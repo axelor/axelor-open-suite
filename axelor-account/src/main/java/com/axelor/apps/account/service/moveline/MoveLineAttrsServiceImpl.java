@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -272,11 +272,12 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   }
 
   @Override
-  public void addSubrogationPartnerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+  public void addThirdPartyPayerPartnerHidden(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "invoiceTermList.subrogationPartner",
+        "invoiceTermList.thirdPartyPayerPartner",
         "hidden",
-        !journalService.isSubrogationOk(move.getJournal()),
+        !journalService.isThirdPartyPayerOk(move.getJournal()),
         attrsMap);
   }
 

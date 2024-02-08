@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -305,7 +305,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
   }
 
-  protected Integer getDailyLimitFromApp() {
+  @Override
+  public Integer getDailyLimitFromApp() {
     return appHumanResourceService.getAppTimesheet().getDailyLimit();
   }
 
@@ -320,7 +321,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
-  protected boolean isExceedingDailyLimit(
+  @Override
+  public boolean isExceedingDailyLimit(
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit) {
     return totalHoursDuration.add(hoursDuration).compareTo(new BigDecimal(dailyLimit)) > 0;
   }

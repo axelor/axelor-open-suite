@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,6 +58,7 @@ public class InvoiceLineController {
     if (invoiceLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (InvoiceLine line : invoiceLines) {
+          BigDecimal coefficient = line.getCoefficient();
           qty =
               (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP))
                   .multiply(newKitQty)
@@ -69,13 +70,17 @@ public class InvoiceLineController {
           }
 
           if (!invoice.getInAti()) {
-            exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted, currencyScale);
+            exTaxTotal =
+                InvoiceLineManagement.computeAmount(
+                    qty, priceDiscounted, currencyScale, coefficient);
             inTaxTotal =
                 exTaxTotal
                     .add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))))
                     .setScale(currencyScale, RoundingMode.HALF_UP);
           } else {
-            inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted, currencyScale);
+            inTaxTotal =
+                InvoiceLineManagement.computeAmount(
+                    qty, priceDiscounted, currencyScale, coefficient);
             exTaxTotal =
                 inTaxTotal.divide(
                     taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),

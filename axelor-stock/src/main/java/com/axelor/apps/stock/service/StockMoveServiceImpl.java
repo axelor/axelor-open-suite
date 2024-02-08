@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -341,7 +341,17 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   public void plan(StockMove stockMove) throws AxelorException {
-    planStockMove(stockMove);
+    planStockMove(stockMove, true);
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPlannedStockMoveAutomaticMail() != null
+        && stockMove.getPlannedStockMoveAutomaticMail()) {
+      sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
+    }
+  }
+
+  @Override
+  public void planWithNoSplit(StockMove stockMove) throws AxelorException {
+    planStockMove(stockMove, false);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && stockMove.getPlannedStockMoveAutomaticMail() != null
         && stockMove.getPlannedStockMoveAutomaticMail()) {
@@ -350,7 +360,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void planStockMove(StockMove stockMove) throws AxelorException {
+  protected void planStockMove(StockMove stockMove, boolean splitByTrackingNumber)
+      throws AxelorException {
     if (stockMove.getStatusSelect() == null
         || stockMove.getStatusSelect() != StockMoveRepository.STATUS_DRAFT) {
       throw new AxelorException(
@@ -365,7 +376,11 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     }
 
-    stockMoveLineService.splitStockMoveLineByTrackingNumber(stockMove);
+    // This call will split move line by tracking number
+    // But only works if the line has not been already splited
+    if (splitByTrackingNumber) {
+      stockMoveLineService.splitStockMoveLineByTrackingNumber(stockMove);
+    }
 
     String draftSeq;
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,7 +57,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -240,12 +239,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             null,
             StockMoveRepository.TYPE_INCOMING);
 
-    stockMove.setPurchaseOrderSet(Sets.newHashSet(purchaseOrder));
+    stockMove.setPurchaseOrder(purchaseOrder);
     stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     stockMove.setTradingName(purchaseOrder.getTradingName());
     stockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
-    qualityStockMove.setPurchaseOrderSet(Sets.newHashSet(purchaseOrder));
+    qualityStockMove.setPurchaseOrder(purchaseOrder);
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
     qualityStockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
@@ -504,9 +503,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     List<StockMove> stockMoveList =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter(
-                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect = 2",
-                purchaseOrder.getId())
+            .filter("self.purchaseOrder.id = ? AND self.statusSelect = 2", purchaseOrder.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -558,7 +555,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect <> ?",
+                "self.purchaseOrder.id = ? AND self.statusSelect <> ?",
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();

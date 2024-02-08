@@ -31,14 +31,13 @@
     <many-to-one name="invoicedPartner" title="Invoiced partner"
       ref="com.axelor.apps.base.db.Partner"/>
 
-    <many-to-many name="saleOrderSet" title="Sale order"
+    <many-to-one name="saleOrder" title="Sale order"
       ref="com.axelor.apps.sale.db.SaleOrder" copy="false"/>
-    <many-to-many name="purchaseOrderSet" title="Purchase order"
+    <many-to-one name="purchaseOrder" title="Purchase order"
       ref="com.axelor.apps.purchase.db.PurchaseOrder" copy="false"/>
 
-    <finder-method name="findAllBySaleOrderAndStatus"
-      using="saleOrderSet,statusSelect" all="true"
-      filter="(:saleOrderSet) MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect"/>
+    <finder-method name="findAllBySaleOrderAndStatus" using="saleOrder,statusSelect"
+      all="true"/>
 
     <extra-code>
     <![CDATA[

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,11 +33,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.utils.helpers.StringHelper;
-import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineController {
 
@@ -72,24 +68,6 @@ public class SaleOrderLineController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
-    }
-  }
-
-  public void setAccount(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    if (context.getParent() != null) {
-      Set<Account> accountsSet =
-          saleOrderLine.getBudget() != null ? saleOrderLine.getBudget().getAccountSet() : null;
-      response.setValue(
-          "account", !CollectionUtils.isEmpty(accountsSet) ? accountsSet.iterator().next() : null);
-    }
-    if (!Beans.get(SaleOrderLineBudgetService.class)
-        .addBudgetDistribution(saleOrderLine)
-        .isEmpty()) {
-      response.setValue(
-          "budgetDistibutionList",
-          Beans.get(SaleOrderLineBudgetService.class).addBudgetDistribution(saleOrderLine));
     }
   }
 
@@ -130,20 +108,6 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void getAccountDomain(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
-    String domain = "self.id IN (0)";
-    Set<Account> accountsSet =
-        saleOrderLine.getBudget() != null ? saleOrderLine.getBudget().getAccountSet() : null;
-    if (!CollectionUtils.isEmpty(accountsSet)) {
-      domain = domain.replace("(0)", "(" + StringHelper.getIdListString(accountsSet) + ")");
-    }
-    response.setAttr("account", "domain", domain);
   }
 
   public void validateBudgetLinesAmount(ActionRequest request, ActionResponse response) {
@@ -206,5 +170,20 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null && request.getContext().getParent() != null) {
+      saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+    }
+
+    Beans.get(SaleOrderLineBudgetService.class)
+        .computeBudgetDistributionSumAmount(saleOrderLine, saleOrder);
+
+    response.setValue(
+        "budgetDistributionSumAmount", saleOrderLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", saleOrderLine.getBudgetDistributionList());
   }
 }

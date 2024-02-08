@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -134,6 +134,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
   public void checkAmountForInvoiceLine(InvoiceLine invoiceLine) throws AxelorException {
     if (invoiceLine.getBudgetDistributionList() != null
         && !invoiceLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal amountSum = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().abs().compareTo(invoiceLine.getCompanyExTaxTotal())
             > 0) {
@@ -142,7 +143,15 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE),
               budgetDistribution.getBudget().getCode(),
               invoiceLine.getProduct().getCode());
+        } else {
+          amountSum = amountSum.add(budgetDistribution.getAmount());
         }
+      }
+      if (amountSum.compareTo(invoiceLine.getCompanyExTaxTotal()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_INVOICE),
+            invoiceLine.getProduct().getCode());
       }
     }
   }

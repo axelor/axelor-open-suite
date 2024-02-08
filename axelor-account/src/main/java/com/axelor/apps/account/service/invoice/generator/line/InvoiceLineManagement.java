@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,9 +62,14 @@ public abstract class InvoiceLineManagement {
    * @param scale Scale to apply on the result
    * @return The Excluded tax total amount.
    */
-  public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {
-
-    BigDecimal amount = quantity.multiply(price).setScale(scale, RoundingMode.HALF_UP);
+  public static BigDecimal computeAmount(
+      BigDecimal quantity, BigDecimal price, int scale, BigDecimal coefficient) {
+    BigDecimal amount;
+    if (coefficient != null) {
+      amount = quantity.multiply(price).multiply(coefficient).setScale(scale, RoundingMode.HALF_UP);
+    } else {
+      amount = quantity.multiply(price).setScale(scale, RoundingMode.HALF_UP);
+    }
 
     LOG.debug(
         "Computation of W.T. amount with quantity of {} for {} : {}",

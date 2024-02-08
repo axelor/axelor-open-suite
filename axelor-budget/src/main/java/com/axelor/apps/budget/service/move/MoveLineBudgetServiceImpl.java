@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,16 +29,21 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBudget;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
@@ -46,15 +51,21 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   protected MoveLineRepository moveLineRepository;
   protected BudgetService budgetService;
   protected BudgetDistributionService budgetDistributionService;
+  protected AppBudgetService appBudgetService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public MoveLineBudgetServiceImpl(
       MoveLineRepository moveLineRepository,
       BudgetService budgetService,
-      BudgetDistributionService budgetDistributionService) {
+      BudgetDistributionService budgetDistributionService,
+      AppBudgetService appBudgetService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.moveLineRepository = moveLineRepository;
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
+    this.appBudgetService = appBudgetService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -79,11 +90,13 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   public void checkAmountForMoveLine(MoveLine moveLine) throws AxelorException {
     if (moveLine.getBudgetDistributionList() != null
         && !moveLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
-        if (budgetDistribution
-                .getAmount()
-                .abs()
-                .compareTo(moveLine.getCredit().add(moveLine.getDebit()))
+        if (currencyScaleServiceBudget
+                .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount().abs())
+                .compareTo(
+                    currencyScaleServiceBudget.getCompanyScaledValue(
+                        budgetDistribution, moveLine.getCredit().add(moveLine.getDebit())))
             > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -91,6 +104,13 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
               budgetDistribution.getBudget().getCode(),
               moveLine.getAccount().getCode());
         }
+        totalAmount = totalAmount.add(budgetDistribution.getAmount());
+      }
+      if (totalAmount.compareTo(moveLine.getCredit().add(moveLine.getDebit())) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_MOVE),
+            moveLine.getAccount().getCode());
       }
     }
   }
@@ -136,6 +156,32 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         if (budgetDistribution.getAmount().compareTo(BigDecimal.ZERO) > 0) {
           budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
         }
+      }
+    }
+  }
+
+  @Override
+  public void manageMonoBudget(Move move) {
+    if (Optional.of(appBudgetService.getAppBudget())
+        .map(AppBudget::getManageMultiBudget)
+        .orElse(true)) {
+      return;
+    }
+
+    List<MoveLine> moveLineList =
+        move.getMoveLineList().stream()
+            .filter(
+                ml -> ml.getBudget() != null && ObjectUtils.isEmpty(ml.getBudgetDistributionList()))
+            .collect(Collectors.toList());
+    if (!ObjectUtils.isEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        BudgetDistribution budgetDistribution =
+            budgetDistributionService.createDistributionFromBudget(
+                moveLine.getBudget(),
+                moveLine.getCredit().add(moveLine.getDebit()),
+                move.getDate());
+        budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
+        moveLine.setBudgetDistributionSumAmount(moveLine.getCredit().add(moveLine.getDebit()));
       }
     }
   }

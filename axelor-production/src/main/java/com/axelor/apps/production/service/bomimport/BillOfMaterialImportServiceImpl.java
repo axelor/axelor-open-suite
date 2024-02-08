@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.bomimport;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -34,10 +35,14 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportService {
 
@@ -48,6 +53,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
   protected final BillOfMaterialImportRepository billOfMaterialImportRepository;
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialImporter billOfMaterialImporter;
+  protected final MetaFiles metaFiles;
 
   @Inject
   public BillOfMaterialImportServiceImpl(
@@ -57,7 +63,8 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
       ImportConfigurationRepository importConfigurationRepository,
       BillOfMaterialImportRepository billOfMaterialImportRepository,
       BillOfMaterialRepository billOfMaterialRepository,
-      BillOfMaterialImporter billOfMaterialImporter) {
+      BillOfMaterialImporter billOfMaterialImporter,
+      MetaFiles metaFiles) {
     this.appBaseService = appBaseService;
     this.importService = importService;
     this.billOfMaterialLineService = billOfMaterialLineService;
@@ -65,6 +72,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     this.billOfMaterialImportRepository = billOfMaterialImportRepository;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialImporter = billOfMaterialImporter;
+    this.metaFiles = metaFiles;
   }
 
   @Override
@@ -119,6 +127,19 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
                 ProductionExceptionMessage.BOM_IMPORT_NO_MAIN_BILL_OF_MATERIALS_GENERATED));
 
     generateBillOfMaterialFromImportLine(billOfMaterialImportLineOp.get());
+
+    attachMetaFile(billOfMaterialImport);
+  }
+
+  protected void attachMetaFile(BillOfMaterialImport billOfMaterialImport) {
+    MetaFile metaFile = billOfMaterialImport.getDocumentMetaFile();
+
+    if (metaFile != null) {
+      metaFiles.attach(
+          billOfMaterialImport.getDocumentMetaFile(),
+          billOfMaterialImport.getDocumentMetaFile().getFileName(),
+          billOfMaterialImport.getMainBillOfMaterialGenerated());
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -167,6 +188,10 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
 
     billOfMaterialImportLine
         .getBillOfMaterialImport()
+        .addBillOfMaterialGeneratedListItem(billOfMaterial);
+
+    billOfMaterialImportLine
+        .getBillOfMaterialImport()
         .setMainBillOfMaterialGenerated(billOfMaterial);
     return Optional.of(billOfMaterialRepository.save(billOfMaterial));
   }
@@ -190,5 +215,13 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     billOfMaterialImport = billOfMaterialImportRepository.find(billOfMaterialImport.getId());
     billOfMaterialImport.setStatusSelect(BillOfMaterialImportRepository.STATUS_VALIDATED);
     billOfMaterialImportRepository.save(billOfMaterialImport);
+  }
+
+  @Override
+  public List<Product> getCreatedProducts(BillOfMaterialImport billOfMaterialImport) {
+    return billOfMaterialImport.getBillOfMaterialImportLineList().stream()
+        .filter(BillOfMaterialImportLine::getIsCreatedProduct)
+        .map(BillOfMaterialImportLine::getProduct)
+        .collect(Collectors.toList());
   }
 }

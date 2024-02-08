@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -282,7 +282,12 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void setFormattedFullName(Address address) throws AxelorException {
-    AddressTemplate addressTemplate = address.getAddressL7Country().getAddressTemplate();
+    Country addressL7Country = address.getAddressL7Country();
+    if (addressL7Country == null) {
+      return;
+    }
+
+    AddressTemplate addressTemplate = addressL7Country.getAddressTemplate();
     String content = addressTemplate.getTemplateStr();
 
     try {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -150,7 +150,7 @@ public class BatchLeaveManagement extends BatchStrategy {
       LeaveManagement leaveManagement =
           leaveManagementService.createLeaveManagement(
               leaveLine,
-              employeeService.getUser(employee),
+              employee.getUser(),
               hrBatch.getComments(),
               null,
               hrBatch.getStartDate(),
@@ -173,7 +173,7 @@ public class BatchLeaveManagement extends BatchStrategy {
       leaveReasonList.addAll(
           leaveReasonRepository
               .all()
-              .filter("self.leaveReasonTypeSelect = :typeSelect AND self.isActive = true")
+              .filter("self.leaveReasonTypeSelect = :typeSelect AND self.isAutoIncrement = true")
               .bind("typeSelect", hrBatch.getLeaveReasonTypeSelect())
               .fetch());
     }

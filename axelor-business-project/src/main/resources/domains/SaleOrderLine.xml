@@ -10,6 +10,16 @@
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <integer name="progress" title="Progress"/>
     <boolean name="toInvoice" title="To invoice with project"/>
+    <integer name="invoicingModeSelect"
+      selection="business.project.sale.order.line.invoicing.mode.select" title="Invoicing mode"/>
+
+    <extra-code>
+      <![CDATA[
+            public static final int INVOICING_MODE_DIRECTLY = 1;
+            public static final int INVOICING_MODE_ON_DELIVERY = 2;
+
+          ]]>
+    </extra-code>
   </entity>
 
 </domain-models>

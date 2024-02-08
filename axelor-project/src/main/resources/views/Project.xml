@@ -690,7 +690,7 @@
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="deleteTaskBtn" icon="fa-times"
@@ -704,7 +704,7 @@
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="deleteTaskBtn" icon="fa-times"
@@ -733,7 +733,7 @@
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
     </node>
   </tree>
@@ -1057,10 +1057,10 @@
 
   <search-filters name="project-topic-filters"
     model="com.axelor.apps.project.db.Topic" title="Topics">
-    <filter title="My topics">
+    <filter name="project-topic-filters-my-topics" title="My topics">
       <domain>self.createdBy.id = :userId</domain>
     </filter>
-    <filter title="New topics">
+    <filter name="project-topic-filters-new-topics" title="New topics">
       <domain>self.createdOn &gt; date(now())</domain>
     </filter>
   </search-filters>

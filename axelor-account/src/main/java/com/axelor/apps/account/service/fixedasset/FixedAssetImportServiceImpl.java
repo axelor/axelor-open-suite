@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,17 +43,20 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
   protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected FixedAssetLineService fixedAssetLineService;
+  protected FixedAssetLineToolService fixedAssetLineToolService;
 
   @Inject
   public FixedAssetImportServiceImpl(
       FixedAssetLineComputationService fixedAssetLineComputationService,
       FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetLineMoveService fixedAssetLineMoveService,
-      FixedAssetLineService fixedAssetLineService) {
+      FixedAssetLineService fixedAssetLineService,
+      FixedAssetLineToolService fixedAssetLineToolService) {
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.fixedAssetLineGenerationService = fixedAssetLineGenerationService;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetLineService = fixedAssetLineService;
+    this.fixedAssetLineToolService = fixedAssetLineToolService;
   }
 
   @Override
@@ -85,14 +88,19 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
         BigDecimal alreadyDepreciatedAmount = fixedAsset.getImportAlreadyDepreciatedAmount();
         BigDecimal depreciatedAmountCurrentYear = fixedAsset.getDepreciatedAmountCurrentYear();
         boolean isTotallyDepreciated =
-            grossValue.equals(alreadyDepreciatedAmount.add(depreciatedAmountCurrentYear))
-                || grossValue
-                    .subtract(fixedAsset.getResidualValue())
-                    .equals(alreadyDepreciatedAmount.add(depreciatedAmountCurrentYear));
+            fixedAssetLineToolService.equals(
+                    grossValue,
+                    alreadyDepreciatedAmount.add(depreciatedAmountCurrentYear),
+                    fixedAsset)
+                || fixedAssetLineToolService.equals(
+                    grossValue.subtract(fixedAsset.getResidualValue()),
+                    alreadyDepreciatedAmount.add(depreciatedAmountCurrentYear),
+                    fixedAsset);
 
         if (isTotallyDepreciated) {
           if (depreciatedAmountCurrentYear.signum() != 0) {
             generateAndComputeDepreciatedLinesBeforeFODate(fixedAsset);
+
           } else {
             generateAndComputeDepreciatedLines(fixedAsset);
           }
@@ -135,10 +143,15 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
           fixedAssetLineComputationService.createFixedAssetLine(
               fixedAsset,
               failOverDate,
-              fiscalDepreciatedAmountCurrentYear,
-              fiscalAlreadyDepreciatedAmount.add(fiscalDepreciatedAmountCurrentYear),
+              fixedAssetLineToolService.getCompanyScaledValue(
+                  fiscalDepreciatedAmountCurrentYear, fixedAsset),
+              fixedAssetLineToolService.getCompanyScaledValue(
+                  fiscalAlreadyDepreciatedAmount,
+                  fiscalDepreciatedAmountCurrentYear,
+                  fixedAsset,
+                  BigDecimal::add),
               BigDecimal.ZERO,
-              depreciationBase,
+              fixedAssetLineToolService.getCompanyScaledValue(depreciationBase, fixedAsset),
               FixedAssetLineRepository.TYPE_SELECT_FISCAL,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLine);
@@ -161,20 +174,25 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
           fixedAssetLineComputationService.createFixedAssetLine(
               fixedAsset,
               failOverDate,
-              depreciatedAmountCurrentYear,
-              alreadyDepreciatedAmount.add(depreciatedAmountCurrentYear),
+              fixedAssetLineToolService.getCompanyScaledValue(
+                  depreciatedAmountCurrentYear, fixedAsset),
+              fixedAssetLineToolService.getCompanyScaledValue(
+                  alreadyDepreciatedAmount,
+                  depreciatedAmountCurrentYear,
+                  fixedAsset,
+                  BigDecimal::add),
               BigDecimal.ZERO,
-              depreciationBase,
+              fixedAssetLineToolService.getCompanyScaledValue(depreciationBase, fixedAsset),
               FixedAssetLineRepository.TYPE_SELECT_ECONOMIC,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
     }
     if (isDerogation(fixedAsset)
         && !fixedAsset.getIsEqualToFiscalDepreciation()
-        && !fixedAsset
-            .getImportFiscalAlreadyDepreciatedAmount()
-            .equals(fixedAsset.getImportAlreadyDepreciatedAmount())) {
-
+        && !fixedAssetLineToolService.equals(
+            fixedAsset.getImportFiscalAlreadyDepreciatedAmount(),
+            fixedAsset.getImportAlreadyDepreciatedAmount(),
+            fixedAsset)) {
       fixedAssetLineGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
     }
     if (isIFRS(fixedAsset) && !fixedAsset.getIsIfrsEqualToFiscalDepreciation()) {
@@ -262,10 +280,10 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
     }
     if (isDerogation(fixedAsset)
         && !fixedAsset.getIsEqualToFiscalDepreciation()
-        && !fixedAsset
-            .getImportFiscalAlreadyDepreciatedAmount()
-            .equals(fixedAsset.getImportAlreadyDepreciatedAmount())) {
-
+        && !fixedAssetLineToolService.equals(
+            fixedAsset.getImportFiscalAlreadyDepreciatedAmount(),
+            fixedAsset.getImportAlreadyDepreciatedAmount(),
+            fixedAsset)) {
       fixedAssetLineGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
     }
     if (isIFRS(fixedAsset) && !fixedAsset.getIsIfrsEqualToFiscalDepreciation()) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -362,7 +363,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (!invoicePayment.getManualChange()
           || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
         invoicePayment.setAmount(payableAmount);
-        amountError = true;
+        amountError = !invoicePayment.getApplyFinancialDiscount();
       }
 
       invoiceTermIdList =
@@ -375,14 +376,30 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
             invoicePayment, invoiceTerms, amount, amount);
 
-        if (this.isPartialPayment(invoicePayment)) {
-          invoicePayment.setApplyFinancialDiscount(false);
+        if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
+          BigDecimal financialDiscountAmount =
+              invoicePayment.getInvoiceTermPaymentList().stream()
+                  .map(InvoiceTermPayment::getInvoiceTerm)
+                  .map(InvoiceTerm::getFinancialDiscountAmount)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO);
+          BigDecimal amountWithFinancialDiscount = amount.add(financialDiscountAmount);
 
+          invoicePayment.clearInvoiceTermPaymentList();
+          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+              invoicePayment,
+              invoiceTerms,
+              amountWithFinancialDiscount,
+              amountWithFinancialDiscount);
+        } else if (this.isPartialPayment(invoicePayment)) {
           invoicePayment.clearInvoiceTermPaymentList();
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
               invoicePayment, invoiceTerms, amount, amount);
         }
 
+        if (this.isPartialPayment(invoicePayment)) {
+          invoicePayment.setApplyFinancialDiscount(false);
+        }
         invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
       }
     }

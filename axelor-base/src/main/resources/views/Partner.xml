@@ -452,7 +452,8 @@
         </panel>
 
         <panel name="settingsPanel" title="Settings" colSpan="12">
-          <field name="language" colSpan="6" canEdit="false"/>
+          <field name="localization" colSpan="6" canEdit="false" grid-view="localization-grid"
+            form-view="localization-form"/>
           <field name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)"
             if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"
             widget="boolean-switch" colSpan="12"/>
@@ -497,8 +498,8 @@
       </panel>
       <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
         if="__config__.app.isApp('account')"/>
-      <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
         <button name="callBtn" title="Create a call" link="" icon="fa-phone"
@@ -511,14 +512,15 @@
           icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
       </panel>
-      <panel name="opportunitiesPanel" title="Opportunities" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="opportunitiesPanel" title="Opportunities"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')">
         <button name="createOpportunityBtn" title="Create opportunity"
           onClick="save,action-partner-view-create-opportunity" link="" colSpan="3"/>
         <panel-include view="incl-opportunities-partner-form"/>
       </panel>
-      <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="emailPanel" title="Emails" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" if="__config__.app.isApp('crm')">
         <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
         <panel-dashlet name="sentEmailsPanel" title="Sent emails"
@@ -526,8 +528,9 @@
         <panel-dashlet name="receivedEmailsPanel" title="Received emails"
           action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
       </panel>
-      <panel name="marketingCampaignPanel" title="Marketing campaigns" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('marketing')">
+      <panel name="marketingCampaignPanel" title="Marketing campaigns"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('marketing')">
         <panel-dashlet name="marketingCampaignsPanel"
           action="action-partner-view-marketing-campaigns" colSpan="12" height="800"/>
       </panel>
@@ -757,8 +760,9 @@
         <panel-include view="incl-activities-contact-form"/>
       </panel>
       <panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12"
-        action="action-contact-view-opportunities" height="550" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
+        action="action-contact-view-opportunities" height="550"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')"/>
       <panel name="saleOrderContactPanel" title="Sales orders" showIf="id != null"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
         <panel-include view="incl-sales-contact-form"/>
@@ -783,7 +787,8 @@
 
     <panel name="settingsPanel" sidebar="true" title="Settings">
       <field name="partnerSeq"/>
-      <field name="language" canEdit="false"/>
+      <field name="localization" canEdit="false" grid-view="localization-grid"
+        form-view="localization-form"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
         <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>
@@ -1035,7 +1040,8 @@
     </panel-tabs>
     <panel name="settingsPanel" sidebar="true" title="Settings">
       <field name="partnerSeq"/>
-      <field name="language" canEdit="false"/>
+      <field name="localization" grid-view="localization-grid" form-view="localization-form"
+        canEdit="false"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
         <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>
@@ -1383,8 +1389,8 @@
     model="com.axelor.apps.base.db.Partner">
     <field name="$positiveBalanceBtn"
       expr="eval: balance &lt; 0 ?
-		java.text.NumberFormat.getInstance(new Locale(__user__.language)).format(balance * -1) :
-		java.text.NumberFormat.getInstance(new Locale(__user__.language)).format(balance)"
+		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance * -1) :
+		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance)"
       if="balance != null"/>
     <field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
   </action-record>
@@ -1420,8 +1426,8 @@
     <field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}"/>
     <field name="user" expr="#{__user__}"/>
     <field name="team" expr="#{__user__.activeTeam}"/>
-    <field name="language"
-      expr="eval: __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="isCustomer" expr="true"
       if="_isCustomer || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
     <field name="isSupplier" expr="true"
@@ -1437,8 +1443,8 @@
     <field name="partnerTypeSelect" expr="#{2}"/>
     <field name="isContact" expr="#{true}"/>
     <field name="companySet" expr="#{__parent__.companySet}"/>
-    <field name="language"
-      expr="eval: __parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
       if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
@@ -1459,8 +1465,8 @@
     <field name="isContact" expr="#{false}"/>
     <field name="isEmployee" expr="#{true}"/>
     <field name="companySet" expr="#{__parent__.companySet}"/>
-    <field name="language"
-      expr="eval: __parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
       if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
@@ -1575,7 +1581,7 @@
     <field name="isCustomer" expr="eval: false"/>
     <field name="isSupplier" expr="eval: false"/>
     <field name="isCarrier" expr="eval: false"/>
-    <field name="isSubrogation" expr="eval: false" if="__config__.app.isApp('account')"/>
+    <field name="isThirdPartyPayer" expr="eval: false" if="__config__.app.isApp('account')"/>
   </action-record>
 
   <action-validate name="action-partner-validate-partner-stock-settings-list">
@@ -1658,22 +1664,22 @@
     <field name="simpleFullName" hidden="true"/>
     <field name="isCarrier" title="Is a carrier" hidden="true"
       if="!__config__.app.isApp('stock')"/>
-    <filter title="All Enterprises">
+    <filter name="partner-filters-all-enterprises" title="All Enterprises">
       <domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
     </filter>
-    <filter title="All Individuals">
+    <filter name="partner-filters-all-individuals" title="All Individuals">
       <domain>self.partnerTypeSelect = 2 AND self.isContact = false</domain>
     </filter>
-    <filter title="All Prospects">
+    <filter name="partner-filters-all-prospects" title="All Prospects">
       <domain>self.isProspect = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Clients">
+    <filter name="partner-filters-all-clients" title="All Clients">
       <domain>self.isCustomer = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Suppliers">
+    <filter name="partner-filters-all-suppliers" title="All Suppliers">
       <domain>self.isSupplier = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Employees">
+    <filter name="partner-filters-all-employees" title="All Employees">
       <domain>self.isEmployee = true AND self.isContact = false</domain>
     </filter>
   </search-filters>
@@ -1733,16 +1739,16 @@
     <field name="simpleFullName" hidden="true"/>
     <field name="isCarrier" title="Is a carrier" hidden="true"
       if="!__config__.app.isApp('stock')"/>
-    <filter name="contact-filters-prospects-clients" title="All prospects and clients">
+    <filter name="contact-filters-all-prospects-clients" title="All prospects and clients">
       <domain>self.mainPartner.isProspect = true OR self.mainPartner.isCustomer = true</domain>
     </filter>
-    <filter name="contact-filters-prospects" title="All prospects">
+    <filter name="contact-filters-all-prospects" title="All prospects">
       <domain>self.mainPartner.isProspect = true</domain>
     </filter>
-    <filter name="contact-filters-clients" title="All clients">
+    <filter name="contact-filters-all-clients" title="All clients">
       <domain>self.mainPartner.isCustomer = true</domain>
     </filter>
-    <filter name="contact-filters-supplier" title="All suppliers">
+    <filter name="contact-filters-all-supplier" title="All suppliers">
       <domain>self.isSupplier = true</domain>
     </filter>
   </search-filters>

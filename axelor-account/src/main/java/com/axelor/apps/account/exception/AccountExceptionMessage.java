@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -441,6 +441,9 @@ public final class AccountExceptionMessage {
   public static final String RECONCILE_WRONG_CURRENCY = /*$$(*/
       "Reconcile involves two different currencies and neither of them is the company currency" /*)*/;
 
+  public static final String RECONCILE_MISSING_TAX = /*$$(*/
+      "Move %s has a move line with a tax account but no tax assigned. Please fix this in order to proceed with this reconcile." /*)*/;
+
   public static final String ALREADY_HAVE_PROPOSAL_RECONCILE = /*$$(*/
       "Some selected MoveLines already have a proposal ReconcileGroup" /*)*/;
 
@@ -823,11 +826,16 @@ public final class AccountExceptionMessage {
 
   public static final String DEBT_RECOVERY_2 = /*$$(*/ "Reference date undefined." /*)*/;
   public static final String DEBT_RECOVERY_3 = /*$$(*/
-      "Debt recovery method missing for the configuration." /*)*/;
+      "%s : No debt recovery method has been found for the company %s and the category %s %s (Partner %s)" /*)*/;
   public static final String DEBT_RECOVERY_4 = /*$$(*/
       "Debt recovery level waiting for approval." /*)*/;
+  public static final String DEBT_RECOVERY_MISSING_PARTNER_CATEGORY = /*$$(*/
+      "The partner category is empty on the partner %s, no debt recovery method can be found." /*)*/;
+
   public static final String DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND = /*$$(*/
       "Debt recovery method line not found" /*)*/;
+
+  public static final String DEBT_RECOVERY_TRADING_NAME = /*$$(*/ "and trading name %s" /*)*/;
 
   /** Debt recovery session service */
   public static final String DEBT_RECOVERY_SESSION_1 = /*$$(*/

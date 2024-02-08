@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -313,6 +314,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(StockExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
     }
+    Partner supplier =
+        stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+                && !stockMove.getIsReversion()
+            ? stockMove.getPartner()
+            : null;
     while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
       BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
@@ -325,7 +331,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
-              stockMove.getOrigin()));
+              stockMove.getOrigin(),
+              supplier));
 
       generateTrakingNumberCounter++;
 
@@ -336,14 +343,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
     }
     if (stockMoveLine.getTrackingNumber() == null) {
-
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
               product,
               qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
-              stockMove.getOrigin()));
+              stockMove.getOrigin(),
+              supplier));
     }
   }
 
@@ -1685,10 +1692,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Transactional(rollbackOn = {Exception.class})
   public void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException {
     Integer type = stockMove.getTypeSelect();
-    if (type == StockMoveRepository.TYPE_INTERNAL) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (type == StockMoveRepository.TYPE_INTERNAL
+        || stockMoveLineList == null
+        || stockMoveLineList.isEmpty()) {
       return;
     }
-    List<StockMoveLine> stockMoveLineList = new ArrayList<>(stockMove.getStockMoveLineList());
+    // Does not manage the case where line is already splited
+    // Works when generating a tracking number
+    // But not when assigning one
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
       if (product == null) {

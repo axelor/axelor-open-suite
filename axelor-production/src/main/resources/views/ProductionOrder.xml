@@ -151,7 +151,6 @@
     <view type="grid" name="operation-order-group-grid"/>
     <view type="form" name="operation-order-form"/>
     <domain>:id member of self.manufOrder.productionOrderSet</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-production-order-view-add-manuf-order-wizard"
@@ -166,7 +165,8 @@
     model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
     <field name="project" hidden="true"
       if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
-    <filter title="Production orders closed">
+    <filter name="production-order-filters-production-orders-closed"
+      title="Production orders closed">
       <domain>self.isClosed = true</domain>
     </filter>
   </search-filters>

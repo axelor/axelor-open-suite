@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,11 +21,13 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.CurrencyScaleServiceContract;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -76,6 +78,11 @@ public class ContractLineManagementRepository extends ContractLineRepository {
           "$currencyNumberOfDecimals",
           Beans.get(CurrencyScaleServiceContract.class).getScale(contractVersion.getContract()));
     }
+
+    AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
+
+    json.put("$nbDecimalDigitForQty", appBase.getNbDecimalDigitForQty());
+    json.put("$nbDecimalDigitForUnitPrice", appBase.getNbDecimalDigitForUnitPrice());
 
     return super.populate(json, context);
   }

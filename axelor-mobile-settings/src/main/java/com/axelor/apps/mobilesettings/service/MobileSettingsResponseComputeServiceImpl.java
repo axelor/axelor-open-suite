@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.mobilesettings.service;
 
 import com.axelor.apps.mobilesettings.db.MobileConfig;
@@ -8,8 +26,10 @@ import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsResponse;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.studio.db.AppMobileSettings;
+import com.axelor.studio.db.repo.AppMobileSettingsRepository;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -67,7 +87,9 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsManualCreationOfTimesheetAllowed(),
         appMobileSettings.getIsLineCreationOfTimesheetDetailsAllowed(),
         appMobileSettings.getIsEditionOfDateAllowed(),
-        appMobileSettings.getIsTimesheetProjectInvoicingEnabled());
+        appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
+        appMobileSettings.getIsStockLocationManagementEnabled(),
+        getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()));
   }
 
   protected Boolean checkConfigWithRoles(Boolean config, Set<Role> authorizedRoles) {
@@ -127,7 +149,14 @@ public class MobileSettingsResponseComputeServiceImpl
                 appMobileSettings.getIsHRAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HR)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)));
+            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_QUALITY,
+            checkConfigWithRoles(
+                appMobileSettings.getIsQualityAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_QUALITY)
+                    .getAuthorizedRoles()),
+            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_QUALITY)));
   }
 
   protected List<String> getRestrictedMenusFromApp(String appSequence) {
@@ -139,5 +168,18 @@ public class MobileSettingsResponseComputeServiceImpl
           .collect(Collectors.toList());
     }
     return List.of();
+  }
+
+  protected List<String> getFieldsToShowOnTimesheet(String timesheetImputationSelect) {
+    return Optional.ofNullable(timesheetImputationSelect)
+        .map(it -> it.split(","))
+        .map(List::of)
+        .orElse(
+            List.of(
+                AppMobileSettingsRepository.IMPUTATION_ON_PROJECT,
+                AppMobileSettingsRepository.IMPUTATION_ON_PROJECT_TASK,
+                AppMobileSettingsRepository.IMPUTATION_ON_MANUF_ORDER,
+                AppMobileSettingsRepository.IMPUTATION_ON_OPERATION_ORDER,
+                AppMobileSettingsRepository.IMPUTATION_ON_ACTIVITY));
   }
 }

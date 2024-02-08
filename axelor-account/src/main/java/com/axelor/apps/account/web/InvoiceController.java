@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -48,7 +47,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -332,25 +331,6 @@ public class InvoiceController {
     }
   }
 
-  public void updateInvoiceTermsFinancialDiscount(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-
-      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        return;
-      }
-
-      List<InvoiceTerm> invoiceTermList =
-          Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
-      response.setValue("invoiceTermList", invoiceTermList);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   /**
    * Function returning both the paymentMode and the paymentCondition
    *
@@ -491,7 +471,7 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null
+      } else if ((context.get("_invoiceId") != null || context.get("id") != null)
           && (Wizard.class.equals(context.getContextClass())
               || Invoice.class.equals(context.getContextClass()))) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
@@ -500,28 +480,33 @@ public class InvoiceController {
                 ? Integer.parseInt(context.get("reportType").toString())
                 : null;
 
-        Map languageMap =
+        Map localizationMap =
             reportType != null
                     && (reportType == 1 || reportType == 3)
-                    && context.get("language") != null
-                ? (Map<String, Object>) request.getContext().get("language")
+                    && context.get("localization") != null
+                ? (Map<String, Object>) request.getContext().get("localization")
                 : null;
-        String locale =
-            languageMap != null && languageMap.get("id") != null
-                ? Beans.get(LanguageRepository.class)
-                    .find(Long.parseLong(languageMap.get("id").toString()))
+        String localizationCode =
+            localizationMap != null && localizationMap.get("id") != null
+                ? Beans.get(LocalizationRepository.class)
+                    .find(Long.parseLong(localizationMap.get("id").toString()))
                     .getCode()
                 : null;
+
+        Object exactInvoiceId = context.get("_invoiceId");
+        if (exactInvoiceId == null) {
+          exactInvoiceId = context.get("id");
+        }
 
         fileLink =
             Beans.get(InvoicePrintService.class)
                 .printInvoice(
                     Beans.get(InvoiceRepository.class)
-                        .find(Long.parseLong(context.get("id").toString())),
+                        .find(Long.parseLong(exactInvoiceId.toString())),
                     false,
                     format,
                     reportType,
-                    locale);
+                    localizationCode);
         title = I18n.get("Invoice");
       } else {
         throw new AxelorException(
@@ -537,7 +522,8 @@ public class InvoiceController {
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     Invoice invoice =
-        Beans.get(InvoiceRepository.class).find(Long.parseLong(context.get("id").toString()));
+        Beans.get(InvoiceRepository.class)
+            .find(Long.parseLong(context.get("_invoiceId").toString()));
     Integer reportType =
         context.get("reportType") != null
             ? Integer.parseInt(context.get("reportType").toString())
@@ -1205,14 +1191,13 @@ public class InvoiceController {
   public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
+      InvoiceFinancialDiscountService invoiceFinancialDiscountService =
+          Beans.get(InvoiceFinancialDiscountService.class);
 
-      Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
+      invoiceFinancialDiscountService.setFinancialDiscountInformations(invoice);
+      invoiceFinancialDiscountService.updateFinancialDiscount(invoice);
 
-      if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
-        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
-      }
-
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
       response.setValue("financialDiscount", invoice.getFinancialDiscount());
       response.setValue("legalNotice", invoice.getLegalNotice());
       response.setValue("financialDiscountRate", invoice.getFinancialDiscountRate());
@@ -1277,10 +1262,10 @@ public class InvoiceController {
   }
 
   @ErrorException
-  public void updateSubrogationPartner(ActionRequest request, ActionResponse response) {
+  public void updateThirdPartyPayerPartner(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
 
-    Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
+    Beans.get(InvoiceService.class).updateThirdPartyPayerPartner(invoice);
 
     response.setValue("invoiceTermList", invoice.getInvoiceTermList());
   }

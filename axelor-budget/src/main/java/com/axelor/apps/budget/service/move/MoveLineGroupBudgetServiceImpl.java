@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -92,7 +92,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadMoveAttrsMap(moveLine, move);
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
@@ -104,7 +104,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadAttrsMap(moveLine, move);
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
@@ -118,7 +118,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
 
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;

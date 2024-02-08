@@ -367,7 +367,6 @@
     <view name="analytic-move-line-grid" type="grid"/>
     <view name="analytic-move-line-form" type="form"/>
     <domain>self.project.id = :id</domain>
-    <context name="id" expr="eval:id"/>
   </action-view>
 
   <action-view name="action-project-view-show-confirmed-purchase-order-lines"

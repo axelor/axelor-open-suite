@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,6 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -127,8 +126,7 @@ public class BankStatementController {
     }
   }
 
-  public void deleteStatement(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void deleteStatement(ActionRequest request, ActionResponse response) {
     try {
       BankStatement bankStatement = request.getContext().asType(BankStatement.class);
       bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());

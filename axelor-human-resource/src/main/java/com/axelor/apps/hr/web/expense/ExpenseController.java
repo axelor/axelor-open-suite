@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -563,17 +563,20 @@ public class ExpenseController {
       return;
     }
 
-    Long empId;
+    Long empId = expenseLine.getEmployee().getId();
     if (expenseLine.getExpense() != null) {
       setExpense(request, expenseLine);
     }
     Expense expense = expenseLine.getExpense();
 
-    if (expense != null && expenseLine.getEmployee() != null) {
-      empId = expense.getEmployee().getId();
-    } else {
-      empId = request.getContext().getParent().asType(Expense.class).getEmployee().getId();
+    if (empId == null) {
+      if (expense != null && expenseLine.getEmployee() != null) {
+        empId = expense.getEmployee().getId();
+      } else {
+        empId = request.getContext().getParent().asType(Expense.class).getEmployee().getId();
+      }
     }
+
     Employee employee = Beans.get(EmployeeRepository.class).find(empId);
 
     BigDecimal amount = BigDecimal.ZERO;
@@ -694,6 +697,7 @@ public class ExpenseController {
 
       if (expenseLine.getKilometricAllowParam() == null
           || expenseLine.getExpenseDate() == null
+          || expenseLine.getKilometricTypeSelect() == null
           || expenseLine.getKilometricTypeSelect() == 0) {
         return;
       }

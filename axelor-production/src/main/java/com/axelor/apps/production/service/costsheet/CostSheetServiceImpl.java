@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -614,30 +614,13 @@ public class CostSheetServiceImpl implements CostSheetService {
         continue;
       }
 
-      BigDecimal valuationQty = BigDecimal.ZERO;
-
-      if (calculationTypeSelect == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
-
-        BigDecimal plannedConsumeQty =
-            computeTotalQtyPerUnit(toConsumeProdProductList, product, unit);
-
-        valuationQty = realQty.subtract(plannedConsumeQty.multiply(ratio));
-      }
-
-      valuationQty =
-          valuationQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-
-      if (valuationQty.compareTo(BigDecimal.ZERO) == 0) {
-        continue;
-      }
-
       costSheetLineService.createConsumedProductCostSheetLine(
           parentCostSheet.getManufOrder().getCompany(),
           product,
           unit,
           bomLevel,
           parentCostSheetLine,
-          valuationQty,
+          realQty,
           CostSheetService.ORIGIN_MANUF_ORDER,
           null);
     }

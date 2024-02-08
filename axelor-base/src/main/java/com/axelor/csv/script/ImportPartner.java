@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,12 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -40,11 +43,16 @@ public class ImportPartner {
 
   @Inject protected PartnerService partnerService;
 
-  public Object importPartner(Object bean, Map<String, Object> values) {
+  @Inject protected SequenceService sequenceService;
+
+  public Object importPartner(Object bean, Map<String, Object> values) throws AxelorException {
 
     assert bean instanceof Partner;
 
     Partner partner = (Partner) bean;
+    partner.setPartnerSeq(
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner));
 
     partnerService.setPartnerFullName(partner);
 

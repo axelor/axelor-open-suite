@@ -1,7 +1,26 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankdetails;
 
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
-import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineAFB120Service;
+import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineFetchAFB120Service;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.google.inject.Inject;
@@ -11,15 +30,18 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPaymentService {
-  protected BankStatementLineAFB120Service bankStatementLineAFB120Service;
+  protected BankStatementLineFetchAFB120Service bankStatementLineFetchAFB120Service;
   protected BankDetailsRepository bankDetailsRepository;
+  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
 
   @Inject
   public BankDetailsBankPaymentServiceImpl(
-      BankStatementLineAFB120Service bankStatementLineAFB120Service,
-      BankDetailsRepository bankDetailsRepository) {
-    this.bankStatementLineAFB120Service = bankStatementLineAFB120Service;
+      BankStatementLineFetchAFB120Service bankStatementLineFetchAFB120Service,
+      BankDetailsRepository bankDetailsRepository,
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+    this.bankStatementLineFetchAFB120Service = bankStatementLineFetchAFB120Service;
     this.bankDetailsRepository = bankDetailsRepository;
+    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
   }
 
   @Override
@@ -31,12 +53,15 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
     BankStatementLineAFB120 lastLine;
     for (BankDetails bankDetail : bankDetails) {
       lastLine =
-          bankStatementLineAFB120Service.getLastBankStatementLineAFB120FromBankDetails(bankDetail);
+          bankStatementLineFetchAFB120Service.getLastBankStatementLineAFB120FromBankDetails(
+              bankDetail);
       if (lastLine != null) {
         bankDetail.setBalance(
-            lastLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-                ? lastLine.getDebit()
-                : lastLine.getCredit());
+            currencyScaleServiceBankPayment.getScaledValue(
+                lastLine,
+                lastLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+                    ? lastLine.getDebit()
+                    : lastLine.getCredit()));
         bankDetail.setBalanceUpdatedDate(lastLine.getOperationDate());
       } else {
         bankDetail.setBalance(BigDecimal.ZERO);
