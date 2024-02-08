@@ -885,7 +885,7 @@
 
   <action-view name="action-open-user-gantt" title="User Gantt"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="gantt" name="user-project-task-gantt"/>
+    <view type="gantt" name="user-task-gantt"/>
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain>self.assignedTo.id IN (:_userIds) </domain>
