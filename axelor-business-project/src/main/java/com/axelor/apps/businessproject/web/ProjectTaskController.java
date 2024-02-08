@@ -203,4 +203,16 @@ public class ProjectTaskController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateParentsProgress(ActionRequest request, ActionResponse response) {
+    try {
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
+      BigDecimal progress = task.getProgress();
+      task = Beans.get(ProjectTaskRepository.class).find(task.getId());
+      Beans.get(ProjectTaskBusinessProjectService.class).updateParentsProgress(task, progress);
+      response.setValue("projectTaskList", task.getProjectTaskList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

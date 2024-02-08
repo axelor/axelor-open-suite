@@ -76,4 +76,6 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   boolean isTimeUnitValid(Unit unit);
 
   void updateChildrenProgress(ProjectTask task, BigDecimal progress);
+
+  void updateParentsProgress(ProjectTask task, BigDecimal progress);
 }
