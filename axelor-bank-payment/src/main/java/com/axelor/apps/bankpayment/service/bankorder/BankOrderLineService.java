@@ -447,7 +447,7 @@ public class BankOrderLineService {
 
     Currency bankOrderCurrency = bankOrder.getBankOrderCurrency();
 
-    if (bankOrder.getIsMultiCurrency()) {
+    if (BankOrderToolService.isMultiCurrency(bankOrder)) {
       bankOrderCurrency = bankOrderLine.getBankOrderCurrency();
     }
 

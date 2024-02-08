@@ -50,6 +50,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -377,7 +378,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected BigDecimal getAmountPaidInCompanyCurrency(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine)
       throws AxelorException {
-    return bankOrderLine.getBankOrder().getIsMultiCurrency()
+    return BankOrderToolService.isMultiCurrency(bankOrderLine.getBankOrder())
         ? currencyService
             .getAmountCurrencyConvertedAtDate(
                 paymentSession.getCurrency(),
