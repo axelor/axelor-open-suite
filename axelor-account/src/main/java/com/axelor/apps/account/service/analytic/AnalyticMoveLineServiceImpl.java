@@ -103,14 +103,23 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine) {
+    return this.computeAmount(analyticMoveLine, analyticMoveLine.getOriginalPieceAmount());
+  }
 
-    return analyticMoveLine
-        .getPercentage()
-        .multiply(analyticMoveLine.getOriginalPieceAmount())
-        .divide(
-            new BigDecimal(100),
-            currencyScaleServiceAccount.getScale(analyticMoveLine),
-            RoundingMode.HALF_UP);
+  @Override
+  public BigDecimal computeAmount(
+      AnalyticMoveLine analyticMoveLine, BigDecimal analyticLineAmount) {
+
+    if (analyticLineAmount.signum() > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(analyticLineAmount)
+          .divide(
+              new BigDecimal(100),
+              currencyScaleServiceAccount.getScale(analyticMoveLine),
+              RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ZERO;
   }
 
   @Override

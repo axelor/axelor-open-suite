@@ -39,7 +39,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,22 +109,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       return appBaseService.getTodayDate(analyticLine.getAccount().getCompany());
     }
     return appBaseService.getTodayDate(null);
-  }
-
-  @Override
-  public BigDecimal getAnalyticAmountFromParent(
-      AnalyticLine parent, AnalyticMoveLine analyticMoveLine) {
-
-    if (parent != null && parent.getLineAmount().signum() > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(parent.getLineAmount())
-          .divide(
-              new BigDecimal(100),
-              currencyScaleServiceAccount.getScale(analyticMoveLine),
-              RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
   }
 
   @Override
