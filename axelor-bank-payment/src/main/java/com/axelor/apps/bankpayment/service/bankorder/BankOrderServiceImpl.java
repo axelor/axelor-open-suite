@@ -85,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
@@ -222,7 +223,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankOrderLines != null) {
       for (BankOrderLine bankOrderLine : bankOrderLines) {
         bankOrderLine.setCompanyCurrencyAmount(
-            bankOrderLine.getBankOrder().getIsMultiCurrency()
+            BankOrderToolService.isMultiCurrency(bankOrder)
                 ? currencyService
                     .getAmountCurrencyConvertedAtDate(
                         bankOrder.getBankOrderCurrency(),
@@ -248,9 +249,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
     }
 
-    if (!bankOrder.getIsMultiCurrency()) {
-      bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
-    }
+    bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
 
     bankOrder.setCompanyCurrencyTotalAmount(this.computeCompanyCurrencyTotalAmount(bankOrder));
   }
@@ -749,7 +748,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     // filter on the currency if it is set in file format
     if (bankOrder.getBankOrderCurrency() != null) {
       if (bankDetails.getCurrency() != null
-          && bankDetails.getCurrency() != bankOrder.getBankOrderCurrency()) {
+          && !Objects.equals(bankDetails.getCurrency(), bankOrder.getBankOrderCurrency())) {
         return false;
       }
     }
