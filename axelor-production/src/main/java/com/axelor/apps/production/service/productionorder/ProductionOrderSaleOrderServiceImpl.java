@@ -27,6 +27,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -39,18 +40,21 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   protected ProductionOrderRepository productionOrderRepo;
   protected AppProductionService appProductionService;
   protected ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService;
+  protected StockLocationLineService stockLocationLineService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
-      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService) {
+      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
+      StockLocationLineService stockLocationLineService) {
 
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
     this.appProductionService = appProductionService;
     this.productionOrderSaleOrderMOGenerationService = productionOrderSaleOrderMOGenerationService;
+    this.stockLocationLineService = stockLocationLineService;
   }
 
   @Override
@@ -109,6 +113,15 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
         && product != null
         && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
+      BigDecimal availableQty =
+          stockLocationLineService.getAvailableQty(
+              saleOrderLine.getSaleOrder().getStockLocation(), product);
+      BigDecimal qtyToProduce = saleOrderLine.getQty().subtract(availableQty);
+
+      if (qtyToProduce.compareTo(BigDecimal.ZERO) > 0) {
+        return productionOrderSaleOrderMOGenerationService.generateManufOrders(
+            productionOrder, saleOrderLine, product, qtyToProduce);
+      }
     }
 
     return null;

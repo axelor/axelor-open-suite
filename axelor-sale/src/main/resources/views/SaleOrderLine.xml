@@ -746,13 +746,13 @@
   <action-record name="action-sale-order-line-get-production-information"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial"
-      if="__config__.app.isApp('production') &amp;&amp; saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
+      if="__config__.app.isApp('production') &amp;&amp; (saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; product?.defaultBillOfMaterial != null"/>
     <field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial"
-      if="__config__.app.isApp('production') &amp;&amp; saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
+      if="__config__.app.isApp('production') &amp;&amp; (saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; product?.defaultBillOfMaterial == null"/>
     <field name="standardDelay" expr="eval: product?.standardDelay"
-      if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect == 2 || saleSupplySelect == 3"/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect == 2 || saleSupplySelect == 3 || saleSupplySelect == 4"/>
     <field name="standardDelay" expr="eval: 0"
-      if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3"/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4"/>
   </action-record>
 
   <action-record name="action-sale-order-line-record-progress"
@@ -857,10 +857,10 @@
   <action-attrs name="action-sale-order-line-attrs-hide-bill-of-material"
     if-module="axelor-production">
     <attribute name="hidden" for="billOfMaterial"
-      expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "
+      expr="eval: (saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4) || product?.productTypeSelect == 'service' "
       if="__config__.app.isApp('production')"/>
     <attribute name="hidden" for="customizeBOMBtn"
-      expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "
+      expr="eval: (saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4) || product?.productTypeSelect == 'service' "
       if="__config__.app.isApp('production')"/>
   </action-attrs>
 

@@ -24,10 +24,8 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
-import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationServiceImpl;
+import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateService;
 import com.axelor.apps.project.db.Project;
@@ -42,17 +40,13 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
 
   @Inject
   public ProductionOrderServiceBusinessImpl(
-      ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ProductionOrderRepository productionOrderRepo,
-      ProductionConfigService productionConfigService,
-      ProductionOrderSaleOrderMOGenerationServiceImpl productionOrderSaleOrderMOGenerationService,
+      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
       ProductionOrderUpdateService productionOrderUpdateService) {
     super(
-        manufOrderService,
         sequenceService,
         productionOrderRepo,
-        productionConfigService,
         productionOrderSaleOrderMOGenerationService,
         productionOrderUpdateService);
   }

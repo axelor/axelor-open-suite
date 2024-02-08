@@ -27,8 +27,6 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.i18n.I18n;
@@ -41,25 +39,19 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionOrderServiceImpl implements ProductionOrderService {
 
-  protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
   protected ProductionOrderRepository productionOrderRepo;
-  protected ProductionConfigService productionConfigService;
   protected ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService;
   protected ProductionOrderUpdateService productionOrderUpdateService;
 
   @Inject
   public ProductionOrderServiceImpl(
-      ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ProductionOrderRepository productionOrderRepo,
-      ProductionConfigService productionConfigService,
       ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
       ProductionOrderUpdateService productionOrderUpdateService) {
-    this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
     this.productionOrderRepo = productionOrderRepo;
-    this.productionConfigService = productionConfigService;
     this.productionOrderSaleOrderMOGenerationService = productionOrderSaleOrderMOGenerationService;
     this.productionOrderUpdateService = productionOrderUpdateService;
   }

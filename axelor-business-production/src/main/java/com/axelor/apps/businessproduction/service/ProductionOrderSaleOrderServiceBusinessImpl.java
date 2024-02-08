@@ -26,6 +26,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrd
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.google.inject.Inject;
 
 public class ProductionOrderSaleOrderServiceBusinessImpl
@@ -36,12 +37,14 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
-      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService) {
+      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
+      StockLocationLineService stockLocationLineService) {
     super(
         productionOrderService,
         productionOrderRepo,
         appProductionService,
-        productionOrderSaleOrderMOGenerationService);
+        productionOrderSaleOrderMOGenerationService,
+        stockLocationLineService);
   }
 
   @Override
