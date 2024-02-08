@@ -18,6 +18,8 @@ public interface CurrencyScaleServiceBudget {
 
   BigDecimal getCompanyScaledValue(GlobalBudget globalBudget, BigDecimal amount);
 
+  BigDecimal getCompanyScaledValue(Company company, BigDecimal amount);
+
   BigDecimal getCompanyScaledValue(BudgetDistribution budgetDistribution, BigDecimal amount);
 
   int getCompanyScale(BudgetScenario budgetScenario);

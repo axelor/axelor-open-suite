@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -46,6 +47,7 @@ import java.util.List;
 public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceProjectServiceImpl {
 
   protected BudgetDistributionRepository budgetDistributionRepository;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public PurchaseOrderInvoiceBudgetServiceImpl(
@@ -63,7 +65,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
       ProductCompanyService productCompanyService,
-      BudgetDistributionRepository budgetDistributionRepository) {
+      BudgetDistributionRepository budgetDistributionRepository,
+      BudgetToolsService budgetToolsService) {
     super(
         invoiceServiceSupplychain,
         invoiceService,
@@ -80,6 +83,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         appBusinessProjectService,
         productCompanyService);
     this.budgetDistributionRepository = budgetDistributionRepository;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -96,8 +100,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
     if (!ObjectUtils.isEmpty(invoiceLineList)) {
       for (InvoiceLine invoiceLine : invoiceLineList) {
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
-        invoiceLine.setBudgetDistributionSumAmount(
-            purchaseOrderLine.getBudgetDistributionSumAmount());
+        invoiceLine.setBudgetRemainingAmountToAllocate(
+            purchaseOrderLine.getBudgetRemainingAmountToAllocate());
         if (!ObjectUtils.isEmpty(purchaseOrderLine.getBudgetDistributionList())) {
           for (BudgetDistribution budgetDistribution :
               purchaseOrderLine.getBudgetDistributionList()) {
@@ -108,6 +112,9 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
                 budgetDistribution.getBudgetAmountAvailable());
             invoiceLine.addBudgetDistributionListItem(copyBudgetDistribution);
           }
+          invoiceLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
         }
       }
     }

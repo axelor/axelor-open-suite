@@ -34,6 +34,11 @@ public class CurrencyScaleServiceBudgetImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getCompanyScaledValue(Company company, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(company));
+  }
+
+  @Override
   public BigDecimal getCompanyScaledValue(
       BudgetDistribution budgetDistribution, BigDecimal amount) {
     return this.getCompanyScaledValue(budgetDistribution.getBudget(), amount);

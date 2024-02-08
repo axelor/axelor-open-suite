@@ -144,14 +144,6 @@ public interface SaleOrderLineService {
    */
   public void fillComplementaryProductList(SaleOrderLine saleOrderLine);
 
-  public SaleOrderLine createSaleOrderLine(
-      PackLine packLine,
-      SaleOrder saleOrder,
-      BigDecimal packQty,
-      BigDecimal conversionRate,
-      Integer sequence)
-      throws AxelorException;
-
   /**
    * Get unique values of type field from pack lines
    *

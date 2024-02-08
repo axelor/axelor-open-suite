@@ -23,10 +23,13 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
+
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public MoveLineCreateBudgetServiceImpl(
@@ -46,7 +49,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       TaxService taxService,
       AppBaseService appBaseService,
       AnalyticLineService analyticLineService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      BudgetToolsService budgetToolsService) {
     super(
         companyConfigService,
         currencyService,
@@ -65,6 +69,7 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
         appBaseService,
         analyticLineService,
         currencyScaleServiceAccount);
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -73,13 +78,16 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
     moveLine = super.fillMoveLineWithInvoiceLine(moveLine, invoiceLine, company);
 
     moveLine.setBudget(invoiceLine.getBudget());
-    moveLine.setBudgetDistributionSumAmount(invoiceLine.getBudgetDistributionSumAmount());
 
     if (!CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
         moveLine.addBudgetDistributionListItem(budgetDistribution);
       }
     }
+
+    moveLine.setBudgetRemainingAmountToAllocate(
+        budgetToolsService.getBudgetRemainingAmountToAllocate(
+            moveLine.getBudgetDistributionList(), moveLine.getCredit().max(moveLine.getDebit())));
 
     return moveLine;
   }

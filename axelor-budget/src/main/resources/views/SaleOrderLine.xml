@@ -45,11 +45,11 @@
             </viewer>
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-            name="budgetDistributionSumAmount" readonly="true" colSpan="6"
+            name="budgetRemainingAmountToAllocate" readonly="true" colSpan="6"
             x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="budgetDistributionSumAmount">
+            <viewer depends="budgetRemainingAmountToAllocate">
               <![CDATA[
-				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
               ]]>
             </viewer>
           </field>
@@ -104,7 +104,7 @@
 
   <action-group name="action-group-budget-sale-order-line-budget-distribution-onchange">
     <action name="action-method-sale-order-line-budget-distribution-validate-amount"/>
-    <action name="action-sale-order-method-compute-budget-distribution-sum-amount"/>
+    <action name="action-sale-order-method-compute-budget-remaining-amount-to-allocate"/>
     <action name="action-budget-sale-order-line-method-fill-budget-str"/>
   </action-group>
 
@@ -127,9 +127,9 @@
   </action-method>
 
   <action-method
-    name="action-sale-order-method-compute-budget-distribution-sum-amount">
+    name="action-sale-order-method-compute-budget-remaining-amount-to-allocate">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController"
-      method="computeBudgetDistributionSumAmount"/>
+      method="computeBudgetRemainingAmountToAllocate"/>
   </action-method>
 
 </object-views>
