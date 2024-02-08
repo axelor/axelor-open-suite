@@ -8,19 +8,19 @@
     <field name="catalogType"/>
     <field name="description"/>
     <template><![CDATA[
-			<div>
-				<div class="span4 card-image">
-					<img ng-src="{{$image(null, 'image')}}" >
-				</div>
-				<div class="span8">
-					<strong>{{name}}</strong>
-					<p class="muted" > <span x-translate>Catalog type</span> : {{catalogType.name}}</p>
-					<p class="muted">{{description}}</p>
-					<div class="buttons">
-						<a class="btn btn-small btn-info" href="" ui-action-click="com.axelor.apps.crm.web.CatalogController:showPdf" x-translate> Show PDF</a>
-					</div>
-				</div>
-			</div>
+			<>
+				<Box d="grid" gridTemplateColumns="33% 67%">
+					<Box d="flex" flexDirection="column" alignItems="center" mt={2} style={{ width: 128, height: 64 }}>
+						<Image src={$image(null, 'image')} w={100} h={100} style={{ borderRadius: "100%" }}></Image>
+					</Box>
+		        	<Box>
+						<strong>{name}</strong>
+						<Box as="p" color="secondary">{_t('Catalog type')} : {catalogType.name}</Box>
+			        	<Box as="p" color="secondary">{description}</Box>
+		            	<Button size="sm" variant="info" onClick={$action("com.axelor.apps.crm.web.CatalogController:showPdf")}>{_t('Show PDF')}</Button>
+					</Box>
+				</Box>
+			</>
 			]]>
     </template>
   </cards>

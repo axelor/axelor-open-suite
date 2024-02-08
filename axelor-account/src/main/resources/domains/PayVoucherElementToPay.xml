@@ -10,34 +10,38 @@
     <integer name="sequence" title="Seq."/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Move line" readonly="true"/>
-    <decimal name="totalAmount" title="Total amount" readonly="true"/>
-    <decimal name="remainingAmount" title="Amount remaining before cashing" readonly="true"/>
+    <decimal name="totalAmount" title="Total amount" readonly="true" precision="20"
+      scale="3"/>
+    <decimal name="remainingAmount" title="Amount remaining before cashing" readonly="true"
+      precision="20" scale="3"/>
 
     <many-to-one name="moveLineGenerated" ref="com.axelor.apps.account.db.MoveLine"
       title="Move Line generated" readonly="true"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher"
       title="Payment" readonly="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-    <decimal name="amountToPayCurrency" title="Imput. amount in currency"/>
-    <decimal name="amountToPay" title="Imput amount"/>
+    <decimal name="amountToPayCurrency" title="Imput. amount in currency" precision="20"
+      scale="3"/>
+    <decimal name="amountToPay" title="Imput amount" precision="20" scale="3"/>
 
     <decimal name="remainingAmountAfterPayment" title="Remaining to pay after cashing"
-      readonly="true"/>
+      readonly="true" precision="20" scale="3"/>
 
     <many-to-one name="invoiceTerm" title="Invoice term"
       ref="com.axelor.apps.account.db.InvoiceTerm"/>
 
-    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"
-      readonly="true"/>
+    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"/>
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>
-    <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
-    <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
+    <decimal name="financialDiscountAmount" title="Fin. discount amount" precision="20"
+      scale="3"/>
+    <decimal name="financialDiscountTaxAmount" title="Fin. discount tax" precision="20"
+      scale="3"/>
     <decimal name="financialDiscountTotalAmount"
-      title="payvoucher.financialDiscountTotalAmount"/>
+      title="payvoucher.financialDiscountTotalAmount" precision="20" scale="3"/>
     <decimal name="totalAmountWithFinancialDiscount"
-      title="Total amount with financial discount"/>
+      title="Total amount with financial discount" precision="20" scale="3"/>
   </entity>
 
 </domain-models>

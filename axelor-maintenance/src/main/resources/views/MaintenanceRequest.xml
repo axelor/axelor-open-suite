@@ -71,17 +71,44 @@
     <hilite color="success" if="doneOn != null"/>
     <template>
             <![CDATA[
-            <h4>{{record.equipementMaintenance.maintenanceCategory.name || ''}}</h4>
-            <div class="card-body">
-                <dl>
-                	<p>{{record.equipementMaintenance.name || ''}}</p>
-                    <dt ng-if="record.requestDate" x-translate>Request date</dt><dd><i  ng-if="record.requestDate" class='fa fa-clock-o'></i> <span  ng-if="record.requestDate">{{$fmt('requestDate')}}</span></dd>
-                    <dt ng-if="record.requestBy" x-translate>Request By</dt><dd><span  ng-if="record.requestBy">{{record.requestBy.fullName}}</span></dd>
-                    <dt ng-if="record.assignedTo" x-translate>Assigned to</dt><dd><span ng-if="record.assignedTo">{{record.assignedTo.fullName}}</span></dd>
-                    <dt ng-if="record.expectedDate" x-translate>Expected date</dt><dd><i ng-if="record.expectedDate" class='fa fa-clock-o'></i> <span ng-if="record.expectedDate">{{$fmt('expectedDate')}}</span></dd>
-                    <dt ng-if="record.doneOn" x-translate>Done on</dt><dd><i ng-if="record.doneOn"  class='fa fa-clock-o'></i> <span ng-if="record.doneOn" >{{$fmt('doneOn')}}</span></dd>
-                </dl>
-            </div>
+            <>
+	            <strong>{equipementMaintenance.maintenanceCategory.name}</strong>
+	            <Box mt={3}>{equipementMaintenance.name}</Box>
+	            <Box mt={1}>
+	                <dl>
+	                	{requestDate &&
+	                		<Box>
+		                		<dt>{_t('Request date')}</dt>
+		                		<Box as="dd" d="flex" alignItems="center" ms={2}><Icon icon="clock" fontSize="15px"/><span> {$fmt('requestDate')} </span></Box>
+		                	</Box>
+	                	}
+	                	{requestBy &&
+	                		<Box>
+		                		<dt>{_t('Request By')}</dt>
+		                		<Box as="dd" d="flex" alignItems="center" ms={2}><span>{requestBy.fullName}</span></Box>
+		                	</Box>
+	                	}
+	                	{assignedTo &&
+	                		<Box>
+		                		<dt>{_t('Assigned to')}</dt>
+		                		<Box as="dd" d="flex" alignItems="center" ms={2}><span>{assignedTo.fullName}</span></Box>
+		                	</Box>
+	                	}
+	                	{expectedDate &&
+	                		<Box>
+		                		<dt>{_t('Expected date')}</dt>
+		                		<Box as="dd" d="flex" alignItems="center" ms={2}><Icon icon="clock" fontSize="15px"/><span> {$fmt('expectedDate')} </span></Box>
+		                	</Box>
+	                	}
+	                	{doneOn &&
+	                		<Box>
+		                		<dt>{_t('Done on')}</dt>
+		                		<Box as="dd" d="flex" alignItems="center" ms={2}><Icon icon="clock" fontSize="15px"/><span> {$fmt('doneOn')} </span></Box>
+		                	</Box>
+	                	}
+	                </dl>
+	            </Box>
+	        </>
             ]]>
     </template>
   </kanban>

@@ -33,10 +33,12 @@ public interface StockMoveToolService {
    *
    * @param stockMoveType Type de mouvement de stock
    * @param company la société
+   * @param stockMove
    * @return la chaine contenant la séquence du StockMove
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
-  public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException;
+  public String getSequenceStockMove(int stockMoveType, Company company, StockMove stockMove)
+      throws AxelorException;
 
   public BigDecimal compute(StockMove stockMove);
 

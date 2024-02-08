@@ -21,10 +21,11 @@
     <panel name="infoPanel">
       <field name="mrpSeq" showTitle="false" colSpan="12">
         <viewer depends="mrpSeq,mrpTypeSelect"><![CDATA[
-					<h3>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 2" x-translate>MPS</span>
-						{{record.mrpSeq}}
-					</h3>
+					<>
+						<h3>
+							{mrpSeq && mrpTypeSelect == 2 && <span>{_t('MPS')} {mrpSeq}</span>}
+						</h3>
+					</>
 				]]></viewer>
       </field>
       <field name="validateScenario"/>

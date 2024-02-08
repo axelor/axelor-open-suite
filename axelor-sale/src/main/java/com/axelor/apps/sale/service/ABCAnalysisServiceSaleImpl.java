@@ -19,8 +19,8 @@
 package com.axelor.apps.sale.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
-import static com.axelor.utils.date.DateTool.toDate;
-import static com.axelor.utils.date.DateTool.toLocalDateT;
+import static com.axelor.utils.helpers.date.LocalDateHelper.toDate;
+import static com.axelor.utils.helpers.date.LocalDateTimeHelper.toLocalDateT;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ABCAnalysis;

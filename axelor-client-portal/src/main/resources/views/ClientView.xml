@@ -59,7 +59,7 @@
             widget="info-button" onClick="action-method-show-client-view-awaiting-invoices"/>
           <button name="$totalRemaining" title="Total remaining" width="190px"
             widget="info-button" onClick="action-method-show-client-view-total-remaining"/>
-          <button name="$myRefund" title="My refund" width="190px" widget="info-button"
+          <button name="$myRefund" title="My credit notes" width="190px" widget="info-button"
             onClick="action-method-show-client-view-refund"/>
 
         </panel>

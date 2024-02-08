@@ -56,11 +56,11 @@
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="debit" onChange="action-move-line-mass-entry-method-debit-onchange"
-      width="90" readonlyIf="isOtherCurrency || inputAction == 2">
+      width="90" readonlyIf="isOtherCurrency || inputAction == 2" x-scale="companyCurrencyDecimals">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="credit" onChange="action-move-line-mass-entry-method-credit-onchange"
-      width="90" readonlyIf="isOtherCurrency || inputAction == 2">
+      width="90" readonlyIf="isOtherCurrency || inputAction == 2" x-scale="companyCurrencyDecimals">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="description"
@@ -150,6 +150,7 @@
     <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
     <field name="account.analyticDistributionAuthorized" hidden="true"/>
+    <field name="companyCurrencyDecimals" hidden="true"/>
   </grid>
 
   <!-- Action group -->

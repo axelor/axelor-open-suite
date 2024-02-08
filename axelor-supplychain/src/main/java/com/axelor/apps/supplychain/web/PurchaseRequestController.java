@@ -34,7 +34,8 @@ public class PurchaseRequestController {
         response.setValue(
             "stockLocation",
             Beans.get(PurchaseOrderSupplychainService.class)
-                .getStockLocation(purchaseRequest.getSupplierUser(), purchaseRequest.getCompany()));
+                .getStockLocation(
+                    purchaseRequest.getSupplierPartner(), purchaseRequest.getCompany()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

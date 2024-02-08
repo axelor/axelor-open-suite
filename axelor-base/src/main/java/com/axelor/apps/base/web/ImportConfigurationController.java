@@ -18,20 +18,16 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.imports.ImportService;
+import com.axelor.apps.base.service.imports.ImportConfigurationCallableService;
+import com.axelor.apps.base.service.imports.ImportConfigurationService;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.FileUtils;
 
 @Singleton
 public class ImportConfigurationController {
@@ -41,22 +37,16 @@ public class ImportConfigurationController {
     ImportConfiguration importConfiguration =
         request.getContext().asType(ImportConfiguration.class);
     try {
-
-      ImportHistory importHistory = Beans.get(ImportService.class).run(importConfiguration);
-
-      response.setValue("statusSelect", ImportConfigurationRepository.STATUS_COMPLETED);
-      response.setValue(
-          "endDateTime", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-
-      response.setAttr("importHistoryList", "value:add", importHistory);
-      File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
-      response.setNotify(
-          FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
-              .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
-
+      ImportConfigurationCallableService importConfigurationService =
+          Beans.get(ImportConfigurationCallableService.class);
+      importConfigurationService.setImportConfig(importConfiguration);
+      ControllerCallableTool<ImportHistory> controllerCallableTool = new ControllerCallableTool<>();
+      controllerCallableTool.runInSeparateThread(importConfigurationService, response);
     } catch (Exception e) {
-      response.setValue("statusSelect", ImportConfigurationRepository.STATUS_ERROR);
+      Beans.get(ImportConfigurationService.class).updateStatusError(importConfiguration);
       TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
     }
   }
 }

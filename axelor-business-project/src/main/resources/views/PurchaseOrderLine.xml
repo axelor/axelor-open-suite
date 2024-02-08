@@ -24,8 +24,9 @@
       readonly="true"/>
     <field name="productName" readonly="true"/>
     <field name="exTaxTotal" aggregate="sum" readonly="true"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="purchaseOrder.currency"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="toInvoice"/>
     <field name="invoiced"/>
     <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced"

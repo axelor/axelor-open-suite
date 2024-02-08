@@ -705,7 +705,7 @@ WHERE ManufOrder.id IN (@INJECTID)]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -782,7 +782,7 @@ LEFT JOIN
 
 LEFT JOIN meta_select AS MetaSelect ON MetaSelect.name = 'production.manuf.order.status.select'
 LEFT JOIN meta_select_item MetaSelectItem ON MetaSelectItem.select_id = MetaSelect.id
-LEFT JOIN meta_translation TranslatedSelect ON (TranslatedSelect.message_key = MetaSelectItem.title AND TranslatedSelect.language = ? )
+LEFT JOIN meta_translation TranslatedSelect ON (TranslatedSelect.message_key = MetaSelectItem.title AND TranslatedSelect.language = substring(?, '^[a-zA-Z]+') )
 
 WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( OperationOrderLine.status_select as varchar )]]></xml-property>
         </oda-data-set>

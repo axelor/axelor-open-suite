@@ -58,7 +58,8 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
                 SequenceRepository.QUALITY_IMPROVEMENT,
                 company,
                 QualityImprovement.class,
-                "sequence");
+                "sequence",
+                qualityImprovement);
 
         if (sequence == null) {
           throw new AxelorException(

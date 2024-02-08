@@ -15,6 +15,7 @@
     model="com.axelor.apps.production.db.WorkCenter" canMove="true">
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="sequence"/>
   </grid>
 
   <grid name="work-center-work-center-group-grid" title="Work centers"
@@ -22,6 +23,7 @@
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="machine" form-view="machine-form" grid-view="machine-grid"/>
+    <field name="sequence"/>
   </grid>
 
   <form name="work-center-form" title="Work center"
@@ -41,6 +43,7 @@
         showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
         form-view="machine-tool-form" grid-view="machine-tool-grid"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
+      <field name="sequence" colSpan="3"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="defaultMachineSettingsPanel" title="Machine settings" readonlyIf="!machine"

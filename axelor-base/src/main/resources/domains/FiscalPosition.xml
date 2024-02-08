@@ -9,6 +9,8 @@
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
+    <boolean name="customerSpecificNote" title="Customer specific note"/>
+    <string name="customerSpecificNoteText" title="Customer specific note" large="true"/>
 
     <one-to-many name="taxEquivList" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax equivalences" mappedBy="fiscalPosition"/>

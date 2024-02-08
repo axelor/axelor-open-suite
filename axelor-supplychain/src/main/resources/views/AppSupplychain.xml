@@ -31,6 +31,7 @@
         colSpan="4"/>
       <field name="blockDeallocationOnAvailabilityRequest" widget="boolean-switch" colSpan="4"
         showIf="manageStockReservation"/>
+
     </panel>
     <panel name="purchaseOrderPanel" title="Purchase order">
       <field name="supplStockMoveMgtOnPO"
@@ -51,15 +52,17 @@
         selection="sale.order.status.select"/>
       <field name="pOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4"
         selection="purchase.purchase.order.status.select"/>
+
     </panel>
     <panel name="stackPanel" title="Stock">
       <field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
       <field name="manageStockReservation" widget="boolean-switch" colSpan="4"
         onChange="action-app-supplychain-validate-config-error"/>
       <field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
-
       <field name="validStepForInvOutSM" showIf="generateInvoiceFromStockMove"
         widget="boolean-switch" colSpan="4"/>
+      <field name="autoFillDeliveryRealQty" widget="boolean-switch" colSpan="4"/>
+      <field name="autoFillReceiptRealQty" widget="boolean-switch" colSpan="4"/>
 
     </panel>
     <panel name="intercoPanel" title="Interco">

@@ -61,6 +61,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
   protected CurrencyService currencyService;
   protected AppBaseService appBaseService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
@@ -72,6 +73,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   public InvoicePaymentCreateServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyService currencyService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
@@ -81,6 +83,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
@@ -371,7 +374,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoice.addInvoicePaymentListItem(invoicePayment);
 
     invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTermList);
-    invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
+    invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
     invoicePayment.setAmount(
         invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));

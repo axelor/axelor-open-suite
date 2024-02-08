@@ -21,11 +21,25 @@ package com.axelor.apps.mobilesettings.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.mobilesettings.service.AppMobileSettingsService;
 import com.axelor.apps.mobilesettings.service.AppMobileSettingsServiceImpl;
+import com.axelor.apps.mobilesettings.service.MobileChartResponseComputeService;
+import com.axelor.apps.mobilesettings.service.MobileChartResponseComputeServiceImpl;
+import com.axelor.apps.mobilesettings.service.MobileChartService;
+import com.axelor.apps.mobilesettings.service.MobileChartServiceImpl;
+import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeService;
+import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeServiceImpl;
+import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeService;
+import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeServiceImpl;
 
 public class MobileSettingsModule extends AxelorModule {
 
   @Override
   protected void configure() {
     bind(AppMobileSettingsService.class).to(AppMobileSettingsServiceImpl.class);
+    bind(MobileChartService.class).to(MobileChartServiceImpl.class);
+    bind(MobileChartResponseComputeService.class).to(MobileChartResponseComputeServiceImpl.class);
+    bind(MobileDashboardResponseComputeService.class)
+        .to(MobileDashboardResponseComputeServiceImpl.class);
+    bind(MobileSettingsResponseComputeService.class)
+        .to(MobileSettingsResponseComputeServiceImpl.class);
   }
 }

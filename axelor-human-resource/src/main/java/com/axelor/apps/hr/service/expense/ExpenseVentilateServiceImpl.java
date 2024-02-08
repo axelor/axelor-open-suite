@@ -151,7 +151,11 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     if (sequence != null) {
       expense.setExpenseSeq(
           sequenceService.getSequenceNumber(
-              sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
+              sequence,
+              expense.getSentDateTime().toLocalDate(),
+              Expense.class,
+              "expenseSeq",
+              expense));
       if (expense.getExpenseSeq() != null) {
         return;
       }
@@ -251,7 +255,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
         BigDecimal amountConvertedInCompanyCurrency =
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                entry.getValue(), currencyRate);
+                entry.getValue(), currencyRate, companyCurrency);
 
         moveLines.add(
             moveLineCreateService.createMoveLine(
@@ -343,7 +347,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
     BigDecimal amountConvertedInCompanyCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            expenseLine.getUntaxedAmount(), currencyRate);
+            expenseLine.getUntaxedAmount(), currencyRate, companyCurrency);
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(

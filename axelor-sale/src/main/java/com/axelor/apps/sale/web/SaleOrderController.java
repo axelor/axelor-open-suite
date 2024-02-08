@@ -45,6 +45,7 @@ import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
+import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
@@ -170,6 +171,16 @@ public class SaleOrderController {
 
         SaleOrder saleOrder =
             Beans.get(SaleOrderRepository.class).find(Long.parseLong(context.get("id").toString()));
+        title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
+        fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        response.setCanClose(true);
+
+        logger.debug("Printing " + title);
+      } else if (context.get("_saleOrderId") != null) {
+
+        SaleOrder saleOrder =
+            Beans.get(SaleOrderRepository.class)
+                .find(Long.parseLong(context.get("_saleOrderId").toString()));
         title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
         fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
         response.setCanClose(true);
@@ -656,12 +667,20 @@ public class SaleOrderController {
         "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
   }
 
-  public void onLineChange(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void onLineChange(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
-    response.setValues(saleOrder);
-    response.setAttr(
-        "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
+    try {
+      if (saleOrder == null) {
+        return;
+      }
+
+      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+
+      response.setValues(saleOrder);
+      response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void createNewVersion(ActionRequest request, ActionResponse response)

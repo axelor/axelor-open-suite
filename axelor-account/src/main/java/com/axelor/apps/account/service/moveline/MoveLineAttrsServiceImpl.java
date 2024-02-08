@@ -272,11 +272,12 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   }
 
   @Override
-  public void addSubrogationPartnerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+  public void addThirdPartyPayerPartnerHidden(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "invoiceTermList.subrogationPartner",
+        "invoiceTermList.thirdPartyPayerPartner",
         "hidden",
-        !journalService.isSubrogationOk(move.getJournal()),
+        !journalService.isThirdPartyPayerOk(move.getJournal()),
         attrsMap);
   }
 

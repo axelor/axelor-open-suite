@@ -22,13 +22,9 @@
       showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; (configuratorProductFormulaList.length + configuratorSOLineFormulaList.length) &gt; 0">
       <!--it does not matter which field is used here, as long as it is not a boolean -->
       <field name="name" readonly="true" showTitle="false">
-        <viewer><![CDATA[
-
-			 			<h4>
-			             <span class="label label-important" x-translate>Changes were made to the configurator creator. Please activate the configurator creator to use it.</span>
-			           </h4>
-
-					]]></viewer>
+        <viewer>
+          <![CDATA[<><Badge bg="danger">{_t('Changes were made to the configurator creator. Please activate the configurator creator to use it.')}</Badge></>]]>
+        </viewer>
       </field>
     </panel>
 
@@ -48,7 +44,7 @@
         onClick="action-configurator-creator-group-activate"
         readonlyIf="isActive || !(attributes.length &gt; 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0)"/>
       <button name="testBtn" title="Test this creator" showIf="generateProduct"
-        readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
+        readonlyIf="!isActive" onClick="save,action-configurator-creator-method-test-configurator"/>
       <field name="generateProduct" widget="boolean-switch"/>
       <field name="isActive" hidden="true"/>
     </panel>
@@ -208,12 +204,10 @@
     <view-param name="show-toolbar" value="false"/>
   </action-view>
 
-  <action-view name="action-configurator-creator-view-test" title="Configurator"
-    model="com.axelor.apps.sale.db.Configurator">
-    <view type="form" name="configurator-form"/>
-    <view type="grid" name="configurator-grid"/>
-    <context name="_configuratorCreator" expr="eval: __self__"/>
-  </action-view>
+  <action-method name="action-configurator-creator-method-test-configurator">
+    <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+      method="openTestConfiguratorView"/>
+  </action-method>
 
   <action-method name="action-configurator-creator-method-update-attributes">
     <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"

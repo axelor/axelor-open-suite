@@ -45,6 +45,7 @@ import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveManagementBatchRule;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
@@ -64,6 +65,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -101,7 +103,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
     if (batch.getHrBatch().getDayNumber() == null
         || batch.getHrBatch().getDayNumber() == BigDecimal.ZERO
-        || batch.getHrBatch().getLeaveReason() == null)
+        || CollectionUtils.isEmpty(batch.getHrBatch().getLeaveReasonSet()))
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -179,103 +181,116 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       return;
     }
     batch = batchRepo.find(batch.getId());
+    HrBatch hrBatch = batch.getHrBatch();
     int count = 0;
-    String eval = null;
     LeaveLine leaveLine = null;
     BigDecimal quantity = BigDecimal.ZERO;
 
-    if (!employee.getLeaveLineList().isEmpty()) {
+    for (LeaveReason leaveReason : hrBatch.getLeaveReasonSet()) {
       for (LeaveLine line : employee.getLeaveLineList()) {
-
-        if (line.getLeaveReason().equals(batch.getHrBatch().getLeaveReason())) {
+        if (line.getLeaveReason().equals(leaveReason)) {
           count++;
           leaveLine = line;
         }
       }
-    }
 
-    if (count == 0) {
-      throw new AxelorException(
-          employee,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT),
-          employee.getName(),
-          batch.getHrBatch().getLeaveReason().getName());
-    }
-    if (count > 1) {
-      throw new AxelorException(
-          employee,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT),
-          employee.getName(),
-          batch.getHrBatch().getLeaveReason().getName());
-    }
-    if (count == 1) {
-
-      EmploymentContract contract = employee.getMainEmploymentContract();
-      if (contract == null) {
+      if (count == 0) {
         throw new AxelorException(
+            employee,
             TraceBackRepository.CATEGORY_NO_VALUE,
-            HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
+            I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT),
+            employee.getName(),
+            leaveReason.getName());
       }
-      Integer executiveStatusSelect = contract.getExecutiveStatusSelect();
+      if (count > 1) {
+        throw new AxelorException(
+            employee,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(HumanResourceExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT),
+            employee.getName(),
+            leaveReason.getName());
+      }
+      if (count == 1) {
+        createLeaveManagement(employee, quantity, leaveLine);
+      }
+    }
+  }
 
-      for (LeaveManagementBatchRule rule :
-          Beans.get(HRConfigRepository.class)
-              .all()
-              .filter("self.company.id = ?1", batch.getHrBatch().getCompany().getId())
-              .fetchOne()
-              .getLeaveManagementBatchRuleList()) {
+  protected void createLeaveManagement(Employee employee, BigDecimal quantity, LeaveLine leaveLine)
+      throws AxelorException {
+    EmploymentContract contract = employee.getMainEmploymentContract();
+    if (contract == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
+    }
+    Integer executiveStatusSelect = contract.getExecutiveStatusSelect();
 
-        if (rule.getExecutiveStatusSelect().equals(executiveStatusSelect)) {
-          maker.setContext(employee, "Employee");
-          String formula = rule.getFormula();
-          formula =
-              formula.replace(
-                  hrConfig.getSeniorityVariableName(),
-                  String.valueOf(
-                      employeeService.getLengthOfService(
-                          employee, batch.getHrBatch().getReferentialDate())));
-          formula =
-              formula.replace(
-                  hrConfig.getAgeVariableName(),
-                  String.valueOf(
-                      employeeService.getAge(employee, batch.getHrBatch().getReferentialDate())));
-          maker.setTemplate(formula);
-          eval = maker.make();
-          CompilerConfiguration conf = new CompilerConfiguration();
-          ImportCustomizer customizer = new ImportCustomizer();
-          customizer.addStaticStars("java.lang.Math");
-          conf.addCompilationCustomizers(customizer);
-          Binding binding = new Binding();
-          GroovyShell shell = new GroovyShell(binding, conf);
-          if (shell.evaluate(eval).toString().equals("true")) {
-            quantity = rule.getLeaveDayNumber();
-            break;
-          }
+    quantity = computeQuantity(employee, quantity, executiveStatusSelect);
+
+    if (quantity.signum() == 0) {
+      // If the quantity equals 0, no need to create a leaveManagement and to update the employee,
+      // since we won't give them any leaves
+      incrementDone();
+      return;
+    }
+
+    LeaveManagement leaveManagement =
+        leaveManagementService.createLeaveManagement(
+            leaveLine,
+            employeeService.getUser(employee),
+            batch.getHrBatch().getComments(),
+            null,
+            batch.getHrBatch().getStartDate(),
+            batch.getHrBatch().getEndDate(),
+            quantity);
+    leaveLine.setQuantity(leaveLine.getQuantity().add(quantity));
+    leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity));
+    leaveManagementRepository.save(leaveManagement);
+    leaveLineRepository.save(leaveLine);
+    updateEmployee(employee);
+  }
+
+  protected BigDecimal computeQuantity(
+      Employee employee, BigDecimal quantity, Integer executiveStatusSelect)
+      throws AxelorException {
+    String eval;
+    for (LeaveManagementBatchRule rule :
+        Beans.get(HRConfigRepository.class)
+            .all()
+            .filter("self.company.id = ?1", batch.getHrBatch().getCompany().getId())
+            .fetchOne()
+            .getLeaveManagementBatchRuleList()) {
+
+      if (rule.getExecutiveStatusSelect().equals(executiveStatusSelect)) {
+        maker.setContext(employee, "Employee");
+        String formula = rule.getFormula();
+        formula =
+            formula.replace(
+                hrConfig.getSeniorityVariableName(),
+                String.valueOf(
+                    employeeService.getLengthOfService(
+                        employee, batch.getHrBatch().getReferentialDate())));
+        formula =
+            formula.replace(
+                hrConfig.getAgeVariableName(),
+                String.valueOf(
+                    employeeService.getAge(employee, batch.getHrBatch().getReferentialDate())));
+        maker.setTemplate(formula);
+        eval = maker.make();
+        CompilerConfiguration conf = new CompilerConfiguration();
+        ImportCustomizer customizer = new ImportCustomizer();
+        customizer.addStaticStars("java.lang.Math");
+        conf.addCompilationCustomizers(customizer);
+        Binding binding = new Binding();
+        GroovyShell shell = new GroovyShell(binding, conf);
+        if (shell.evaluate(eval).toString().equals("true")) {
+          quantity = rule.getLeaveDayNumber();
+          break;
         }
       }
-      if (quantity.signum() == 0) {
-        // If the quantity equals 0, no need to create a leaveManagement and to update the employee,
-        // since we won't give them any leaves
-        incrementDone();
-        return;
-      }
-      LeaveManagement leaveManagement =
-          leaveManagementService.createLeaveManagement(
-              leaveLine,
-              employeeService.getUser(employee),
-              batch.getHrBatch().getComments(),
-              null,
-              batch.getHrBatch().getStartDate(),
-              batch.getHrBatch().getEndDate(),
-              quantity);
-      leaveLine.setQuantity(leaveLine.getQuantity().add(quantity));
-      leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity));
-      leaveManagementRepository.save(leaveManagement);
-      leaveLineRepository.save(leaveLine);
-      updateEmployee(employee);
     }
+    return quantity;
   }
 
   @Override

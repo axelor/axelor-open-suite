@@ -9,8 +9,7 @@
 
     <one-to-many name="accountEquivList" ref="com.axelor.apps.account.db.AccountEquiv"
       title="Account equivalences" mappedBy="fiscalPosition"/>
-    <boolean name="customerSpecificNote" title="Customer specific note"/>
-    <string name="customerSpecificNoteText" title="Customer specific note" large="true"/>
+
     <many-to-many name="taxNumberSet" title="Tax numbers"
       ref="com.axelor.apps.account.db.TaxNumber" mappedBy="fiscalPositionSet"/>
 

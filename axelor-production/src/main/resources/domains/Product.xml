@@ -24,6 +24,9 @@
     <string name="productStandard" title="Production.productStandard"/>
     <many-to-one name="productApproval"
       ref="com.axelor.apps.production.db.ProductApproval" title="Approval"/>
+
+    <long name="createdFromBOMImportId"/>
+
     <extra-code>
 	   		<![CDATA[
 				// PRICE METHOD SELECT

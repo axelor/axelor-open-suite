@@ -66,7 +66,7 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.message.service.MailMessageService;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -177,7 +177,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED, mrp.getMrpTypeSelect());
 
     String statusSelect = manufOrderMrpLineType.getStatusSelect();
-    List<Integer> statusList = StringTool.getIntegerList(statusSelect);
+    List<Integer> statusList = StringHelper.getIntegerList(statusSelect);
 
     if (statusList.isEmpty()) {
       statusList.add(ManufOrderRepository.STATUS_FINISHED);
@@ -448,7 +448,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
-      maturityDate = updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty);
+      maturityDate =
+          updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty)
+              .minusDays(mrpLineType.getSecurityDelay());
     }
 
     super.createProposalMrpLine(
@@ -650,8 +652,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct) && billOfMaterialLine.getBillOfMaterial() != null) {
-          this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
+        if (this.isMrpProduct(subProduct)) {
+          this.assignProductLevel(billOfMaterialLine, level);
 
           Company company = mrp.getStockLocation().getCompany();
           BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);
@@ -665,6 +667,34 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           }
         }
       }
+    }
+  }
+
+  protected void assignProductLevel(BillOfMaterialLine billOfMaterialLine, int level)
+      throws AxelorException {
+
+    if (level > 100) {
+      if (billOfMaterialLine == null || billOfMaterialLine.getProduct() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH_PRODUCT),
+            billOfMaterialLine.getProduct().getFullName());
+      }
+    }
+
+    Product product = billOfMaterialLine.getProduct();
+
+    log.debug("Add product: {} for the level : {} ", product.getFullName(), level);
+    this.productMap.put(product.getId(), this.getMaxLevel(product, level));
+
+    // No bill of material = End product so no more level
+    // Bom should be same level as bom line so no leveling also
+    if (billOfMaterialLine.getBillOfMaterial() != null) {
+      this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
     }
   }
 

@@ -42,7 +42,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.*;
-import wslite.json.JSONException;
 
 public class GdprResponseAccessServiceImpl implements GdprResponseAccessService {
 
@@ -132,7 +131,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
       messageService.attachMetaFiles(message, metaFileList);
       messageService.sendMessage(message);
       return message;
-    } catch (ClassNotFoundException | IOException | JSONException e) {
+    } catch (ClassNotFoundException | IOException e) {
       throw new AxelorException(
           e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

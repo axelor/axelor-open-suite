@@ -24,5 +24,5 @@ import java.math.BigDecimal;
 
 public interface TimesheetProjectService {
 
-  public BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException;
+  BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException;
 }

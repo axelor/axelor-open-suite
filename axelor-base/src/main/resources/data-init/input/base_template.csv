@@ -1,4 +1,4 @@
-"name";"metaModel.name";"languageCode";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"name";"metaModel.name";"languageCode";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"localization.importId"
 "Confirmation coordonnées";"Partner";"fr";;;;"true";;"Mise à jour de vos coordonnées";"<p>Madame, Monsieur,<br/>
 Nous sommes actuellement en phase de mise à jour de notre répertoire de contacts.<br/> 
 A ce jour voici les informations dont nous disposons : </p>
@@ -13,7 +13,7 @@ $Partner.mainInvoicingAddress.fullName$<br/></p>
 
 <p>Cordialement<br/>
 L'équipe Axelor</p>
-";"$Partner.emailAddress.address$";;;2
+";"$Partner.emailAddress.address$";;;2;2
 "Contact details confirmation";"Partner";"en";;;;"true";;"Contact details update";"<p>Dear $Partner.firstName$,<br/>
 We are currently proceeding to an update of  our contact database. Can you please confirm the following information about you are up to date :  </p>
  
@@ -26,6 +26,6 @@ $Partner.mainInvoicingAddress.fullName$</p>
 <p>If among those information upwards, some are biased, please do inform us by reply thie email.</p>
 
 <p>Best regards<br/>
-Axelor Team</p>";"$Partner.emailAddress.address$";;;2
+Axelor Team</p>";"$Partner.emailAddress.address$";;;2;1
 "Changed password";"User";"en";;;;"true";"transientPassword";"Changed password / Mot de passe modifié";"<p>Madame, Monsieur $User.name$,<br/> Votre nouveau mot de passe est&nbsp;: $transientPassword$<br/> Il a été changé le $User.updatedOn$.</p> <p>Cordialement,<br/> L’équipe Axelor</p>
-<p>Dear $User.name$,<br/> Your new password is: $transientPassword$<br/> It was changed on $User.updatedOn$.</p> <p>Best regards<br/> Axelor Team</p>";"$User.email$";;;2
+<p>Dear $User.name$,<br/> Your new password is: $transientPassword$<br/> It was changed on $User.updatedOn$.</p> <p>Best regards<br/> Axelor Team</p>";"$User.email$";;;2;1

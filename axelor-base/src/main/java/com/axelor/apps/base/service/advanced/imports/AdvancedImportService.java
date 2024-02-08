@@ -21,7 +21,7 @@ package com.axelor.apps.base.service.advanced.imports;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.utils.reader.DataReaderService;
+import com.axelor.utils.service.reader.DataReader;
 
 public interface AdvancedImportService {
 
@@ -30,7 +30,7 @@ public interface AdvancedImportService {
   public Mapper getMapper(String modelFullName) throws ClassNotFoundException;
 
   public int getTabConfigRowCount(
-      String sheet, DataReaderService reader, int totalLines, String[] objectRow);
+      String sheet, DataReader reader, int totalLines, String[] objectRow);
 
   public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException;
 }

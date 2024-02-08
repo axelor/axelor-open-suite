@@ -62,5 +62,5 @@ public interface MoveRecordSetService {
 
   Map<String, Object> computeTotals(Move move);
 
-  void setSubrogationPartner(Move move);
+  void setThirdPartyPayerPartner(Move move);
 }

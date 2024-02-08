@@ -101,7 +101,7 @@ public class PurchaseOrderLineController {
   }
 
   public void resetProductInformation(ActionResponse response) {
-    response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+    response.setAttr("qtyLimitNotRespectedLabel", "hidden", true);
     response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
   }
 
@@ -332,20 +332,29 @@ public class PurchaseOrderLineController {
 
   public void checkQty(ActionRequest request, ActionResponse response) {
     try {
+      SupplierCatalogService supplierCatalogService = Beans.get(SupplierCatalogService.class);
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
       Company company = purchaseOrder.getCompany();
       Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
-      Beans.get(SupplierCatalogService.class)
-          .checkMinQty(
-              purchaseOrderLine.getProduct(),
-              supplierPartner,
-              company,
-              purchaseOrderLine.getQty(),
-              request,
-              response);
+      if (!supplierCatalogService.checkMinQty(
+          purchaseOrderLine.getProduct(),
+          supplierPartner,
+          company,
+          purchaseOrderLine.getQty(),
+          request,
+          response)) {
+        supplierCatalogService.checkMaxQty(
+            purchaseOrderLine.getProduct(),
+            supplierPartner,
+            company,
+            purchaseOrderLine.getQty(),
+            request,
+            response);
+      }
+
       Beans.get(PurchaseOrderLineService.class)
           .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);
     } catch (Exception e) {

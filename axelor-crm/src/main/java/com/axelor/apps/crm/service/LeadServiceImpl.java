@@ -85,10 +85,11 @@ public class LeadServiceImpl implements LeadService {
    * @return
    * @throws AxelorException
    */
-  public String getSequence() throws AxelorException {
+  public String getSequence(Partner partner) throws AxelorException {
 
     String seq =
-        sequenceService.getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

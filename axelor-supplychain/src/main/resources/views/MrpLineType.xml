@@ -43,6 +43,7 @@
       <field name="ignoreEndDate" showIf="$contains([2, 6], elementSelect)"/>
       <field name="includeOneOffSalesSelect" showIf="elementSelect == 3"/>
       <field name="lateSalesSelect" showIf="elementSelect == 3"/>
+      <field name="securityDelay" showIf="$contains([5, 8], elementSelect)"/>
     </panel>
   </form>
 

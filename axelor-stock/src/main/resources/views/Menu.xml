@@ -190,7 +190,7 @@
     icon="fa-cog"/>
 
   <menuitem name="stock-root-incoterm" parent="stock-root-conf" title="Incoterms"
-    action="stock.root.incoterm" order="100"/>
+    action="stock.root.incoterm" order="100" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
 
   <action-view name="stock.root.incoterm" title="Incoterms"
     model="com.axelor.apps.stock.db.Incoterm">

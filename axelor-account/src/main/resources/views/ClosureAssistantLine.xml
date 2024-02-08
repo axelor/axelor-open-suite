@@ -17,7 +17,7 @@
         hideIf="!isValidated || isNextLineValidated" help="Cancel step" icon="fa-times-circle"
         colSpan="12"/>
       <button onClick="account-closure-assistant-line-open-view-link-to-action-group"
-        name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute" colSpan="12"
+        name="openViewLinkToActionBtn" icon="engineering" help="Open action to execute" colSpan="12"
         hideIf="isValidated" readonlyIf="!isPreviousLineValidated"/>
       <field name="validatedOnDateTime" colSpan="6"/>
       <field name="validatedByUser" title="Validated by" readonly="true" colSpan="6"/>
@@ -44,7 +44,7 @@
     <button onClick="save,action-closure-assistant-line-group-cancel" name="cancelActionBtn"
       readonlyIf="!isValidated || isNextLineValidated" help="Cancel step" icon="fa-times-circle"/>
     <button onClick="account-closure-assistant-line-open-view-link-to-action-group"
-      name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute"
+      name="openViewLinkToActionBtn" icon="engineering" help="Open action to execute"
       readonlyIf="isValidated  || !isPreviousLineValidated"/>
   </grid>
 
