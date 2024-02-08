@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -53,8 +52,7 @@ public class BankReconciliationCreateService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement)
-      throws IOException {
+  public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement) {
 
     List<BankReconciliation> bankReconciliationList = new ArrayList<>();
 
@@ -113,8 +111,7 @@ public class BankReconciliationCreateService {
       LocalDate toDate,
       Currency currency,
       BankDetails bankDetails,
-      BankStatement bankStatement)
-      throws IOException {
+      BankStatement bankStatement) {
 
     BankReconciliation bankReconciliation = new BankReconciliation();
     bankReconciliation.setCompany(company);

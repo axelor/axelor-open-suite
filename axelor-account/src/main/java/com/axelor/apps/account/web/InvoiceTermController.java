@@ -422,15 +422,22 @@ public class InvoiceTermController {
 
       this.setParentContext(request, invoiceTerm);
 
-      MoveLine moveLine = invoiceTerm.getMoveLine();
-      if (moveLine != null && moveLine.getFinancialDiscount() != null) {
+      if (invoiceTerm.getInvoice() != null
+          && invoiceTerm.getInvoice().getFinancialDiscount() != null) {
         Beans.get(InvoiceTermFinancialDiscountService.class)
-            .computeFinancialDiscount(
-                invoiceTerm,
-                moveLine.getCredit().max(moveLine.getDebit()),
-                moveLine.getFinancialDiscount(),
-                moveLine.getFinancialDiscountTotalAmount(),
-                moveLine.getRemainingAmountAfterFinDiscount());
+            .computeFinancialDiscount(invoiceTerm, invoiceTerm.getInvoice());
+      } else {
+        MoveLine moveLine = invoiceTerm.getMoveLine();
+
+        if (moveLine != null && moveLine.getFinancialDiscount() != null) {
+          Beans.get(InvoiceTermFinancialDiscountService.class)
+              .computeFinancialDiscount(
+                  invoiceTerm,
+                  moveLine.getCredit().max(moveLine.getDebit()),
+                  moveLine.getFinancialDiscount(),
+                  moveLine.getFinancialDiscountTotalAmount(),
+                  moveLine.getRemainingAmountAfterFinDiscount());
+        }
       }
 
       response.setValue("applyFinancialDiscount", invoiceTerm.getApplyFinancialDiscount());

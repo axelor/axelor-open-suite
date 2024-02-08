@@ -17,8 +17,8 @@
       selection="bankpayment.bank.reconciliation.type.select"/>
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account"
       title="Accounting.Account"/>
-    <decimal name="debit" title="Debit"/>
-    <decimal name="credit" title="Credit"/>
+    <decimal name="debit" title="Debit" precision="20" scale="3"/>
+    <decimal name="credit" title="Credit" precision="20" scale="3"/>
     <many-to-one name="bankStatementLine"
       ref="com.axelor.apps.bankpayment.db.BankStatementLine" title="Bank Statement detail"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"

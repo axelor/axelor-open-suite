@@ -535,6 +535,7 @@
   <selection name='trace.back.origin.select'>
     <option value="default">Default</option>
     <option value="import">Importing</option>
+    <option value="addressRecompute">Recompute addresses batch</option>
   </selection>
 
   <selection name="base.print.template.format.select">

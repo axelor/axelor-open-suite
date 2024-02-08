@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -332,25 +331,6 @@ public class InvoiceController {
     }
   }
 
-  public void updateInvoiceTermsFinancialDiscount(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-
-      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        return;
-      }
-
-      List<InvoiceTerm> invoiceTermList =
-          Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
-      response.setValue("invoiceTermList", invoiceTermList);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   /**
    * Function returning both the paymentMode and the paymentCondition
    *
@@ -491,7 +471,7 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null
+      } else if ((context.get("_invoiceId") != null || context.get("id") != null)
           && (Wizard.class.equals(context.getContextClass())
               || Invoice.class.equals(context.getContextClass()))) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
@@ -513,11 +493,16 @@ public class InvoiceController {
                     .getCode()
                 : null;
 
+        Object exactInvoiceId = context.get("_invoiceId");
+        if (exactInvoiceId == null) {
+          exactInvoiceId = context.get("id");
+        }
+
         fileLink =
             Beans.get(InvoicePrintService.class)
                 .printInvoice(
                     Beans.get(InvoiceRepository.class)
-                        .find(Long.parseLong(context.get("id").toString())),
+                        .find(Long.parseLong(exactInvoiceId.toString())),
                     false,
                     format,
                     reportType,
@@ -537,7 +522,8 @@ public class InvoiceController {
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     Invoice invoice =
-        Beans.get(InvoiceRepository.class).find(Long.parseLong(context.get("id").toString()));
+        Beans.get(InvoiceRepository.class)
+            .find(Long.parseLong(context.get("_invoiceId").toString()));
     Integer reportType =
         context.get("reportType") != null
             ? Integer.parseInt(context.get("reportType").toString())
@@ -1205,14 +1191,13 @@ public class InvoiceController {
   public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
+      InvoiceFinancialDiscountService invoiceFinancialDiscountService =
+          Beans.get(InvoiceFinancialDiscountService.class);
 
-      Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
+      invoiceFinancialDiscountService.setFinancialDiscountInformations(invoice);
+      invoiceFinancialDiscountService.updateFinancialDiscount(invoice);
 
-      if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
-        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
-      }
-
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
       response.setValue("financialDiscount", invoice.getFinancialDiscount());
       response.setValue("legalNotice", invoice.getLegalNotice());
       response.setValue("financialDiscountRate", invoice.getFinancialDiscountRate());

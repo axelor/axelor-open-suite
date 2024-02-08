@@ -282,7 +282,12 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void setFormattedFullName(Address address) throws AxelorException {
-    AddressTemplate addressTemplate = address.getAddressL7Country().getAddressTemplate();
+    Country addressL7Country = address.getAddressL7Country();
+    if (addressL7Country == null) {
+      return;
+    }
+
+    AddressTemplate addressTemplate = addressL7Country.getAddressTemplate();
     String content = addressTemplate.getTemplateStr();
 
     try {

@@ -265,8 +265,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void planStockMove(StockMove stockMove) throws AxelorException {
-    super.planStockMove(stockMove);
+  public void planStockMove(StockMove stockMove, boolean splitByTrackingNumber)
+      throws AxelorException {
+    super.planStockMove(stockMove, splitByTrackingNumber);
     updateReservedQuantity(stockMove);
   }
 
