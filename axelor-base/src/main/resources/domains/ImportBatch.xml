@@ -13,6 +13,7 @@
     <one-to-many name="batchList" title="Batchs" ref="com.axelor.apps.base.db.Batch"
       mappedBy="importBatch"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <integer name="fetchLimit" title="Fetch limit" min="0"/>
     <string name="description" title="Description" large="true"/>
 
     <many-to-one name="importConfig" title="Import"

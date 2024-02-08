@@ -178,6 +178,9 @@
     <boolean name="isPricingComputingOrder" title="Pricing computing order"
       help="When selected, this is the pricing scale computation order."/>
 
+    <integer name="defaultBatchFetchLimit" title="Default batch fetch limit"
+      help="Default fetch limit for batches" min="0"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -258,6 +261,7 @@
       <field name="activatePartnerRelations" on="UPDATE"/>
       <field name="enablePricingScale" on="UPDATE"/>
       <field name="isPricingComputingOrder" on="UPDATE"/>
+      <field name="batchFetchLimit" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 
