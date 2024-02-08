@@ -5,9 +5,9 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="HoldBackLine">
+  <entity name="ProjectHoldBackLine">
     <decimal name="percentage" min="0" max="100" title="Percentage" default="0"/>
-    <many-to-one name="holdBack" ref="com.axelor.apps.project.db.HoldBack"
+    <many-to-one name="projectHoldBack" ref="com.axelor.apps.project.db.ProjectHoldBack"
       title="HoldBack" required="true"/>
   </entity>
 

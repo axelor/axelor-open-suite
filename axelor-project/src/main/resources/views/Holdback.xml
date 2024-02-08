@@ -3,15 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="hold-back-grid" title="HoldBacks" model="com.axelor.apps.project.db.HoldBack">
-    <field name="name" onChange="action-hold-back-line-record-update-result-product-name"/>
+  <grid name="project-hold-back-grid" title="HoldBacks"
+    model="com.axelor.apps.project.db.ProjectHoldBack">
+    <field name="name"/>
     <field name="defaultPercentage"/>
-    <field name="holdBackProduct"/>
+    <field name="projectHoldBackProduct"/>
   </grid>
 
-  <form name="hold-back-form" title="HoldBack" model="com.axelor.apps.project.db.HoldBack">
+  <form name="project-hold-back-form" title="HoldBack"
+    model="com.axelor.apps.project.db.ProjectHoldBack">
     <panel name="mainPanel">
-      <field name="name" onChange="action-hold-back-record-update-result-product-name"/>
+      <field name="name"/>
       <field name="defaultPercentage">
         <viewer>
           <![CDATA[{{record.defaultPercentage}}%]]>
@@ -21,9 +23,9 @@
           <label title="%" colSpan="3"/>
         </editor>
       </field>
-      <field name="holdBackProduct"/>
+      <field name="projectHoldBackProduct"/>
       <panel-related field="productsHeldBackSet" form-view="product-form" colSpan="12"
-        grid-view="product-hold-back-grid" canNew="false"/>
+        grid-view="product-project-hold-back-grid" canNew="false"/>
     </panel>
   </form>
 
