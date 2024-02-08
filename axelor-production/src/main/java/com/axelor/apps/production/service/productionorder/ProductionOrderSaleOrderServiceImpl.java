@@ -18,40 +18,22 @@
  */
 package com.axelor.apps.production.service.productionorder;
 
-import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE;
-
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
-
 
   protected ProductionOrderService productionOrderService;
   protected ProductionOrderRepository productionOrderRepo;
@@ -110,25 +92,25 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
     Product product = saleOrderLine.getProduct();
 
-    //Produce everything
+    // Produce everything
     if (saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
         && product != null
         && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
       BigDecimal qtyToProduce = saleOrderLine.getQty();
 
-      return productionOrderSaleOrderMOGenerationService.generateManufOrders(productionOrder, saleOrderLine, product, qtyToProduce);
+      return productionOrderSaleOrderMOGenerationService.generateManufOrders(
+          productionOrder, saleOrderLine, product, qtyToProduce);
 
     }
-    //Produce only missing qty
-    else if (saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE
-            && product != null
-            && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-
+    // Produce only missing qty
+    else if (saleOrderLine.getSaleSupplySelect()
+            == SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE
+        && product != null
+        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
     }
 
     return null;
   }
-
 }

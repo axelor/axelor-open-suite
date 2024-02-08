@@ -27,7 +27,9 @@ import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
+import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
+import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -43,8 +45,16 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ProductionOrderRepository productionOrderRepo,
-      ProductionConfigService productionConfigService) {
-    super(manufOrderService, sequenceService, productionOrderRepo, productionConfigService);
+      ProductionConfigService productionConfigService,
+      ProductionOrderSaleOrderMOGenerationServiceImpl productionOrderSaleOrderMOGenerationService,
+      ProductionOrderUpdateService productionOrderUpdateService) {
+    super(
+        manufOrderService,
+        sequenceService,
+        productionOrderRepo,
+        productionConfigService,
+        productionOrderSaleOrderMOGenerationService,
+        productionOrderUpdateService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -62,7 +72,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
     ProductionOrder productionOrder = this.createProductionOrder(saleOrder);
     productionOrder.setProject(project);
 
-    this.addManufOrder(
+    productionOrderSaleOrderMOGenerationService.addManufOrder(
         productionOrder,
         product,
         billOfMaterial,
