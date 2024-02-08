@@ -86,7 +86,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                   ? currencyScaleServiceAccount.getCompanyScaledValue(
                       invoiceTerm, invoiceTerm.getCompanyAmountRemaining())
                   : currencyScaleServiceAccount.getScaledValue(
-                      invoiceTerm, invoiceTerm.getAmountRemaining())));
+                      invoiceTerm, invoiceTerm.getCompanyAmountRemaining())));
     }
 
     return invoicePayment;

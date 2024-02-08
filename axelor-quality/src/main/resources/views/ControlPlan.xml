@@ -20,7 +20,8 @@
       <field name="controlPlanFrequency" colSpan="6"/>
       <field name="description" widget="html" colSpan="12"/>
     </panel>
-    <panel-related name="controlPlanLinesPanel" field="controlPlanLinesSet"
-      colSpan="12" grid-view="control-plan-line-grid" form-view="control-plan-line-form"/>
+    <panel-related name="controlPlanLinesPanel" field="controlPlanLinesList"
+      colSpan="12" grid-view="control-plan-line-grid" form-view="control-plan-line-form"
+      canSelect="false"/>
   </form>
 </object-views>

@@ -1,10 +1,30 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.businessproduction.exception.BusinessProductionExceptionMessage;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
 import com.axelor.apps.production.db.ManufOrder;
@@ -26,9 +46,10 @@ public class TimesheetLineUpdateBusinessServiceImpl extends TimesheetLineUpdateS
   @Inject
   public TimesheetLineUpdateBusinessServiceImpl(
       TimesheetLineService timesheetLineService,
+      TimesheetLineCheckService timesheetLineCheckService,
       TimesheetLineBusinessService timesheetLineBusinessService,
       AppProductionService appProductionService) {
-    super(timesheetLineService);
+    super(timesheetLineService, timesheetLineCheckService);
     this.timesheetLineBusinessService = timesheetLineBusinessService;
     this.appProductionService = appProductionService;
   }
@@ -39,13 +60,14 @@ public class TimesheetLineUpdateBusinessServiceImpl extends TimesheetLineUpdateS
       TimesheetLine timesheetLine,
       Project project,
       ProjectTask projectTask,
+      Product product,
       BigDecimal duration,
       LocalDate date,
       String comments,
       Boolean toInvoice)
       throws AxelorException {
     super.updateTimesheetLine(
-        timesheetLine, project, projectTask, duration, date, comments, toInvoice);
+        timesheetLine, project, projectTask, product, duration, date, comments, toInvoice);
     if (!appProductionService.isApp("production")) {
       return;
     }
@@ -58,6 +80,7 @@ public class TimesheetLineUpdateBusinessServiceImpl extends TimesheetLineUpdateS
       TimesheetLine timesheetLine,
       Project project,
       ProjectTask projectTask,
+      Product product,
       BigDecimal duration,
       LocalDate date,
       String comments,
@@ -75,7 +98,7 @@ public class TimesheetLineUpdateBusinessServiceImpl extends TimesheetLineUpdateS
     }
 
     this.updateTimesheetLine(
-        timesheetLine, project, projectTask, duration, date, comments, toInvoice);
+        timesheetLine, project, projectTask, product, duration, date, comments, toInvoice);
 
     if (manufOrder != null) {
       timesheetLine.setManufOrder(manufOrder);

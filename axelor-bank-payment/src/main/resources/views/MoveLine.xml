@@ -58,7 +58,7 @@
     <field name="move.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
-  <form name="move-line-move-form" title="Move line"
+  <form name="move-line-tabs-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" id="bank-payment-move-line-move-form"
     extension="true">
     <extend target="//field[@name='bankReconciledAmount']">

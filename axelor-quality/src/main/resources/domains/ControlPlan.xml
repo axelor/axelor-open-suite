@@ -11,7 +11,7 @@
     <many-to-one name="controlPlanFrequency"
       ref="com.axelor.apps.quality.db.ControlPlanFrequency" title="Frequency"/>
     <string large="true" name="description" title="Description"/>
-    <many-to-many name="controlPlanLinesSet"
+    <one-to-many name="controlPlanLinesList"
       ref="com.axelor.apps.quality.db.ControlEntryPlanLine" title="Control plan lines"
       mappedBy="controlPlan"/>
     <integer name="statusSelect" selection="quality.control.plan.status.select"
