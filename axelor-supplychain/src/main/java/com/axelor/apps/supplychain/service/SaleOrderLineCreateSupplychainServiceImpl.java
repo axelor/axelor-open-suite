@@ -13,22 +13,27 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCreateServiceImpl {
 
   protected AnalyticLineModelService analyticLineModelService;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected ReservedQtyService reservedQtyService;
 
   @Inject
   public SaleOrderLineCreateSupplychainServiceImpl(
       SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
       AppBaseService appBaseService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      SupplyChainConfigService supplyChainConfigService,
+      ReservedQtyService reservedQtyService) {
     super(saleOrderLineService, appSaleService, appBaseService);
     this.analyticLineModelService = analyticLineModelService;
+    this.supplyChainConfigService = supplyChainConfigService;
+    this.reservedQtyService = reservedQtyService;
   }
 
   @Override
@@ -57,10 +62,10 @@ public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCrea
 
       try {
         SupplyChainConfig supplyChainConfig =
-            Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
+            supplyChainConfigService.getSupplyChainConfig(saleOrder.getCompany());
 
         if (supplyChainConfig.getAutoRequestReservedQty()) {
-          Beans.get(ReservedQtyService.class).requestQty(soLine);
+          reservedQtyService.requestQty(soLine);
         }
       } catch (AxelorException e) {
         TraceBackService.trace(e);
