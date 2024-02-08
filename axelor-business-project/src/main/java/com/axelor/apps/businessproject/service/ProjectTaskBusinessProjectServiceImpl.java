@@ -76,7 +76,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
@@ -676,61 +675,5 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
     return Objects.equals(unit, appBusinessProject.getDaysUnit())
         || Objects.equals(unit, appBusinessProject.getHoursUnit());
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateChildrenProgress(ProjectTask task, BigDecimal progress) {
-    task = updateChildProgress(task, progress);
-    projectTaskRepo.save(task);
-  }
-
-  protected ProjectTask updateChildProgress(ProjectTask projectTask, BigDecimal progress) {
-
-    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
-
-    if (projectTaskList != null && !projectTaskList.isEmpty()) {
-      for (ProjectTask child : projectTaskList) {
-        child.setProgress(progress);
-        updateChildProgress(child, progress);
-      }
-    }
-    return projectTask;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateParentsProgress(ProjectTask task, BigDecimal progress) {
-    task = updateParentProgress(task);
-    projectTaskRepo.save(task);
-  }
-
-  protected ProjectTask updateParentProgress(ProjectTask projectTask) {
-    ProjectTask parentTask = projectTask.getParentTask();
-    if (parentTask != null) {
-      List<ProjectTask> childProjectTasks = parentTask.getProjectTaskList();
-      childProjectTasks =
-          childProjectTasks.stream()
-              .map(task -> Objects.equals(task, projectTask) ? projectTask : task)
-              .collect(Collectors.toList());
-
-      BigDecimal sumProgressTimesPlanifiedTime =
-          childProjectTasks.stream()
-              .map(task -> task.getProgress().multiply(task.getPlannedTime()))
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-      BigDecimal sumPlannedTime =
-          childProjectTasks.stream()
-              .map(ProjectTask::getPlannedTime)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-      BigDecimal averageProgress =
-          sumPlannedTime.compareTo(BigDecimal.ZERO) != 0
-              ? sumProgressTimesPlanifiedTime.divide(
-                  sumPlannedTime, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
-              : BigDecimal.ZERO;
-      parentTask.setProgress(averageProgress);
-      updateParentProgress(parentTask);
-    }
-    return projectTask;
   }
 }

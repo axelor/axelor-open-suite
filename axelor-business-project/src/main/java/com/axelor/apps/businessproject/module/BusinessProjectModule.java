@@ -53,6 +53,8 @@ import com.axelor.apps.businessproject.service.ProjectPurchaseServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectTaskProgressUpdateService;
+import com.axelor.apps.businessproject.service.ProjectTaskProgressUpdateServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.ProjectTaskReportingValuesComputingServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
@@ -163,5 +165,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(AnalyticLineModelServiceImpl.class).to(AnalyticLineModelProjectServiceImpl.class);
     bind(TimesheetProjectPlanningTimeServiceImpl.class).to(TimesheetProjectPPTServiceImpl.class);
     bind(TimesheetInvoiceServiceImpl.class).to(TimesheetProjectInvoiceServiceImpl.class);
+    bind(ProjectTaskProgressUpdateService.class).to(ProjectTaskProgressUpdateServiceImpl.class);
   }
 }

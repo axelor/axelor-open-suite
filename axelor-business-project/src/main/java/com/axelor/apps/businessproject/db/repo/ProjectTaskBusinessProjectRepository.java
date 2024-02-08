@@ -18,10 +18,19 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
+import com.axelor.apps.businessproject.service.ProjectTaskProgressUpdateService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
+import com.google.inject.Inject;
 
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
+  ProjectTaskProgressUpdateService projectTaskProgressUpdateService;
+
+  @Inject
+  public ProjectTaskBusinessProjectRepository(
+      ProjectTaskProgressUpdateService projectTaskProgressUpdateService) {
+    this.projectTaskProgressUpdateService = projectTaskProgressUpdateService;
+  }
 
   @Override
   public ProjectTask copy(ProjectTask entity, boolean deep) {
@@ -29,5 +38,15 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
     task.setSaleOrderLine(null);
     task.setInvoiceLine(null);
     return task;
+  }
+
+  @Override
+  public ProjectTask save(ProjectTask projectTask) {
+    projectTask = super.save(projectTask);
+    projectTask =
+        projectTaskProgressUpdateService.updateChildrenProgress(
+            projectTask, projectTask.getProgress());
+    projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask);
+    return projectTask;
   }
 }
