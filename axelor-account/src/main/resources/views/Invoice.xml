@@ -697,7 +697,7 @@
           showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
           <button name="createRefundBtn" title="Generate credit note" colSpan="3"
             showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 2"
-            onClick="save,action-invoice-method-create-refund,save"/>
+            onClick="save,action-invoice-method-create-refund"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
             form-view="invoice-form" grid-view="invoice-grid"/>
           <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
@@ -2387,11 +2387,6 @@ InvoiceSet.length > 0))"
       method="validateInvoiceTermsBeforeSave"/>
   </action-method>
 
-  <action-method name="action-method-invoice-financial-discount-update-invoice-terms">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="updateInvoiceTermsFinancialDiscount"/>
-  </action-method>
-
   <action-method name="action-invoice-method-update-unpaid-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateUnpaidInvoiceTerms"/>
@@ -2494,7 +2489,7 @@ InvoiceSet.length > 0))"
     <context name="_statusSelect" expr="eval: statusSelect"/>
     <context name="_operationSubTypeSelect" expr="eval: operationSubTypeSelect"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
-    <context name="id" expr="eval: id"/>
+    <context name="_invoiceId" expr="eval: id"/>
     <context name="_localization" expr="eval: localization"/>
   </action-view>
 

@@ -160,9 +160,12 @@
         <field name="taskDeadline" title="Task deadline" colSpan="4"/>
         <field name="projectTaskTagSet" widget="TagSelect" x-color-field="colorSelect"
           form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
-        <field name="progressSelect" widget="SelectProgress"
-          onChange="action-project-task-update-planned-progress" showIf="project.isShowProgress"
-          colSpan="4"/>
+        <field name="progress" onChange="action-project-task-group-progress-onchange"
+          showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4"/>
+        <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
+        <field name="progress" showIf="project.isShowProgress &amp;&amp; $readonly()"
+          colSpan="4" widget="SelectProgress"/>
+        <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; $readonly()"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="project.isShowProgress" hidden="true"/>
         <field name="project.isShowSection" hidden="true"/>
@@ -312,14 +315,14 @@
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
     </node>
 
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
     </node>
 
   </tree>
@@ -333,7 +336,7 @@
     <field name="taskDeadline"/>
     <field name="priority.name"/>
     <field name="priority.technicalTypeSelect"/>
-    <field name="progressSelect"/>
+    <field name="progress"/>
     <field name="project.isShowProgress"/>
     <template>
 		<![CDATA[
@@ -360,7 +363,7 @@
 				</Box>
 				{project.isShowProgress &&
 					<Box mt={1}>
-						{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
+						{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 					</Box>
 				}
          		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
@@ -380,7 +383,7 @@
     <field name="taskDeadline"/>
     <field name="priority.name"/>
     <field name="priority.technicalTypeSelect"/>
-    <field name="progressSelect"/>
+    <field name="progress"/>
     <template>
 		<![CDATA[
 			<>
@@ -405,7 +408,7 @@
 					</Box>
 				</Box>
 				<Box mt={1}>
-					{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
+					{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 				</Box>
          		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
          			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
@@ -573,10 +576,19 @@
       if="__config__.app.getApp('business-support').providerCompany"/>
   </action-record>
 
+  <action-group name="action-project-task-group-progress-onchange">
+    <action name="action-project-task-update-planned-progress"/>
+    <action name="action-project-task-method-update-progress-select"/>
+  </action-group>
+
   <action-record name="action-project-task-update-planned-progress"
     model="com.axelor.apps.project.db.ProjectTask">
-    <field name="plannedProgress" expr="eval: progressSelect"/>
+    <field name="plannedProgress" expr="eval: progress"/>
   </action-record>
+
+  <action-method name="action-project-task-method-update-progress-select">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillProgressSelect"/>
+  </action-method>
 
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
     model="com.axelor.apps.project.db.ProjectTask">

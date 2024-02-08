@@ -1,3 +1,0 @@
----
-title: "Invoice/Move/Order : Fix the error message when the budget amount exceed the line amount"
-type: fix

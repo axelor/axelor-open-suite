@@ -88,8 +88,8 @@
   </action-group>
 
   <action-group name="action-budget-group-purchase-order-on-validate-actions">
-    <action name="action-method-purchase-order-validate-budget-distribution-list"
-      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.manageMultiBudget"/>
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
     <action name="action-group-purchase-order-on-validate-actions"/>
   </action-group>
 

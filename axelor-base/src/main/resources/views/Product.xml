@@ -157,8 +157,7 @@
       </panel>
       <panel name="productInfoPanel" colSpan="10">
 
-        <panel name="productTypologyPanel" title="Product typology" colSpan="6"
-          colWidths="30%,70%">
+        <panel name="productTypologyPanel" title="Product typology" colSpan="6">
           <field name="productTypeSelect" required="true" colSpan="12"
             onChange="action-group-base-product-producttype-onchange"/>
           <field name="productSubTypeSelect" colSpan="12"
@@ -176,8 +175,7 @@
             showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true"
             if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
-        <panel name="categorizationPanel" title="Categorization" colSpan="6"
-          colWidths="30%,70%">
+        <panel name="categorizationPanel" title="Categorization" colSpan="6">
           <field name="productFamily" canEdit="false" colSpan="12"
             form-view="product-family-form" grid-view="product-family-grid"/>
           <field name="productCategory" canEdit="false" colSpan="12"
@@ -481,8 +479,8 @@
           domain="self.parentTaskTemplate = null or self.parentTaskTemplate in :taskTemplateSet"/>
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-stock"
-        if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged"
-        showIf="id">
+        if="__config__.app.isApp('stock')" hidden="true"
+        showIf="id &amp;&amp; !isShippingCostsProduct &amp;&amp; stockManaged">
         <panel-dashlet name="StockMoveLineIncomingPLannedPanel" colSpan="12"
           action="action-product-view-stock-move-line-incoming-planned" showIf="id"/>
         <panel-dashlet name="StockMoveLineConsumptionPLannedPanel" colSpan="12"
