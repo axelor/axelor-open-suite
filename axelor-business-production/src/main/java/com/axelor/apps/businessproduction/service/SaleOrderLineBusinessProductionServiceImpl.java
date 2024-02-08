@@ -26,7 +26,9 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
@@ -38,8 +40,16 @@ public class SaleOrderLineBusinessProductionServiceImpl
       SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
       AppBaseService appBaseService,
-      AnalyticLineModelService analyticLineModelService) {
-    super(saleOrderLineService, appSaleService, appBaseService, analyticLineModelService);
+      AnalyticLineModelService analyticLineModelService,
+      SupplyChainConfigService supplyChainConfigService,
+      ReservedQtyService reservedQtyService) {
+    super(
+        saleOrderLineService,
+        appSaleService,
+        appBaseService,
+        analyticLineModelService,
+        supplyChainConfigService,
+        reservedQtyService);
   }
 
   @Override
