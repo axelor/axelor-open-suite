@@ -113,7 +113,6 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
   protected CurrencyScaleService currencyScaleService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public ReconcileServiceImpl(
@@ -139,8 +138,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
-      CurrencyScaleService currencyScaleService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -165,7 +163,6 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
     this.currencyScaleService = currencyScaleService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -360,12 +357,12 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (currencyScaleServiceAccount.isGreaterThan(
+    if (currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
             creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
             creditMoveLine,
             false)
-        || currencyScaleServiceAccount.isGreaterThan(
+        || currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
             debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
             debitMoveLine,

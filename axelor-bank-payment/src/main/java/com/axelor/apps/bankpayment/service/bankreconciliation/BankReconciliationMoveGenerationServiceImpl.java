@@ -12,7 +12,6 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -34,6 +33,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -67,7 +67,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineService moveLineService;
   protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -86,7 +86,7 @@ public class BankReconciliationMoveGenerationServiceImpl
       MoveLineCreateService moveLineCreateService,
       MoveLineService moveLineService,
       CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -102,7 +102,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineService = moveLineService;
     this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -328,9 +328,9 @@ public class BankReconciliationMoveGenerationServiceImpl
             .subtract(counterPartMoveLine.getDebit().max(counterPartMoveLine.getCredit()))
             .abs();
     if (taxMoveLine.getDebit().signum() > 0) {
-      taxMoveLine.setDebit(currencyScaleServiceAccount.getScaledValue(move, taxAmount));
+      taxMoveLine.setDebit(currencyScaleService.getScaledValue(move, taxAmount));
     } else {
-      taxMoveLine.setCredit(currencyScaleServiceAccount.getScaledValue(move, taxAmount));
+      taxMoveLine.setCredit(currencyScaleService.getScaledValue(move, taxAmount));
     }
   }
 

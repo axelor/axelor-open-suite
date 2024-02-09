@@ -1,7 +1,6 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -67,15 +66,5 @@ public class CurrencyScaleServiceBudgetImpl extends CurrencyScaleServiceImpl
   @Override
   public int getCompanyScale(Company company) {
     return this.getCompanyCurrencyScale(company);
-  }
-
-  protected int getCompanyCurrencyScale(Company company) {
-    return company != null && company.getCurrency() != null
-        ? this.getCurrencyScale(company.getCurrency())
-        : this.getScale();
-  }
-
-  protected int getCurrencyScale(Currency currency) {
-    return currency != null ? currency.getNumberOfDecimals() : this.getScale();
   }
 }

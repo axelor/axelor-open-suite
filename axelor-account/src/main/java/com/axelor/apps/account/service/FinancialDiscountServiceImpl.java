@@ -8,20 +8,20 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class FinancialDiscountServiceImpl implements FinancialDiscountService {
   AccountConfigService accountConfigService;
-  CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  CurrencyScaleService currencyScaleService;
 
   @Inject
   public FinancialDiscountServiceImpl(
-      AccountConfigService accountConfigService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      AccountConfigService accountConfigService, CurrencyScaleService currencyScaleService) {
     this.accountConfigService = accountConfigService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -54,7 +54,7 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
         .multiply(amount)
         .divide(
             new BigDecimal(100),
-            currencyScaleServiceAccount.getScale(currency),
+            currencyScaleService.getCurrencyScale(currency),
             RoundingMode.HALF_UP);
   }
 
@@ -71,7 +71,7 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
             .multiply(financialDiscount.getDiscountRate())
             .divide(
                 inTaxTotal.multiply(BigDecimal.valueOf(100)),
-                currencyScaleServiceAccount.getScale(currency),
+                currencyScaleService.getCurrencyScale(currency),
                 RoundingMode.HALF_UP);
   }
 

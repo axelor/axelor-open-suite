@@ -29,12 +29,12 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -76,7 +76,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected DateService dateService;
 
   protected FixedAssetLineService fixedAssetLineService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -95,7 +95,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetDateService fixedAssetDateService,
       DateService dateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -107,7 +107,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.dateService = dateService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -364,22 +364,22 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     if (fixedAsset.getGrossValue() != null) {
       fixedAsset.setGrossValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset, prorata.multiply(fixedAsset.getGrossValue())));
     }
     if (fixedAsset.getResidualValue() != null) {
       fixedAsset.setResidualValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset, prorata.multiply(fixedAsset.getResidualValue())));
     }
     if (fixedAsset.getAccountingValue() != null) {
       fixedAsset.setAccountingValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset, prorata.multiply(fixedAsset.getAccountingValue())));
     }
     if (fixedAsset.getCorrectedAccountingValue() != null) {
       fixedAsset.setCorrectedAccountingValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset, prorata.multiply(fixedAsset.getCorrectedAccountingValue())));
     }
   }

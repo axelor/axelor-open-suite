@@ -212,8 +212,7 @@
     <many-to-one name="companyCurrency" transient="true"
       ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
-      Company company = move != null ? move.getCompany() : null;
-      return company != null ? company.getCurrency() : null;
+      return move != null ? move.getCompanyCurrency() : null;
 	    ]]>
     </many-to-one>
 

@@ -48,14 +48,4 @@ public class CurrencyScaleServiceContractImpl extends CurrencyScaleServiceImpl
   public int getScale(Currency currency) {
     return this.getCurrencyScale(currency);
   }
-
-  protected int getCompanyCurrencyScale(Company company) {
-    return company != null && company.getCurrency() != null
-        ? this.getCurrencyScale(company.getCurrency())
-        : this.getScale();
-  }
-
-  protected int getCurrencyScale(Currency currency) {
-    return currency != null ? currency.getNumberOfDecimals() : this.getScale();
-  }
 }

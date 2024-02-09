@@ -3,10 +3,10 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -21,18 +21,18 @@ public class InvoicePaymentFinancialDiscountServiceImpl
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
       InvoiceTermService invoiceTermService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -131,9 +131,9 @@ public class InvoicePaymentFinancialDiscountServiceImpl
   protected int findScale(List<InvoiceTermPayment> invoiceTermPaymentList) {
     return invoiceTermPaymentList.stream()
         .map(InvoiceTermPayment::getInvoiceTerm)
-        .map(currencyScaleServiceAccount::getScale)
+        .map(currencyScaleService::getScale)
         .findAny()
-        .orElse(currencyScaleServiceAccount.getScale());
+        .orElse(currencyScaleService.getScale());
   }
 
   protected LocalDate getFinancialDiscountDeadlineDate(

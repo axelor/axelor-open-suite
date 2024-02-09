@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -17,14 +18,13 @@ import java.time.LocalDate;
 public class InvoiceTermFinancialDiscountServiceImpl
     implements InvoiceTermFinancialDiscountService {
   protected AppAccountService appAccountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public InvoiceTermFinancialDiscountServiceImpl(
-      AppAccountService appAccountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      AppAccountService appAccountService, CurrencyScaleService currencyScaleService) {
     this.appAccountService = appAccountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -58,7 +58,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage)));
       invoiceTerm.setFinancialDiscountAmount(
           invoiceTerm.getAmount().subtract(invoiceTerm.getRemainingAmountAfterFinDiscount()));
@@ -98,7 +98,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
               .multiply(invoiceTerm.getRemainingAmountAfterFinDiscount())
               .divide(
                   invoiceTerm.getAmount(),
-                  currencyScaleServiceAccount.getScale(invoiceTerm),
+                  currencyScaleService.getScale(invoiceTerm),
                   RoundingMode.HALF_UP));
     }
   }
@@ -140,7 +140,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
           .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
           .divide(
               BigDecimal.valueOf(10000),
-              currencyScaleServiceAccount.getScale(invoiceTerm),
+              currencyScaleService.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     } else {
       BigDecimal exTaxTotal;
@@ -157,7 +157,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
           .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
           .divide(
               taxTotal.add(exTaxTotal).multiply(BigDecimal.valueOf(10000)),
-              currencyScaleServiceAccount.getScale(invoiceTerm),
+              currencyScaleService.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     }
   }

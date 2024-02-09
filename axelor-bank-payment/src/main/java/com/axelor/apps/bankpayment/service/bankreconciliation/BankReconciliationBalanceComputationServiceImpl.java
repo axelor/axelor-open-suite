@@ -5,13 +5,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.db.JPA;
@@ -32,7 +32,7 @@ public class BankReconciliationBalanceComputationServiceImpl
   protected DateService dateService;
   protected BankReconciliationComputeService bankReconciliationComputeService;
   protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationBalanceComputationServiceImpl(
@@ -43,7 +43,8 @@ public class BankReconciliationBalanceComputationServiceImpl
       CurrencyService currencyService,
       DateService dateService,
       BankReconciliationComputeService bankReconciliationComputeService,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment,
+      CurrencyScaleService currencyScaleService) {
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
@@ -52,6 +53,7 @@ public class BankReconciliationBalanceComputationServiceImpl
     this.dateService = dateService;
     this.bankReconciliationComputeService = bankReconciliationComputeService;
     this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -182,7 +184,7 @@ public class BankReconciliationBalanceComputationServiceImpl
       movesReconciledLineBalance =
           movesReconciledLineBalance.subtract(moveLine.getBankReconciledAmount());
     }
-    return currencyScaleServiceAccount.getCompanyScaledValue(moveLine, movesReconciledLineBalance);
+    return currencyScaleService.getCompanyScaledValue(moveLine, movesReconciledLineBalance);
   }
 
   protected BigDecimal computeMovesUnreconciledLineBalance(
@@ -196,8 +198,7 @@ public class BankReconciliationBalanceComputationServiceImpl
           movesUnreconciledLineBalance.subtract(
               moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()));
     }
-    return currencyScaleServiceAccount.getCompanyScaledValue(
-        moveLine, movesUnreconciledLineBalance);
+    return currencyScaleService.getCompanyScaledValue(moveLine, movesUnreconciledLineBalance);
   }
 
   protected BigDecimal computeStatementReconciledLineBalance(

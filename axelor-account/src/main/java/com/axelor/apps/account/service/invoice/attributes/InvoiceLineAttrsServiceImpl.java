@@ -1,18 +1,18 @@
 package com.axelor.apps.account.service.invoice.attributes;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
-  public InvoiceLineAttrsServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+  public InvoiceLineAttrsServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
   }
 
   protected void addAttr(
@@ -34,7 +34,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("inTaxPrice", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -44,7 +44,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("exTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -54,7 +54,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("inTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -64,7 +64,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("companyExTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoice),
+        currencyScaleService.getCompanyScale(invoice),
         attrsMap);
   }
 
@@ -74,7 +74,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("companyInTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoice),
+        currencyScaleService.getCompanyScale(invoice),
         attrsMap);
   }
 }

@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity sequential="true" name="Invoice"
-    implements="com.axelor.apps.base.interfaces.PricedOrder">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
@@ -253,6 +253,13 @@
     <integer name="paymentProgress" title="Payment progress" default="0"/>
     <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
       mappedBy="invoice" title="Invoice terms"/>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <unique-constraint columns="invoiceId,company"/>
 
