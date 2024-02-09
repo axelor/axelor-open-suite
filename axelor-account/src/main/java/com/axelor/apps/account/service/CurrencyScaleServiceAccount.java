@@ -22,10 +22,6 @@ public interface CurrencyScaleServiceAccount extends CurrencyScaleService {
 
   BigDecimal getCompanyScaledValue(Move move, BigDecimal amount);
 
-  BigDecimal getScaledValue(MoveLine moveLine, BigDecimal amount);
-
-  BigDecimal getCompanyScaledValue(MoveLine moveLine, BigDecimal amount);
-
   BigDecimal getScaledValue(InvoiceTerm invoiceTerm, BigDecimal amount);
 
   BigDecimal getCompanyScaledValue(InvoiceTerm invoiceTerm, BigDecimal amount);
@@ -58,10 +54,6 @@ public interface CurrencyScaleServiceAccount extends CurrencyScaleService {
   int getScale(Move move);
 
   int getCompanyScale(Move move);
-
-  int getScale(MoveLine moveLine);
-
-  int getCompanyScale(MoveLine moveLine);
 
   int getScale(Invoice invoice);
 

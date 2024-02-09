@@ -37,15 +37,15 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     return this.getScaledValue(amount, this.getCompanyScale(move.getCompany()));
   }
 
-  @Override
-  public BigDecimal getScaledValue(MoveLine moveLine, BigDecimal amount) {
+  protected BigDecimal getScaledValue(MoveLine moveLine, BigDecimal amount) {
+    // TODO Unused, need to be removed
     return moveLine.getMove() != null
         ? this.getScaledValue(moveLine.getMove(), amount)
         : this.getScaledValue(amount);
   }
 
-  @Override
-  public BigDecimal getCompanyScaledValue(MoveLine moveLine, BigDecimal amount) {
+  protected BigDecimal getCompanyScaledValue(MoveLine moveLine, BigDecimal amount) {
+    // TODO Unused, need to be removed
     return moveLine.getMove() != null
         ? this.getCompanyScaledValue(moveLine.getMove(), amount)
         : this.getScaledValue(amount);
@@ -141,13 +141,13 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     return this.getCompanyScale(move.getCompany());
   }
 
-  @Override
-  public int getScale(MoveLine moveLine) {
+  protected int getScale(MoveLine moveLine) {
+    // TODO Unused, need to be removed
     return moveLine.getMove() != null ? this.getScale(moveLine.getMove()) : this.getScale();
   }
 
-  @Override
-  public int getCompanyScale(MoveLine moveLine) {
+  protected int getCompanyScale(MoveLine moveLine) {
+    // TODO Unused, need to be removed
     return moveLine.getMove() != null ? this.getCompanyScale(moveLine.getMove()) : this.getScale();
   }
 
@@ -237,10 +237,6 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     return company != null && company.getCurrency() != null
         ? this.getCurrencyScale(company.getCurrency())
         : this.getScale();
-  }
-
-  protected int getCurrencyScale(Currency currency) {
-    return currency != null ? currency.getNumberOfDecimals() : this.getScale();
   }
 
   @Override
