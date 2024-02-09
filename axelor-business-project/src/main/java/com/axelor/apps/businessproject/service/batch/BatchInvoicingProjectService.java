@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
@@ -28,6 +26,8 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BatchInvoicingProjectService extends AbstractBatch {
+public class BatchInvoicingProjectService extends BatchStrategy {
 
   protected ProjectRepository projectRepo;
 
@@ -57,44 +57,48 @@ public class BatchInvoicingProjectService extends AbstractBatch {
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
-
-    List<Object> generatedInvoicingProjectList = new ArrayList<Object>();
-
-    List<Project> projectList =
+    int offset = 0;
+    List<Object> generatedInvoicingProjectList = new ArrayList<>();
+    List<Project> projectList;
+    Query<Project> projectQuery =
         projectRepo
             .all()
             .filter(
                 "self.isBusinessProject = true "
                     + "AND self.toInvoice = true AND "
-                    + "self.projectStatus.isCompleted = false")
-            .fetch();
+                    + "self.projectStatus.isCompleted = false");
 
-    for (Project project : projectList) {
-      try {
-        InvoicingProject invoicingProject =
-            invoicingProjectService.generateInvoicingProject(
-                project, batch.getBusinessProjectBatch().getConsolidatePhaseSelect());
+    while (!(projectList = projectQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Project project : projectList) {
+        ++offset;
+        try {
+          InvoicingProject invoicingProject =
+              invoicingProjectService.generateInvoicingProject(
+                  project, batch.getBusinessProjectBatch().getConsolidatePhaseSelect());
 
-        if (invoicingProject != null && invoicingProject.getId() != null) {
-          incrementDone();
-          if (batch.getBusinessProjectBatch().getActionSelect()
-              == BusinessProjectBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
-            invoicingProject.setDeadlineDate(batch.getBusinessProjectBatch().getDeadlineDate());
+          if (invoicingProject != null && invoicingProject.getId() != null) {
+            incrementDone();
+            if (batch.getBusinessProjectBatch().getActionSelect()
+                == BusinessProjectBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
+              invoicingProject.setDeadlineDate(batch.getBusinessProjectBatch().getDeadlineDate());
+            }
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", invoicingProject.getId());
+            generatedInvoicingProjectList.add(map);
           }
-
-          Map<String, Object> map = new HashMap<String, Object>();
-          map.put("id", invoicingProject.getId());
-          generatedInvoicingProjectList.add(map);
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              e,
+              String.format(
+                  I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
+                  project.getId()),
+              batch.getId());
         }
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            e,
-            String.format(
-                I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
-                project.getId()),
-            batch.getId());
       }
+      JPA.clear();
     }
     BusinessProjectBatchService.updateJsonObject(
         batch, generatedInvoicingProjectList, "generatedInvoicingProjectSet", contextValues);
@@ -113,9 +117,5 @@ public class BatchInvoicingProjectService extends AbstractBatch {
 
     addComment(comment);
     super.stop();
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BUSINESS_PROJECT_BATCH);
   }
 }

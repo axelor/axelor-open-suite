@@ -301,11 +301,11 @@ public abstract class AbstractBatch {
     return batch;
   }
 
-  protected Integer getFetchLimit(){
+  protected Integer getFetchLimit() {
     Integer defaultBatchFetchLimit = appBaseService.getAppBase().getDefaultBatchFetchLimit();
 
     // if not value, default will be 1
-    if(defaultBatchFetchLimit == 0) {
+    if (defaultBatchFetchLimit == 0) {
       defaultBatchFetchLimit = 1;
     }
     return defaultBatchFetchLimit;
