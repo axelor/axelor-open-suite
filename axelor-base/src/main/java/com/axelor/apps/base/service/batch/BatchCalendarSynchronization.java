@@ -20,14 +20,14 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ICalendar;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
-import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import java.util.List;
 
-public class BatchCalendarSynchronization extends AbstractBatch {
+public class BatchCalendarSynchronization extends BatchStrategy {
 
   @Inject ICalendarService iCalendarService;
 
@@ -35,29 +35,33 @@ public class BatchCalendarSynchronization extends AbstractBatch {
 
   @Override
   protected void process() {
+    int offset = 0;
     final Company company = batch.getBaseBatch().getCompany();
-    ;
-    final List<ICalendar> calendars =
+
+    List<ICalendar> calendars;
+
+    Query<ICalendar> calendarQuery =
         repo.all()
+            .order("id")
             .filter("self.user.activeCompany = :company AND self.isValid = TRUE")
-            .bind("company", company)
-            .fetch();
+            .bind("company", company);
 
-    for (ICalendar calendar : calendars) {
-      try {
-        iCalendarService.sync(
-            calendar,
-            batch.getBaseBatch().getAllEvents(),
-            batch.getBaseBatch().getSynchronizationDuration());
-        incrementDone();
-      } catch (Exception e) {
-        e.printStackTrace();
-        incrementAnomaly();
+    while (!(calendars = calendarQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (ICalendar calendar : calendars) {
+        ++offset;
+        try {
+          iCalendarService.sync(
+              calendar,
+              batch.getBaseBatch().getAllEvents(),
+              batch.getBaseBatch().getSynchronizationDuration());
+          incrementDone();
+        } catch (Exception e) {
+          e.printStackTrace();
+          incrementAnomaly();
+        }
       }
+      JPA.clear();
     }
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BASE_BATCH);
   }
 }
