@@ -26,6 +26,7 @@
     </string>
     <string name="dateFormat" title="Date Format" help="DD/MM/YYYY"/>
     <string name="numbersFormat" title="Numbers Format" help="#,###.00"/>
+    <many-to-many name="templateSet" ref="com.axelor.message.db.Template"/>
 
   </entity>
 

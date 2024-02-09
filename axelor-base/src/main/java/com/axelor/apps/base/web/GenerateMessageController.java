@@ -20,12 +20,15 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.LocalizationRepository;
+import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.util.List;
 import java.util.Map;
+import javax.persistence.Query;
 
 @Singleton
 public class GenerateMessageController {
@@ -55,11 +58,35 @@ public class GenerateMessageController {
     if (localization == null) {
       domain = "self.metaModel.fullName = '" + model + "' and self.isSystem != true";
     } else {
+      Long localizationId = localization.getId();
+      Query query =
+          JPA.em()
+              .createQuery(
+                  "SELECT DISTINCT t.id "
+                      + "FROM Template t "
+                      + "JOIN t.localizationSet l "
+                      + "WHERE l.id = :localizationId")
+              .setParameter("localizationId", localizationId);
+      List resultList = query.getResultList();
+      StringBuilder sb = new StringBuilder();
+      sb.append('(');
+      for (int i = 0; i < resultList.size(); i++) {
+        long curId = (long) resultList.get(i);
+        if (i != resultList.size() - 1) {
+          sb.append(curId);
+          sb.append(',');
+        } else {
+          sb.append(curId);
+        }
+      }
+      sb.append(')');
+      String ids = sb.toString();
+
       domain =
           "self.metaModel.fullName = '"
               + model
-              + "' and self.isSystem != true and self.localization.id = "
-              + localization.getId();
+              + "' and self.isSystem != true and self.id IN "
+              + ids;
     }
 
     response.setAttr("_xTemplate", "domain", domain);

@@ -32,8 +32,8 @@
         </editor>
       </field>
       <field name="mediaTypeSelect"/>
-      <field name="localization" canEdit="false" form-view="localization-form"
-        grid-view="localization-grid"/>
+      <field name="localizationSet" widget="TagSelect" canEdit="false" canNew="false"
+        form-view="localization-form" grid-view="localization-grid"/>
       <field name="templateEngineSelect"/>
       <field name="isJson" onChange="action-template-record-is-json-change"/>
       <panel itemSpan="12">
