@@ -63,6 +63,7 @@ public class BatchInvoicingProjectService extends BatchStrategy {
     Query<Project> projectQuery =
         projectRepo
             .all()
+            .order("id")
             .filter(
                 "self.isBusinessProject = true "
                     + "AND self.toInvoice = true AND "
