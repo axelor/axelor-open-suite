@@ -39,12 +39,12 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -103,7 +103,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected CommonInvoiceService commonInvoiceService;
   protected InvoiceLineOrderService invoiceLineOrderService;
   protected SaleInvoicingStateService saleInvoicingStateService;
-  protected CurrencyScaleServiceSale currencyScaleServiceSale;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -120,7 +120,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
-      CurrencyScaleServiceSale currencyScaleServiceSale) {
+      CurrencyScaleService currencyScaleService) {
 
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -135,7 +135,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.commonInvoiceService = commonInvoiceService;
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.saleInvoicingStateService = saleInvoicingStateService;
-    this.currencyScaleServiceSale = currencyScaleServiceSale;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -693,11 +693,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (saleAmount != null) {
       invoicedAmount =
-          currencyScaleServiceSale.getScaledValue(saleOrder, invoicedAmount.add(saleAmount));
+          currencyScaleService.getScaledValue(saleOrder, invoicedAmount.add(saleAmount));
     }
     if (refundAmount != null) {
       invoicedAmount =
-          currencyScaleServiceSale.getScaledValue(saleOrder, invoicedAmount.subtract(refundAmount));
+          currencyScaleService.getScaledValue(saleOrder, invoicedAmount.subtract(refundAmount));
     }
 
     if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())
@@ -705,8 +705,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       BigDecimal rate =
           invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
       invoicedAmount =
-          currencyScaleServiceSale.getScaledValue(
-              saleOrder, saleOrder.getExTaxTotal().multiply(rate));
+          currencyScaleService.getScaledValue(saleOrder, saleOrder.getExTaxTotal().multiply(rate));
     }
 
     log.debug(
