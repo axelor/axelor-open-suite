@@ -98,10 +98,6 @@
 	    ]]>
     </decimal>
 
-    <extra-imports>
-      import com.axelor.apps.base.db.Company;
-    </extra-imports>
-
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
       return invoice != null ? invoice.getCurrency() : null;

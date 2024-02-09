@@ -9,7 +9,6 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -31,7 +30,6 @@ public class BankReconciliationBalanceComputationServiceImpl
   protected CurrencyService currencyService;
   protected DateService dateService;
   protected BankReconciliationComputeService bankReconciliationComputeService;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
@@ -43,7 +41,6 @@ public class BankReconciliationBalanceComputationServiceImpl
       CurrencyService currencyService,
       DateService dateService,
       BankReconciliationComputeService bankReconciliationComputeService,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment,
       CurrencyScaleService currencyScaleService) {
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -52,7 +49,6 @@ public class BankReconciliationBalanceComputationServiceImpl
     this.currencyService = currencyService;
     this.dateService = dateService;
     this.bankReconciliationComputeService = bankReconciliationComputeService;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
     this.currencyScaleService = currencyScaleService;
   }
 
@@ -79,11 +75,11 @@ public class BankReconciliationBalanceComputationServiceImpl
             .fetch(limit, offset);
     if (bankReconciliations.size() != 0) {
       statementReconciledLineBalance =
-          currencyScaleServiceBankPayment.getScaledValue(
+          currencyScaleService.getScaledValue(
               bankReconciliation,
               statementReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance()));
       movesReconciledLineBalance =
-          currencyScaleServiceBankPayment.getScaledValue(
+          currencyScaleService.getScaledValue(
               bankReconciliation,
               movesReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance()));
     }
@@ -208,7 +204,7 @@ public class BankReconciliationBalanceComputationServiceImpl
       statementReconciledLineBalance = statementReconciledLineBalance.subtract(brl.getDebit());
       statementReconciledLineBalance = statementReconciledLineBalance.add(brl.getCredit());
     }
-    return currencyScaleServiceBankPayment.getScaledValue(brl, statementReconciledLineBalance);
+    return currencyScaleService.getScaledValue(brl, statementReconciledLineBalance);
   }
 
   protected BigDecimal computeStatementUnreconciledLineBalance(
@@ -217,7 +213,7 @@ public class BankReconciliationBalanceComputationServiceImpl
       statementUnreconciledLineBalance = statementUnreconciledLineBalance.subtract(brl.getDebit());
       statementUnreconciledLineBalance = statementUnreconciledLineBalance.add(brl.getCredit());
     }
-    return currencyScaleServiceBankPayment.getScaledValue(brl, statementUnreconciledLineBalance);
+    return currencyScaleService.getScaledValue(brl, statementUnreconciledLineBalance);
   }
 
   protected BigDecimal computeStatementOngoingReconciledLineBalance(
@@ -235,7 +231,7 @@ public class BankReconciliationBalanceComputationServiceImpl
             statementOngoingReconciledBalance.add(bankReconciliationLine.getCredit());
       }
     }
-    return currencyScaleServiceBankPayment.getScaledValue(brl, statementOngoingReconciledBalance);
+    return currencyScaleService.getScaledValue(brl, statementOngoingReconciledBalance);
   }
 
   protected BigDecimal computeMovesOngoingReconciledLineBalance(
@@ -254,7 +250,7 @@ public class BankReconciliationBalanceComputationServiceImpl
         }
       }
     }
-    return currencyScaleServiceBankPayment.getScaledValue(brl, movesOngoingReconciledBalance);
+    return currencyScaleService.getScaledValue(brl, movesOngoingReconciledBalance);
   }
 
   protected BigDecimal getConvertedAmount(BigDecimal value, BankReconciliation bankReconciliation)
