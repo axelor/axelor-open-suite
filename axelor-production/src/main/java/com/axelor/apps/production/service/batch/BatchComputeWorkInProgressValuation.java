@@ -42,12 +42,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BatchComputeWorkInProgressValuation extends AbstractBatch {
+public class BatchComputeWorkInProgressValuation extends BatchStrategy {
 
   protected CostSheetService costSheetService;
   protected ManufOrderRepository manufOrderRepository;
-
-  protected static final int FETCH_LIMIT = 1;
 
   @Inject
   public BatchComputeWorkInProgressValuation(
@@ -92,7 +90,7 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
     int offset = 0;
 
-    while (!(manufOrderList = manufOrderQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(manufOrderList = manufOrderQuery.order("id").fetch(getFetchLimit(), offset)).isEmpty()) {
 
       for (ManufOrder manufOrder : manufOrderList) {
         ++offset;
@@ -120,9 +118,5 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
     addComment(comment);
     super.stop();
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PRODUCTION_BATCH);
   }
 }
