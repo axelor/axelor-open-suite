@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,11 +37,13 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
   public Move save(Move move) {
     try {
       if (!CollectionUtils.isEmpty(move.getMoveLineList())
-          && move.getStatusSelect() != MoveRepository.STATUS_NEW
           && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
         MoveLineBudgetService moveLineBudgetService = Beans.get(MoveLineBudgetService.class);
+        moveLineBudgetService.manageMonoBudget(move);
+
         for (MoveLine moveLine : move.getMoveLineList()) {
           moveLineBudgetService.checkAmountForMoveLine(moveLine);
+          moveLineBudgetService.negateAmount(moveLine, move);
         }
       }
 

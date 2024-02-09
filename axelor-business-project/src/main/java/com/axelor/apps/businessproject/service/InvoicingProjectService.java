@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
@@ -39,6 +40,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -50,7 +52,7 @@ import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -69,7 +71,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.utils.file.PdfTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -84,7 +85,7 @@ import java.util.Map;
 
 public class InvoicingProjectService {
 
-  @Inject protected TimesheetService timesheetService;
+  @Inject protected TimesheetInvoiceService timesheetInvoiceService;
 
   @Inject protected ExpenseInvoiceLineService expenseInvoiceLineService;
 
@@ -97,6 +98,8 @@ public class InvoicingProjectService {
   @Inject protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
+
+  @Inject protected InvoiceLineService invoiceLineService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -206,7 +209,7 @@ public class InvoicingProjectService {
         this.createPurchaseOrderInvoiceLines(
             invoice, purchaseOrderLineList, folder.getPurchaseOrderLineSetPrioritySelect()));
     invoiceLineList.addAll(
-        timesheetService.createInvoiceLines(
+        timesheetInvoiceService.createInvoiceLines(
             invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
     invoiceLineList.addAll(
         expenseInvoiceLineService.createInvoiceLines(
@@ -220,6 +223,8 @@ public class InvoicingProjectService {
     for (InvoiceLine invoiceLine : invoiceLineList) {
       invoiceLine.setSequence(sequence);
       sequence++;
+
+      invoiceLineService.compute(invoice, invoiceLine);
     }
 
     return invoiceLineList;
@@ -535,7 +540,7 @@ public class InvoicingProjectService {
               .print(invoice, null, ReportSettings.FORMAT_PDF, null));
       fileList.add(reportSettings.generate().getFile());
 
-      MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));
+      MetaFile metaFile = metaFiles.upload(PdfHelper.mergePdf(fileList));
       metaFile.setFileName(title + ".pdf");
       metaFiles.attach(metaFile, null, invoicingProject);
       return;

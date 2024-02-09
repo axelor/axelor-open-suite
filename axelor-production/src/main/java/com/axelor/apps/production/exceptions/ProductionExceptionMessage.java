@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -204,8 +204,11 @@ public final class ProductionExceptionMessage {
   public static final String UNIT_COST_CALCULATION_IMPORT_CSV_ERROR = /*$$(*/
       "Uploaded file is not a CSV file" /*)*/;
 
-  public static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
+  public static final String UNIT_COST_CALCULATION_CHOOSE_FILTERS = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  public static final String UNIT_COST_CALCULATION_NO_PRODUCT_FOUND = /*$$(*/
+      "No product has been found with these filters. Please check your filters" /*)*/;
 
   public static final String NO_PRODUCT_SELECTED = /*$$(*/
       "Please select at least one product in the list." /*)*/;
@@ -334,4 +337,19 @@ public final class ProductionExceptionMessage {
   public static final String
       LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
           "The last operation order planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
+
+  public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
+      "There is no applicable bill of materials for %s" /*)*/;
+
+  public static final String NO_COMPANY_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM." /*)*/;
+
+  public static final String LOOP_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The system found a loop in your bill of materials, please correct concerned data" /*)*/;
+
+  public static final String BOM_IMPORT_PARENTS_NOT_DONE_PROPERLY = /*$$(*/
+      "Parents are not set properly in input file." /*)*/;
+
+  public static final String BOM_IMPORT_NO_MAIN_BILL_OF_MATERIALS_GENERATED = /*$$(*/
+      "Could not find main bill of materials generated (BoM level 0)." /*)*/;
 }

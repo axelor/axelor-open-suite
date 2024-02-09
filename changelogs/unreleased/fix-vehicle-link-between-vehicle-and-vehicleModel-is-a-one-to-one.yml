@@ -1,3 +1,0 @@
----
-title: "Vehicle: link between Vehicle and VehicleModel is a one-to-one change it to many-to-one"
-type: fix

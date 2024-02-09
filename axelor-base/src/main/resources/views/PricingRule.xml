@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid model="com.axelor.apps.base.db.PricingRule" title="Pricing rules"
     name="pricing-rule-grid" groupBy="concernedModel,typeSelect" orderBy="name">
@@ -18,9 +18,8 @@
     onLoad="action-pricing-rule-attrs-display-meta-json-field">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="concernedModel"
-        onChange="action-pricing-rule-attrs-field-to-populate-clear"
-        domain="self.name = 'SaleOrderLine'"/>
+      <field name="concernedModel" domain="self.name != 'Pricing'"
+        onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
       <field name="company"/>
       <field name="typeSelect" onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
       <field name="fieldTypeSelect" showIf="typeSelect == 1"/>

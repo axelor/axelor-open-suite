@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,10 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLineService {
 
@@ -54,9 +56,12 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
   public SaleOrder updateLines(SaleOrder saleOrder) {
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
       orderLine.setProject(saleOrder.getProject());
-      for (AnalyticMoveLine analyticMoveLine : orderLine.getAnalyticMoveLineList()) {
-        analyticMoveLine.setProject(saleOrder.getProject());
-        analyticMoveLineRepository.save(analyticMoveLine);
+      List<AnalyticMoveLine> analyticMoveLines = orderLine.getAnalyticMoveLineList();
+      if (ObjectUtils.notEmpty(analyticMoveLines)) {
+        for (AnalyticMoveLine analyticMoveLine : analyticMoveLines) {
+          analyticMoveLine.setProject(saleOrder.getProject());
+          analyticMoveLineRepository.save(analyticMoveLine);
+        }
       }
     }
     return saleOrder;

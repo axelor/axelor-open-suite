@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,9 +25,9 @@ import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.FindFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -50,10 +50,10 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected AppBaseService appBaseService;
-  protected FixedAssetLineService fixedAssetLineService;
   protected FixedAssetLineRepository fixedAssetLineRepo;
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepo;
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
+  protected FindFixedAssetService findFixedAssetService;
   protected static final int DEROGATORY_TYPE_SELECT = 99;
 
   protected final Set<FixedAsset> fixedAssetSet = new HashSet<>();
@@ -63,16 +63,16 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
   public BatchRealizeFixedAssetLine(
       FixedAssetLineMoveService fixedAssetLineMoveService,
       AppBaseService appBaseService,
-      FixedAssetLineService fixedAssetLineService,
       FixedAssetLineRepository fixedAssetLineRepo,
       FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepo,
-      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService) {
+      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
+      FindFixedAssetService findFixedAssetService) {
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.appBaseService = appBaseService;
-    this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.fixedAssetDerogatoryLineRepo = fixedAssetDerogatoryLineRepo;
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
+    this.findFixedAssetService = findFixedAssetService;
   }
 
   @Override
@@ -119,7 +119,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
-        FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+        FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
         if (fixedAsset != null
             && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
           fixedAssetSet.add(fixedAsset);

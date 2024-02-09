@@ -1,3 +1,0 @@
----
-title: "[SOP/MPS] : Fixed a bug where a existing Forecast was modified instead of creating a new one when on different date"
-type: fix

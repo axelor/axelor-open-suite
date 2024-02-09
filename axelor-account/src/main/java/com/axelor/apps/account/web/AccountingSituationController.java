@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -125,7 +125,7 @@ public class AccountingSituationController {
     try {
       AccountingSituation accountingSituation =
           request.getContext().asType(AccountingSituation.class);
-      Partner partner = ContextTool.getContextParent(request.getContext(), Partner.class, 1);
+      Partner partner = ContextHelper.getContextParent(request.getContext(), Partner.class, 1);
       Beans.get(AccountingSituationService.class).setHoldBackAccounts(accountingSituation, partner);
       response.setValues(accountingSituation);
     } catch (Exception e) {

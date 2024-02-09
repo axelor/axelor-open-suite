@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
-import com.axelor.utils.MetaTool;
+import com.axelor.utils.helpers.MetaHelper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -148,7 +148,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
         return new AbstractMap.SimpleEntry<>(nameField, object.toString());
       }
 
-      String wantedType = MetaTool.jsonTypeToType(metaJsonField.getType());
+      String wantedType = MetaHelper.jsonTypeToType(metaJsonField.getType());
       // Case of many to one object
       if ("ManyToOne".equals(wantedType) || "Custom-ManyToOne".equals(wantedType)) {
         if (object instanceof Map) {

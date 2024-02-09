@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -81,6 +81,7 @@ public class AnalyticDistributionLineController {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
         response.setValue("analyticJournal", analyticMoveLineService.getAnalyticJournal(parent));
         response.setValue("date", analyticMoveLineService.getDate(parent));
+        response.setValue("currency", analyticMoveLineService.getCompanyCurrency(parent));
       }
 
     } catch (Exception e) {
@@ -116,7 +117,7 @@ public class AnalyticDistributionLineController {
       company = analyticDistributionTemplate.getCompany();
     } else {
       company =
-          ContextTool.getFieldFromContextParent(request.getContext(), "company", Company.class);
+          ContextHelper.getFieldFromContextParent(request.getContext(), "company", Company.class);
     }
     if (company != null) {
       response.setAttr(

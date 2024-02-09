@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -75,11 +76,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected DateService dateService;
 
   protected FixedAssetLineService fixedAssetLineService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final int CALCULATION_SCALE = 20;
-  protected static final int RETURNED_SCALE = 2;
 
   @Inject
   public FixedAssetServiceImpl(
@@ -93,7 +94,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetGenerationService fixedAssetGenerationService,
       FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetDateService fixedAssetDateService,
-      DateService dateService) {
+      DateService dateService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -105,6 +107,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.dateService = dateService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -361,27 +364,23 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     if (fixedAsset.getGrossValue() != null) {
       fixedAsset.setGrossValue(
-          prorata
-              .multiply(fixedAsset.getGrossValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getGrossValue())));
     }
     if (fixedAsset.getResidualValue() != null) {
       fixedAsset.setResidualValue(
-          prorata
-              .multiply(fixedAsset.getResidualValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getResidualValue())));
     }
     if (fixedAsset.getAccountingValue() != null) {
       fixedAsset.setAccountingValue(
-          prorata
-              .multiply(fixedAsset.getAccountingValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getAccountingValue())));
     }
     if (fixedAsset.getCorrectedAccountingValue() != null) {
       fixedAsset.setCorrectedAccountingValue(
-          prorata
-              .multiply(fixedAsset.getCorrectedAccountingValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getCorrectedAccountingValue())));
     }
   }
 
@@ -536,7 +535,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               transferredReason,
               createdFixedAsset.getComments());
       filterListsByDates(createdFixedAsset, disposalDate);
-    } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
+    } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION
+        || transferredReason == FixedAssetRepository.TRANSFERED_REASON_SCRAPPING) {
       depreciationFixedAssetLine =
           computeCession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
       filterListsByDates(fixedAsset, disposalDate);

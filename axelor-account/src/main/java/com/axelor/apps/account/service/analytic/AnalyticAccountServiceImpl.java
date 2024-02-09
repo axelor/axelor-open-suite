@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -116,7 +116,9 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       domain =
           "(self.company is null OR self.company.id = "
               + company.getId()
-              + ") AND self.analyticAxis.id ";
+              + ") AND "
+              + this.getIsNotParentAnalyticAccountQuery()
+              + " AND self.analyticAxis.id ";
       if (analyticAxis != null) {
         domain += "= " + analyticAxis.getId();
       } else {
@@ -125,9 +127,9 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
             accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList();
         if (ObjectUtils.notEmpty(analyticAxisByCompanyList)) {
           analyticAxisIdList =
-              StringTool.getIdListString(
+              StringHelper.getIdListString(
                   analyticAxisByCompanyList.stream()
-                      .map(it -> it.getAnalyticAxis())
+                      .map(AnalyticAxisByCompany::getAnalyticAxis)
                       .collect(Collectors.toList()));
         }
 
@@ -143,5 +145,10 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
     }
 
     return domain;
+  }
+
+  @Override
+  public String getIsNotParentAnalyticAccountQuery() {
+    return "NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id)";
   }
 }

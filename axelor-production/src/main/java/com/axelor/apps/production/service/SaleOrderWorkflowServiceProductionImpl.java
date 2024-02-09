@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,10 +34,10 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,7 +63,7 @@ public class SaleOrderWorkflowServiceProductionImpl
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
-      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService,
+      AnalyticToolSupplychainService analyticToolSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
       BirtTemplateService birtTemplateService,
@@ -82,7 +82,7 @@ public class SaleOrderWorkflowServiceProductionImpl
         accountingSituationSupplychainService,
         partnerSupplychainService,
         saleConfigService,
-        saleOrderCheckAnalyticService,
+        analyticToolSupplychainService,
         birtTemplateService,
         saleOrderService);
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;

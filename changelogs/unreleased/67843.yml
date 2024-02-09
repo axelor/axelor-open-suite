@@ -1,5 +1,0 @@
----
-title: "SaleOrder : Multi-level sale order lines"
-type: feature
-description: |
-  Enhance the functionality of the sale order line by introducing sub-components. These sub-components will be organized in a tree view, allowing users to effortlessly manage them.   Users can easily delete existing sub-components or add new sub-elements to them as needed.

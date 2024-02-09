@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -173,8 +173,8 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
    * *****************************************
    */
   /**
-   * solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai
-   * d’acheminement(X) » <« date du jour » si la date de facture = date d'échéance de facture, sinon
+   * solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai
+   * d’acheminement(X)» + « date du jour » si la date de facture = date d'échéance de facture, sinon
    * pas de prise en compte du délai d'acheminement **
    */
   /**
@@ -199,7 +199,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
       mailTransitTime = accountConfig.getMailTransitTime();
     }
 
-    // TODO: Replace native query to standard JPQL query
+    // TODO: Replace native query to standard JPQL query
     Query query =
         JPA.em()
             .createNativeQuery(

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -167,9 +167,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         for (Reconcile reconcile : reconcileList) {
           reconcileService.unreconcile(reconcile);
         }
+      } else {
+        cancelInvoicePayment(move);
       }
-
-      cancelInvoicePayment(move);
 
       if (validatedMove && isAutomaticReconcile) {
         if (isDebit) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,12 +29,13 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
+import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,17 +44,17 @@ import java.util.Map;
 public class ContractLineController {
 
   protected Contract getContractFromContext(ActionRequest request) {
-    Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
+    Contract contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 2);
 
-    if (ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1) == null) {
-      contract = ContextTool.getContextParent(request.getContext(), Contract.class, 1);
+    if (ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1) == null) {
+      contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 1);
     }
 
     return contract;
   }
 
   protected ContractVersion getContractVersionFromContext(ActionRequest request) {
-    return ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
+    return ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1);
   }
 
   public void computeTotal(ActionRequest request, ActionResponse response) {
@@ -61,7 +62,8 @@ public class ContractLineController {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
 
     try {
-      contractLine = contractLineService.computeTotal(contractLine);
+      Contract contract = this.getContractFromContext(request);
+      contractLine = contractLineService.computeTotal(contractLine, contract);
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
@@ -226,5 +228,16 @@ public class ContractLineController {
         "isToRevaluate",
         "hidden",
         Beans.get(ContractLineViewService.class).hideIsToRevaluate(contract, contractVersion));
+  }
+
+  public void setScaleAndPrecision(ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+
+    if (contractLine != null) {
+      Contract contract = this.getContractFromContext(request);
+
+      response.setAttrs(
+          Beans.get(ContractLineAttrsService.class).setScaleAndPrecision(contract, ""));
+    }
   }
 }

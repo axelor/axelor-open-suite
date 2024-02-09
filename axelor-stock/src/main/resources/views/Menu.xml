@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <menuitem name="stock-root" title="Stock management" order="-700"
     if="__config__.app.isApp('stock')" icon="fa-cubes" icon-background="#b6473f"/>
@@ -190,7 +190,7 @@
     icon="fa-cog"/>
 
   <menuitem name="stock-root-incoterm" parent="stock-root-conf" title="Incoterms"
-    action="stock.root.incoterm" order="100"/>
+    action="stock.root.incoterm" order="100" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
 
   <action-view name="stock.root.incoterm" title="Incoterms"
     model="com.axelor.apps.stock.db.Incoterm">

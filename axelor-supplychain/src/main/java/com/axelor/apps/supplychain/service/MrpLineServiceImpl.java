@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,6 +62,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
@@ -439,5 +440,15 @@ public class MrpLineServiceImpl implements MrpLineService {
       mrpLine.setProposalToProcess(proposalToProcess);
       mrpLineRepo.save(mrpLine);
     }
+  }
+
+  @Override
+  public List<MrpLine> getMrpLineListCopy(List<MrpLine> mrpLineList) {
+    List<MrpLine> copyMrpLineList = new ArrayList<>();
+    for (MrpLine mrpLine : mrpLineList) {
+      copyMrpLineList.add(mrpLineRepo.copy(mrpLine, true));
+    }
+
+    return copyMrpLineList;
   }
 }

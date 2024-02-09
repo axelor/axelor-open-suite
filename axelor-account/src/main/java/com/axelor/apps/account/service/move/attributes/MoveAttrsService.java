@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,9 +31,6 @@ public interface MoveAttrsService {
   void addFunctionalOriginSelectDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
-
-  void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException;
 
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
@@ -69,4 +66,8 @@ public interface MoveAttrsService {
   void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addMainPanelTabHiddenValue(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addThirdPartyPayerPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 }

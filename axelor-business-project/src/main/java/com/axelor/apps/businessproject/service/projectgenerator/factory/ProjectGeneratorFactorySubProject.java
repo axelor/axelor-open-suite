@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
@@ -112,6 +112,6 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
         .add("grid", "project-grid")
         .add("form", "project-form")
         .param("search-filters", "project-filters")
-        .domain(String.format("self.id in (%s)", StringTool.getIdListString(projects)));
+        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(projects)));
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,39 +22,128 @@ import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.asse
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAsset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAssetCategoryFromIsProrataTemporis;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAssetLine;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 
-public class TestFixedAssetLineComputationService {
+class TestFixedAssetLineComputationService {
 
-  protected FixedAssetLineComputationService fixedAssetLineComputationService;
-  protected FixedAssetDateService fixedAssetDateService;
-  protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
-  protected AppBaseService appBaseService;
+  private static FixedAssetLineComputationService fixedAssetLineComputationService;
+  private static FixedAssetDateService fixedAssetDateService;
 
-  @Before
-  public void prepare() {
+  @BeforeAll
+  static void prepare() throws AxelorException {
     fixedAssetDateService = mock(FixedAssetDateService.class);
-    appBaseService = mock(AppBaseService.class);
-    fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
+    AppBaseService appBaseService = mock(AppBaseService.class);
+    FixedAssetFailOverControlService fixedAssetFailOverControlService =
+        mock(FixedAssetFailOverControlService.class);
+    CurrencyScaleServiceAccount currencyScaleServiceAccount =
+        mock(CurrencyScaleServiceAccount.class);
+    when(currencyScaleServiceAccount.getCompanyScaledValue(any(FixedAsset.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[1]).setScale(2, RoundingMode.HALF_UP));
+    when(currencyScaleServiceAccount.getCompanyScaledValue(any(FixedAssetLine.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[1]).setScale(2, RoundingMode.HALF_UP));
+    when(currencyScaleServiceAccount.getCompanyScale(any(FixedAsset.class))).thenReturn(2);
+
+    FixedAssetLineToolService fixedAssetLineToolService = mock(FixedAssetLineToolService.class);
+    when(fixedAssetLineToolService.getCompanyScaledValue(
+            any(),
+            any(),
+            any(FixedAsset.class),
+            any(FixedAssetLineToolService.ArithmeticOperation.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAsset) invocation.getArguments()[2]),
+                        ((FixedAssetLineToolService.ArithmeticOperation)
+                                invocation.getArguments()[3])
+                            .operate(
+                                ((BigDecimal) invocation.getArguments()[0]),
+                                ((BigDecimal) invocation.getArguments()[1]))));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAsset.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAsset) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[0])));
+    when(fixedAssetLineToolService.getCompanyDivideScaledValue(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[0])
+                        .divide(
+                            ((BigDecimal) invocation.getArguments()[1]),
+                            currencyScaleServiceAccount.getCompanyScale(
+                                ((FixedAsset) invocation.getArguments()[2])),
+                            RoundingMode.HALF_UP));
+    when(fixedAssetLineToolService.getCompanyScaledValue(
+            any(),
+            any(),
+            any(FixedAssetLine.class),
+            any(FixedAssetLineToolService.ArithmeticOperation.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAssetLine) invocation.getArguments()[2]),
+                        ((FixedAssetLineToolService.ArithmeticOperation)
+                                invocation.getArguments()[3])
+                            .operate(
+                                ((BigDecimal) invocation.getArguments()[0]),
+                                ((BigDecimal) invocation.getArguments()[1]))));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAssetLine.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAssetLine) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[0])));
+    when(fixedAssetLineToolService.isGreaterThan(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<Boolean>)
+                invocation ->
+                    invocation.getArguments()[0] != null
+                        && (((BigDecimal) invocation.getArguments()[0])
+                                .compareTo(((BigDecimal) invocation.getArguments()[1]))
+                            > 0));
+    when(fixedAssetLineToolService.equals(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<Boolean>)
+                invocation ->
+                    Objects.equals(invocation.getArguments()[0], invocation.getArguments()[1]));
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
+            fixedAssetDateService,
+            fixedAssetFailOverControlService,
+            appBaseService,
+            fixedAssetLineToolService);
   }
 
   @Test
-  public void testComputeInitialPlannedFixedAssetLineWithoutProrata() throws AxelorException {
+  void testComputeInitialPlannedFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -81,7 +170,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeInitialPlannedFixedAssetLineWithProrata() throws AxelorException {
+  void testComputeInitialPlannedFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -108,7 +197,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputePlannedFixedAssetLineWithoutProrata() throws AxelorException {
+  void testComputePlannedFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -141,7 +230,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputePlannedFixedAssetLineWithProrata() throws AxelorException {
+  void testComputePlannedFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -173,7 +262,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithoutProrata() throws AxelorException {
+  void testComputeLastFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -205,7 +294,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithProrata() throws AxelorException {
+  void testComputeLastFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -237,7 +326,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithUsProrata() throws AxelorException {
+  void testComputeLastFixedAssetLineWithUsProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -269,7 +358,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeFirstDegressiveAssetLine() throws AxelorException {
+  void testComputeFirstDegressiveAssetLine() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
@@ -297,7 +386,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeOngoingDegressiveAssetLine() throws AxelorException {
+  void testComputeOngoingDegressiveAssetLine() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
@@ -331,7 +420,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeOngoingDegressiveAssetLineSwitchToLinear() throws AxelorException {
+  void testComputeOngoingDegressiveAssetLineSwitchToLinear() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
