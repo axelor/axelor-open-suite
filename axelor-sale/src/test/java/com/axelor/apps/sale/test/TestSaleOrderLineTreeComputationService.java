@@ -45,7 +45,7 @@ class TestSaleOrderLineTreeComputationService extends BaseTest {
             .fetchOne();
     saleOrderLineTreeComputationService.computePrices(saleOrderLine);
     Assertions.assertEquals(
-        new BigDecimal(720).setScale(2, RoundingMode.HALF_UP), saleOrderLine.getPrice());
+        new BigDecimal(720).setScale(3, RoundingMode.HALF_UP), saleOrderLine.getPrice());
   }
 
   @Test
@@ -59,7 +59,7 @@ class TestSaleOrderLineTreeComputationService extends BaseTest {
     saleOrderLineTreeComputationService.computePrices(saleOrderLine);
     saleOrderLineTreeComputationService.computeSubTotalCostPrice(saleOrderLine);
     Assertions.assertEquals(
-        new BigDecimal(648).setScale(2, RoundingMode.HALF_UP),
+        new BigDecimal(648).setScale(3, RoundingMode.HALF_UP),
         saleOrderLine.getSubTotalCostPrice());
     Assertions.assertEquals(
         new BigDecimal(864).setScale(2, RoundingMode.HALF_UP), saleOrderLine.getInTaxPrice());
