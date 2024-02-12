@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="control-plan-line-grid" title="Control plan lines"
     model="com.axelor.apps.quality.db.ControlEntryPlanLine" canEdit="false">
+    <field name="name"/>
     <field name="priority"/>
     <field name="reference"/>
     <field name="typeSelect"/>
@@ -20,7 +21,7 @@
       <field name="priority" colSpan="3"/>
       <field name="controlType" colSpan="3" required="true"/>
       <field name="characteristic" colSpan="6"/>
-      <field name="name" colSpan="6"/>
+      <field name="name" required="true" colSpan="6"/>
       <field name="machineType" colSpan="6"/>
       <field name="isCustomFrequency" colSpan="3"/>
       <field name="controlPlanFrequency" colSpan="9" showIf="isCustomFrequency"/>
@@ -46,10 +47,10 @@
       <field name="controlPlanLine" colSpan="6" form-view="control-plan-line-form"
         grid-view="control-plan-line-grid"
         domain="self.typeSelect = 1 AND self.controlPlan = :controlPlanParent"
-        onChange="action-quality-control-entry-line-copy-record" required="true"/>
+        onChange="action-quality-control-entry-line-copy-record" required="true" readonly="true"/>
       <field name="controlPlanLine.characteristic" colSpan="6"/>
       <field name="controlType" readonly="true"/>
-      <field name="resultSelect" colSpan="6"/>
+      <field name="resultSelect" colSpan="6" readonly="true"/>
       <field name="controlEntrySample" colSpan="6" readonly="true"/>
       <field name="$controlPlanParent" type="many-to-one"
         target="com.axelor.apps.quality.db.ControlPlan" hidden="true"/>
@@ -63,7 +64,7 @@
       <field name="entryAttrs"/>
 
       <button name="checkConformityBtn" title="Check conformity"
-        onClick="action-quality-control-entry-line-method-control-conformity"/>
+        onClick="save,action-quality-control-entry-line-method-control-conformity"/>
     </panel>
 
   </form>

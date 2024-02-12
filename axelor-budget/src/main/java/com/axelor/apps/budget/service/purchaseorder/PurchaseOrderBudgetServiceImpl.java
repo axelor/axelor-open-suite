@@ -40,6 +40,7 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -221,12 +223,14 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       throws AxelorException {
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
-        Product product = poLine.getProduct();
-        if (product != null || poLine.getProductName() != null) {
+        String productCode =
+            Optional.of(poLine)
+                .map(PurchaseOrderLine::getProduct)
+                .map(Product::getCode)
+                .orElse(poLine.getProductName());
+        if (StringUtils.notEmpty(productCode)) {
           budgetService.validateBudgetDistributionAmounts(
-              poLine.getBudgetDistributionList(),
-              poLine.getCompanyExTaxTotal(),
-              product != null ? product.getCode() : poLine.getProductName());
+              poLine.getBudgetDistributionList(), poLine.getCompanyExTaxTotal(), productCode);
         }
       }
     }
