@@ -107,10 +107,6 @@
     <boolean name="pfpfPartialValidationOk"/>
     <decimal name="pfpPartialValidationAmount" scale="3" precision="20"/>
 
-    <extra-imports>
-      import com.axelor.apps.base.db.Company;
-    </extra-imports>
-
     <many-to-one name="companyCurrency" transient="true"
       ref="com.axelor.apps.base.db.Currency">
       <![CDATA[

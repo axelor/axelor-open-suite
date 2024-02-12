@@ -59,10 +59,6 @@
       ref="com.axelor.apps.account.db.InvoiceTermPayment" mappedBy="invoicePayment"
       title="Invoice term payments"/>
 
-    <extra-imports>
-      import com.axelor.apps.base.db.Company;
-    </extra-imports>
-
     <many-to-one name="companyCurrency" transient="true"
       ref="com.axelor.apps.base.db.Currency">
       <![CDATA[

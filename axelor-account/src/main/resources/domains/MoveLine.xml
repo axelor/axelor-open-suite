@@ -200,10 +200,6 @@
       precision="20"/>
     <string name="durationCutOffProrata" title="Prorata duration"/>
 
-    <extra-imports>
-      import com.axelor.apps.base.db.Company;
-    </extra-imports>
-
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
       return move != null ? move.getCurrency() : null;
