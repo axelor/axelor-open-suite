@@ -27,7 +27,6 @@ public class BudgetManagementRepository extends BudgetRepository {
 
   @Override
   public Budget save(Budget entity) {
-
     entity.setAvailableAmount(
         (entity
                 .getTotalAmountExpected()
