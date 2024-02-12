@@ -19,6 +19,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected InvoiceTermRecordService invoiceTermRecordService;
 
   @Inject
   public InvoiceTermGroupServiceImpl(
@@ -26,12 +27,14 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
       InvoiceTermAttrsService invoiceTermAttrsService,
       InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      InvoiceTermRecordService invoiceTermRecordService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermAttrsService = invoiceTermAttrsService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.invoiceTermRecordService = invoiceTermRecordService;
   }
 
   @Override
@@ -98,13 +101,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     valuesMap.put("companyAmount", invoiceTerm.getCompanyAmount());
     valuesMap.put("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
     putFinancialDiscountFields(invoiceTerm, valuesMap);
-    valuesMap.put(
-        "isCustomized",
-        invoiceTerm.getPaymentConditionLine() == null
-            || invoiceTerm
-                    .getPercentage()
-                    .compareTo(invoiceTerm.getPaymentConditionLine().getPaymentPercentage())
-                != 0);
+    valuesMap.put("isCustomized", invoiceTermRecordService.computeIsCustomized(invoiceTerm));
 
     return valuesMap;
   }
@@ -121,13 +118,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     valuesMap.put("companyAmount", invoiceTerm.getCompanyAmount());
     valuesMap.put("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
     putFinancialDiscountFields(invoiceTerm, valuesMap);
-    valuesMap.put(
-        "isCustomized",
-        invoiceTerm.getPaymentConditionLine() == null
-            || invoiceTerm
-                    .getPercentage()
-                    .compareTo(invoiceTerm.getPaymentConditionLine().getPaymentPercentage())
-                != 0);
+    valuesMap.put("isCustomized", invoiceTermRecordService.computeIsCustomized(invoiceTerm));
 
     return valuesMap;
   }
@@ -156,11 +147,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     if (invoiceTerm.getPfpValidatorUser() != null) {
       valuesMap.put(
           "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
-          invoiceTerm
-              .getPfpValidatorUser()
-              .equals(
-                  invoiceTermService.getPfpValidatorUser(
-                      invoiceTerm.getPartner(), invoiceTerm.getCompany())));
+          invoiceTermService.checkPfpValidatorUser(invoiceTerm));
     }
 
     valuesMap.put(
@@ -180,11 +167,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
 
     valuesMap.put(
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
-        invoiceTerm
-            .getPfpValidatorUser()
-            .equals(
-                invoiceTermService.getPfpValidatorUser(
-                    invoiceTerm.getPartner(), invoiceTerm.getCompany())));
+        invoiceTermService.checkPfpValidatorUser(invoiceTerm));
 
     return valuesMap;
   }

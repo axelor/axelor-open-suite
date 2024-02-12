@@ -121,12 +121,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       return true;
     }
     return validateUser(invoiceTerm, currentUser)
-        && (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
-            && invoiceTerm
-                .getPfpValidatorUser()
-                .equals(
-                    invoiceTermService.getPfpValidatorUser(
-                        invoiceTerm.getPartner(), invoiceTerm.getCompany())))
+        && invoiceTermService.checkPfpValidatorUser(invoiceTerm)
         && !invoiceTerm.getIsPaid();
   }
 

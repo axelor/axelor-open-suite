@@ -270,6 +270,8 @@ public interface InvoiceTermService {
 
   public User getPfpValidatorUser(Partner partner, Company company);
 
+  boolean checkPfpValidatorUser(InvoiceTerm invoiceTerm);
+
   public String getPfpValidatorUserDomain(Partner partner, Company company);
 
   public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine);

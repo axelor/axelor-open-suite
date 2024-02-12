@@ -1439,6 +1439,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  public boolean checkPfpValidatorUser(InvoiceTerm invoiceTerm) {
+    return invoiceTerm != null
+        && invoiceTerm.getPfpValidatorUser() != null
+        && Objects.equals(
+            invoiceTerm.getPfpValidatorUser(),
+            this.getPfpValidatorUser(invoiceTerm.getPartner(), invoiceTerm.getCompany()));
+  }
+
+  @Override
   public String getPfpValidatorUserDomain(Partner partner, Company company) {
     List<User> pfpValidatorUserList = userRepo.all().filter("self.isPfpValidator IS TRUE").fetch();
 
@@ -1726,16 +1735,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     if (invoice != null) {
-      return new ArrayList<>(
-              Arrays.asList(InvoiceRepository.STATUS_VENTILATED, InvoiceRepository.STATUS_CANCELED))
+      return Arrays.asList(InvoiceRepository.STATUS_VENTILATED, InvoiceRepository.STATUS_CANCELED)
           .contains(invoice.getStatusSelect());
     }
     if (moveLine != null && moveLine.getMove() != null) {
-      return new ArrayList<>(
-              Arrays.asList(
-                  MoveRepository.STATUS_DAYBOOK,
-                  MoveRepository.STATUS_ACCOUNTED,
-                  MoveRepository.STATUS_CANCELED))
+      return Arrays.asList(
+              MoveRepository.STATUS_DAYBOOK,
+              MoveRepository.STATUS_ACCOUNTED,
+              MoveRepository.STATUS_CANCELED)
           .contains(moveLine.getMove().getStatusSelect());
     }
     return false;
@@ -1763,15 +1770,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm) {
     Move move =
         Optional.of(invoiceTerm).map(InvoiceTerm::getMoveLine).map(MoveLine::getMove).orElse(null);
-    if (move != null) {
-      return DMSFileRepo.all()
-          .filter(
-              String.format(
-                  "self.isDirectory = false AND self.relatedId = %d AND self.relatedModel = 'com.axelor.apps.account.db.Move'",
-                  move.getId()))
-          .fetch();
+    if (move == null) {
+      return new ArrayList<>();
     }
-    return new ArrayList<>();
+    return DMSFileRepo.all()
+        .filter(
+            String.format(
+                "self.isDirectory = false AND self.relatedId = %d AND self.relatedModel = '%s'",
+                move.getId(), Move.class.getName()))
+        .fetch();
   }
 
   @Override

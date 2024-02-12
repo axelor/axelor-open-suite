@@ -8,22 +8,25 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public class InvoiceTermAttrsServiceImpl implements InvoiceTermAttrsService {
 
   protected InvoiceTermService invoiceTermService;
+  protected MoveToolService moveToolService;
 
   @Inject
-  public void InvoiceTermAttrsServiceImpl(InvoiceTermService invoiceTermService) {
+  public void InvoiceTermAttrsServiceImpl(
+      InvoiceTermService invoiceTermService, MoveToolService moveToolService) {
     this.invoiceTermService = invoiceTermService;
+    this.moveToolService = moveToolService;
   }
 
   protected void addAttr(
@@ -48,21 +51,17 @@ public class InvoiceTermAttrsServiceImpl implements InvoiceTermAttrsService {
     if (invoiceTerm.getInvoice() != null) {
       Invoice invoice = invoiceTerm.getInvoice();
       return invoiceTerm.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_NO_PFP
-          || !(new ArrayList<>(
-                  Arrays.asList(
-                      InvoiceRepository.STATUS_VALIDATED,
-                      InvoiceRepository.STATUS_VENTILATED,
-                      InvoiceRepository.STATUS_CANCELED))
+          || !(Arrays.asList(
+                  InvoiceRepository.STATUS_VALIDATED,
+                  InvoiceRepository.STATUS_VENTILATED,
+                  InvoiceRepository.STATUS_CANCELED)
               .contains(invoice.getStatusSelect()))
           || (invoice.getOriginDate() == null
-              && new ArrayList<>(
-                      Arrays.asList(
-                          InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
-                          InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND))
+              && Arrays.asList(
+                      InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+                      InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
                   .contains(invoice.getOperationTypeSelect())
-              && (new ArrayList<>(
-                          Arrays.asList(
-                              InvoiceRepository.STATUS_DRAFT, InvoiceRepository.STATUS_VALIDATED))
+              && (Arrays.asList(InvoiceRepository.STATUS_DRAFT, InvoiceRepository.STATUS_VALIDATED)
                       .contains(invoice.getStatusSelect())
                   || invoice.getOperationSubTypeSelect()
                       == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE));
@@ -71,11 +70,10 @@ public class InvoiceTermAttrsServiceImpl implements InvoiceTermAttrsService {
         Optional.of(invoiceTerm).map(InvoiceTerm::getMoveLine).map(MoveLine::getMove).orElse(null);
     if (move != null) {
       return invoiceTerm.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_NO_PFP
-          || !(new ArrayList<>(
-                  Arrays.asList(
-                      MoveRepository.STATUS_DAYBOOK,
-                      MoveRepository.STATUS_ACCOUNTED,
-                      MoveRepository.STATUS_CANCELED))
+          || !(Arrays.asList(
+                  MoveRepository.STATUS_DAYBOOK,
+                  MoveRepository.STATUS_ACCOUNTED,
+                  MoveRepository.STATUS_CANCELED)
               .contains(move.getStatusSelect()));
     }
     return true;
@@ -91,12 +89,8 @@ public class InvoiceTermAttrsServiceImpl implements InvoiceTermAttrsService {
             .map(MoveLine::getMove)
             .orElse(null);
 
-    if (invoice != null
-            && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
-        || (invoice == null
-            && move != null
-            && move.getCompany() != null
-            && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency()))) {
+    if (InvoiceToolService.isMultiCurrency(invoice)
+        || (invoice == null && moveToolService.isMultiCurrency(move))) {
 
       this.addAttr("amount", "title", I18n.get("Amount in currency"), attrsMap);
       this.addAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"), attrsMap);
