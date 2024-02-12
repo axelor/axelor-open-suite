@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
@@ -55,18 +56,18 @@ public class StockMoveLineController {
 
     BigDecimal qty = BigDecimal.ZERO;
     int scale = appBaseService.getNbDecimalDigitForQty();
-
+    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
     if (moveLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (StockMoveLine line : moveLines) {
           qty = (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP)).multiply(newKitQty);
           line.setQty(qty.setScale(scale, RoundingMode.HALF_UP));
-          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
+          stockMoveLineService.fillRealQuantities(line, line.getStockMove(), line.getQty());
         }
       } else {
         for (StockMoveLine line : moveLines) {
           line.setQty(qty.setScale(scale, RoundingMode.HALF_UP));
-          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
+          stockMoveLineService.fillRealQuantities(line, line.getStockMove(), line.getQty());
         }
       }
     }
@@ -224,8 +225,7 @@ public class StockMoveLineController {
 
       if (!context.containsKey("_ids")) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       }
 
       List<Long> ids =
@@ -239,8 +239,7 @@ public class StockMoveLineController {
 
       if (CollectionUtils.isEmpty(ids)) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       } else {
         Batch batch = Beans.get(StockMoveLineServiceSupplychain.class).validateCutOffBatch(ids, id);
         response.setInfo(batch.getComments());

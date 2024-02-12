@@ -21,16 +21,10 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.WorkCenterGroup;
-import com.axelor.apps.production.db.repo.ConfiguratorProdProcessLineRepository;
-import com.axelor.apps.production.db.repo.WorkCenterGroupRepository;
 import com.axelor.apps.production.service.WorkCenterService;
-import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class ConfiguratorProdProcessLineController {
 
@@ -74,28 +68,6 @@ public class ConfiguratorProdProcessLineController {
           "workCenter",
           Beans.get(WorkCenterService.class)
               .getMainWorkCenterFromGroup(confProdProcessLine.getWorkCenterGroup()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public void setWorkCenterGroup(ActionRequest request, ActionResponse response) {
-    try {
-      Long configuratorProdProcessId =
-          request.getContext().asType(ConfiguratorProdProcessLine.class).getId();
-      ConfiguratorProdProcessLine confProdProcessLine =
-          Beans.get(ConfiguratorProdProcessLineRepository.class).find(configuratorProdProcessId);
-      Map<String, Object> workCenterGroupMap =
-          ((LinkedHashMap<String, Object>) request.getContext().get("workCenterGroupWizard"));
-      if (workCenterGroupMap != null && workCenterGroupMap.containsKey("id")) {
-        WorkCenterGroup workCenterGroup =
-            Beans.get(WorkCenterGroupRepository.class)
-                .find(Long.valueOf(workCenterGroupMap.get("id").toString()));
-        Beans.get(ConfiguratorProdProcessLineService.class)
-            .setWorkCenterGroup(confProdProcessLine, workCenterGroup);
-      }
-      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

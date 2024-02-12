@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -65,7 +66,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       SaleOrderMarginService saleOrderMarginService,
       InvoiceLineRepository invoiceLineRepository,
       SaleInvoicingStateService saleInvoicingStateService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      CurrencyScaleServiceSale currencyScaleServiceSale) {
     super(
         currencyService,
         priceListService,
@@ -84,7 +86,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         saleOrderMarginService,
         invoiceLineRepository,
         saleInvoicingStateService,
-        analyticLineModelService);
+        analyticLineModelService,
+        currencyScaleServiceSale);
   }
 
   @Override

@@ -1,0 +1,4 @@
+"importId";"typeList";"statement"
+"FRA_PCG1";"storable";"Cette facture ne comporte que des livraisons de biens."
+"FRA_PCG2";"service";"Cette facture ne comporte que des prestations de services."
+"FRA_PCG3";"storable, service";"Cette facture comporte des livraisons de biens ainsi que des prestations de services."

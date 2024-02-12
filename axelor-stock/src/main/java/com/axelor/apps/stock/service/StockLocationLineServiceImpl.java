@@ -43,7 +43,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -174,12 +174,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         isIncrement,
         lastFutureStockMoveDate);
 
-    if (generateOrder) {
-      if (!isIncrement) {
-        minStockRules(product, qty, stockLocationLine, current, future);
-      } else {
-        maxStockRules(product, qty, stockLocationLine, current, future);
-      }
+    if (generateOrder && isIncrement) {
+      maxStockRules(product, qty, stockLocationLine, current, future);
     }
 
     stockLocationLine =
@@ -196,25 +192,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     this.checkStockMin(stockLocationLine, false);
 
     stockLocationLineRepo.save(stockLocationLine);
-  }
-
-  @Override
-  public void minStockRules(
-      Product product,
-      BigDecimal qty,
-      StockLocationLine stockLocationLine,
-      boolean current,
-      boolean future)
-      throws AxelorException {
-
-    if (current) {
-      stockRulesService.generateOrder(
-          product, qty, stockLocationLine, StockRulesRepository.TYPE_CURRENT);
-    }
-    if (future) {
-      stockRulesService.generateOrder(
-          product, qty, stockLocationLine, StockRulesRepository.TYPE_FUTURE);
-    }
   }
 
   @Override
@@ -792,7 +769,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.stockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
+                  + StringHelper.getIdListString(stockLocationList)
                   + ") ";
         }
       }

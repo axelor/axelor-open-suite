@@ -75,7 +75,7 @@ public class ProjectActivityDashboardServiceBusinessSupportImpl
     Map<String, Object> dataMap = super.getModelWithUtilityClass(message);
     if (ProjectAnnouncement.class.getName().equals(message.getRelatedModel())) {
       dataMap.put("modelName", "Project announcement");
-      dataMap.put("utilityClass", "label-info");
+      dataMap.put("utilityClass", "info");
     }
     return dataMap;
   }

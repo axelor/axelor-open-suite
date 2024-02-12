@@ -679,12 +679,12 @@ public class MoveController {
     }
   }
 
-  public void onSelectSubrogationPartner(ActionRequest request, ActionResponse response) {
+  public void onSelectThirdPartyPayerPartner(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
 
       response.setAttrs(
-          Beans.get(MoveGroupService.class).getSubrogationPartnerOnSelectAttrsMap(move));
+          Beans.get(MoveGroupService.class).getThirdPartyPayerPartnerOnSelectAttrsMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

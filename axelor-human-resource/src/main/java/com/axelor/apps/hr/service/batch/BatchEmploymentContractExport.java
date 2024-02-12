@@ -29,7 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -99,7 +99,7 @@ public class BatchEmploymentContractExport extends BatchStrategy {
 
     String[] headers = Beans.get(EmploymentContractService.class).employmentContractExportHeaders();
 
-    CsvTool.csvWriter(tempFile.getParent(), tempFile.getName(), ';', headers, list);
+    CsvHelper.csvWriter(tempFile.getParent(), tempFile.getName(), ';', headers, list);
 
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
     MetaFile metaFile = metaFiles.upload(tempFile);

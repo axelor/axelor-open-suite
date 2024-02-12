@@ -1,4 +1,8 @@
 "key","message","comment","context"
+"Calendar per employee","Calendrier par employé",,
+"Employee planned operations","Opérations planifiées par employé",,
+"Employee planning","Planning employé",,
+"Employee real operations","Opérations réelles par employé",,
 "Employees",,,
 "Enable timesheet on manuf order","Activer les feuilles de temps pour les OFs",,
 "Generate timesheet line on operation order stop","Générer ligne de feuille de temps",,
@@ -26,6 +30,7 @@
 "Timesheet imputed on project","Feuilles de temps imputées sur projet",,
 "Timesheet line","Ligne de feuille de temps",,
 "Timesheet lines","Lignes de feuille de temps",,
+"Timesheet on manuf order is not enabled.","Les feuilles de temps ne sont pas gérées sur les ordres de fabrication.",,
 "To Invoice","A facturer",,
 "To invoice","A facturer",,
 "Warning, this manuforder is finished","Attention, cet OF est terminé",,

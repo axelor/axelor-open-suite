@@ -63,4 +63,6 @@ public interface MrpLineService {
   void updateProposalToProcess(List<Integer> mrpLineIds, boolean proposalToProcess);
 
   void updateProposalToProcess(MrpLine mrpLine, boolean proposalToProcess);
+
+  List<MrpLine> getMrpLineListCopy(List<MrpLine> mrpLineList);
 }

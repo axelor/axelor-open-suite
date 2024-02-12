@@ -43,6 +43,17 @@ public interface ManufOrderService {
 
   void setConsumedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
 
+  /**
+   * This method check if operation orders regardless of manufOrder. If manufOrder is outsourced,
+   * the method will return false as they are outsourced because of manufOrder.
+   *
+   * @param manufOrder
+   * @return true if lines are outsourced regardless of manufOrder, else false.
+   */
+  boolean areLinesOutsourced(ManufOrder manufOrder);
+
+  void setOperationOrdersOutsourcing(ManufOrder manufOrder);
+
   public interface ManufOrderOriginType {}
 
   public enum ManufOrderOriginTypeProduction implements ManufOrderOriginType {
@@ -286,4 +297,6 @@ public interface ManufOrderService {
    * @param manufOrder
    */
   public void updatePlannedDates(ManufOrder manufOrder);
+
+  void checkApplicableManufOrder(ManufOrder manufOrder) throws AxelorException;
 }

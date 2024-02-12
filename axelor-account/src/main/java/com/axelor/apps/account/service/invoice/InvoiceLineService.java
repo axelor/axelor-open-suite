@@ -118,4 +118,6 @@ public interface InvoiceLineService {
       Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
 
   BigDecimal getInTaxPrice(InvoiceLine invoiceLine);
+
+  Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice);
 }

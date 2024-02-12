@@ -221,7 +221,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     setReservationDateTime(stockMove, saleOrder);
-    stockMoveService.plan(stockMove);
+    stockMoveService.planWithNoSplit(stockMove);
 
     return Optional.of(stockMove);
   }

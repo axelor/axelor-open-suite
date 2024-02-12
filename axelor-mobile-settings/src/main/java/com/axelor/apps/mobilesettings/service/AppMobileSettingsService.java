@@ -22,5 +22,7 @@ import com.axelor.studio.db.AppMobileSettings;
 
 public interface AppMobileSettingsService {
 
+  public AppMobileSettings getAppMobileSettings();
+
   public void updateAllMobileConfig(AppMobileSettings appMobileSettings);
 }

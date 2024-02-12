@@ -48,7 +48,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppCrm;
-import com.axelor.utils.service.ConvertBinaryToMetafileService;
+import com.axelor.utils.service.BinaryConversionService;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -236,7 +236,7 @@ public class ConvertLeadWizardController {
       partnerMap.put("partnerTypeSelect", 1);
       partnerMap.put("name", lead.getEnterpriseName());
     }
-    partnerMap.put("language", appBase.getDefaultPartnerLanguage());
+    partnerMap.put("localization", appBase.getDefaultPartnerLocalization());
     return partnerMap;
   }
 
@@ -245,9 +245,7 @@ public class ConvertLeadWizardController {
     Map<String, Object> contactMap = new HashMap<String, Object>();
     Lead lead = findLead(request);
     if (lead.getPicture() != null) {
-      MetaFile picture =
-          Beans.get(ConvertBinaryToMetafileService.class)
-              .convertByteTabPictureInMetafile(lead.getPicture());
+      MetaFile picture = Beans.get(BinaryConversionService.class).toMetaFile(lead.getPicture());
       contactMap.put("picture", picture);
     }
     contactMap.put("firstName", lead.getFirstName());

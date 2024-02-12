@@ -162,14 +162,14 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public void updateSubrogationPartner(Move move) {
+  public void updateThirdPartyPayerPartner(Move move) {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       move.getMoveLineList().stream()
           .map(MoveLine::getInvoiceTermList)
           .filter(CollectionUtils::isNotEmpty)
           .flatMap(Collection::stream)
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
-          .forEach(it -> it.setSubrogationPartner(move.getSubrogationPartner()));
+          .forEach(it -> it.setThirdPartyPayerPartner(move.getThirdPartyPayerPartner()));
     }
   }
 }

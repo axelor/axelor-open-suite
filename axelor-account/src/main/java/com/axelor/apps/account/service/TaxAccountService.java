@@ -50,14 +50,7 @@ public class TaxAccountService {
     AccountManagement accountManagement = this.getTaxAccount(tax, company);
 
     return accountManagementAccountService.getTaxAccount(
-        accountManagement,
-        tax,
-        company,
-        journal,
-        vatSystemSelect,
-        functionalOrigin,
-        isFixedAssets,
-        false);
+        accountManagement, tax, company, journal, vatSystemSelect, functionalOrigin, isFixedAssets);
   }
 
   protected AccountManagement getTaxAccount(Tax tax, Company company) {
