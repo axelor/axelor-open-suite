@@ -50,9 +50,10 @@ public class BatchInvoicing extends BatchStrategy {
   @Override
   protected void process() {
 
-    List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
+    List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(getFetchLimit());
 
     while (!saleOrders.isEmpty()) {
+      findBatch();
       for (SaleOrder saleOrder : saleOrders) {
         try {
           subscriptionInvoiceService.generateSubscriptionInvoice(saleOrder);
@@ -75,7 +76,7 @@ public class BatchInvoicing extends BatchStrategy {
         }
       }
       JPA.clear();
-      saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
+      saleOrders = subscriptionInvoiceService.getSubscriptionOrders(getFetchLimit());
     }
   }
 
@@ -98,7 +99,17 @@ public class BatchInvoicing extends BatchStrategy {
     addComment(comment);
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SALE_BATCH);
+  }
+
+  @Override
+  protected Integer getFetchLimit() {
+    Integer batchFetchLimit = this.batch.getSaleBatch().getFetchLimit();
+    if (batchFetchLimit == 0) {
+      batchFetchLimit = super.getFetchLimit();
+    }
+    return batchFetchLimit;
   }
 }
