@@ -33,6 +33,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
@@ -45,6 +46,7 @@ import java.time.LocalDate;
 public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl {
 
   protected BudgetDistributionService budgetDistributionService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public MoveReverseServiceBudgetImpl(
@@ -62,7 +64,8 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
       ExpenseRepository expenseRepository,
       ExpensePaymentService expensePaymentService,
       AppService appService,
-      BudgetDistributionService budgetDistributionService) {
+      BudgetDistributionService budgetDistributionService,
+      AppBudgetService appBudgetService) {
     super(
         moveCreateService,
         reconcileService,
@@ -79,6 +82,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
         expensePaymentService,
         appService);
     this.budgetDistributionService = budgetDistributionService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -88,7 +92,9 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
     MoveLine reverseMoveLine =
         super.generateReverseMoveLine(reverseMove, originMoveLine, dateOfReversion, isDebit);
 
-    computeReverseBudgetDistribution(reverseMoveLine, originMoveLine);
+    if (appBudgetService.isApp("budget")) {
+      computeReverseBudgetDistribution(reverseMoveLine, originMoveLine);
+    }
     return reverseMoveLine;
   }
 
