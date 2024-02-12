@@ -54,7 +54,7 @@
             </viewer>
           </field>
           <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
-            onChange="action-budget-sale-order-line-method-set-account,action-budget-sale-order-line-method-fill-budget-str"
+            onChange="action-budget-sale-order-line-method-fill-budget-str, action-reset-budget-distribution-list-method"
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
           <panel name="accountPanel" colSpan="12">
             <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"
@@ -98,14 +98,6 @@
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setBudgetDomain"/>
   </action-method>
 
-  <action-method name="action-budget-sale-order-line-method-account-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="getAccountDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-sale-order-line-method-set-account">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccount"/>
-  </action-method>
-
   <action-method name="action-method-budget-sale-orderline-set-product-account">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setProductAccount"/>
   </action-method>
@@ -132,6 +124,12 @@
 
   <action-method name="action-budget-sale-order-line-set-account-domain">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccountDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-method-compute-budget-distribution-sum-amount">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="computeBudgetDistributionSumAmount"/>
   </action-method>
 
 </object-views>

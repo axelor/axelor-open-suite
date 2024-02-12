@@ -180,7 +180,7 @@
     <attribute name="hidden" for="toConsumeProdProductList"
       expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
     <attribute name="hidden" for="stockLocation"
-      expr="eval: !__parent__.isConsProOnOperation"/>
+      expr="eval: !__parent__?.isConsProOnOperation"/>
     <attribute name="hidden" for="useLineInGeneratedPurchaseOrder"
       expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)"
       if="__parent__ != null"/>

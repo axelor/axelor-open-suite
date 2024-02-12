@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.mobilesettings.rest.dto;
 
 import com.axelor.utils.api.ResponseStructure;
@@ -27,6 +45,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isEditionOfDateAllowed;
   protected final Boolean isTimesheetProjectInvoicingEnabled;
   protected final Boolean isStockLocationManagementEnabled;
+  protected final List<String> fieldsToShowOnTimesheet;
 
   public MobileSettingsResponse(
       Integer version,
@@ -50,7 +69,8 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isLineCreationOfTimesheetDetailsAllowed,
       Boolean isEditionOfDateAllowed,
       Boolean isTimesheetProjectInvoicingEnabled,
-      Boolean isStockLocationManagementEnabled) {
+      Boolean isStockLocationManagementEnabled,
+      List<String> fieldsToShowOnTimesheet) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
@@ -73,6 +93,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isEditionOfDateAllowed = isEditionOfDateAllowed;
     this.isTimesheetProjectInvoicingEnabled = isTimesheetProjectInvoicingEnabled;
     this.isStockLocationManagementEnabled = isStockLocationManagementEnabled;
+    this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -177,5 +198,10 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isStockLocationManagementEnabled")
   public Boolean getStockLocationManagementEnabled() {
     return isStockLocationManagementEnabled;
+  }
+
+  @JsonProperty(value = "fieldsToShowOnTimesheet")
+  public List<String> getFieldsToShowOnTimesheet() {
+    return fieldsToShowOnTimesheet;
   }
 }

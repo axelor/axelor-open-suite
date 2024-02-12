@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -368,25 +367,6 @@ public class InvoiceTermController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setPfpStatus(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-
-      this.setParentContext(request, invoiceTerm);
-
-      if (invoiceTerm.getMoveLine() == null && request.getContext().containsKey("_moveLineId")) {
-        invoiceTerm.setMoveLine(
-            Beans.get(MoveLineRepository.class)
-                .find(Long.valueOf((Integer) request.getContext().get("_moveLineId"))));
-      }
-
-      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm, null);
-      response.setValue("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

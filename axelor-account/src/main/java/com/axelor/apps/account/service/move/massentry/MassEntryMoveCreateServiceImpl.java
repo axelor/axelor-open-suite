@@ -128,7 +128,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       newMove.setPfpValidatorUser(move.getPfpValidatorUser());
       newMove.setPfpValidateStatusSelect(move.getPfpValidateStatusSelect());
 
-      moveRecordSetService.setSubrogationPartner(newMove);
+      moveRecordSetService.setThirdPartyPayerPartner(newMove);
 
       int counter = 1;
 

@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -263,9 +264,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (isDebit) {
-      debit = currencyScaleServiceAccount.getCompanyScaledValue(move, amountInCompanyCurrency);
+      debit = amountInCompanyCurrency;
     } else {
-      credit = currencyScaleServiceAccount.getCompanyScaledValue(move, amountInCompanyCurrency);
+      credit = amountInCompanyCurrency;
     }
 
     if (currencyRate == null) {
@@ -295,8 +296,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             date,
             dueDate,
             counter,
-            debit,
-            credit,
+            currencyScaleServiceAccount.getScaledValue(move, debit),
+            currencyScaleServiceAccount.getScaledValue(move, credit),
             Strings.isNullOrEmpty(move.getDescription())
                 ? StringHelper.cutTooLongString(
                     moveLineToolService.determineDescriptionMoveLine(
@@ -308,6 +309,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             originDate);
 
     moveLine.setIsOtherCurrency(!move.getCurrency().equals(move.getCompanyCurrency()));
+    moveLineToolService.setDecimals(moveLine, move);
 
     analyticMoveLineGenerateRealService.computeAnalyticDistribution(
         move, moveLine, credit.add(debit));
@@ -834,7 +836,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
-    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    Integer vatSystem = moveLine.getVatSystemSelect();
+    if (moveLine.getVatSystemSelect() == null
+        || moveLine.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+      vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    }
+
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
     if (taxLineRC != null) {
       newAccountRC =
@@ -980,14 +987,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       Move move)
       throws AxelorException {
     Account newAccount = null;
+
     if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
         || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, partner);
 
-      int vatSystemSelect =
-          accountingSituationService.determineVatSystemSelect(
-              accountingSituation, moveLine.getAccount());
+      int vatSystemSelect = this.getVatSystemSelect(accountingSituation, moveLine);
 
       newAccount =
           taxAccountService.getAccount(
@@ -1002,9 +1008,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
 
-      int vatSystemSelect =
-          accountingSituationService.determineVatSystemSelect(
-              accountingSituation, moveLine.getAccount());
+      int vatSystemSelect = this.getVatSystemSelect(accountingSituation, moveLine);
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
@@ -1024,9 +1028,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             partner.getFullName(),
             company.getCode());
       }
-      int vatSystemSelect =
-          accountingSituationService.determineVatSystemSelect(
-              accountingSituation, moveLine.getAccount());
+      int vatSystemSelect = this.getVatSystemSelect(accountingSituation, moveLine);
 
       newAccount =
           taxAccountService.getAccount(
@@ -1038,6 +1040,17 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               move.getFunctionalOriginSelect());
     }
     return newAccount;
+  }
+
+  protected int getVatSystemSelect(AccountingSituation accountingSituation, MoveLine moveLine)
+      throws AxelorException {
+    if (moveLine.getVatSystemSelect() == null
+        || moveLine.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+      return accountingSituationService.determineVatSystemSelect(
+          accountingSituation, moveLine.getAccount());
+    }
+
+    return moveLine.getVatSystemSelect();
   }
 
   protected MoveLine createMoveLine(LocalDate date, TaxLine taxLine, Account account, Move move)

@@ -118,7 +118,7 @@
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="//panel[@name='rightPanel']">
       <insert position="inside">
-        <field name="isSubrogation" widget="InlineCheckbox"
+        <field name="isThirdPartyPayer" widget="InlineCheckbox"
           showIf="(isCustomer || isSupplier) &amp;&amp; !isFactor"
           if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       </insert>

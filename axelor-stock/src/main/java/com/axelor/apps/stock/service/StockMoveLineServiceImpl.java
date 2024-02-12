@@ -1692,10 +1692,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Transactional(rollbackOn = {Exception.class})
   public void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException {
     Integer type = stockMove.getTypeSelect();
-    if (type == StockMoveRepository.TYPE_INTERNAL) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (type == StockMoveRepository.TYPE_INTERNAL
+        || stockMoveLineList == null
+        || stockMoveLineList.isEmpty()) {
       return;
     }
-    List<StockMoveLine> stockMoveLineList = new ArrayList<>(stockMove.getStockMoveLineList());
+    // Does not manage the case where line is already splited
+    // Works when generating a tracking number
+    // But not when assigning one
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
       if (product == null) {

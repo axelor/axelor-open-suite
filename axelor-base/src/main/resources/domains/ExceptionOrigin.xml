@@ -12,6 +12,8 @@
   	  public static final String IMPORT = "import";
 
   	  public static final String PASSWORD_CHANGE = "passwordChange";
+
+  	  public static final String ADDRESS_RECOMPUTE = "addressRecompute";
   	  ]]>
     </extra-code>
   </entity>

@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -42,6 +43,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
     copy.setEstimatedReceiptDate(null);
     copy.setValidatedByUser(null);
     copy.setValidationDateTime(null);
+    copy.setOrderDate(Beans.get(AppBaseService.class).getTodayDate(entity.getCompany()));
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
         purchaseOrderLine.setDesiredReceiptDate(null);
