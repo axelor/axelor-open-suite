@@ -928,7 +928,7 @@ GlobalBudget.status_select IN (1,2) AND
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>__locale</design:name>
+              <design:name>locale</design:name>
               <design:position>15</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
@@ -936,11 +936,11 @@ GlobalBudget.status_select IN (1,2) AND
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>__locale</design:displayName>
+              <design:displayName>locale</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>__locale</design:label>
+            <design:label>locale</design:label>
             <design:formattingHints>
               <design:displaySize>255</design:displaySize>
             </design:formattingHints>
@@ -1762,7 +1762,7 @@ GlobalBudget.status_select IN (1,2) AND
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>__locale</design:name>
+              <design:name>locale</design:name>
               <design:position>15</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
@@ -1770,11 +1770,11 @@ GlobalBudget.status_select IN (1,2) AND
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>__locale</design:displayName>
+              <design:displayName>locale</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>__locale</design:label>
+            <design:label>locale</design:label>
             <design:formattingHints>
               <design:displaySize>255</design:displaySize>
             </design:formattingHints>
