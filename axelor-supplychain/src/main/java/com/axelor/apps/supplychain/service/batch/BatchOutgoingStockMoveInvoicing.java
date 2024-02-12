@@ -74,10 +74,11 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
             .setParameter("invoicingStatusSelect", StockMoveRepository.STATUS_DELAYED_INVOICE)
             .setParameter("anomalyList", anomalyList)
             .setParameter("batch", batch)
-            .setMaxResults(FETCH_LIMIT);
+            .setMaxResults(getFetchLimit());
 
     List<StockMove> stockMoveList;
     while (!(stockMoveList = query.getResultList()).isEmpty()) {
+      findBatch();
       for (StockMove stockMove : stockMoveList) {
         try {
           stockMoveInvoiceService.createInvoiceFromStockMove(stockMove, null);
