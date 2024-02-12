@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="localization-grid" title="Localization"
     model="com.axelor.apps.base.db.Localization">
@@ -9,8 +9,8 @@
     <field name="code" title="Code" required="true" readonly="true"/>
     <field name="country" title="Country"/>
     <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
-    <field name="dateFormat" title="Date Format" help="DD/MM/YYYY"/>
-    <field name="numbersFormat" title="Numbers Format" help="#,###.00"/>
+    <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" hidden="true"/>
+    <field name="numbersFormat" title="Numbers Format" help="#,###.00" hidden="true"/>
   </grid>
 
   <form name="localization-form" title="Localization"
@@ -23,8 +23,9 @@
         colSpan="6" onChange="action-localization-record-generate-name-from-country-and-language"/>
       <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"
         colSpan="6" onChange="action-localization-record-generate-name-from-country-and-language"/>
-      <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" colSpan="6"/>
-      <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"/>
+      <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" colSpan="6" hidden="true"/>
+      <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"
+        hidden="true"/>
       <field name="country.alpha2Code" hidden="true"/>
     </panel>
   </form>

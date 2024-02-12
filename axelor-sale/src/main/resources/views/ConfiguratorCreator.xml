@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="configurator-creator-grid" title="ConfiguratorCreators"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
@@ -44,7 +44,7 @@
         onClick="action-configurator-creator-group-activate"
         readonlyIf="isActive || !(attributes.length &gt; 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0)"/>
       <button name="testBtn" title="Test this creator" showIf="generateProduct"
-        readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
+        readonlyIf="!isActive" onClick="save,action-configurator-creator-method-test-configurator"/>
       <field name="generateProduct" widget="boolean-switch"/>
       <field name="isActive" hidden="true"/>
     </panel>
@@ -204,12 +204,10 @@
     <view-param name="show-toolbar" value="false"/>
   </action-view>
 
-  <action-view name="action-configurator-creator-view-test" title="Configurator"
-    model="com.axelor.apps.sale.db.Configurator">
-    <view type="form" name="configurator-form"/>
-    <view type="grid" name="configurator-grid"/>
-    <context name="_configuratorCreator" expr="eval: __self__"/>
-  </action-view>
+  <action-method name="action-configurator-creator-method-test-configurator">
+    <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+      method="openTestConfiguratorView"/>
+  </action-method>
 
   <action-method name="action-configurator-creator-method-update-attributes">
     <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
