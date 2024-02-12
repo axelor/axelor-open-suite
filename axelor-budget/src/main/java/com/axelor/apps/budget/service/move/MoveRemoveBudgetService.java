@@ -97,9 +97,8 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
   public List<String> getModelsToIgnoreList() {
     List<String> modelsToIgnoreList = super.getModelsToIgnoreList();
 
-    if (appBudgetService.isApp("budget")) {
-      modelsToIgnoreList.add("BudgetDistribution");
-    }
+    modelsToIgnoreList.add("BudgetDistribution");
+
     return modelsToIgnoreList;
   }
 }

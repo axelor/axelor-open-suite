@@ -19,7 +19,6 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.BudgetLevel;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetLevelResetToolService;
 import com.axelor.inject.Beans;
 
@@ -29,9 +28,8 @@ public class BudgetLevelManagementRepository extends BudgetLevelRepository {
   public BudgetLevel copy(BudgetLevel entity, boolean deep) {
     BudgetLevel copy = super.copy(entity, deep);
 
-    if (Beans.get(AppBudgetService.class).isApp("budget")) {
-      Beans.get(BudgetLevelResetToolService.class).resetBudgetLevel(copy);
-    }
+    Beans.get(BudgetLevelResetToolService.class).resetBudgetLevel(copy);
+
     return copy;
   }
 }
