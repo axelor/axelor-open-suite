@@ -407,12 +407,9 @@
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
-        <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
+        <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
           readonlyIf="$number(amountRemaining) != $number(amount)" form-view="partner-form"
           grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
-        <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
-          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
-          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
         <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
