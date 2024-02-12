@@ -20,23 +20,9 @@ package com.axelor.apps.budget.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.invoice.factory.CancelFactory;
-import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
-import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
@@ -46,11 +32,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -65,8 +47,9 @@ import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
-    implements BudgetInvoiceService {
+public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
+
+  protected InvoiceRepository invoiceRepo;
 
   protected BudgetDistributionRepository budgetDistributionRepo;
   protected BudgetRepository budgetRepository;
@@ -79,24 +62,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
 
   @Inject
   public BudgetInvoiceServiceImpl(
-      ValidateFactory validateFactory,
-      VentilateFactory ventilateFactory,
-      CancelFactory cancelFactory,
       InvoiceRepository invoiceRepo,
-      AppAccountService appAccountService,
-      PartnerService partnerService,
-      InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService,
-      MoveToolService moveToolService,
-      InvoiceLineRepository invoiceLineRepo,
-      InvoiceTermService invoiceTermService,
-      InvoiceTermPfpService invoiceTermPfpService,
-      AppBaseService appBaseService,
-      TemplateMessageService templateMessageService,
-      IntercoService intercoService,
-      TaxService taxService,
-      InvoiceProductStatementService invoiceProductStatementService,
-      StockMoveRepository stockMoveRepository,
       BudgetDistributionRepository budgetDistributionRepo,
       BudgetRepository budgetRepository,
       BudgetInvoiceLineService budgetInvoiceLineService,
@@ -104,25 +70,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       BudgetService budgetService,
       BudgetLineService budgetLineService,
       AppBudgetService appBudgetService) {
-    super(
-        validateFactory,
-        ventilateFactory,
-        cancelFactory,
-        invoiceRepo,
-        appAccountService,
-        partnerService,
-        invoiceLineService,
-        accountConfigService,
-        moveToolService,
-        invoiceTermService,
-        invoiceTermPfpService,
-        appBaseService,
-        taxService,
-        invoiceProductStatementService,
-        templateMessageService,
-        invoiceLineRepo,
-        intercoService,
-        stockMoveRepository);
+    this.invoiceRepo = invoiceRepo;
     this.budgetDistributionRepo = budgetDistributionRepo;
     this.budgetRepository = budgetRepository;
     this.budgetInvoiceLineService = budgetInvoiceLineService;

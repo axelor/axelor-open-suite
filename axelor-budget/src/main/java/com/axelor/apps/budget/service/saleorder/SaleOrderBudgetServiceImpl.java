@@ -186,6 +186,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       Invoice invoice, SaleOrderLine saleOrderLine, BigDecimal qtyToInvoice)
       throws AxelorException {
     List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, saleOrderLine, qtyToInvoice);
+    if (!appBudgetService.isApp("budget")) {
+      return invoiceLines;
+    }
 
     for (InvoiceLine invoiceLine : invoiceLines) {
       if (saleOrderLine != null) {
