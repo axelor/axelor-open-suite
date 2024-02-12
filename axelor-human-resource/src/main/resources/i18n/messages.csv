@@ -1071,6 +1071,7 @@
 "There is no payroll for society %s which includes date %s",,,
 "There is no year for society %s which includes date %s",,,
 "There is no year selected for the allowance.",,,
+"This configuration allows to fill expense line before creating any expense. This process is similar to the mobile application one.",,,
 "This contact is referenced from employee %s - %s",,,
 "This date is invalid. It must be included in the timesheet's period.",,,
 "This expense cannot be created because no project has been filled in and it has been noted as to be billed.",,,
