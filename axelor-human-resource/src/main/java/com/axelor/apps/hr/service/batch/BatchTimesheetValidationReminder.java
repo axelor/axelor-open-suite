@@ -19,12 +19,11 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.batch.MailBatchStrategy;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
@@ -32,6 +31,8 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -46,7 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import javax.mail.MessagingException;
 
-public class BatchTimesheetValidationReminder extends AbstractBatch {
+public class BatchTimesheetValidationReminder extends MailBatchStrategy {
 
   protected TemplateMessageService templateMessageService;
   protected MessageService messageService;
@@ -91,67 +92,82 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     Company company = batch.getMailBatch().getCompany();
     Template template = batch.getMailBatch().getTemplate();
     List<Timesheet> timesheetList = null;
+    Query<Timesheet> timesheetQuery = null;
     if (Beans.get(CompanyRepository.class).all().count() > 1) {
-      timesheetList =
+      timesheetQuery =
           Beans.get(TimesheetRepository.class)
               .all()
+              .order("id")
               .filter(
                   "self.company.id = ?1 AND self.statusSelect = 1 AND self.employee.timesheetReminder = true",
-                  company.getId())
-              .fetch();
+                  company.getId());
     } else {
-      timesheetList =
+      timesheetQuery =
           Beans.get(TimesheetRepository.class)
               .all()
-              .filter("self.statusSelect = 1 AND self.employee.timesheetReminder = true")
-              .fetch();
+              .order("id")
+              .filter("self.statusSelect = 1 AND self.employee.timesheetReminder = true");
     }
     String model = template.getMetaModel().getFullName();
     String tag = template.getMetaModel().getName();
-    for (Timesheet timesheet : timesheetList) {
-      try {
-        Employee employee = timesheet.getEmployee();
-        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-          continue;
+    int offset = 0;
+    while (!(timesheetList = timesheetQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Timesheet timesheet : timesheetList) {
+        ++offset;
+        try {
+          Employee employee = timesheet.getEmployee();
+          if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+            continue;
+          }
+          Message message =
+              templateMessageService.generateMessage(employee.getId(), model, tag, template);
+          messageService.sendByEmail(message);
+          incrementDone();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(e), ExceptionOriginRepository.REMINDER, batch.getId());
         }
-        Message message =
-            templateMessageService.generateMessage(employee.getId(), model, tag, template);
-        messageService.sendByEmail(message);
-        incrementDone();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(new Exception(e), ExceptionOriginRepository.REMINDER, batch.getId());
       }
+      JPA.clear();
     }
   }
 
   public void generateEmail() {
-    List<Timesheet> timesheetList =
+    List<Timesheet> timesheetList;
+    Query<Timesheet> timesheetQuery =
         Beans.get(CompanyRepository.class).all().count() > 1
             ? Beans.get(TimesheetRepository.class)
                 .all()
+                .order("id")
                 .filter(
                     "self.company.id = ?1 AND self.statusSelect = 1 AND self.employee.timesheetReminder = true",
                     batch.getMailBatch().getCompany().getId())
-                .fetch()
             : Beans.get(TimesheetRepository.class)
                 .all()
-                .filter("self.statusSelect = 1 AND self.employee.timesheetReminder = true")
-                .fetch();
+                .order("id")
+                .filter("self.statusSelect = 1 AND self.employee.timesheetReminder = true");
 
-    for (Timesheet timesheet : timesheetList) {
-      try {
-        Employee employee = timesheet.getEmployee();
-        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-          continue;
+    int offset = 0;
+    while (!(timesheetList = timesheetQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Timesheet timesheet : timesheetList) {
+        ++offset;
+        try {
+          Employee employee = timesheet.getEmployee();
+          if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+            continue;
+          }
+          generateAndSendMessage(employee);
+          incrementDone();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
         }
-        generateAndSendMessage(employee);
-        incrementDone();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
       }
+      JPA.clear();
     }
   }
 
@@ -160,41 +176,63 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     String model = template.getMetaModel().getFullName();
     String tag = template.getMetaModel().getName();
 
-    List<Employee> employeeList =
-        Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
+    List<Employee> employeeList;
+    Query<Employee> employeeQuery =
+        Beans.get(EmployeeRepository.class)
+            .all()
+            .order("id")
+            .filter("self.timesheetReminder = true");
 
-    for (Employee employee : employeeList) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
+    int offset = 0;
+    while (!(employeeList = employeeQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Employee employee : employeeList) {
+        ++offset;
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
+        }
+        try {
+          Message message =
+              templateMessageService.generateMessage(employee.getId(), model, tag, template);
+          messageService.sendByEmail(message);
+          incrementDone();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(e), ExceptionOriginRepository.REMINDER, batch.getId());
+        }
       }
-      try {
-        Message message =
-            templateMessageService.generateMessage(employee.getId(), model, tag, template);
-        messageService.sendByEmail(message);
-        incrementDone();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(new Exception(e), ExceptionOriginRepository.REMINDER, batch.getId());
-      }
+      JPA.clear();
     }
   }
 
   public void generateAllEmail() {
-    List<Employee> employeeList =
-        Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
+    List<Employee> employeeList;
+    Query<Employee> employeeQuery =
+        Beans.get(EmployeeRepository.class)
+            .all()
+            .order("id")
+            .filter("self.timesheetReminder = true");
 
-    for (Employee employee : employeeList) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
+    int offset = 0;
+
+    while (!(employeeList = employeeQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Employee employee : employeeList) {
+        ++offset;
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
+        }
+        try {
+          generateAndSendMessage(employee);
+          incrementDone();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
+        }
       }
-      try {
-        generateAndSendMessage(employee);
-        incrementDone();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
-      }
+      JPA.clear();
     }
   }
 
@@ -226,9 +264,5 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
 
     super.stop();
     addComment(comment);
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_HR_BATCH);
   }
 }
