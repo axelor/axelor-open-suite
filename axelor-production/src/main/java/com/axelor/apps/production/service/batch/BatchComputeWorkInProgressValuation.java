@@ -19,10 +19,8 @@
 package com.axelor.apps.production.service.batch;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -90,8 +88,9 @@ public class BatchComputeWorkInProgressValuation extends BatchStrategy {
 
     int offset = 0;
 
-    while (!(manufOrderList = manufOrderQuery.order("id").fetch(getFetchLimit(), offset)).isEmpty()) {
-
+    while (!(manufOrderList = manufOrderQuery.order("id").fetch(getFetchLimit(), offset))
+        .isEmpty()) {
+      findBatch();
       for (ManufOrder manufOrder : manufOrderList) {
         ++offset;
         try {

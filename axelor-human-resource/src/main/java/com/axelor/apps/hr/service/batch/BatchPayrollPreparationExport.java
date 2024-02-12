@@ -33,6 +33,8 @@ import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -92,19 +94,19 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       exportAll = " AND self.exported = false ";
     }
 
-    List<PayrollPreparation> payrollPreparationList =
+    Query<PayrollPreparation> payrollPreparationQuery =
         payrollPreparationRepository
             .all()
+            .order("id")
             .filter(
                 "self.company = ?1 AND self.period = ?2 " + exportAll,
                 hrBatch.getCompany(),
-                hrBatch.getPeriod())
-            .fetch();
+                hrBatch.getPeriod());
 
     switch (hrBatch.getPayrollPreparationExportTypeSelect()) {
       case HrBatchRepository.EXPORT_TYPE_STANDARD:
         try {
-          batch.setMetaFile(standardExport(payrollPreparationList));
+          batch.setMetaFile(standardExport(payrollPreparationQuery));
         } catch (IOException e) {
           incrementAnomaly();
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
@@ -112,7 +114,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
         break;
       case HrBatchRepository.EXPORT_TYPE_NIBELIS:
         try {
-          batch.setMetaFile(nibelisExport(payrollPreparationList));
+          batch.setMetaFile(nibelisExport(payrollPreparationQuery));
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
@@ -120,7 +122,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
         break;
       case HrBatchRepository.EXPORT_TYPE_SILAE:
         try {
-          batch.setMetaFile(silaeExport(payrollPreparationList));
+          batch.setMetaFile(silaeExport(payrollPreparationQuery));
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
@@ -128,7 +130,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
         break;
       case HrBatchRepository.EXPORT_TYPE_SAGE:
         try {
-          batch.setMetaFile(sageExport(payrollPreparationList));
+          batch.setMetaFile(sageExport(payrollPreparationQuery));
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
@@ -140,29 +142,37 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public MetaFile standardExport(List<PayrollPreparation> payrollPreparationList)
+  public MetaFile standardExport(Query<PayrollPreparation> payrollPreparationQuery)
       throws IOException {
 
     List<String[]> list = new ArrayList<>();
     LocalDateTime today =
         Beans.get(AppBaseService.class).getTodayDateTime(hrBatch.getCompany()).toLocalDateTime();
 
-    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-      String[] item = new String[5];
-      item[0] = payrollPreparation.getEmployee().getName();
-      item[1] = payrollPreparation.getDuration().toString();
-      item[2] = payrollPreparation.getLunchVoucherNumber().toString();
-      item[3] = payrollPreparation.getEmployeeBonusAmount().toString();
-      item[4] = payrollPreparation.getExtraHoursNumber().toString();
-      list.add(item);
+    int offset = 0;
+    List<PayrollPreparation> payrollPreparationList;
+    while (!(payrollPreparationList = payrollPreparationQuery.fetch(getFetchLimit(), offset))
+        .isEmpty()) {
+      findBatch();
+      for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+        ++offset;
+        String[] item = new String[5];
+        item[0] = payrollPreparation.getEmployee().getName();
+        item[1] = payrollPreparation.getDuration().toString();
+        item[2] = payrollPreparation.getLunchVoucherNumber().toString();
+        item[3] = payrollPreparation.getEmployeeBonusAmount().toString();
+        item[4] = payrollPreparation.getExtraHoursNumber().toString();
+        list.add(item);
 
-      payrollPreparation.setExported(true);
-      payrollPreparation.setExportDateTime(today);
-      payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_STANDARD);
-      payrollPreparation.addBatchListItem(batch);
-      payrollPreparationRepository.save(payrollPreparation);
-      total++;
-      incrementDone();
+        payrollPreparation.setExported(true);
+        payrollPreparation.setExportDateTime(today);
+        payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_STANDARD);
+        payrollPreparation.addBatchListItem(batch);
+        payrollPreparationRepository.save(payrollPreparation);
+        total++;
+        incrementDone();
+      }
+      JPA.clear();
     }
 
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
@@ -182,16 +192,23 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public MetaFile nibelisExport(List<PayrollPreparation> payrollPreparationList)
+  public MetaFile nibelisExport(Query<PayrollPreparation> payrollPreparationQuery)
       throws IOException, AxelorException {
 
     List<String[]> list = new ArrayList<>();
 
-    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-
-      payrollPreparation.addBatchListItem(batch);
-      payrollPreparationService.exportNibelis(payrollPreparation, list);
-      total++;
+    int offset = 0;
+    List<PayrollPreparation> payrollPreparationList;
+    while (!(payrollPreparationList = payrollPreparationQuery.fetch(getFetchLimit(), offset))
+        .isEmpty()) {
+      findBatch();
+      for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+        ++offset;
+        payrollPreparation.addBatchListItem(batch);
+        payrollPreparationService.exportNibelis(payrollPreparation, list);
+        total++;
+      }
+      JPA.clear();
     }
 
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
@@ -223,16 +240,24 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public MetaFile silaeExport(List<PayrollPreparation> payrollPreparationList)
+  public MetaFile silaeExport(Query<PayrollPreparation> payrollPreparationQuery)
       throws IOException, AxelorException {
 
     List<String[]> list = new ArrayList<>();
 
-    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-      payrollPreparation.addBatchListItem(batch);
-      payrollPreparationService.exportSilae(payrollPreparation, list);
-      total++;
-      incrementDone();
+    int offset = 0;
+    List<PayrollPreparation> payrollPreparationList;
+    while (!(payrollPreparationList = payrollPreparationQuery.fetch(getFetchLimit(), offset))
+        .isEmpty()) {
+      findBatch();
+      for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+        ++offset;
+        payrollPreparation.addBatchListItem(batch);
+        payrollPreparationService.exportSilae(payrollPreparation, list);
+        total++;
+        incrementDone();
+      }
+      JPA.clear();
     }
 
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
@@ -251,18 +276,26 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public MetaFile sageExport(List<PayrollPreparation> payrollPreparationList)
+  public MetaFile sageExport(Query<PayrollPreparation> payrollPreparationQuery)
       throws IOException, AxelorException {
-    MetaFile file = standardExport(payrollPreparationList);
+    MetaFile file = standardExport(payrollPreparationQuery);
 
-    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-      payrollPreparationService.fillInLeaves(payrollPreparation).stream()
-          .map(PayrollLeave::getLeaveRequest)
-          .forEach(
-              leaveReq -> {
-                leaveReq.setIsPayrollInput(true);
-                leaveRequestRepo.save(leaveReq);
-              });
+    int offset = 0;
+    List<PayrollPreparation> payrollPreparationList;
+    while (!(payrollPreparationList = payrollPreparationQuery.fetch(getFetchLimit(), offset))
+        .isEmpty()) {
+      findBatch();
+      for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+        ++offset;
+        payrollPreparationService.fillInLeaves(payrollPreparation).stream()
+            .map(PayrollLeave::getLeaveRequest)
+            .forEach(
+                leaveReq -> {
+                  leaveReq.setIsPayrollInput(true);
+                  leaveRequestRepo.save(leaveReq);
+                });
+      }
+      JPA.clear();
     }
     return file;
   }

@@ -30,6 +30,8 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
@@ -100,28 +102,22 @@ public class BatchTimesheetReminder extends BatchStrategy {
     super.stop();
   }
 
-  private List<Employee> getEmployeesWithoutRecentTimesheet(Company company) {
+  private Query<Employee> getEmployees() {
+    return employeeRepository
+        .all()
+        .order("id")
+        .filter(
+            "self.timesheetReminder = 't' AND self.mainEmploymentContract.payCompany = :companyId")
+        .bind("companyId", batch.getHrBatch().getCompany().getId());
+  }
+
+  protected boolean hasRecentTimesheet(Company company, Employee employee) {
     LocalDate now = appBaseService.getTodayDate(company);
     long daysBeforeReminder = batch.getHrBatch().getDaysBeforeReminder();
 
-    List<Employee> employees =
-        employeeRepository
-            .all()
-            .filter(
-                "self.timesheetReminder = 't' AND self.mainEmploymentContract.payCompany = :companyId")
-            .bind("companyId", batch.getHrBatch().getCompany().getId())
-            .fetch();
-
-    employees.removeIf(
-        employee ->
-            hasRecentTimesheet(now, daysBeforeReminder, employee)
-                || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee));
-    return employees;
-  }
-
-  protected boolean hasRecentTimesheet(LocalDate now, long daysBeforeReminder, Employee employee) {
     Timesheet timesheet = getRecentEmployeeTimesheet(employee);
-    return timesheet != null && timesheet.getToDate().plusDays(daysBeforeReminder).isAfter(now);
+    return (timesheet != null && timesheet.getToDate().plusDays(daysBeforeReminder).isAfter(now))
+        || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee);
   }
 
   protected Timesheet getRecentEmployeeTimesheet(Employee employee) {
@@ -141,41 +137,57 @@ public class BatchTimesheetReminder extends BatchStrategy {
 
   protected void sendReminderUsingEmployees(Template template)
       throws ClassNotFoundException, MessagingException {
-    for (Employee employee :
-        getEmployeesWithoutRecentTimesheet(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList())) {
-      Message message = templateMessageService.generateMessage(employee, template);
-      messageService.sendByEmail(message);
-      incrementDone();
+    int offset = 0;
+    List<Employee> employeeList;
+    Query<Employee> employeeQuery = getEmployees();
+    while (!(employeeList = employeeQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Employee employee :
+          employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+        ++offset;
+        if (hasRecentTimesheet(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null),
+            employee)) {
+          continue;
+        }
+        Message message = templateMessageService.generateMessage(employee, template);
+        messageService.sendByEmail(message);
+        incrementDone();
+      }
+
+      JPA.clear();
     }
   }
 
   protected void sendReminderUsingTimesheets(Template template)
       throws ClassNotFoundException, MessagingException, AxelorException {
-    for (Employee employee :
-        getEmployeesWithoutRecentTimesheet(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList())) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
+    int offset = 0;
+    List<Employee> employeeList;
+    Query<Employee> employeeQuery = getEmployees();
+    while (!(employeeList = employeeQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Employee employee :
+          employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+        ++offset;
+        if (hasRecentTimesheet(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null),
+            employee)) {
+          continue;
+        }
+        Timesheet timeSheet = getRecentEmployeeTimesheet(employee);
+        if (timeSheet != null) {
+          Message message = templateMessageService.generateMessage(timeSheet, template);
+          messageService.sendByEmail(message);
+        } else {
+          throw new AxelorException(
+              Timesheet.class,
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_FOUND_FOR_EMPLOYEE),
+              employee.getName());
+        }
+        incrementDone();
       }
-      Timesheet timeSheet = getRecentEmployeeTimesheet(employee);
-      if (timeSheet != null) {
-        Message message = templateMessageService.generateMessage(timeSheet, template);
-        messageService.sendByEmail(message);
-      } else {
-        throw new AxelorException(
-            Timesheet.class,
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_FOUND_FOR_EMPLOYEE),
-            employee.getName());
-      }
-      incrementDone();
+      JPA.clear();
     }
   }
 }

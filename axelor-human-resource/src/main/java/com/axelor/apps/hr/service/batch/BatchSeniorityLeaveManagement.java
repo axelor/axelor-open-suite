@@ -54,6 +54,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.template.TemplateMaker;
@@ -130,48 +131,54 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
   @Override
   protected void process() {
 
-    List<Employee> employeeList = this.getEmployees(batch.getHrBatch());
-    generateLeaveManagementLines(employeeList);
+    Query<Employee> employeeQuery = this.getEmployees(batch.getHrBatch());
+
+    generateLeaveManagementLines(employeeQuery);
   }
 
-  public List<Employee> getEmployees(HrBatch hrBatch) {
+  public Query<Employee> getEmployees(HrBatch hrBatch) {
 
-    List<Employee> employeeList;
+    Query<Employee> employeeQuery;
     if (hrBatch.getCompany() != null) {
-      employeeList =
+      employeeQuery =
           JPA.all(Employee.class)
+              .order("id")
               .filter("self.mainEmploymentContract.payCompany = :company")
-              .bind("company", hrBatch.getCompany())
-              .fetch();
+              .bind("company", hrBatch.getCompany());
     } else {
-      employeeList = JPA.all(Employee.class).fetch();
+      employeeQuery = JPA.all(Employee.class).order("id");
     }
-    return employeeList;
+    return employeeQuery;
   }
 
-  public void generateLeaveManagementLines(List<Employee> employeeList) {
-
-    for (Employee employee :
-        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
-      employee = employeeRepository.find(employee.getId());
-      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
-      }
-      try {
-        createLeaveManagement(employee);
-      } catch (AxelorException e) {
-        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
-        incrementAnomaly();
-        if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
-          noValueAnomaly++;
+  public void generateLeaveManagementLines(Query<Employee> employeeQuery) {
+    int offset = 0;
+    List<Employee> employeeList;
+    while (!(employeeList = employeeQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Employee employee :
+          employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+        ++offset;
+        employee = employeeRepository.find(employee.getId());
+        if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
         }
-        if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
-          confAnomaly++;
+        try {
+          createLeaveManagement(employee);
+        } catch (AxelorException e) {
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
+          incrementAnomaly();
+          if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
+            noValueAnomaly++;
+          }
+          if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
+            confAnomaly++;
+          }
+        } finally {
+          total++;
         }
-      } finally {
-        total++;
-        JPA.clear();
       }
+      JPA.clear();
     }
   }
 

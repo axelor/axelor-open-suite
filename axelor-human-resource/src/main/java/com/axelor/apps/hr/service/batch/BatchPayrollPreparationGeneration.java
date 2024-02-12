@@ -36,6 +36,7 @@ import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -102,11 +103,11 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
   @Override
   protected void process() {
 
-    List<Employee> employeeList = this.getEmployees(hrBatch);
-    generatePayrollPreparations(employeeList);
+    Query<Employee> employeeQuery = this.getEmployees(hrBatch);
+    generatePayrollPreparations(employeeQuery);
   }
 
-  public List<Employee> getEmployees(HrBatch hrBatch) {
+  public Query<Employee> getEmployees(HrBatch hrBatch) {
 
     List<String> query = Lists.newArrayList();
 
@@ -127,47 +128,53 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     String liaison = query.isEmpty() ? "" : " AND";
     if (hrBatch.getCompany() != null) {
       return JPA.all(Employee.class)
+          .order("id")
           .filter(
               Joiner.on(" AND ").join(query)
                   + liaison
                   + " self.mainEmploymentContract.payCompany = :company")
-          .bind("company", hrBatch.getCompany())
-          .fetch();
+          .bind("company", hrBatch.getCompany());
     } else {
-      return JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query)).fetch();
+      return JPA.all(Employee.class).order("id").filter(Joiner.on(" AND ").join(query));
     }
   }
 
-  public void generatePayrollPreparations(List<Employee> employeeList) {
+  public void generatePayrollPreparations(Query<Employee> employeeQuery) {
+    int offset = 0;
+    List<Employee> employeeList;
 
-    for (Employee employee :
-        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
-      employee = employeeRepository.find(employee.getId());
-      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
+    while (!(employeeList = employeeQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Employee employee :
+          employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+        ++offset;
+        employee = employeeRepository.find(employee.getId());
+        if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
+        }
+        try {
+          hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
+          if (hrBatch.getCompany() != null) {
+            company = companyRepository.find(hrBatch.getCompany().getId());
+          }
+          if (employee.getMainEmploymentContract() != null
+              && employee.getMainEmploymentContract().getStatus()
+                  != EmploymentContractRepository.STATUS_CLOSED) {
+            createPayrollPreparation(employee);
+          }
+        } catch (AxelorException e) {
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
+          incrementAnomaly();
+          if (e.getCategory() == TraceBackRepository.CATEGORY_NO_UNIQUE_KEY) {
+            duplicateAnomaly++;
+          } else if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
+            configurationAnomaly++;
+          }
+        } finally {
+          total++;
+        }
       }
-      try {
-        hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
-        if (hrBatch.getCompany() != null) {
-          company = companyRepository.find(hrBatch.getCompany().getId());
-        }
-        if (employee.getMainEmploymentContract() != null
-            && employee.getMainEmploymentContract().getStatus()
-                != EmploymentContractRepository.STATUS_CLOSED) {
-          createPayrollPreparation(employee);
-        }
-      } catch (AxelorException e) {
-        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
-        incrementAnomaly();
-        if (e.getCategory() == TraceBackRepository.CATEGORY_NO_UNIQUE_KEY) {
-          duplicateAnomaly++;
-        } else if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
-          configurationAnomaly++;
-        }
-      } finally {
-        total++;
-        JPA.clear();
-      }
+      JPA.clear();
     }
   }
 

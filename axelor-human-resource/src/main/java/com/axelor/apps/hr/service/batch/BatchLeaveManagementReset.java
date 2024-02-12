@@ -36,6 +36,7 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -68,38 +69,44 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
 
   @Override
   protected void process() {
-    List<Employee> employeeList = employeeFetchService.getEmployees(batch.getHrBatch());
-    resetLeaveManagementLines(employeeList);
+    Query<Employee> employeeQuery = employeeFetchService.getEmployeesQuery(batch.getHrBatch());
+    resetLeaveManagementLines(employeeQuery);
   }
 
-  public void resetLeaveManagementLines(List<Employee> employeeList) {
+  public void resetLeaveManagementLines(Query<Employee> employeeQuery) {
     HrBatch hrBatch = batch.getHrBatch();
     List<LeaveReason> selectedLeaveReasons = new ArrayList<>(hrBatch.getLeaveReasonSet());
     List<LeaveReason> noRecoveryleaveReasonList =
         getLeaveReasonWithNoRecovery(selectedLeaveReasons);
     List<LeaveReason> recoveryleaveReasonList = getLeaveReasonWithRecovery(selectedLeaveReasons);
 
-    for (Employee employee :
-        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
-      employee = employeeRepository.find(employee.getId());
-      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
-      }
-      try {
-        resetLeaveManagement(employee, noRecoveryleaveReasonList, recoveryleaveReasonList);
-      } catch (AxelorException e) {
-        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
-        incrementAnomaly();
-        if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
-          noValueAnomaly++;
+    int offset = 0;
+    List<Employee> employeeList;
+    while (!(employeeList = employeeQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
+      findBatch();
+      for (Employee employee :
+          employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+        ++offset;
+        employee = employeeRepository.find(employee.getId());
+        if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
         }
-        if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
-          confAnomaly++;
+        try {
+          resetLeaveManagement(employee, noRecoveryleaveReasonList, recoveryleaveReasonList);
+        } catch (AxelorException e) {
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
+          incrementAnomaly();
+          if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
+            noValueAnomaly++;
+          }
+          if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
+            confAnomaly++;
+          }
+        } finally {
+          total++;
         }
-      } finally {
-        total++;
-        JPA.clear();
       }
+      JPA.clear();
     }
   }
 
