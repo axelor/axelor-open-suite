@@ -4747,18 +4747,6 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">Column Binding</property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
-                    <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">Column Binding_1</property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
                     <property name="name">_stockMoveRealDate</property>
                     <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
                     <property name="dataType">string</property>
@@ -6354,7 +6342,7 @@ row["partnerFirstName"]
                 <cell id="5747">
                     <property name="colSpan">8</property>
                     <property name="rowSpan">1</property>
-                    <data id="6105">
+                    <data id="6103">
                         <property name="backgroundAttachment">scroll</property>
                         <property name="backgroundPositionX">0%</property>
                         <property name="backgroundPositionY">0%</property>
@@ -6407,7 +6395,7 @@ row["partnerFirstName"]
                         <property name="showIfBlank">false</property>
                         <property name="canShrink">false</property>
                         <property name="overflow">hidden</property>
-                        <property name="resultSetColumn">_stockMoveSeq</property>
+                        <property name="resultSetColumn">_stockMoveRealDate</property>
                     </data>
                     <text id="6104">
                         <property name="backgroundAttachment">scroll</property>
@@ -6462,7 +6450,7 @@ row["partnerFirstName"]
                         <property name="contentType">auto</property>
                         <text-property name="content"><![CDATA[-]]></text-property>
                     </text>
-                    <data id="6103">
+                    <data id="6105">
                         <property name="backgroundAttachment">scroll</property>
                         <property name="backgroundPositionX">0%</property>
                         <property name="backgroundPositionY">0%</property>
@@ -6515,7 +6503,7 @@ row["partnerFirstName"]
                         <property name="showIfBlank">false</property>
                         <property name="canShrink">false</property>
                         <property name="overflow">hidden</property>
-                        <property name="resultSetColumn">_stockMoveRealDate</property>
+                        <property name="resultSetColumn">_stockMoveSeq</property>
                     </data>
                 </cell>
             </row>
