@@ -640,4 +640,7 @@ public final class BaseExceptionMessage {
 
   public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
       "The import configuration executed successfully." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_FILE_TYPE_MESSAGE = /*$$(*/
+      "The binding file should be only a xml file, the data file should be only a xml or csv file. Please use the AOP accepted file feature." /*)*/;
 }
