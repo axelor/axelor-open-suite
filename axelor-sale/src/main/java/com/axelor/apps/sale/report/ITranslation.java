@@ -82,4 +82,5 @@ public interface ITranslation {
 
   public static final String SALES_ORDER_PRODUCT_SEQUENCE = /*$$(*/
       "SaleOrder.productSequence"; /*)*/
+  public static final String SALES_ORDER_LEVEL_INDICATOR = /*$$(*/ "SaleOrder.levelIndicator"; /*)*/
 }

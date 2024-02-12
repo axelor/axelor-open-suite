@@ -583,5 +583,9 @@ public class SaleOrderLineController {
         "hidden",
         !(isEditableGridEnabled && isDiscountEnabledOnEditableGrid));
     response.setAttr("subSoLineList.discountAmount", "hidden", !isDiscountEnabledOnEditableGrid);
+
+    response.setAttr("isPrintSubLines", "hidden", !saleOrder.getIsPrintLevelOfLines());
+    response.setAttr(
+        "subSoLineList.isPrintSubLines", "hidden", !saleOrder.getIsPrintLevelOfLines());
   }
 }

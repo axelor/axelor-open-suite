@@ -478,7 +478,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     return map;
   }
 
-  protected List<SaleOrderLine> getChildrenLines(SaleOrderLine saleOrderLine) {
+  @Override
+  public List<SaleOrderLine> getChildrenLines(SaleOrderLine saleOrderLine) {
 
     List<SaleOrderLine> childrens = new ArrayList<>();
     childrens.add(saleOrderLine);

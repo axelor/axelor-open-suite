@@ -340,4 +340,10 @@ public interface SaleOrderLineService {
   public void updateSubLinesPrice(SaleOrder saleOrder, SaleOrderLine line) throws AxelorException;
 
   public Map<String, Object> toMapWithSubLine(SaleOrderLine line);
+
+  public void computeSequence(List<SaleOrderLine> saleOrderLineList);
+
+  public void computeLevelIndicator(List<SaleOrderLine> saleOrderLineList);
+
+  public void computeLevel(List<SaleOrderLine> saleOrderLineList);
 }

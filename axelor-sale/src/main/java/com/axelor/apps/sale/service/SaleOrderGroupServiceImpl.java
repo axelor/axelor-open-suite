@@ -42,6 +42,7 @@ public class SaleOrderGroupServiceImpl implements SaleOrderGroupService {
       saleOrderAttrsService.addIncotermRequired(saleOrder, attrsMap);
       saleOrderAttrsService.setSaleOrderLineScale(saleOrder, attrsMap);
       saleOrderAttrsService.setSaleOrderLineTaxScale(saleOrder, attrsMap);
+      saleOrderAttrsService.setPrintSubLinesHidden(saleOrder, attrsMap);
     }
 
     return attrsMap;

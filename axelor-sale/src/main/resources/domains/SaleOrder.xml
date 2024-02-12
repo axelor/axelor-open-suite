@@ -166,6 +166,9 @@
     <many-to-one name="taxNumber" title="Tax number"
       ref="com.axelor.apps.account.db.TaxNumber"/>
 
+    <boolean name="isDisplayLevelOfLines" title="Display levels of lines"/>
+    <boolean name="isPrintLevelOfLines" title="Print levels of lines"/>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>

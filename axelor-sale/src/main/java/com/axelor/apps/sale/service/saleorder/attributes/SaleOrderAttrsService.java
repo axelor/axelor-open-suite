@@ -28,4 +28,6 @@ public interface SaleOrderAttrsService {
   void setSaleOrderLineTaxScale(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
 
   void addIncotermRequired(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
+
+  void setPrintSubLinesHidden(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
 }

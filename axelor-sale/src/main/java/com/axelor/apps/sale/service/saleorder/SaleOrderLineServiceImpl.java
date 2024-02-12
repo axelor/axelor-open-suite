@@ -64,11 +64,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.loader.ModuleManager;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +78,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1176,5 +1179,112 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
   protected boolean isChildCounted(SaleOrderLine line) {
     return subLineService.isChildCounted(line);
+  }
+
+  @Override
+  public void computeSequence(List<SaleOrderLine> saleOrderLineList) {
+    saleOrderLineList.sort(Comparator.comparingLong(SaleOrderLine::getId));
+    Map<SaleOrderLine, List<SaleOrderLine>> map =
+        saleOrderLineList.stream()
+            .filter(line -> line.getParentSaleOrderLine() != null)
+            .collect(
+                Collectors.groupingBy(
+                    SaleOrderLine::getParentSaleOrderLine,
+                    Collectors.toCollection(ArrayList::new)));
+    int sequence = 0;
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderLine.getParentSaleOrderLine() == null) {
+        sequence = setSequence(saleOrderLine, map, sequence);
+      }
+    }
+  }
+
+  protected int setSequence(
+      SaleOrderLine saleOrderLine, Map<SaleOrderLine, List<SaleOrderLine>> map, int sequence) {
+    saleOrderLine.setSequence(++sequence);
+    List<SaleOrderLine> subLineList = map.get(saleOrderLine);
+    if (CollectionUtils.isEmpty(subLineList)) {
+      return sequence;
+    }
+    for (SaleOrderLine subLine : subLineList) {
+      sequence = setSequence(subLine, map, sequence);
+    }
+    return sequence;
+  }
+
+  @Override
+  public void computeLevelIndicator(List<SaleOrderLine> saleOrderLineList) {
+    saleOrderLineList.stream().forEach(line -> line.setLevelIndicator(null));
+    saleOrderLineList.sort(Comparator.comparingLong(SaleOrderLine::getId));
+
+    Map<SaleOrderLine, List<SaleOrderLine>> map =
+        saleOrderLineList.stream()
+            .filter(
+                line ->
+                    line.getParentSaleOrderLine() != null
+                        && line.getTypeSelect() == SaleOrderLineRepository.TYPE_PARENT)
+            .collect(
+                Collectors.groupingBy(
+                    SaleOrderLine::getParentSaleOrderLine,
+                    Collectors.toCollection(ArrayList::new)));
+    int count = 1;
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderLine.getParentSaleOrderLine() == null
+          && saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PARENT) {
+        setLevelIndicator(saleOrderLine, String.valueOf(count), map);
+        count++;
+      }
+    }
+  }
+
+  protected void setLevelIndicator(
+      SaleOrderLine saleOrderLine,
+      String levelIndicator,
+      Map<SaleOrderLine, List<SaleOrderLine>> map) {
+    saleOrderLine.setLevelIndicator(levelIndicator);
+    List<SaleOrderLine> subLineList = map.get(saleOrderLine);
+    if (CollectionUtils.isEmpty(subLineList)) {
+      return;
+    }
+    int count = 1;
+    for (SaleOrderLine subLine : subLineList) {
+      setLevelIndicator(subLine, String.format("%s.%s", levelIndicator, count), map);
+      count++;
+    }
+  }
+
+  @Override
+  public void computeLevel(List<SaleOrderLine> saleOrderLineList) {
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderLine.getParentSaleOrderLine() == null) {
+        int maxLevel = computeMaxLevel(saleOrderLine);
+        List<SaleOrderLine> lines = saleOrderService.getChildrenLines(saleOrderLine);
+        setLevel(lines, maxLevel + 1);
+      }
+    }
+  }
+
+  protected void setLevel(List<SaleOrderLine> lines, int maxLevel) {
+    for (SaleOrderLine saleOrderLine : lines) {
+      String levelIndicator = saleOrderLine.getLevelIndicator();
+      if (Strings.isNullOrEmpty(levelIndicator)) {
+        continue;
+      }
+      int length = levelIndicator.split("\\.").length;
+      saleOrderLine.setLevelNo(maxLevel - length);
+    }
+  }
+
+  protected int computeMaxLevel(SaleOrderLine saleOrderLine) {
+    int maxLevel = 0;
+    List<SaleOrderLine> subSoLineList = saleOrderLine.getSubSoLineList();
+    if (!CollectionUtils.isEmpty(subSoLineList)) {
+      for (SaleOrderLine line : subSoLineList) {
+        int subLevel = computeMaxLevel(line);
+        maxLevel = Math.max(maxLevel, subLevel);
+      }
+      maxLevel++;
+    }
+    return maxLevel;
   }
 }

@@ -89,6 +89,9 @@
       transient="true"/>
     <string name="subLineId" title="Subline id" large="true" multiline="true"/>
 
+    <boolean name="isPrintSubLines" title="Print sublines"/>
+    <string name="levelIndicator" title="Level indicator" readonly="true"/>
+    <integer name="levelNo" title="Level" readonly="true"/>
 
     <!-- Margins -->
     <decimal name="subTotalCostPrice" title="SubTotal cost price" precision="20" scale="3"/>

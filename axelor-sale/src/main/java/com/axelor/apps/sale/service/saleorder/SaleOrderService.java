@@ -110,4 +110,6 @@ public interface SaleOrderService {
 
   List<SaleOrderLine> updateRelatedLines(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  List<SaleOrderLine> getChildrenLines(SaleOrderLine saleOrderLine);
 }

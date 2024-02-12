@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.i18n.I18n;
@@ -37,6 +38,7 @@ import com.google.common.base.Strings;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
@@ -87,6 +89,15 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
       SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
       saleOrderService.updateSubLines(saleOrder);
+
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+
+      if (!CollectionUtils.isEmpty(saleOrderLineList)) {
+        saleOrderLineService.computeSequence(saleOrderLineList);
+        saleOrderLineService.computeLevelIndicator(saleOrderLineList);
+        saleOrderLineService.computeLevel(saleOrderLineList);
+      }
 
       if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);

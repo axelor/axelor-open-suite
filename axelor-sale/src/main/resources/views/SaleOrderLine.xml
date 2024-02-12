@@ -16,6 +16,7 @@
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <field name="levelIndicator" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
     <field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
@@ -63,6 +64,7 @@
     <hilite color="success" if="deliveryState == 3"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <field name="levelIndicator" hidden="true"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-empty-line"/>
     <field name="product" canEdit="false"
       onChange="action-group-sale-saleorderline-product-onchange"
@@ -101,6 +103,7 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
     <field name="isNotCountable" onChange="action-sale-order-line-method-is-counted-onchange"/>
+    <field name="isPrintSubLines"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$isChildCounted" type="boolean" hidden="true"/>
@@ -316,6 +319,7 @@
           <field name="$currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
             hidden="true"/>
           <field name="$currency.numberOfDecimals" hidden="true"/>
+          <field name="isPrintSubLines"/>
         </panel>
         <panel-related name="subSoLineListPanel" field="subSoLineList"
           showIf="typeSelect == 4" form-view="sale-order-line-form"

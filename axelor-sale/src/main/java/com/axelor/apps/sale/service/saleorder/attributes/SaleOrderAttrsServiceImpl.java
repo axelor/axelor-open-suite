@@ -69,4 +69,14 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
   public void addIncotermRequired(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("incoterm", "required", saleOrderService.isIncotermRequired(saleOrder), attrsMap);
   }
+
+  @Override
+  public void setPrintSubLinesHidden(
+      SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "saleOrderLineList.isPrintSubLines",
+        "hidden",
+        !saleOrder.getIsPrintLevelOfLines(),
+        attrsMap);
+  }
 }
