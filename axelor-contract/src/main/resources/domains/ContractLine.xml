@@ -5,7 +5,7 @@
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
-  <entity name="ContractLine">
+  <entity name="ContractLine" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <integer name="sequence"/>
 
@@ -75,6 +75,18 @@
       scale="3"/>
     <decimal name="yearlyPriceRevalued" title="Price revalued yearly" precision="20"
       scale="3"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return contractVersion != null ? contractVersion.getContract().getCurrency() : null;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return contractVersion != null ? contractVersion.getContract().getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
