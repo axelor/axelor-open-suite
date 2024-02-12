@@ -19,7 +19,6 @@
       <field name="actionSelect"/>
       <field name="code"/>
       <field name="company"/>
-      <field name="fetchLimit"/>
       <field name="archived"/>
     </panel>
     <panel-tabs name="panelTabs">
