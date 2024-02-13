@@ -9,7 +9,7 @@
     <field name="metaField" title="Bank details fields"/>
   </grid>
 
-  <form name="bank-details-template-line-form" title="Bank details template lines"
+  <form name="bank-details-template-line-form" title="Bank details template line"
     model="com.axelor.apps.base.db.BankDetailsTemplateLine">
     <panel name="mainPanel" colSpan="12">
       <field name="title" title="Title" colSpan="6"/>
