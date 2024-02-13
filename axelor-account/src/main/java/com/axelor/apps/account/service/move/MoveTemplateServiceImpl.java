@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -53,7 +54,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +78,8 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineToolService moveLineToolService;
   protected MoveRecordUpdateService moveRecordUpdateService;
+  protected MoveAttrsService moveAttrsService;
+  protected MoveToolService moveToolService;
 
   protected List<String> exceptionsList;
 
@@ -95,7 +97,9 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       MoveLineTaxService moveLineTaxService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveRecordUpdateService moveRecordUpdateService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      MoveAttrsService moveAttrsService,
+      MoveToolService moveToolService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -110,6 +114,8 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveRecordUpdateService = moveRecordUpdateService;
     this.moveLineToolService = moveLineToolService;
+    this.moveAttrsService = moveAttrsService;
+    this.moveToolService = moveToolService;
 
     this.exceptionsList = Lists.newArrayList();
   }
@@ -179,18 +185,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
         partner = creditPartner;
       }
       if (moveTemplate.getJournal().getCompany() != null) {
-        int[] functionalOriginTab = new int[0];
-        if (!ObjectUtils.isEmpty(moveTemplate.getJournal().getAuthorizedFunctionalOriginSelect())) {
-          functionalOriginTab =
-              Arrays.stream(
-                      moveTemplate
-                          .getJournal()
-                          .getAuthorizedFunctionalOriginSelect()
-                          .replace(" ", "")
-                          .split(","))
-                  .mapToInt(Integer::parseInt)
-                  .toArray();
-        }
         BankDetails companyBankDetails = null;
         if (moveTemplate != null
             && moveTemplate.getJournal() != null
@@ -210,7 +204,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                 null,
                 partner != null ? partner.getFiscalPosition() : null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
+                moveTemplate.getFunctionalOriginSelect(),
                 origin,
                 moveTemplate.getDescription(),
                 companyBankDetails);
@@ -307,18 +301,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
           moveTemplateRepo.find(Long.valueOf((Integer) moveTemplateMap.get("id")));
 
       if (moveTemplate.getJournal().getCompany() != null) {
-        int[] functionalOriginTab = new int[0];
-        if (!ObjectUtils.isEmpty(moveTemplate.getJournal().getAuthorizedFunctionalOriginSelect())) {
-          functionalOriginTab =
-              Arrays.stream(
-                      moveTemplate
-                          .getJournal()
-                          .getAuthorizedFunctionalOriginSelect()
-                          .replace(" ", "")
-                          .split(","))
-                  .mapToInt(Integer::parseInt)
-                  .toArray();
-        }
         Partner moveTemplatePartner = fillPartnerWithMoveTemplate(moveTemplate);
 
         BankDetails companyBankDetails = null;
@@ -348,7 +330,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                     : moveTemplatePartner.getOutPaymentMode(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
+                moveTemplate.getFunctionalOriginSelect(),
                 moveTemplate.getFullName(),
                 moveTemplate.getDescription(),
                 companyBankDetails);
@@ -547,5 +529,27 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       partner = moveTemplate.getMoveTemplateLineList().get(0).getPartner();
     }
     return partner;
+  }
+
+  @Override
+  public Map<String, Object> getJournalOnChangeValuesMap(MoveTemplate moveTemplate) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveTemplate.setFunctionalOriginSelect(
+        moveToolService.computeFunctionalOriginSelect(
+            moveTemplate.getJournal(), MoveRepository.MASS_ENTRY_STATUS_NULL));
+
+    valuesMap.put("functionalOriginSelect", moveTemplate.getFunctionalOriginSelect());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(MoveTemplate moveTemplate) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addFunctionalOriginSelectDomain(moveTemplate.getJournal(), attrsMap);
+
+    return attrsMap;
   }
 }

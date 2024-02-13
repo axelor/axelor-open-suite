@@ -203,7 +203,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addHidden(move, attrsMap);
     moveAttrsService.addMoveLineListViewerHidden(move, attrsMap);
-    moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
+    moveAttrsService.addFunctionalOriginSelectDomain(move.getJournal(), attrsMap);
     analyticAttrsService.addAnalyticAxisAttrs(
         move.getCompany(), move.getMassEntryStatusSelect(), attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
@@ -324,7 +324,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addHidden(move, attrsMap);
-    moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
+    moveAttrsService.addFunctionalOriginSelectDomain(move.getJournal(), attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
     analyticAttrsService.addAnalyticAxisAttrs(

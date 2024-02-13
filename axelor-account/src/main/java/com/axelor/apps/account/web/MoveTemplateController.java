@@ -169,4 +169,17 @@ public class MoveTemplateController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void onChangeJournal(ActionRequest request, ActionResponse response) {
+    try {
+      MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
+
+      MoveTemplateService moveTemplateService = Beans.get(MoveTemplateService.class);
+
+      response.setValues(moveTemplateService.getJournalOnChangeValuesMap(moveTemplate));
+      response.setAttrs(moveTemplateService.getJournalOnChangeAttrsMap(moveTemplate));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

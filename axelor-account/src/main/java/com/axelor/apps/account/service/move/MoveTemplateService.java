@@ -41,4 +41,8 @@ public interface MoveTemplateService {
   boolean checkValidity(MoveTemplate moveTemplate);
 
   Map<String, Object> computeTotals(MoveTemplate moveTemplate);
+
+  Map<String, Object> getJournalOnChangeValuesMap(MoveTemplate moveTemplate);
+
+  Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(MoveTemplate moveTemplate);
 }

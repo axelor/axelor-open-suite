@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.move.attributes;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.db.User;
@@ -28,7 +29,7 @@ public interface MoveAttrsService {
 
   void addHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addFunctionalOriginSelectDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+  void addFunctionalOriginSelectDomain(Journal journal, Map<String, Map<String, Object>> attrsMap);
 
   void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
