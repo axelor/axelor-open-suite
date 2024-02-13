@@ -284,7 +284,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
-    if (!isDebit) {
+    if (!isDebit && amountInSpecificMoveCurrency != null) {
       amountInSpecificMoveCurrency =
           currencyScaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.negate());
     }
