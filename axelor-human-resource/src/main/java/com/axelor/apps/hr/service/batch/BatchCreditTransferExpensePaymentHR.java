@@ -143,9 +143,9 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
       query.bind("bankDetailsSet", bankDetailsSet);
     }
 
-    for (List<Expense> expenseList;
-        !(expenseList = query.fetch(FETCH_LIMIT)).isEmpty();
-        JPA.clear()) {
+    List<Expense> expenseList;
+    while (!(expenseList = query.fetch(getFetchLimit())).isEmpty()) {
+      findBatch();
       for (Expense expense : expenseList) {
         try {
           addPayment(expense, accountingBatch.getBankDetails());
@@ -164,6 +164,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
           break;
         }
       }
+      JPA.clear();
     }
 
     return doneList;
