@@ -899,7 +899,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
-    if (linesTaxAmount.compareTo(taxLinesAmount.abs()) != 0
+    if (linesTaxAmount.compareTo(taxLinesAmount) != 0
         && accountConfig.getAllowedTaxGap().compareTo(linesTaxAmount.subtract(taxLinesAmount).abs())
             < 0) {
       throw new AxelorException(
