@@ -1613,4 +1613,6 @@ public final class AccountExceptionMessage {
 
   public static final String MONO_INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
       "The move lines are still linked to invoice payment(s) related to invoices: <br> %s <br> You can't modify them." /*)*/;
+  public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
+      "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
 }
