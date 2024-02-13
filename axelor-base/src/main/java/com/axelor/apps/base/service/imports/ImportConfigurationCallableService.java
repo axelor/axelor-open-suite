@@ -18,10 +18,8 @@
  */
 package com.axelor.apps.base.service.imports;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -48,9 +46,7 @@ public class ImportConfigurationCallableService implements Callable<ImportHistor
       return importHistory;
     } catch (Exception e) {
       onRunnerException(e);
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_FILE_TYPE_MESSAGE));
+      throw e;
     }
   }
 
