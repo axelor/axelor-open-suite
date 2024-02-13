@@ -85,6 +85,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected InvoiceRepository invoiceRepository;
   protected InvoiceService invoiceService;
   protected AnalyticLineModelService analyticLineModelService;
+  protected ContractYearEndBonusService contractYearEndBonusService;
 
   @Inject
   public ContractServiceImpl(
@@ -98,7 +99,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractVersionRepository contractVersionRepository,
       InvoiceRepository invoiceRepository,
       InvoiceService invoiceService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      ContractYearEndBonusService contractYearEndBonusService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -110,6 +112,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.invoiceRepository = invoiceRepository;
     this.invoiceService = invoiceService;
     this.analyticLineModelService = analyticLineModelService;
+    this.contractYearEndBonusService = contractYearEndBonusService;
   }
 
   @Override
@@ -405,6 +408,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     // Increase invoice period date
     increaseInvoiceDates(contract);
     setRevaluationFormulaDescription(contract, invoice);
+
+    contractYearEndBonusService.invoiceYebContract(contract, invoice);
+
     return computeAndSave(invoice);
   }
 
