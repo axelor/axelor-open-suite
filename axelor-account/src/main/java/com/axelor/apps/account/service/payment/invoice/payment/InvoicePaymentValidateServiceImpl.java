@@ -334,7 +334,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     return origin;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public Move fillMove(
       InvoicePayment invoicePayment, Move move, Account customerAccount, BigDecimal maxAmount)
       throws AxelorException {

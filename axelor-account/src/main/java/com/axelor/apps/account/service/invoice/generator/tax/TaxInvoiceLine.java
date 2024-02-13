@@ -32,16 +32,20 @@ import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +53,13 @@ public class TaxInvoiceLine extends TaxGenerator {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected TaxAccountToolService taxAccountToolService;
 
   public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
     super(invoice, invoiceLines);
 
     this.currencyScaleServiceAccount = Beans.get(CurrencyScaleServiceAccount.class);
+    this.taxAccountToolService = Beans.get(TaxAccountToolService.class);
   }
 
   /**
@@ -84,8 +90,9 @@ public class TaxInvoiceLine extends TaxGenerator {
       if (invoiceLines != null) {
         invoice.setSpecificNotes(
             invoiceLines.stream()
-                .map(InvoiceLine::getTaxEquiv)
+                .map(InvoiceLine::getTaxEquivSet)
                 .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
                 .map(TaxEquiv::getSpecificNote)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -100,49 +107,56 @@ public class TaxInvoiceLine extends TaxGenerator {
 
   protected void createInvoiceLineTaxes(
       InvoiceLine invoiceLine, Map<TaxLineByVatSystem, InvoiceLineTax> map) throws AxelorException {
-    TaxLine taxLine = invoiceLine.getTaxLine();
-    TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
-    TaxLine taxLineRC = null;
-
-    if (taxEquiv != null && taxEquiv.getReverseCharge()) {
-      // We get active tax line if it exist, else we fetch one in taxLine list of reverse charge tax
-      taxLineRC =
-          Optional.ofNullable(taxEquiv.getReverseChargeTax())
-              .map(Tax::getActiveTaxLine)
-              .orElse(
-                  Beans.get(TaxService.class)
-                      .getTaxLine(
-                          taxEquiv.getReverseChargeTax(),
-                          Beans.get(AppBaseService.class)
-                              .getTodayDate(
-                                  Optional.ofNullable(invoiceLine.getInvoice())
-                                      .map(Invoice::getCompany)
-                                      .orElse(null))));
-    }
+    Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
 
     int vatSystem = 0;
 
-    if (taxLine != null) {
-      if (taxLine.getValue().signum() != 0) {
-        vatSystem =
-            Beans.get(TaxAccountToolService.class)
-                .calculateVatSystem(
-                    invoice.getPartner(),
-                    invoice.getCompany(),
-                    invoiceLine.getAccount(),
-                    (invoice.getOperationTypeSelect()
-                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                        || invoice.getOperationTypeSelect()
-                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
-                    (invoice.getOperationTypeSelect()
-                            == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-                        || invoice.getOperationTypeSelect()
-                            == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      for (TaxLine taxLine : taxLineSet) {
+        if (taxLine.getValue().signum() != 0) {
+          vatSystem =
+              taxAccountToolService.calculateVatSystem(
+                  invoice.getPartner(),
+                  invoice.getCompany(),
+                  invoiceLine.getAccount(),
+                  (invoice.getOperationTypeSelect()
+                          == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                      || invoice.getOperationTypeSelect()
+                          == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
+                  (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+                      || invoice.getOperationTypeSelect()
+                          == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+        }
+        createOrUpdateInvoiceLineTax(invoiceLine, taxLine, vatSystem, map);
       }
-      createOrUpdateInvoiceLineTax(invoiceLine, taxLine, vatSystem, map);
-    }
-    if (taxLineRC != null) {
-      createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, taxEquiv, vatSystem, map);
+
+      Set<TaxEquiv> taxEquivSet = invoiceLine.getTaxEquivSet();
+      AppBaseService appBaseService = Beans.get(AppBaseService.class);
+      TaxService taxService = Beans.get(TaxService.class);
+      if (ObjectUtils.notEmpty(taxEquivSet)) {
+        for (TaxEquiv taxEquiv : taxEquivSet) {
+          TaxLine taxLineRC = null;
+
+          if (taxEquiv != null && taxEquiv.getReverseCharge()) {
+            // We get active tax line if it exist, else we fetch one in taxLine list of reverse
+            // charge
+            // tax
+            taxLineRC =
+                Optional.ofNullable(taxEquiv.getReverseChargeTax())
+                    .map(Tax::getActiveTaxLine)
+                    .orElse(
+                        taxService.getTaxLine(
+                            taxEquiv.getReverseChargeTax(),
+                            appBaseService.getTodayDate(
+                                Optional.ofNullable(invoiceLine.getInvoice())
+                                    .map(Invoice::getCompany)
+                                    .orElse(null))));
+          }
+          if (taxLineRC != null) {
+            createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, taxEquiv, vatSystem, map);
+          }
+        }
+      }
     }
   }
 
@@ -237,6 +251,8 @@ public class TaxInvoiceLine extends TaxGenerator {
     invoiceLineTax.setVatSystemSelect(vatSystem);
     invoiceLineTax.setTaxLine(taxLine);
     invoiceLineTax.setCoefficient(invoiceLine.getCoefficient());
+    invoiceLineTax.setTaxType(
+        Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
     return invoiceLineTax;
   }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -21,26 +21,6 @@
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -1808,6 +1788,52 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     <text-property name="displayName">number_of_decimals</text-property>
                     <text-property name="heading">number_of_decimals</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">tax_type</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">tax_type</text-property>
+                    <text-property name="heading">tax_type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">tax_type_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">tax_type_name</text-property>
+                    <text-property name="heading">tax_type_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">tax_type_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">tax_type_code</text-property>
+                    <text-property name="heading">tax_type_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">tax_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">tax_code</text-property>
+                    <text-property name="heading">tax_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">type_select</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">tax_type_count</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">tax_type_count</text-property>
+                    <text-property name="heading">tax_type_count</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">unique_tax_type_names</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">unique_tax_type_names</text-property>
+                    <text-property name="heading">unique_tax_type_names</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">seq</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">seq</text-property>
+                    <text-property name="heading">seq</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1818,6 +1844,16 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">InvoiceId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1846,11 +1882,54 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     </structure>
                     <structure>
                         <property name="position">5</property>
+                        <property name="name">tax_type</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">tax_type_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">tax_type_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">tax_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">type_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">tax_type_count</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">unique_tax_type_names</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">seq</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
                         <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
+            <method name="onFetch"><![CDATA[if(row["tax_type_count"] > 1 &amp;&amp; row["unique_tax_type_names"] > 1){
+	vars["GroupBy"] = true
+}]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1858,28 +1937,84 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     <property name="name">inv_id</property>
                     <property name="nativeName">inv_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">value</property>
                     <property name="nativeName">value</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">ex_tax_base</property>
                     <property name="nativeName">ex_tax_base</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">tax_total</property>
                     <property name="nativeName">tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">tax_type</property>
+                    <property name="nativeName">tax_type</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">tax_type_name</property>
+                    <property name="nativeName">tax_type_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">tax_type_code</property>
+                    <property name="nativeName">tax_type_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">tax_code</property>
+                    <property name="nativeName">tax_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">type_select</property>
+                    <property name="nativeName">type_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">tax_type_count</property>
+                    <property name="nativeName">tax_type_count</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">unique_tax_type_names</property>
+                    <property name="nativeName">unique_tax_type_names</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">seq</property>
+                    <property name="nativeName">seq</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
@@ -1889,12 +2024,45 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, TaxLine.value, InvoiceLineTax.ex_tax_base, InvoiceLineTax.tax_total, Currency.number_of_decimals
-from account_invoice_line_tax as InvoiceLineTax
-inner join account_invoice as Invoice on (InvoiceLineTax.invoice = Invoice.id)
-left outer join account_tax_line as TaxLine on (InvoiceLineTax.tax_line = TaxLine.id)
-left outer join base_currency as Currency on (Invoice.currency = Currency.id)
-where Invoice.id = ?]]></xml-property>
+            <xml-property name="queryText"><![CDATA[SELECT
+    main_query.*,
+    unique_tax_type_names,
+    (Case when main_query.tax_type_code IN ('VAT','TVA') THEN 999
+    Else 0 END ) as seq
+FROM (
+    SELECT
+    	Invoice.id as inv_id,
+        TaxLine.value, 
+        InvoiceLineTax.ex_tax_base, 
+        InvoiceLineTax.tax_total, 
+        Currency.number_of_decimals,
+        MetaSelectItem.title AS tax_type, 
+        TaxType.name AS tax_type_name,
+        TaxType.code as tax_type_code,
+        Tax.code AS tax_code,
+        TaxType.type_select,
+        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count
+    FROM
+    	account_invoice_line_tax as InvoiceLineTax
+		inner join account_invoice as Invoice on (InvoiceLineTax.invoice = Invoice.id)
+		left outer join account_tax_line as TaxLine on (InvoiceLineTax.tax_line = TaxLine.id)
+		left outer join base_currency as Currency on (Invoice.currency = Currency.id)
+		left outer join account_tax As Tax on (Tax.id = TaxLine.tax)
+		left outer join account_tax_type as TaxType on (TaxType.id = Tax.tax_type)
+		left outer join meta_select AS MetaSelect on (MetaSelect.name = 'tax.type.type.select')
+		left outer join meta_select_item MetaSelectItem on (MetaSelectItem.select_id = MetaSelect.id AND MetaSelectItem.value = cast( TaxType.type_select AS text ))
+    WHERE
+        Invoice.id = ?
+) AS main_query
+CROSS JOIN (
+    SELECT COUNT(DISTINCT TaxType.name) AS unique_tax_type_names
+    FROM account_invoice_line_tax as InvoiceLineTax
+		inner join account_invoice as Invoice on (InvoiceLineTax.invoice = Invoice.id)
+		left outer join account_tax_line as TaxLine on (InvoiceLineTax.tax_line = TaxLine.id)
+		left outer join account_tax As Tax on (Tax.id = TaxLine.tax)
+		left outer join account_tax_type as TaxType on (TaxType.id = Tax.tax_type)
+    WHERE Invoice.id = ?
+) AS subquery;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2384,13 +2552,13 @@ JOIN base_unit product_unit ON product_unit.id = product.unit]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">totalAmount</property>
-                        <property name="dataType">float</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">number_of_decimals</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">totalAmount</property>
+                        <property name="dataType">float</property>
                     </structure>
                 </list-property>
             </structure>
@@ -2793,14 +2961,13 @@ from studio_app_base]]></xml-property>
             <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS invoice_line_proc(bigint);
 CREATE OR REPLACE FUNCTION invoice_line_proc(invoiceId bigint)
 RETURNS table(inv_id bigint, product_name varchar, description text,
-    "productType" varchar, "taxValue" numeric, qty numeric, "unitName" varchar,
+    "productType" varchar, qty numeric, "unitName" varchar,
     "unitPrice" numeric, price numeric, "totalDiscountAmount" numeric,
     ex_tax_total numeric, in_tax_total numeric, "currencyCode" varchar,
     sequence int, "typeSelect" int, in_ati boolean, "productCode" varchar,
     "CustomerProductCode" varchar, "CustomerProductName" varchar,
     "productCategory" bigint, "showTotal" boolean, "hideUnitAmounts" boolean,
-    "PackHideUnitAmounts" boolean,
-    number_of_decimals int) as
+    "PackHideUnitAmounts" boolean,number_of_decimals int,invoice_line_id bigint) as
 $func$
 BEGIN
 IF (SELECT COUNT(to_regclass('sale_customer_catalog')) = 0) THEN
@@ -2809,7 +2976,6 @@ select Invoice.id as inv_id,
 InvoiceLine.product_name,
 InvoiceLine.description,
 Product.product_type_select as "productType",
-TaxLine.value as "taxValue",
 InvoiceLine.qty,
 Unit.label_to_printing as "unitName",
 (CASE WHEN Invoice.in_ati
@@ -2836,10 +3002,10 @@ ProductCategory.id as "productCategory",
 InvoiceLine.is_show_total as showTotal,
 InvoiceLine.is_hide_unit_amounts as hideUnitAmounts,
 (SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts",
-Currency.number_of_decimals
+Currency.number_of_decimals,
+InvoiceLine.id as invoice_line_id
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
-left outer join account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
 left outer join base_product as Product on (InvoiceLine.product = Product.id)
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 left outer join base_unit as Unit on (InvoiceLine.unit = Unit.id)
@@ -2853,7 +3019,6 @@ select Invoice.id as inv_id,
 InvoiceLine.product_name,
 InvoiceLine.description,
 Product.product_type_select as "productType",
-TaxLine.value as "taxValue",
 InvoiceLine.qty,
 Unit.label_to_printing as "unitName",
 (CASE WHEN Invoice.in_ati
@@ -2880,10 +3045,10 @@ ProductCategory.id as "productCategory",
 InvoiceLine.is_show_total as showTotal,
 InvoiceLine.is_hide_unit_amounts as hideUnitAmounts,
 (SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts",
-Currency.number_of_decimals
+Currency.number_of_decimals,
+InvoiceLine.id as invoice_line_id
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
-left outer join account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
 left outer join base_product as Product on (InvoiceLine.product = Product.id)
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 left outer join base_unit as Unit on (InvoiceLine.unit = Unit.id)
@@ -2921,12 +3086,6 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">productType</text-property>
                     <text-property name="heading">productType</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">taxValue</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">taxValue</text-property>
-                    <text-property name="heading">taxValue</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">qty</property>
@@ -3042,6 +3201,12 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <text-property name="displayName">number_of_decimals</text-property>
                     <text-property name="heading">number_of_decimals</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">invoice_line_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">invoice_line_id</text-property>
+                    <text-property name="heading">invoice_line_id</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -3080,103 +3245,103 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">taxValue</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
                         <property name="name">qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">unitName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">unitPrice</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">price</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">totalDiscountAmount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">ex_tax_total</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">in_tax_total</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">currencyCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">sequence</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">typeSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">in_ati</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">productCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">CustomerProductCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">18</property>
                         <property name="name">CustomerProductName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">19</property>
                         <property name="name">productCategory</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">20</property>
                         <property name="name">showTotal</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">21</property>
                         <property name="name">hideUnitAmounts</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">22</property>
                         <property name="name">PackHideUnitAmounts</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">24</property>
+                        <property name="position">23</property>
                         <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">invoice_line_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -3212,143 +3377,143 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">taxValue</property>
-                    <property name="nativeName">taxValue</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">unitName</property>
                     <property name="nativeName">unitName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">unitPrice</property>
                     <property name="nativeName">unitPrice</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">price</property>
                     <property name="nativeName">price</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">totalDiscountAmount</property>
                     <property name="nativeName">totalDiscountAmount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">in_tax_total</property>
                     <property name="nativeName">in_tax_total</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">currencyCode</property>
                     <property name="nativeName">currencyCode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">sequence</property>
                     <property name="nativeName">sequence</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">typeSelect</property>
                     <property name="nativeName">typeSelect</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">in_ati</property>
                     <property name="nativeName">in_ati</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">16</property>
                     <property name="name">productCode</property>
                     <property name="nativeName">productCode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">17</property>
                     <property name="name">CustomerProductCode</property>
                     <property name="nativeName">CustomerProductCode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">18</property>
                     <property name="name">CustomerProductName</property>
                     <property name="nativeName">CustomerProductName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">19</property>
                     <property name="name">productCategory</property>
                     <property name="nativeName">productCategory</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">20</property>
                     <property name="name">showTotal</property>
                     <property name="nativeName">showTotal</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">21</property>
                     <property name="name">hideUnitAmounts</property>
                     <property name="nativeName">hideUnitAmounts</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">23</property>
+                    <property name="position">22</property>
                     <property name="name">PackHideUnitAmounts</property>
                     <property name="nativeName">PackHideUnitAmounts</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">24</property>
+                    <property name="position">23</property>
                     <property name="name">number_of_decimals</property>
                     <property name="nativeName">number_of_decimals</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">invoice_line_id</property>
+                    <property name="nativeName">invoice_line_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH INV AS (
@@ -3360,7 +3525,6 @@ select
     INV.product_name as "productName",
     INV.description,
     INV."productType",
-    INV."taxValue",
     INV.qty,
     INV."unitName",
     INV."unitPrice",
@@ -3379,7 +3543,8 @@ select
     INV."showTotal",
     INV."hideUnitAmounts",
     INV."PackHideUnitAmounts",
-    Currency.number_of_decimals
+    Currency.number_of_decimals,
+    INV.invoice_line_id
     from INV
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -3396,7 +3561,6 @@ select
     ProductCategory.name as "productName",
     null as description,
     INV."productType",
-    INV."taxValue",
     SUM(INV.qty) as qty,
     INV."unitName",
     CASE WHEN SUM(INV.qty) != 0
@@ -3421,7 +3585,8 @@ select
     BOOL_AND(INV."showTotal") as "showTotal",
     BOOL_OR(INV."hideUnitAmounts") as "hideUnitAmounts",
     BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts",
-    Currency.number_of_decimals
+    Currency.number_of_decimals,
+    MIN(INV.invoice_line_id)
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
@@ -3431,7 +3596,7 @@ select
     AND AppBase.regroup_products_level_select = 'category'
     AND ((AppBase.regroup_products_type_select LIKE '%products%' AND INV."productType" = 'storable')
         OR (AppBase.regroup_products_type_select LIKE '%services%' AND INV."productType" = 'service'))
-    group by INV."productCategory", ProductCategory.name, ProductCategory.code, INV."productType", INV."taxValue", INV."unitName", INV."currencyCode", Currency.number_of_decimals
+    group by INV."productCategory", ProductCategory.name, ProductCategory.code, INV."productType", INV."unitName", INV."currencyCode", Currency.number_of_decimals
 
 UNION ALL
 
@@ -3442,7 +3607,6 @@ select
         ELSE AppBase.regroup_products_label_services END as "productName",
     null as description,
     INV."productType",
-    INV."taxValue",
     SUM(INV.qty) as qty,
     INV."unitName",
     CASE WHEN SUM(INV.qty) != 0
@@ -3467,7 +3631,8 @@ select
     BOOL_AND(INV."showTotal") as "showTotal",
     BOOL_OR(INV."hideUnitAmounts") as "hideUnitAmounts",
     BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts",
-    Currency.number_of_decimals
+    Currency.number_of_decimals,
+    MIN(INV.invoice_line_id)
 from INV
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -3477,8 +3642,7 @@ WHERE AppBase.is_regroup_products_on_printings IS TRUE AND Invoice.group_product
     AND ((AppBase.regroup_products_type_select LIKE '%products%' AND INV."productType" = 'storable')
         OR (AppBase.regroup_products_type_select LIKE '%services%' AND INV."productType" = 'service'))
 group by AppBase.regroup_products_label_products, AppBase.regroup_products_label_services,
-        INV."productType", INV."taxValue", INV."unitName", INV."currencyCode", Currency.number_of_decimals;
-
+        INV."productType", INV."unitName", INV."currencyCode", Currency.number_of_decimals;
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -4086,6 +4250,69 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
     </design:resultSetDefinitions>
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineTaxLineDS" id="5984">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">value</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">value</text-property>
+                    <text-property name="heading">value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">code</text-property>
+                    <text-property name="heading">code</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="dataType">decimal</property>
+                    <property name="position">1</property>
+                    <expression name="defaultValue" type="javascript">0</expression>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">value</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">value</property>
+                    <property name="nativeName">value</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">code</property>
+                    <property name="nativeName">code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select TaxLine.value,Tax.code
+from account_invoice_line_tax_line_set as InvoiceLineTaxLine  
+left outer join account_tax_line as TaxLine on (TaxLine.id = InvoiceLineTaxLine.tax_line_set)
+left outer join account_tax as Tax on (Tax.id = TaxLine.tax)
+where InvoiceLineTaxLine.account_invoice_line = ?;]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -6415,13 +6642,6 @@ row["partnerFirstName"]
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">taxvalue</property>
-                                <text-property name="displayName">taxvalue</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["taxValue"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">qty</property>
                                 <text-property name="displayName">qty</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
@@ -6622,6 +6842,12 @@ row["partnerFirstName"]
                                 <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
                                 <property name="dataType">integer</property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoice_line_id</property>
+                                <text-property name="displayName">invoice_line_id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invoice_line_id"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <list-property name="sort">
@@ -7234,13 +7460,51 @@ row["partnerFirstName"]
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">none</property>
-                                    <text id="5390">
-                                        <property name="fontSize">8pt</property>
-                                        <property name="textAlign">center</property>
-                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["taxvalue"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <table id="6051">
+                                        <property name="dataSet">InvoiceLineTaxLineDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["invoice_line_id"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">value</property>
+                                                <text-property name="displayName">value</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["value"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">code</property>
+                                                <text-property name="displayName">code</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["code"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <column id="6058"/>
+                                        <detail>
+                                            <row id="6054">
+                                                <cell id="6055">
+                                                    <text id="6059">
+                                                        <property name="fontSize">8pt</property>
+                                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["code"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["value"]</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
+                                            </row>
+                                        </detail>
+                                    </table>
                                 </cell>
                                 <cell id="5391">
                                     <property name="borderBottomStyle">none</property>
@@ -8396,7 +8660,7 @@ row["partnerFirstName"]
                                 <cell id="5253">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
-                                    <table id="4704">
+                                    <table name="InvoiceLineTaxTable" id="4704">
                                         <property name="width">3.7604166666666665in</property>
                                         <property name="dataSet">InvoiceLineTaxDS</property>
                                         <list-property name="visibility">
@@ -8435,6 +8699,83 @@ row["partnerFirstName"]
                                                 <text-property name="displayName">number_of_decimals</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
                                                 <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">tax_type</property>
+                                                <text-property name="displayName">tax_type</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["tax_type"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">type_select</property>
+                                                <text-property name="displayName">type_select</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">totalVatTaxes</property>
+                                                <text-property name="displayName">totalVatTaxes</text-property>
+                                                <property name="dataType">float</property>
+                                                <property name="aggregateFunction">SUM</property>
+                                                <list-property name="arguments">
+                                                    <structure>
+                                                        <property name="name">Expression</property>
+                                                        <expression name="value" type="javascript">dataSetRow["tax_total"]</expression>
+                                                    </structure>
+                                                </list-property>
+                                                <expression name="filterExpr" type="javascript">row["tax_type_code"] == 'VAT' || row["tax_type_code"] == 'TVA'</expression>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">tax_type_name</property>
+                                                <text-property name="displayName">tax_type_name</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["tax_type_name"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">tax_type_code</property>
+                                                <text-property name="displayName">tax_type_code</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["tax_type_code"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">tax_code</property>
+                                                <text-property name="displayName">tax_code</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["tax_code"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">tax_type_count</property>
+                                                <text-property name="displayName">tax_type_count</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["tax_type_count"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">unique_tax_type_names</property>
+                                                <text-property name="displayName">unique_tax_type_names</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["unique_tax_type_names"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">seq</property>
+                                                <text-property name="displayName">seq</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["seq"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">totalByTaxType</property>
+                                                <text-property name="displayName">totalByTaxType</text-property>
+                                                <property name="dataType">float</property>
+                                                <simple-property-list name="aggregateOn">
+                                                    <value>GroupByTaxType</value>
+                                                </simple-property-list>
+                                                <property name="aggregateFunction">SUM</property>
+                                                <list-property name="arguments">
+                                                    <structure>
+                                                        <property name="name">Expression</property>
+                                                        <expression name="value" type="javascript">row["tax_total"]</expression>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
@@ -8448,18 +8789,63 @@ row["partnerFirstName"]
                                                 <property name="updateAggregation">true</property>
                                             </structure>
                                         </list-property>
+                                        <column id="6017">
+                                            <property name="width">15%</property>
+                                        </column>
                                         <column id="4719">
-                                            <property name="width">1.125in</property>
+                                            <property name="width">25%</property>
                                         </column>
                                         <column id="4720">
-                                            <property name="width">1.1145833333333333in</property>
+                                            <property name="width">30%</property>
                                         </column>
                                         <column id="4721">
-                                            <property name="width">1.5208333333333333in</property>
+                                            <property name="width">30%</property>
                                         </column>
                                         <header>
                                             <row id="4705">
                                                 <property name="fontSize">8pt</property>
+                                                <cell id="6014">
+                                                    <property name="borderBottomStyle">solid</property>
+                                                    <property name="borderBottomWidth">thin</property>
+                                                    <property name="borderLeftStyle">solid</property>
+                                                    <property name="borderLeftWidth">thin</property>
+                                                    <property name="borderRightStyle">solid</property>
+                                                    <property name="borderRightWidth">thin</property>
+                                                    <property name="borderTopStyle">solid</property>
+                                                    <property name="borderTopWidth">thin</property>
+                                                    <text id="6018">
+                                                        <property name="fontWeight">bold</property>
+                                                        <property name="borderBottomStyle">none</property>
+                                                        <property name="borderLeftStyle">none</property>
+                                                        <property name="borderRightStyle">none</property>
+                                                        <property name="borderTopStyle">none</property>
+                                                        <property name="dataSet">TranslateDS</property>
+                                                        <list-property name="paramBindings">
+                                                            <structure>
+                                                                <property name="paramName">param_1</property>
+                                                                <simple-property-list name="expression">
+                                                                    <value type="javascript">'Invoice.taxCode'</value>
+                                                                </simple-property-list>
+                                                            </structure>
+                                                        </list-property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">key</property>
+                                                                <text-property name="displayName">key</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                            <structure>
+                                                                <property name="name">translation</property>
+                                                                <text-property name="displayName">translation</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                        </list-property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
                                                 <cell id="4706">
                                                     <property name="borderBottomStyle">solid</property>
                                                     <property name="borderBottomWidth">thin</property>
@@ -8480,7 +8866,7 @@ row["partnerFirstName"]
                                                             <structure>
                                                                 <property name="paramName">param_1</property>
                                                                 <simple-property-list name="expression">
-                                                                    <value type="javascript">'Invoice.tax'</value>
+                                                                    <value type="javascript">'Invoice.taxes'</value>
                                                                 </simple-property-list>
                                                             </structure>
                                                         </list-property>
@@ -8588,9 +8974,108 @@ row["partnerFirstName"]
                                                 </cell>
                                             </row>
                                         </header>
+                                        <group id="6063">
+                                            <property name="groupName">GroupByTaxType</property>
+                                            <expression name="keyExpr" type="javascript">row["tax_type_name"]</expression>
+                                            <structure name="toc">
+                                                <expression name="expressionValue" type="javascript">row["tax_type_name"]</expression>
+                                            </structure>
+                                            <property name="hideDetail">false</property>
+                                            <list-property name="sort">
+                                                <structure>
+                                                    <expression name="key" type="javascript">row["seq"]</expression>
+                                                    <property name="direction">desc</property>
+                                                    <property name="strength">-1</property>
+                                                </structure>
+                                            </list-property>
+                                            <header>
+                                                <row id="6064">
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">!vars["GroupBy"]</expression>
+                                                        </structure>
+                                                    </list-property>
+                                                    <cell id="6065">
+                                                        <property name="colSpan">4</property>
+                                                        <property name="rowSpan">1</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                        <data id="6074">
+                                                            <property name="fontSize">8pt</property>
+                                                            <property name="fontWeight">bold</property>
+                                                            <property name="resultSetColumn">tax_type_name</property>
+                                                        </data>
+                                                    </cell>
+                                                </row>
+                                            </header>
+                                            <footer>
+                                                <row id="6069">
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">!vars["GroupBy"]</expression>
+                                                        </structure>
+                                                    </list-property>
+                                                    <cell id="6070">
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                    </cell>
+                                                    <cell id="6071">
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                    </cell>
+                                                    <cell id="6072">
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                    </cell>
+                                                    <cell id="6073">
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                        <data id="6075">
+                                                            <property name="fontSize">8pt</property>
+                                                            <property name="fontWeight">bold</property>
+                                                            <structure name="numberFormat">
+                                                                <property name="category">Currency</property>
+                                                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                                            </structure>
+                                                            <property name="textAlign">right</property>
+                                                            <property name="resultSetColumn">totalByTaxType</property>
+                                                        </data>
+                                                    </cell>
+                                                </row>
+                                            </footer>
+                                        </group>
                                         <detail>
                                             <row id="4712">
                                                 <property name="fontSize">8pt</property>
+                                                <cell id="6060">
+                                                    <property name="borderBottomColor">#000000</property>
+                                                    <property name="borderBottomStyle">solid</property>
+                                                    <property name="borderBottomWidth">thin</property>
+                                                    <property name="borderLeftColor">#000000</property>
+                                                    <property name="borderLeftStyle">solid</property>
+                                                    <property name="borderLeftWidth">thin</property>
+                                                    <property name="borderRightColor">#000000</property>
+                                                    <property name="borderRightStyle">solid</property>
+                                                    <property name="borderRightWidth">thin</property>
+                                                    <property name="borderTopColor">#000000</property>
+                                                    <property name="borderTopStyle">solid</property>
+                                                    <property name="borderTopWidth">thin</property>
+                                                    <text id="6019">
+                                                        <property name="textAlign">center</property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["tax_code"]</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
                                                 <cell id="4713">
                                                     <property name="borderBottomColor">#000000</property>
                                                     <property name="borderBottomStyle">solid</property>
@@ -8667,36 +9152,11 @@ row["partnerFirstName"]
                                                     </text>
                                                 </cell>
                                             </row>
-                                            <row id="5597">
-                                                <property name="fontSize">8pt</property>
-                                                <property name="borderBottomStyle">none</property>
-                                                <property name="borderLeftStyle">none</property>
-                                                <property name="borderRightStyle">none</property>
-                                                <property name="borderTopStyle">none</property>
-                                                <property name="height">0.5cm</property>
-                                                <cell id="5598">
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                </cell>
-                                                <cell id="5599">
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                </cell>
-                                                <cell id="5600">
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                </cell>
-                                            </row>
                                         </detail>
                                     </table>
                                     <table id="5458">
                                         <property name="fontSize">8pt</property>
+                                        <property name="marginTop">0.1in</property>
                                         <property name="dataSet">InvoicePaymentDS</property>
                                         <list-property name="visibility">
                                             <structure>
@@ -9421,41 +9881,48 @@ row["partnerFirstName"]
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <text id="5693">
-                                                    <property name="fontSize">10pt</property>
-                                                    <property name="fontWeight">normal</property>
-                                                    <property name="textAlign">left</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.totalTax'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                <grid id="6076">
+                                                    <property name="dataBindingRef">InvoiceLineTaxTable</property>
+                                                    <column id="6077"/>
+                                                    <row id="6078">
+                                                        <cell id="6079">
+                                                            <text id="5693">
+                                                                <property name="fontSize">10pt</property>
+                                                                <property name="fontWeight">normal</property>
+                                                                <property name="textAlign">left</property>
+                                                                <property name="dataSet">TranslateDS</property>
+                                                                <list-property name="paramBindings">
+                                                                    <structure>
+                                                                        <property name="paramName">param_1</property>
+                                                                        <simple-property-list name="expression">
+                                                                            <value type="javascript">if(row["unique_tax_type_names"]&lt;=1 &amp;&amp; row["totalVatTaxes"] > 0) {'Invoice.totalTax'}
+else {'Invoice.totalTaxes'}</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="boundDataColumns">
+                                                                    <structure>
+                                                                        <property name="name">key</property>
+                                                                        <text-property name="displayName">key</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">translation</property>
+                                                                        <text-property name="displayName">translation</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                    </row>
+                                                </grid>
                                             </cell>
                                             <cell id="5694">
                                                 <property name="fontSize">9pt</property>
-                                                <property name="borderBottomStyle">solid</property>
-                                                <property name="borderBottomWidth">thin</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
@@ -9471,8 +9938,6 @@ row["partnerFirstName"]
                                             </cell>
                                             <cell id="5696">
                                                 <property name="fontSize">9pt</property>
-                                                <property name="borderBottomStyle">solid</property>
-                                                <property name="borderBottomWidth">thin</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
@@ -10594,7 +11059,7 @@ row["partnerFirstName"]
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["legal_notice"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                     </text>
-                                    <text id="6058">
+                                    <text id="6061">
                                         <property name="fontSize">9pt</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="visibility">
@@ -11500,7 +11965,7 @@ row["partnerFirstName"]
                                         <expression name="valueExpr" type="javascript">row["operation_type_select"] != 2 &amp;&amp; row["operation_type_select"] != 4</expression>
                                     </structure>
                                 </list-property>
-                                <cell id="6014">
+                                <cell id="6062">
                                     <property name="colSpan">9</property>
                                     <property name="rowSpan">1</property>
                                     <grid id="6037">
@@ -12284,4 +12749,10 @@ row["partnerFirstName"]
             <property name="contentType">html</property>
         </text>
     </body>
+    <property name="pageVariables">
+        <variable-element name="GroupBy">
+            <expression name="value" type="javascript">false</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

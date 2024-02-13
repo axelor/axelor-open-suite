@@ -753,4 +753,9 @@
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
   </selection>
 
+  <selection name="tax.type.type.select">
+    <option value="1">VAT</option>
+    <option value="2">Other</option>
+  </selection>
+
 </object-views>
