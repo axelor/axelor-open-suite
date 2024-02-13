@@ -1697,4 +1697,7 @@ public final class AccountExceptionMessage {
       "Fiscal year and periods have been generated successfully." /*)*/;
   public static final String ACCOUNT_CHART_AND_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
       "The chart of account has been loaded and fiscal year/periods have been correctly generated." /*)*/;
+
+  public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
+      "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
 }
