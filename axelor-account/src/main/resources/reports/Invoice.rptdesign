@@ -4976,7 +4976,7 @@ where InvoiceLineTaxLine.account_invoice_line = ?;]]></xml-property>
                 <structure>
                     <property name="name">_stockMoveRealDate</property>
                     <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="dataType">date</property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
