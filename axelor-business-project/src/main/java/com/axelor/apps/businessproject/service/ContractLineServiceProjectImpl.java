@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -49,7 +50,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       DurationService durationService,
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
-      CurrencyScaleServiceContract currencyScaleServiceContract) {
+      CurrencyScaleServiceContract currencyScaleServiceContract,
+      TaxService taxService) {
     super(
         appBaseService,
         accountManagementService,
@@ -60,7 +62,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
         durationService,
         analyticLineModelService,
         appAccountService,
-        currencyScaleServiceContract);
+        currencyScaleServiceContract,
+        taxService);
   }
 
   @Override

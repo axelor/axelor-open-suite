@@ -333,12 +333,13 @@
         title="Disposal amount" hidden="true"/>
       <button name="disposalBtn" title="confirm.disposal" colSpan="4"
         onClick="action-fixed-asset-group-disposal-asset"
-        readonlyIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0 &amp;&amp; $generateSaleMove &amp;&amp; !saleTaxLine"/>
+        readonlyIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0 &amp;&amp; $generateSaleMove &amp;&amp; !saleTaxLineSet"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0" hidden="true"/>
-      <field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line"
-        widget="many-to-one" target="com.axelor.apps.account.db.TaxLine"
-        showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"/>
+      <field name="saleTaxLineSet" requiredIf="$generateSaleMove" title="Tax lines"
+        type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
+        showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"
+        widget="TagSelect"/>
       <field name="comments" colSpan="12" widget="html" x-lite="true"
         showIf="disposalTypeSelect == 2" hidden="true"/>
       <field name="$originalQty" type="decimal" hidden="true"/>
@@ -407,7 +408,7 @@
 
   <action-attrs
     name="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
-    <attribute name="domain" for="saleTaxLine"
+    <attribute name="domain" for="saleTaxLineSet"
       expr="eval: &quot;(self.endDate &gt; :disposalDate OR self.endDate IS NULL) AND self.startDate &lt; :disposalDate &quot;"/>
   </action-attrs>
 

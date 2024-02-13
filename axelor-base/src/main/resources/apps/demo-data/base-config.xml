@@ -282,6 +282,9 @@
   <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"
     search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser"/>
 
+  <input file="account_taxType.csv" separator=";" type="com.axelor.apps.account.db.TaxType"
+    search="self.code = :code"/>
+
   <input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax"
     search="self.code = :code"/>
 
@@ -311,6 +314,10 @@
       to="journal" update="true" if="journal_importId"/>
     <bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true"
       if="bankDetails_importId"/>
+    <bind search="self.code in :saleTaxSet" to="saleTaxSet" column="saleTaxSet"
+      eval="saleTaxSet.split('\\|') as List"/>
+    <bind search="self.code in :purchaseTaxSet" to="purchaseTaxSet" column="purchaseTaxSet"
+      eval="purchaseTaxSet.split('\\|') as List"/>
   </input>
 
   <input file="meta_metaTranslation.csv" separator=";"

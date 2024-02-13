@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -423,7 +423,7 @@ MoveLine.name as moveLineName,
 MoveLine.date_val as moveLineDate,
 Account.code as accountCode,
 Account.name as accountName,
-Tax.code as taxCode,
+TaxCodes.code as taxCode,
 FiscalPosition.code as fiscalPositionCode,
 AccountType.technical_type_select,
 Case  when AccountType.technical_type_select != 'tax' then 
@@ -463,14 +463,20 @@ left outer join public.base_partner as CompanyPartner on Company.partner = Compa
 left outer join public.account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
 
 left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
-left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
-left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
+LEFT OUTER JOIN (
+    SELECT 
+        TaxLineSet.account_move_line AS moveLineId,
+        string_agg(Tax.code, ',') AS code
+    FROM public.account_move_line_tax_line_set AS TaxLineSet
+    INNER JOIN public.account_tax_line AS TaxLine ON TaxLineSet.tax_line_set = TaxLine.id
+    INNER JOIN public.account_tax AS Tax ON TaxLine.tax = Tax.id
+    GROUP BY TaxLineSet.account_move_line
+) AS TaxCodes ON TaxCodes.moveLineId = MoveLine.id
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
-AND MoveLine.tax_line is not null
 AND ((((AccountType.technical_type_select not like 'tax'
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
@@ -893,7 +899,8 @@ left outer join public.base_company as Company on Move.company = Company.id
 left outer join public.base_partner as CompanyPartner on Company.partner = CompanyPartner.id
 left outer join public.account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
 left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
-left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
+left outer join public.account_move_line_tax_line_set as TaxLineSet on (TaxLineSet.account_move_line = MoveLine.id)
+left outer join public.account_tax_line as TaxLine on (TaxLineSet.tax_line_set = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 where 
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
@@ -901,7 +908,6 @@ AND AccountingReport.company = Move.company
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
-AND MoveLine.tax_line is not null
 AND ((((AccountType.technical_type_select not like 'tax'
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
