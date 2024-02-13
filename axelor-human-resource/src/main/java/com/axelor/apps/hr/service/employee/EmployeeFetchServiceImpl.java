@@ -42,14 +42,14 @@ public class EmployeeFetchServiceImpl implements EmployeeFetchService {
   }
 
   @Override
-  public Query<Employee> getEmployeesQuery(HrBatch hrBatch) {
+  public List<Employee> getEmployees(HrBatch hrBatch) {
     Company company = hrBatch.getCompany();
     String query = getFilters(hrBatch);
-    Query<Employee> employeeQuery = employeeRepository.all().order("id").filter(query);
+    Query<Employee> employeeQuery = employeeRepository.all().filter(query);
     if (company != null) {
       employeeQuery.bind("company", company);
     }
-    return employeeQuery;
+    return employeeQuery.fetch();
   }
 
   protected String getFilters(HrBatch hrBatch) {

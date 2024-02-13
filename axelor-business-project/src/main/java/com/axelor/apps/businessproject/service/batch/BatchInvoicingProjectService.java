@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
@@ -26,8 +27,6 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -57,49 +56,46 @@ public class BatchInvoicingProjectService extends BatchStrategy {
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
-    int offset = 0;
-    List<Object> generatedInvoicingProjectList = new ArrayList<>();
-    List<Project> projectList;
-    Query<Project> projectQuery =
+
+    List<Object> generatedInvoicingProjectList = new ArrayList<Object>();
+
+    List<Project> projectList =
         projectRepo
             .all()
-            .order("id")
             .filter(
                 "self.isBusinessProject = true "
                     + "AND self.toInvoice = true AND "
-                    + "self.projectStatus.isCompleted = false");
+                    + "self.projectStatus.isCompleted = false")
+            .fetch();
 
-    while (!(projectList = projectQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
-      findBatch();
-      for (Project project : projectList) {
-        ++offset;
-        try {
-          InvoicingProject invoicingProject =
-              invoicingProjectService.generateInvoicingProject(
-                  project, batch.getBusinessProjectBatch().getConsolidatePhaseSelect());
+    for (Project project : projectList) {
+      try {
+        InvoicingProject invoicingProject =
+            invoicingProjectService.generateInvoicingProject(
+                project, batch.getBusinessProjectBatch().getConsolidatePhaseSelect());
 
-          if (invoicingProject != null && invoicingProject.getId() != null) {
-            incrementDone();
-            if (batch.getBusinessProjectBatch().getActionSelect()
-                == BusinessProjectBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
-              invoicingProject.setDeadlineDate(batch.getBusinessProjectBatch().getDeadlineDate());
-            }
-
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", invoicingProject.getId());
-            generatedInvoicingProjectList.add(map);
+        if (invoicingProject != null && invoicingProject.getId() != null) {
+          incrementDone();
+          if (batch.getBusinessProjectBatch().getActionSelect()
+              == BusinessProjectBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
+            invoicingProject.setDeadlineDate(batch.getBusinessProjectBatch().getDeadlineDate());
           }
-        } catch (Exception e) {
-          incrementAnomaly();
-          TraceBackService.trace(
-              e,
-              String.format(
-                  I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
-                  project.getId()),
-              batch.getId());
+
+          Map<String, Object> map = new HashMap<String, Object>();
+          map.put("id", invoicingProject.getId());
+          generatedInvoicingProjectList.add(map);
         }
+      } catch (Exception e) {
+        incrementAnomaly();
+        TraceBackService.trace(
+            new Exception(
+                String.format(
+                    I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
+                    project.getId()),
+                e),
+            ExceptionOriginRepository.INVOICE_ORIGIN,
+            batch.getId());
       }
-      JPA.clear();
     }
     BusinessProjectBatchService.updateJsonObject(
         batch, generatedInvoicingProjectList, "generatedInvoicingProjectSet", contextValues);

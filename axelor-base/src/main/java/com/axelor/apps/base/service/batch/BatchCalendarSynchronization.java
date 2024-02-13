@@ -22,8 +22,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
-import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -35,33 +33,25 @@ public class BatchCalendarSynchronization extends BatchStrategy {
 
   @Override
   protected void process() {
-    int offset = 0;
     final Company company = batch.getBaseBatch().getCompany();
 
-    List<ICalendar> calendars;
-
-    Query<ICalendar> calendarQuery =
+    final List<ICalendar> calendars =
         repo.all()
-            .order("id")
             .filter("self.user.activeCompany = :company AND self.isValid = TRUE")
-            .bind("company", company);
+            .bind("company", company)
+            .fetch();
 
-    while (!(calendars = calendarQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
-      findBatch();
-      for (ICalendar calendar : calendars) {
-        ++offset;
-        try {
-          iCalendarService.sync(
-              calendar,
-              batch.getBaseBatch().getAllEvents(),
-              batch.getBaseBatch().getSynchronizationDuration());
-          incrementDone();
-        } catch (Exception e) {
-          e.printStackTrace();
-          incrementAnomaly();
-        }
+    for (ICalendar calendar : calendars) {
+      try {
+        iCalendarService.sync(
+            calendar,
+            batch.getBaseBatch().getAllEvents(),
+            batch.getBaseBatch().getSynchronizationDuration());
+        incrementDone();
+      } catch (Exception e) {
+        e.printStackTrace();
+        incrementAnomaly();
       }
-      JPA.clear();
     }
   }
 }

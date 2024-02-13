@@ -75,44 +75,47 @@ public class BatchEventReminder extends BatchStrategy {
   protected void markEventReminderProcess() {
 
     if (!stop) {
-      int offset = 0;
-      List<? extends EventReminder> eventReminderList;
-      com.axelor.db.Query<? extends EventReminder> eventReminderQuery =
-          eventReminderRepo.all().order("id");
 
-      while (!(eventReminderList = eventReminderQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
-        findBatch();
-        for (EventReminder eventReminder : eventReminderList) {
-          ++offset;
-          try {
+      int i = 0;
 
-            eventReminder = eventReminderRepo.find(eventReminder.getId());
+      List<? extends EventReminder> eventReminderList = eventReminderRepo.all().fetch();
 
-            Integer eventStatusSelect = eventReminder.getEvent().getStatusSelect();
-            boolean eventIsNotFinished = eventStatusSelect == EventRepository.STATUS_PLANNED;
-            if (!eventReminder.getIsReminded() && isExpired(eventReminder) && eventIsNotFinished) {
-              updateEventReminder(eventReminder);
-            }
+      for (EventReminder eventReminder : eventReminderList) {
 
-          } catch (Exception e) {
+        try {
 
-            TraceBackService.trace(
-                new Exception(
-                    String.format(
-                        I18n.get(CrmExceptionMessage.BATCH_EVENT_REMINDER_1),
-                        eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject()),
-                    e),
-                ExceptionOriginRepository.CRM,
-                batch.getId());
+          eventReminder = eventReminderRepo.find(eventReminder.getId());
 
-            incrementAnomaly();
+          Integer eventStatusSelect = eventReminder.getEvent().getStatusSelect();
+          boolean eventIsNotFinished = eventStatusSelect == EventRepository.STATUS_PLANNED;
+          if (!eventReminder.getIsReminded() && isExpired(eventReminder) && eventIsNotFinished) {
+            updateEventReminder(eventReminder);
+            i++;
+          }
 
-            LOG.error(
-                "Bug(Anomalie) généré(e) pour le rappel de l'évènement {}",
-                eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject());
+        } catch (Exception e) {
+
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get(CrmExceptionMessage.BATCH_EVENT_REMINDER_1),
+                      eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject()),
+                  e),
+              ExceptionOriginRepository.CRM,
+              batch.getId());
+
+          incrementAnomaly();
+
+          LOG.error(
+              "Bug(Anomalie) généré(e) pour le rappel de l'évènement {}",
+              eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject());
+
+        } finally {
+
+          if (i % 1 == 0) {
+            JPA.clear();
           }
         }
-        JPA.clear();
       }
     }
   }

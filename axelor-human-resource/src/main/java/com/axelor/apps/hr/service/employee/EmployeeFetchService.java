@@ -20,8 +20,8 @@ package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
-import com.axelor.db.Query;
+import java.util.List;
 
 public interface EmployeeFetchService {
-  Query<Employee> getEmployeesQuery(HrBatch hrBatch);
+  List<Employee> getEmployees(HrBatch hrBatch);
 }

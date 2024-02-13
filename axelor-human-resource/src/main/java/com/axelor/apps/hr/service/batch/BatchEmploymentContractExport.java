@@ -25,8 +25,6 @@ import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.EmploymentContractService;
-import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -57,19 +55,19 @@ public class BatchEmploymentContractExport extends BatchStrategy {
   @Override
   protected void process() {
 
-    Query<EmploymentContract> employmentContractQuery =
+    List<EmploymentContract> employmentContractList =
         Beans.get(EmploymentContractRepository.class)
             .all()
-            .order("id")
             .filter(
                 "self.payCompany = ?1 AND self.status = ?2",
                 hrBatch.getCompany(),
-                EmploymentContractRepository.STATUS_ACTIVE);
+                EmploymentContractRepository.STATUS_ACTIVE)
+            .fetch();
 
     switch (hrBatch.getEmploymentContractExportTypeSelect()) {
       case HrBatchRepository.EMPLOYMENT_CONTRACT_EXPORT_TYPE_SILAE:
         try {
-          batch.setMetaFile(employmentContractExportSilae(employmentContractQuery));
+          batch.setMetaFile(employmentContractExportSilae(employmentContractList));
         } catch (IOException e) {
           incrementAnomaly();
           TraceBackService.trace(e);
@@ -81,26 +79,17 @@ public class BatchEmploymentContractExport extends BatchStrategy {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public MetaFile employmentContractExportSilae(Query<EmploymentContract> employmentContractQuery)
+  public MetaFile employmentContractExportSilae(List<EmploymentContract> employmentContractList)
       throws IOException {
 
     List<String[]> list = new ArrayList<>();
 
-    int offset = 0;
-    List<EmploymentContract> employmentContractList;
-    while (!(employmentContractList = employmentContractQuery.fetch(getFetchLimit(), offset))
-        .isEmpty()) {
-      findBatch();
-      for (EmploymentContract employmentContract : employmentContractList) {
-        ++offset;
-        Beans.get(EmploymentContractService.class)
-            .employmentContractExportSilae(employmentContract, list);
+    for (EmploymentContract employmentContract : employmentContractList) {
+      Beans.get(EmploymentContractService.class)
+          .employmentContractExportSilae(employmentContract, list);
 
-        total++;
-        incrementDone();
-      }
-
-      JPA.clear();
+      total++;
+      incrementDone();
     }
 
     File tempFile =

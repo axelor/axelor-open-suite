@@ -37,7 +37,6 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -107,35 +106,31 @@ public class BatchLeaveManagement extends BatchStrategy {
 
   @Override
   protected void process() {
-    Query<Employee> employeeQuery = employeeFetchService.getEmployeesQuery(batch.getHrBatch());
-    generateLeaveManagementLines(employeeQuery);
+
+    List<Employee> employeeList = employeeFetchService.getEmployees(batch.getHrBatch());
+    generateLeaveManagementLines(employeeList);
   }
 
-  public void generateLeaveManagementLines(Query<Employee> employeeQuery) {
-    int offset = 0;
-    List<Employee> employeeList;
-    while (!(employeeList = employeeQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
-      findBatch();
-      for (Employee employee : employeeList) {
-        ++offset;
-        employee = employeeRepository.find(employee.getId());
+  public void generateLeaveManagementLines(List<Employee> employeeList) {
 
-        try {
-          createLeaveManagement(employee);
-        } catch (AxelorException e) {
-          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
-          incrementAnomaly();
-          if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
-            noValueAnomaly++;
-          }
-          if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
-            confAnomaly++;
-          }
-        } finally {
-          total++;
+    for (Employee employee : employeeList) {
+      employee = employeeRepository.find(employee.getId());
+
+      try {
+        createLeaveManagement(employee);
+      } catch (AxelorException e) {
+        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
+        incrementAnomaly();
+        if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
+          noValueAnomaly++;
         }
+        if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
+          confAnomaly++;
+        }
+      } finally {
+        total++;
+        JPA.clear();
       }
-      JPA.clear();
     }
   }
 

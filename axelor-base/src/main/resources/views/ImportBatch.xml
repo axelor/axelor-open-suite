@@ -19,6 +19,7 @@
       <field name="actionSelect"/>
       <field name="code"/>
       <field name="company"/>
+      <spacer colSpan="6"/>
       <field name="archived"/>
     </panel>
     <panel-tabs name="panelTabs">
