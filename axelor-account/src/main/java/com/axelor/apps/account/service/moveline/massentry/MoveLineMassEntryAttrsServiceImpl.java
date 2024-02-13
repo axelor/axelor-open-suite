@@ -243,7 +243,7 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
     }
 
     this.addAttr(
-        "taxLine",
+        "taxLineSet",
         "readonly",
         isCounterPartLine && account != null && !account.getIsTaxAuthorizedOnMoveLine(),
         attrsMap);

@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
@@ -697,11 +696,11 @@ public class PaymentVoucherConfirmService {
     Account financialDiscountAccount =
         financialDiscountService.getFinancialDiscountAccount(company, isPurchase);
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
-    Map<Tax, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
+    Map<String, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
         moveLineFinancialDiscountService.getFinancialDiscountTaxMap(moveLineToPay);
-    Map<Tax, Integer> vatSystemTaxMap =
+    Map<String, Integer> vatSystemTaxMap =
         moveLineFinancialDiscountService.getVatSystemTaxMap(moveLineToPay.getMove());
-    Map<Tax, Account> accountTaxMap =
+    Map<String, Account> accountTaxMap =
         moveLineFinancialDiscountService.getAccountTaxMap(moveLineToPay.getMove());
 
     moveLineFinancialDiscountService.createFinancialDiscountMoveLine(

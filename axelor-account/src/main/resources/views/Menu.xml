@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <menuitem name="invoice-root" title="Invoicing" order="-1000"
     if="__config__.app.isApp('invoice')" icon="fa-file-text-o" icon-background="#31b4a9"/>
@@ -684,6 +684,16 @@
     <view type="form" name="tax-form"/>
     <view-param name="search-filters" value="tax-filters"/>
   </action-view>
+
+  <menuitem name="account-conf-financial-tax-type" parent="account-conf-financial"
+    title="Tax types" action="account.conf.financial.tax.type" order="1050"/>
+
+  <action-view name="account.conf.financial.tax.type" title="Tax types"
+    model="com.axelor.apps.account.db.TaxType">
+    <view type="grid" name="tax-type-grid"/>
+    <view type="form" name="tax-type-form"/>
+  </action-view>
+
   <menuitem name="account-conf-financial-service-types" parent="account-conf-financial"
     title="Service types" action="account.conf.financial.service.types" order="1100"/>
 
