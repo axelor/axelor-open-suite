@@ -96,8 +96,8 @@
   <menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
     title="Operations orders" action="manufacturing.root.operation.order" order="600"/>
 
-  <action-view name="manufacturing.root.operation.order" title="Manufacturing operations"
-    model="com.axelor.apps.production.db.OperationOrder">
+  <action-view name="manufacturing.root.operation.order"
+    title="Manufacturing operations" model="com.axelor.apps.production.db.OperationOrder">
     <view type="grid" name="operation-order-group-grid"/>
     <view type="form" name="operation-order-form"/>
     <view-param name="search-filters" value="operation-order-filters"/>

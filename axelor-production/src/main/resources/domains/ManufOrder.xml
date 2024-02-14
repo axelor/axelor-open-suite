@@ -117,7 +117,8 @@
 
     <!-- Added this field to identify unsaved manufacturing orders in multi-level planning -->
     <string name="manualMOSeq" transient="true"/>
-    <integer name="operationOrderMaxPriority" title="Manufacturing operations maximum priority"/>
+    <integer name="operationOrderMaxPriority"
+      title="Manufacturing operations maximum priority"/>
 
 
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
