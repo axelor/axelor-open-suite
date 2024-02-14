@@ -10,7 +10,7 @@
     <many-to-many name="birtTemplateSet" ref="com.axelor.apps.base.db.BirtTemplate"
       title="Birt Template"/>
     <many-to-many name="localizationSet" ref="com.axelor.apps.base.db.Localization"
-      title="Localization" mappedBy="templateSet"/>
+      title="Localization"/>
 
   </entity>
 
