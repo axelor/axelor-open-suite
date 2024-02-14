@@ -376,7 +376,7 @@
   </action-view>
 
   <search-filters name="operation-order-filters"
-    model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
+    model="com.axelor.apps.production.db.OperationOrder" title="Manufacturing order filters">
     <field name="operationOrderDurationList" hidden="true"
       if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
     <field name="timesheetLineList" hidden="true"

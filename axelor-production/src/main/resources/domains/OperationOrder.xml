@@ -61,7 +61,7 @@
     </boolean>
 
     <one-to-many name="operationOrderDurationList"
-      ref="com.axelor.apps.production.db.OperationOrderDuration" title="Operation Order Durations"
+      ref="com.axelor.apps.production.db.OperationOrderDuration" title="Manufacturing Operation Durations"
       mappedBy="operationOrder"/>
 
     <string name="comments" title="Comments" large="true"/>

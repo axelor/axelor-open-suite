@@ -32,7 +32,7 @@
     <long name="hrDurationPerCycle" title="HR Duration Per Cycle (hhh:mm:ss)"/>
 
     <many-to-one name="operationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+      ref="com.axelor.apps.production.db.OperationOrder" title="Manufacturing operation"/>
 
     <many-to-one name="costSheetGroup"
       ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>

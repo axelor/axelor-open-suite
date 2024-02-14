@@ -13,7 +13,7 @@
       ref="com.axelor.apps.production.db.OperationOrder"/>
     <many-to-one name="manufOrder" title="Manufacturing order"
       ref="com.axelor.apps.production.db.ManufOrder" copy="false"/>
-    <many-to-one name="operationOrder" title="Operation order"
+    <many-to-one name="operationOrder" title="Manufacturing operation"
       ref="com.axelor.apps.production.db.OperationOrder" copy="false"/>
     <many-to-one name="outsourcingManufOrder"
       ref="com.axelor.apps.production.db.ManufOrder"/>
