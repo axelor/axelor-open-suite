@@ -23,6 +23,9 @@
     <field name="gap"/>
     <field name="gapValue"/>
     <field name="realValue"/>
+    <button name="showDetailStockProduct" icon="fa-cubes"
+      onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product"
+      if="__config__.app.isApp('supplychain')"/>
   </grid>
 
   <form name="inventory-line-form" title="Inventory line"
@@ -45,6 +48,9 @@
       <field name="rack"/>
       <field name="trackingNumber" canNew="true" domain="self.product = :product"
         onChange="action-inventory-line-group-update-inventory-line"/>
+      <button name="showDetailStockProduct" title="See stock details" colSpan="3"
+        onClick="action-inventory-line-view-for-a-product-from-product-view"
+        if="__config__.app.isApp('supplychain')" widget="info-button" icon="fa-cubes"/>
     </panel>
   </form>
 
@@ -81,4 +87,13 @@
   <action-method name="action-inventory-line-method-update-current-qty">
     <call class="com.axelor.apps.stock.web.InventoryLineController" method="updateCurrentQty"/>
   </action-method>
+
+  <action-view name="action-inventory-line-view-for-a-product-from-product-view"
+    title="Stock location lines by product" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="supplychain-stock-details-by-product-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <context name="_product" expr="eval:__this__?.product"/>
+  </action-view>
 </object-views>
