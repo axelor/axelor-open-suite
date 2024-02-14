@@ -66,7 +66,7 @@
         <field name="iban" readonlyIf="bank==null"
           onChange="action-group-account-bankdetails-iban-onchange" colSpan="12"/>
         <static name="invalidIbanText" hidden="true" colSpan="12">
-          <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
+                <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
         </static>
       </panel>
 
