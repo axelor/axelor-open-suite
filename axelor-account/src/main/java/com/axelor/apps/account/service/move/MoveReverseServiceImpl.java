@@ -227,7 +227,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             originMoveLine.getPartner(),
             originMoveLine.getAccount(),
             currencyAmount,
-            originMoveLine.getTaxLine(),
+            originMoveLine.getTaxLineSet(),
             originMoveLine.getDebit().add(originMoveLine.getCredit()),
             originMoveLine.getCurrencyRate(),
             !isDebit,

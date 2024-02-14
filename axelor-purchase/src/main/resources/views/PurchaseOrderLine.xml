@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -188,10 +188,10 @@
             hideIf="discountTypeSelect == 3"/>
           <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"/>
         </panel>
-        <field name="taxLine" canEdit="false"
+        <field name="taxLineSet" canEdit="false"
           onChange="action-group-purchase-purchase-orderline-taxline-onchange"
           domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-          form-view="tax-line-form"/>
+          form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"
           x-scale="$currency.numberOfDecimals"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"
@@ -200,7 +200,7 @@
           hidden="true"/>
         <field name="$currency.numberOfDecimals" hidden="true"/>
         <field name="fixedAssets" widget="boolean-switch"/>
-        <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
+        <field name="taxEquivSet" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>

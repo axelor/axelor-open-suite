@@ -1077,4 +1077,9 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType.date"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_USER =
       /*$$(*/ "AccountingReportType.user"; /*)*/
+
+  public static final String INVOICE_TYPE = /*$$(*/ "Invoice.type"; /*)*/
+  public static final String INVOICE_TAXES = /*$$(*/ "Invoice.taxes"; /*)*/
+  public static final String INVOICE_TOTAL_TAXES = /*$$(*/ "Invoice.totalTaxes"; /*)*/
+  public static final String INVOICE_TAX_CODE = /*$$(*/ "Invoice.taxCode"; /*)*/
 }

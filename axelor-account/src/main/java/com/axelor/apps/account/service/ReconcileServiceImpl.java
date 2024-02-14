@@ -391,7 +391,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (move.getMoveLineList().stream()
         .anyMatch(
             it ->
-                it.getTaxLine() == null
+                ObjectUtils.isEmpty(it.getTaxLineSet())
                     && it.getAccount()
                         .getAccountType()
                         .getTechnicalTypeSelect()
