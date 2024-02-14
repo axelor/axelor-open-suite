@@ -26,7 +26,7 @@
         <spacer colSpan="10"/>
         <field name="$activeLabel" showIf="$readonly()" showTitle="false" colSpan="2">
           <viewer depends="active">
-                        <![CDATA[<><Badge bg={active ? "success" : "danger"}>{active ? _t('Active') : _t('Inactive')}</Badge></>]]>
+            <![CDATA[<><Badge bg={active ? "success" : "danger"}>{active ? _t('Active') : _t('Inactive')}</Badge></>]]>
           </viewer>
         </field>
         <field name="partner"
@@ -66,7 +66,7 @@
         <field name="iban" readonlyIf="bank==null"
           onChange="action-group-account-bankdetails-iban-onchange" colSpan="12"/>
         <static name="invalidIbanText" hidden="true" colSpan="12">
-                    <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
+          <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
         </static>
       </panel>
 
@@ -252,13 +252,13 @@
 
   <action-attrs name="action-bank-details-attrs-fields-to-be-shown">
     <attribute for="bankCode" name="hidden"
-      expr="! ((bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.findAll{it.title == 'Bank Code'}?.size() &gt; 0) || bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.size() == 0)"/>
+      expr="! ((bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.findAll{it.metaField.name == 'bankCode'}?.size() &gt; 0) || bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.size() == 0)"/>
     <attribute for="accountNbr" name="hidden"
-      expr="! ((bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.findAll{it.title == 'Account Number'}?.size() &gt; 0) || bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.size() == 0)"/>
+      expr="! ((bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.findAll{it.metaField.name == 'accountNbr'}?.size() &gt; 0) || bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.size() == 0)"/>
     <attribute for="bbanKey" name="hidden"
-      expr="! ((bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.findAll{it.title == 'BBan Key'}?.size() &gt; 0) || bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.size() == 0)"/>
+      expr="! ((bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.findAll{it.metaField.name == 'bbanKey'}?.size() &gt; 0) || bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.size() == 0)"/>
     <attribute for="sortCode" name="hidden"
-      expr="! ((bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.findAll{it.title == 'Sort Code'}?.size() &gt; 0) || bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.size() == 0)"/>
+      expr="! ((bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.findAll{it.metaField.name == 'sortCode'}?.size() &gt; 0) || bank?.country?.bankDetailsTemplate?.bankDetailsTemplateLineList?.size() == 0)"/>
   </action-attrs>
 
   <action-attrs name="action-bank-details-attrs-iban-set-required">
