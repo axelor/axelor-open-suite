@@ -346,10 +346,18 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       return manufOrderPlannedEndDateT;
     }
 
-    LocalDateTime plannedStartDateT = nextOperationOrder.getPlannedStartDateT();
+    LocalDateTime plannedStartDateT =
+        nextOperationOrder
+            .getPlannedStartDateT()
+            .minusSeconds(operationOrder.getProdProcessLine().getTimeBeforeNextOperation());
 
     if (Objects.equals(nextOperationOrder.getPriority(), operationOrder.getPriority())) {
-      LocalDateTime plannedEndDateT = nextOperationOrder.getPlannedEndDateT();
+      LocalDateTime plannedEndDateT =
+          nextOperationOrder
+              .getPlannedEndDateT()
+              .minusSeconds(
+                  operationOrder.getProdProcessLine().getTimeBeforeNextOperation()
+                      - nextOperationOrder.getProdProcessLine().getTimeBeforeNextOperation());
       if (plannedEndDateT != null && plannedEndDateT.isBefore(manufOrderPlannedEndDateT)) {
         boolean isOnSameMachine =
             Objects.equals(nextOperationOrder.getMachine(), operationOrder.getMachine());
@@ -378,7 +386,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             .bind("machine", operationOrder.getMachine())
             .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
-            .order("-plannedEndDateT")
+            .order("-plannedEndWithWaitingDateT")
             .fetchOne();
 
     LocalDateTime manufOrderPlannedStartDateT = manufOrder.getPlannedStartDateT();
@@ -386,7 +394,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       return manufOrderPlannedStartDateT;
     }
 
-    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndDateT();
+    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndWithWaitingDateT();
 
     if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
       LocalDateTime plannedStartDateT = lastOperationOrder.getPlannedStartDateT();
