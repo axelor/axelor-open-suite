@@ -30,8 +30,12 @@ import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -292,32 +296,54 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       boolean applyFinancialDiscount) {
     InvoiceTermPayment invoiceTermPayment = new InvoiceTermPayment();
 
-    invoiceTermPayment.setInvoicePayment(invoicePayment);
-    invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
+    try {
+      invoiceTermPayment.setInvoicePayment(invoicePayment);
+      invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
 
-    boolean isCompanyCurrency =
-        invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
-    invoiceTermPayment.setPaidAmount(
-        isCompanyCurrency ? paidAmount : this.computePaidAmount(invoiceTermToPay, paidAmount));
+      boolean isCompanyCurrency =
+          invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
+      invoiceTermPayment.setPaidAmount(
+          isCompanyCurrency ? paidAmount : this.computePaidAmount(invoiceTermToPay, paidAmount));
 
-    if (paidAmount.compareTo(invoiceTermToPay.getAmount()) == 0) {
-      manageInvoiceTermFinancialDiscount(
-          invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
+      if (paidAmount.compareTo(invoiceTermToPay.getAmount()) == 0) {
+        manageInvoiceTermFinancialDiscount(
+            invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
+      }
+      invoiceTermPayment.setCompanyPaidAmount(
+          isCompanyCurrency
+              ? this.computeCompanyPaidAmount(
+                  invoiceTermToPay, invoicePayment, invoiceTermPayment.getPaidAmount())
+              : invoiceTermPayment.getPaidAmount());
+    } catch (AxelorException e) {
+      TraceBackService.trace(
+          new AxelorException(
+              e,
+              e.getCategory(),
+              I18n.get("Invoice") + " %s",
+              invoicePayment.getInvoice().getInvoiceId()),
+          ExceptionOriginRepository.INVOICE_ORIGIN);
     }
-    invoiceTermPayment.setCompanyPaidAmount(
-        isCompanyCurrency
-            ? this.computeCompanyPaidAmount(invoiceTermToPay, invoiceTermPayment.getPaidAmount())
-            : invoiceTermPayment.getPaidAmount());
-
     return invoiceTermPayment;
   }
 
-  protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
+  protected BigDecimal computeCompanyPaidAmount(
+      InvoiceTerm invoiceTerm, InvoicePayment invoicePayment, BigDecimal paidAmount)
+      throws AxelorException {
+    Currency moveCurrency =
+        invoicePayment == null
+            ? invoiceTerm.getCompany().getCurrency()
+            : invoicePayment.getCurrency();
+    boolean isSameCurrency = invoiceTerm.getCurrency() == moveCurrency;
+
     BigDecimal ratio =
-        invoiceTerm
-            .getCompanyAmount()
-            .divide(
-                invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        isSameCurrency
+            ? invoiceTerm
+                .getCompanyAmount()
+                .divide(
+                    invoiceTerm.getAmount(),
+                    AppBaseService.COMPUTATION_SCALING,
+                    RoundingMode.HALF_UP)
+            : currencyService.getCurrencyConversionRate(moveCurrency, invoiceTerm.getCurrency());
 
     return currencyScaleServiceAccount.getCompanyScaledValue(
         invoiceTerm, paidAmount.multiply(ratio));
