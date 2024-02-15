@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
-import com.axelor.apps.account.service.ReconcileGroupLetterService;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupLetterService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;

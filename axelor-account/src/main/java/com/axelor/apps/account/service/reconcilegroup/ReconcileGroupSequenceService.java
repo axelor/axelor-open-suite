@@ -16,25 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.reconcilegroup;
 
-import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.base.AxelorException;
 
-public interface ReconcileGroupService {
+public interface ReconcileGroupSequenceService {
 
   /**
-   * Add a reconcile to a group and validate the group if it is balanced. If the reconcile group
-   * does not exist, it is created.
-   *
-   * @param reconcile a reconcile.
+   * Set sequence for reconcile group, based on the status of the reconcile group, the sequence can
+   * be draft or final.
    */
-  void addAndValidateReconcileGroup(Reconcile reconcile) throws AxelorException;
-
-  /**
-   * Remove a reconcile from a reconcile group then update the group.
-   *
-   * @param reconcile a reconcile with a reconcile group.
-   */
-  void remove(Reconcile reconcile) throws AxelorException;
+  void fillCodeFromSequence(ReconcileGroup reconcileGroup) throws AxelorException;
 }

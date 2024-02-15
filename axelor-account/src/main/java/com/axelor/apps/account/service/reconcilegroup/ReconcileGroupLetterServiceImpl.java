@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.reconcilegroup;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReconcileGroup;
