@@ -458,6 +458,14 @@ public class AccountModule extends AxelorModule {
 
     bind(ReconcileGroupService.class).to(ReconcileGroupServiceImpl.class);
 
+    bind(ReconcileGroupFetchService.class).to(ReconcileGroupFetchServiceImpl.class);
+
+    bind(ReconcileGroupLetterService.class).to(ReconcileGroupLetterServiceImpl.class);
+
+    bind(ReconcileGroupUnletterService.class).to(ReconcileGroupUnletterServiceImpl.class);
+
+    bind(ReconcileGroupProposalService.class).to(ReconcileGroupProposalServiceImpl.class);
+
     bind(SubrogationReleaseRepository.class).to(SubrogationReleaseManagementRepository.class);
 
     bind(PeriodServiceImpl.class).to(PeriodServiceAccountImpl.class);
