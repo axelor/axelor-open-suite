@@ -234,7 +234,6 @@
 
   <action-group name="action-operation-order-group-finish">
     <action name="action-operation-order-method-finish"/>
-    <action name="action-operation-order-method-compute-duration"/>
   </action-group>
 
   <action-method name="action-operation-order-method-pause">
