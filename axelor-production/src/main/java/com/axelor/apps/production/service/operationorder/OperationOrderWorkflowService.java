@@ -537,6 +537,7 @@ public class OperationOrderWorkflowService {
     operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
     stopOperationOrderDuration(operationOrder);
+    computeDuration(operationOrder);
 
     operationOrderStockMoveService.finish(operationOrder);
     operationOrderRepo.save(operationOrder);
