@@ -27,6 +27,14 @@ import com.axelor.apps.base.AxelorException;
 import java.util.List;
 
 public interface InvoiceTermReplaceService {
+
+  /**
+   * This function replace invoice terms from a move to another when changing the invoice's move in
+   * a process.
+   *
+   * @param invoice, move (the new move), invoiceMoveLineList (the old move movelinelist),
+   *     partnerAccount for the reconcile
+   */
   void replaceInvoiceTerms(
       Invoice invoice, Move move, List<MoveLine> invoiceMoveLineList, Account partnerAccount)
       throws AxelorException;

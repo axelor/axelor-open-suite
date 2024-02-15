@@ -8,7 +8,9 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -50,10 +52,15 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
 
     resetInvoiceBeforeLcrCancellation(invoice, oldMove, lcrMove);
 
-    moveReverseService.generateReverse(lcrMove, true, true, true, lcrMove.getDate());
+    Move reverseMove =
+        moveReverseService.generateReverse(lcrMove, true, true, true, lcrMove.getDate());
+    reverseMove.setDescription(
+        String.format(
+            I18n.get(ITranslation.BILL_OF_EXCHANGE_CANCELLATION), invoice.getInvoiceId()));
   }
 
-  protected void resetInvoiceBeforeLcrCancellation(Invoice invoice, Move oldMove, Move lcrMove) {
+  protected void resetInvoiceBeforeLcrCancellation(Invoice invoice, Move oldMove, Move lcrMove)
+      throws AxelorException {
     if (lcrMove == null || oldMove == null) {
       return;
     }
@@ -87,7 +94,8 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
     invoice.setPartnerAccount(debitMoveLine.getAccount());
 
     resetInvoiceTermAmounts(invoice, oldInvoiceTermList);
-    invoiceTermReplaceService.replaceInvoiceTerms(invoice, oldInvoiceTermList, lcrInvoiceTermList);
+    invoiceTermReplaceService.replaceInvoiceTerms(
+        invoice, oldMove, lcrMove.getMoveLineList(), invoice.getPartnerAccount());
   }
 
   protected void resetInvoiceTermAmounts(Invoice invoice, List<InvoiceTerm> oldInvoiceTermList) {
