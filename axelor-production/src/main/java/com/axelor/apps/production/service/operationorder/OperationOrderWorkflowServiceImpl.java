@@ -423,7 +423,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
     stopOperationOrderDuration(operationOrder);
-    operationOrderPlanningService.computeDuration(operationOrder);
+    computeDuration(operationOrder);
 
     operationOrderStockMoveService.finish(operationOrder);
     operationOrderRepo.save(operationOrder);
