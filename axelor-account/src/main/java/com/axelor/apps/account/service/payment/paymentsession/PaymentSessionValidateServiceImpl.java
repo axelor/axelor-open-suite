@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
@@ -62,8 +61,10 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -73,9 +74,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -451,17 +452,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         || !moveMap.containsKey(partner)
         || (isGlobal && !partner.getIsCompensation())) {
       BankDetails partnerBankDetails = null;
-      Partner subrogationPartner = null;
+      Partner thirdPartyPayerPartner = null;
 
       if (paymentSession.getAccountingMethodSelect()
           == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM) {
-        subrogationPartner = invoiceTerm.getSubrogationPartner();
+        thirdPartyPayerPartner = invoiceTerm.getThirdPartyPayerPartner();
         partnerBankDetails = this.getBankDetails(invoiceTerm);
       }
 
       move =
           this.createMove(
-              paymentSession, partner, subrogationPartner, accountingDate, partnerBankDetails);
+              paymentSession, partner, thirdPartyPayerPartner, accountingDate, partnerBankDetails);
 
       if (!moveMap.containsKey(partner)) {
         moveMap.put(partner, new ArrayList<>());
@@ -480,7 +481,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected BankDetails getBankDetails(InvoiceTerm invoiceTerm) {
     return Optional.of(invoiceTerm)
-        .map(InvoiceTerm::getSubrogationPartner)
+        .map(InvoiceTerm::getThirdPartyPayerPartner)
         .map(partnerService::getDefaultBankDetails)
         .orElse(invoiceTerm.getBankDetails());
   }
@@ -488,7 +489,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected Move createMove(
       PaymentSession paymentSession,
       Partner partner,
-      Partner subrogationPartner,
+      Partner thirdPartyPayerPartner,
       LocalDate accountingDate,
       BankDetails partnerBankDetails)
       throws AxelorException {
@@ -511,7 +512,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     move.setPartnerBankDetails(partnerBankDetails);
     move.setPaymentSession(paymentSession);
     move.setPaymentCondition(null);
-    move.setSubrogationPartner(subrogationPartner);
+    move.setThirdPartyPayerPartner(thirdPartyPayerPartner);
 
     return move;
   }
@@ -724,7 +725,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (Partner partner : moveMap.keySet()) {
         for (Move move : moveMap.get(partner)) {
           move = moveRepo.find(move.getId());
-          Map<MoveLine, TaxLine> taxLineMap = this.extractTaxLinesFromFinancialDiscountLines(move);
+          Map<MoveLine, Set<TaxLine>> taxLineMap =
+              this.extractTaxLinesFromFinancialDiscountLines(move);
 
           moveLineTaxService.autoTaxLineGenerate(move, null, false);
 
@@ -734,23 +736,23 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
   }
 
-  protected Map<MoveLine, TaxLine> extractTaxLinesFromFinancialDiscountLines(Move move)
+  protected Map<MoveLine, Set<TaxLine>> extractTaxLinesFromFinancialDiscountLines(Move move)
       throws AxelorException {
-    Map<MoveLine, TaxLine> taxLineMap = new HashMap<>();
+    Map<MoveLine, Set<TaxLine>> taxLineMap = new HashMap<>();
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
-        taxLineMap.put(moveLine, moveLine.getTaxLine());
-        moveLine.setTaxLine(null);
+        taxLineMap.put(moveLine, moveLine.getTaxLineSet());
+        moveLine.setTaxLineSet(Sets.newHashSet());
       }
     }
 
     return taxLineMap;
   }
 
-  protected void applyTaxes(Map<MoveLine, TaxLine> taxLineMap) {
+  protected void applyTaxes(Map<MoveLine, Set<TaxLine>> taxLineMap) {
     for (MoveLine moveLine : taxLineMap.keySet()) {
-      moveLine.setTaxLine(taxLineMap.get(moveLine));
+      moveLine.setTaxLineSet(taxLineMap.get(moveLine));
     }
   }
 
@@ -892,11 +894,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         invoiceTermFinancialDiscountService.getFinancialDiscountTaxAmount(invoiceTerm);
     BigDecimal financialDiscountAmount =
         invoiceTerm.getFinancialDiscountAmount().subtract(financialDiscountTaxAmount);
-    Map<Tax, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
+    Map<String, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
         moveLineFinancialDiscountService.getFinancialDiscountTaxMap(invoiceTerm.getMoveLine());
-    Map<Tax, Integer> vatSystemTaxMap =
+    Map<String, Integer> vatSystemTaxMap =
         moveLineFinancialDiscountService.getVatSystemTaxMap(invoiceTerm.getMoveLine().getMove());
-    Map<Tax, Account> accountTaxMap =
+    Map<String, Account> accountTaxMap =
         moveLineFinancialDiscountService.getAccountTaxMap(invoiceTerm.getMoveLine().getMove());
 
     counter =

@@ -204,17 +204,4 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
     return opportunityDefaultStatus;
   }
-
-  @Override
-  public PartnerStatus getPartnerDefaultStatus() throws AxelorException {
-    PartnerStatus partnerDefaultStatus = getAppCrm().getPartnerDefaultStatus();
-
-    if (partnerDefaultStatus == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(CrmExceptionMessage.CRM_DEFAULT_PARTNER_STATUS_MISSING));
-    }
-
-    return partnerDefaultStatus;
-  }
 }

@@ -40,6 +40,7 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -124,49 +126,25 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
               purchaseOrderLine.getBudgetDistributionList()) {
             Budget budget = budgetDistribution.getBudget();
 
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(
-                  budget,
-                  currencyScaleServiceBudget.getCompanyScaledValue(
-                      budget, budgetDistribution.getAmount()));
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.remove(budget);
-              amountPerBudgetMap.put(
-                  budget,
-                  currencyScaleServiceBudget.getCompanyScaledValue(
-                      budget, oldAmount.add(budgetDistribution.getAmount())));
-            }
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, budgetDistribution.getAmount(), amountPerBudgetMap);
           }
 
-          for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budgetEntry.getKey(), budgetEntry.getValue(), purchaseOrder.getOrderDate());
-          }
         } else {
           Budget budget = purchaseOrderLine.getBudget();
           if (budget == null && purchaseOrder.getBudget() != null) {
             budget = purchaseOrder.getBudget();
 
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(
-                  budget,
-                  currencyScaleServiceBudget.getCompanyScaledValue(
-                      budget, purchaseOrderLine.getExTaxTotal()));
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.put(
-                  budget,
-                  currencyScaleServiceBudget.getCompanyScaledValue(
-                      budget, oldAmount.add(purchaseOrderLine.getExTaxTotal())));
-            }
-
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budget, amountPerBudgetMap.get(budget), purchaseOrder.getOrderDate());
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, purchaseOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
           }
         }
+      }
+
+      for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
+        budgetExceedAlert +=
+            budgetDistributionService.getBudgetExceedAlert(
+                budgetEntry.getKey(), budgetEntry.getValue(), purchaseOrder.getOrderDate());
       }
     }
     return budgetExceedAlert;
@@ -203,7 +181,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
                         ? purchaseOrderLine.getPurchaseOrder().getOrderDate()
                         : null));
 
-            purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
+            budgetDistributionService.linkBudgetDistributionWithParent(
+                budgetDistribution, purchaseOrderLine);
           }
 
           budgetDistribution.setAmount(
@@ -214,6 +193,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
             && !appBudget.getManageMultiBudget()) {
           purchaseOrderLine.clearBudgetDistributionList();
         }
+        purchaseOrderLine.setBudgetDistributionSumAmount(purchaseOrderLine.getCompanyExTaxTotal());
       }
     }
   }
@@ -243,10 +223,14 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       throws AxelorException {
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
-        Product product = poLine.getProduct();
-        if (product != null) {
+        String productCode =
+            Optional.of(poLine)
+                .map(PurchaseOrderLine::getProduct)
+                .map(Product::getCode)
+                .orElse(poLine.getProductName());
+        if (StringUtils.notEmpty(productCode)) {
           budgetService.validateBudgetDistributionAmounts(
-              poLine.getBudgetDistributionList(), poLine.getCompanyExTaxTotal(), product.getCode());
+              poLine.getBudgetDistributionList(), poLine.getCompanyExTaxTotal(), productCode);
         }
       }
     }
@@ -314,13 +298,15 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 
-    updateBudgetLinesFromPurchaseOrder(purchaseOrder);
-
-    if (appBudgetService.getAppBudget() != null
-        && !appBudgetService.getAppBudget().getManageMultiBudget()) {
-      generateBudgetDistribution(purchaseOrder);
-      updateBudgetDistributionAmountAvailable(purchaseOrder);
+    if (!appBudgetService.isApp("budget")) {
+      return;
     }
+
+    if (!appBudgetService.getAppBudget().getManageMultiBudget()) {
+      generateBudgetDistribution(purchaseOrder);
+    }
+
+    updateBudgetLinesFromPurchaseOrder(purchaseOrder);
   }
 
   @Transactional

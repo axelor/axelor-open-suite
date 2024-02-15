@@ -91,7 +91,7 @@ public class TSTimerController {
       TSTimer timerView = request.getContext().asType(TSTimer.class);
       TSTimer timer = Beans.get(TSTimerRepository.class).find(timerView.getId());
 
-      Beans.get(TimesheetTimerService.class).stop(timer);
+      Beans.get(TimesheetTimerService.class).stopAndGenerateTimesheetLine(timer);
 
       response.setReload(true);
     } catch (Exception e) {

@@ -142,6 +142,7 @@ public class BudgetController {
 
         boolean checkBudgetKey =
             Beans.get(BudgetToolsService.class).checkBudgetKeyInConfig(company);
+        response.setAttr("budgetKeyPanel", "hidden", !checkBudgetKey);
         response.setAttr("accountSet", "hidden", !checkBudgetKey);
         response.setAttr("analyticAxis", "hidden", !checkBudgetKey);
         response.setAttr("analyticAccount", "hidden", !checkBudgetKey);

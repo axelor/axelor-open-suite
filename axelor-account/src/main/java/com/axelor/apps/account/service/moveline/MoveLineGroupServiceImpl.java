@@ -115,7 +115,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("credit", moveLine.getCredit());
     valuesMap.put("debit", moveLine.getDebit());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
     valuesMap.put("interbankCodeLine", moveLine.getInterbankCodeLine());
     valuesMap.put("exportedDirectDebitOk", moveLine.getExportedDirectDebitOk());
@@ -177,7 +177,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
-      moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addThirdPartyPayerPartnerHidden(move, attrsMap);
       moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
       moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
       moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
@@ -203,7 +203,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addValidatePeriod(move, attrsMap);
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
-      moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addThirdPartyPayerPartnerHidden(move, attrsMap);
       moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
       moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
       moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
@@ -301,9 +301,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("isCutOffGenerated", moveLine.getCutOffEndDate());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
-    valuesMap.put("taxLineBeforeReverse", moveLine.getTaxLineBeforeReverse());
+    valuesMap.put("taxLineBeforeReverseSet", moveLine.getTaxLineBeforeReverseSet());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
     valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());

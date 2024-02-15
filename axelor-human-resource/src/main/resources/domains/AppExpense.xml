@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -10,7 +10,8 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="computeDistanceWithWebService"/>
-    <boolean name="isOrphanExpenseLineManaged" title="Manage orphan expense lines"/>
+    <boolean name="isOrphanExpenseLineManaged" title="Manage orphan expense lines"
+      help="This configuration allows to fill expense line before creating any expense. This process is similar to the mobile application one."/>
 
     <track>
       <field name="computeDistanceWithWebService" on="UPDATE"/>

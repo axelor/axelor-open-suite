@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -34,6 +35,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
@@ -45,6 +47,7 @@ import java.time.LocalDate;
 public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl {
 
   protected BudgetDistributionService budgetDistributionService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public MoveReverseServiceBudgetImpl(
@@ -60,9 +63,11 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
       BankReconciliationLineService bankReconciliationLineService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
       ExpensePaymentService expensePaymentService,
       AppService appService,
-      BudgetDistributionService budgetDistributionService) {
+      BudgetDistributionService budgetDistributionService,
+      AppBudgetService appBudgetService) {
     super(
         moveCreateService,
         reconcileService,
@@ -76,9 +81,11 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
         bankReconciliationService,
         bankReconciliationLineRepository,
         bankReconciliationLineService,
+        currencyScaleServiceAccount,
         expensePaymentService,
         appService);
     this.budgetDistributionService = budgetDistributionService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -88,7 +95,9 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
     MoveLine reverseMoveLine =
         super.generateReverseMoveLine(reverseMove, originMoveLine, dateOfReversion, isDebit);
 
-    computeReverseBudgetDistribution(reverseMoveLine, originMoveLine);
+    if (appBudgetService.isApp("budget")) {
+      computeReverseBudgetDistribution(reverseMoveLine, originMoveLine);
+    }
     return reverseMoveLine;
   }
 

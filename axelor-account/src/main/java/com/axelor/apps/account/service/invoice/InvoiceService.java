@@ -320,5 +320,5 @@ public interface InvoiceService {
 
   Invoice computeEstimatedPaymentDate(Invoice invoice);
 
-  void updateSubrogationPartner(Invoice invoice);
+  void updateThirdPartyPayerPartner(Invoice invoice);
 }

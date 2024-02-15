@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form name="sale-order-invoicing-wizard-form" title="Invoicing"
     model="com.axelor.apps.sale.db.SaleOrder"
@@ -42,9 +42,9 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="product.code" width="120"/>
     <field name="productName" readonly="true"/>
-    <field name="qty" readonly="true" aggregate="sum" x-scale="2"/>
+    <field name="qty" readonly="true" aggregate="sum"/>
     <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="price" readonly="true" x-scale="2"/>
+    <field name="price" readonly="true"/>
     <field name="exTaxTotal" readonly="true" aggregate="sum"
       x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="amountInvoiced" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
@@ -84,8 +84,16 @@
     <action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
     <action name="action-method-sale-order-invoicing-wizard-operation-select-domain"/>
     <action name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list"/>
+    <action name="action-attrs-sale-order-invoicing-wizard-price-and-qty-precision"/>
     <action name="action-method-sale-order-invoicing-wizard-set-amount-to-invoice-scale"/>
   </action-group>
+
+  <action-attrs name="action-attrs-sale-order-invoicing-wizard-price-and-qty-precision">
+    <attribute for="saleOrderLineList.price" name="scale"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute for="saleOrderLineList.qty" name="scale"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
 
   <action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
     <attribute for="qtyToInvoice" name="value"

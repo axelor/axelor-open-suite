@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -58,6 +59,7 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
       BankReconciliationLineService bankReconciliationLineService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
       ExpensePaymentService expensePaymentService,
       AppService appService) {
     super(
@@ -72,7 +74,8 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         moveToolService,
         bankReconciliationService,
         bankReconciliationLineRepository,
-        bankReconciliationLineService);
+        bankReconciliationLineService,
+        currencyScaleServiceAccount);
     this.expensePaymentService = expensePaymentService;
     this.appService = appService;
   }

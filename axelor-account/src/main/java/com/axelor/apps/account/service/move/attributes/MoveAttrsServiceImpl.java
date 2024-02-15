@@ -113,6 +113,16 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         move.getStatusSelect() == MoveRepository.STATUS_NEW
             || move.getStatusSelect() == MoveRepository.STATUS_CANCELED,
         attrsMap);
+
+    this.addAttr(
+        "moveLineList.vatSystemSelect",
+        "hidden",
+        move.getJournal() != null
+            && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+        attrsMap);
   }
 
   @Override
@@ -390,7 +400,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addSubrogationPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
+  public void addThirdPartyPayerPartnerReadonly(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean isReadonly =
         move.getMoveLineList().stream()
             .map(MoveLine::getInvoiceTermList)
@@ -398,7 +409,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
             .flatMap(Collection::stream)
             .allMatch(InvoiceTerm::getIsPaid);
 
-    this.addAttr("subrogationPartner", "readonly", isReadonly, attrsMap);
+    this.addAttr("thirdPartyPayerPartner", "readonly", isReadonly, attrsMap);
   }
 
   @Override

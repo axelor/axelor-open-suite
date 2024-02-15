@@ -167,9 +167,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         for (Reconcile reconcile : reconcileList) {
           reconcileService.unreconcile(reconcile);
         }
+      } else {
+        cancelInvoicePayment(move);
       }
-
-      cancelInvoicePayment(move);
 
       if (validatedMove && isAutomaticReconcile) {
         if (isDebit) {
@@ -227,7 +227,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             originMoveLine.getPartner(),
             originMoveLine.getAccount(),
             currencyAmount,
-            originMoveLine.getTaxLine(),
+            originMoveLine.getTaxLineSet(),
             originMoveLine.getDebit().add(originMoveLine.getCredit()),
             originMoveLine.getCurrencyRate(),
             !isDebit,

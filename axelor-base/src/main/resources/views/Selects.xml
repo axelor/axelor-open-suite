@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -535,6 +535,7 @@
   <selection name='trace.back.origin.select'>
     <option value="default">Default</option>
     <option value="import">Importing</option>
+    <option value="addressRecompute">Recompute addresses batch</option>
   </selection>
 
   <selection name="base.print.template.format.select">
@@ -750,6 +751,11 @@
 
   <selection name="base.partner.link.type.type.select">
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
+  </selection>
+
+  <selection name="tax.type.type.select">
+    <option value="1">VAT</option>
+    <option value="2">Other</option>
   </selection>
 
 </object-views>
