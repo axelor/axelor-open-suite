@@ -16,7 +16,7 @@
 
   <form name="move-template-form" title="Move template"
     model="com.axelor.apps.account.db.MoveTemplate" width="large"
-    onNew="action-move-template-set-default" onLoad="action-move-template-method-compute-totals">
+    onNew="action-move-template-set-default" onLoad="action-move-template-method-onload">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true" colSpan="3"/>
@@ -309,6 +309,10 @@
 
   <action-method name="action-move-template-method-journal-onchange">
     <call class="com.axelor.apps.account.web.MoveTemplateController" method="onChangeJournal"/>
+  </action-method>
+
+  <action-method name="action-move-template-method-onload">
+    <call class="com.axelor.apps.account.web.MoveTemplateController" method="onLoad"/>
   </action-method>
 
 </object-views>
