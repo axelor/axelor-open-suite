@@ -349,7 +349,7 @@
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
-        <field name="taxNbr" hideIf="partnerTypeSelect== 2"/>
+        <field name="taxNbr"/>
         <field name="paymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
         <field name="parentPartner" hideIf="partnerTypeSelect != 1"

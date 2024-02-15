@@ -1,5 +1,7 @@
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Partner;
+
 public class RegistrationNumberValidationFRA extends RegistrationNumberValidation {
   public boolean computeRegistrationCodeValidity(String registrationCode) {
     int sum = 0;
@@ -28,5 +30,36 @@ public class RegistrationNumberValidationFRA extends RegistrationNumberValidatio
       isOddNumber = !isOddNumber;
     }
     return sum % 10 == 0;
+  }
+
+  @Override
+  protected String getTaxNbrFromRegistrationCode(Partner partner) {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null
+        && partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate() != null
+        && partner
+            .getMainAddress()
+            .getAddressL7Country()
+            .getRegistrationNumberTemplate()
+            .getUseTaxNbr()) {
+      String taxNbr = "";
+      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
+      String regCode = partner.getRegistrationCode();
+
+      if (regCode != null) {
+        regCode = regCode.replaceAll(" ", "");
+
+        if (regCode.length() == 14) {
+          String siren = regCode.substring(0, 9);
+          String taxKey = getTaxKeyFromSIREN(siren);
+
+          taxNbr = String.format("%s%s%s", countryCode, taxKey, siren);
+        }
+      }
+
+      return taxNbr;
+    } else {
+      return null;
+    }
   }
 }

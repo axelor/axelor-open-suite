@@ -18,17 +18,99 @@
         <field name="titleToDisplay"/>
         <field name="requiredSize"/>
         <field name="validationMethodSelect"/>
+        <field name="useTaxNbr" title="Use tax number"/>
       </panel>
       <panel title="Short registration number" colSpan="12">
         <field name="useSiren" colSpan="12"/>
-        <field name="sirenPos" showIf="useSiren"/>
-        <field name="sirenLength" showIf="useSiren"/>
+        <field name="sirenPos" showIf="useSiren"
+          onChange="action-registration-number-template-group-siren-pos-on-change-check"/>
+        <field name="sirenLength" showIf="useSiren"
+          onChange="action-registration-number-template-group-siren-length-on-change-check"/>
       </panel>
       <panel title="Internal classification number" colSpan="12">
         <field name="useNic" colSpan="12"/>
-        <field name="nicPos" showIf="useNic"/>
-        <field name="nicLength" showIf="useNic"/>
+        <field name="nicPos" showIf="useNic"
+          onChange="action-registration-number-template-group-nic-pos-on-change-check"/>
+        <field name="nicLength" showIf="useNic"
+          onChange="action-registration-number-template-group-nic-length-on-change-check"/>
       </panel>
     </panel>
   </form>
+
+  <action-group
+    name="action-registration-number-template-group-nic-length-on-change-check">
+    <action
+      name="action-registration-number-template-sum-of-nicpos-niclength-not-greater-than-requiredsize-niclength-check"/>
+    <action
+      name="action-registration-number-template-sum-of-nicpos-niclength-not-greater-than-requiredsize-nicPos-check"/>
+  </action-group>
+
+  <action-group
+    name="action-registration-number-template-group-siren-length-on-change-check">
+    <action
+      name="action-registration-number-template-sum-of-sirenpos-sirenlength-not-greater-than-requiredsize-sirenlength-check"/>
+    <action
+      name="action-registration-number-template-sum-of-sirenpos-sirenlength-not-greater-than-requiredsize-sirenPos-check"/>
+  </action-group>
+
+  <action-group
+    name="action-registration-number-template-group-siren-pos-on-change-check">
+    <action
+      name="action-registration-number-template-sirenpos-not-greater-than-requiredsize-check"/>
+    <action
+      name="action-registration-number-template-sum-of-sirenpos-sirenlength-not-greater-than-requiredsize-sirenPos-check"/>
+    <action name="action-registration-number-template-group-siren-length-on-change-check"/>
+  </action-group>
+
+  <action-group
+    name="action-registration-number-template-group-nic-pos-on-change-check">
+    <action
+      name="action-registration-number-template-nicpos-not-greater-than-requiredsize-check"/>
+    <action
+      name="action-registration-number-template-sum-of-nicpos-niclength-not-greater-than-requiredsize-nicPos-check"/>
+    <action name="action-registration-number-template-group-nic-length-on-change-check"/>
+  </action-group>
+
+  <action-condition
+    name="action-registration-number-template-sirenpos-not-greater-than-requiredsize-check">
+    <check
+      error="Starting position in the registration number should be less than the required size."
+      field="sirenPos" if="sirenPos > requiredSize"/>
+  </action-condition>
+
+  <action-condition
+    name="action-registration-number-template-nicpos-not-greater-than-requiredsize-check">
+    <check
+      error="Starting position in the registration number should be less than the required size."
+      field="nicPos" if="nicPos > requiredSize"/>
+  </action-condition>
+
+  <action-condition
+    name="action-registration-number-template-sum-of-sirenpos-sirenlength-not-greater-than-requiredsize-sirenPos-check">
+    <check
+      error="The sum of the starting position in the registration number and length should not be greater than the required size."
+      field="sirenPos" if="sirenPos + sirenLength > requiredSize + 1"/>
+  </action-condition>
+
+  <action-condition
+    name="action-registration-number-template-sum-of-nicpos-niclength-not-greater-than-requiredsize-nicPos-check">
+    <check
+      error="The sum of the starting position in the registration number and length should not be greater than the required size."
+      field="nicPos" if="nicPos + nicLength > requiredSize + 1"/>
+  </action-condition>
+
+  <action-condition
+    name="action-registration-number-template-sum-of-sirenpos-sirenlength-not-greater-than-requiredsize-sirenlength-check">
+    <check
+      error="The sum of the starting position in the registration number and length should not be greater than the required size."
+      field="sirenLength" if="sirenPos + sirenLength > requiredSize + 1"/>
+  </action-condition>
+
+  <action-condition
+    name="action-registration-number-template-sum-of-nicpos-niclength-not-greater-than-requiredsize-niclength-check">
+    <check
+      error="The sum of the starting position in the registration number and length should not be greater than the required size."
+      field="nicLength" if="nicPos + nicLength > requiredSize + 1"/>
+  </action-condition>
+
 </object-views>

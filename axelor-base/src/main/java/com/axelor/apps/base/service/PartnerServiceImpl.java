@@ -811,18 +811,25 @@ public class PartnerServiceImpl implements PartnerService {
     attrsMap.put("siren", new HashMap<>());
     attrsMap.put("nic", new HashMap<>());
     attrsMap.put("registrationCode", new HashMap<>());
+    attrsMap.put("taxNbr", new HashMap<>());
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
     boolean isIndividual =
         partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
     boolean hideNic = true, hideSiren = true;
+    boolean isCustomer = partner.getIsCustomer();
+    boolean hideTaxNbr = !isCustomer;
     Address mainAddress = partner.getMainAddress();
     if (mainAddress != null && mainAddress.getAddressL7Country() != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
           mainAddress.getAddressL7Country().getRegistrationNumberTemplate();
       hideNic = isIndividual || !registrationNumberTemplate.getUseNic();
       hideSiren = isIndividual || !registrationNumberTemplate.getUseSiren();
+      boolean useTaxNbr = registrationNumberTemplate.getUseTaxNbr();
+      hideTaxNbr = !useTaxNbr || !isCustomer;
     }
     attrsMap.get("siren").put("hidden", hideSiren);
     attrsMap.get("nic").put("hidden", hideNic);
+    attrsMap.get("taxNbr").put("hidden", hideTaxNbr);
     String registrationCodeTitle = getRegistrationCodeTitleFromTemplate(partner);
     attrsMap
         .get("registrationCode")
