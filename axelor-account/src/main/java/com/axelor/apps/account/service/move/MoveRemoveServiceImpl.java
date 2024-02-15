@@ -170,9 +170,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         archivingService.getObjectLinkTo(moveLine, moveLine.getId());
     for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
       String modelName = entry.getKey();
-      List<String> modelsToIgnore =
-          Lists.newArrayList(
-              "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
+      List<String> modelsToIgnore = getModelsToIgnoreList();
       if (!modelsToIgnore.contains(modelName)
           && moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
         errorMessage +=
@@ -191,6 +189,12 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
       }
     }
     return errorMessage;
+  }
+
+  @Override
+  public List<String> getModelsToIgnoreList() {
+    return Lists.newArrayList(
+        "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
   }
 
   @Override

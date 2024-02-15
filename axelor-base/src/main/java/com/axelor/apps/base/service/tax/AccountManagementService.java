@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface AccountManagementService {
 
@@ -54,11 +55,15 @@ public interface AccountManagementService {
    * @return
    * @throws AxelorException
    */
-  public TaxLine getTaxLine(
+  public Set<TaxLine> getTaxLineSet(
       LocalDate date,
       Product product,
       Company company,
       FiscalPosition fiscalPosition,
       boolean isPurchase)
+      throws AxelorException;
+
+  public Set<TaxEquiv> getProductTaxEquivSet(
+      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
       throws AxelorException;
 }

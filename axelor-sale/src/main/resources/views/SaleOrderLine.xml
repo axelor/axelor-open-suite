@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
@@ -291,11 +291,11 @@
         </panel>
 
         <panel name="taxPanel" colSpan="12">
-          <field name="taxLine" canEdit="false" colSpan="6"
+          <field name="taxLineSet" canEdit="false" colSpan="6"
             readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
             onChange="action-group-sale-saleorderline-tax-line-onchange"
             domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-            form-view="tax-line-form"/>
+            form-view="tax-line-form" widget="TagSelect"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"
             x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" readonly="true" colSpan="3"
@@ -420,7 +420,11 @@
           grid-view="project-grid"/>
         <field name="toInvoice" colSpan="3"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-          if-module="axelor-business-project"/>
+          if-module="axelor-business-project"
+          onChange="action-sale-order-line-record-set-default-invoicing-mode-select"/>
+        <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
+          if-module="axelor-business-project" showIf="toInvoice"/>
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
           action="action-sale-order-line-view-project-tasks" colSpan="12"/>
       </panel>
@@ -480,10 +484,10 @@
           <field name="priceDiscounted" colSpan="4" hidden="true"/>
         </panel>
       </panel>
-      <field name="taxLine" canEdit="false" colSpan="4"
+      <field name="taxLineSet" canEdit="false" colSpan="4"
         onChange="action-group-sale-saleorderline-tax-line-onchange"
         domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-        form-view="tax-line-form"/>
+        form-view="tax-line-form" widget="TagSelect"/>
       <field name="exTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
@@ -571,7 +575,6 @@
     <view type="grid" name="stock-move-line-sale-order-line-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.saleOrderLine.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-sale-order-line-view-project-tasks" title="Related tasks"
@@ -1045,5 +1048,13 @@
   <action-attrs name="action-sale-order-line-attrs-onnew-focus">
     <attribute for="product" name="focus" expr="true"/>
   </action-attrs>
+
+  <action-record
+    name="action-sale-order-line-record-set-default-invoicing-mode-select"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="invoicingModeSelect"
+      expr="eval:__repo__(SaleOrderLine).INVOICING_MODE_DIRECTLY" if="toInvoice"/>
+    <field name="invoicingModeSelect" expr="eval:null" if="!toInvoice"/>
+  </action-record>
 
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="partner-related-contact-grid" model="com.axelor.apps.base.db.Partner"
     title="Contacts">
@@ -611,7 +611,6 @@
     <view type="form" name="event-form"/>
     <view-param name="forceEdit" value="true"/>
     <domain>self.partner.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-contact-view-all-events" title="Events"
@@ -620,7 +619,6 @@
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
     <domain>self.contactPartner.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-partner-view-opportunities" title="Opportunities"
@@ -629,7 +627,6 @@
     <view type="grid" name="opportunity-dashlet-grid"/>
     <view type="form" name="opportunity-form"/>
     <domain>self.partner.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-contact-view-opportunities" title="Opportunities"
@@ -638,7 +635,6 @@
     <view type="grid" name="opportunity-dashlet-grid"/>
     <view type="form" name="opportunity-form"/>
     <domain>self.contact.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-partner-view-events" title="Events"

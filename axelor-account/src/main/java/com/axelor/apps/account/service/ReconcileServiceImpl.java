@@ -356,20 +356,16 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (currencyScaleServiceAccount
-                .getScaledValue(creditMoveLine, reconcile.getAmount())
-                .compareTo(
-                    currencyScaleServiceAccount.getScaledValue(
-                        creditMoveLine,
-                        creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())))
-            > 0
-        || currencyScaleServiceAccount
-                .getScaledValue(debitMoveLine, reconcile.getAmount())
-                .compareTo(
-                    currencyScaleServiceAccount.getScaledValue(
-                        debitMoveLine,
-                        debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())))
-            > 0) {
+    if (currencyScaleServiceAccount.isGreaterThan(
+            reconcile.getAmount(),
+            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
+            creditMoveLine,
+            false)
+        || currencyScaleServiceAccount.isGreaterThan(
+            reconcile.getAmount(),
+            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
+            debitMoveLine,
+            false)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -395,7 +391,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (move.getMoveLineList().stream()
         .anyMatch(
             it ->
-                it.getTaxLine() == null
+                ObjectUtils.isEmpty(it.getTaxLineSet())
                     && it.getAccount()
                         .getAccountType()
                         .getTechnicalTypeSelect()

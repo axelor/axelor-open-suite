@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,14 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -47,15 +49,21 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected MoveLineRepository moveLineRepository;
   protected MoveLineService moveLineService;
+  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public BankReconciliationLineServiceImpl(
       BankReconciliationLineRepository bankReconciliationLineRepository,
       MoveLineRepository moveLineRepository,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.moveLineRepository = moveLineRepository;
     this.moveLineService = moveLineService;
+    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -118,22 +126,29 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
   @Override
   public void checkAmount(BankReconciliationLine bankReconciliationLine) throws AxelorException {
-
     MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
-    BigDecimal bankDebit = bankReconciliationLine.getDebit();
-    BigDecimal bankCredit = bankReconciliationLine.getCredit();
+    BigDecimal bankDebit =
+        currencyScaleServiceBankPayment.getScaledValue(
+            bankReconciliationLine, bankReconciliationLine.getDebit());
+    BigDecimal bankCredit =
+        currencyScaleServiceBankPayment.getScaledValue(
+            bankReconciliationLine, bankReconciliationLine.getCredit());
     boolean isDebit = bankDebit.compareTo(bankCredit) > 0;
 
     BigDecimal moveLineDebit;
     BigDecimal moveLineCredit;
 
     if (isDebit) {
-      moveLineCredit = moveLine.getCurrencyAmount().abs();
-      moveLineDebit = moveLine.getDebit();
+      moveLineCredit =
+          currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
+      moveLineDebit =
+          currencyScaleServiceAccount.getCompanyScaledValue(moveLine, moveLine.getDebit());
     } else {
-      moveLineDebit = moveLine.getCurrencyAmount().abs();
-      moveLineCredit = moveLine.getCredit();
+      moveLineDebit =
+          currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
+      moveLineCredit =
+          currencyScaleServiceAccount.getCompanyScaledValue(moveLine, moveLine.getCredit());
     }
 
     if (bankDebit.add(bankCredit).compareTo(BigDecimal.ZERO) == 0) {
@@ -149,11 +164,17 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
     if (!(bankDebit.compareTo(BigDecimal.ZERO) > 0
             && moveLineCredit.compareTo(BigDecimal.ZERO) > 0
-            && bankDebit.compareTo(moveLineCredit.subtract(moveLine.getBankReconciledAmount()))
+            && bankDebit.compareTo(
+                    currencyScaleServiceBankPayment.getScaledValue(
+                        bankReconciliationLine,
+                        moveLineCredit.subtract(moveLine.getBankReconciledAmount())))
                 == 0)
         && !(bankCredit.compareTo(BigDecimal.ZERO) > 0
             && moveLineDebit.compareTo(BigDecimal.ZERO) > 0
-            && bankCredit.compareTo(moveLineDebit.subtract(moveLine.getBankReconciledAmount()))
+            && bankCredit.compareTo(
+                    currencyScaleServiceBankPayment.getScaledValue(
+                        bankReconciliationLine,
+                        moveLineDebit.subtract(moveLine.getBankReconciledAmount())))
                 == 0)) {
       throw new AxelorException(
           bankReconciliationLine,
@@ -219,14 +240,17 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
   @Override
   public void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
-
     BigDecimal bankReconciledAmount =
-        bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
+        currencyScaleServiceBankPayment.getScaledValue(
+            bankReconciliationLine,
+            bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit()));
 
     BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
     if (bankStatementLine != null) {
       bankStatementLine.setAmountRemainToReconcile(
-          bankStatementLine.getAmountRemainToReconcile().subtract(bankReconciledAmount));
+          currencyScaleServiceBankPayment.getScaledValue(
+              bankReconciliationLine,
+              bankStatementLine.getAmountRemainToReconcile().subtract(bankReconciledAmount)));
     }
 
     MoveLine moveLine = bankReconciliationLine.getMoveLine();
@@ -264,7 +288,11 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
       BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
       if (bankStatementLine != null) {
         bankStatementLine.setAmountRemainToReconcile(
-            bankStatementLine.getAmountRemainToReconcile().add(moveLine.getBankReconciledAmount()));
+            currencyScaleServiceBankPayment.getScaledValue(
+                bankStatementLine,
+                bankStatementLine
+                    .getAmountRemainToReconcile()
+                    .add(moveLine.getBankReconciledAmount())));
       }
       moveLine.setBankReconciledAmount(BigDecimal.ZERO);
       moveLineRepository.save(moveLine);
