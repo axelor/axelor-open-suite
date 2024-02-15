@@ -28,7 +28,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -223,7 +223,7 @@ public class IndicatorGeneratorService {
                 + ".csv"
             : QUERY_RESULT_CSV_FILE_NAME + "_" + timeStamp + ".csv";
 
-    CsvTool.csvWriter(
+    CsvHelper.csvWriter(
         filePath, fileName, ';', columnHeader.toArray(new String[0]), queryResultData);
 
     Path path = Paths.get(filePath, fileName);

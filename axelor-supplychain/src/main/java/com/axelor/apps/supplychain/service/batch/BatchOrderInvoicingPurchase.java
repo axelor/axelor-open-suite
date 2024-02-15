@@ -30,7 +30,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -65,14 +65,14 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
 
     if (!Strings.isNullOrEmpty(supplychainBatch.getDeliveryOrReceiptState())) {
       List<Integer> receiptStateList =
-          StringTool.getIntegerList(supplychainBatch.getDeliveryOrReceiptState());
+          StringHelper.getIntegerList(supplychainBatch.getDeliveryOrReceiptState());
       filterList.add("self.receiptState IN (:receiptStateList)");
       query.bind("receiptStateList", receiptStateList);
     }
 
     if (!Strings.isNullOrEmpty(supplychainBatch.getStatusSelect())) {
       List<Integer> statusSelectList =
-          StringTool.getIntegerList(supplychainBatch.getStatusSelect());
+          StringHelper.getIntegerList(supplychainBatch.getStatusSelect());
       filterList.add("self.statusSelect IN (:statusSelectList)");
       query.bind("statusSelectList", statusSelectList);
     }

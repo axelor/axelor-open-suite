@@ -335,15 +335,15 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public void setSubrogationPartner(Move move) {
+  public void setThirdPartyPayerPartner(Move move) {
     if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
       return;
     }
 
-    if (journalService.isSubrogationOk(move.getJournal())) {
-      move.setSubrogationPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
+    if (journalService.isThirdPartyPayerOk(move.getJournal())) {
+      move.setThirdPartyPayerPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
     } else {
-      move.setSubrogationPartner(null);
+      move.setThirdPartyPayerPartner(null);
     }
   }
 }

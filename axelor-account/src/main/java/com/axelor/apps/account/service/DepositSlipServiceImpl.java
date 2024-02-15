@@ -41,7 +41,7 @@ import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;

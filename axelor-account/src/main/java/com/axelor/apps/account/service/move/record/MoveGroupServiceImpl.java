@@ -147,7 +147,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordUpdateService.updateInvoiceTerms(
         move, paymentConditionChange || dateChange, headerChange);
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
-    moveRecordUpdateService.updateSubrogationPartner(move);
+    moveRecordUpdateService.updateThirdPartyPayerPartner(move);
 
     moveRepository.save(move);
 
@@ -240,7 +240,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = this.getOnNewAttrsMap(move, user);
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
-    moveAttrsService.addSubrogationPartnerReadonly(move, attrsMap);
+    moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
 
     return attrsMap;
   }
@@ -294,7 +294,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
     moveRecordSetService.setOriginDate(move);
-    moveRecordSetService.setSubrogationPartner(move);
+    moveRecordSetService.setThirdPartyPayerPartner(move);
 
     if (move.getJournal() != null
         && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -313,7 +313,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("paymentCondition", move.getPaymentCondition());
     valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
     valuesMap.put("originDate", move.getOriginDate());
-    valuesMap.put("subrogationPartner", move.getSubrogationPartner());
+    valuesMap.put("thirdPartyPayerPartner", move.getThirdPartyPayerPartner());
 
     return valuesMap;
   }
@@ -346,7 +346,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentMode(move);
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
-    moveRecordSetService.setSubrogationPartner(move);
+    moveRecordSetService.setThirdPartyPayerPartner(move);
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
 
     if (pfpService.isManagePassedForPayment(move.getCompany())
@@ -363,7 +363,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
     valuesMap.put("dueDate", move.getDueDate());
     valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
-    valuesMap.put("subrogationPartner", move.getSubrogationPartner());
+    valuesMap.put("thirdPartyPayerPartner", move.getThirdPartyPayerPartner());
 
     return valuesMap;
   }
@@ -710,10 +710,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getSubrogationPartnerOnSelectAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getThirdPartyPayerPartnerOnSelectAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveAttrsService.addSubrogationPartnerReadonly(move, attrsMap);
+    moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
 
     return attrsMap;
   }

@@ -22,7 +22,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.inject.Beans;
-import com.axelor.utils.ModelTool;
+import com.axelor.utils.helpers.ModelHelper;
 import java.util.List;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {
@@ -60,7 +60,7 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
 
     ContractLineRepository repository = Beans.get(ContractLineRepository.class);
     List<ContractLine> lines =
-        ModelTool.copy(repository, currentVersion.getContractLineList(), false);
+        ModelHelper.copy(repository, currentVersion.getContractLineList(), false);
 
     for (ContractLine line : lines) {
       newVersion.addContractLineListItem(line);

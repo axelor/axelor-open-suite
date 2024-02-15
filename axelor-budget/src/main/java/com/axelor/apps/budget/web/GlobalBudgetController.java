@@ -25,16 +25,19 @@ import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
-import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
 import com.axelor.apps.budget.service.BudgetVersionService;
-import com.axelor.apps.budget.service.GlobalBudgetGroupService;
-import com.axelor.apps.budget.service.GlobalBudgetService;
-import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetWorkflowService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class GlobalBudgetController {
@@ -52,11 +55,7 @@ public class GlobalBudgetController {
   public void setDates(ActionRequest request, ActionResponse response) throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
 
-    Beans.get(BudgetLevelService.class)
-        .getUpdatedGroupBudgetLevelList(
-            globalBudget.getBudgetLevelList(),
-            globalBudget.getFromDate(),
-            globalBudget.getToDate());
+    Beans.get(GlobalBudgetService.class).updateGlobalBudgetDates(globalBudget);
     response.setReload(true);
   }
 
@@ -76,9 +75,7 @@ public class GlobalBudgetController {
   }
 
   public void draftChildren(ActionRequest request, ActionResponse response) {
-    GlobalBudget globalBudget =
-        Beans.get(GlobalBudgetRepository.class)
-            .find(request.getContext().asType(GlobalBudget.class).getId());
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     Beans.get(GlobalBudgetWorkflowService.class).draftChildren(globalBudget);
     response.setReload(true);
   }
@@ -166,5 +163,30 @@ public class GlobalBudgetController {
               "self.isActive = false  AND self.globalBudget.id = %s", globalBudget.getId());
     }
     response.setAttr("$budgetVersion", "domain", domain);
+  }
+
+  public void clearBudgetList(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      globalBudget.setBudgetList(new ArrayList<>());
+      Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+      response.setValues(globalBudget);
+    }
+  }
+
+  public void hideAmounts(ActionRequest request, ActionResponse response) {
+    response.setAttrs(Beans.get(GlobalBudgetToolsService.class).manageHiddenAmounts(true));
+  }
+
+  public void showAmounts(ActionRequest request, ActionResponse response) {
+    response.setAttrs(Beans.get(GlobalBudgetToolsService.class).manageHiddenAmounts(false));
+  }
+
+  @ErrorException
+  public void showUpdateDatesBtn(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(globalBudget);
+    response.setAttr("updateDatesBtn", "hidden", isHidden);
   }
 }

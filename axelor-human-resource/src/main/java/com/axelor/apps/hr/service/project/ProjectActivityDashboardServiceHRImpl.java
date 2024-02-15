@@ -68,7 +68,7 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
     Map<String, Object> dataMap = super.getModelWithUtilityClass(message);
     if (TimesheetLine.class.getName().equals(message.getRelatedModel())) {
       dataMap.put("modelName", "Timesheet line");
-      dataMap.put("utilityClass", "label-important");
+      dataMap.put("utilityClass", "danger");
     }
     return dataMap;
   }

@@ -32,7 +32,7 @@ import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.service.ArchivingToolService;
+import com.axelor.utils.service.ArchivingService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -46,7 +46,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
   public MoveRemoveServiceBankPaymentImpl(
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
-      ArchivingToolService archivingToolService,
+      ArchivingService archivingService,
       ReconcileService reconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
@@ -54,7 +54,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
     super(
         moveRepo,
         moveLineRepo,
-        archivingToolService,
+        archivingService,
         reconcileService,
         accountingSituationService,
         accountCustomerService);

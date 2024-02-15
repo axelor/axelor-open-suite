@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <menuitem name="menu-products-dashboard-1" parent="referential-report"
@@ -174,6 +174,17 @@
     <domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where
       s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged =
       true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2)</domain>
+  </action-view>
+
+  <menuitem name="sc-root-sale-timetable" title="Timetables" parent="sc-root-sale"
+    action="sc.root.sale.timetable" order="700"
+    if="__config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
+
+  <action-view name="sc.root.sale.timetable" title="Timetables"
+    model="com.axelor.apps.supplychain.db.Timetable">
+    <view type="grid" name="timetable-grid"/>
+    <view type="form" name="timetable-form"/>
+    <view-param name="orderBy" value="estimatedDate"/>
   </action-view>
 
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"

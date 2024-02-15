@@ -20,7 +20,7 @@ axelor {
 }
 
 dependencies {
-	implementation libs.commons_lang3
+	api libs.commons_lang3
 	implementation libs.commons_math3
 	implementation libs.commons_validator
 	implementation libs.commons_httpclient
@@ -43,12 +43,27 @@ dependencies {
 
 	api libs.tika
 
+	if (file("../../axelor-utils").exists()) {
+		api project(":modules:axelor-utils")
+	}
+	else {
+	   api libs.axelor_utils
+	}
+
+	if (file("../../axelor-message").exists()) {
+		api project(":modules:axelor-message")
+	}
+	else {
+		api libs.axelor_message
+   	}
+
 	if (file("../../axelor-studio").exists()) {
 		api project(":modules:axelor-studio")
 	}
 	else {
 		api libs.axelor_studio
 	}
+
 	implementation libs.faker
 	api libs.commons_csv
 	api libs.wslite
@@ -56,7 +71,13 @@ dependencies {
 	implementation libs.logback
 
 	implementation libs.swagger_jaxrs
-	implementation libs.pdfbox
+
+	//Fix the version of PDFBox to prevent incompabilities with axelor-utils while Boxable is not updated
+	implementation ('org.apache.pdfbox:pdfbox'){
+		version {
+			strictly('2.0.26')
+		}
+	}
 	implementation libs.boxable
 	implementation libs.bcprov_jdk15on
 	implementation libs.bcpkix_jdk15on

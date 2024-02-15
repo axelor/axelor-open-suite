@@ -33,7 +33,7 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ModelTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -105,7 +105,7 @@ public class MetaJsonFieldProjectController {
     }
 
     String typeSelect = (String) request.getContext().get("typeSelect");
-    String name = ModelTool.normalizeKeyword(title, true);
+    String name = ModelHelper.normalizeKeyword(title, true);
 
     if (Project.class.equals(request.getContext().getParent().getContextClass())) {
       Long projectId = request.getContext().getParent().asType(Project.class).getId();

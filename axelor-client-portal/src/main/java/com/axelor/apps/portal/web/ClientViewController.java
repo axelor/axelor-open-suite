@@ -392,7 +392,7 @@ public class ClientViewController {
         Filter filter = clientViewService.getRefundOfUser(clientUser).get(0);
         if (filter != null) {
           response.setView(
-              ActionView.define(I18n.get("My refund"))
+              ActionView.define(I18n.get("My credit notes"))
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-refund-grid")
                   .add("form", "invoice-form")
