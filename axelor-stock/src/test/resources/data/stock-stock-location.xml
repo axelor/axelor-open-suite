@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/data-import"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
+
+  <input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit"/>
+  <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"/>
+  <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product">
+    <bind to="unit" column="unit_importId" search="self.importId = :unit_importId"/>
+  </input>
+
+  <input file="stock_stock_location.csv" separator=";"
+    type="com.axelor.apps.stock.db.StockLocation">
+    <bind to="company" column="company_importId" search="self.importId = :company_importId"/>
+  </input>
+
+  <input file="stock_stock_location_line.csv" separator=";"
+    type="com.axelor.apps.stock.db.StockLocationLine">
+    <bind to="stockLocation" column="stockLocation_importId"
+      search="self.importId = :stockLocation_importId"/>
+    <bind to="product" column="product_importId" search="self.importId = :product_importId"/>
+    <bind to="unit" column="unit_importId" search="self.importId = :unit_importId"/>
+  </input>
+
+</csv-inputs>
