@@ -10,7 +10,7 @@
       <field name="costSheetGroup" showIf="productSubTypeSelect == 3" canEdit="false"
         form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
         domain="self.costTypeSelect = 1"/>
-      <field name="economicManufOrderQty"/>
+      <spacer/>
       <field name="defaultBillOfMaterial" canEdit="false"
         onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form"
         grid-view="bill-of-material-grid"
