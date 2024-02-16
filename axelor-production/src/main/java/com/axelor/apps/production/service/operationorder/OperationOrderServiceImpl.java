@@ -347,17 +347,12 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     }
 
     LocalDateTime plannedStartDateT =
-        nextOperationOrder
-            .getPlannedStartDateT()
-            .minusSeconds(operationOrder.getProdProcessLine().getTimeBeforeNextOperation());
+        computePlannedStartTimeForNextOperationDate(operationOrder, nextOperationOrder);
 
     if (Objects.equals(nextOperationOrder.getPriority(), operationOrder.getPriority())) {
       LocalDateTime plannedEndDateT =
-          nextOperationOrder
-              .getPlannedEndDateT()
-              .minusSeconds(
-                  operationOrder.getProdProcessLine().getTimeBeforeNextOperation()
-                      - nextOperationOrder.getProdProcessLine().getTimeBeforeNextOperation());
+          computePlannedEndTimeForNextOperationDate(operationOrder, nextOperationOrder);
+
       if (plannedEndDateT != null && plannedEndDateT.isBefore(manufOrderPlannedEndDateT)) {
         boolean isOnSameMachine =
             Objects.equals(nextOperationOrder.getMachine(), operationOrder.getMachine());
@@ -409,6 +404,28 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     }
 
     return manufOrderPlannedStartDateT;
+  }
+
+  protected LocalDateTime computePlannedStartTimeForNextOperationDate(
+      OperationOrder operationOrder, OperationOrder nextOperationOrder) {
+    if (operationOrder.getProdProcessLine() == null) {
+      return nextOperationOrder.getPlannedStartDateT();
+    }
+    return nextOperationOrder
+        .getPlannedStartDateT()
+        .minusSeconds(operationOrder.getProdProcessLine().getTimeBeforeNextOperation());
+  }
+
+  protected LocalDateTime computePlannedEndTimeForNextOperationDate(
+      OperationOrder operationOrder, OperationOrder nextOperationOrder) {
+    if (operationOrder.getProdProcessLine() == null) {
+      return nextOperationOrder.getPlannedEndDateT();
+    }
+    return nextOperationOrder
+        .getPlannedEndDateT()
+        .minusSeconds(
+            operationOrder.getProdProcessLine().getTimeBeforeNextOperation()
+                - nextOperationOrder.getProdProcessLine().getTimeBeforeNextOperation());
   }
 
   @Override
