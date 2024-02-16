@@ -63,6 +63,9 @@ public interface ManufOrderStockMoveService {
   Optional<StockMove> createAndPlanToProduceStockMoveWithLines(ManufOrder manufOrder)
       throws AxelorException;
 
+  Optional<StockMove> createAndPlanResidualStockMoveWithLines(ManufOrder manufOrder)
+      throws AxelorException;
+
   Optional<StockMove> createAndPlanToProduceStockMove(ManufOrder manufOrder) throws AxelorException;
 
   /**

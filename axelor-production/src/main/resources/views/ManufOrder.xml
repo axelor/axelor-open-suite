@@ -367,6 +367,10 @@
           onChange="action-manuf-order-group-on-change-produced-stock-move-line"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-produced-production-grid"/>
+        <panel-related name="residualStockMoveLineListPanel"
+          field="residualStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12"
+          form-view="stock-move-line-production-form"
+          grid-view="stock-move-line-produced-production-grid"/>
         <panel-related name="wasteProdProductListPanel" field="wasteProdProductList"
           colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
         <panel name="descriptionPanel" title="Waste description" colSpan="12">

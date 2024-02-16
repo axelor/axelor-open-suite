@@ -30,6 +30,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -357,6 +358,39 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   }
 
   @Override
+  public Optional<StockMove> createAndPlanResidualStockMoveWithLines(ManufOrder manufOrder)
+      throws AxelorException {
+
+    Company company = manufOrder.getCompany();
+    StockLocation virtualStockLocation =
+        getVirtualStockLocationForProducedStockMove(manufOrder, company);
+    StockLocation residualProductStockLocation =
+        getResidualProductStockLocation(manufOrder, company);
+
+    if (manufOrder.getToProduceProdProductList() != null
+        && company != null
+        && hasResidualProduct(manufOrder)) {
+
+      StockMove stockMove =
+          this._createToProduceStockMove(
+              manufOrder, company, virtualStockLocation, residualProductStockLocation);
+
+      createResidualStockMoveLines(
+          manufOrder, stockMove, virtualStockLocation, residualProductStockLocation);
+      planProducedStockMove(stockMove);
+
+      return Optional.of(stockMove);
+    }
+    return Optional.empty();
+  }
+
+  protected boolean hasResidualProduct(ManufOrder manufOrder) {
+
+    return manufOrder.getToProduceProdProductList().stream()
+        .anyMatch(prodProduct -> isResidualProduct(prodProduct, manufOrder));
+  }
+
+  @Override
   public Optional<StockMove> createAndPlanToProduceStockMove(ManufOrder manufOrder)
       throws AxelorException {
 
@@ -389,21 +423,62 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       throws AxelorException {
     for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 
-      BigDecimal productCostPrice =
-          prodProduct.getProduct() != null
-              ? (BigDecimal)
-                  productCompanyService.get(
-                      prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
-              : BigDecimal.ZERO;
-      this._createStockMoveLine(
-          prodProduct,
-          stockMove,
-          StockMoveLineService.TYPE_OUT_PRODUCTIONS,
-          prodProduct.getQty(),
-          productCostPrice,
-          virtualStockLocation,
-          producedProductStockLocation);
+      // Only manages non residual products.
+      if (!isResidualProduct(prodProduct, manufOrder)) {
+        BigDecimal productCostPrice =
+            prodProduct.getProduct() != null
+                ? (BigDecimal)
+                    productCompanyService.get(
+                        prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
+                : BigDecimal.ZERO;
+        this._createStockMoveLine(
+            prodProduct,
+            stockMove,
+            StockMoveLineService.TYPE_OUT_PRODUCTIONS,
+            prodProduct.getQty(),
+            productCostPrice,
+            virtualStockLocation,
+            producedProductStockLocation);
+      }
     }
+  }
+
+  protected void createResidualStockMoveLines(
+      ManufOrder manufOrder,
+      StockMove stockMove,
+      StockLocation virtualStockLocation,
+      StockLocation residualProductStockLocation)
+      throws AxelorException {
+    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
+
+      // Only manages residual products.
+      if (isResidualProduct(prodProduct, manufOrder)) {
+        BigDecimal productCostPrice =
+            prodProduct.getProduct() != null
+                ? (BigDecimal)
+                    productCompanyService.get(
+                        prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
+                : BigDecimal.ZERO;
+        this._createStockMoveLine(
+            prodProduct,
+            stockMove,
+            StockMoveLineService.TYPE_OUT_PRODUCTIONS,
+            prodProduct.getQty(),
+            productCostPrice,
+            virtualStockLocation,
+            residualProductStockLocation);
+      }
+    }
+  }
+
+  protected boolean isResidualProduct(ProdProduct prodProduct, ManufOrder manufOrder) {
+    if (manufOrder.getBillOfMaterial() != null
+        && manufOrder.getBillOfMaterial().getProdResidualProductList() != null) {
+      return manufOrder.getBillOfMaterial().getProdResidualProductList().stream()
+          .map(ProdResidualProduct::getProduct)
+          .anyMatch(product -> product.equals(prodProduct.getProduct()));
+    }
+    return false;
   }
 
   protected void planProducedStockMove(StockMove stockMove) throws AxelorException {
@@ -976,6 +1051,20 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     } else {
       return _getProducedProductStockLocation(manufOrder, company);
     }
+  }
+
+  public StockLocation getResidualProductStockLocation(ManufOrder manufOrder, Company company)
+      throws AxelorException {
+
+    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
+
+    StockLocation residualProductStockLocation =
+        manufOrder.getProdProcess().getResidualProductsDefaultStockLocation();
+    if (residualProductStockLocation == null) {
+      residualProductStockLocation =
+          stockConfigProductionService.getResidualProductsDefaultStockLocation(stockConfig);
+    }
+    return residualProductStockLocation;
   }
 
   protected StockLocation _getReceiptOutsourcingStockLocation(

@@ -85,6 +85,9 @@ public final class ProductionExceptionMessage {
   public static final String UNRECOGNIZED_CAPACITY_FOR_COMPANY_PRODUCTION_CONFIG = /*$$(*/
       "Unrecognized capacity for company %s production configuration" /*)*/;
 
+  public static final String PRODUCTION_RESIDUAL_STOCK_LOCATION_MISSING = /*$$(*/
+      "You must configure a residual products default stock location for company %s." /*)*/;
+
   /** Manuf Order Controller */
   public static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
       "Please select more than one manufacturing order." /*)*/;
