@@ -34,9 +34,11 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -94,6 +96,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected InvoiceService invoiceService;
   protected AnalyticLineModelService analyticLineModelService;
   protected ContractYearEndBonusService contractYearEndBonusService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public ContractServiceImpl(
@@ -109,7 +112,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       InvoiceService invoiceService,
       AnalyticLineModelService analyticLineModelService,
       ContractYearEndBonusService contractYearEndBonusService,
-      OpportunityRepository opportunityRepository) {
+      OpportunityRepository opportunityRepository,
+      ProductCompanyService productCompanyService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -123,6 +127,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.analyticLineModelService = analyticLineModelService;
     this.contractYearEndBonusService = contractYearEndBonusService;
     this.opportunityRepository = opportunityRepository;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -669,11 +674,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 + " "
                 + line.getContractVersion().getContract().getInvoicePeriodEndDate()
             : line.getDescription();
+
+    Contract contract = line.getContractVersion().getContract();
+    Product product = getLineProduct(line, contract);
+    String productName = (String) productCompanyService.get(product, "name", contract.getCompany());
+
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
-            line.getProduct(),
-            line.getProductName(),
+            product,
+            productName,
             line.getPrice(),
             inTaxPriceComputed,
             line.getPriceDiscounted(),
@@ -1009,5 +1019,20 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       return true;
     }
     return !date.isBefore(startDate) && !date.isAfter(endDate);
+  }
+
+  protected Product getLineProduct(ContractLine line, Contract contract) throws AxelorException {
+    Product product = line.getProduct();
+
+    if (contractYearEndBonusService.isYebContract(contract) && product == null) {
+      product = contractYearEndBonusService.getYebProduct(contract);
+    }
+
+    if (product == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(ContractExceptionMessage.CONTRACT_LINE_PRODUCT_MISSING));
+    }
+    return product;
   }
 }
