@@ -18,4 +18,7 @@ public interface RelatedSaleOrderLineService {
   SaleOrderLine setLineIndex(SaleOrderLine saleOrderLine, Context context);
 
   SaleOrderLine updateOnSaleOrderLineListChange(SaleOrderLine saleOrderLine);
+
+  SaleOrderLine createLinesForSubProducts(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 }

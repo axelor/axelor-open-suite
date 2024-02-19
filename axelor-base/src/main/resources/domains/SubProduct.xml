@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="SubProduct">
+    <many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product"
+      title="Parent"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <decimal name="qty" title="Quantity"/>
+  </entity>
+
+</domain-models>

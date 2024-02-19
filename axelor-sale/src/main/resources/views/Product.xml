@@ -12,6 +12,14 @@
           grid-view="complementary-product-grid" form-view="complementary-product-form"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='packingPanel']">
+      <insert position="after">
+        <panel title="Children">
+          <panel-related field="subProductList" grid-view="sub-product-grid"
+            form-view="sub-product-form" colSpan="12" title="Children"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-attrs name="action-product-attrs-readonly-sellable">
