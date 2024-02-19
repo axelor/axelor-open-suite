@@ -123,6 +123,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected PartnerRepository partnerRepository;
   protected BillOfMaterialService billOfMaterialService;
   protected StockMoveService stockMoveService;
+  protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
+  protected ManufOrderStockMoveService manufOrderStockMoveService;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -142,7 +144,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       MetaFiles metaFiles,
       PartnerRepository partnerRepository,
       BillOfMaterialService billOfMaterialService,
-      StockMoveService stockMoveService) {
+      StockMoveService stockMoveService,
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
+      ManufOrderStockMoveService manufOrderStockMoveService) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderPlanService = manufOrderPlanService;
@@ -160,6 +164,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.partnerRepository = partnerRepository;
     this.billOfMaterialService = billOfMaterialService;
     this.stockMoveService = stockMoveService;
+    this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
+    this.manufOrderStockMoveService = manufOrderStockMoveService;
   }
 
   @Override
@@ -732,12 +738,23 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         producedStockMoveLineList, getProducedStockMoveFromManufOrder(manufOrder));
   }
 
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateResidualStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
+    List<StockMoveLine> residualStockMoveLineList = manufOrder.getResidualStockMoveLineList();
+    if (residualStockMoveLineList == null) {
+      return;
+    }
+    updateStockMoveFromManufOrder(
+        residualStockMoveLineList, getResidualStockMoveFromManufOrder(manufOrder));
+  }
+
   public StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder)
       throws AxelorException {
-    ManufOrderStockMoveService manufOrderStockMoveService =
-        Beans.get(ManufOrderStockMoveService.class);
+
     Optional<StockMove> stockMoveOpt =
-        manufOrderStockMoveService.getPlannedStockMove(manufOrder.getOutStockMoveList());
+        manufOrderStockMoveService.getPlannedStockMove(
+            manufOrderOutgoingStockMoveService.getNonResidualOutStockMoveLineList(manufOrder));
 
     Company company = manufOrder.getCompany();
 
@@ -747,6 +764,30 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     } else {
       return manufOrderStockMoveService
           .createAndPlanToProduceStockMove(manufOrder)
+          .map(
+              sm -> {
+                manufOrder.addOutStockMoveListItem(sm);
+                return sm;
+              })
+          .orElse(null);
+    }
+  }
+
+  protected StockMove getResidualStockMoveFromManufOrder(ManufOrder manufOrder)
+      throws AxelorException {
+
+    Optional<StockMove> stockMoveOpt =
+        manufOrderStockMoveService.getPlannedStockMove(
+            manufOrderOutgoingStockMoveService.getResidualOutStockMoveLineList(manufOrder));
+
+    Company company = manufOrder.getCompany();
+
+    StockMove stockMove;
+    if (stockMoveOpt.isPresent()) {
+      return stockMoveOpt.get();
+    } else {
+      return manufOrderStockMoveService
+          .createAndPlanResidualStockMoveWithLines(manufOrder)
           .map(
               sm -> {
                 manufOrder.addOutStockMoveListItem(sm);
@@ -768,6 +809,13 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throws AxelorException {
     checkRealizedStockMoveLineList(
         manufOrder.getProducedStockMoveLineList(), oldManufOrder.getProducedStockMoveLineList());
+  }
+
+  @Override
+  public void checkResidualStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
+      throws AxelorException {
+    checkRealizedStockMoveLineList(
+        manufOrder.getResidualStockMoveLineList(), oldManufOrder.getResidualStockMoveLineList());
   }
 
   @Override
@@ -1454,6 +1502,23 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       StockMove stockMove = getProducedStockMoveFromManufOrder(manufOrder);
 
       for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
+        if (stockMoveLine.getFromStockLocation() == null) {
+          stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+        }
+        if (stockMoveLine.getToStockLocation() == null) {
+          stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+        }
+      }
+    }
+  }
+
+  @Override
+  public void setResidualStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getResidualStockMoveLineList() != null) {
+      StockMove stockMove = getResidualStockMoveFromManufOrder(manufOrder);
+
+      for (StockMoveLine stockMoveLine : manufOrder.getResidualStockMoveLineList()) {
         if (stockMoveLine.getFromStockLocation() == null) {
           stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
         }

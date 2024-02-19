@@ -82,6 +82,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   protected PartnerService partnerService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected StockMoveLineRepository stockMoveLineRepository;
+  protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
 
   @Inject
   public ManufOrderStockMoveServiceImpl(
@@ -94,7 +95,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       StockConfigProductionService stockConfigProductionService,
       PartnerService partnerService,
       ManufOrderOutsourceService manufOrderOutsourceService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService) {
     this.supplyChainConfigService = supplyChainConfigService;
     this.reservedQtyService = reservedQtyService;
     this.stockMoveService = stockMoveService;
@@ -105,6 +107,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     this.partnerService = partnerService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
   }
 
   @Override
@@ -364,12 +367,9 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     Company company = manufOrder.getCompany();
     StockLocation virtualStockLocation =
         getVirtualStockLocationForProducedStockMove(manufOrder, company);
-    StockLocation residualProductStockLocation =
-        getResidualProductStockLocation(manufOrder, company);
+    StockLocation residualProductStockLocation = getResidualProductStockLocation(manufOrder);
 
-    if (manufOrder.getToProduceProdProductList() != null
-        && company != null
-        && hasResidualProduct(manufOrder)) {
+    if (manufOrder.getToProduceProdProductList() != null && company != null) {
 
       StockMove stockMove =
           this._createToProduceStockMove(
@@ -384,7 +384,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     return Optional.empty();
   }
 
-  protected boolean hasResidualProduct(ManufOrder manufOrder) {
+  @Override
+  public boolean hasResidualProduct(ManufOrder manufOrder) {
 
     return manufOrder.getToProduceProdProductList().stream()
         .anyMatch(prodProduct -> isResidualProduct(prodProduct, manufOrder));
@@ -938,7 +939,9 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
    */
   public void createNewProducedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException {
-    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getOutStockMoveList());
+    Optional<StockMove> stockMoveOpt =
+        getPlannedStockMove(
+            manufOrderOutgoingStockMoveService.getNonResidualOutStockMoveLineList(manufOrder));
     if (!stockMoveOpt.isPresent()) {
       return;
     }
@@ -1053,9 +1056,10 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     }
   }
 
-  public StockLocation getResidualProductStockLocation(ManufOrder manufOrder, Company company)
+  @Override
+  public StockLocation getResidualProductStockLocation(ManufOrder manufOrder)
       throws AxelorException {
-
+    Company company = manufOrder.getCompany();
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
 
     StockLocation residualProductStockLocation =
