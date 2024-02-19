@@ -7,6 +7,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionConfig;
@@ -37,6 +38,7 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
   protected BillOfMaterialService billOfMaterialService;
   protected ManufOrderService manufOrderService;
   protected ProductionOrderUpdateService productionOrderUpdateService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ProductionOrderSaleOrderMOGenerationServiceImpl(
@@ -44,12 +46,14 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ProductionConfigService productionConfigService,
       BillOfMaterialService billOfMaterialService,
       ManufOrderService manufOrderService,
-      ProductionOrderUpdateService productionOrderUpdateService) {
+      ProductionOrderUpdateService productionOrderUpdateService,
+      AppBaseService appBaseService) {
     this.unitConversionService = unitConversionService;
     this.productionConfigService = productionConfigService;
     this.billOfMaterialService = billOfMaterialService;
     this.manufOrderService = manufOrderService;
     this.productionOrderUpdateService = productionOrderUpdateService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -70,7 +74,7 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
         productionOrder,
         billOfMaterial,
         qty,
-        LocalDateTime.now(),
+        appBaseService.getTodayDateTime().toLocalDateTime(),
         saleOrderLine.getSaleOrder(),
         saleOrderLine);
   }
