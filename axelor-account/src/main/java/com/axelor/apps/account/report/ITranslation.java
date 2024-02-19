@@ -548,6 +548,9 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_2001_DESCRIPTION = /*$$(*/
       "AccountingReportType2001.description"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_3000_ALL_COMPANIES = /*$$(*/
+      "AccountingReportType3000.allCompanies"; /*)*/
+
   public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/
       "SaleInvoicesDetails.title"; /*)*/
   public static final String SALE_INVOICE_DETAILS_REPORT_COMPANY = /*$$(*/

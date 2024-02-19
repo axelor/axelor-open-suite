@@ -49,6 +49,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -77,6 +78,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected AccountConfigService accountConfigService;
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveRepository moveRepository;
+  protected ListHelper listHelper;
 
   @Inject
   public MoveToolServiceImpl(
@@ -84,12 +86,14 @@ public class MoveToolServiceImpl implements MoveToolService {
       MoveLineRepository moveLineRepository,
       AccountConfigService accountConfigService,
       PeriodServiceAccount periodServiceAccount,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      ListHelper listHelper) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveRepository = moveRepository;
+    this.listHelper = listHelper;
   }
 
   @Override
@@ -708,6 +712,39 @@ public class MoveToolServiceImpl implements MoveToolService {
         && move.getCurrency() != null
         && move.getCompany() != null
         && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency());
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Set<Company> companySet) {
+    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, companySet);
+    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
+    return statusList;
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet) {
+    List<Integer> statusList = null;
+
+    for (Company company : companySet) {
+      List<Integer> companyStatusList = this.getMoveStatusSelect(moveStatusSelect, company);
+
+      if (statusList == null) {
+        statusList = companyStatusList;
+      } else {
+        statusList = listHelper.intersection(statusList, companyStatusList);
+      }
+    }
+
+    return statusList;
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Company company) {
+    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, company);
+    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
+    return statusList;
   }
 
   @Override
