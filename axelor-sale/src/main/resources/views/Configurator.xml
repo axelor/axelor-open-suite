@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="configurator-grid" title="Configurators"
     model="com.axelor.apps.sale.db.Configurator">
@@ -9,8 +9,7 @@
   </grid>
 
   <form name="configurator-form" title="Configurator"
-    model="com.axelor.apps.sale.db.Configurator" onNew="action-configurator-group-on-new"
-    onLoad="action-configurator-update-indicators,save">
+    model="com.axelor.apps.sale.db.Configurator">
     <panel name="mainPanel" readonlyIf="product">
       <field name="product" readonly="true" showTitle="false" showIf="product" colSpan="12"
         domain="self.dtype = 'Product'">
@@ -79,29 +78,10 @@
     <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
   </action-method>
 
-  <action-group name="action-configurator-group-on-new">
-    <action name="action-configurator-record-on-new" if="eval: _configuratorCreator != null"/>
-    <action name="action-configurator-attrs-on-new" if="eval: _configuratorCreator != null"/>
-    <action name="save" if="eval: _configuratorCreator != null"/>
-    <action name="action-configurator-update-indicators"
-      if="eval: _configuratorCreator != null"/>
-  </action-group>
-
-  <action-record name="action-configurator-record-on-new"
-    model="com.axelor.apps.sale.db.Configurator">
-    <field name="configuratorCreator" expr="eval: _configuratorCreator"/>
-    <field name="configuratorCreatorName" expr="eval: _configuratorCreator?.name"/>
-  </action-record>
-
   <action-record name="action-configurator-record-fill-creator-name"
     model="com.axelor.apps.sale.db.Configurator">
     <field name="configuratorCreatorName" expr="eval: configuratorCreator.name"/>
   </action-record>
-
-  <action-attrs name="action-configurator-attrs-on-new">
-    <attribute for="configuratorCreator" name="readonly"
-      expr="eval: _configuratorCreator != null"/>
-  </action-attrs>
 
   <action-method name="action-configurator-method-creator-domain">
     <call class="com.axelor.apps.sale.web.ConfiguratorController"

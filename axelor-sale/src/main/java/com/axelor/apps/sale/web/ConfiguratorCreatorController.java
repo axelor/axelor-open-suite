@@ -20,11 +20,15 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.HandleExceptionResponse;
+import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorInitService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -80,5 +84,19 @@ public class ConfiguratorCreatorController {
     creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
     Beans.get(ConfiguratorCreatorService.class).updateAttributes(creator);
     response.setReload(true);
+  }
+
+  public void openTestConfiguratorView(ActionRequest request, ActionResponse response) {
+    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
+    Configurator configurator = Beans.get(ConfiguratorInitService.class).create(creator);
+    response.setView(
+        ActionView.define(I18n.get("Configurator"))
+            .model(Configurator.class.getName())
+            .add("form", "configurator-form")
+            .add("grid", "configurator-grid")
+            .param("forceEdit", "true")
+            .context("_showRecord", configurator.getId())
+            .map());
   }
 }

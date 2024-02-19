@@ -49,7 +49,7 @@ class Services {
       actionURL: `${baseURL}ws/action/`,
       baseURL,
       actionName:
-        "com.axelor.apps.hr.service.timesheet.TimesheetService:getCurrentOrCreateTimesheet()",
+        "com.axelor.apps.hr.service.timesheet.TimesheetFetchService:getCurrentOrCreateTimesheet()",
     };
   }
 

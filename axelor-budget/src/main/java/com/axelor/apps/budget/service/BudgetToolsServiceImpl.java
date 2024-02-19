@@ -237,6 +237,18 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   }
 
   @Override
+  public void fillAmountPerBudgetMap(
+      Budget budget, BigDecimal amount, Map<Budget, BigDecimal> amountPerBudgetMap) {
+    if (!amountPerBudgetMap.containsKey(budget)) {
+      amountPerBudgetMap.put(budget, amount);
+    } else {
+      BigDecimal oldAmount = amountPerBudgetMap.get(budget);
+      amountPerBudgetMap.remove(budget);
+      amountPerBudgetMap.put(budget, oldAmount.add(amount));
+    }
+  }
+
+  @Override
   public Map<String, BigDecimal> buildMapWithAmounts(
       List<Budget> budgetList, List<BudgetLevel> budgetLevelList) {
     Map<String, BigDecimal> amountByField = new HashMap<>();

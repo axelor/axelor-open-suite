@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
@@ -47,7 +47,8 @@
     <field name="kilometricAllowParam" canEdit="false" required="true" width="60"
       onChange="action-kilometric-allowance-method-compute"
       onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"/>
-    <field name="kilometricTypeSelect" required="true" width="100"/>
+    <field name="kilometricTypeSelect" required="true" width="100"
+      onChange="action-kilometric-allowance-method-compute-distance"/>
     <field name="distance" required="true"
       onChange="action-kilometric-allowance-method-compute" width="150"/>
     <field name="fromCity" required="true"
@@ -176,7 +177,8 @@
       <field name="kilometricAllowParam" required="true"
         onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
         onChange="action-kilometric-allowance-method-compute"/>
-      <field name="kilometricTypeSelect" required="true"/>
+      <field name="kilometricTypeSelect" required="true"
+        onChange="action-kilometric-allowance-method-compute-distance"/>
       <field name="distance" onChange="action-kilometric-allowance-method-compute"
         required="true"/>
       <panel name="cityDetailsPanel" colSpan="12">

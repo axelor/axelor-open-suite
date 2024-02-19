@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.FindFixedAssetService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -97,6 +98,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected FixedAssetDateService fixedAssetDateService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected FindFixedAssetService findFixedAssetService;
 
   private Batch batch;
 
@@ -115,7 +117,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       BatchRepository batchRepository,
       BankDetailsService bankDetailsService,
       FixedAssetDateService fixedAssetDateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      FindFixedAssetService findFixedAssetService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -130,6 +133,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.bankDetailsService = bankDetailsService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.findFixedAssetService = findFixedAssetService;
   }
 
   @Override
@@ -142,7 +146,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         || fixedAssetLine.getStatusSelect() != FixedAssetLineRepository.STATUS_PLANNED) {
       return;
     }
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
     if (fixedAsset == null) {
       return;
     }
@@ -282,7 +286,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   @Transactional(rollbackOn = {Exception.class})
   protected Move generateImpairementAccountMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -436,7 +440,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   @Override
   public Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated, boolean isDisposal)
       throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -914,7 +918,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
     fixedAssetLine.setIsSimulated(true);
     fixedAssetLineRepo.save(fixedAssetLine);
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
     if (fixedAsset != null) {
       simulateOthersLine(fixedAsset, fixedAssetLine.getDepreciationDate());
     }
@@ -975,7 +979,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   public boolean canSimulate(FixedAssetLine fixedAssetLine) throws AxelorException {
     Objects.requireNonNull(fixedAssetLine);
 
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
     if (fixedAsset != null && fixedAsset.getJournal() != null) {
       return fixedAsset.getJournal().getAuthorizeSimulatedMove();
     }

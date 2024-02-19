@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -33,7 +33,7 @@
       title="Product / Product model"/>
     <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
       title="Product category"/>
-    <string name="formula" title="Formula"/>
+    <string name="formula" title="Formula" large="true"/>
     <many-to-one name="linkedPricing" ref="com.axelor.apps.base.db.Pricing"
       title="Linked pricing"/>
     <one-to-many name="pricingLineList" ref="com.axelor.apps.base.db.PricingLine"

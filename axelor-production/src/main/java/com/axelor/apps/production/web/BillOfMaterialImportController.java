@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -70,5 +70,14 @@ public class BillOfMaterialImportController {
 
     billOfMaterialImportService.setStatusToValidated(billOfMaterialImport);
     response.setReload(true);
+  }
+
+  public void getCreatedProducts(ActionRequest request, ActionResponse response) {
+    BillOfMaterialImport billOfMaterialImport =
+        request.getContext().asType(BillOfMaterialImport.class);
+
+    response.setValue(
+        "$createdProducts",
+        Beans.get(BillOfMaterialImportService.class).getCreatedProducts(billOfMaterialImport));
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,10 @@ package com.axelor.apps.production.service.bomimport;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterialImport;
 import java.io.IOException;
+import java.util.List;
 
 public interface BillOfMaterialImportService {
   ImportHistory processImport(BillOfMaterialImport billOfMaterialImport)
@@ -32,4 +34,6 @@ public interface BillOfMaterialImportService {
   void createBoMFromImport(BillOfMaterialImport billOfMaterialImport) throws AxelorException;
 
   void setStatusToValidated(BillOfMaterialImport billOfMaterialImport);
+
+  List<Product> getCreatedProducts(BillOfMaterialImport billOfMaterialImport);
 }

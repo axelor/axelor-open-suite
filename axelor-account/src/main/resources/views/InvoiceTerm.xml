@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
@@ -249,7 +249,7 @@
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="isPaid || amountRemaining != amount || paymentSession">
+        readonlyIf="isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
         <field name="dueDate" readonly="true"/>
         <field name="isHoldBack" readonly="true"/>
         <field name="estimatedPaymentDate"
@@ -413,7 +413,7 @@
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || paymentSession">
+        readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
         <field name="dueDate" required="true"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="isPaid || pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
@@ -455,7 +455,7 @@
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
         hidden="true" showIf="applyFinancialDiscount"
-        readonlyIf="amount != amountRemaining || paymentSession || isPaid">
+        readonlyIf="$number(amount) != $number(amountRemaining) || paymentSession || isPaid">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate" readonlyIf="financialDiscount"/>
@@ -582,13 +582,13 @@
           grid-view="partner-grid"/>
         <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
           showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
-          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
-          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+          readonlyIf="$number(amountRemaining) != $number(amount)" form-view="partner-form"
+          grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
         <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="isPaid || paymentSession || amountRemaining != amount || !$popup()">
+        readonlyIf="isPaid || paymentSession || $number(amountRemaining) != $number(amount) || !$popup()">
         <field name="dueDate" required="true"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="$isPaymentConditionFree == false"/>
@@ -750,7 +750,7 @@
     onLoad="action-invoice-term-attrs-set-initial-pfp-amount">
     <panel name="mainPanel">
       <field name="$grantedAmount" title="Granted amount" type="decimal" required="true"
-        validIf="$grantedAmount > 0 &amp;&amp; $grantedAmount &lt; amount"/>
+        validIf="$grantedAmount > 0 &amp;&amp; $number($grantedAmount) &lt; $number(amount)"/>
       <field name="pfpPartialReason" required="true"/>
       <button name="pfpPartialReasonConfirmBtn" title="Confirm Partial PFP" colSpan="12"
         onClick="action-invoice-term-method-pfp-partial-reason-confirm-btn"/>
@@ -776,7 +776,7 @@
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="isPaid || amountRemaining != amount || paymentSession">
+        readonlyIf="isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
         <field name="dueDate" readonly="true"/>
         <field name="isHoldBack" readonly="true"/>
         <field name="amount" readonly="true" x-scale="currency.numberOfDecimals"/>
@@ -976,11 +976,14 @@
   <action-group name="action-invoice-term-group-amount-onchange">
     <action name="action-invoice-term-method-compute-customized-percentage"/>
     <action name="action-invoice-term-record-update-customized-true"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-move-line-amount-onchange">
     <action name="action-invoice-term-group-amount-onchange"/>
-    <action name="action-invoice-term-method-compute-financial-discount"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-percentage-onchange">
@@ -990,12 +993,15 @@
 
   <action-group name="action-invoice-term-group-move-line-percentage-onchange">
     <action name="action-invoice-term-group-percentage-onchange"/>
-    <action name="action-invoice-term-method-compute-financial-discount"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-invoice-percentage-onchange">
     <action name="action-invoice-term-record-update-customized"/>
     <action name="action-invoice-term-group-percentage-onchange"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-partial-pfp">

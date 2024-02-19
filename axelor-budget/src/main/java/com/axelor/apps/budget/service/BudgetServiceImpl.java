@@ -650,6 +650,7 @@ public class BudgetServiceImpl implements BudgetService {
     if (move.getStatusSelect() == MoveRepository.STATUS_NEW || move.getInvoice() != null) {
       return;
     }
+
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
       move.getMoveLineList().stream()
           .filter(moveLine -> CollectionUtils.isNotEmpty(moveLine.getBudgetDistributionList()))
@@ -897,6 +898,7 @@ public class BudgetServiceImpl implements BudgetService {
       if (budget.getPeriodDurationSelect() == null) {
         budget.setPeriodDurationSelect(0);
       }
+      budget.setAmountForGeneration(budget.getTotalAmountExpected());
       generatePeriods(budget);
     }
   }
@@ -926,13 +928,22 @@ public class BudgetServiceImpl implements BudgetService {
               .map(BudgetDistribution::getAmount)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
-      if (totalAmount.compareTo(amount) > 0) {
+      if (this.isGreaterThan(
+          totalAmount, amount, budgetDistributionList.stream().findFirst().get())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ORDER_LINE_AMOUNT),
             code);
       }
     }
+  }
+
+  protected boolean isGreaterThan(
+      BigDecimal amount1, BigDecimal amount2, BudgetDistribution budgetDistribution) {
+    amount1 = currencyScaleServiceBudget.getCompanyScaledValue(budgetDistribution, amount1);
+    amount2 = currencyScaleServiceBudget.getCompanyScaledValue(budgetDistribution, amount2);
+
+    return amount1.compareTo(amount2) > 0;
   }
 
   @Override

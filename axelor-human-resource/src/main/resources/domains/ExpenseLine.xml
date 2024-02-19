@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -40,7 +40,7 @@
     <!-- integration of KilometricAllowance -->
     <many-to-one name="kilometricAllowParam"
       ref="com.axelor.apps.hr.db.KilometricAllowParam" title="K.A.P."/>
-    <integer name="kilometricTypeSelect" title="Type"
+    <integer name="kilometricTypeSelect" title="Type" nullable="true"
       selection="hr.kilometric.allowance.type.select"/>
     <decimal name="distance" title="Distance travelled" min="0"/>
     <string name="fromCity" title="Starting city"/>
