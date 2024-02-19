@@ -126,6 +126,8 @@ public interface ITranslation {
   public static final String INVOICE_REFUND_PART_2 = /*$$(*/ "Invoice.refundInvoicePart2"; /*)*/
   public static final String INVOICE_NO_DISCOUNT_EARLY_PAYMENT = /*$$(*/
       "Invoice.noDiscountEarlyPayment"; /*)*/
+  public static final String INVOICE_COEFIICIENT = /*$$(*/ "Invoice.coefficient"; /*)*/
+
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
