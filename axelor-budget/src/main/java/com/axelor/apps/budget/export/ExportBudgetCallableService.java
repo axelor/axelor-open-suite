@@ -31,17 +31,15 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,6 +59,25 @@ public class ExportBudgetCallableService implements Callable<MetaFile> {
   private AdvancedExport advancedExportBudget;
   private AdvancedExport advancedExportBudgetLine;
   protected File exportFile;
+  protected AdvancedExportRepository advancedExportRepository;
+  protected GlobalBudgetRepository globalBudgetRepository;
+  protected GlobalBudgetToolsService globalBudgetToolsService;
+  protected MetaFiles metaFiles;
+  protected AdvancedExportService advancedExportService;
+
+  @Inject
+  public ExportBudgetCallableService(
+      AdvancedExportRepository advancedExportRepository,
+      GlobalBudgetRepository globalBudgetRepository,
+      GlobalBudgetToolsService globalBudgetToolsService,
+      MetaFiles metaFiles,
+      AdvancedExportService advancedExportService) {
+    this.advancedExportRepository = advancedExportRepository;
+    this.globalBudgetRepository = globalBudgetRepository;
+    this.globalBudgetToolsService = globalBudgetToolsService;
+    this.metaFiles = metaFiles;
+    this.advancedExportService = advancedExportService;
+  }
 
   public void initialize(
       GlobalBudget globalBudget,
@@ -79,9 +96,8 @@ public class ExportBudgetCallableService implements Callable<MetaFile> {
   public MetaFile call() throws Exception {
     final RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
     try (RequestScoper.CloseableScope ignored = scope.open()) {
-      AdvancedExportRepository advancedExportRepository = Beans.get(AdvancedExportRepository.class);
 
-      globalBudget = Beans.get(GlobalBudgetRepository.class).find(globalBudget.getId());
+      globalBudget = globalBudgetRepository.find(globalBudget.getId());
       advancedExportGlobalBudget =
           advancedExportRepository.find(advancedExportGlobalBudget.getId());
       advancedExportBudgetLevel = advancedExportRepository.find(advancedExportBudgetLevel.getId());
@@ -103,7 +119,6 @@ public class ExportBudgetCallableService implements Callable<MetaFile> {
    * @throws IOException
    */
   public MetaFile export() throws AxelorException, IOException {
-    GlobalBudgetToolsService globalBudgetToolsService = Beans.get(GlobalBudgetToolsService.class);
 
     List<Long> budgetLevelRecordIds = globalBudgetToolsService.getAllBudgetLevelIds(globalBudget);
 
@@ -145,13 +160,7 @@ public class ExportBudgetCallableService implements Callable<MetaFile> {
     if (exportFile != null) {
       FileInputStream inStream = new FileInputStream(exportFile);
       MetaFile metaExportFile =
-          Beans.get(MetaFiles.class)
-              .upload(
-                  inStream,
-                  globalBudget.getName()
-                      + "-"
-                      + LocalTime.now().format(DateTimeFormatter.ofPattern("HH-mm-ss"))
-                      + ".xlsx");
+          metaFiles.upload(inStream, String.format("%s.xlsx", globalBudget.getName()));
       inStream.close();
       exportFile.delete();
       return metaExportFile;
@@ -208,7 +217,6 @@ public class ExportBudgetCallableService implements Callable<MetaFile> {
 
       if (advancedExport != null
           && !ObjectUtils.isEmpty(advancedExport.getAdvancedExportLineList())) {
-        AdvancedExportService advancedExportService = Beans.get(AdvancedExportService.class);
 
         File file =
             advancedExportService.export(

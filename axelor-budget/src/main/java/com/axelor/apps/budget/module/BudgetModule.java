@@ -39,6 +39,7 @@ import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.PurchaseOrderManagementBudgetRepository;
 import com.axelor.apps.budget.db.repo.SaleOrderBudgetRepository;
+import com.axelor.apps.budget.export.ExportBudgetCallableService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.AppBudgetServiceImpl;
 import com.axelor.apps.budget.service.BudgetAccountConfigService;
@@ -121,6 +122,7 @@ import com.axelor.apps.businessproject.service.WorkflowVentilationProjectService
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
+import java.util.concurrent.Callable;
 
 public class BudgetModule extends AxelorModule {
 
@@ -185,5 +187,6 @@ public class BudgetModule extends AxelorModule {
     bind(GlobalBudgetToolsService.class).to(GlobalBudgetToolsServiceImpl.class);
     bind(CurrencyScaleServiceBudget.class).to(CurrencyScaleServiceBudgetImpl.class);
     bind(BudgetComputeHiddenDateService.class).to(BudgetComputeHiddenDateServiceImpl.class);
+    bind(Callable.class).to(ExportBudgetCallableService.class);
   }
 }
