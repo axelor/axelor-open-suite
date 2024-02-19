@@ -1227,11 +1227,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void updateSubrogationPartner(Invoice invoice) {
+  public void updateThirdPartyPayerPartner(Invoice invoice) {
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       invoice.getInvoiceTermList().stream()
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
-          .forEach(it -> it.setSubrogationPartner(invoice.getSubrogationPartner()));
+          .forEach(it -> it.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner()));
     }
   }
 }

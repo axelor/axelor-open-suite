@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <custom name="report-top-3-suppliers" title="Top 3 supplier" css="report-box">
     <dataset type="jpql"><![CDATA[
@@ -1411,21 +1411,21 @@ from InvoiceTerm as self
 	     ROUND(SUM(self.amountPaid), self.currency.numberOfDecimals) AS amount,
 	     CASE WHEN ROUND(SUM(self.amountPaid), self.currency.numberOfDecimals) > 0 THEN 2 ELSE 1 END AS statusSelect,
 	     CONCAT(_partner.name, CASE
-	       WHEN _subrogationPartner IS NOT NULL THEN CONCAT(' (', _subrogationPartner.name, ')')
+	       WHEN _thirdPartyPayerPartner IS NOT NULL THEN CONCAT(' (', _thirdPartyPayerPartner.name, ')')
 	       ELSE ''
 	     END) AS supplier,
 	     CASE
-	       WHEN _subrogationPartner IS NOT NULL THEN _subrogationBankDetails.fullName
+	       WHEN _thirdPartyPayerPartner IS NOT NULL THEN _subrogationBankDetails.fullName
 	       ELSE _bankDetails.fullName
 	     END AS bankDetails,
 	     self.currency.numberOfDecimals AS numberOfDecimals
 	   FROM InvoiceTerm AS self
 	   LEFT JOIN self.moveLine.partner AS _partner
 	   LEFT JOIN self.bankDetails AS _bankDetails
-	   LEFT JOIN self.subrogationPartner AS _subrogationPartner
-	   LEFT JOIN BankDetails AS _subrogationBankDetails ON _subrogationBankDetails.partner = _subrogationPartner.id
+	   LEFT JOIN self.thirdPartyPayerPartner AS _thirdPartyPayerPartner
+	   LEFT JOIN BankDetails AS _subrogationBankDetails ON _subrogationBankDetails.partner = _thirdPartyPayerPartner.id
 	   WHERE self.isSelectedOnPaymentSession IS TRUE AND self.paymentSession.id = :_id
-	   GROUP BY _partner.id, _subrogationPartner.id, _bankDetails.id, _subrogationBankDetails.id, self.currency.numberOfDecimals
+	   GROUP BY _partner.id, _thirdPartyPayerPartner.id, _bankDetails.id, _subrogationBankDetails.id, self.currency.numberOfDecimals
 	   ORDER BY _partner.name
 	 ]]></dataset>
 

@@ -1,6 +1,26 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -8,6 +28,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -47,6 +68,11 @@ public interface CurrencyScaleServiceAccount extends CurrencyScaleService {
 
   BigDecimal getCompanyScaledValue(PaymentVoucher paymentVoucher, BigDecimal amount);
 
+  BigDecimal getCompanyScaledValue(FixedAsset fixedAsset, BigDecimal amount);
+
+  BigDecimal getCompanyScaledValue(FixedAssetLine fixedAssetLine, BigDecimal amount)
+      throws AxelorException;
+
   int getScale(Move move);
 
   int getCompanyScale(Move move);
@@ -77,7 +103,16 @@ public interface CurrencyScaleServiceAccount extends CurrencyScaleService {
 
   int getCompanyScale(PaymentVoucher paymentVoucher);
 
+  int getCompanyScale(FixedAsset fixedAsset);
+
+  int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException;
+
   int getScale(Currency currency);
 
   int getCompanyScale(Company company);
+
+  boolean isGreaterThan(
+      BigDecimal amount1, BigDecimal amount2, MoveLine moveLine, boolean isCompanyValue);
+
+  boolean equals(BigDecimal amount1, BigDecimal amount2, MoveLine moveLine, boolean isCompanyValue);
 }

@@ -33,6 +33,7 @@ public class PurchaseOrderLinePurchaseRepository extends PurchaseOrderLineReposi
     json.put(
         "$nbDecimalDigitForUnitPrice",
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
 
     if (context.get("_model") != null
         && context.get("_model").toString().contains("PurchaseOrder")

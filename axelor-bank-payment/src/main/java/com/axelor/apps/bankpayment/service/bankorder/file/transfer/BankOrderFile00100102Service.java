@@ -47,10 +47,10 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 

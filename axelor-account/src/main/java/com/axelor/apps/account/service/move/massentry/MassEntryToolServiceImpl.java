@@ -116,11 +116,11 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineResult.setDescription(moveLine.getDescription());
       moveLineResult.setOrigin(moveLine.getOrigin());
       moveLineResult.setOriginDate(moveLine.getOriginDate());
-      moveLineResult.setTaxLine(moveLine.getTaxLine());
-      moveLineResult.setTaxLineBeforeReverse(moveLine.getTaxLineBeforeReverse());
+      moveLineResult.setTaxLineSet(moveLine.getTaxLineSet());
+      moveLineResult.setTaxLineBeforeReverseSet(moveLine.getTaxLineBeforeReverseSet());
       moveLineResult.setCurrencyAmount(moveLine.getCurrencyAmount());
       moveLineResult.setCurrencyRate(moveLine.getCurrencyRate());
-      moveLineResult.setSourceTaxLine(moveLine.getSourceTaxLine());
+      moveLineResult.setSourceTaxLineSet(moveLine.getSourceTaxLineSet());
       moveLineResult.setVatSystemSelect(moveLine.getVatSystemSelect());
 
       if (move.getCurrency() != null && move.getCompany() != null) {

@@ -30,6 +30,7 @@ import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Set;
 
 public interface SupplierCatalogService {
 
@@ -71,7 +72,7 @@ public interface SupplierCatalogService {
       Company company,
       Currency currency,
       LocalDate localDate,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       boolean resultInAti)
       throws AxelorException;
 

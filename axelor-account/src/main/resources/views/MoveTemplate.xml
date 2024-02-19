@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="move-template-grid" title="Move templates"
     model="com.axelor.apps.account.db.MoveTemplate">
@@ -151,7 +151,7 @@
     <field name="creditPartner" target-name="fullName" title="Partner to Credit"
       onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
       target="com.axelor.apps.base.db.Partner"/>
-    <field name="subrogationPartner" target-name="fullName" title="Third-party payer"
+    <field name="thirdPartyPayerPartner" target-name="fullName" title="Third-party payer"
       type="many-to-one" target="com.axelor.apps.base.db.Partner"
       onSelect="action-move-template-attrs-wizard-subrogation-partner-domain"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
@@ -175,7 +175,7 @@
       <field name="creditPartner" target-name="fullName" title="Partner to Credit"
         onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"/>
-      <field name="subrogationPartner" target-name="fullName" title="Third-party payer"
+      <field name="thirdPartyPayerPartner" target-name="fullName" title="Third-party payer"
         type="many-to-one" target="com.axelor.apps.base.db.Partner"
         showIf="[1,2,5].includes(moveTemplate.journal.journalType.technicalTypeSelect)"
         onSelect="action-move-template-attrs-wizard-subrogation-partner-domain"
@@ -275,13 +275,13 @@
   </action-attrs>
 
   <action-attrs name="action-move-template-attrs-wizard-hide-subrogation">
-    <attribute name="hidden" for="dataInputList.subrogationPartner"
+    <attribute name="hidden" for="dataInputList.thirdPartyPayerPartner"
       expr="eval: !moveTemplate?.journal || ![1,2,5].contains(moveTemplate?.journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
 
   <action-attrs name="action-move-template-attrs-wizard-subrogation-partner-domain">
-    <attribute name="domain" for="subrogationPartner"
-      expr="eval: &quot; self.isSubrogation IS TRUE AND ${__parent__?.company?.id} MEMBER OF self.companySet &quot;"/>
+    <attribute name="domain" for="thirdPartyPayerPartner"
+      expr="eval: &quot; self.isThirdPartyPayer IS TRUE AND ${__parent__?.company?.id} MEMBER OF self.companySet &quot;"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->

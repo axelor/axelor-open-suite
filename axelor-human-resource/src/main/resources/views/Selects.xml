@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <selection name="hrs.expenses.status.select">
     <option value="1">Draft</option>
@@ -239,9 +239,9 @@
   </selection>
 
   <selection name="hr.leave.reason.type.select">
-    <option value="1">Leave incremented every month</option>
+    <option value="1">Leave managed every month</option>
     <option value="2">Exceptional leave</option>
-    <option value="3">Leave incremented every year</option>
+    <option value="3">Leave managed every year</option>
   </selection>
 
   <selection name="hr.app.leave.use.weekly.planning.coefficient.select">

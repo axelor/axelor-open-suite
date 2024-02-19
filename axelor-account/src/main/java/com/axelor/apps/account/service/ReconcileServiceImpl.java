@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
@@ -355,20 +356,16 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (currencyScaleServiceAccount
-                .getScaledValue(creditMoveLine, reconcile.getAmount())
-                .compareTo(
-                    currencyScaleServiceAccount.getScaledValue(
-                        creditMoveLine,
-                        creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())))
-            > 0
-        || currencyScaleServiceAccount
-                .getScaledValue(debitMoveLine, reconcile.getAmount())
-                .compareTo(
-                    currencyScaleServiceAccount.getScaledValue(
-                        debitMoveLine,
-                        debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())))
-            > 0) {
+    if (currencyScaleServiceAccount.isGreaterThan(
+            reconcile.getAmount(),
+            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
+            creditMoveLine,
+            false)
+        || currencyScaleServiceAccount.isGreaterThan(
+            reconcile.getAmount(),
+            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
+            debitMoveLine,
+            false)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -383,6 +380,26 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getName(),
           creditMoveLine.getAccount().getLabel(),
           creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()));
+    }
+
+    // Check tax lines
+    this.taxLinePrecondition(creditMoveLine.getMove());
+    this.taxLinePrecondition(debitMoveLine.getMove());
+  }
+
+  protected void taxLinePrecondition(Move move) throws AxelorException {
+    if (move.getMoveLineList().stream()
+        .anyMatch(
+            it ->
+                ObjectUtils.isEmpty(it.getTaxLineSet())
+                    && it.getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          AccountExceptionMessage.RECONCILE_MISSING_TAX,
+          move.getReference());
     }
   }
 
@@ -949,6 +966,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
       invoicePaymentCancelService.updateCancelStatus(invoicePayment);
     }
+
+    invoiceTermPaymentRepo
+        .findByReconcileId(reconcile.getId())
+        .fetch()
+        .forEach(it -> it.setInvoiceTerm(null));
   }
 
   public void updateInvoiceTermsAmountRemaining(Reconcile reconcile) throws AxelorException {

@@ -83,4 +83,6 @@ public interface ContractLineService {
       throws AxelorException;
 
   void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException;
+
+  ContractLine resetProductInformation(ContractLine contractLine);
 }
