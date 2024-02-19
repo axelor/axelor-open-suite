@@ -47,7 +47,6 @@
     <!-- Ligne de devis -->
     <one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine"
       mappedBy="saleOrder" title="Sale order lines" orderBy="sequence"/>
-    <long name="saleOrderLineListSize"/>
 
     <!-- Ligne de Taxe -->
     <one-to-many name="saleOrderLineTaxList"

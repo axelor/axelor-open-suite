@@ -15,7 +15,9 @@ public interface RelatedSaleOrderLineService {
 
   void updateRelatedOrderLines(SaleOrder saleOrder) throws AxelorException;
 
-  SaleOrder getSaleOrderFromContext(Context context);
-
   SaleOrderLine setLineIndex(SaleOrderLine saleOrderLine, Context context);
+
+  SaleOrderLine updateOnSaleOrderLineListChange(SaleOrderLine saleOrderLine);
+
+  void setIsProcessedLinetoTrue(SaleOrderLine saleOrderLine);
 }

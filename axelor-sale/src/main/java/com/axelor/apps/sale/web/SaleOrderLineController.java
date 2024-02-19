@@ -458,23 +458,19 @@ public class SaleOrderLineController {
     }
   }
 
-  public void calculateRelatedSOLinesValues(ActionRequest request, ActionResponse response) {
-    try {
+  public void calculateRelatedSOLinesValues(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-      RelatedSaleOrderLineService relatedSaleOrderLineService =
-          Beans.get(RelatedSaleOrderLineService.class);
-      Context context = request.getContext();
-      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      SaleOrder saleOrder = relatedSaleOrderLineService.getSaleOrderFromContext(context);
-      relatedSaleOrderLineService.updateRelatedSOLinesOnPriceChange(saleOrderLine, saleOrder);
-      relatedSaleOrderLineService.updateRelatedSOLinesOnQtyChange(saleOrderLine, saleOrder);
-      saleOrderLine.setIsProcessedLine(true);
-      response.setReload(true);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    RelatedSaleOrderLineService relatedSaleOrderLineService =
+        Beans.get(RelatedSaleOrderLineService.class);
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    relatedSaleOrderLineService.updateRelatedSOLinesOnPriceChange(saleOrderLine, saleOrder);
+    relatedSaleOrderLineService.updateRelatedSOLinesOnQtyChange(saleOrderLine, saleOrder);
+    relatedSaleOrderLineService.setIsProcessedLinetoTrue(saleOrderLine);
+    response.setReload(true);
   }
 
   public void hideAti(ActionRequest request, ActionResponse response) {
@@ -491,20 +487,14 @@ public class SaleOrderLineController {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    saleOrderLine =
-        Beans.get(RelatedSaleOrderLineService.class).setLineIndex(saleOrderLine, context);
-    response.setValues(saleOrderLine);
+    response.setValues(
+        Beans.get(RelatedSaleOrderLineService.class).setLineIndex(saleOrderLine, context));
   }
 
-  public void updateSaleOrderLineListSize(ActionRequest request, ActionResponse response) {
+  public void updateOnSaleOrderLineListChange(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    saleOrderLine.setSaleOrderLineListSize(saleOrderLine.getSaleOrderLineList().size());
-    for (SaleOrderLine slo : saleOrderLine.getSaleOrderLineList()) {
-      if (slo.getIsProcessedLine() || slo.getIsDisabledFromCalculation()) {
-        saleOrderLine.setIsDisabledFromCalculation(true);
-        break;
-      }
-    }
+    saleOrderLine =
+        Beans.get(RelatedSaleOrderLineService.class).updateOnSaleOrderLineListChange(saleOrderLine);
     response.setValues(saleOrderLine);
   }
 }

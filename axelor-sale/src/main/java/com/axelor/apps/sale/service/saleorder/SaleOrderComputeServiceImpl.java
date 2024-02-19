@@ -140,6 +140,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     }
 
     for (SaleOrderLineTax saleOrderLineVat : saleOrder.getSaleOrderLineTaxList()) {
+
       // In the sale order currency
       saleOrder.setTaxTotal(saleOrder.getTaxTotal().add(saleOrderLineVat.getTaxTotal()));
     }

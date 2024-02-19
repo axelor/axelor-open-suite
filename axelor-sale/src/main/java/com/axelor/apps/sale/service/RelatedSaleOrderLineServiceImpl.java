@@ -6,6 +6,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
@@ -15,9 +16,9 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.shiro.util.CollectionUtils;
 
 public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineService {
 
@@ -81,29 +82,17 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
   }
 
   @Override
-  public SaleOrder getSaleOrderFromContext(Context context) {
-    Context parentContext = context.getParent();
-    if (parentContext == null) {
-      return null;
-    }
-    if (parentContext.getContextClass().equals(SaleOrder.class)) {
-      return parentContext.asType(SaleOrder.class);
-    }
-    return getSaleOrderFromContext(parentContext);
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateRelatedOrderLines(SaleOrder saleOrder) throws AxelorException {
 
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
-      for (int i = 0; i < saleOrderLineList.size(); i++) {
-        SaleOrderLine saleOrderLine = saleOrderLineList.get(i);
-        SaleOrderLine newSaleOrderLine =
-            calculateAllParentsTotalsAndPrices(saleOrderLine, saleOrder);
-        saleOrderLineList.set(i, newSaleOrderLine);
-      }
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+    for (int i = 0; i < saleOrderLineList.size(); i++) {
+      SaleOrderLine saleOrderLine = saleOrderLineList.get(i);
+      saleOrderLine = calculateAllParentsTotalsAndPrices(saleOrderLine, saleOrder);
+      saleOrderLineList.set(i, saleOrderLine);
     }
     saleOrderRepository.save(saleOrder);
   }
@@ -118,18 +107,12 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
       return saleOrderLine;
     }
 
-    BigDecimal total = BigDecimal.ZERO;
-    for (SaleOrderLine subline : saleOrderLine.getSaleOrderLineList()) {
-      if (subline.getSaleOrderLineList() != null
-          && !saleOrderLine.getSaleOrderLineList().isEmpty()) {
-        calculateAllParentsTotalsAndPrices(subline, saleOrder);
-        total = total.add(subline.getExTaxTotal());
-      } else {
-        total = total.add(subline.getExTaxTotal());
-      }
-    }
-
-    saleOrderLine.setPrice(total.divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_UP));
+    BigDecimal total = computeTotal(saleOrderLine, saleOrder);
+    saleOrderLine.setPrice(
+        total.divide(
+            saleOrderLine.getQty(),
+            appBaseService.getNbDecimalDigitForUnitPrice(),
+            RoundingMode.HALF_UP));
 
     computeAllValues(saleOrderLine, saleOrder);
     saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
@@ -138,29 +121,37 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     return saleOrderLine;
   }
 
+  protected BigDecimal computeTotal(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    BigDecimal total = BigDecimal.ZERO;
+    for (SaleOrderLine subline : saleOrderLine.getSaleOrderLineList()) {
+      calculateAllParentsTotalsAndPrices(subline, saleOrder);
+      total = total.add(subline.getExTaxTotal());
+    }
+    return total;
+  }
+
   protected void setDefaultSaleOrderLineProperties(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    if (saleOrderLine.getParentSaleOrderLine() == null
-        && saleOrder.getCompany().getSaleConfig().getCountType() == 1) {
+
+    SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
+    Integer countType = saleOrder.getCompany().getSaleConfig().getCountTypeSelect();
+    if (parentSaleOrderLine == null && countType == SaleConfigRepository.COUNT_ONLY_PARENTS) {
       saleOrderLine.setIsNotCountable(false);
     }
-    if (saleOrderLine.getParentSaleOrderLine() != null
-        && saleOrder.getCompany().getSaleConfig().getCountType() == 1) {
+    if (parentSaleOrderLine != null && countType == SaleConfigRepository.COUNT_ONLY_PARENTS) {
       saleOrderLine.setIsNotCountable(true);
     }
-    if (saleOrderLine.getParentSaleOrderLine() == null
-        && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
+    if (parentSaleOrderLine == null && countType == SaleConfigRepository.COUNT_ONLY_CHILDREN) {
       saleOrderLine.setIsNotCountable(true);
     }
-    if (saleOrderLine.getParentSaleOrderLine() != null
-        && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
+    if (parentSaleOrderLine != null && countType == SaleConfigRepository.COUNT_ONLY_CHILDREN) {
       saleOrderLine.setIsNotCountable(false);
     }
 
-    if (saleOrderLine.getParentSaleOrderLine() == null
-        && (saleOrderLine.getSaleOrderLineList() == null
-            || saleOrderLine.getSaleOrderLineList().isEmpty())
-        && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
+    if (parentSaleOrderLine == null
+        && CollectionUtils.isEmpty(saleOrderLine.getSaleOrderLineList())
+        && countType == SaleConfigRepository.COUNT_ONLY_CHILDREN) {
       saleOrderLine.setIsNotCountable(false);
     }
 
@@ -192,7 +183,9 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
               .getExTaxTotal()
               .multiply(subLineTotal)
               .divide(
-                  subLine.getQty().multiply(oldQty.multiply(oldPrice)), 2, RoundingMode.HALF_UP));
+                  subLine.getQty().multiply(oldQty.multiply(oldPrice)),
+                  appBaseService.getNbDecimalDigitForUnitPrice(),
+                  RoundingMode.HALF_UP));
       computeAllValues(subLine, saleOrder);
       calculateChildrenTotalsAndPrices(subLine, saleOrder);
     }
@@ -201,7 +194,7 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     return saleOrderLine;
   }
 
-  protected SaleOrderLine computeAllValues(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  protected void computeAllValues(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     BigDecimal exTaxPrice = saleOrderLine.getPrice();
     Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
@@ -209,31 +202,16 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
         taxService.convertUnitPrice(
             false, taxLineSet, exTaxPrice, appBaseService.getNbDecimalDigitForUnitPrice());
     saleOrderLine.setInTaxPrice(inTaxPrice);
-    Map<String, BigDecimal> map = saleOrderLineService.computeValues(saleOrder, saleOrderLine);
-    saleOrderLine.setInTaxTotal(map.get("inTaxTotal"));
-    saleOrderLine.setExTaxTotal(map.get("exTaxTotal"));
-    saleOrderLine.setPriceDiscounted(map.get("priceDiscounted"));
-    saleOrderLine.setCompanyExTaxTotal(map.get("companyExTaxTotal"));
-    saleOrderLine.setCompanyInTaxTotal(map.get("companyInTaxTotal"));
-    saleOrderLine.setSubTotalCostPrice(map.get("subTotalCostPrice"));
-    return saleOrderLine;
+    saleOrderLineService.computeValues(saleOrder, saleOrderLine);
   }
 
+  @Override
   public SaleOrderLine setLineIndex(SaleOrderLine saleOrderLine, Context context) {
     if (saleOrderLine.getLineIndex() == null) {
-      if (context.getParent() != null
-          && context.getParent().getContextClass().equals(SaleOrder.class)) {
-        SaleOrder parent = context.getParent().asType(SaleOrder.class);
-        String nextIndex =
-            parent.getSaleOrderLineList().stream()
-                .filter(slo -> slo.getLineIndex() != null)
-                .map(slo -> slo.getLineIndex().split("\\.")[0])
-                .mapToInt(Integer::parseInt)
-                .boxed()
-                .collect(Collectors.maxBy(Integer::compareTo))
-                .map(max -> String.valueOf(max + 1))
-                .orElse("1");
-        saleOrderLine.setLineIndex(nextIndex);
+      Context parentContext = context.getParent();
+      if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
+        SaleOrder parent = parentContext.asType(SaleOrder.class);
+        saleOrderLine.setLineIndex(calculatePrentSolLineIndex(parent));
       }
 
       if (context.getParent() != null
@@ -244,5 +222,33 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
       }
     }
     return saleOrderLine;
+  }
+
+  protected String calculatePrentSolLineIndex(SaleOrder saleOrder) {
+    return saleOrder.getSaleOrderLineList().stream()
+        .filter(slo -> slo.getLineIndex() != null)
+        .map(slo -> slo.getLineIndex().split("\\.")[0])
+        .mapToInt(Integer::parseInt)
+        .boxed()
+        .collect(Collectors.maxBy(Integer::compareTo))
+        .map(max -> String.valueOf(max + 1))
+        .orElse("1");
+  }
+
+  @Override
+  public SaleOrderLine updateOnSaleOrderLineListChange(SaleOrderLine saleOrderLine) {
+    saleOrderLine.setSaleOrderLineListSize(saleOrderLine.getSaleOrderLineList().size());
+    for (SaleOrderLine slo : saleOrderLine.getSaleOrderLineList()) {
+      if (slo.getIsProcessedLine() || slo.getIsDisabledFromCalculation()) {
+        saleOrderLine.setIsDisabledFromCalculation(true);
+        break;
+      }
+    }
+    return saleOrderLine;
+  }
+
+  @Override
+  public void setIsProcessedLinetoTrue(SaleOrderLine saleOrderLine) {
+    saleOrderLine.setIsProcessedLine(true);
   }
 }
