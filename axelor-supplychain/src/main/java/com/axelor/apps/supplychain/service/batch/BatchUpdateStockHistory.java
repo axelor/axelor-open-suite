@@ -82,8 +82,8 @@ public class BatchUpdateStockHistory extends BatchStrategy {
 
       int offset = 0;
 
-      while (!(productList = productQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
-
+      while (!(productList = productQuery.order("id").fetch(getFetchLimit(), offset)).isEmpty()) {
+        findBatch();
         for (Product product : productList) {
           ++offset;
           try {

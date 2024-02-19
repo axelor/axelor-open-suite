@@ -123,9 +123,9 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
     BankDetailsRepository bankDetailsRepo = Beans.get(BankDetailsRepository.class);
     BankDetails companyBankDetails = accountingBatch.getBankDetails();
 
-    for (List<Invoice> invoiceList;
-        !(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty();
-        JPA.clear()) {
+    List<Invoice> invoiceList;
+    while (!(invoiceList = query.fetch(getFetchLimit())).isEmpty()) {
+      findBatch();
       if (!JPA.em().contains(companyBankDetails)) {
         companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
       }
@@ -148,6 +148,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
           break;
         }
       }
+      JPA.clear();
     }
 
     return doneList;

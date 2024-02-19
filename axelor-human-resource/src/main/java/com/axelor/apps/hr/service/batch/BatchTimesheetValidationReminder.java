@@ -19,12 +19,11 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.batch.MailBatchStrategy;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
@@ -46,7 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import javax.mail.MessagingException;
 
-public class BatchTimesheetValidationReminder extends AbstractBatch {
+public class BatchTimesheetValidationReminder extends MailBatchStrategy {
 
   protected TemplateMessageService templateMessageService;
   protected MessageService messageService;
@@ -226,9 +225,5 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
 
     super.stop();
     addComment(comment);
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_HR_BATCH);
   }
 }
