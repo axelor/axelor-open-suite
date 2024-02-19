@@ -27,7 +27,6 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
-import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -35,7 +34,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -103,16 +101,6 @@ public class BankOrderCreateService {
     bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);
     bankOrder.setSenderCompany(senderCompany);
     bankOrder.setSenderBankDetails(senderBankDetails);
-    EbicsUser signatoryEbicsUser =
-        bankOrderService.getDefaultEbicsUserFromBankDetails(senderBankDetails);
-    User signatoryUser = null;
-    if (signatoryEbicsUser != null) {
-      signatoryUser = signatoryEbicsUser.getAssociatedUser();
-      bankOrder.setSignatoryEbicsUser(signatoryEbicsUser);
-    }
-    if (signatoryUser != null) {
-      bankOrder.setSignatoryUser(signatoryUser);
-    }
 
     if (!bankOrderFileFormat.getIsMultiCurrency()) {
       bankOrder.setBankOrderCurrency(currency);

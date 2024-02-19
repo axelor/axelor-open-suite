@@ -94,7 +94,7 @@ public class JournalService {
     return journal;
   }
 
-  public boolean isSubrogationOk(Journal journal) {
+  public boolean isThirdPartyPayerOk(Journal journal) {
     List<Integer> journalTypeList =
         Arrays.asList(
             JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,

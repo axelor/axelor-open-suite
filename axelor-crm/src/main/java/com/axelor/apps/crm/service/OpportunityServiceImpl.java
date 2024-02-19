@@ -72,7 +72,11 @@ public class OpportunityServiceImpl implements OpportunityService {
     String seq =
         Beans.get(SequenceService.class)
             .getSequenceNumber(
-                SequenceRepository.OPPORTUNITY, company, Opportunity.class, "opportunitySeq");
+                SequenceRepository.OPPORTUNITY,
+                company,
+                Opportunity.class,
+                "opportunitySeq",
+                opportunity);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

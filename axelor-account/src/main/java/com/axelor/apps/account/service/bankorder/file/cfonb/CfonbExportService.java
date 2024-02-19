@@ -39,8 +39,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
-import com.axelor.utils.file.FileTool;
+import com.axelor.utils.helpers.StringHelper;
+import com.axelor.utils.helpers.file.FileHelper;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -314,7 +314,8 @@ public class CfonbExportService {
     DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
     String date = ddmmFormat.format(zonedDateTime.toLocalDate());
     date +=
-        String.format("%s", StringTool.truncLeft(String.format("%s", zonedDateTime.getYear()), 1));
+        String.format(
+            "%s", StringHelper.truncLeft(String.format("%s", zonedDateTime.getYear()), 1));
 
     // Récupération des valeurs
     String a = this.cfonbConfig.getSenderRecordCodeExportCFONB(); // Code enregistrement
@@ -339,26 +340,26 @@ public class CfonbExportService {
     String g2 = ""; // Zone réservée
 
     // Tronquage / remplissage à droite (chaine de caractère)
-    b2 = StringTool.fillStringRight(b2, ' ', 8);
-    b3 = StringTool.fillStringRight(b3, ' ', 6);
-    c1One = StringTool.fillStringRight(c1One, ' ', 1);
-    c1Two = StringTool.fillStringRight(c1Two, ' ', 6);
-    c2 = StringTool.fillStringRight(c2, ' ', 24);
-    d1One = StringTool.fillStringRight(d1One, ' ', 7);
-    d1Two = StringTool.fillStringRight(d1Two, ' ', 17);
-    d2One = StringTool.fillStringRight(d2One, ' ', 2);
-    d2Three = StringTool.fillStringRight(d2Three, ' ', 5);
-    d4 = StringTool.fillStringRight(d4, ' ', 11);
-    e = StringTool.fillStringRight(e, ' ', 16);
-    f = StringTool.fillStringRight(f, ' ', 31);
-    g2 = StringTool.fillStringRight(g2, ' ', 6);
+    b2 = StringHelper.fillStringRight(b2, ' ', 8);
+    b3 = StringHelper.fillStringRight(b3, ' ', 6);
+    c1One = StringHelper.fillStringRight(c1One, ' ', 1);
+    c1Two = StringHelper.fillStringRight(c1Two, ' ', 6);
+    c2 = StringHelper.fillStringRight(c2, ' ', 24);
+    d1One = StringHelper.fillStringRight(d1One, ' ', 7);
+    d1Two = StringHelper.fillStringRight(d1Two, ' ', 17);
+    d2One = StringHelper.fillStringRight(d2One, ' ', 2);
+    d2Three = StringHelper.fillStringRight(d2Three, ' ', 5);
+    d4 = StringHelper.fillStringRight(d4, ' ', 11);
+    e = StringHelper.fillStringRight(e, ' ', 16);
+    f = StringHelper.fillStringRight(f, ' ', 31);
+    g2 = StringHelper.fillStringRight(g2, ' ', 6);
 
     // Tronquage / remplissage à gauche (nombre)
-    a = StringTool.fillStringLeft(a, '0', 2);
-    b1 = StringTool.fillStringLeft(b1, '0', 2);
-    c1Three = StringTool.fillStringLeft(c1Three, '0', 5);
-    d3 = StringTool.fillStringLeft(d3, '0', 5);
-    g1 = StringTool.fillStringLeft(g1, '0', 5);
+    a = StringHelper.fillStringLeft(a, '0', 2);
+    b1 = StringHelper.fillStringLeft(b1, '0', 2);
+    c1Three = StringHelper.fillStringLeft(c1Three, '0', 5);
+    d3 = StringHelper.fillStringLeft(d3, '0', 5);
+    g1 = StringHelper.fillStringLeft(g1, '0', 5);
 
     // Vérification AN / N / A
     //		cfonbToolService.testDigital(a, "");
@@ -385,7 +386,8 @@ public class CfonbExportService {
 
     DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
     String date = ddmmFormat.format(localDate.atTime(LocalTime.now()).toLocalDate());
-    date += String.format("%s", StringTool.truncLeft(String.format("%s", localDate.getYear()), 1));
+    date +=
+        String.format("%s", StringHelper.truncLeft(String.format("%s", localDate.getYear()), 1));
 
     // Récupération des valeurs
     String a = this.cfonbConfig.getSenderRecordCodeExportCFONB(); // Code enregistrement
@@ -407,24 +409,24 @@ public class CfonbExportService {
     String g2 = ""; // Zone réservée
 
     // Tronquage / remplissage à droite (chaine de caractère)
-    b2 = StringTool.fillStringRight(b2, ' ', 8);
-    b3 = StringTool.fillStringRight(b3, ' ', 6);
-    c1One = StringTool.fillStringRight(c1One, ' ', 7);
-    c2 = StringTool.fillStringRight(c2, ' ', 24);
-    d1One = StringTool.fillStringRight(d1One, ' ', 7);
-    d1Two = StringTool.fillStringRight(d1Two, ' ', 17);
-    d2 = StringTool.fillStringRight(d2, ' ', 8);
-    d4 = StringTool.fillStringRight(d4, ' ', 11);
-    e = StringTool.fillStringRight(e, ' ', 16);
-    f = StringTool.fillStringRight(f, ' ', 31);
-    g2 = StringTool.fillStringRight(g2, ' ', 6);
+    b2 = StringHelper.fillStringRight(b2, ' ', 8);
+    b3 = StringHelper.fillStringRight(b3, ' ', 6);
+    c1One = StringHelper.fillStringRight(c1One, ' ', 7);
+    c2 = StringHelper.fillStringRight(c2, ' ', 24);
+    d1One = StringHelper.fillStringRight(d1One, ' ', 7);
+    d1Two = StringHelper.fillStringRight(d1Two, ' ', 17);
+    d2 = StringHelper.fillStringRight(d2, ' ', 8);
+    d4 = StringHelper.fillStringRight(d4, ' ', 11);
+    e = StringHelper.fillStringRight(e, ' ', 16);
+    f = StringHelper.fillStringRight(f, ' ', 31);
+    g2 = StringHelper.fillStringRight(g2, ' ', 6);
 
     // Tronquage / remplissage à gauche (nombre)
-    a = StringTool.fillStringLeft(a, '0', 2);
-    b1 = StringTool.fillStringLeft(b1, '0', 2);
-    c1Two = StringTool.fillStringLeft(c1Two, '0', 5);
-    d3 = StringTool.fillStringLeft(d3, '0', 5);
-    g1 = StringTool.fillStringLeft(g1, '0', 5);
+    a = StringHelper.fillStringLeft(a, '0', 2);
+    b1 = StringHelper.fillStringLeft(b1, '0', 2);
+    c1Two = StringHelper.fillStringLeft(c1Two, '0', 5);
+    d3 = StringHelper.fillStringLeft(d3, '0', 5);
+    g1 = StringHelper.fillStringLeft(g1, '0', 5);
 
     // Vérification AN / N / A
     //		cfonbToolService.testDigital(a, "");
@@ -561,22 +563,22 @@ public class CfonbExportService {
     String g2 = ""; // Zone réservée
 
     // Tronquage / remplissage à droite (chaine de caractère)
-    b2 = StringTool.fillStringRight(b2, ' ', 8);
-    b3 = StringTool.fillStringRight(b3, ' ', 6);
-    c1 = StringTool.fillStringRight(c1, ' ', 12);
-    c2 = StringTool.fillStringRight(c2, ' ', 24);
-    d1 = StringTool.fillStringRight(d1, ' ', 24);
-    d2 = StringTool.fillStringRight(d2, ' ', 8);
-    d4 = StringTool.fillStringRight(d4, ' ', 11);
-    f = StringTool.fillStringRight(f, ' ', 31);
-    g2 = StringTool.fillStringRight(g2, ' ', 6);
+    b2 = StringHelper.fillStringRight(b2, ' ', 8);
+    b3 = StringHelper.fillStringRight(b3, ' ', 6);
+    c1 = StringHelper.fillStringRight(c1, ' ', 12);
+    c2 = StringHelper.fillStringRight(c2, ' ', 24);
+    d1 = StringHelper.fillStringRight(d1, ' ', 24);
+    d2 = StringHelper.fillStringRight(d2, ' ', 8);
+    d4 = StringHelper.fillStringRight(d4, ' ', 11);
+    f = StringHelper.fillStringRight(f, ' ', 31);
+    g2 = StringHelper.fillStringRight(g2, ' ', 6);
 
     // Tronquage / remplissage à gauche (nombre)
-    a = StringTool.fillStringLeft(a, '0', 2);
-    b1 = StringTool.fillStringLeft(b1, '0', 2);
-    d3 = StringTool.fillStringLeft(d3, '0', 5);
-    e = StringTool.fillStringLeft(e, '0', 16);
-    g1 = StringTool.fillStringLeft(g1, '0', 5);
+    a = StringHelper.fillStringLeft(a, '0', 2);
+    b1 = StringHelper.fillStringLeft(b1, '0', 2);
+    d3 = StringHelper.fillStringLeft(d3, '0', 5);
+    e = StringHelper.fillStringLeft(e, '0', 16);
+    g1 = StringHelper.fillStringLeft(g1, '0', 5);
 
     return a + b1 + b2 + b3 + c1 + c2 + d1 + d2 + d3 + d4 + e + f + g1 + g2;
   }
@@ -644,22 +646,22 @@ public class CfonbExportService {
     String g2 = ""; // Zone réservée
 
     // Tronquage / remplissage à droite (chaine de caractère)
-    b2 = StringTool.fillStringRight(b2, ' ', 8);
-    b3 = StringTool.fillStringRight(b3, ' ', 6);
-    c1 = StringTool.fillStringRight(c1, ' ', 12);
-    c2 = StringTool.fillStringRight(c2, ' ', 24);
-    d1 = StringTool.fillStringRight(d1, ' ', 24);
-    d2 = StringTool.fillStringRight(d2, ' ', 8);
-    d3 = StringTool.fillStringRight(d3, ' ', 5);
-    d4 = StringTool.fillStringRight(d4, ' ', 11);
-    f = StringTool.fillStringRight(f, ' ', 31);
-    g1 = StringTool.fillStringRight(g1, ' ', 5);
-    g2 = StringTool.fillStringRight(g2, ' ', 6);
+    b2 = StringHelper.fillStringRight(b2, ' ', 8);
+    b3 = StringHelper.fillStringRight(b3, ' ', 6);
+    c1 = StringHelper.fillStringRight(c1, ' ', 12);
+    c2 = StringHelper.fillStringRight(c2, ' ', 24);
+    d1 = StringHelper.fillStringRight(d1, ' ', 24);
+    d2 = StringHelper.fillStringRight(d2, ' ', 8);
+    d3 = StringHelper.fillStringRight(d3, ' ', 5);
+    d4 = StringHelper.fillStringRight(d4, ' ', 11);
+    f = StringHelper.fillStringRight(f, ' ', 31);
+    g1 = StringHelper.fillStringRight(g1, ' ', 5);
+    g2 = StringHelper.fillStringRight(g2, ' ', 6);
 
     // Tronquage / remplissage à gauche (nombre)
-    a = StringTool.fillStringLeft(a, '0', 2);
-    b1 = StringTool.fillStringLeft(b1, '0', 2);
-    e = StringTool.fillStringLeft(e, '0', 16);
+    a = StringHelper.fillStringLeft(a, '0', 2);
+    b1 = StringHelper.fillStringLeft(b1, '0', 2);
+    e = StringHelper.fillStringLeft(e, '0', 16);
 
     return a + b1 + b2 + b3 + c1 + c2 + d1 + d2 + d3 + d4 + e + f + g1 + g2;
   }
@@ -681,7 +683,7 @@ public class CfonbExportService {
     String fileName = String.format("%s%s.dat", prefix, dateFileName);
 
     try {
-      FileTool.writer(destinationFolder, fileName, cFONB);
+      FileHelper.writer(destinationFolder, fileName, cFONB);
     } catch (IOException e) {
       throw new AxelorException(
           e.getCause(),

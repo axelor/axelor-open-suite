@@ -150,7 +150,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         baseAmount
             .multiply(paymentAmount)
             .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
-            .setScale(2, RoundingMode.HALF_UP);
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     TaxPaymentMoveLine taxPaymentMoveLine =
         new TaxPaymentMoveLine(

@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -142,7 +143,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
         moveLineAmount
             .multiply(paymentAmount)
             .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
-            .setScale(2, RoundingMode.HALF_UP);
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     BigDecimal taxProratedAmount = BigDecimal.ZERO;
     if (taxLine != null) {
@@ -151,7 +152,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
               ? BigDecimal.ZERO
               : exTaxProratedAmount
                   .multiply(taxLine.getValue().divide(new BigDecimal(100)))
-                  .setScale(2, RoundingMode.HALF_UP);
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
 
     paymentMvlD.setExTaxProratedAmount(exTaxProratedAmount);

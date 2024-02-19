@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="inventory-line-grid" title="Inventory lines"
     model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code">
@@ -14,7 +14,7 @@
       onChange="action-inventory-line-group-update-inventory-line"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
-      width="120" x-scale="2"/>
+      width="120" x-scale="2" min="0"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
     <field name="description"/>
     <field name="rack" width="150"/>
@@ -39,7 +39,7 @@
         onChange="action-inventory-line-group-update-inventory-line"/>
       <field name="currentQty" readonly="true"
         help="Does not include quantities from sub stock locations"/>
-      <field name="realQty" onChange="action-inventory-line-method-compute"/>
+      <field name="realQty" onChange="action-inventory-line-method-compute" min="0"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
       <field name="description"/>
       <field name="rack"/>

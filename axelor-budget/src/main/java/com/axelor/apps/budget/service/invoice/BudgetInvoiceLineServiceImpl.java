@@ -23,27 +23,16 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.InternationalService;
-import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -51,47 +40,28 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 @RequestScoped
-public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
-    implements BudgetInvoiceLineService {
+public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
 
+  protected InvoiceLineRepository invoiceLineRepo;
+  protected AppBaseService appBaseService;
   protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
   protected BudgetDistributionService budgetDistributionService;
 
   @Inject
   public BudgetInvoiceLineServiceImpl(
-      CurrencyService currencyService,
-      PriceListService priceListService,
-      AppAccountService appAccountService,
-      AccountManagementAccountService accountManagementAccountService,
-      ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService,
-      InvoiceLineAnalyticService invoiceLineAnalyticService,
-      SupplierCatalogService supplierCatalogService,
-      TaxService taxService,
-      InternationalService internationalService,
       BudgetService budgetService,
       BudgetRepository budgetRepository,
       BudgetDistributionService budgetDistributionService) {
-    super(
-        currencyService,
-        priceListService,
-        appAccountService,
-        accountManagementAccountService,
-        productCompanyService,
-        invoiceLineRepo,
-        appBaseService,
-        accountConfigService,
-        invoiceLineAnalyticService,
-        supplierCatalogService,
-        taxService,
-        internationalService);
+    this.appBaseService = appBaseService;
+    this.invoiceLineRepo = invoiceLineRepo;
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
@@ -101,7 +71,11 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
   @Transactional
   public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-    if (invoice == null || invoiceLine == null) {
+    LocalDate date =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
+    if (invoice == null || invoiceLine == null || date == null) {
       return "";
     }
     invoiceLine.clearBudgetDistributionList();
@@ -110,9 +84,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             invoiceLine.getAnalyticMoveLineList(),
             invoiceLine.getAccount(),
             invoice.getCompany(),
-            invoice.getInvoiceDate() != null
-                ? invoice.getInvoiceDate()
-                : invoice.getCreatedOn().toLocalDate(),
+            date,
             invoiceLine.getCompanyExTaxTotal(),
             invoiceLine.getName(),
             invoiceLine);
@@ -125,6 +97,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
   public void checkAmountForInvoiceLine(InvoiceLine invoiceLine) throws AxelorException {
     if (invoiceLine.getBudgetDistributionList() != null
         && !invoiceLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal amountSum = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().abs().compareTo(invoiceLine.getCompanyExTaxTotal())
             > 0) {
@@ -133,7 +106,15 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE),
               budgetDistribution.getBudget().getCode(),
               invoiceLine.getProduct().getCode());
+        } else {
+          amountSum = amountSum.add(budgetDistribution.getAmount());
         }
+      }
+      if (amountSum.compareTo(invoiceLine.getCompanyExTaxTotal()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_INVOICE),
+            invoiceLine.getProduct().getCode());
       }
     }
   }
@@ -184,7 +165,8 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(null);
 
-    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
+    return budgetDistributionService.getBudgetDomain(
+        company, date, technicalTypeSelect, new HashSet<>());
   }
 
   @Override

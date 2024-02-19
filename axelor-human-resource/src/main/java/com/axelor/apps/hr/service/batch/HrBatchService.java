@@ -66,6 +66,9 @@ public class HrBatchService extends AbstractBatchService {
       case HrBatchHRRepository.ACTION_TIMESHEET_REMINDER:
         batch = runTimesheetReminderBatch(hrBatch);
         break;
+      case HrBatchRepository.ACTION_INCREMENT_LEAVE:
+        batch = incrementLeave(hrBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -109,5 +112,9 @@ public class HrBatchService extends AbstractBatchService {
     }
 
     return Beans.get(BatchTimesheetReminder.class).run(hrBatch);
+  }
+
+  public Batch incrementLeave(HrBatch hrBatch) {
+    return Beans.get(BatchIncrementLeave.class).run(hrBatch);
   }
 }

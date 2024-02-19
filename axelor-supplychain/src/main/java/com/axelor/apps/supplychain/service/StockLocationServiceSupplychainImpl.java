@@ -23,7 +23,9 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -42,7 +44,9 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
       StockConfigService stockConfigService,
       AppBaseService appBaseService,
       UnitRepository unitRepository,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      StockRulesRepository stockRulesRepository,
+      StockLocationLineRepository stockLocationLineRepository) {
     super(
         stockLocationRepo,
         stockLocationLineService,
@@ -50,7 +54,9 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
         stockConfigService,
         appBaseService,
         unitRepository,
-        unitConversionService);
+        unitConversionService,
+        stockRulesRepository,
+        stockLocationLineRepository);
   }
 
   @Override

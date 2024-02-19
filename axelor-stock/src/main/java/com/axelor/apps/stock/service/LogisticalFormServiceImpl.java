@@ -45,8 +45,8 @@ import com.axelor.rpc.Context;
 import com.axelor.rpc.ContextEntity;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import com.axelor.utils.QueryBuilder;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.QueryBuilder;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -525,7 +525,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
 
     if (!fullySpreadStockMoveList.isEmpty()) {
-      String idListString = StringTool.getIdListString(fullySpreadStockMoveList);
+      String idListString = StringHelper.getIdListString(fullySpreadStockMoveList);
       domainList.add(String.format("self.id NOT IN (%s)", idListString));
     }
 

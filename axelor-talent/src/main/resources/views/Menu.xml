@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <!-- Recruitment menus -->
   <menuitem name="recruitment-root" parent="hr-root"
-    if="__config__.app.isApp('recruitment')" title="Recruitment" icon="fa-handshake-o"
+    if="__config__.app.isApp('recruitment')" title="Recruitment" icon="handshake"
     icon-background="#84429f" order="200"/>
 
   <menuitem name="recruitment-job-position-open" parent="recruitment-root"

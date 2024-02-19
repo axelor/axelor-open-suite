@@ -24,7 +24,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppAccount;
 import com.axelor.studio.db.AppInvoice;
@@ -54,12 +56,21 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
+      AppSettingsStudioService appSettingsService,
+      MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo,
       AppAccountRepository appAccountRepo,
       AppInvoiceRepository appInvoiceRepo,
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
     this.appAccountRepo = appAccountRepo;
     this.appInvoiceRepo = appInvoiceRepo;
     this.accountConfigRepo = accountConfigRepo;

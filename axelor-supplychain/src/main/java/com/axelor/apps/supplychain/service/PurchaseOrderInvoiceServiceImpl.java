@@ -44,6 +44,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.CurrencyScaleServicePurchase;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -84,6 +85,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   protected CommonInvoiceService commonInvoiceService;
   protected AddressService addressService;
   protected InvoiceLineOrderService invoiceLineOrderService;
+  protected CurrencyScaleServicePurchase currencyScaleServicePurchase;
 
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
@@ -95,7 +97,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       AccountConfigService accountConfigService,
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
-      InvoiceLineOrderService invoiceLineOrderService) {
+      InvoiceLineOrderService invoiceLineOrderService,
+      CurrencyScaleServicePurchase currencyScaleServicePurchase) {
     this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
     this.invoiceRepo = invoiceRepo;
@@ -105,6 +108,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     this.commonInvoiceService = commonInvoiceService;
     this.addressService = addressService;
     this.invoiceLineOrderService = invoiceLineOrderService;
+    this.currencyScaleServicePurchase = currencyScaleServicePurchase;
   }
 
   @Override
@@ -253,17 +257,23 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
 
     if (purchaseAmount != null) {
-      invoicedAmount = invoicedAmount.add(purchaseAmount);
+      invoicedAmount =
+          currencyScaleServicePurchase.getScaledValue(
+              purchaseOrder, invoicedAmount.add(purchaseAmount));
     }
     if (refundAmount != null) {
-      invoicedAmount = invoicedAmount.subtract(refundAmount);
+      invoicedAmount =
+          currencyScaleServicePurchase.getScaledValue(
+              purchaseOrder, invoicedAmount.subtract(refundAmount));
     }
 
     if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())
         && purchaseOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal rate =
           invoicedAmount.divide(purchaseOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-      invoicedAmount = purchaseOrder.getExTaxTotal().multiply(rate);
+      invoicedAmount =
+          currencyScaleServicePurchase.getScaledValue(
+              purchaseOrder, purchaseOrder.getExTaxTotal().multiply(rate));
     }
 
     log.debug(

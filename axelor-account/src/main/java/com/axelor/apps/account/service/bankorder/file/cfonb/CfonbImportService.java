@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.file.FileTool;
+import com.axelor.utils.helpers.file.FileHelper;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -127,7 +127,7 @@ public class CfonbImportService {
 
     this.testCompanyImportCFONBField(company);
 
-    this.importFile = FileTool.reader(fileName);
+    this.importFile = FileHelper.reader(fileName);
 
     if (appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null) {
       throw new AxelorException(
@@ -211,7 +211,7 @@ public class CfonbImportService {
 
     this.testCompanyImportCFONBField(company);
 
-    this.importFile = FileTool.reader(fileName);
+    this.importFile = FileHelper.reader(fileName);
 
     if (appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null) {
       throw new AxelorException(
