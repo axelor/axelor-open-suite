@@ -303,6 +303,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             InvoiceLine invoiceLine = this.createInvoiceLine();
             invoiceLine.setProject(projectTask.getProject());
             invoiceLine.setSaleOrderLine(projectTask.getSaleOrderLine());
+            invoiceLine.addProjectTaskSetItem(projectTask);
             projectTask.addInvoiceLineSetItem(invoiceLine);
 
             setProgressAndCoefficient(invoiceLine, projectTask);
