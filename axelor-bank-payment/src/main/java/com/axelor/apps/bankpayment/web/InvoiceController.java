@@ -11,10 +11,11 @@ import com.axelor.rpc.ActionResponse;
 public class InvoiceController {
 
   @ErrorException
-  public void cancelLcr(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancelBillOfExchange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
 
-    Beans.get(InvoiceBankPaymentService.class).cancelLcr(invoice);
+    Beans.get(InvoiceBankPaymentService.class).cancelBillOfExchange(invoice);
 
     response.setReload(true);
   }

@@ -317,7 +317,7 @@
 "C3 - Sender company name","C3 - Raison sociale du cédant ",,
 "Can't load while another reconciliation is open","Impossible de charger ce relevé car une autre réconciliation est ouverte",,
 "Cancel","Annuler",,
-"Cancel LCR","Annuler LCR",,
+"Cancel bill of exchange","Annuler LCR",,
 "Canceled","Annulé",,
 "Cancellation of Bill of Exchange for invoice %s","Annulation opération LCR pour la facture %s",,
 "Carried out","Réalisé",,

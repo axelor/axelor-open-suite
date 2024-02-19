@@ -37,7 +37,7 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void cancelLcr(Invoice invoice) throws AxelorException {
+  public void cancelBillOfExchange(Invoice invoice) throws AxelorException {
     if (invoice == null
         || !invoice.getLcrAccounted()
         || invoice.getAmountRemaining().signum() == 0
@@ -47,36 +47,37 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
 
     invoice = invoiceRepository.find(invoice.getId());
 
-    Move lcrMove = invoice.getMove();
+    Move billOfExchangeMove = invoice.getMove();
     Move oldMove = invoice.getOldMove();
 
-    resetInvoiceBeforeLcrCancellation(invoice, oldMove, lcrMove);
+    resetInvoiceBeforeBillOfExchangeCancellation(invoice, oldMove, billOfExchangeMove);
 
     Move reverseMove =
-        moveReverseService.generateReverse(lcrMove, true, true, true, lcrMove.getDate());
+        moveReverseService.generateReverse(
+            billOfExchangeMove, true, true, true, billOfExchangeMove.getDate());
     reverseMove.setDescription(
         String.format(
             I18n.get(ITranslation.BILL_OF_EXCHANGE_CANCELLATION), invoice.getInvoiceId()));
   }
 
-  protected void resetInvoiceBeforeLcrCancellation(Invoice invoice, Move oldMove, Move lcrMove)
-      throws AxelorException {
-    if (lcrMove == null || oldMove == null) {
+  protected void resetInvoiceBeforeBillOfExchangeCancellation(
+      Invoice invoice, Move oldMove, Move billOfExchangeMove) throws AxelorException {
+    if (billOfExchangeMove == null || oldMove == null) {
       return;
     }
 
     List<InvoiceTerm> oldInvoiceTermList = new ArrayList<>();
-    List<InvoiceTerm> lcrInvoiceTermList = new ArrayList<>();
+    List<InvoiceTerm> billOfExchangeInvoiceTermList = new ArrayList<>();
 
-    MoveLine lcrDebitMoveLine =
-        lcrMove.getMoveLineList().stream()
+    MoveLine billOfExchangeDebitMoveLine =
+        billOfExchangeMove.getMoveLineList().stream()
             .filter(ml -> ml.getDebit().signum() != 0)
             .findFirst()
             .orElse(null);
-    if (lcrDebitMoveLine == null) {
+    if (billOfExchangeDebitMoveLine == null) {
       return;
     }
-    lcrInvoiceTermList.addAll(lcrDebitMoveLine.getInvoiceTermList());
+    billOfExchangeInvoiceTermList.addAll(billOfExchangeDebitMoveLine.getInvoiceTermList());
 
     MoveLine debitMoveLine =
         oldMove.getMoveLineList().stream()
@@ -95,7 +96,7 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
 
     resetInvoiceTermAmounts(invoice, oldInvoiceTermList);
     invoiceTermReplaceService.replaceInvoiceTerms(
-        invoice, oldMove, lcrMove.getMoveLineList(), invoice.getPartnerAccount());
+        invoice, oldMove, billOfExchangeMove.getMoveLineList(), invoice.getPartnerAccount());
   }
 
   protected void resetInvoiceTermAmounts(Invoice invoice, List<InvoiceTerm> oldInvoiceTermList) {
