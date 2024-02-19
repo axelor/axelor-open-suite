@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineService {
@@ -140,24 +141,26 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
   protected void setDefaultSaleOrderLineProperties(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     if (saleOrderLine.getParentSaleOrderLine() == null
-            && saleOrder.getCompany().getSaleConfig().getCountType() == 1) {
+        && saleOrder.getCompany().getSaleConfig().getCountType() == 1) {
       saleOrderLine.setIsNotCountable(false);
     }
     if (saleOrderLine.getParentSaleOrderLine() != null
-            && saleOrder.getCompany().getSaleConfig().getCountType() == 1) {
+        && saleOrder.getCompany().getSaleConfig().getCountType() == 1) {
       saleOrderLine.setIsNotCountable(true);
     }
     if (saleOrderLine.getParentSaleOrderLine() == null
-            && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
+        && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
       saleOrderLine.setIsNotCountable(true);
     }
     if (saleOrderLine.getParentSaleOrderLine() != null
-            && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
+        && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
       saleOrderLine.setIsNotCountable(false);
     }
 
-    if (saleOrderLine.getParentSaleOrderLine() == null && (saleOrderLine.getSaleOrderLineList() == null || saleOrderLine.getSaleOrderLineList().isEmpty())
-            && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
+    if (saleOrderLine.getParentSaleOrderLine() == null
+        && (saleOrderLine.getSaleOrderLineList() == null
+            || saleOrderLine.getSaleOrderLineList().isEmpty())
+        && saleOrder.getCompany().getSaleConfig().getCountType() == 2) {
       saleOrderLine.setIsNotCountable(false);
     }
 
@@ -201,10 +204,10 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
   protected SaleOrderLine computeAllValues(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     BigDecimal exTaxPrice = saleOrderLine.getPrice();
-    TaxLine taxLine = saleOrderLine.getTaxLine();
+    Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
     BigDecimal inTaxPrice =
         taxService.convertUnitPrice(
-            false, taxLine, exTaxPrice, appBaseService.getNbDecimalDigitForUnitPrice());
+            false, taxLineSet, exTaxPrice, appBaseService.getNbDecimalDigitForUnitPrice());
     saleOrderLine.setInTaxPrice(inTaxPrice);
     Map<String, BigDecimal> map = saleOrderLineService.computeValues(saleOrder, saleOrderLine);
     saleOrderLine.setInTaxTotal(map.get("inTaxTotal"));
