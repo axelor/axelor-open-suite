@@ -117,7 +117,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
         analyticMoveLineService.computeAnalytic(company, analyticAccount);
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
-    analyticMoveLine.setAmount(analyticLineModel.getExTaxTotal());
+    analyticMoveLine.setAmount(analyticLineModel.getCompanyExTaxTotal());
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
@@ -206,7 +206,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             analyticLineModel.getAnalyticDistributionTemplate(),
-            analyticLineModel.getExTaxTotal(),
+            analyticLineModel.getCompanyExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 
