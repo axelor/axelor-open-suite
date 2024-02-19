@@ -13,6 +13,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
+import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -417,5 +418,10 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
         && ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
       Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
     }
+
+    invoice.setAdvancePaymentInvoiceSet(
+        Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
+    invoice.setInvoiceProductStatement(
+        Beans.get(InvoiceProductStatementService.class).getInvoiceProductStatement(invoice));
   }
 }

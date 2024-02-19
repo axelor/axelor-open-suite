@@ -20,4 +20,7 @@ public interface RelatedSaleOrderLineService {
   SaleOrderLine updateOnSaleOrderLineListChange(SaleOrderLine saleOrderLine);
 
   void populateSOLines(SaleOrder saleOrder);
+
+  SaleOrderLine createLinesForSubProducts(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 }

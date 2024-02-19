@@ -116,6 +116,7 @@ public class InvoicingProjectService {
 
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
+    invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
     if (invoicingProject.getProject() == null) {
       throw new AxelorException(
           invoicingProject,

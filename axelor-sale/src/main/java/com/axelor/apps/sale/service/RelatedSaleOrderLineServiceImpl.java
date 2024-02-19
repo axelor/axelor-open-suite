@@ -2,6 +2,7 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.SubProduct;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -17,6 +18,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.shiro.util.CollectionUtils;
@@ -281,6 +283,37 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
         saleOrderLine.setIsDisabledFromCalculation(true);
         break;
       }
+    }
+    return saleOrderLine;
+  }
+
+  public SaleOrderLine createSaleOrderline(SubProduct subProduct, SaleOrder saleOrder)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = new SaleOrderLine();
+    saleOrderLine.setProduct(subProduct.getProduct());
+    saleOrderLine.setQty(subProduct.getQty());
+    saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+    saleOrderLineService.computeValues(saleOrder, saleOrderLine);
+    if (Objects.equals(saleOrderLine.getPriceBeforeUpdate(), BigDecimal.ZERO)) {
+      saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
+    }
+    return saleOrderLine;
+  }
+
+  @Override
+  public SaleOrderLine createLinesForSubProducts(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    List<SubProduct> productList = saleOrderLine.getProduct().getSubProductList();
+    if (productList == null || productList.isEmpty()) {
+      return saleOrderLine;
+    }
+    for (SubProduct subProduct : productList) {
+      SaleOrderLine relatedSaleOrderLine = createSaleOrderline(subProduct, saleOrder);
+      saleOrderLine.addSaleOrderLineListItem(relatedSaleOrderLine);
+      saleOrderLine.setSaleOrderLineListSize(saleOrderLine.getSaleOrderLineList().size());
+      relatedSaleOrderLine.setLineIndex(
+          saleOrderLine.getLineIndex() + "." + (saleOrderLine.getSaleOrderLineListSize()));
+      createLinesForSubProducts(relatedSaleOrderLine, saleOrder);
     }
     return saleOrderLine;
   }
