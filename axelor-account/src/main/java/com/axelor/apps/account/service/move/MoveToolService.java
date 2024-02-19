@@ -209,4 +209,6 @@ public interface MoveToolService {
   boolean isMultiCurrency(Move move);
 
   List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
+
+  List<Integer> getMoveStatusSelection(Company company, Journal journal) throws AxelorException;
 }

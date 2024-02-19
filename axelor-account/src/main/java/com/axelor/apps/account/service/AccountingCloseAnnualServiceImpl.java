@@ -107,7 +107,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       boolean closeYear,
       boolean openYear,
       boolean allocatePerPartner,
-      boolean isSimulatedMove)
+      Integer moveStatus)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -127,7 +127,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               partner,
               false,
               allocatePerPartner,
-              isSimulatedMove);
+              moveStatus);
 
       if (closeYearMove == null) {
         return null;
@@ -147,7 +147,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               partner,
               true,
               allocatePerPartner,
-              isSimulatedMove);
+              moveStatus);
 
       if (openYearMove == null) {
         return null;
@@ -173,7 +173,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String moveDescription,
       boolean closeYear,
       boolean allocatePerPartner,
-      boolean isSimulatedMove)
+      Integer moveStatus)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -192,7 +192,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               partner,
               false,
               allocatePerPartner,
-              isSimulatedMove);
+              moveStatus);
 
       if (closeYearMove == null) {
         return null;
@@ -214,7 +214,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String moveDescription,
       boolean openYear,
       boolean allocatePerPartner,
-      boolean isSimulatedMove)
+      Integer moveStatus)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -233,7 +233,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               partner,
               true,
               allocatePerPartner,
-              isSimulatedMove);
+              moveStatus);
 
       if (openYearMove == null) {
         return null;
@@ -254,7 +254,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       Partner partner,
       boolean isReverse,
       boolean allocatePerPartner,
-      boolean isSimulatedMove)
+      Integer moveStatus)
       throws AxelorException {
 
     Company company = account.getCompany();
@@ -314,14 +314,18 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         originDate,
         balance);
 
-    if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
-      if (move.getJournal() != null
-          && accountConfig.getIsActivateSimulatedMove()
-          && isSimulatedMove
+    if (move.getMoveLineList() != null
+        && !move.getMoveLineList().isEmpty()
+        && move.getJournal() != null) {
+      if (accountConfig.getIsActivateSimulatedMove()
+          && moveStatus == MoveRepository.STATUS_SIMULATED
           && move.getJournal().getAuthorizeSimulatedMove()) {
-
         moveSimulateService.simulate(move);
-      } else {
+      } else if (accountConfig.getAccountingDaybook()
+          && move.getJournal().getAllowAccountingDaybook()) {
+        moveValidateService.accounting(move);
+      }
+      if (moveStatus == MoveRepository.STATUS_ACCOUNTED) {
         moveValidateService.accounting(move);
       }
     } else {

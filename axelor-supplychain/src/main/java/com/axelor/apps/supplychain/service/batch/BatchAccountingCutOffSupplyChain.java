@@ -151,7 +151,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       String moveDescription = accountingBatch.getMoveDescription();
       String reverseMoveDescription = accountingBatch.getReverseMoveDescription();
       int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-      int cutOffMoveStatusSelect = accountingBatch.getCutOffMoveStatusSelect();
+      int cutOffMoveStatusSelect = accountingBatch.getGeneratedMoveStatusSelect();
       boolean recoveredTax = accountingBatch.getRecoveredTax();
       boolean ati = accountingBatch.getAti();
       boolean includeNotStockManagedProduct = accountingBatch.getIncludeNotStockManagedProduct();
