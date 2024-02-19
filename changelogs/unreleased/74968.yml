@@ -1,0 +1,6 @@
+---
+title: "TEMPLATE : use a M2M for localizations"
+type: feature
+description: |
+  On a Template, there is a M2O localization. Now, we change it to M2M for localization. 
+  GenerateMessageController.templateDomain is modified. Demo/init data is modified.
