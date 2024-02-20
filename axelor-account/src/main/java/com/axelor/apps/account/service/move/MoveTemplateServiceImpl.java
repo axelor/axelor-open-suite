@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
-import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -78,8 +77,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineToolService moveLineToolService;
   protected MoveRecordUpdateService moveRecordUpdateService;
-  protected MoveAttrsService moveAttrsService;
-  protected MoveToolService moveToolService;
 
   protected List<String> exceptionsList;
 
@@ -97,9 +94,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       MoveLineTaxService moveLineTaxService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveRecordUpdateService moveRecordUpdateService,
-      MoveLineToolService moveLineToolService,
-      MoveAttrsService moveAttrsService,
-      MoveToolService moveToolService) {
+      MoveLineToolService moveLineToolService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -114,8 +109,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveRecordUpdateService = moveRecordUpdateService;
     this.moveLineToolService = moveLineToolService;
-    this.moveAttrsService = moveAttrsService;
-    this.moveToolService = moveToolService;
 
     this.exceptionsList = Lists.newArrayList();
   }
