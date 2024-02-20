@@ -88,6 +88,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ProductionConfigRepository productionConfigRepo;
   protected PurchaseOrderService purchaseOrderService;
   protected AppBaseService appBaseService;
+  protected ProductService productService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -98,7 +99,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
       PurchaseOrderService purchaseOrderService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ProductService productService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -107,6 +109,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.productionConfigRepo = productionConfigRepo;
     this.purchaseOrderService = purchaseOrderService;
     this.appBaseService = appBaseService;
+    this.productService = productService;
   }
 
   @Override
@@ -333,19 +336,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
 
-    // update costprice in product
-    if (((Integer) productCompanyService.get(product, "costTypeSelect", company))
-        == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
-      productCompanyService.set(
-          product,
-          "costPrice",
-          (BigDecimal) productCompanyService.get(product, "lastProductionPrice", company),
-          company);
-      if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
-        Beans.get(ProductService.class).updateSalePrice(product, company);
-      }
-    }
-
     manufOrderStockMoveService.finish(manufOrder);
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
@@ -355,7 +345,22 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+
+    updateProductCostPrice(manufOrder, product, company);
+
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
+  }
+
+  protected void updateProductCostPrice(ManufOrder manufOrder, Product product, Company company)
+      throws AxelorException {
+    // update costprice in product
+    if (((Integer) productCompanyService.get(product, "costTypeSelect", company))
+        == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
+      productCompanyService.set(product, "costPrice", manufOrder.getCostPrice(), company);
+      if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
+        productService.updateSalePrice(product, company);
+      }
+    }
   }
 
   /** Return the cost price for one unit in a manufacturing order. */

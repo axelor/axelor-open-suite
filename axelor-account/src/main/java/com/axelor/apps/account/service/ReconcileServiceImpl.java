@@ -41,6 +41,7 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -113,6 +114,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
+  protected InvoiceTermPfpService invoiceTermPfpService;
   protected CurrencyService currencyService;
 
   @Inject
@@ -139,6 +141,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
+      InvoiceTermPfpService invoiceTermPfpService,
       CurrencyService currencyService) {
 
     this.moveToolService = moveToolService;
@@ -163,6 +166,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
+    this.invoiceTermPfpService = invoiceTermPfpService;
     this.currencyService = currencyService;
   }
 
@@ -181,10 +185,12 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal amount,
-      boolean canBeZeroBalanceOk) {
+      boolean canBeZeroBalanceOk)
+      throws AxelorException {
 
     if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)
         && amount.compareTo(BigDecimal.ZERO) > 0) {
+
       log.debug(
           "Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
           debitMoveLine.getMove().getCompany(),
@@ -229,7 +235,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     checkDifferentAccounts(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
-    reconcile = initReconcileConfirmation(reconcile);
+    reconcile = initReconcileConfirmation(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
     if (updateInvoicePayments) {
       this.updatePayments(reconcile, updateInvoiceTerms);
@@ -271,9 +277,11 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Reconcile initReconcileConfirmation(Reconcile reconcile) throws AxelorException {
+  public Reconcile initReconcileConfirmation(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerm)
+      throws AxelorException {
 
-    this.reconcilePreconditions(reconcile);
+    this.reconcilePreconditions(reconcile, updateInvoicePayments, updateInvoiceTerm);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
@@ -317,7 +325,9 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   @Override
-  public void reconcilePreconditions(Reconcile reconcile) throws AxelorException {
+  public void reconcilePreconditions(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
+      throws AxelorException {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
@@ -385,6 +395,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     // Check tax lines
     this.taxLinePrecondition(creditMoveLine.getMove());
     this.taxLinePrecondition(debitMoveLine.getMove());
+
+    if (updateInvoiceTerms && updateInvoicePayments) {
+      invoiceTermPfpService.validatePfpValidatedAmount(
+          debitMoveLine, creditMoveLine, reconcile.getAmount());
+    }
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
@@ -716,7 +731,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     } else {
       List<InvoiceTerm> invoiceTermsToPay = null;
       if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-        invoiceTermsToPay = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+        invoiceTermsToPay =
+            invoiceTermService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
       } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
         invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
