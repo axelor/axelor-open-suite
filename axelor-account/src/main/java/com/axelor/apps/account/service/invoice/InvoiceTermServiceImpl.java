@@ -575,9 +575,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException {
+    boolean pfpCondition = invoiceVisibilityService.getPfpCondition(invoice);
+
+    return buildUnpaidInvoiceTermsQuery(invoice, pfpCondition);
+  }
+
+  @Override
+  public List<InvoiceTerm> getUnpaidInvoiceTermsWithoutPfpCheck(Invoice invoice)
+      throws AxelorException {
+
+    return buildUnpaidInvoiceTermsQuery(invoice, false);
+  }
+
+  protected List<InvoiceTerm> buildUnpaidInvoiceTermsQuery(Invoice invoice, boolean pfpCondition) {
     String queryStr =
         "self.invoice = :invoice AND (self.isPaid IS NOT TRUE OR self.amountRemaining > 0)";
-    boolean pfpCondition = invoiceVisibilityService.getPfpCondition(invoice);
 
     if (pfpCondition) {
       queryStr =
@@ -615,6 +627,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException {
 
     return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTerms(invoice));
+  }
+
+  @Override
+  public List<InvoiceTerm> getUnpaidInvoiceTermsFilteredWithoutPfpCheck(Invoice invoice)
+      throws AxelorException {
+
+    return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTermsWithoutPfpCheck(invoice));
   }
 
   @Override
