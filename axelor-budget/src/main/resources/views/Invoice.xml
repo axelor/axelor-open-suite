@@ -31,11 +31,11 @@
 
     <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='pfpAccountConfigPanel']">
       <insert position="after">
-        <panel name="budgetPanel" title="Budget"
+        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')"
           showIf="(statusSelect >= 2 &amp;&amp; statusSelect &lt; 4) || budgetDistributionGenerated">
           <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
             action="action-budget-distribution-view-budget-distribution" colSpan="12"
-            readonly="true" if="__config__.app.isApp('budget')"/>
+            readonly="true"/>
         </panel>
       </insert>
     </extend>

@@ -298,8 +298,11 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 
-    if (appBudgetService.getAppBudget() != null
-        && !appBudgetService.getAppBudget().getManageMultiBudget()) {
+    if (!appBudgetService.isApp("budget")) {
+      return;
+    }
+
+    if (!appBudgetService.getAppBudget().getManageMultiBudget()) {
       generateBudgetDistribution(purchaseOrder);
     }
 

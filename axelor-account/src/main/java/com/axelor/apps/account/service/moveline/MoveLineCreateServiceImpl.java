@@ -283,7 +283,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
-    if (!isDebit) {
+    if (!isDebit && amountInSpecificMoveCurrency != null) {
       amountInSpecificMoveCurrency =
           currencyScaleService.getScaledValue(move, amountInSpecificMoveCurrency.negate());
     }
@@ -296,8 +296,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             date,
             dueDate,
             counter,
-            currencyScaleService.getScaledValue(move, debit),
-            currencyScaleService.getScaledValue(move, credit),
+            currencyScaleService.getCompanyScaledValue(move, debit),
+            currencyScaleService.getCompanyScaledValue(move, credit),
             Strings.isNullOrEmpty(move.getDescription())
                 ? StringHelper.cutTooLongString(
                     moveLineToolService.determineDescriptionMoveLine(

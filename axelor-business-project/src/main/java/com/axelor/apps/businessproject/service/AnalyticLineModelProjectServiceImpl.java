@@ -33,6 +33,7 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -84,7 +85,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
 
     super.createAnalyticDistributionWithTemplate(analyticLineModel);
 
-    if (analyticLineProjectModel.getProject() != null) {
+    if (analyticLineProjectModel.getProject() != null
+        && ObjectUtils.notEmpty(analyticLineProjectModel.getAnalyticMoveLineList())) {
       List<AnalyticMoveLine> analyticMoveLineList =
           analyticLineProjectModel.getAnalyticMoveLineList();
 

@@ -123,7 +123,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
     analyticMoveLine.setAmount(
-        currencyScaleService.getScaledValue(analyticMoveLine, analyticLineModel.getExTaxTotal()));
+        currencyScaleService.getScaledValue(
+            analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
@@ -216,7 +217,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
         analyticMoveLineService.generateLines(
             analyticLineModel.getAnalyticDistributionTemplate(),
             currencyScaleService.getCompanyScaledValue(
-                analyticLineModel.getCompany(), analyticLineModel.getExTaxTotal()),
+                analyticLineModel.getCompany(), analyticLineModel.getCompanyExTaxTotal()),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 

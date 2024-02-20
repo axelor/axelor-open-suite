@@ -8,8 +8,10 @@
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <extend target="//field[@name='inTaxTotal']">
       <insert position="after">
-        <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
-        <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budgetStr"
+          if="__config__.app.getApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budget"
+          if="__config__.app.getApp('budget') &amp;&amp; !__config__.app.getApp('budget').getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -19,7 +21,7 @@
     name="purchase-order-line-grid" extension="true">
     <extend target="//field[@name='estimatedReceiptDate']">
       <insert position="after">
-        <field name="budget"/>
+        <field name="budget" if="__config__.app.getApp('budget')"/>
       </insert>
     </extend>
   </grid>
