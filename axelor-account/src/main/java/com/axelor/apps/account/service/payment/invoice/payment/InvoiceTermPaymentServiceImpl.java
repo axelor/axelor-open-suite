@@ -148,10 +148,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       isCompanyCurrency =
           invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
 
-      BigDecimal invoiceTermAmount =
-          isCompanyCurrency
-              ? invoiceTermToPay.getAmountRemaining()
-              : invoiceTermToPay.getCompanyAmountRemaining();
+      BigDecimal invoiceTermAmount = invoiceTermToPay.getAmountRemaining();
 
       if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
         invoiceTermPayment =
@@ -160,7 +157,10 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       } else {
         invoiceTermPayment =
             createInvoiceTermPayment(invoicePayment, invoiceTermToPay, invoiceTermAmount);
-        availableAmount = availableAmount.subtract(invoiceTermAmount);
+        availableAmount =
+            isCompanyCurrency
+                ? reconcileAmount.subtract(invoiceTermAmount)
+                : availableAmount.subtract(invoiceTermAmount);
       }
 
       invoiceTermPaymentList.add(invoiceTermPayment);
@@ -274,14 +274,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       manageInvoiceTermFinancialDiscount(
           invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
 
-      boolean isCompanyCurrency =
-          invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
-      invoiceTermPayment.setPaidAmount(
-          isCompanyCurrency ? paidAmount : this.computePaidAmount(invoiceTermToPay, paidAmount));
+      invoiceTermPayment.setPaidAmount(paidAmount);
       invoiceTermPayment.setCompanyPaidAmount(
-          isCompanyCurrency
-              ? this.computeCompanyPaidAmount(invoiceTermToPay, invoicePayment, paidAmount)
-              : paidAmount);
+          this.computeCompanyPaidAmount(invoiceTermToPay, invoicePayment, paidAmount));
     } catch (AxelorException e) {
       TraceBackService.trace(
           new AxelorException(
@@ -302,10 +297,17 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         invoicePayment == null
             ? invoiceTerm.getCompany().getCurrency()
             : invoicePayment.getCurrency();
-    boolean isSameCurrency = invoiceTerm.getCurrency() == moveCurrency;
+    boolean paymentIsSameCurrency = invoiceTerm.getCurrency() == moveCurrency;
+    boolean invoiceTermIsMonoCurrency =
+        invoiceTerm.getAmount().compareTo(invoiceTerm.getCompanyAmount()) == 0;
+    boolean isCompanyCurrency = invoiceTerm.getCompany().getCurrency() == moveCurrency;
+
+    if ((paymentIsSameCurrency && invoiceTermIsMonoCurrency) || isCompanyCurrency) {
+      return paidAmount;
+    }
 
     BigDecimal ratio =
-        isSameCurrency
+        paymentIsSameCurrency
             ? invoiceTerm
                 .getCompanyAmount()
                 .divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP)
