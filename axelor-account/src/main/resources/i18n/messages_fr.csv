@@ -3160,6 +3160,7 @@
 "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted.","Le journal comptable : %s est inactif. Ainsi,l'écriture ne peut être passée en brouillard/comptabilisé.",,
 "The journal with the code %s cannot be found. The move cannot be created.","Le journal avec le code %s n'a pas pu être déterminé. L'écriture ne peut pas être créée.",,
 "The line can not be simulated because there is no journal or it does not authorize simulated move","La ligne ne peut pas être simulée parceque le journal est absent, ou parceque les écritures simulées n'y sont pas autorisées",,
+"The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp","L'écriture comptable %s ne peut être réconciliée car la ligne %s n'a pas assez de montant restant avec les BAP validés",,
 "The move %s cannot be empty","L'écriture %s ne peut pas être vide",,
 "The move field description is empty, do you wish to continue ?","Le champ description de l'écriture est vide, voulez-vous continuer ?",,
 "The move field origin is empty, do you wish to continue ?","Le champ origine de l'écriture est vide, voulez-vous continuer ?",,
