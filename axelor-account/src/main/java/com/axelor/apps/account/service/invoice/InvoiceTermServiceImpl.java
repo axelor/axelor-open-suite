@@ -1672,12 +1672,35 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmountRemaining)
             .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO)
-            .subtract(amountToPay)
-            .multiply(currencyRate)
-            .setScale(companyScale, RoundingMode.HALF_UP);
+            .orElse(BigDecimal.ZERO);
+    BigDecimal invoiceCurrencyRate =
+        companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP);
 
-    BigDecimal diff = moveLineAmountRemaining.subtract(invoiceTermAmountRemaining);
+    if (Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
+      if (BigDecimal.ONE.compareTo(invoiceCurrencyRate) == 0) {
+        invoiceTermAmountRemaining =
+            invoiceTermAmountRemaining.subtract(amountToPay).multiply(currencyRate);
+      } else {
+        invoiceTermAmountRemaining =
+            (invoiceTermAmountRemaining.subtract(
+                amountToPay.divide(
+                    invoiceCurrencyRate,
+                        companyScale,
+                    RoundingMode.HALF_UP)));
+      }
+    } else {
+      if (BigDecimal.ONE.compareTo(invoiceCurrencyRate) != 0) {
+        invoiceTermAmountRemaining =
+            invoiceTermAmountRemaining.subtract(amountToPay).multiply(invoiceCurrencyRate);
+      } else {
+        invoiceTermAmountRemaining =
+            invoiceTermAmountRemaining.subtract(amountToPayInCompanyCurrency);
+      }
+    }
+
+    BigDecimal diff =
+        moveLineAmountRemaining.subtract(
+            invoiceTermAmountRemaining.setScale(companyScale, RoundingMode.HALF_UP));
 
     return amountToPayInCompanyCurrency.add(diff).setScale(companyScale, RoundingMode.HALF_UP);
   }

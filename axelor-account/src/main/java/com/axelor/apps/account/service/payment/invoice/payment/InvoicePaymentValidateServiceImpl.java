@@ -50,6 +50,8 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
@@ -363,24 +365,21 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
 
-    BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
-    companyPaymentAmount =
-        companyPaymentAmount.subtract(
-            invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));
-
+    BigDecimal currencyRate =
+        this.computeCurrencyRate(
+            companyPaymentAmount,
+            paymentAmount,
+            invoice.getCurrency(),
+            invoicePayment.getCurrency(),
+            invoice.getCompany().getCurrency(),
+            invoice.getMove());
     companyPaymentAmount =
         invoiceTermService.adjustAmountInCompanyCurrency(
             invoice.getInvoiceTermList(),
             invoice.getCompanyInTaxTotalRemaining(),
             companyPaymentAmount,
             paymentAmount,
-            invoice.getMove() != null
-                ? invoice.getMove().getMoveLineList().stream()
-                    .map(MoveLine::getCurrencyRate)
-                    .findAny()
-                    .orElse(BigDecimal.ONE)
-                : BigDecimal.ONE,
-            company);
+            currencyRate);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -441,4 +440,25 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && invoicePayment.getFinancialDiscount() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount();
   }
+
+    protected BigDecimal computeCurrencyRate(
+            BigDecimal companyPaymentAmount,
+            BigDecimal paymentAmount,
+            Currency invoiceCurrency,
+            Currency paymentCurrency,
+            Currency companyCurrency,
+            Move invoiceMove) {
+        BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+
+        if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
+            return invoiceMove != null
+                    ? invoiceMove.getMoveLineList().stream()
+                    .map(MoveLine::getCurrencyRate)
+                    .findAny()
+                    .orElse(currencyRate)
+                    : currencyRate;
+        }
+
+        return currencyRate;
+    }
 }
