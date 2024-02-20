@@ -469,7 +469,6 @@ public class SaleOrderLineController {
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
     relatedSaleOrderLineService.updateRelatedSOLinesOnPriceChange(saleOrderLine, saleOrder);
     relatedSaleOrderLineService.updateRelatedSOLinesOnQtyChange(saleOrderLine, saleOrder);
-    relatedSaleOrderLineService.setIsProcessedLinetoTrue(saleOrderLine);
     response.setReload(true);
   }
 

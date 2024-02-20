@@ -18,6 +18,4 @@ public interface RelatedSaleOrderLineService {
   SaleOrderLine setLineIndex(SaleOrderLine saleOrderLine, Context context);
 
   SaleOrderLine updateOnSaleOrderLineListChange(SaleOrderLine saleOrderLine);
-
-  void setIsProcessedLinetoTrue(SaleOrderLine saleOrderLine);
 }

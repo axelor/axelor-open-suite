@@ -742,10 +742,8 @@ public class SaleOrderController {
   public void updateRelatedOrderLines(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      Beans.get(RelatedSaleOrderLineService.class).updateRelatedOrderLines(saleOrder);
-      response.setReload(true);
-    }
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    Beans.get(RelatedSaleOrderLineService.class).updateRelatedOrderLines(saleOrder);
+    response.setReload(true);
   }
 }

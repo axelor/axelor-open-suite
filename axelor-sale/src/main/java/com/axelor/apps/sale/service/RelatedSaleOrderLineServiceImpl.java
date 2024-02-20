@@ -9,6 +9,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
@@ -27,6 +28,7 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
   protected final TaxService taxService;
   protected final AppBaseService appBaseService;
   protected final SaleOrderLineService saleOrderLineService;
+  protected final AppSaleService appSaleService;
 
   @Inject
   public RelatedSaleOrderLineServiceImpl(
@@ -34,12 +36,14 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
       SaleOrderRepository saleOrderRepository,
       TaxService taxService,
       AppBaseService appBaseService,
-      SaleOrderLineService saleOrderLineService) {
+      SaleOrderLineService saleOrderLineService,
+      AppSaleService appSaleService) {
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.taxService = taxService;
     this.appBaseService = appBaseService;
     this.saleOrderLineService = saleOrderLineService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
@@ -84,27 +88,28 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateRelatedOrderLines(SaleOrder saleOrder) throws AxelorException {
+    if (!appSaleService.getAppSale().getIsSubLinesEnabled()) {
+      return;
+    }
 
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
       return;
     }
-    for (int i = 0; i < saleOrderLineList.size(); i++) {
-      SaleOrderLine saleOrderLine = saleOrderLineList.get(i);
-      saleOrderLine = calculateAllParentsTotalsAndPrices(saleOrderLine, saleOrder);
-      saleOrderLineList.set(i, saleOrderLine);
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      calculateAllParentsTotalsAndPrices(saleOrderLine, saleOrder);
     }
     saleOrderRepository.save(saleOrder);
   }
 
-  protected SaleOrderLine calculateAllParentsTotalsAndPrices(
+  protected void calculateAllParentsTotalsAndPrices(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     if (saleOrderLine.getSaleOrderLineList() == null
         || saleOrderLine.getSaleOrderLineList().isEmpty()) {
       saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
       saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
       setDefaultSaleOrderLineProperties(saleOrderLine, saleOrder);
-      return saleOrderLine;
+      return;
     }
 
     BigDecimal total = computeTotal(saleOrderLine, saleOrder);
@@ -118,7 +123,6 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
     saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
     setDefaultSaleOrderLineProperties(saleOrderLine, saleOrder);
-    return saleOrderLine;
   }
 
   protected BigDecimal computeTotal(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -207,6 +211,10 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
 
   @Override
   public SaleOrderLine setLineIndex(SaleOrderLine saleOrderLine, Context context) {
+    if (!appSaleService.getAppSale().getIsSubLinesEnabled()) {
+      return saleOrderLine;
+    }
+
     if (saleOrderLine.getLineIndex() == null) {
       Context parentContext = context.getParent();
       if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
@@ -245,10 +253,5 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
       }
     }
     return saleOrderLine;
-  }
-
-  @Override
-  public void setIsProcessedLinetoTrue(SaleOrderLine saleOrderLine) {
-    saleOrderLine.setIsProcessedLine(true);
   }
 }
