@@ -71,7 +71,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       }
     }
 
-    moveLine.setCurrencyRate(currencyRate);
+    moveLine.setCurrencyRate(currencyRate.setScale(5, RoundingMode.HALF_UP));
 
     BigDecimal total = moveLine.getCredit().add(moveLine.getDebit());
 
