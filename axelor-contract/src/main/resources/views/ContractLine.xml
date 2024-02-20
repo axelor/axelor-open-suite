@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="contract-line-grid" title="Contract Lines"
     model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
@@ -76,9 +76,11 @@
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-method-contract-line-compute-total"/>
           <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
-            onChange="action-method-contract-line-compute-total"/>
-          <field name="priceDiscounted" hideIf="discountTypeSelect == 0" readonly="true"
-            colSpan="3" showIf="priceDiscounted != 0"/>
+            onChange="action-method-contract-line-compute-total"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
+          <field name="priceDiscounted" readonly="true" colSpan="3"
+            showIf="priceDiscounted != 0 &amp;&amp; discountTypeSelect != 0"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
