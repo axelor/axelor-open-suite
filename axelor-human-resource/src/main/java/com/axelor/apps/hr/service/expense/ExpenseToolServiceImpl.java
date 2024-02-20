@@ -56,6 +56,7 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
   protected ExpenseRepository expenseRepository;
   protected PeriodRepository periodRepository;
   protected ExpenseComputationService expenseComputationService;
+  protected ExpenseLineToolService expenseLineToolService;
 
   @Inject
   public ExpenseToolServiceImpl(
@@ -64,13 +65,15 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       SequenceService sequenceService,
       ExpenseRepository expenseRepository,
       PeriodRepository periodRepository,
-      ExpenseComputationService expenseComputationService) {
+      ExpenseComputationService expenseComputationService,
+      ExpenseLineToolService expenseLineToolService) {
     this.appBaseService = appBaseService;
     this.expenseLineService = expenseLineService;
     this.sequenceService = sequenceService;
     this.expenseRepository = expenseRepository;
     this.periodRepository = periodRepository;
     this.expenseComputationService = expenseComputationService;
+    this.expenseLineToolService = expenseLineToolService;
   }
 
   @Override
@@ -152,12 +155,23 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       if (expenseProduct != null && kilometricAllowParam == null) {
         expense.addGeneralExpenseLineListItem(expenseLine);
       }
-      if (isKilometricExpenseLine(expenseLine)) {
+      if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
         expense.addKilometricExpenseLineListItem(expenseLine);
       }
     }
 
     expenseRepository.save(expense);
+  }
+
+  @Override
+  public void addExpenseLineToExpense(Expense expense, ExpenseLine expenseLine)
+      throws AxelorException {
+    checkCurrency(expense, expenseLine);
+    if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
+      expense.addKilometricExpenseLineListItem(expenseLine);
+    } else {
+      expense.addGeneralExpenseLineListItem(expenseLine);
+    }
   }
 
   protected void checkCurrency(Expense expense, List<ExpenseLine> expenseLineList)
@@ -169,6 +183,14 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
     if (hasSeveralCurrencies(expenseLineList)
         || (expenseLineCurrency.isPresent()
             && !expense.getCurrency().equals(expenseLineCurrency.get()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_CURRENCY_NOT_EQUAL));
+    }
+  }
+
+  protected void checkCurrency(Expense expense, ExpenseLine expenseLine) throws AxelorException {
+    if (!expense.getCurrency().equals(expenseLine.getCurrency())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_CURRENCY_NOT_EQUAL));
@@ -198,10 +220,11 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
   }
 
   @Override
-  public boolean isKilometricExpenseLine(ExpenseLine expenseLine) {
-    Product expenseProduct = expenseLine.getExpenseProduct();
-    KilometricAllowParam kilometricAllowParam = expenseLine.getKilometricAllowParam();
-    return expenseProduct != null && kilometricAllowParam != null;
+  @Transactional(rollbackOn = {Exception.class})
+  public void addExpenseLineToExpenseAndCompute(Expense expense, ExpenseLine expenseLine)
+      throws AxelorException {
+    addExpenseLineToExpense(expense, expenseLine);
+    expenseComputationService.compute(expense);
   }
 
   protected void updateMoveDate(Expense expense) {
