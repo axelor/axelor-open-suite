@@ -530,26 +530,4 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     }
     return partner;
   }
-
-  @Override
-  public Map<String, Object> getJournalOnChangeValuesMap(MoveTemplate moveTemplate) {
-    Map<String, Object> valuesMap = new HashMap<>();
-
-    moveTemplate.setFunctionalOriginSelect(
-        moveToolService.computeFunctionalOriginSelect(
-            moveTemplate.getJournal(), MoveRepository.MASS_ENTRY_STATUS_NULL));
-
-    valuesMap.put("functionalOriginSelect", moveTemplate.getFunctionalOriginSelect());
-
-    return valuesMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(MoveTemplate moveTemplate) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addFunctionalOriginSelectDomain(moveTemplate.getJournal(), attrsMap);
-
-    return attrsMap;
-  }
 }

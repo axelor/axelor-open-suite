@@ -137,8 +137,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addFunctionalOriginSelectDomain(
-      Journal journal, Map<String, Map<String, Object>> attrsMap) {
+  public Map<String, Map<String, Object>> addFunctionalOriginSelectDomain(Journal journal) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
     String selectionValue = null;
 
     if (journal != null) {
@@ -147,6 +147,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
 
     this.addAttr("functionalOriginSelect", "selection-in", selectionValue, attrsMap);
+    return attrsMap;
   }
 
   @Override

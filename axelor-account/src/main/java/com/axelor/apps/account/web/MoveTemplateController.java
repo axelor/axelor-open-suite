@@ -22,11 +22,14 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.MoveTemplateType;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveTemplateService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -174,10 +177,15 @@ public class MoveTemplateController {
     try {
       MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
 
-      MoveTemplateService moveTemplateService = Beans.get(MoveTemplateService.class);
+      MoveToolService moveToolService = Beans.get(MoveToolService.class);
+      MoveAttrsService moveAttrsService = Beans.get(MoveAttrsService.class);
 
-      response.setValues(moveTemplateService.getJournalOnChangeValuesMap(moveTemplate));
-      response.setAttrs(moveTemplateService.getJournalOnChangeAttrsMap(moveTemplate));
+      response.setValue(
+          "functionalOriginSelect",
+          moveToolService.computeFunctionalOriginSelect(
+              moveTemplate.getJournal(), MoveRepository.MASS_ENTRY_STATUS_NULL));
+      response.setAttrs(
+          moveAttrsService.addFunctionalOriginSelectDomain(moveTemplate.getJournal()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -188,9 +196,11 @@ public class MoveTemplateController {
       MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
 
       MoveTemplateService moveTemplateService = Beans.get(MoveTemplateService.class);
+      MoveAttrsService moveAttrsService = Beans.get(MoveAttrsService.class);
 
       response.setValues(moveTemplateService.computeTotals(moveTemplate));
-      response.setAttrs(moveTemplateService.getJournalOnChangeAttrsMap(moveTemplate));
+      response.setAttrs(
+          moveAttrsService.addFunctionalOriginSelectDomain(moveTemplate.getJournal()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

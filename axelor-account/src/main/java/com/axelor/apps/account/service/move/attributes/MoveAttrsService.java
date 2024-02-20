@@ -29,7 +29,7 @@ public interface MoveAttrsService {
 
   void addHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addFunctionalOriginSelectDomain(Journal journal, Map<String, Map<String, Object>> attrsMap);
+  Map<String, Map<String, Object>> addFunctionalOriginSelectDomain(Journal journal);
 
   void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
