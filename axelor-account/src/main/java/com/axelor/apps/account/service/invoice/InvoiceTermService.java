@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -252,8 +253,7 @@ public interface InvoiceTermService {
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
 
-  boolean setCustomizedAmounts(
-      InvoiceTerm invoiceTerm, List<InvoiceTerm> invoiceTermList, BigDecimal total);
+  void setCustomizedAmounts(InvoiceTerm invoiceTerm);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
       List<InvoiceTerm> invoiceTermList,
@@ -269,6 +269,8 @@ public interface InvoiceTermService {
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
   public User getPfpValidatorUser(Partner partner, Company company);
+
+  boolean checkPfpValidatorUser(InvoiceTerm invoiceTerm);
 
   public String getPfpValidatorUserDomain(Partner partner, Company company);
 
@@ -308,6 +310,16 @@ public interface InvoiceTermService {
 
   boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
+
+  InvoiceTerm initInvoiceTermWithParents(InvoiceTerm invoiceTerm) throws AxelorException;
+
+  boolean setShowFinancialDiscount(InvoiceTerm invoiceTerm);
+
+  boolean isPaymentConditionFree(InvoiceTerm invoiceTerm);
+
+  List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm);
+
+  void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
 
   BigDecimal adjustAmountInCompanyCurrency(
       List<InvoiceTerm> invoiceTermList,
