@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -40,6 +39,10 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
@@ -54,6 +57,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -232,7 +236,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (updateInvoicePayments) {
       this.updatePayments(reconcile, updateInvoiceTerms);
     }
-    this.addToReconcileGroup(reconcile);
+    Beans.get(ReconcileGroupService.class).addAndValidateReconcileGroup(reconcile);
 
     return reconcileRepository.save(reconcile);
   }
@@ -303,15 +307,6 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePaymentMoveLineDistribution(reconcile);
 
     return reconcile;
-  }
-
-  @Override
-  public void addToReconcileGroup(Reconcile reconcile) throws AxelorException {
-    ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
-
-    ReconcileGroup reconcileGroup = reconcileGroupService.findOrCreateGroup(reconcile);
-
-    reconcileGroupService.addAndValidate(reconcileGroup, reconcile);
   }
 
   @Override

@@ -76,6 +76,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
@@ -302,7 +303,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             InvoiceLine invoiceLine = this.createInvoiceLine();
             invoiceLine.setProject(projectTask.getProject());
             invoiceLine.setSaleOrderLine(projectTask.getSaleOrderLine());
-            projectTask.setInvoiceLine(invoiceLine);
+            invoiceLine.addProjectTaskSetItem(projectTask);
+            projectTask.addInvoiceLineSetItem(invoiceLine);
+
+            setProgressAndCoefficient(invoiceLine, projectTask);
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
             invoiceLines.add(invoiceLine);
@@ -312,6 +316,21 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         };
 
     return invoiceLineGenerator.creates();
+  }
+
+  protected void setProgressAndCoefficient(InvoiceLine invoiceLine, ProjectTask projectTask) {
+    if (projectTask.getInvoicingType().equals(ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS)) {
+      BigDecimal invoicingProgress = projectTask.getInvoicingProgress();
+
+      BigDecimal progress = projectTask.getProgress();
+      invoiceLine.setPreviousProgress(invoicingProgress);
+      invoiceLine.setNewProgress(progress);
+
+      invoiceLine.setCoefficient(
+          progress
+              .subtract(invoicingProgress)
+              .divide(BigDecimal.valueOf(100), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
   }
 
   @Override
@@ -487,7 +506,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException {
-    if (projectTask.getSaleOrderLine() != null || projectTask.getInvoiceLine() != null) {
+    if (projectTask.getSaleOrderLine() != null
+        || CollectionUtils.isNotEmpty(projectTask.getInvoiceLineSet())) {
       return projectTask;
     }
     projectTask = updateTaskFinancialInfo(projectTask);
