@@ -771,4 +771,29 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     return statusList;
   }
+
+  @Override
+  public Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus) {
+    if (journal == null) {
+      return null;
+    }
+    String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
+
+    if (ObjectUtils.isEmpty(authorizedFunctionalOriginSelect)) {
+      return null;
+    }
+
+    if (massEntryStatus == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      // standard behavior: fill an origin if there is only one authorized
+      return authorizedFunctionalOriginSelect.split(",").length == 1
+          ? Integer.valueOf(authorizedFunctionalOriginSelect)
+          : null;
+    } else {
+      // behavior for mass entry: take the first authorized functional origin select
+      return Arrays.stream(authorizedFunctionalOriginSelect.split(","))
+          .findFirst()
+          .map(Integer::valueOf)
+          .orElse(null);
+    }
+  }
 }

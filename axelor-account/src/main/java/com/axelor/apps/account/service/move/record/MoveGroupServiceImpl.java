@@ -199,11 +199,11 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Map<String, Object>> getOnNewAttrsMap(Move move, User user)
       throws AxelorException {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    Map<String, Map<String, Object>> attrsMap =
+        moveAttrsService.addFunctionalOriginSelectDomain(move.getJournal());
 
     moveAttrsService.addHidden(move, attrsMap);
     moveAttrsService.addMoveLineListViewerHidden(move, attrsMap);
-    moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
     analyticAttrsService.addAnalyticAxisAttrs(
         move.getCompany(), move.getMassEntryStatusSelect(), attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
@@ -321,10 +321,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move)
       throws AxelorException {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    Map<String, Map<String, Object>> attrsMap =
+        moveAttrsService.addFunctionalOriginSelectDomain(move.getJournal());
 
     moveAttrsService.addHidden(move, attrsMap);
-    moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
     analyticAttrsService.addAnalyticAxisAttrs(
