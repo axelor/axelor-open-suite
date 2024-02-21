@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -88,6 +89,7 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
       MoveValidateService moveValidateService,
       CurrencyScaleServiceAccount currencyScaleServiceAccount,
       InvoiceTermPfpService invoiceTermPfpService,
+      CurrencyService currencyService,
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService) {
     super(
@@ -114,7 +116,8 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
         moveLineCreateService,
         moveValidateService,
         currencyScaleServiceAccount,
-        invoiceTermPfpService);
+        invoiceTermPfpService,
+        currencyService);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;
   }

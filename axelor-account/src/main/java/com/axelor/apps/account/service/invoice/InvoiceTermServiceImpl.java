@@ -1683,10 +1683,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       } else {
         invoiceTermAmountRemaining =
             (invoiceTermAmountRemaining.subtract(
-                amountToPay.divide(
-                    invoiceCurrencyRate,
-                        companyScale,
-                    RoundingMode.HALF_UP)));
+                amountToPay.divide(invoiceCurrencyRate, companyScale, RoundingMode.HALF_UP)));
       }
     } else {
       if (BigDecimal.ONE.compareTo(invoiceCurrencyRate) != 0) {
