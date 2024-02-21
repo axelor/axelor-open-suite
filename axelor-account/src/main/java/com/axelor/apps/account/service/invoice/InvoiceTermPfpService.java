@@ -57,4 +57,6 @@ public interface InvoiceTermPfpService {
 
   boolean generateInvoiceTermsAfterPfpPartial(List<InvoiceTerm> invoiceTermList)
       throws AxelorException;
+
+  boolean isPfpValidatorUser(InvoiceTerm invoiceTerm, User user);
 }
