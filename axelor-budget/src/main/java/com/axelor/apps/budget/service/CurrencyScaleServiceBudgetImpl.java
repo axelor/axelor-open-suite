@@ -74,7 +74,9 @@ public class CurrencyScaleServiceBudgetImpl extends CurrencyScaleServiceImpl
 
   @Override
   public int getCompanyScale(GlobalBudget globalBudget) {
-    return this.getCompanyCurrencyScale(globalBudget.getCompany());
+    return globalBudget != null
+        ? this.getCompanyCurrencyScale(globalBudget.getCompany())
+        : this.getScale();
   }
 
   @Override

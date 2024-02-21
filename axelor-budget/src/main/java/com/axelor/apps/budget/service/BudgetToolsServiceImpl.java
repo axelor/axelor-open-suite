@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.BudgetStructure;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
@@ -133,6 +134,36 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     }
 
     return getGlobalBudgetUsingBudgetLevel(budgetLevel.getParentBudgetLevel());
+  }
+
+  @Override
+  public BudgetStructure getBudgetStructureUsingBudget(Budget budget) {
+
+    if (budget == null) {
+      return null;
+    }
+
+    if (budget.getGlobalBudget() != null) {
+      return budget.getBudgetStructure();
+    }
+    if (budget.getBudgetLevel() != null) {
+      return getBudgetStructureUsingBudgetLevel(budget.getBudgetLevel());
+    }
+
+    return null;
+  }
+
+  @Override
+  public BudgetStructure getBudgetStructureUsingBudgetLevel(BudgetLevel budgetLevel) {
+    if (budgetLevel == null) {
+      return null;
+    }
+
+    if (budgetLevel.getGlobalBudget() != null) {
+      return budgetLevel.getBudgetStructure();
+    }
+
+    return getBudgetStructureUsingBudgetLevel(budgetLevel.getParentBudgetLevel());
   }
 
   @Override

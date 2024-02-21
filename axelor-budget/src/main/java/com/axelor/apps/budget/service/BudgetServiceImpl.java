@@ -1009,7 +1009,7 @@ public class BudgetServiceImpl implements BudgetService {
     optBudget.setCategory(budgetScenarioVariable.getCategory());
     BigDecimal calculatedAmount =
         currencyScaleServiceBudget.getCompanyScaledValue(
-            parent,
+            globalBudget,
             ((BigDecimal)
                 variableAmountMap.getOrDefault(budgetScenarioVariable.getCode(), BigDecimal.ZERO)));
     optBudget.setAmountForGeneration(calculatedAmount);
