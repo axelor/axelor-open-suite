@@ -1,0 +1,3 @@
+---
+title: "PurchaseOrderLine/Budget : fix wrong budget distribution when invoicing multiple purchase order lines"
+type: fix
