@@ -45,4 +45,8 @@ public interface CurrencyService {
   void checkOverLappingPeriod(
       CurrencyConversionLine currentCcl, List<CurrencyConversionLine> currencyConversionLines)
       throws AxelorException;
+
+  boolean isSameCurrencyRate(
+      LocalDate invoiceDate, LocalDate paymentDate, Currency startCurrency, Currency endCurrency)
+      throws AxelorException;
 }

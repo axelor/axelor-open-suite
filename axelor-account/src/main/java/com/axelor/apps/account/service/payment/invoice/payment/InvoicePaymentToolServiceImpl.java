@@ -54,6 +54,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -162,13 +163,31 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                       .getFinancialDiscountAmount()
                       .add(invoicePayment.getFinancialDiscountTaxAmount()));
         }
-        amountPaid =
-            amountPaid.add(
-                currencyService.getAmountCurrencyConvertedAtDate(
-                    invoicePayment.getCurrency(),
-                    invoiceCurrency,
-                    paymentAmount,
-                    invoicePayment.getPaymentDate()));
+
+        if (currencyService.isSameCurrencyRate(
+            invoice.getInvoiceDate(),
+            invoicePayment.getPaymentDate(),
+            invoicePayment.getCurrency(),
+            invoiceCurrency)) {
+          BigDecimal currencyRate =
+              invoice
+                  .getCompanyInTaxTotal()
+                  .divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP);
+          BigDecimal computedPaidAmount =
+              Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)
+                  ? paymentAmount
+                  : paymentAmount.divide(
+                      currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          amountPaid = amountPaid.add(computedPaidAmount);
+        } else {
+          amountPaid =
+              amountPaid.add(
+                  currencyService.getAmountCurrencyConvertedAtDate(
+                      invoicePayment.getCurrency(),
+                      invoiceCurrency,
+                      paymentAmount,
+                      invoicePayment.getPaymentDate()));
+        }
       }
     }
 
