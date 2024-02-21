@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -85,13 +85,6 @@ public interface ReconcileService {
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException;
 
   public List<Reconcile> getReconciles(MoveLine moveLine);
-
-  /**
-   * Add a reconcile to an existing or created reconcile group.
-   *
-   * @param reconcile a confirmed reconcile.
-   */
-  void addToReconcileGroup(Reconcile reconcile) throws AxelorException;
 
   public static boolean isReconcilable(MoveLine acc1, MoveLine acc2) {
     return acc1.getAccount().getReconcileOk()

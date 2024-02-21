@@ -69,6 +69,7 @@
     <option value="1">From stock</option>
     <option value="2">Purchase</option>
     <option value="3">Produce</option>
+    <option value="4">Stock and produce</option>
   </selection>
 
   <selection name='iimport.type.select'>

@@ -134,10 +134,14 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
+import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
@@ -235,5 +239,8 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderCreatePurchaseOrderService.class)
         .to(ManufOrderCreatePurchaseOrderServiceImpl.class);
     bind(ManufOrderPlanService.class).to(ManufOrderPlanServiceImpl.class);
+    bind(ProductionOrderSaleOrderMOGenerationService.class)
+        .to(ProductionOrderSaleOrderMOGenerationServiceImpl.class);
+    bind(ProductionOrderUpdateService.class).to(ProductionOrderUpdateServiceImpl.class);
   }
 }

@@ -73,7 +73,7 @@
           <field name="saleSupplySelect"
             onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
           <field name="standardDelay" hidden="true"
-            showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
+            showIf="saleSupplySelect == 2 || saleSupplySelect == 3 || saleSupplySelect == 4"/>
           <field name="pricingScaleLogs" colSpan="12"
             showIf="pricingScaleLogs &amp;&amp; product"/>
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
@@ -116,7 +116,7 @@
           <field name="saleSupplySelect"
             onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
           <field name="standardDelay" hidden="true"
-            showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
+            showIf="saleSupplySelect == 2 || saleSupplySelect == 3 || saleSupplySelect == 4"/>
           <field name="pricingScaleLogs" colSpan="12"
             showIf="pricingScaleLogs &amp;&amp; product"/>
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
