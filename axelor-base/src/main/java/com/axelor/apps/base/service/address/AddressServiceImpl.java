@@ -16,51 +16,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.AddressTemplate;
-import com.axelor.apps.base.db.AddressTemplateLine;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.Street;
-import com.axelor.apps.base.db.repo.AddressTemplateRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.Context;
-import com.axelor.text.GroovyTemplates;
-import com.axelor.text.StringTemplates;
-import com.axelor.text.Templates;
 import com.axelor.utils.helpers.address.AddressHelper;
-import com.google.api.client.util.Maps;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -70,9 +56,6 @@ import wslite.json.JSONException;
 @Singleton
 public class AddressServiceImpl implements AddressService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*$(\\n|\\r\\n)";
-  private static final char TEMPLATE_DELIMITER = '$';
-  private GroovyTemplates groovyTemplates;
   protected AddressHelper ads;
   protected CityRepository cityRepository;
   protected StreetRepository streetRepository;
@@ -88,14 +71,12 @@ public class AddressServiceImpl implements AddressService {
 
   @Inject
   public AddressServiceImpl(
-      GroovyTemplates groovyTemplates,
       AddressHelper ads,
       MapService mapService,
       CityRepository cityRepository,
       StreetRepository streetRepository,
       AppBaseService appBaseService,
       AddressAttrsService addressAttrsService) {
-    this.groovyTemplates = groovyTemplates;
     this.ads = ads;
     this.mapService = mapService;
     this.cityRepository = cityRepository;
@@ -262,130 +243,5 @@ public class AddressServiceImpl implements AddressService {
         address.setAddressL4(null);
       }
     }
-  }
-
-  @Override
-  public String getZipCode(Address address) {
-    return address.getZip();
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void setFormattedFullName(Address address) throws AxelorException {
-    Country country = address.getCountry();
-    if (country == null) {
-      return;
-    }
-
-    AddressTemplate addressTemplate = country.getAddressTemplate();
-    setFormattedAddressField(addressTemplate.getAddressL2Str(), address, address::setAddressL2);
-    setFormattedAddressField(addressTemplate.getAddressL3Str(), address, address::setAddressL3);
-    setFormattedAddressField(addressTemplate.getAddressL4Str(), address, address::setAddressL4);
-    setFormattedAddressField(addressTemplate.getAddressL5Str(), address, address::setAddressL5);
-    setFormattedAddressField(addressTemplate.getAddressL6Str(), address, address::setAddressL6);
-    setFormattedAddressField(
-        addressTemplate.getTemplateStr(), address, address::setFormattedFullName);
-  }
-
-  private void setFormattedAddressField(
-      String contentTemplateStr, Address address, Consumer<String> setter) throws AxelorException {
-    String formattedString = computeTemplateStr(contentTemplateStr, address);
-    setter.accept(formattedString);
-  }
-
-  private String computeTemplateStr(String content, Address address) throws AxelorException {
-    AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
-    try {
-      Templates templates;
-      if (addressTemplate.getEngineSelect() == AddressTemplateRepository.GROOVY_TEMPLATE) {
-        templates = this.groovyTemplates;
-      } else {
-        templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
-      }
-
-      Map<String, Object> templatesContext = Maps.newHashMap();
-      Class<?> klass = EntityHelper.getEntityClass(address);
-      Context context = new Context(Mapper.toMap(address), klass);
-      templatesContext.put(klass.getSimpleName(), context.asType(klass));
-      String computedString = templates.fromText(content).make(templatesContext).render();
-      if (computedString == null) {
-        throw new RuntimeException(
-            String.format(
-                I18n.get(BaseExceptionMessage.ADDRESS_FIELD_TEMPLATE_ERROR),
-                addressTemplate.getName(),
-                content));
-      }
-      computedString = computedString.trim();
-      computedString = computedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
-      return computedString;
-
-    } catch (Exception e) {
-      LOG.error("Runtime Exception Address: {} - {}", addressTemplate.getName(), content);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
-    }
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
-      Address address) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    if (ObjectUtils.notEmpty(
-        address.getCountry().getAddressTemplate().getAddressTemplateLineList())) {
-      List<AddressTemplateLine> addressTemplateLineList =
-          address.getCountry().getAddressTemplate().getAddressTemplateLineList();
-      addressAttrsService.addHiddenAndTitle(addressTemplateLineList, attrsMap);
-      addressAttrsService.addAllFieldsUnhide(addressTemplateLineList, attrsMap);
-    }
-    return attrsMap;
-  }
-
-  @Override
-  public void checkRequiredAddressFields(Address address) throws AxelorException {
-    if (address.getCountry() != null) {
-      AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
-      for (AddressTemplateLine addressTemplateLine : addressTemplate.getAddressTemplateLineList()) {
-        if (addressTemplateLine.getIsRequired()) {
-          // Assuming field name is stored in addressTemplateLine.getFieldName()
-          String fieldName = addressTemplateLine.getMetaField().getName();
-          Object fieldValue = null;
-          try {
-            fieldValue = Mapper.of(address.getClass()).getGetter(fieldName).invoke(address);
-          } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new AxelorException(
-                addressTemplateLine,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                String.format(
-                    I18n.get(BaseExceptionMessage.MISSING_ADDRESS_FIELD),
-                    addressTemplateLine.getMetaField().getName()));
-          }
-          if (fieldValue == null) {
-            throw new AxelorException(
-                addressTemplateLine,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                String.format(
-                    I18n.get(BaseExceptionMessage.MISSING_ADDRESS_FIELD),
-                    addressTemplateLine.getMetaField().getName()));
-          }
-        }
-      }
-    }
-  }
-
-  // Helper method to invoke getter dynamically using reflection
-  private Object invokeGetter(Object object, String getterName) {
-    try {
-      return object.getClass().getMethod(getterName).invoke(object);
-    } catch (Exception e) {
-
-      return null;
-    }
-  }
-
-  private String capitalize(String s) {
-    if (s == null || s.isEmpty()) {
-      return s;
-    }
-    return Character.toUpperCase(s.charAt(0)) + s.substring(1);
   }
 }

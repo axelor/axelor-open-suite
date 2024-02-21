@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;

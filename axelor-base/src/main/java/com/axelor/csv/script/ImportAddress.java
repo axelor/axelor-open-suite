@@ -20,7 +20,8 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -31,7 +32,15 @@ import org.slf4j.LoggerFactory;
 public class ImportAddress {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject protected AddressService addressService;
+  protected AddressService addressService;
+  protected AddressTemplateService addressTemplateService;
+
+  @Inject
+  public ImportAddress(
+      AddressService addressService, AddressTemplateService addressTemplateService) {
+    this.addressService = addressService;
+    this.addressTemplateService = addressTemplateService;
+  }
 
   public Object importAddress(Object bean, Map<String, Object> values) {
 
@@ -45,7 +54,7 @@ public class ImportAddress {
     }
 
     try {
-      addressService.setFormattedFullName(address);
+      addressTemplateService.setFormattedFullName(address);
     } catch (Exception e) {
       TraceBackService.trace(
           e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, Long.parseLong(address.getImportId()));

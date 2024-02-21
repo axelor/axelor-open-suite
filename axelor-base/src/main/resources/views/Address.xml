@@ -214,7 +214,7 @@
   <action-record name="action-base-address-set-address-used"
     model="com.axelor.apps.base.db.Address">
     <field name="isUsed"
-      expr="call:com.axelor.apps.base.service.AddressService:checkAddressUsed(id)"/>
+      expr="call:com.axelor.apps.base.service.address.AddressService:checkAddressUsed(id)"/>
   </action-record>
 
   <action-validate name="action-base-address-check-address-used">

@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.StringUtils;

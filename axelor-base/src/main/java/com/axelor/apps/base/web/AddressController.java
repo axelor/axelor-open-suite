@@ -21,7 +21,6 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
-import com.axelor.apps.base.db.AddressTemplateLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -30,10 +29,11 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressExportService;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressAttrsService;
+import com.axelor.apps.base.service.address.AddressExportService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -374,12 +374,8 @@ public class AddressController {
     Address address = request.getContext().asType(Address.class);
 
     if (address.getCountry() != null) {
-      List<AddressTemplateLine> addressTemplateLineList =
-          address.getCountry().getAddressTemplate().getAddressTemplateLineList();
-      AddressService addressService = Beans.get(AddressService.class);
-      Map<String, Map<String, Object>> attrsMap =
-          addressService.getCountryAddressMetaFieldOnChangeAttrsMap(address);
-      response.setAttrs(attrsMap);
+      response.setAttrs(
+          Beans.get(AddressAttrsService.class).getCountryAddressMetaFieldOnChangeAttrsMap(address));
     }
   }
 }

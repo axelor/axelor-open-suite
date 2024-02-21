@@ -22,8 +22,6 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarEventFactory;
 import com.axelor.apps.base.ical.ICalendarService;
-import com.axelor.apps.base.service.AddressExportService;
-import com.axelor.apps.base.service.AddressExportServiceImpl;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.CrmBatchCrmRepository;
@@ -69,7 +67,6 @@ public class CrmModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(AddressExportService.class).to(AddressExportServiceImpl.class);
     bind(EventRepository.class).to(EventManagementRepository.class);
     bind(LeadRepository.class).to(LeadManagementRepository.class);
     bind(OpportunityRepository.class).to(OpportunityManagementRepository.class);

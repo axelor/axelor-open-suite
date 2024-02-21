@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
@@ -94,18 +94,4 @@ public interface AddressService {
    * @param address
    */
   public void autocompleteAddress(Address address);
-
-  public String getZipCode(Address address);
-
-  /**
-   * Set formatted full name for the address from address template
-   *
-   * @param address
-   */
-  public void setFormattedFullName(Address address) throws AxelorException;
-
-  public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
-      Address address);
-
-  public void checkRequiredAddressFields(Address address) throws AxelorException;
 }
