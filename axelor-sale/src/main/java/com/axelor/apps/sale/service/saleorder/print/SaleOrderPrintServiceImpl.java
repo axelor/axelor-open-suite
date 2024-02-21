@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -33,9 +34,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -72,14 +72,14 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
       throws AxelorException, IOException {
     String fileName = saleOrderService.getFileName(saleOrder) + "." + format;
 
-    return PdfTool.getFileLinkFromPdfFile(print(saleOrder, proforma, format), fileName);
+    return PdfHelper.getFileLinkFromPdfFile(print(saleOrder, proforma, format), fileName);
   }
 
   @Override
   public String printSaleOrders(List<Long> ids) throws IOException, AxelorException {
     List<File> printedSaleOrders = new ArrayList<>();
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             SaleOrder.class,
             ids,
             new ThrowConsumer<SaleOrder, Exception>() {
@@ -100,7 +100,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
     }
     Integer status = saleOrderRepository.find(ids.get(0)).getStatusSelect();
     String fileName = getSaleOrderFilesName(status);
-    return PdfTool.mergePdfToFileLink(printedSaleOrders, fileName);
+    return PdfHelper.mergePdfToFileLink(printedSaleOrders, fileName);
   }
 
   public File print(SaleOrder saleOrder, boolean proforma, String format) throws AxelorException {

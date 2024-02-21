@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -449,7 +449,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             .bind("accountSet", groupColumn.getAccountSet())
             .bind("accountTypeSet", groupColumn.getAccountTypeSet());
 
-    this.bindAccountFilters(accountQuery, groupColumn.getAccountCode(), "groupColumn");
+    accountQuery = this.bindAccountFilters(accountQuery, groupColumn.getAccountCode());
 
     return new HashSet<>(accountQuery.fetch());
   }
@@ -677,9 +677,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         this.getAccountFilters(
             configLine.getAccountTypeSet(),
             configLine.getAccountCode(),
-            null,
-            null,
-            false,
             CollectionUtils.isEmpty(configLine.getAccountSet())));
   }
 }

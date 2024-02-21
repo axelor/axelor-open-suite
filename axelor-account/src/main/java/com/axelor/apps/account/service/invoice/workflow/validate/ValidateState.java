@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -118,11 +118,7 @@ public class ValidateState extends WorkflowInvoice {
     if (invoice.getPartnerAccount() == null) {
       invoice.setPartnerAccount(accountingSituationService.getPartnerAccount(invoice, false));
     }
-    if (invoice.getPartnerAccount() != null
-        && !invoice.getPartnerAccount().getUseForPartnerBalance()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
-    }
+
+    InvoiceToolService.checkUseForPartnerBalanceAndReconcileOk(invoice);
   }
 }

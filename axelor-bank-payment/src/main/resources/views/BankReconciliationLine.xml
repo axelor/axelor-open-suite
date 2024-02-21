@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false"
@@ -21,13 +21,14 @@
     <field name="effectDate"/>
     <field name="name"/>
     <field name="reference"/>
-    <field name="debit" aggregate="sum">
+    <field name="debit" aggregate="sum" x-scale="$currencyNumberOfDecimals">
       <hilite if="debit > 0" color="green"/>
     </field>
-    <field name="credit" aggregate="sum">
+    <field name="credit" aggregate="sum" x-scale="$currencyNumberOfDecimals">
       <hilite if="credit > 0" color="red"/>
     </field>
-    <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
+    <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"
+      x-scale="$currencyNumberOfDecimals"/>
     <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
     <field name="account" canEdit="false"
       onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
@@ -42,6 +43,7 @@
       grid-view="move-line-grid"/>
     <field name="isPosted" readonly="true"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"
@@ -52,9 +54,11 @@
       <field name="effectDate"/>
       <field name="name"/>
       <field name="reference"/>
-      <field name="debit"/>
-      <field name="credit"/>
-      <field name="bankStatementLine.amountRemainToReconcile"/>
+      <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+      <field name="credit" x-scale="$currencyNumberOfDecimals"/>
+      <field name="bankStatementLine.amountRemainToReconcile"
+        x-scale="$currencyNumberOfDecimals"/>
+      <field name="$currencyNumberOfDecimals" hidden="true"/>
     </panel>
     <panel name="accountingPanel" title="Accounting details">
       <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>

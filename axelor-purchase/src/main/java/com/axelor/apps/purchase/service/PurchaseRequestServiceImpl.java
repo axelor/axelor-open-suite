@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -86,18 +86,18 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             AuthUtils.getUser(),
             purchaseRequest.getCompany(),
             null,
-            purchaseRequest.getSupplierUser().getCurrency(),
+            purchaseRequest.getSupplierPartner().getCurrency(),
             null,
             null,
             null,
             appBaseService.getTodayDate(purchaseRequest.getCompany()),
             null,
-            purchaseRequest.getSupplierUser(),
+            purchaseRequest.getSupplierPartner(),
             null));
   }
 
   protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
-    return purchaseRequest.getSupplierUser().getId().toString();
+    return purchaseRequest.getSupplierPartner().getId().toString();
   }
 
   protected void generatePoLineListFromPurchaseRequest(

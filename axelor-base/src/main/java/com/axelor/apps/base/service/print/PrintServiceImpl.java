@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.db.repo.PrintRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -33,7 +34,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.PdfTool;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -94,8 +94,8 @@ public class PrintServiceImpl implements PrintService {
       File file = MetaFiles.getPath(metaFile).toFile();
 
       String fileLink =
-          PdfTool.getFileLinkFromPdfFile(
-              PdfTool.printCopiesToFile(file, 1), metaFile.getFileName());
+          PdfHelper.getFileLinkFromPdfFile(
+              PdfHelper.printCopiesToFile(file, 1), metaFile.getFileName());
 
       attachFileToModel(print, file, metaFile, documentName);
 

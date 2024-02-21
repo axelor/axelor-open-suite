@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -71,7 +71,7 @@ import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.message.service.MailMessageService;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -528,7 +528,11 @@ public class MrpServiceImpl implements MrpService {
     LocalDate initialMaturityDate = maturityDate;
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
-      maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
+      maturityDate =
+          maturityDate
+              .minusDays(product.getSupplierDeliveryTime())
+              .minusDays(mrpLineType.getSecurityDelay());
+      initialMaturityDate = initialMaturityDate.minusDays(mrpLineType.getSecurityDelay());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
       if (appPurchaseService.getAppPurchase() != null
           && appPurchaseService.getAppPurchase().getManageMultiplePurchaseQuantity()) {
@@ -756,7 +760,7 @@ public class MrpServiceImpl implements MrpService {
     }
 
     String statusSelect = purchaseOrderMrpLineType.getStatusSelect();
-    List<Integer> statusList = StringTool.getIntegerList(statusSelect);
+    List<Integer> statusList = StringHelper.getIntegerList(statusSelect);
 
     if (statusList.isEmpty()) {
       statusList.add(PurchaseOrderRepository.STATUS_VALIDATED);
@@ -852,7 +856,7 @@ public class MrpServiceImpl implements MrpService {
         saleOrderLineList = new ArrayList<>();
 
         List<Integer> statusList =
-            StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
+            StringHelper.getIntegerList(saleOrderMrpLineType.getStatusSelect());
 
         String filter =
             "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
@@ -898,7 +902,7 @@ public class MrpServiceImpl implements MrpService {
 
       for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
         List<Integer> statusList =
-            StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
+            StringHelper.getIntegerList(saleOrderMrpLineType.getStatusSelect());
 
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
           if (saleOrderLine.getSaleOrder() != null) {

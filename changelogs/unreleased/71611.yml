@@ -1,3 +1,0 @@
----
-title: "Configurator BOM: fixed a bug during bill of materials generation where lines were not generated."
-type: fix

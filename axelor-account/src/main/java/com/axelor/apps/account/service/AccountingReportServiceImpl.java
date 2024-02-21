@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -454,12 +454,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     SequenceService sequenceService = Beans.get(SequenceService.class);
 
-    if (accountingReport.getReportType() == null) {
-      throw new AxelorException(
-          accountingReport,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_NO_REPORT_TYPE));
-    }
+    this.checkReportType(accountingReport);
 
     int accountingReportTypeSelect = accountingReport.getReportType().getTypeSelect();
 
@@ -470,7 +465,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.ACCOUNTING_REPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "ref");
+              "ref",
+              accountingReport);
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -485,7 +481,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.MOVE_LINE_EXPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "ref");
+              "ref",
+              accountingReport);
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -500,7 +497,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.ANALYTIC_REPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "ref");
+              "ref",
+              accountingReport);
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -947,5 +945,15 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       }
     }
     return null;
+  }
+
+  @Override
+  public void checkReportType(AccountingReport accountingReport) throws AxelorException {
+    if (accountingReport.getReportType() == null) {
+      throw new AxelorException(
+          accountingReport,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_NO_REPORT_TYPE));
+    }
   }
 }

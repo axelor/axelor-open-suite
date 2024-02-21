@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -122,6 +122,12 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineResult.setCurrencyRate(moveLine.getCurrencyRate());
       moveLineResult.setSourceTaxLine(moveLine.getSourceTaxLine());
       moveLineResult.setVatSystemSelect(moveLine.getVatSystemSelect());
+
+      if (move.getCurrency() != null && move.getCompany() != null) {
+        moveLineResult.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
+        moveLineResult.setCompanyCurrencyDecimals(
+            move.getCompany().getCurrency().getNumberOfDecimals());
+      }
 
       moveLineMassEntryRecordService.setAnalytics(moveLineResult, moveLine);
       moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLineResult, moveLine);

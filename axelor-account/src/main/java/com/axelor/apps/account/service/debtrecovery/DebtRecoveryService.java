@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,6 +47,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -449,6 +450,12 @@ public class DebtRecoveryService {
 
         remindedOk = true;
 
+        List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(partner, company, tradingName);
+
+        if (ObjectUtils.isEmpty(invoiceTermList)) {
+          debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
+        }
+
         if (debtRecovery == null) {
           AccountingSituationRepository accSituationRepo =
               Beans.get(AccountingSituationRepository.class);
@@ -466,7 +473,6 @@ public class DebtRecoveryService {
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 
-        List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(partner, company, tradingName);
         this.updateInvoiceTermDebtRecovery(debtRecovery, invoiceTermList);
         this.updateInvoiceDebtRecovery(
             debtRecovery, this.getInvoiceListFromInvoiceTerm(invoiceTermList));
@@ -571,17 +577,18 @@ public class DebtRecoveryService {
       throw new AxelorException(
           debtRecovery,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "%s :\n"
-              + I18n.get("Partner")
-              + " %s, "
-              + I18n.get("Company")
-              + " %s : "
-              + (tradingName != null ? I18n.get("Trading name") + " %s : " : "")
-              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
+          I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
           I18n.get(BaseExceptionMessage.EXCEPTION),
-          partner.getName(),
           company.getName(),
-          tradingName != null ? tradingName.getName() : "");
+          partner.getPartnerCategory().getName(),
+          tradingName != null
+              ? " "
+                  .concat(
+                      String.format(
+                          I18n.get(AccountExceptionMessage.DEBT_RECOVERY_TRADING_NAME),
+                          tradingName.getName()))
+              : "",
+          partner.getName());
     }
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -74,9 +74,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
-import com.axelor.utils.ModelTool;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.ThrowConsumer;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -728,7 +728,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
     Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
-    String domain = "self.id IN (" + StringTool.getIdListString(invoices) + ")";
+    String domain = "self.id IN (" + StringHelper.getIdListString(invoices) + ")";
 
     return domain;
   }
@@ -952,7 +952,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     IntCounter doneCounter = new IntCounter();
 
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             Invoice.class,
             invoiceIds,
             new ThrowConsumer<Invoice, Exception>() {
@@ -1170,6 +1170,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public LocalDate getFinancialDiscountDeadlineDate(
       Invoice invoice, FinancialDiscount financialDiscount) {
+    if (invoice.getInvoiceDate() == null) {
+      return null;
+    }
+
     int discountDelay =
         Optional.ofNullable(financialDiscount).map(FinancialDiscount::getDiscountDelay).orElse(0);
 
@@ -1223,11 +1227,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void updateSubrogationPartner(Invoice invoice) {
+  public void updateThirdPartyPayerPartner(Invoice invoice) {
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       invoice.getInvoiceTermList().stream()
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
-          .forEach(it -> it.setSubrogationPartner(invoice.getSubrogationPartner()));
+          .forEach(it -> it.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner()));
     }
   }
 }

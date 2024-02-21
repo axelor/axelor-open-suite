@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -58,15 +57,6 @@ public interface InvoiceTermService {
 
   void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate, boolean isHoldback);
 
-  void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
-
-  void computeFinancialDiscount(
-      InvoiceTerm invoiceTerm,
-      BigDecimal totalAmount,
-      FinancialDiscount financialDiscount,
-      BigDecimal financialDiscountAmount,
-      BigDecimal remainingAmountAfterFinDiscount);
-
   @CallMethod
   boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) throws AxelorException;
 
@@ -97,6 +87,8 @@ public interface InvoiceTermService {
    */
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException;
 
+  List<InvoiceTerm> getUnpaidInvoiceTermsWithoutPfpCheck(Invoice invoice) throws AxelorException;
+
   /**
    * Method that filters invoiceTerm List and returns only invoice terms with holdback status same
    * as first invoice term of the list.
@@ -114,6 +106,9 @@ public interface InvoiceTermService {
    * @return
    */
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException;
+
+  List<InvoiceTerm> getUnpaidInvoiceTermsFilteredWithoutPfpCheck(Invoice invoice)
+      throws AxelorException;
 
   /**
    * Return the latest invoice terms due date by ignoring holdback invoice terms Return invoice due
@@ -179,14 +174,6 @@ public interface InvoiceTermService {
    * @throws AxelorException
    */
   public BigDecimal computePercentageSum(Invoice invoice);
-
-  /**
-   * Update invoice terms financial discount if not paid with invoice financial discount
-   *
-   * @param invoice
-   * @return
-   */
-  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
@@ -268,10 +255,6 @@ public interface InvoiceTermService {
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 
-  BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
-
-  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException;
-
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
 
   boolean setCustomizedAmounts(
@@ -336,5 +319,8 @@ public interface InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
-      BigDecimal currencyRate);
+      BigDecimal currencyRate,
+      Company company);
+
+  boolean isPartiallyPaid(InvoiceTerm invoiceTerm);
 }

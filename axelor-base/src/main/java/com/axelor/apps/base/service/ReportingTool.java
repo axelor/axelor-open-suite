@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import java.util.Locale;
@@ -33,9 +33,9 @@ public class ReportingTool {
     // manage NPE using optional
     return Optional.ofNullable(AuthUtils.getUser())
         .map(User::getActiveCompany)
-        .map(Company::getLanguage)
-        .map(Language::getCode)
-        .map(Locale::new)
+        .map(Company::getLocalization)
+        .map(Localization::getCode)
+        .map(LocaleService::computeLocaleByLocaleCode)
         .orElseGet(AppFilter::getLocale);
   }
 }

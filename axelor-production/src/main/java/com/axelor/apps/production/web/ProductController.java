@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.production.db.BillOfMaterialImportLine;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.i18n.I18n;
@@ -49,6 +50,19 @@ public class ProductController {
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void bomImportLineProductOnNew(ActionRequest request, ActionResponse response) {
+    if (request.getContext().getParent() != null) {
+      BillOfMaterialImportLine billOfMaterialImportLine =
+          request.getContext().getParent().asType(BillOfMaterialImportLine.class);
+
+      response.setValue("code", billOfMaterialImportLine.getCode());
+      response.setValue("name", billOfMaterialImportLine.getName());
+      response.setValue("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE);
+      response.setValue(
+          "createdFromBOMImportId", billOfMaterialImportLine.getBillOfMaterialImport().getId());
     }
   }
 }

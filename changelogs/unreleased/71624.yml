@@ -1,3 +1,0 @@
----
-title: "Invoice : Fix an issue where enabling pfp management and opening a previously created supplier invoice would make it look unsaved"
-type: fix

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -296,7 +296,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   public List<Integer> getSelectedPaymentVoucherDueIdList(
       List<Map<String, Object>> paymentVoucherDueList) {
     return paymentVoucherDueList.stream()
-        .filter(o -> (Boolean) o.get("selected"))
+        .filter(o -> ObjectUtils.notEmpty(o.get("selected")) && (Boolean) o.get("selected"))
         .map(o -> (Integer) o.get("id"))
         .collect(Collectors.toList());
   }

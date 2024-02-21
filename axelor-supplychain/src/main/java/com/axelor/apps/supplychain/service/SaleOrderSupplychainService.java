@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,26 +21,12 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
-import java.math.BigDecimal;
 
 public interface SaleOrderSupplychainService {
 
   public void updateToConfirmedStatus(SaleOrder saleOrder) throws AxelorException;
-
-  public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException;
-
-  boolean alreadyHasShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct);
-
-  SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
-      throws AxelorException;
-
-  String removeShipmentCostLine(SaleOrder saleOrder);
-
-  BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder);
 
   public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder);
 

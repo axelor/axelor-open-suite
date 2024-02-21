@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -30,7 +31,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.utils.service.ListToolService;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -47,17 +48,19 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListToolService listToolService,
+      ListHelper listHelper,
       AppAccountService appAccountService,
       AnalyticLineModelService analyticLineModelService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         analyticAccountRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
-        listToolService,
-        appAccountService);
+        listHelper,
+        appAccountService,
+        currencyScaleServiceAccount);
     this.analyticLineModelService = analyticLineModelService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
