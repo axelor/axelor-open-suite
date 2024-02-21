@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,7 +53,7 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
-import com.axelor.utils.date.LocalDateUtils;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -79,9 +79,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected InvoiceRepository invoiceRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
-  public static final String FA_LEVEL_UP = "fa-level-up";
-  public static final String FA_LEVEL_DOWN = "fa-level-down";
-  public static final String ICON_EQUAL = "icon-equal";
+  public static final String FA_LEVEL_UP = "arrow-90deg-up";
+  public static final String FA_LEVEL_DOWN = "arrow-90deg-down";
+  public static final String ICON_EQUAL = "equal";
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -501,7 +501,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   protected BigDecimal processInvoicedThisMonth(Invoice ventilatedInvoice) {
-    if (LocalDateUtils.isInTheSameMonth(
+    if (LocalDateHelper.isInTheSameMonth(
         ventilatedInvoice.getInvoiceDate(),
         appBaseService.getTodayDateTime(ventilatedInvoice.getCompany()).toLocalDate())) {
       return processTotalInvoiced(ventilatedInvoice);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
@@ -59,7 +60,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      AppStockService appStockService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -70,7 +72,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
         stockMoveLineRepository,
         invoiceLineRepository,
         supplyChainConfigService,
-        appSupplychainService);
+        appSupplychainService,
+        appStockService);
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,6 +50,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveAttrsService moveAttrsService;
   protected AnalyticAttrsService analyticAttrsService;
   protected MoveCutOffService moveCutOffService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineGroupServiceImpl(
@@ -65,7 +66,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       AnalyticLineService analyticLineService,
       MoveAttrsService moveAttrsService,
       AnalyticAttrsService analyticAttrsService,
-      MoveCutOffService moveCutOffService) {
+      MoveCutOffService moveCutOffService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
 
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -80,6 +82,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.moveAttrsService = moveAttrsService;
     this.analyticAttrsService = analyticAttrsService;
     this.moveCutOffService = moveCutOffService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   @Override
@@ -96,8 +99,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineService.balanceCreditDebit(moveLine, move);
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
+    moveLineToolService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
     moveLineRecordService.setCounter(moveLine, move);
 
     valuesMap.put("counter", moveLine.getCounter());
@@ -123,6 +127,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
     valuesMap.put("remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
 
     return valuesMap;
   }
@@ -144,6 +150,18 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
+  public Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLineToolService.setDecimals(moveLine, move);
+
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
+
+    return valuesMap;
+  }
+
+  @Override
   public Map<String, Map<String, Object>> getOnLoadAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException {
 
@@ -159,7 +177,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
-      moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addThirdPartyPayerPartnerHidden(move, attrsMap);
       moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
       moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
       moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
@@ -185,7 +203,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addValidatePeriod(move, attrsMap);
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
-      moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addThirdPartyPayerPartnerHidden(move, attrsMap);
       moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
       moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
       moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
@@ -228,7 +246,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
 
     Map<String, Object> valuesMap = new HashMap<>();
 

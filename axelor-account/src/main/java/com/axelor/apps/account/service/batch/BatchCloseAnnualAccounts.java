@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,7 +54,9 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -89,7 +91,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       AccountingCloseAnnualService accountingCloseAnnualService,
       AccountConfigService accountConfigService,
       MoveCreateService moveCreateService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveSimulateService moveSimulateService) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
@@ -98,6 +101,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     this.accountConfigService = accountConfigService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
+    this.moveSimulateService = moveSimulateService;
   }
 
   @Override
@@ -206,7 +210,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       List<Pair<Long, Long>> openingAccountAndPartnerPairList =
           accountingCloseAnnualService.assignPartner(
               openingAccountIdList, year, allocatePerPartner);
-      Map<AccountByPartner, Map<Boolean, Boolean>> map = new HashMap<>();
+      LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map = new LinkedHashMap<>();
       map =
           openAndCloseProcess(
               closureAccountAndPartnerPairList, accountingBatch.getCloseYear(), false, map);
@@ -218,18 +222,15 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
-  protected Map<AccountByPartner, Map<Boolean, Boolean>> openAndCloseProcess(
+  protected LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> openAndCloseProcess(
       List<Pair<Long, Long>> accountAndPartnerPairList,
       boolean close,
       boolean open,
-      Map<AccountByPartner, Map<Boolean, Boolean>> map) {
-    for (Pair<Long, Long> accountAndPartnerPair : accountAndPartnerPairList) {
-      Account account = null;
-      Partner partner = null;
-      account = accountRepository.find(accountAndPartnerPair.getLeft());
-      if (accountAndPartnerPair.getRight() != null) {
-        partner = partnerRepository.find(accountAndPartnerPair.getRight());
-      }
+      LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map) {
+    List<Long> idsDone = new ArrayList<>();
+    for (Account account : getSortedAccountList(accountAndPartnerPairList)) {
+      Partner partner = getPartner(accountAndPartnerPairList, account, idsDone);
+
       Map<Boolean, Boolean> value = new HashMap<>();
       if (close) {
         value.put(close, false);
@@ -247,6 +248,34 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
     }
     return map;
+  }
+
+  protected List<Account> getSortedAccountList(List<Pair<Long, Long>> accountAndPartnerPairList) {
+    List<Account> sortedAccountList = new ArrayList<>();
+    for (Pair<Long, Long> accountAndPartnerPair : accountAndPartnerPairList) {
+      sortedAccountList.add(accountRepository.find(accountAndPartnerPair.getLeft()));
+    }
+    sortedAccountList.sort(Comparator.comparing(Account::getCode));
+    return sortedAccountList;
+  }
+
+  protected Partner getPartner(
+      List<Pair<Long, Long>> accountAndPartnerPairList, Account account, List<Long> idsDone) {
+    Partner partner =
+        accountAndPartnerPairList.stream()
+            .filter(
+                pair ->
+                    pair.getLeft().equals(account.getId()) && !idsDone.contains(pair.getRight()))
+            .findFirst()
+            .map(Pair::getRight)
+            .map(id -> partnerRepository.find(id))
+            .orElse(null);
+
+    if (partner != null) {
+      idsDone.add(partner.getId());
+    }
+
+    return partner;
   }
 
   protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {

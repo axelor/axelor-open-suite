@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,14 +23,18 @@ import com.axelor.apps.maintenance.db.repo.EquipementMaintenanceRepo;
 import com.axelor.apps.maintenance.db.repo.EquipementMaintenanceRepository;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepo;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
+import com.axelor.apps.maintenance.service.BillOfMaterialComputeNameServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.BillOfMaterialMaintenanceService;
 import com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.MaintenanceRequestService;
 import com.axelor.apps.maintenance.service.MaintenanceRequestServiceImpl;
+import com.axelor.apps.maintenance.service.ManufOrderPlanServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderPrintService;
 import com.axelor.apps.maintenance.service.ManufOrderPrintServiceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderWorkflowMaintenanceServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 
 public class MaintenanceModule extends AxelorModule {
@@ -45,5 +49,8 @@ public class MaintenanceModule extends AxelorModule {
     bind(BillOfMaterialServiceImpl.class).to(BillOfMaterialServiceMaintenanceImpl.class);
     bind(ManufOrderWorkflowServiceImpl.class).to(ManufOrderWorkflowMaintenanceServiceImpl.class);
     bind(ManufOrderPrintService.class).to(ManufOrderPrintServiceImpl.class);
+    bind(BillOfMaterialComputeNameServiceImpl.class)
+        .to(BillOfMaterialComputeNameServiceMaintenanceImpl.class);
+    bind(ManufOrderPlanServiceImpl.class).to(ManufOrderPlanServiceMaintenanceImpl.class);
   }
 }

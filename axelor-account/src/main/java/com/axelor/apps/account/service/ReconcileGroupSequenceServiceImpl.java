@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,11 @@ public class ReconcileGroupSequenceServiceImpl implements ReconcileGroupSequence
     String code =
         Beans.get(SequenceService.class)
             .getSequenceNumber(
-                sequenceCode, reconcileGroup.getCompany(), ReconcileGroup.class, "code");
+                sequenceCode,
+                reconcileGroup.getCompany(),
+                ReconcileGroup.class,
+                "code",
+                reconcileGroup);
 
     if (code == null) {
       throw new AxelorException(

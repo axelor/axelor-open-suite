@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form name="incl-invoice-payment-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
@@ -40,11 +40,12 @@
     <panel name="bankDetailsPanel" title="Bank details" colSpan="12">
       <field name="bankDetailsList" colSpan="12" showTitle="false">
         <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
-                    <dl>
-                      <dd ng-if="!record.isDefault" ng-style="!record.active && {'color':'orange'}"> {{record.fullName}} </dd>
-                      <dd ng-if="record.isDefault" ng-style="!record.active && {'color':'orange'}"> <b>{{record.fullName}}</b> </dd>
-                    </dl>
-                ]]></viewer>
+              <>
+                  <dl>
+                        {<Box as="dd" {...(!active && {color:"warning"})} {...(isDefault && {fontWeight:"bold"})}>{fullName}</Box>}
+                  </dl>
+              </>
+        ]]></viewer>
         <editor onNew="action-set-default-partner" x-show-on-new="false">
           <field name="ownerName"/>
           <field name="iban"/>
@@ -117,7 +118,7 @@
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="//panel[@name='rightPanel']">
       <insert position="inside">
-        <field name="isSubrogation" widget="InlineCheckbox"
+        <field name="isThirdPartyPayer" widget="InlineCheckbox"
           showIf="(isCustomer || isSupplier) &amp;&amp; !isFactor"
           if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       </insert>

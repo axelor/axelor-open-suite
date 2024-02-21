@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -34,9 +35,8 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
       throws IOException, AxelorException {
     List<File> printedStockMoves = new ArrayList<>();
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             StockMove.class,
             ids,
             new ThrowConsumer<StockMove, Exception>() {
@@ -87,7 +87,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
     }
     stockMoveService.setPickingStockMovesEditDate(ids, userType);
     String fileName = getStockMoveFilesName(true, ReportSettings.FORMAT_PDF);
-    return PdfTool.mergePdfToFileLink(printedStockMoves, fileName);
+    return PdfHelper.mergePdfToFileLink(printedStockMoves, fileName);
   }
 
   @Override
@@ -117,7 +117,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
       throws AxelorException, IOException {
     stockMoveService.setPickingStockMoveEditDate(stockMove, userType);
     String fileName = getStockMoveFilesName(false, ReportSettings.FORMAT_PDF);
-    return PdfTool.getFileLinkFromPdfFile(print(stockMove, format), fileName);
+    return PdfHelper.getFileLinkFromPdfFile(print(stockMove, format), fileName);
   }
 
   /**

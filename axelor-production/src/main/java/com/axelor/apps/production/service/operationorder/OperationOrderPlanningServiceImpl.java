@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,7 +43,7 @@ import com.axelor.apps.production.service.operationorder.planning.OperationOrder
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningInfiniteCapacityService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
@@ -92,6 +92,9 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void plan(List<OperationOrder> operationOrders) throws AxelorException {
+    if (CollectionUtils.isEmpty(operationOrders)) {
+      return;
+    }
 
     ManufOrder manufOrder = operationOrders.get(0).getManufOrder();
     Company company = manufOrder.getCompany();
@@ -153,6 +156,9 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void replan(List<OperationOrder> operationOrders) throws AxelorException {
+    if (CollectionUtils.isEmpty(operationOrders)) {
+      return;
+    }
 
     ManufOrder manufOrder = operationOrders.get(0).getManufOrder();
     Company company = manufOrder.getCompany();
@@ -174,7 +180,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
             operationOrderPlanningInfiniteCapacityService.computePlannedEndDateT(operationOrder));
 
         operationOrder.setPlannedDuration(
-            DurationTool.getSecondsDuration(
+            DurationHelper.getSecondsDuration(
                 Duration.between(
                     operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
       }
@@ -320,7 +326,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     if (operationOrder.getPlannedStartDateT() != null
         && operationOrder.getPlannedEndDateT() != null) {
       duration =
-          DurationTool.getSecondsDuration(
+          DurationHelper.getSecondsDuration(
               Duration.between(
                   operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
       operationOrder.setPlannedDuration(duration);
@@ -371,7 +377,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   @Override
   public void updateRealDuration(OperationOrder operationOrder) {
     long durationLong =
-        DurationTool.getSecondsDuration(operationOrderService.computeRealDuration(operationOrder));
+        DurationHelper.getSecondsDuration(
+            operationOrderService.computeRealDuration(operationOrder));
     operationOrder.setRealDuration(durationLong);
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
     <field name="inventorySeq" width="120"/>
@@ -282,10 +282,10 @@
     model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <filter title="Planned Inventories">
+    <filter name="inventories-filters-planned-inventories" title="Planned Inventories">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Inventories History">
+    <filter name="inventories-filters-inventories-history" title="Inventories History">
       <domain>self.statusSelect = 2</domain>
     </filter>
   </search-filters>

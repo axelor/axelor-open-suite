@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,8 +40,9 @@ public interface MoveBudgetService {
    * budget exceed then compute an error message if needed.
    *
    * @param move
+   * @return String
    */
-  public void getBudgetExceedAlert(Move move) throws AxelorException;
+  public String getBudgetExceedAlert(Move move);
 
   /**
    * Return if there is budget distribution on any move line
@@ -58,4 +59,6 @@ public interface MoveBudgetService {
    * @return boolean
    */
   boolean checkMissingBudgetDistributionOnAccountedMove(Move move);
+
+  void autoComputeBudgetDistribution(Move move) throws AxelorException;
 }
