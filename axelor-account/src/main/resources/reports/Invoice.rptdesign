@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -6263,7 +6263,7 @@ row["partnerFirstName"]
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["DisplayDelAddr"] == false || row["operation_type_select"] != 3</expression>
+                        <expression name="valueExpr" type="javascript">row["DisplayDelAddr"] == false || row["operation_type_select"] != 3 || row["operation_sub_type_select"] == 2</expression>
                     </structure>
                 </list-property>
                 <cell id="3638">
