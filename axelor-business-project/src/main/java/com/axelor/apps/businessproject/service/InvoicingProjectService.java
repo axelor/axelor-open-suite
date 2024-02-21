@@ -108,6 +108,8 @@ public class InvoicingProjectService {
 
   @Inject protected SaleOrderLineRepository saleOrderLineRepository;
 
+  @Inject protected ProjectHoldBackLineService projectHoldBackLineService;
+
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
   protected int sequence = 0;
@@ -193,6 +195,7 @@ public class InvoicingProjectService {
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
+    invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
 
     Beans.get(InvoiceRepository.class).save(invoice);
 
