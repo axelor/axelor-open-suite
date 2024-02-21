@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.sublines.InvoiceSubLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
@@ -1293,5 +1294,13 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateRelatedOrderLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    Beans.get(InvoiceSubLineService.class).updateRelatedOrderLines(invoice);
+    response.setReload(true);
   }
 }

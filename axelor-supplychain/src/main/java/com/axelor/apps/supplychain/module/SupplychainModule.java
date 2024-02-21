@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
+import com.axelor.apps.account.service.sublines.InvoiceSubLineServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
@@ -219,6 +220,7 @@ import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderServiceImpl;
+import com.axelor.apps.supplychain.service.invoice.sublines.InvoiceSubLineSupplychainService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
@@ -349,5 +351,6 @@ public class SupplychainModule extends AxelorModule {
     bind(AnalyticToolSupplychainService.class).to(AnalyticToolSupplychainServiceImpl.class);
     bind(SaleOrderShipmentService.class).to(SaleOrderShipmentServiceImpl.class);
     bind(StockMoveMergingServiceImpl.class).to(StockMoveMergingServiceSupplychainImpl.class);
+    bind(InvoiceSubLineServiceImpl.class).to(InvoiceSubLineSupplychainService.class);
   }
 }

@@ -6,6 +6,8 @@
   <grid name="invoice-line-grid" title="Invoice lines"
     model="com.axelor.apps.account.db.InvoiceLine">
     <hilite strong="true" color="default" if="typeSelect != 0"/>
+    <hilite strong="true" color="default" if="invoiceLineListSize &gt; 0"/>
+    <field name="lineIndex"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
@@ -19,6 +21,8 @@
     <field name="typeSelect" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="parentInvoiceLine" hidden="true"/>
+    <field name="invoiceLineListSize" hidden="true"/>
   </grid>
 
   <grid name="invoice-line-menu-grid" title="Invoice lines"
@@ -80,27 +84,37 @@
           </viewer>
         </field>
         <panel name="customerInvoicePanel" colSpan="12">
+          <field name="lineIndex" colSpan="1"/>
           <field name="product" canEdit="false"
             onChange="action-group-account-invoice-line-product-onchange"
-            onSelect="action-invoice-line-attrs-set-product-domain-onselect"
+            onSelect="action-invoice-line-method-set-product-domain-onselect"
             form-view="product-form" grid-view="product-grid"/>
           <field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean"
             widget="boolean-switch" colSpan="2"
             if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
           <field name="typeSelect" colSpan="3"
             onChange="action-invoice-line-method-empty-line"/>
+          <field name="isNotCountable" readonly="true" colSpan="1"/>
+          <button name="recalculate" onClick="action-invoice-line-group-recalculate"
+            title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
+            if="__config__.app.getApp('account')?.isSubLinesEnabled" showIf="id"/>
         </panel>
 
         <panel name="supplierInvoicePanel" colSpan="12">
+          <field name="lineIndex" colSpan="1"/>
           <field name="product" canEdit="false"
             onChange="action-group-account-invoice-line-product-onchange"
-            onSelect="action-invoice-line-attrs-set-product-domain-onselect"
+            onSelect="action-invoice-line-method-set-product-domain-onselect"
             form-view="product-form" grid-view="product-purchase-grid"/>
           <field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean"
             widget="boolean-switch" colSpan="2"
             if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
           <field name="typeSelect" colSpan="3"
             onChange="action-invoice-line-method-empty-line"/>
+          <field name="isNotCountable" readonly="true" colSpan="1"/>
+          <button name="recalculate" onClick="action-invoice-line-group-recalculate"
+            title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
+            if="__config__.app.getApp('account')?.isSubLinesEnabled" showIf="id"/>
         </panel>
         <field name="productName" colSpan="12" requiredIf="typeSelect == 0"/>
         <field name="qty" colSpan="3" required="true"
@@ -138,6 +152,16 @@
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>
+        <field name="parentSaleOrderLine" hidden="true"/>
+        <field name="qtyBeforeUpdate" hidden="true"/>
+        <field name="priceBeforeUpdate" hidden="true"/>
+        <field name="isProcessedLine" hidden="true"/>
+        <field name="isDisabledFromCalculation" hidden="true"/>
+        <field name="saleOrderLineListSize" hidden="true"/>
+        <panel-related field="invoiceLineList" name="invoiceLineListPanel"
+          colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid"
+          onChange="action-invoice-line-method-update-on-invoice-line-list-change"
+          if="__config__.app.getApp('account')?.isSubLinesEnabled"/>
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"
@@ -315,6 +339,7 @@
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
+    <action name="action-invoice-line-set-line-index"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -344,7 +369,13 @@
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
+    <action name="action-sale-order-line-record-update-old-price-and-qty"/>
   </action-group>
+
+  <action-record name="action-sale-order-line-record-update-old-price-and-qty"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="priceBeforeUpdate" expr="eval: price" if="priceBeforeUpdate == 0"/>
+  </action-record>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
     <action name="action-invoice-line-method-get-discount"/>
@@ -715,6 +746,10 @@
       if="__parent__?.operationTypeSelect &lt; 3 &amp;&amp; __config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog() &amp;&amp; isFilterOnSupplier"/>
   </action-attrs>
 
+  <action-method name="action-invoice-line-method-set-product-domain-onselect">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="setProductDomain"/>
+  </action-method>
+
   <action-attrs name="action-invoice-line-attrs-set-isFilterOnSupplier">
     <attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
   </action-attrs>
@@ -748,6 +783,29 @@
     <view type="form" name="project-task-form"/>
     <domain>:id IN self.invoiceLineSet.id</domain>
   </action-view>
+
+  <action-method name="action-sale-order-method-hide-ati">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="hideAti"/>
+  </action-method>
+
+  <action-group name="action-invoice-line-group-recalculate">
+    <action name="save"/>
+    <action name="action-invoice-line-method-update-related-lines"/>
+  </action-group>
+
+  <action-method name="action-invoice-line-method-update-related-lines">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="calculateRelatedSOLinesValues"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-update-on-invoice-line-list-change">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="updateOnSaleOrderLineListChange"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-set-line-index">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="setLineIndex"/>
+  </action-method>
 
   <search-filters name="invoice-line-filters"
     model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">

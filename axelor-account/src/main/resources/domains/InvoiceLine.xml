@@ -101,6 +101,19 @@
     <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
       min="0" max="1" nullable="true"/>
 
+    <!-- Sublines -->
+    <one-to-many name="invoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine"
+      mappedBy="parentInvoiceLine"/>
+    <many-to-one name="parentInvoiceLine" ref="com.axelor.apps.account.db.InvoiceLine"/>
+    <decimal name="qtyBeforeUpdate" title="Qty before update" default="1"/>
+    <decimal name="priceBeforeUpdate" title="Price before update"/>
+    <boolean name="isNotCountable" title="Not countable" default="false" nullable="false"/>
+    <string name="lineIndex" title="Index" readonly="true"/>
+    <boolean name="isProcessedLine" title="Processed line" default="false" nullable="false"/>
+    <boolean name="isDisabledFromCalculation" title="Processed line" default="false"
+      nullable="false"/>
+    <integer name="invoiceLineListSize"/>
+
     <extra-code>
 		<![CDATA[
 			// TYPE SELECT
@@ -108,6 +121,7 @@
 			public static final int TYPE_TITLE = 1;
             public static final int TYPE_START_OF_PACK = 2;
             public static final int TYPE_END_OF_PACK = 3;
+            public static final int TYPE_PARENT_LINE = 5;
 	  	]]>
     </extra-code>
 

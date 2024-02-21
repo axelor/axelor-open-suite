@@ -32,6 +32,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
@@ -171,7 +172,9 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
 
   @Override
   public int getScale(Invoice invoice) {
-    return this.getScale(invoice.getCurrency());
+    return invoice != null
+        ? this.getScale(invoice.getCurrency())
+        : AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
   }
 
   @Override

@@ -33,23 +33,20 @@ public class InvoiceLineController {
 
     Context parentContext = context.getParent();
 
-    Invoice invoice = parentContext.asType(Invoice.class);
-
-    if (!parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
-
-      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-      invoice = invoiceLine.getInvoice();
+    if (parentContext == null) {
+      return null;
     }
-
-    return invoice;
+    if (parentContext.getContextClass().equals(Invoice.class)) {
+      return parentContext.asType(Invoice.class);
+    }
+    return getInvoice(parentContext);
   }
 
   public void checkQty(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+      Invoice invoice = getInvoice(context);
 
       Beans.get(InvoiceLineSupplychainService.class)
           .checkMinQty(invoice, invoiceLine, request, response);

@@ -62,6 +62,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -363,7 +364,13 @@ public abstract class InvoiceGenerator {
       invoiceLines.forEach(invoice::addInvoiceLineListItem);
     }
     // Create tax lines.
-    List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
+    List<InvoiceLineTax> invoiceTaxLines =
+        (new TaxInvoiceLine(
+                invoice,
+                invoiceLines.stream()
+                    .filter(line -> !line.getIsNotCountable())
+                    .collect(Collectors.toList())))
+            .creates();
 
     // Workaround for #9759
     if (invoice instanceof ContextEntity) {
@@ -434,7 +441,10 @@ public abstract class InvoiceGenerator {
     invoice.setCompanyTaxTotal(BigDecimal.ZERO);
     invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    for (InvoiceLine invoiceLine :
+        invoice.getInvoiceLineList().stream()
+            .filter(line -> !line.getIsNotCountable())
+            .collect(Collectors.toList())) {
 
       if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
         continue;

@@ -530,6 +530,7 @@
     <option value="1">Title</option>
     <option value="2">Start of pack</option>
     <option value="3">End of pack</option>
+    <option value="5">Parent</option>
   </selection>
 
   <selection name='trace.back.origin.select'>
