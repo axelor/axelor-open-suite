@@ -210,6 +210,9 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
+    if (address == null) {
+      return null;
+    }
     return address.getFormattedFullName();
   }
 
