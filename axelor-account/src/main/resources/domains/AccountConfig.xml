@@ -343,6 +343,8 @@
       title="Purchase invoices details template" ref="com.axelor.apps.base.db.BirtTemplate"/>
     <many-to-one name="chequeDepositSlipBirtTemplate"
       title="Cheque deposit slip template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <integer name="countTypeSelect" selection="account.account.config.count.type.select"
+      title="Count type" default="1"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -363,6 +365,9 @@
 		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
 		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
         public static final int DISTRIBUTION_TYPE_TRADING_NAME = 4;
+
+        public static final int COUNT_ONLY_PARENTS = 1;
+        public static final int COUNT_ONLY_CHILDREN = 2;
 
 	]]></extra-code>
 

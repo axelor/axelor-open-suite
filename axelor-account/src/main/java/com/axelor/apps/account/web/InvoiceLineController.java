@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.sublines.InvoiceSubLineService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -250,7 +251,7 @@ public class InvoiceLineController {
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
     Invoice invoice = this.getInvoice(request.getContext());
-    invoiceLine.setInvoice(invoice);
+    // invoiceLine.setInvoice(invoice);
 
     try {
       BigDecimal exTaxPrice = invoiceLine.getPrice();
@@ -299,19 +300,13 @@ public class InvoiceLineController {
 
     Context parentContext = context.getParent();
 
-    Invoice invoice;
-
-    if (parentContext == null
-        || !parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
-
-      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-      invoice = invoiceLine.getInvoice();
-    } else {
-      invoice = parentContext.asType(Invoice.class);
+    if (parentContext == null) {
+      return null;
     }
-
-    return invoice;
+    if (parentContext.getContextClass().equals(Invoice.class)) {
+      return parentContext.asType(Invoice.class);
+    }
+    return getInvoice(parentContext);
   }
 
   public void getAccount(ActionRequest request, ActionResponse response) {
@@ -500,7 +495,7 @@ public class InvoiceLineController {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
       if (request.getContext().getParent() != null) {
-        Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+        Invoice invoice = getInvoice(request.getContext());
         if (invoiceLine != null && invoice != null) {
           Beans.get(AnalyticLineService.class)
               .setAnalyticAccount(invoiceLine, invoice.getCompany());
@@ -610,5 +605,50 @@ public class InvoiceLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void calculateRelatedSOLinesValues(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    InvoiceSubLineService invoiceSubLineService = Beans.get(InvoiceSubLineService.class);
+    Context context = request.getContext();
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    invoiceLine = Beans.get(InvoiceLineRepository.class).find(invoiceLine.getId());
+    Invoice invoice = invoiceSubLineService.getParentInvoiceLine(context);
+    invoiceSubLineService.updateRelatedInvoiceLinesOnPriceChange(invoiceLine, invoice);
+    invoiceSubLineService.updateRelatedInvoiceLinesOnQtyChange(invoiceLine, invoice);
+    response.setReload(true);
+  }
+
+  public void hideAti(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+    Invoice invoice = Beans.get(InvoiceSubLineService.class).getParentInvoiceLine(context);
+    response.setAttr("exTaxTotal", "hidden", invoice.getInAti());
+    response.setAttr("inTaxTotal", "hidden", !invoice.getInAti());
+    response.setAttr("price", "hidden", invoice.getInAti());
+    response.setAttr("inTaxPrice", "hidden", !invoice.getInAti());
+  }
+
+  public void setLineIndex(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    response.setValues(Beans.get(InvoiceSubLineService.class).setLineIndex(invoiceLine, context));
+  }
+
+  public void updateOnSaleOrderLineListChange(ActionRequest request, ActionResponse response) {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    invoiceLine = Beans.get(InvoiceSubLineService.class).updateOnInvoiceLineListChange(invoiceLine);
+    response.setValues(invoiceLine);
+  }
+
+  public void setProductDomain(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    boolean isFilterOnSupplier = (boolean) context.get("isFilterOnSupplier");
+    InvoiceSubLineService invoiceSubLineService = Beans.get(InvoiceSubLineService.class);
+    Invoice invoice = getInvoice(request.getContext());
+    response.setAttr(
+        "product", "domain", invoiceSubLineService.getProductDomain(invoice, isFilterOnSupplier));
   }
 }

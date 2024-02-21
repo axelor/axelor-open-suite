@@ -346,6 +346,8 @@ import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceServ
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterService;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterServiceImpl;
+import com.axelor.apps.account.service.sublines.InvoiceSubLineService;
+import com.axelor.apps.account.service.sublines.InvoiceSubLineServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.account.util.TaxAccountToolService;
@@ -808,5 +810,7 @@ public class AccountModule extends AxelorModule {
     bind(AccountingReportTypeRepository.class).to(AccountingReportTypeManagementRepository.class);
 
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
+
+    bind(InvoiceSubLineService.class).to(InvoiceSubLineServiceImpl.class);
   }
 }

@@ -875,4 +875,9 @@
     <option value="import-FEC-config.xml">FEC</option>
     <option value="input-config-with-tva.xml">FEC with TVA</option>
   </selection>
+
+  <selection name="account.account.config.count.type.select">
+    <option value="1">Count only parents</option>
+    <option value="2">Count only children</option>
+  </selection>
 </object-views>

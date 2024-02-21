@@ -613,6 +613,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           public List<InvoiceLine> creates() throws AxelorException {
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
+            invoiceLine.setIsNotCountable(saleOrderLine.getIsNotCountable());
+            invoiceLine.setLineIndex(saleOrderLine.getLineIndex());
+            invoiceLine.setInvoiceLineListSize(saleOrderLine.getSaleOrderLineListSize());
 
             List<InvoiceLine> invoiceLines = new ArrayList<>();
             invoiceLines.add(invoiceLine);

@@ -15,6 +15,7 @@
     width="large">
 
     <panel name="mainPanel">
+      <field name="countTypeSelect"/>
       <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
         grid-view="company-grid"/>
       <spacer colSpan="12"/>

@@ -47,6 +47,7 @@
       title="Specify the barcode type by fixed asset" default="false"/>
     <many-to-one name="fixedAssetBarcodeTypeConfig" title="Fixed asset barcode type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
+    <boolean name="isSubLinesEnabled" title="Enabled sub lines"/>
 
     <extra-code><![CDATA[
 

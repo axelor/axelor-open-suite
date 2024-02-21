@@ -618,7 +618,15 @@
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" form-view="invoice-line-form"
           grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
-          canMove="true" orderBy="sequence" height="30"/>
+          canMove="true" orderBy="sequence" height="30"
+          if="!__config__.app.getApp('account')?.getIsSubLinesEnabled()"/>
+
+        <panel-related name="invoiceLineListSubLinesPanel" field="invoiceLineList"
+          canNew="statusSelect == 1" canRemove="statusSelect == 1"
+          readonlyIf="statusSelect == 3 || partner == null" form-view="invoice-line-form"
+          grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
+          orderBy="lineIndex" height="30"
+          if="__config__.app.getApp('account')?.getIsSubLinesEnabled()"/>
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
@@ -1729,6 +1737,8 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
+    <action name="save"/>
+    <action name="action-invoice-update-lines"/>
     <action name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-method-generate-invoice-terms"
@@ -2831,5 +2841,10 @@ InvoiceSet.length > 0))"
     <action name="save"/>
     <action name="action-invoice-view-reports-wizard"/>
   </action-group>
+
+  <action-method name="action-invoice-update-lines">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateRelatedOrderLines"/>
+  </action-method>
 
 </object-views>
