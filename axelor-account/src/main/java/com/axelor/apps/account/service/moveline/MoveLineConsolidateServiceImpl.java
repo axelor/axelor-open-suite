@@ -124,7 +124,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       List<Object> keys = new ArrayList<>();
 
       keys.add(moveLine.getAccount());
-      keys.add(moveLine.getTaxLine());
+      keys.add(moveLine.getTaxLineSet());
       keys.add(moveLine.getAnalyticDistributionTemplate());
       keys.add(moveLine.getCutOffStartDate());
       keys.add(moveLine.getCutOffEndDate());

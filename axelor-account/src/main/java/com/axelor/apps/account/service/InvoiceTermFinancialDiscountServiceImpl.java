@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.FinancialDiscount;
@@ -28,6 +46,20 @@ public class InvoiceTermFinancialDiscountServiceImpl
   }
 
   @Override
+  public void computeFinancialDiscount(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm == null) {
+      return;
+    }
+    if (invoiceTerm.getMoveLine() != null
+        && invoiceTerm.getMoveLine().getFinancialDiscount() != null) {
+      computeFinancialDiscount(invoiceTerm, invoiceTerm.getMoveLine());
+    } else if (invoiceTerm.getInvoice() != null
+        && invoiceTerm.getInvoice().getFinancialDiscount() != null) {
+      computeFinancialDiscount(invoiceTerm, invoiceTerm.getInvoice());
+    }
+  }
+
+  @Override
   public void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
@@ -35,6 +67,15 @@ public class InvoiceTermFinancialDiscountServiceImpl
         invoice.getFinancialDiscount(),
         invoice.getFinancialDiscountTotalAmount(),
         invoice.getRemainingAmountAfterFinDiscount());
+  }
+
+  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, MoveLine moveLine) {
+    this.computeFinancialDiscount(
+        invoiceTerm,
+        moveLine.getCredit().max(moveLine.getDebit()),
+        moveLine.getFinancialDiscount(),
+        moveLine.getFinancialDiscountTotalAmount(),
+        moveLine.getRemainingAmountAfterFinDiscount());
   }
 
   @Override

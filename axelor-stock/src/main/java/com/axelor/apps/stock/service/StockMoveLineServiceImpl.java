@@ -629,7 +629,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockMoveLine stockMoveLine,
       LocalDate date,
       String origin,
-      int toStatus) {
+      int toStatus)
+      throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
             stockLocation, stockMoveLine.getProduct());
@@ -1698,6 +1699,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         || stockMoveLineList.isEmpty()) {
       return;
     }
+    // Does not manage the case where line is already splited
+    // Works when generating a tracking number
+    // But not when assigning one
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
       if (product == null) {

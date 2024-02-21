@@ -347,4 +347,33 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_TIMER_ALREADY_STARTED = /*$$(*/
       "Timer is already ongoing, stop it before starting a new one." /*)*/;
+
+  public static final String TIMESHEET_ADD_TIMER_WRONG_STATUS = /*$$(*/
+      "You can only add a timer to a drafted or a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_LINE_INVALID_DATE = /*$$(*/
+      "This date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String TIMESHEET_CONFIRM_COMPLETE_WRONG_STATUS = /*$$(*/
+      "Can only confirm/complete from draft status." /*)*/;
+
+  public static final String TIMESHEET_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_CANCEL_WRONG_STATUS = /*$$(*/
+      "You can not cancel an already cancelled timesheet." /*)*/;
+
+  public static final String TIMESHEET_VALIDATION_NEEDED_NOT_ENABLED = /*$$(*/
+      "Validation needed configuration is not enabled." /*)*/;
+
+  public static final String TIMESHEET_ACTIVITY_NOT_ENABLED = /*$$(*/
+      "Activity on timesheet line is not enabled." /*)*/;
+
+  public static final String TIMESHEET_ACTIVITY_NOT_ALLOWED = /*$$(*/
+      "The activity is not allowed in the current project." /*)*/;
+  public static final String TIMESHEET_PRODUCT_NOT_ACTIVITY = /*$$(*/
+      "The given product is not an activity, please choose a correct activity." /*)*/;
 }

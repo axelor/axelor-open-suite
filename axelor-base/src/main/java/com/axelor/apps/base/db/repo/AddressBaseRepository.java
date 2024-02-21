@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
@@ -36,7 +37,8 @@ public class AddressBaseRepository extends AddressRepository {
     entity.setFullName(addressService.computeFullName(entity));
     try {
       EntityManager em = JPA.em().getEntityManagerFactory().createEntityManager();
-      Address oldAddressObject = em.find(Address.class, entity.getId());
+      Address oldAddressObject =
+          Optional.ofNullable(entity.getId()).map(id -> em.find(Address.class, id)).orElse(null);
       if (oldAddressObject == null
           || !oldAddressObject.getFullName().equals(entity.getFullName())) {
         addressService.updateLatLong(entity);

@@ -45,6 +45,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -259,7 +260,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
             if (tax != null) {
               TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
               if (taxLine != null) {
-                moveLine.setTaxLine(taxLine);
+                moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
                 moveLine.setTaxRate(taxLine.getValue());
                 moveLine.setTaxCode(tax.getCode());
                 moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
@@ -379,7 +380,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
             if (tax != null) {
               TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
               if (taxLine != null) {
-                moveLine.setTaxLine(taxLine);
+                moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
                 moveLine.setTaxRate(taxLine.getValue());
                 moveLine.setTaxCode(tax.getCode());
                 moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));

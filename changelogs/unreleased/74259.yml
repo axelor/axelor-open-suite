@@ -1,0 +1,8 @@
+---
+title: "LOCALIZATION : we should only use the __locale parameter in rptdesigns, not the Locale"
+type: feature
+description: |
+  In rptdesign files, we have both Locale and __locale parameters. Now we use __locale only.
+  All Locale parameters in rptdesign files, base_birtTemplateParameters.csv files are now replaced with __locale.
+  Also in EmbeddedReportSettings and ExternalReportSettings, we check if there is a __locale in the params map. 
+  If it exists, use it directly. Otherwise, use the ReportingTool.getCompanyLocale().

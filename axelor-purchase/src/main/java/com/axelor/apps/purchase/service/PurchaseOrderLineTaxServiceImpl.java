@@ -1,5 +1,24 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
@@ -14,7 +33,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,20 +92,34 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       Map<TaxLine, PurchaseOrderLineTax> map,
       boolean customerSpecificNote,
       Set<String> specificNotes) {
-    TaxLine taxLine = purchaseOrderLine.getTaxLine();
-    TaxEquiv taxEquiv = purchaseOrderLine.getTaxEquiv();
-    TaxLine taxLineRC =
-        (taxEquiv != null && taxEquiv.getReverseCharge() && taxEquiv.getReverseChargeTax() != null)
-            ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
-            : null;
+    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      for (TaxLine taxLine : taxLineSet) {
+        getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLine, map, false);
+      }
+    }
+    Set<TaxEquiv> taxEquivSet = purchaseOrderLine.getTaxEquivSet();
+    if (CollectionUtils.isNotEmpty(taxEquivSet)) {
+      for (TaxEquiv taxEquiv : taxEquivSet) {
+        TaxLine taxLineRC =
+            (taxEquiv != null
+                    && taxEquiv.getReverseCharge()
+                    && taxEquiv.getReverseChargeTax() != null)
+                ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
+                : null;
 
-    getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLine, map, false);
+        // Reverse charged process
+        getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLineRC, map, true);
+      }
+    }
 
-    // Reverse charged process
-    getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLineRC, map, true);
-
-    orderLineTaxService.addTaxEquivSpecificNote(
-        purchaseOrderLine, customerSpecificNote, specificNotes);
+    if (!customerSpecificNote && CollectionUtils.isNotEmpty(taxEquivSet)) {
+      specificNotes.addAll(
+          taxEquivSet.stream()
+              .map(TaxEquiv::getSpecificNote)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList()));
+    }
   }
 
   protected void getOrCreateLine(
@@ -118,6 +154,8 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
     purchaseOrderLineTax.setReverseCharged(reverseCharged);
     purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
     purchaseOrderLineTax.setTaxLine(taxLine);
+    purchaseOrderLineTax.setTaxType(
+        Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
     return purchaseOrderLineTax;
   }
 

@@ -248,6 +248,8 @@ import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
+import com.axelor.auth.service.PermissionService;
+import com.axelor.auth.service.PermissionServiceImpl;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.base.service.ical.ICalendarEventServiceImpl;
 import com.axelor.message.service.MailAccountServiceImpl;
@@ -427,5 +429,6 @@ public class BaseModule extends AxelorModule {
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
     bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
+    bind(PermissionService.class).to(PermissionServiceImpl.class);
   }
 }

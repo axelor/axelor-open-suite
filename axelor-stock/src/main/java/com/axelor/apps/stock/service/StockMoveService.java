@@ -240,4 +240,6 @@ public interface StockMoveService {
   void setMergedStatus(StockMove stockMove);
 
   StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException;
+
+  void planWithNoSplit(StockMove stockMove) throws AxelorException;
 }

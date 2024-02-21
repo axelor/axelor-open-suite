@@ -24,8 +24,10 @@ import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Set;
 
 public interface AccountingReportValueMoveLineService {
   void createValueFromMoveLines(
@@ -36,6 +38,7 @@ public interface AccountingReportValueMoveLineService {
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       Account groupAccount,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
