@@ -24,7 +24,6 @@
     <action name="action-business-production-operation-order-group-checks"/>
     <action name="action-operation-order-business-production-method-alert-timesheet"/>
     <action name="action-operation-order-method-finish"/>
-    <action name="action-operation-order-method-compute-duration"/>
   </action-group>
 
   <action-method

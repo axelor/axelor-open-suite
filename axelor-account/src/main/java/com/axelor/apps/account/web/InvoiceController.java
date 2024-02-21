@@ -415,6 +415,11 @@ public class InvoiceController {
       response.setReload(true);
       response.setNotify(I18n.get(AccountExceptionMessage.INVOICE_2));
 
+      int refundType =
+          invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+              ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+              : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+
       response.setView(
           ActionView.define(
                   String.format(
@@ -425,6 +430,7 @@ public class InvoiceController {
               .param("search-filters", "customer-invoices-filters")
               .param("forceTitle", "true")
               .context("_showRecord", refund.getId().toString())
+              .context("_operationTypeSelect", refundType)
               .domain("self.originalInvoice.id = " + invoice.getId())
               .map());
     } catch (Exception e) {

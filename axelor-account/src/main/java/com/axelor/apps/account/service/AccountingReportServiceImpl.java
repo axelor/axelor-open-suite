@@ -454,12 +454,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     SequenceService sequenceService = Beans.get(SequenceService.class);
 
-    if (accountingReport.getReportType() == null) {
-      throw new AxelorException(
-          accountingReport,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_NO_REPORT_TYPE));
-    }
+    this.checkReportType(accountingReport);
 
     int accountingReportTypeSelect = accountingReport.getReportType().getTypeSelect();
 
@@ -947,5 +942,15 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       }
     }
     return null;
+  }
+
+  @Override
+  public void checkReportType(AccountingReport accountingReport) throws AxelorException {
+    if (accountingReport.getReportType() == null) {
+      throw new AxelorException(
+          accountingReport,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_NO_REPORT_TYPE));
+    }
   }
 }

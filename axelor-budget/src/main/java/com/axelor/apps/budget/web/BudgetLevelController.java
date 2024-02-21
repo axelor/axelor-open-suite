@@ -157,4 +157,35 @@ public class BudgetLevelController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void viewBudgetLines(ActionRequest request, ActionResponse response) {
+    try {
+      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+      if (budgetLevel == null) {
+        return;
+      }
+
+      String domain = "";
+      if (budgetLevel.getGlobalBudget() != null) {
+        domain = String.format("self.budgetLevel.parentBudgetLevel.id = %d", budgetLevel.getId());
+      } else {
+        domain = String.format("self.budgetLevel.id = %d", budgetLevel.getId());
+      }
+
+      response.setView(
+          ActionView.define(I18n.get("Budget"))
+              .model(Budget.class.getName())
+              .add("grid", "budget-lines-grid")
+              .add("form", "budget-included-form")
+              .param("details-view", "true")
+              .context(
+                  "_isReadOnly",
+                  !BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT.equals(
+                      budgetLevel.getStatusSelect()))
+              .domain(domain)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
