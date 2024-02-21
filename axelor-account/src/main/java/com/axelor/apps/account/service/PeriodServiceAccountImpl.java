@@ -34,12 +34,13 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Set;
 import javax.inject.Singleton;
 import javax.persistence.PersistenceException;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PeriodServiceAccountImpl extends PeriodServiceImpl implements PeriodServiceAccount {
@@ -110,55 +111,35 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   public boolean isManageClosedPeriod(Period period, User user) throws AxelorException {
-    if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
+    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
-      if (CollectionUtils.isEmpty(accountConfig.getClosureAuthorizedRoleList())) {
-        return false;
-      }
-      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
-        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
-          return true;
-        }
-      }
+
+      return checkUserRoles(user, accountConfig.getClosureAuthorizedRoleList());
     }
     return false;
   }
 
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
-    if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
+    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
-      if (CollectionUtils.isEmpty(accountConfig.getTemporaryClosureAuthorizedRoleList())) {
-        return false;
-      }
-      for (Role role : accountConfig.getTemporaryClosureAuthorizedRoleList()) {
-        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
-          return true;
-        }
-      }
+
+      return checkUserRoles(user, accountConfig.getTemporaryClosureAuthorizedRoleList());
     }
     return false;
   }
 
   @Override
   public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException {
-    if (period != null
-        && period.getYear().getCompany() != null
-        && user != null
-        && user.getGroup() != null) {
+    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
       if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
         return false;
       }
       if (period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
         AccountConfig accountConfig =
             accountConfigService.getAccountConfig(period.getYear().getCompany());
-        for (Role role : accountConfig.getMoveOnTempClosureAuthorizedRoleList()) {
-          if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
-            return true;
-          }
-        }
-        return false;
+        return checkUserRoles(user, accountConfig.getMoveOnTempClosureAuthorizedRoleList());
       }
       return true;
     }
@@ -181,5 +162,21 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     User user = AuthUtils.getUser();
 
     return super.isClosedPeriod(period) && !this.isAuthorizedToAccountOnPeriod(period, user);
+  }
+
+  protected boolean checkUserRoles(User user, Set<Role> roleSet) {
+    if (user == null || ObjectUtils.isEmpty(roleSet)) {
+      return false;
+    }
+    Set<Role> userRoleSet = user.getRoles();
+    if (user.getGroup() != null && !ObjectUtils.isEmpty(user.getGroup().getRoles())) {
+      userRoleSet.addAll(user.getGroup().getRoles());
+    }
+    for (Role role : roleSet) {
+      if (userRoleSet.contains(role)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
