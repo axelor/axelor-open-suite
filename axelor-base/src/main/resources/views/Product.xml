@@ -357,7 +357,7 @@
             action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"/>
           <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel"
             colSpan="12"/>
-          <panel-dashlet action="action-stock-view-stock-history-line"
+          <panel-dashlet action="action-stock-view-stock-location-line-history"
             name="stockHistoryLinePanel" colSpan="12" showIf="productTypeSelect == 'storable'"/>
         </panel>
       </panel>

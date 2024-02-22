@@ -644,5 +644,14 @@ public final class BaseExceptionMessage {
   public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
       "The import configuration executed successfully." /*)*/;
 
+  public static final String IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE = /*$$(*/
+      "The binding file should be only an XML file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_CSV_MESSAGE = /*$$(*/
+      "The data file should be only a CSV file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
+      "The data file should be only an XML file." /*)*/;
+
   public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
 }
