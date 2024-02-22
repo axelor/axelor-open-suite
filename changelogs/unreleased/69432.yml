@@ -1,3 +1,0 @@
----
-title: "SaleOrderLine: new supply selection 'stock and produce' that only produce missing quantity of the product and use the for the rest"
-type: feature
