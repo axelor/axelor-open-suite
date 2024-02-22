@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
@@ -37,12 +38,13 @@ public interface AddressService {
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
 
   public Address createAddress(
-      String addressL2,
-      String addressL3,
-      String addressL4,
-      String addressL5,
-      String addressL6,
-      Country addressL7Country);
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
+      String zip,
+      City city,
+      Country country);
 
   @CallMethod
   public boolean checkAddressUsed(Long addressId);
@@ -92,13 +94,4 @@ public interface AddressService {
    * @param address
    */
   public void autocompleteAddress(Address address);
-
-  public String getZipCode(Address address);
-
-  /**
-   * Set formatted full name for the address from address template
-   *
-   * @param address
-   */
-  public void setFormattedFullName(Address address) throws AxelorException;
 }

@@ -16,9 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.City;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.common.csv.CSVFile;
 import com.google.inject.Inject;
@@ -77,5 +79,30 @@ public class AddressExportServiceImpl implements AddressExportService {
     LOG.info("{} exported", path);
 
     return addresses.size();
+  }
+
+  @Override
+  public Address getAddress(
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
+      String zip,
+      City city,
+      Country country) {
+
+    return addressRepository
+        .all()
+        .filter(
+            "self.room = :room AND self.floor = :floor AND self.streetName = :streetName "
+                + "AND self.postBox = :postBox AND self.zip = :zip self.city = :city AND self.country = :country")
+        .bind("room", room)
+        .bind("floor", floor)
+        .bind("streetName", streetName)
+        .bind("postBox", postBox)
+        .bind("zip", zip)
+        .bind("city", city)
+        .bind("country", country)
+        .fetchOne();
   }
 }
