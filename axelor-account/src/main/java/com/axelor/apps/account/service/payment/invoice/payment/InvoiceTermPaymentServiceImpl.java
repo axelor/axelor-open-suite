@@ -312,9 +312,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
       }
       invoiceTermPayment.setCompanyPaidAmount(
-          isCompanyCurrency
-              ? paidAmount
-              : this.computeCompanyPaidAmount(invoiceTermToPay, invoicePayment, paidAmount));
+          this.computeCompanyPaidAmount(invoiceTermToPay, invoicePayment, paidAmount));
     } catch (AxelorException e) {
       TraceBackService.trace(
           new AxelorException(
