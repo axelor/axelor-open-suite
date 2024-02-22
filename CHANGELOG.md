@@ -1,3 +1,33 @@
+## [7.1.16] (2024-02-22)
+
+#### Fixed
+
+* Stock location: fixed wrong QR Code on copied stock location.
+* Manufacturing order: fixed an issue where the stock location is incorrect for generated stock moves in manufacturing order using outsourcing.
+* Move: fixed currency rate errors in move line view.
+* Invoice: fixed an issue when returning to the refund list after creating a refund from an invoice.
+* Bank order: fixed multi currency management.
+* Purchase order: fixed JNPE error on purchase order historic opening.
+* Cost calculation: fixed JNPE error on select of product.
+* Product: replaced stock history panel which is showing empty records by a panel to stock location line history.
+* Employee: fixed error happening while deleting employee.
+* Invoice: fixed an error on invoice ventilation when the invoice had an advance payment in previous period.
+* Sale order: removed the possibility to mass update fields on sale order, as it caused inconsistencies.
+* Fixed asset: fixed purchase account move domain in fixed asset form view.
+* Invoice: fixed display of delivery address on advance payment invoices generated from a sale order.
+* Budget: remove all dependencies with other modules when the app budget is disabled.
+* Computing amounts in employee bonus management now alert user if employee does not have a birth date or seniority date.
+* Project: fixed opening gantt view per user.
+* Accounting report: set readonly export button and add report type check to provide critical error.
+* Operation order: finishing a manuf order from the operations correctly computes the cost sheet quantities.
+* Sale order: fixed technical error preventing pack creation.
+* Contract: reset sequence when duplicating contracts.
+* Reconciliation: fixed invoice term imputation when PFP not validated.
+* Manufacturing order: finishing a manufacturing order now correctly updates the cost price of a product.
+* Stock move: fixed error when spliting in two a stock move.
+* Inventory line: forbid negative values in inventories.
+* Accounting export: fixed FEC export not taking journal into account.
+
 ## [7.1.15] (2024-02-01)
 
 #### Fixed
@@ -841,6 +871,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.16]: https://github.com/axelor/axelor-open-suite/compare/v7.1.15...v7.1.16
 [7.1.15]: https://github.com/axelor/axelor-open-suite/compare/v7.1.14...v7.1.15
 [7.1.14]: https://github.com/axelor/axelor-open-suite/compare/v7.1.13...v7.1.14
 [7.1.13]: https://github.com/axelor/axelor-open-suite/compare/v7.1.12...v7.1.13
