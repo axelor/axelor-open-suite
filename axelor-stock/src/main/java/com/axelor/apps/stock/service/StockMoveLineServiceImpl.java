@@ -328,7 +328,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           minQty,
           trackingNumberService.getTrackingNumber(
               product,
-              qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
               stockMove.getOrigin(),
@@ -346,7 +345,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
               product,
-              qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
               stockMove.getOrigin(),
@@ -1316,7 +1314,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       if (trackingNumber == null) {
         trackingNumber = new TrackingNumber();
-        trackingNumber.setCounter(counter);
         trackingNumber.setTrackingNumberSeq(trackingNumberItem.get("trackingNumberSeq").toString());
         if (trackingNumberItem.get("warrantyExpirationDate") != null) {
           trackingNumber.setWarrantyExpirationDate(

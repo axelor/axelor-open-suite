@@ -34,7 +34,6 @@
         domain="self.dtype = 'Product'"/>
       <field name="warrantyExpirationDate"/>
       <field name="perishableExpirationDate"/>
-      <field name="counter"/>
       <field name="origin"/>
       <field name="supplier" domain="self.isSupplier IS TRUE"
         grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
@@ -57,7 +56,6 @@
         domain="self.dtype = 'Product'" readonlyIf="$popup() || id != null"/>
       <field name="warrantyExpirationDate" readonly="false"/>
       <field name="perishableExpirationDate" readonly="false"/>
-      <field name="counter" hidden="true"/>
       <field name="origin"/>
       <field name="supplier" domain="self.isSupplier IS TRUE"
         grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
@@ -123,15 +121,6 @@
     <field name="product" expr="eval: __parent__?.product"/>
   </action-record>
 
-  <action-record name="action-tracking-number-record-from-stock-move-line"
-    model="com.axelor.apps.stock.db.TrackingNumber">
-    <field
-      if="eval: __parent__?.stockMove == null || __parent__?.stockMove?.statusSelect == 1"
-      name="counter" expr="eval: __parent__?.qty"/>
-    <field if="eval: __parent__?.stockMove?.statusSelect == 2" name="counter"
-      expr="eval: __parent__?.realQty"/>
-  </action-record>
-
   <action-attrs name="action-tracking-number-attrs-from-stock-move-line">
     <attribute name="hidden" expr="eval: !__parent__?.product?.hasWarranty"
       for="warrantyExpirationDate"/>
@@ -144,10 +133,6 @@
       if="product == null"/>
   </action-attrs>
 
-  <action-attrs name="action-tracking-number-attrs-set-scale">
-    <attribute name="scale" for="counter"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-  </action-attrs>
 
   <action-attrs name="action-tracking-number-attrs-set-product-readonly">
     <attribute name="readonly" for="product"
