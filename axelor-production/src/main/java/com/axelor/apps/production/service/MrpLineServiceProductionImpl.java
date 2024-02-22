@@ -57,7 +57,6 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
@@ -153,7 +152,8 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       // plannedStartDateT on the current date time.
       LocalDateTime maturityDateTime =
           maturityDate.isEqual(LocalDate.now())
-              ? maturityDate.atTime(LocalTime.now().plusMinutes(2))
+              ? maturityDate.atTime(
+                  appBaseService.getTodayDateTime(company).toLocalTime().plusMinutes(2))
               : maturityDate.atStartOfDay();
       plannedEndDateT =
           maturityDateTime.plusMinutes(
