@@ -413,7 +413,9 @@ public class PartnerController {
       PartnerService partnerService = Beans.get(PartnerService.class);
 
       Map<String, Map<String, Object>> attrsMap = partnerService.getPartnerTypeSelectAttrs(partner);
-
+      if (attrsMap == null) {
+        return;
+      }
       LOG.info("Attribute Map for registration code: {}", attrsMap);
       response.setAttrs(attrsMap);
 

@@ -822,6 +822,9 @@ public class PartnerServiceImpl implements PartnerService {
     if (mainAddress != null && mainAddress.getAddressL7Country() != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
           mainAddress.getAddressL7Country().getRegistrationNumberTemplate();
+      if (registrationNumberTemplate == null) {
+        return null;
+      }
       hideNic = isIndividual || !registrationNumberTemplate.getUseNic();
       hideSiren = isIndividual || !registrationNumberTemplate.getUseSiren();
       boolean useTaxNbr = registrationNumberTemplate.getUseTaxNbr();
