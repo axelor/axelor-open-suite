@@ -332,6 +332,7 @@
 "Accounting.toAccount",,,
 "AccountingReport.control",,,
 "AccountingReport.editionDate",,,
+"AccountingReport.noEntry",,,
 "AccountingReport.recapByAccount",,,
 "AccountingReport.totalCreditAccount",,,
 "AccountingReport.totalDebitAccount",,,
