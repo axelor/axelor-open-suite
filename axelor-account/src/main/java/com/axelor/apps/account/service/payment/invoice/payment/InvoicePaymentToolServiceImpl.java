@@ -169,15 +169,24 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             invoicePayment.getPaymentDate(),
             invoicePayment.getCurrency(),
             invoiceCurrency)) {
-          BigDecimal currencyRate =
-              invoice
-                  .getCompanyInTaxTotal()
-                  .divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP);
-          BigDecimal computedPaidAmount =
-              Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)
-                  ? paymentAmount
-                  : paymentAmount.divide(
-                      currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          BigDecimal computedPaidAmount = paymentAmount;
+          if (!Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)) {
+            BigDecimal currencyRate =
+                invoice
+                    .getCompanyInTaxTotal()
+                    .divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP);
+            computedPaidAmount =
+                Objects.equals(invoiceCurrency, invoice.getCompany().getCurrency())
+                    ? currencyService.getAmountCurrencyConvertedAtDate(
+                        invoicePayment.getCurrency(),
+                        invoiceCurrency,
+                        paymentAmount,
+                        invoicePayment.getPaymentDate())
+                    : paymentAmount.divide(
+                        currencyRate,
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP);
+          }
           amountPaid = amountPaid.add(computedPaidAmount);
         } else {
           amountPaid =
