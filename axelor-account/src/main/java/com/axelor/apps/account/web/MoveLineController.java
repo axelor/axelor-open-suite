@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
@@ -258,21 +257,6 @@ public class MoveLineController {
       Beans.get(AnalyticAttrsService.class).addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
 
       response.setAttrs(attrsMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine.setMove(this.getMove(request, moveLine));
-
-      response.setAttr(
-          "invoiceTermPanel",
-          "readonly",
-          Beans.get(MoveLineControlService.class)
-              .isInvoiceTermReadonly(moveLine, request.getUser()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
