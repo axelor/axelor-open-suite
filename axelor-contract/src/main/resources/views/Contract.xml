@@ -365,16 +365,19 @@
           onChange="action-contract-method-hide-fields-list"/>
         <field name="revaluationPeriod"
           requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
-          domain="self.applicationTypeSelect = 2"/>
+          domain="self.applicationTypeSelect = 2" hidden="true" showIf="isToRevaluate"/>
         <field name="revaluationFormula"
-          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index2"/>
-        <field name="index2Date"/>
-        <field name="endOfApplicationDate"/>
-        <field name="lastRevaluationDate" readonly="true"/>
-        <field name="nextRevaluationDate"/>
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate" hidden="true"
+          showIf="isToRevaluate"/>
+        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          hidden="true" showIf="isToRevaluate"/>
+        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          hidden="true" showIf="isToRevaluate"/>
+        <field name="index2" hidden="true" showIf="isToRevaluate"/>
+        <field name="index2Date" hidden="true" showIf="isToRevaluate"/>
+        <field name="endOfApplicationDate" hidden="true" showIf="isToRevaluate"/>
+        <field name="lastRevaluationDate" readonly="true" hidden="true" showIf="isToRevaluate"/>
+        <field name="nextRevaluationDate" hidden="true" showIf="isToRevaluate"/>
       </panel>
 
       <panel-related name="versionHistoryPanel" hidden="true" readonly="true"
