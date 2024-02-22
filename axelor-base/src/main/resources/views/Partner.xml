@@ -1162,7 +1162,7 @@
     <error message="Registration code is required."
       if="partnerAddressList?.findAll{it.address?.country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
   </action-validate>
-  
+
   <action-record name="action-partner-record-factor-supplier-customer-no-error"
     model="com.axelor.apps.base.db.Partner">
     <field name="customerCantBeRemoved" expr="eval:false"/>

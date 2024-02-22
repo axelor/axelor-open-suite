@@ -35,15 +35,11 @@ public class RegistrationNumberValidationFRA extends RegistrationNumberValidatio
   @Override
   protected String getTaxNbrFromRegistrationCode(Partner partner) {
     if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null
-        && partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate() != null
-        && partner
-            .getMainAddress()
-            .getAddressL7Country()
-            .getRegistrationNumberTemplate()
-            .getUseTaxNbr()) {
+        && partner.getMainAddress().getCountry() != null
+        && partner.getMainAddress().getCountry().getRegistrationNumberTemplate() != null
+        && partner.getMainAddress().getCountry().getRegistrationNumberTemplate().getUseTaxNbr()) {
       String taxNbr = "";
-      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
+      String countryCode = partner.getMainAddress().getCountry().getAlpha2Code();
       String regCode = partner.getRegistrationCode();
 
       if (regCode != null) {

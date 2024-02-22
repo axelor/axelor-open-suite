@@ -66,7 +66,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -746,18 +745,50 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
+  public String getNicFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String nic = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        nic = regCode.substring(9, 14);
+      }
+    }
+
+    return nic;
+  }
+
+  @Override
+  public String getSirenFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String siren = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        siren = regCode.substring(0, 9);
+      }
+    }
+
+    return siren;
+  }
+
+  @Override
   public boolean isRegistrationCodeValid(Partner partner) {
     List<PartnerAddress> addresses = partner.getPartnerAddressList();
     String registrationCode = partner.getRegistrationCode();
     if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
-            || Strings.isNullOrEmpty(registrationCode)
-            || CollectionUtils.isEmpty(addresses)
-            || addresses.stream()
+        || Strings.isNullOrEmpty(registrationCode)
+        || CollectionUtils.isEmpty(addresses)
+        || addresses.stream()
             .filter(
-                    address ->
-                            address.getAddress() != null
-                                    && address.getAddress().getCountry() != null
-                                    && "FR".equals(address.getAddress().getCountry().getAlpha2Code()))
+                address ->
+                    address.getAddress() != null
+                        && address.getAddress().getCountry() != null
+                        && "FR".equals(address.getAddress().getCountry().getAlpha2Code()))
             .collect(Collectors.toList())
             .isEmpty()) {
 
@@ -776,7 +807,7 @@ public class PartnerServiceImpl implements PartnerService {
         return true;
       }
       RegistrationNumberTemplate registrationNumberTemplate =
-          partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
+          partner.getMainAddress().getCountry().getRegistrationNumberTemplate();
       if (registrationNumberTemplate.getIsRequiredForCompanies()
           && StringUtils.isBlank(registrationCode)) {
         throw new AxelorException(
@@ -808,10 +839,10 @@ public class PartnerServiceImpl implements PartnerService {
   public Class<? extends RegistrationNumberValidation> getRegistrationNumberValidationClass(
       Partner partner) {
     Address mainAddress = partner.getMainAddress();
-    if (mainAddress == null || mainAddress.getAddressL7Country() == null) {
+    if (mainAddress == null || mainAddress.getCountry() == null) {
       return null;
     }
-    Country businessCountry = partner.getMainAddress().getAddressL7Country();
+    Country businessCountry = partner.getMainAddress().getCountry();
     RegistrationNumberTemplate registrationNumberTemplate =
         businessCountry.getRegistrationNumberTemplate();
 
@@ -836,9 +867,8 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String getRegistrationCodeTitleFromTemplate(Partner partner) {
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      Country businessCountry = partner.getMainAddress().getAddressL7Country();
+    if (partner.getMainAddress() != null && partner.getMainAddress().getCountry() != null) {
+      Country businessCountry = partner.getMainAddress().getCountry();
       RegistrationNumberTemplate registrationNumberTemplate =
           businessCountry.getRegistrationNumberTemplate();
       if (registrationNumberTemplate != null
@@ -863,9 +893,9 @@ public class PartnerServiceImpl implements PartnerService {
     boolean isCustomer = partner.getIsCustomer();
     boolean hideTaxNbr = !isCustomer;
     Address mainAddress = partner.getMainAddress();
-    if (mainAddress != null && mainAddress.getAddressL7Country() != null) {
+    if (mainAddress != null && mainAddress.getCountry() != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
-          mainAddress.getAddressL7Country().getRegistrationNumberTemplate();
+          mainAddress.getCountry().getRegistrationNumberTemplate();
       if (registrationNumberTemplate == null) {
         return null;
       }

@@ -13,10 +13,10 @@ public abstract class RegistrationNumberValidation {
 
   public void setRegistrationCodeValidationValues(Partner partner) {
     Address mainAddress = partner.getMainAddress();
-    if (mainAddress == null || mainAddress.getAddressL7Country() == null) {
+    if (mainAddress == null || mainAddress.getCountry() == null) {
       return;
     }
-    Country businessCountry = mainAddress.getAddressL7Country();
+    Country businessCountry = mainAddress.getCountry();
     RegistrationNumberTemplate registrationNumberTemplate =
         businessCountry.getRegistrationNumberTemplate();
 
@@ -39,7 +39,7 @@ public abstract class RegistrationNumberValidation {
     String regCode = partner.getRegistrationCode();
     String nic = "";
 
-    Country businessCountry = partner.getMainAddress().getAddressL7Country();
+    Country businessCountry = partner.getMainAddress().getCountry();
     RegistrationNumberTemplate registrationNumberTemplate =
         businessCountry.getRegistrationNumberTemplate();
     if (registrationNumberTemplate.getUseNic() && registrationNumberTemplate.getNicLength() != 0) {
@@ -59,7 +59,7 @@ public abstract class RegistrationNumberValidation {
     String regCode = partner.getRegistrationCode();
     String siren = "";
 
-    Country businessCountry = partner.getMainAddress().getAddressL7Country();
+    Country businessCountry = partner.getMainAddress().getCountry();
     RegistrationNumberTemplate registrationNumberTemplate =
         businessCountry.getRegistrationNumberTemplate();
     if (registrationNumberTemplate.getUseSiren()
