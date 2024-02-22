@@ -61,6 +61,7 @@ public class SaleOrderLineController {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+
     try {
       compute(response, saleOrder, saleOrderLine);
     } catch (Exception e) {

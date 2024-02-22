@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -63,6 +64,7 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.helpers.QueryBuilder;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -89,6 +91,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   private TimesheetLineRepository timesheetLineRepository;
   private AppBusinessProjectService appBusinessProjectService;
 
+  protected InvoiceLineRepository invoiceLineRepository;
+
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
       ProjectTaskRepository projectTaskRepo,
@@ -101,7 +105,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      InvoiceLineRepository invoiceLineRepository) {
     super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService, projectRepository);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
@@ -109,6 +114,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
@@ -271,6 +277,32 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       invoiceLineList.addAll(this.createInvoiceLine(invoice, projectTask, priority * 100 + count));
       count++;
     }
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      ProjectTask projectTask =
+          invoiceLine.getProjectTaskSet().stream().findFirst().orElseGet(null);
+      List<ProjectTask> childrenProjectTasks = projectTask.getProjectTaskList();
+      ProjectTask parentProjectTask = projectTask.getParentTask();
+      if (parentProjectTask != null) {
+        InvoiceLine parentInvoiceLine =
+            invoiceLineRepository
+                .all()
+                .filter(":parentProjectTask MEMBER OF self.projectTaskSet")
+                .bind("parentProjectTask", parentProjectTask)
+                .fetchOne();
+        invoiceLine.setParentInvoiceLine(parentInvoiceLine);
+      }
+      if (CollectionUtils.isNotEmpty(childrenProjectTasks)) {
+        List<InvoiceLine> childrenInvoiceLineList =
+            invoiceLineRepository
+                .all()
+                .filter(
+                    "self.projectTaskSet.id IN ("
+                        + StringHelper.getIdListString(childrenProjectTasks)
+                        + ")")
+                .fetch();
+        childrenInvoiceLineList.forEach(invoiceLine::addInvoiceLineListItem);
+      }
+    }
     return invoiceLineList;
   }
 
@@ -305,6 +337,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             invoiceLine.setSaleOrderLine(projectTask.getSaleOrderLine());
             invoiceLine.addProjectTaskSetItem(projectTask);
             projectTask.addInvoiceLineSetItem(invoiceLine);
+            invoiceLine.setInvoiceLineListSize(
+                projectTask.getSaleOrderLine().getSaleOrderLineListSize());
+            invoiceLine.setLineIndex(projectTask.getSaleOrderLine().getLineIndex());
 
             setProgressAndCoefficient(invoiceLine, projectTask);
 

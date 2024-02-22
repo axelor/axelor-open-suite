@@ -44,6 +44,7 @@ import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
@@ -100,6 +101,32 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_3));
+    }
+
+    for (ProjectTask task : tasks) {
+      SaleOrderLine saleOrderLine = task.getSaleOrderLine();
+      List<SaleOrderLine> childrenSOLines = saleOrderLine.getSaleOrderLineList();
+      SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
+      if (parentSaleOrderLine != null) {
+        ProjectTask parentProjectTask =
+            projectTaskRepo
+                .all()
+                .filter("self.saleOrderLine = :parentSaleOrderLine")
+                .bind("parentSaleOrderLine", parentSaleOrderLine)
+                .fetchOne();
+        task.setParentTask(parentProjectTask);
+      }
+      if (CollectionUtils.isNotEmpty(childrenSOLines)) {
+        List<ProjectTask> childrenProjectTaskList =
+            projectTaskRepo
+                .all()
+                .filter(
+                    "self.saleOrderLine.id IN ("
+                        + StringHelper.getIdListString(childrenSOLines)
+                        + ")")
+                .fetch();
+        childrenProjectTaskList.forEach(task::addProjectTaskListItem);
+      }
     }
 
     return ActionView.define(String.format("Task%s generated", (tasks.size() > 1 ? "s" : "")))
