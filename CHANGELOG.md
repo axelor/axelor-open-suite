@@ -1,3 +1,22 @@
+## [6.3.39] (2024-02-22)
+
+#### Fixed
+
+* Stock location: fixed wrong QR Code on copied stock location.
+* Invoice: fixed an issue when returning to the refund list after creating a refund from an invoice.
+* Cost calculation: fixed JNPE error on select of product.
+* Employee: fixed error happening while deleting employee.
+* Invoice: fixed an error on invoice ventilation when the invoice had an advance payment in previous period.
+* Sale order: removed the possibility to mass update fields on sale order, as it caused inconsistencies.
+* Invoice: fixed display of delivery address on advance payment invoices generated from a sale order.
+* Computing amounts in employee bonus management now alert user if employee does not have a birth date or seniority date.
+* Project: fixed opening gantt view per user.
+* Accounting report: set readonly export button and add report type check to provide critical error.
+* Operation order: finishing a manuf order from the operations correctly computes the cost sheet quantities.
+* Contract: reset sequence when duplicating contracts.
+* Inventory line: forbid negative values in inventories.
+* Accounting export: fixed FEC export not taking journal into account.
+
 ## [6.3.38] (2024-02-01)
 
 #### Fixed
@@ -1028,6 +1047,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.39]: https://github.com/axelor/axelor-open-suite/compare/v6.3.38...v6.3.39
 [6.3.38]: https://github.com/axelor/axelor-open-suite/compare/v6.3.37...v6.3.38
 [6.3.37]: https://github.com/axelor/axelor-open-suite/compare/v6.3.36...v6.3.37
 [6.3.36]: https://github.com/axelor/axelor-open-suite/compare/v6.3.35...v6.3.36
