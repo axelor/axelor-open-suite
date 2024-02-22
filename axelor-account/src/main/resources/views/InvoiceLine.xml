@@ -784,10 +784,6 @@
     <domain>:id IN self.invoiceLineSet.id</domain>
   </action-view>
 
-  <action-method name="action-sale-order-method-hide-ati">
-    <call class="com.axelor.apps.account.web.InvoiceLineController" method="hideAti"/>
-  </action-method>
-
   <action-group name="action-invoice-line-group-recalculate">
     <action name="save"/>
     <action name="action-invoice-line-method-update-related-lines"/>
