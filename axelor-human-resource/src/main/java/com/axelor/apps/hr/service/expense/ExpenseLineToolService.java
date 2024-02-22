@@ -19,37 +19,24 @@
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import java.util.List;
+import com.axelor.meta.db.MetaFile;
+import java.math.BigDecimal;
 
-public interface ExpenseToolService {
+public interface ExpenseLineToolService {
+  void computeAmount(Employee employee, ExpenseLine expenseLine) throws AxelorException;
 
-  /**
-   * Get the expense from employee, if no expense is found create one.
-   *
-   * @param employee
-   * @return
-   */
-  public Expense getOrCreateExpense(Employee employee);
+  void computeDistance(BigDecimal distance, ExpenseLine expenseLine) throws AxelorException;
 
-  public void setDraftSequence(Expense expense) throws AxelorException;
-
-  public Expense updateMoveDateAndPeriod(Expense expense);
-
-  void addExpenseLinesToExpense(Expense expense, List<ExpenseLine> expenseLineList)
+  void setGeneralExpenseLineInfo(
+      Product expenseProduct,
+      BigDecimal totalAmount,
+      BigDecimal totalTax,
+      MetaFile justificationMetaFile,
+      ExpenseLine expenseLine)
       throws AxelorException;
 
-  void addExpenseLineToExpense(Expense expense, ExpenseLine expenseLine) throws AxelorException;
-
-  void addExpenseLinesToExpenseAndCompute(Expense expense, List<ExpenseLine> expenseLineList)
-      throws AxelorException;
-
-  void addExpenseLineToExpenseAndCompute(Expense expense, ExpenseLine expenseLine)
-      throws AxelorException;
-
-  boolean hasSeveralCurrencies(List<ExpenseLine> expenseLineList);
-
-  boolean hasSeveralEmployees(List<ExpenseLine> expenseLineList);
+  boolean isKilometricExpenseLine(ExpenseLine expenseLine);
 }

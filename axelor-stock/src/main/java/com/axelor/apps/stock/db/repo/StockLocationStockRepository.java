@@ -100,6 +100,8 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
     copy.clearDetailsStockLocationLineList();
     copy.clearStockLocationLineList();
+    copy.setBarCode(null);
+    copy.setSerialNumber(null);
     return copy;
   }
 }
