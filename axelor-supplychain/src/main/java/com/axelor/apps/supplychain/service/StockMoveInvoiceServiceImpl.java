@@ -175,6 +175,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Invoice invoice = invoiceGenerator.generate();
 
     // When not null, we are in a partial invoicing
+    if (qtyToInvoiceMap != null) {
+      checkSplitSalePartiallyInvoicedStockMoveLines(stockMove, stockMove.getStockMoveLineList());
+    }
 
     invoiceGenerator.populate(
         invoice,
