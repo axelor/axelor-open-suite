@@ -27,7 +27,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ProductionBatch;
-import com.axelor.apps.production.db.Sop;
 import com.axelor.apps.production.db.SopLine;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.SopLineRepository;
@@ -37,6 +36,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -66,35 +66,27 @@ public class BatchFillSopRealValues extends AbstractBatch {
   @Override
   protected void process() {
     ProductionBatch productionBatch = batch.getProductionBatch();
-    computeSopRealValues(productionBatch);
-  }
 
-  @Transactional
-  protected void computeSopRealValues(ProductionBatch productionBatch) {
-    Company company = productionBatch.getCompany();
-    int i = 0;
-    for (Sop sop : productionBatch.getSopSet()) {
-      sop = JPA.find(Sop.class, sop.getId());
-      computeValuesPerSOP(sop, company);
-      if (++i % 10 == 0) {
-        JPA.clear();
-      }
-    }
-  }
-
-  protected void computeValuesPerSOP(Sop sop, Company company) {
-    ProductCategory productCategory = sop.getProductCategory();
     int offset = 0;
-    Query<SopLine> query = sopLineRepo.all().filter("self.sop = :sop").bind("sop", sop).order("id");
+    Query<SopLine> query =
+        sopLineRepo
+            .all()
+            .filter(
+                String.format(
+                    "self.sop.id IN (%s)",
+                    StringHelper.getIdListString(productionBatch.getSopSet())))
+            .order("id");
 
     List<SopLine> sopLineList;
 
     while (!(sopLineList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
+      productionBatch = batch.getProductionBatch();
+      Company company = productionBatch.getCompany();
       for (SopLine sopLine : sopLineList) {
         ++offset;
         try {
-          updateSopLine(company, productCategory, sopLine);
+          updateSopLine(company, sopLine.getSop().getProductCategory(), sopLine);
           incrementDone();
         } catch (Exception e) {
           incrementAnomaly();
@@ -105,6 +97,7 @@ public class BatchFillSopRealValues extends AbstractBatch {
     }
   }
 
+  @Transactional
   protected void updateSopLine(Company company, ProductCategory productCategory, SopLine sopLine) {
     computeRealSalesAndSalesGap(company, productCategory, sopLine);
     computeRealProduction(company, productCategory, sopLine);
