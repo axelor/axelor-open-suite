@@ -1,3 +1,28 @@
+## [7.0.21] (2024-02-22)
+
+#### Fixed
+
+* Stock location: fixed wrong QR Code on copied stock location.
+* Move: fixed currency rate errors in move line view.
+* Invoice: fixed an issue when returning to the refund list after creating a refund from an invoice.
+* Bank order: fixed multi currency management.
+* Cost calculation: fixed JNPE error on select of product.
+* Product: replaced stock history panel which is showing empty records by a panel to stock location line history.
+* Employee: fixed error happening while deleting employee.
+* Invoice: fixed an error on invoice ventilation when the invoice had an advance payment in previous period.
+* Sale order: removed the possibility to mass update fields on sale order, as it caused inconsistencies.
+* Fixed asset: fixed purchase account move domain in fixed asset form view.
+* Invoice: fixed display of delivery address on advance payment invoices generated from a sale order.
+* Computing amounts in employee bonus management now alert user if employee does not have a birth date or seniority date.
+* Project: fixed opening gantt view per user.
+* Accounting report: set readonly export button and add report type check to provide critical error.
+* Operation order: finishing a manuf order from the operations correctly computes the cost sheet quantities.
+* Contract: reset sequence when duplicating contracts.
+* Reconciliation: fixed invoice term imputation when PFP not validated.
+* Manufacturing order: finishing a manufacturing order now correctly updates the cost price of a product.
+* Inventory line: forbid negative values in inventories.
+* Accounting export: fixed FEC export not taking journal into account.
+
 ## [7.0.20] (2024-02-01)
 
 #### Fixed
@@ -858,6 +883,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.21]: https://github.com/axelor/axelor-open-suite/compare/v7.0.20...v7.0.21
 [7.0.20]: https://github.com/axelor/axelor-open-suite/compare/v7.0.19...v7.0.20
 [7.0.19]: https://github.com/axelor/axelor-open-suite/compare/v7.0.18...v7.0.19
 [7.0.18]: https://github.com/axelor/axelor-open-suite/compare/v7.0.17...v7.0.18
