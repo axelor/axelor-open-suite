@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businesssupport.service;
 
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.FrequencyService;
@@ -52,7 +53,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -64,7 +66,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         partnerPriceListService,
         productCompanyService,
         timesheetLineRepository,
-        appBusinessProjectService);
+        appBusinessProjectService,
+        invoiceLineRepository);
   }
 
   @Override
