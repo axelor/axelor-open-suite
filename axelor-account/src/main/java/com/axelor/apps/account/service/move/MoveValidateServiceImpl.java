@@ -59,6 +59,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -905,6 +906,23 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.MOVE_TAX_NOT_EQUALS));
+    }
+  }
+
+  @Override
+  public void checkJournalPermissions(Move move) throws AxelorException {
+    if (move == null || move.getCompany() == null || move.getJournal() == null) {
+      return;
+    }
+
+    if (!UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
+        AuthUtils.getUser(), move.getJournal().getAuthorizedRoleSet())) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_USER_NOT_AUTHORIZED_ON_JOURNAL_ROLE_SET),
+          move.getReference() != null ? move.getReference() : "",
+          move.getJournal().getCode());
     }
   }
 

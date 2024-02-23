@@ -1692,4 +1692,7 @@ public final class AccountExceptionMessage {
       "Fiscal year and periods have been generated successfully." /*)*/;
   public static final String ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS = /*$$(*/
       "The accounting configurations have been imported successfully for the company %s." /*)*/;
+
+  public static final String MOVE_USER_NOT_AUTHORIZED_ON_JOURNAL_ROLE_SET = /*$$(*/
+      "You are not authorized to save the move %s (check the %s journal's role config)." /*)*/;
 }
