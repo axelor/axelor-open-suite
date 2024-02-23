@@ -519,9 +519,10 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
 
       BigDecimal taxProrata = BigDecimal.ONE;
       if (taxTotal.compareTo(BigDecimal.ZERO) != 0) {
-        invoiceLineTax
-            .getTaxTotal()
-            .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        taxProrata =
+            invoiceLineTax
+                .getTaxTotal()
+                .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       }
 
       taxMap.put(invoiceLineTax.getTaxLine().getTax(), Pair.of(amountProrata, taxProrata));
