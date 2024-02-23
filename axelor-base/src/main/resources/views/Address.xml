@@ -191,10 +191,7 @@
   </action-method>
 
   <action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
-    <field name="country" expr="eval: __user__?.activeCompany?.address?.country"
-      if="__user__?.activeCompany?.address"/>
-    <field name="country" expr="action:default-address-country-record"
-      if="!__user__?.activeCompany?.address"/>
+    <field name="country" expr="eval: __user__?.localization?.country"/>
   </action-record>
 
   <action-record name="action-address-change-city"
