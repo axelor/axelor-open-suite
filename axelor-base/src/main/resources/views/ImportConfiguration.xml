@@ -24,7 +24,7 @@
         canNew="true" form-view="meta-files-form" grid-view="meta-files-grid" x-accept=".xml"/>
       <field name="dataMetaFile" widget="binary-link"
         onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-files-form"
-        grid-view="meta-files-grid" x-accept=".csv, .xml"/>
+        grid-view="meta-files-grid" x-accept=".csv, .xml, .zip"/>
       <field name="startDateTime" readonly="true"/>
       <field name="endDateTime" readonly="true"/>
       <button name="importBtn" title="importconfig.btn" colSpan="4"
