@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -86,7 +85,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
       if (ObjectUtils.notEmpty(taxLineSet)) {
         for (TaxLine taxLine : taxLineSet) {
           PaymentMoveLineDistribution paymentMvlD =
-              createPaymentMoveLineDistribution(
+              new PaymentMoveLineDistribution(
                   move.getPartner(), reconcile, moveLine, move, taxLine);
 
           paymentMvlD.setOperationDate(
@@ -167,16 +166,5 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
     paymentMvlD.setExTaxProratedAmount(exTaxProratedAmount);
     paymentMvlD.setTaxProratedAmount(taxProratedAmount);
     paymentMvlD.setInTaxProratedAmount(exTaxProratedAmount.add(taxProratedAmount));
-  }
-
-  protected PaymentMoveLineDistribution createPaymentMoveLineDistribution(
-      Partner partner, Reconcile reconcile, MoveLine moveLine, Move move, TaxLine taxLine) {
-    PaymentMoveLineDistribution paymentMoveLineDistribution = new PaymentMoveLineDistribution();
-    paymentMoveLineDistribution.setPartner(partner);
-    paymentMoveLineDistribution.setReconcile(reconcile);
-    paymentMoveLineDistribution.setMove(move);
-    paymentMoveLineDistribution.setMoveLine(moveLine);
-    paymentMoveLineDistribution.setTaxLine(taxLine);
-    return paymentMoveLineDistribution;
   }
 }
