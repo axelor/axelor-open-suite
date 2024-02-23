@@ -96,7 +96,7 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
 
     resetInvoiceTermAmounts(invoice, oldInvoiceTermList);
     invoiceTermReplaceService.replaceInvoiceTerms(
-        invoice, oldMove, billOfExchangeMove.getMoveLineList(), invoice.getPartnerAccount());
+        invoice, oldInvoiceTermList, billOfExchangeInvoiceTermList);
   }
 
   protected void resetInvoiceTermAmounts(Invoice invoice, List<InvoiceTerm> oldInvoiceTermList) {
