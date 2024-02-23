@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.CurrencyScaleServiceContract;
 import com.axelor.i18n.I18n;
@@ -64,19 +66,33 @@ public class ContractLineManagementRepository extends ContractLineRepository {
         json.put("statusSelect", statusSelect);
       }
     }
+    try {
+      if (context.containsKey("_field")
+          && context.get("_field").equals("contractLineList")
+          && context.get("_parent") != null) {
+        Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
+        Class model = Class.forName((String) _parent.get("_model"));
 
-    if (context.containsKey("_field")
-        && context.get("_field").equals("contractLineList")
-        && context.get("_parent") != null) {
-      Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
-
-      ContractVersion contractVersion =
-          Beans.get(ContractVersionRepository.class)
-              .find(Long.parseLong(_parent.get("id").toString()));
-
-      json.put(
-          "$currencyNumberOfDecimals",
-          Beans.get(CurrencyScaleServiceContract.class).getScale(contractVersion.getContract()));
+        if (ContractVersion.class.equals(model)) {
+          ContractVersion contractVersion =
+              Beans.get(ContractVersionRepository.class)
+                  .find(Long.parseLong(_parent.get("id").toString()));
+          json.put(
+              "$currencyNumberOfDecimals",
+              Beans.get(CurrencyScaleServiceContract.class)
+                  .getScale(contractVersion.getContract().getCurrency()));
+        } else if (ContractTemplate.class.equals(model)) {
+          ContractTemplate contractTemplate =
+              Beans.get(ContractTemplateRepository.class)
+                  .find(Long.parseLong(_parent.get("id").toString()));
+          json.put(
+              "$currencyNumberOfDecimals",
+              Beans.get(CurrencyScaleServiceContract.class)
+                  .getScale(contractTemplate.getCurrency()));
+        }
+      }
+    } catch (ClassNotFoundException e) {
+      TraceBackService.trace(e);
     }
 
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();

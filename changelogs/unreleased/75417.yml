@@ -1,6 +1,7 @@
 ---
-title: Fixed error when opening an existing contract template
+title: Fixed error when opening an existing contract template or saving a new one
 module: axelor-contract
 developer: |
   Fixed invalid type error com.axelor.apps.contract.db.ContractVersion, should be com.axelor.apps.contract.db.ContractTemplate
   due to ContractTemplate onLoad method 'action-contract-method-additional-contract-line-list-on-change'
+  Fixed com.axelor.rpc.ResponseInterceptor : Error: null when saving a ContractTemplate
