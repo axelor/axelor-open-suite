@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -30,6 +33,7 @@ import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -198,6 +202,26 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
       contractVersion.setYearlyExTaxTotalRevalued(
           contractLineList.stream()
               .map(ContractLine::getYearlyPriceRevalued)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+
+      List<InvoiceLine> invoiceLineList =
+          Beans.get(InvoiceLineRepository.class)
+              .all()
+              .filter("self.contractLine.contractVersion = :contractVersion")
+              .bind("contractVersion", contractVersion)
+              .fetch();
+      contractVersion.setTotalInvoicedAmount(
+          invoiceLineList.stream()
+              .filter(
+                  invoiceLine -> {
+                    if (invoiceLine != null && invoiceLine.getInvoice() != null) {
+                      return invoiceLine.getInvoice().getStatusSelect()
+                          == InvoiceRepository.STATUS_VENTILATED;
+                    }
+                    return false;
+                  })
+              .map(InvoiceLine::getInTaxTotal)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO));
     }

@@ -15,7 +15,8 @@
   <form name="contract-version-next-form" title="Version"
     model="com.axelor.apps.contract.db.ContractVersion" width="large"
     onLoad="action-contract-version-group-form-onload"
-    onSave="save,action-contract-version-method-save" onNew="action-contract-version-group-on-new">
+    onSave="save,action-contract-version-method-save" onNew="action-contract-version-group-on-new"
+    canNew="false">
     <panel name="mainPanel">
       <panel name="generalInfoPanel" colSpan="9">
         <panel name="hiddenFieldsPanel" hidden="true" colSpan="12">
