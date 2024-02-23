@@ -45,6 +45,23 @@ public interface MachineService {
       throws AxelorException;
 
   /**
+   * Method that return the closest available dateTime for a operation starting from startDateT and
+   * end at endDateT. It take into account the weekly planning, the days event planning.
+   *
+   * @param machine
+   * @param duration
+   * @param operationOrder
+   * @return the closest available date
+   * @throws AxelorException
+   */
+  MachineTimeSlot getClosestTimeSlotFrom(
+      Machine machine,
+      LocalDateTime startDateT,
+      LocalDateTime endDateT,
+      OperationOrder operationOrder)
+      throws AxelorException;
+
+  /**
    * Method that return the furthest available dateTime for a operation starting from startDateT and
    * end at endDateT. It takes into account the weekly planning, the days event planning and the
    * other operations order of the machine.
@@ -57,6 +74,24 @@ public interface MachineService {
    * @throws AxelorException
    */
   MachineTimeSlot getFurthestAvailableTimeSlotFrom(
+      Machine machine,
+      LocalDateTime startDateT,
+      LocalDateTime endDateT,
+      OperationOrder operationOrder)
+      throws AxelorException;
+
+  /**
+   * Method that return the furthest available dateTime for a operation starting from startDateT and
+   * end at endDateT. It takes into account the weekly planning, the days event planning
+   *
+   * @param machine
+   * @param startDateT
+   * @param endDateT
+   * @param operationOrder
+   * @return the furthest available date
+   * @throws AxelorException
+   */
+  MachineTimeSlot getFurthestTimeSlotFrom(
       Machine machine,
       LocalDateTime startDateT,
       LocalDateTime endDateT,

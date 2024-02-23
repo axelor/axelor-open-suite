@@ -1,3 +1,0 @@
----
-title: "BudgetModule : remove all dependencies with other modules when the app budget is disabled"
-type: fix

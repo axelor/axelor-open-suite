@@ -329,7 +329,7 @@ public final class ProductionExceptionMessage {
           /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders." /*)*/;
 
   public static final String PLAN_IS_BEFORE_TODAY_DATE =
-      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please adjust it." /*)*/;
+      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please adjust it. (Used date time %s)" /*)*/;
 
   public static final String INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION =
       /*$$(*/ "Invalid scheduling and capacity configuration." /*)*/;
@@ -352,4 +352,10 @@ public final class ProductionExceptionMessage {
 
   public static final String BOM_IMPORT_NO_MAIN_BILL_OF_MATERIALS_GENERATED = /*$$(*/
       "Could not find main bill of materials generated (BoM level 0)." /*)*/;
+
+  public static final String TOO_MANY_CALL_GETTING_START_DATE = /*$$(*/
+      "Max loop call reached when trying to compute start date." /*)*/;
+
+  public static final String TOO_MANY_CALL_GETTING_END_DATE = /*$$(*/
+      "Max loop call reached when trying to compute end date." /*)*/;
 }

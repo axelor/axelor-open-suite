@@ -19,8 +19,8 @@
 package com.axelor.apps.businesssupport.service;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
