@@ -82,6 +82,11 @@
     <decimal name="yearlyExTaxTotalRevalued" title="Yearly ex tax total revalued "
       readonly="true" precision="20" scale="3"/>
 
+    <decimal name="totalInvoicedAmount" title="Total invoiced amount" readonly="true"
+      copy="false" precision="20" scale="3"/>
+    <decimal name="totalPaidAmount" title="Total paid amount" readonly="true" precision="20"
+      scale="3"/>
+
     <extra-code><![CDATA[
             public static final int DRAFT_VERSION = 1;
             public static final int WAITING_VERSION = 2;
