@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplierportal.translation;
+package com.axelor.apps.mobilesettings.translation;
 
 public interface ITranslation {
 
-  public static final String SUPPLIER_PORTAL_APP_NAME = /*$$(*/ "value:Supplier Portal"; /*)*/
+  public static final String AXELOR_MOBILE_SETTINGS_APP_NAME = /*$$(*/
+      "value:Axelor Mobile Settings"; /*)*/
 }
