@@ -1,5 +1,0 @@
----
-title: "App builder: update axelor-studio dependency to 2.0.1"
-type: fix
-description: |
-  Please see the corresponding [CHANGELOG](https://github.com/axelor/axelor-studio/blob/2.0.1/CHANGELOG.md).

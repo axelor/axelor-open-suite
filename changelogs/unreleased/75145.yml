@@ -1,3 +1,0 @@
----
-title: "OperationOrder: Fixed duplication of operation order that could happen on some cases"
-type: fix
