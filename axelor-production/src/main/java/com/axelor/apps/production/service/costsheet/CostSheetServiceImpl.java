@@ -984,7 +984,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       BigDecimal realDuration)
       throws AxelorException {
-    BigDecimal costPerHour = workCenter.getHrCostAmount();
+    BigDecimal costPerHour = workCenter.getCostAmount();
     BigDecimal durationHours =
         realDuration.divide(
             new BigDecimal(3600),
