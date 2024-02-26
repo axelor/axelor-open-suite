@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
@@ -439,6 +440,8 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
           .getTechnicalTypeSelect()
           .equals(AccountTypeRepository.TYPE_TAX)) {
         vatSystemMap.put(moveLine.getTaxLine().getTax(), moveLine.getVatSystemSelect());
+      } else if (moveLine.getTaxLine() != null) {
+        vatSystemMap.put(moveLine.getTaxLine().getTax(), MoveLineRepository.VAT_SYSTEM_DEFAULT);
       }
     }
 
@@ -481,6 +484,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
           taxTotal = taxTotal.add(taxAmount);
         }
       }
+      if (baseTotal.compareTo(BigDecimal.ZERO) == 0 || taxTotal.compareTo(BigDecimal.ZERO) == 0) {
+        return taxMap;
+      }
 
       for (Tax tax : taxMap.keySet()) {
         Pair<BigDecimal, BigDecimal> pair = taxMap.get(tax);
@@ -511,10 +517,13 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
                   AppBaseService.COMPUTATION_SCALING,
                   RoundingMode.HALF_UP);
 
-      BigDecimal taxProrata =
-          invoiceLineTax
-              .getTaxTotal()
-              .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+      BigDecimal taxProrata = BigDecimal.ONE;
+      if (taxTotal.compareTo(BigDecimal.ZERO) != 0) {
+        taxProrata =
+            invoiceLineTax
+                .getTaxTotal()
+                .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+      }
 
       taxMap.put(invoiceLineTax.getTaxLine().getTax(), Pair.of(amountProrata, taxProrata));
     }
