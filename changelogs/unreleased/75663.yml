@@ -1,0 +1,3 @@
+---
+title: "Accounting batch : Fix move generation on account closing/opening batch"
+module: axelor-account
