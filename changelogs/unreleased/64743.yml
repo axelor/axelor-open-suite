@@ -1,3 +1,3 @@
 ---
 title: "App/Module config : Add missing field tracking on all modules"
-type: fix
+module: axelor-base
