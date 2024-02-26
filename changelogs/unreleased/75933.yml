@@ -1,0 +1,3 @@
+title: "DurationHelper is properly used in xml actions"
+type: fix
+module: axelor-crm
