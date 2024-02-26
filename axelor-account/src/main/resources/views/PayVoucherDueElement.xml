@@ -13,6 +13,7 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="dueAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="invoiceTerm" hidden="true"/>
   </grid>
 
   <form name="pay-voucher-due-element-form" title="Invoices to pay"
