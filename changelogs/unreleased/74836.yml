@@ -1,0 +1,6 @@
+---
+title: "Timesheet line: improve timesheet line creation process"
+module: axelor-human-resource
+developer: |
+  Gather every timesheet line creation methods in TimesheetLineCreationService. Several services added this service into its constructor.
+  Create TimesheetLineCreationProjectServiceImpl to override a creation method.
