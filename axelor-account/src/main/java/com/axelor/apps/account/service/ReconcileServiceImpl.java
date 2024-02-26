@@ -491,7 +491,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         && !Objects.equals(creditCurrency, companyCurrency)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.RECONCILE_WRONG_CURRENCY);
+          I18n.get(AccountExceptionMessage.RECONCILE_WRONG_CURRENCY));
     }
   }
 
