@@ -1,2 +1,3 @@
+---
 title: "SaleOrder/PurchaseOrder : Manage analytic using the budget financial account"
-type: fix
+module: axelor-budget
