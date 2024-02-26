@@ -25,6 +25,8 @@
     </string>
     <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
       title="Sale order"/>
+    <many-to-one name="saleOrderDisplay" ref="com.axelor.apps.sale.db.SaleOrder"
+      title="Sale order"/>
     <boolean name="hasTree" title="Has tree"/>
     <integer name="sequence" title="Seq."/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>

@@ -48,6 +48,23 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
+  public void populateSOLines(SaleOrder saleOrder) {
+
+    if (!appSaleService.getAppSale().getIsSubLinesEnabled()) {
+      return;
+    }
+
+    saleOrder = saleOrderRepository.find(saleOrder.getId());
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
+      if (!saleOrderLine.getIsNotCountable()) {
+        saleOrder.addSaleOrderLineListItem(saleOrderLine);
+      }
+    }
+    saleOrderRepository.save(saleOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void updateRelatedSOLinesOnPriceChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     saleOrderLine = calculateChildrenTotalsAndPrices(saleOrderLine, saleOrder);
@@ -92,7 +109,7 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
       return;
     }
 
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineDisplayList();
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
       return;
     }
@@ -137,9 +154,13 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
 
   protected void setDefaultSaleOrderLineProperties(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    if (saleOrderLine.getSaleOrder() == null) {
+      saleOrderLine.setSaleOrderDisplay(saleOrder);
+    }
 
     SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
     Integer countType = saleOrder.getCompany().getSaleConfig().getCountTypeSelect();
+    List<SaleOrderLine> saleOrderLineList = saleOrderLine.getSaleOrderLineList();
     if (parentSaleOrderLine == null && countType == SaleConfigRepository.COUNT_ONLY_PARENTS) {
       saleOrderLine.setIsNotCountable(false);
     }
@@ -149,8 +170,16 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     if (parentSaleOrderLine == null && countType == SaleConfigRepository.COUNT_ONLY_CHILDREN) {
       saleOrderLine.setIsNotCountable(true);
     }
-    if (parentSaleOrderLine != null && countType == SaleConfigRepository.COUNT_ONLY_CHILDREN) {
+    if (parentSaleOrderLine != null
+        && CollectionUtils.isEmpty(saleOrderLineList)
+        && countType == SaleConfigRepository.COUNT_ONLY_CHILDREN) {
       saleOrderLine.setIsNotCountable(false);
+    }
+
+    if (parentSaleOrderLine != null
+        && !CollectionUtils.isEmpty(saleOrderLineList)
+        && countType == SaleConfigRepository.COUNT_ONLY_CHILDREN) {
+      saleOrderLine.setIsNotCountable(true);
     }
 
     if (parentSaleOrderLine == null
@@ -159,9 +188,6 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
       saleOrderLine.setIsNotCountable(false);
     }
 
-    if (saleOrderLine.getSaleOrder() == null) {
-      saleOrderLine.setSaleOrder(saleOrder);
-    }
     if (saleOrderLine.getIsProcessedLine()) {
       saleOrderLine.setIsProcessedLine(false);
     }
@@ -219,7 +245,11 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
       Context parentContext = context.getParent();
       if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
         SaleOrder parent = parentContext.asType(SaleOrder.class);
-        saleOrderLine.setLineIndex(calculatePrentSolLineIndex(parent));
+        if (parent.getSaleOrderLineDisplayList() != null) {
+          saleOrderLine.setLineIndex(calculatePrentSolLineIndex(parent));
+        } else {
+          saleOrderLine.setLineIndex("1");
+        }
       }
 
       if (context.getParent() != null
@@ -233,7 +263,7 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
   }
 
   protected String calculatePrentSolLineIndex(SaleOrder saleOrder) {
-    return saleOrder.getSaleOrderLineList().stream()
+    return saleOrder.getSaleOrderLineDisplayList().stream()
         .filter(slo -> slo.getLineIndex() != null)
         .map(slo -> slo.getLineIndex().split("\\.")[0])
         .mapToInt(Integer::parseInt)

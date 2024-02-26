@@ -746,4 +746,10 @@ public class SaleOrderController {
     Beans.get(RelatedSaleOrderLineService.class).updateRelatedOrderLines(saleOrder);
     response.setReload(true);
   }
+
+  public void populateSOLines(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(RelatedSaleOrderLineService.class).populateSOLines(saleOrder);
+    response.setReload(true);
+  }
 }
