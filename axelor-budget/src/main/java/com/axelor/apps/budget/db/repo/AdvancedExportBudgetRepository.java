@@ -20,6 +20,8 @@ package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.inject.Beans;
 
 public class AdvancedExportBudgetRepository extends AdvancedExportRepository {
 
@@ -30,11 +32,13 @@ public class AdvancedExportBudgetRepository extends AdvancedExportRepository {
 
   @Override
   public void remove(AdvancedExport entity) {
-
-    String importId = entity.getImportId();
-    if (importId != null && (importId.equals(EXPORT_ID_1) || importId.equals(EXPORT_ID_2))) {
-      return;
+    if (Beans.get(AppBudgetService.class).isApp("budget")) {
+      String importId = entity.getImportId();
+      if (importId != null && (importId.equals(EXPORT_ID_1) || importId.equals(EXPORT_ID_2))) {
+        return;
+      }
     }
+
     super.remove(entity);
   }
 }

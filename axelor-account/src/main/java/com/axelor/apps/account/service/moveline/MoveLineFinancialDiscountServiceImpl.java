@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
@@ -10,6 +28,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -421,6 +440,8 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
           .getTechnicalTypeSelect()
           .equals(AccountTypeRepository.TYPE_TAX)) {
         vatSystemMap.put(moveLine.getTaxLine().getTax(), moveLine.getVatSystemSelect());
+      } else if (moveLine.getTaxLine() != null) {
+        vatSystemMap.put(moveLine.getTaxLine().getTax(), MoveLineRepository.VAT_SYSTEM_DEFAULT);
       }
     }
 
@@ -448,7 +469,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               moveLine.getMove().getMoveLineList().stream()
                   .filter(
                       it ->
-                          it.getTaxLine().equals(moveLineIt.getTaxLine()) && !it.equals(moveLineIt))
+                          it.getTaxLine() != null
+                              && it.getTaxLine().equals(moveLineIt.getTaxLine())
+                              && !it.equals(moveLineIt))
                   .map(MoveLine::getCurrencyAmount)
                   .map(BigDecimal::abs)
                   .findFirst()
@@ -460,6 +483,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
           baseTotal = baseTotal.add(baseAmount);
           taxTotal = taxTotal.add(taxAmount);
         }
+      }
+      if (baseTotal.compareTo(BigDecimal.ZERO) == 0 || taxTotal.compareTo(BigDecimal.ZERO) == 0) {
+        return taxMap;
       }
 
       for (Tax tax : taxMap.keySet()) {
@@ -491,10 +517,13 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
                   AppBaseService.COMPUTATION_SCALING,
                   RoundingMode.HALF_UP);
 
-      BigDecimal taxProrata =
-          invoiceLineTax
-              .getTaxTotal()
-              .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+      BigDecimal taxProrata = BigDecimal.ONE;
+      if (taxTotal.compareTo(BigDecimal.ZERO) != 0) {
+        taxProrata =
+            invoiceLineTax
+                .getTaxTotal()
+                .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+      }
 
       taxMap.put(invoiceLineTax.getTaxLine().getTax(), Pair.of(amountProrata, taxProrata));
     }
