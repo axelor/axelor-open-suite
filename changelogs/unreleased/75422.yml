@@ -4,3 +4,4 @@ module: axelor-contract
 developer: |
   Fixed if condition syntax on contract app isAdditionalBenefitManagement field
   causing a script error in logs
+  Fixed in contract-version-next-form, contract-template-form and contract-template-filters
