@@ -1,3 +1,6 @@
 ---
-title: "Contract : fix isAdditionalBenefitManagement field script error"
-type: fix
+title: Fixed minor error in log
+module: axelor-contract
+developer: |
+  Fixed if condition syntax on contract app isAdditionalBenefitManagement field
+  causing a script error in logs
