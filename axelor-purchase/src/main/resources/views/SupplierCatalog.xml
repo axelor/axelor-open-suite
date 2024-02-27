@@ -13,6 +13,7 @@
     <field name="minQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="maxQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="deliveryTime"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
@@ -28,6 +29,7 @@
     <field name="minQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="maxQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="deliveryTime"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
