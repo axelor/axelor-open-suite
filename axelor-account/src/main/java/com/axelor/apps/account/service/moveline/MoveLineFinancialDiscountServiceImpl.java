@@ -510,6 +510,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
           taxTotal = taxTotal.add(taxAmount);
         }
       }
+      if (baseTotal.compareTo(BigDecimal.ZERO) == 0 || taxTotal.compareTo(BigDecimal.ZERO) == 0) {
+        return taxMap;
+      }
 
       for (String taxCode : taxMap.keySet()) {
         Pair<BigDecimal, BigDecimal> pair = taxMap.get(taxCode);
@@ -551,10 +554,13 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
                   AppBaseService.COMPUTATION_SCALING,
                   RoundingMode.HALF_UP);
 
-      BigDecimal taxProrata =
-          invoiceLineTax
-              .getTaxTotal()
-              .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+      BigDecimal taxProrata = BigDecimal.ONE;
+      if (taxTotal.compareTo(BigDecimal.ZERO) != 0) {
+        taxProrata =
+            invoiceLineTax
+                .getTaxTotal()
+                .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+      }
 
       taxMap.put(
           invoiceLineTax.getTaxLine().getTax().getCode(), Pair.of(amountProrata, taxProrata));
