@@ -22,13 +22,20 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.supplychain.db.ProductReservation;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
+import com.axelor.apps.supplychain.service.ProductReservationService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
+
+  @Inject ProductReservationService productReservationService;
+  @Inject SaleOrderLineRepository saleOrderLineRepo;
 
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -44,7 +51,6 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     copy.setAmountInvoiced(null);
     copy.setInvoicingState(INVOICING_STATE_NOT_INVOICED);
     copy.setStockMoveList(null);
-
     if (copy.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
         saleOrderLine.setDeliveryState(null);
@@ -54,6 +60,7 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
         saleOrderLine.setInvoiced(null);
         saleOrderLine.setIsInvoiceControlled(null);
         saleOrderLine.setReservedQty(BigDecimal.ZERO);
+        saleOrderLine.clearProductReservationList();
       }
     }
 
@@ -62,9 +69,17 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
 
   @Override
   public void remove(SaleOrder order) {
-
     Partner partner = order.getClientPartner();
-
+    if (order.getSaleOrderLineList() != null) {
+      for (SaleOrderLine orderLine : order.getSaleOrderLineList()) {
+        if (orderLine.getProductReservationList() != null) {
+          for (ProductReservation productReservation : orderLine.getProductReservationList()) {
+            productReservationService.unlink(productReservation);
+          }
+          saleOrderLineRepo.save(orderLine);
+        }
+      }
+    }
     super.remove(order);
 
     try {

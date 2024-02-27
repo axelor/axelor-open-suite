@@ -9,4 +9,6 @@ public interface ProductReservationService {
   void cancelReservation(ProductReservation productReservation);
 
   void realiseReservation(ProductReservation productReservation);
+
+  void unlink(ProductReservation productReservation);
 }

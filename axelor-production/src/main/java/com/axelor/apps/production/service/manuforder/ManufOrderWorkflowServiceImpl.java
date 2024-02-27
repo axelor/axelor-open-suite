@@ -61,6 +61,8 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.db.ProductReservation;
+import com.axelor.apps.supplychain.service.ProductReservationService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -92,6 +94,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected AppProductionService appProductionService;
   protected ProductionConfigService productionConfigService;
   protected OperationOrderPlanningService operationOrderPlanningService;
+  protected ProductReservationService productReservationService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -106,7 +109,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService) {
+      OperationOrderPlanningService operationOrderPlanningService,
+      ProductReservationService productReservationService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -119,6 +123,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.appProductionService = appProductionService;
     this.productionConfigService = productionConfigService;
     this.operationOrderPlanningService = operationOrderPlanningService;
+    this.productReservationService = productReservationService;
   }
 
   @Override
@@ -451,6 +456,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL_REASON_ERROR));
+    }
+    if (manufOrder.getProductReservationList() != null) {
+      for (ProductReservation productReservation : manufOrder.getProductReservationList()) {
+        productReservationService.cancelReservation(productReservation);
+      }
     }
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {

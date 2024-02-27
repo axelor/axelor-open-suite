@@ -29,6 +29,8 @@ import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -38,6 +40,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.ProductReservation;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -56,6 +59,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
   protected AnalyticToolSupplychainService analyticToolSupplychainService;
+  protected ProductReservationService productReservationService;
+  protected SaleOrderLineRepository saleOrderLineRepo;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -74,7 +79,9 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleConfigService saleConfigService,
       AnalyticToolSupplychainService analyticToolSupplychainService,
       BirtTemplateService birtTemplateService,
-      SaleOrderService saleOrderService) {
+      SaleOrderService saleOrderService,
+      ProductReservationService productReservationService,
+      SaleOrderLineRepository saleOrderLineRepo) {
     super(
         sequenceService,
         partnerRepo,
@@ -92,6 +99,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
+    this.productReservationService = productReservationService;
+    this.saleOrderLineRepo = saleOrderLineRepo;
   }
 
   @Override
@@ -134,7 +143,16 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
-
+    if (saleOrder.getSaleOrderLineList() != null) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.getProductReservationList() != null) {
+          for (ProductReservation productReservation : saleOrderLine.getProductReservationList()) {
+            productReservationService.cancelReservation(productReservation);
+          }
+          saleOrderLineRepo.save(saleOrderLine);
+        }
+      }
+    }
     if (!appSupplychainService.isApp("supplychain")) {
       return;
     }

@@ -106,4 +106,10 @@ public class ProductReservationServiceImpl implements ProductReservationService 
     }
     return realQty;
   }
+
+  @Override
+  public void unlink(ProductReservation productReservation) {
+    productReservation.setOriginSaleOrderLine(null);
+    cancelReservation(productReservation);
+  }
 }

@@ -49,7 +49,7 @@
         <field name="stockLocation" requiredIf="typeSelect == 2"/>
         <field name="trackingNumber" title="Tracking number"
           showIf="product.trackingNumberConfiguration != null"
-          requiredIf="product.trackingNumberConfiguration != null"/>
+          requiredIf="product.trackingNumberConfiguration != null &amp;&amp; typeSelect == 2"/>
         <field name="product.trackingNumberConfiguration" hidden="true"/>
       </panel>
       <panel name="origin" showIf="product">

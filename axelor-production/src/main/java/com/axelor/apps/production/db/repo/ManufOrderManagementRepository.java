@@ -26,6 +26,8 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.apps.supplychain.db.ProductReservation;
+import com.axelor.apps.supplychain.service.ProductReservationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -35,6 +37,7 @@ import javax.persistence.PersistenceException;
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 
   @Inject OperationOrderService operationOrderService;
+  @Inject ProductReservationService productReservationService;
 
   @Override
   public ManufOrder copy(ManufOrder entity, boolean deep) {
@@ -47,6 +50,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
     entity.setWasteStockMove(null);
     entity.setCostPrice(null);
     entity.setBarCode(null);
+    entity.clearProductReservationList();
     if (deep) {
       entity.clearInStockMoveList();
       entity.clearOutStockMoveList();
@@ -91,6 +95,12 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
 
   @Override
   public void remove(ManufOrder entity) {
+    if (entity.getProductReservationList() != null) {
+      for (ProductReservation productReservation : entity.getProductReservationList()) {
+        productReservationService.unlink(productReservation);
+      }
+      save(entity);
+    }
     Integer status = entity.getStatusSelect();
     if (status == ManufOrderRepository.STATUS_PLANNED
         || status == ManufOrderRepository.STATUS_STANDBY
