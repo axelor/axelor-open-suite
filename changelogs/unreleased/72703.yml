@@ -1,3 +1,5 @@
 ---
-title: "Customer map : fix Request failed: SyntaxError: JSON.parse"
-type: fix
+title: Fixed error when loading the customer map
+module: axelor-base
+developer: |
+  Fixed html view causing Request failed: SyntaxError: JSON.parse when opening a customer map 
