@@ -667,7 +667,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateAllocationFromStockMoveLine(
       List<HashMap<String, Object>> productReservationList,
       StockMoveLine stockMoveLine,
@@ -704,6 +704,16 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.STOCK_MOVE_LINE_NOT_ENOUGH_QTY_SELECTED));
+    } else if (fillWithStock) {
+      ProductReservation productReservation =
+          productReservationService.createProductReservation(
+              stockMoveLine.getProduct(),
+              stockMoveLine.getRealQty().subtract(filledQty),
+              ProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION,
+              stockMoveLine.getFromStockLocation(),
+              stockMoveLine.getTrackingNumber());
+      productReservation.setOriginStockMoveLine(stockMoveLine);
+      productReservationRepository.save(productReservation);
     }
   }
 
