@@ -1,5 +1,3 @@
 ---
 title: Fix impossible import of zip files
 module: axelor-base
-developer: |
-  Now possible to import data with a zip file in 'Imports'
