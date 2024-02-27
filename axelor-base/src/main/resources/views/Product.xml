@@ -216,6 +216,9 @@
           <field name="saleSupplySelect" colSpan="12"
             onChange="action-product-validate-sale-supply-select"
             hideIf="isShippingCostsProduct || !sellable"/>
+          <field name="defaultInvoicingModeSelect" title="Invoicing mode" colSpan="12"
+            if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
+            if-module="axelor-business-project"/>
           <panel name="unitsPanel" title="Units" colSpan="12">
             <field name="unit" canEdit="false" colSpan="6" form-view="unit-form"
               grid-view="unit-grid" onChange="action-product-method-update-cost-price"

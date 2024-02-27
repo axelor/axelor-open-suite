@@ -98,6 +98,8 @@
     </field>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
+    <field name="product.defaultInvoicingModeSelect" hidden="true"/>
+    <field name="invoicingModeSelect" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -240,6 +242,8 @@
             onChange="action-group-sale-saleorderline-product-onchange"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
             grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
+          <field name="product.defaultInvoicingModeSelect" hidden="true"/>
+          <field name="invoicingModeSelect" hidden="true"/>
           <field name="enableFreezeFields" colSpan="2"/>
           <field name="typeSelect" colSpan="2"
             onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati"/>
@@ -654,6 +658,8 @@
     <action name="action-sale-order-line-method-compute"/>
     <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     <action name="action-sale-order-line-get-production-information"/>
+    <action name="action-sale-order-line-record-set-default-invoicing-mode"/>
+    <action name="action-sale-order-line-record-reset-invoicing-mode"/>
     <action name="action-sale-order-line-method-supplier-partner-default"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-line-method-check-stock"
@@ -667,6 +673,7 @@
     <action name="action-sale-order-line-record-complementary-products-to-handle"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-method-translate-product-description-and-name"/>
+
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -718,6 +725,11 @@
   </action-group>
 
   <!-- ACTION RECORD -->
+
+  <action-record name="action-sale-order-line-record-set-default-invoicing-mode"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="invoicingModeSelect" expr="eval: product?.defaultInvoicingModeSelect"/>
+  </action-record>
 
   <action-record name="action-sale-order-line-record-is-form-readonly"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -1059,6 +1071,12 @@
   <action-attrs name="action-sale-order-line-attrs-reset-invoicing-mode">
     <attribute for="invoicingModeSelect" name="value" expr="eval: null"/>
   </action-attrs>
+
+  <action-record name="action-sale-order-line-record-reset-invoicing-mode"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="invoicingModeSelect" expr="eval: 1"
+      if="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled &amp;&amp; invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_PROGRESS_BILLING"/>
+  </action-record>
 
   <action-record
     name="action-sale-order-line-record-set-default-invoicing-mode-select"

@@ -8,6 +8,8 @@
   <entity name="Product">
     <many-to-many name="taskTemplateSet" ref="com.axelor.apps.project.db.TaskTemplate"
       title="Task templates"/>
+    <integer name="defaultInvoicingModeSelect"
+      selection="business.project.sale.order.line.invoicing.mode.select" title="Invoicing mode"/>
   </entity>
 
 </domain-models>
