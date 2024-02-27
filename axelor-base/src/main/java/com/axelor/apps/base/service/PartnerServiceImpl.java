@@ -892,7 +892,7 @@ public class PartnerServiceImpl implements PartnerService {
     boolean hideNic = false, hideSiren = false;
     boolean isCustomer = partner.getIsCustomer();
     boolean hideTaxNbr = !isCustomer;
-    Address address = null;
+    Address address;
     if (partner.getMainAddress() != null) {
       address = partner.getMainAddress();
     } else {
