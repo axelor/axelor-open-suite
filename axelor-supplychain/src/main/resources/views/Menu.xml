@@ -157,7 +157,8 @@
     <view-param name="search-filters" value="sale-order-filters"/>
     <domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where
       s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged =
-      true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2)</domain>
+      true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2 AND
+      s.saleOrder IS NOT NULL)</domain>
   </action-view>
 
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"
