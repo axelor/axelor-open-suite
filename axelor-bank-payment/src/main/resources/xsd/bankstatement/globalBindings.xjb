@@ -1,0 +1,15 @@
+<jaxb:bindings xmlns:jaxb="http://jakarta.ee/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               jaxb:version="2.1"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+               jaxb:extensionBindingPrefixes="xjc">
+
+    <jaxb:bindings schemaLocation="*.xsd">
+        <jaxb:bindings>
+            <jaxb:globalBindings>
+                <xjc:serializable/>
+            </jaxb:globalBindings>
+        </jaxb:bindings>
+    </jaxb:bindings>
+
+</jaxb:bindings>
