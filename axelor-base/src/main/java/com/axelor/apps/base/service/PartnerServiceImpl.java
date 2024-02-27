@@ -889,13 +889,18 @@ public class PartnerServiceImpl implements PartnerService {
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
     boolean isIndividual =
         partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
-    boolean hideNic = true, hideSiren = true;
+    boolean hideNic = false, hideSiren = false;
     boolean isCustomer = partner.getIsCustomer();
     boolean hideTaxNbr = !isCustomer;
-    Address mainAddress = partner.getMainAddress();
-    if (mainAddress != null && mainAddress.getCountry() != null) {
+    Address address = null;
+    if (partner.getMainAddress() != null) {
+      address = partner.getMainAddress();
+    } else {
+      address = partner.getPartnerAddressList().get(0).getAddress();
+    }
+    if (address != null && address.getCountry() != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
-          mainAddress.getCountry().getRegistrationNumberTemplate();
+          address.getCountry().getRegistrationNumberTemplate();
       if (registrationNumberTemplate == null) {
         return null;
       }
