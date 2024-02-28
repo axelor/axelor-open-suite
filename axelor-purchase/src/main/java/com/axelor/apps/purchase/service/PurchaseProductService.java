@@ -30,4 +30,6 @@ public interface PurchaseProductService {
    * @return An optional with the shippingCoef
    */
   BigDecimal getLastShippingCoef(Product product) throws AxelorException;
+
+  int getSupplierPartnerCatalogDeliveryTime(Product product);
 }

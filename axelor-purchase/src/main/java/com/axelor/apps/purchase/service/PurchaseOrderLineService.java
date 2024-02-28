@@ -31,6 +31,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -104,4 +105,6 @@ public interface PurchaseOrderLineService {
 
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException;
+
+  LocalDate getEstimatedReceiptDate(PurchaseOrderLine purchaseOrderLine, Partner supplierPartner);
 }

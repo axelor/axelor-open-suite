@@ -53,6 +53,7 @@
 
 
     <date name="desiredReceiptDate" title="Desired receipt date"/>
+    <date name="estimatedShippingDate" title="Estim. shipping date"/>
     <date name="estimatedReceiptDate" title="Estim. receipt date"/>
     <decimal name="receivedQty" title="Received quantity" precision="20" scale="10"/>
 
@@ -82,6 +83,7 @@
 
     <track>
       <field name="desiredReceiptDate"/>
+      <field name="estimatedShippingDate"/>
       <field name="estimatedReceiptDate"/>
     </track>
 
