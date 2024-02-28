@@ -75,6 +75,16 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.*;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationRecordService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationRecordServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
 import com.axelor.apps.account.service.analytic.AccountConfigAnalyticServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
@@ -433,6 +443,12 @@ public class AccountModule extends AxelorModule {
     bind(AppAccountService.class).to(AppAccountServiceImpl.class);
 
     bind(AccountingSituationService.class).to(AccountingSituationServiceImpl.class);
+
+    bind(AccountingSituationGroupService.class).to(AccountingSituationGroupServiceImpl.class);
+
+    bind(AccountingSituationRecordService.class).to(AccountingSituationRecordServiceImpl.class);
+
+    bind(AccountingSituationAttrsService.class).to(AccountingSituationAttrsServiceImpl.class);
 
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 

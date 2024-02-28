@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.AccountingSituationServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;

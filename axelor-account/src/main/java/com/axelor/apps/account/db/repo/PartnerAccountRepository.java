@@ -19,7 +19,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.service.AccountingSituationInitService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
