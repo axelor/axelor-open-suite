@@ -3482,6 +3482,7 @@
 "Warning : This will import move lines even if they have already been imported through this feature. Be careful not to import the same elements several times.",,,
 "Warning, the option of lettering proposal is not activated, the realized reconcile groups will be definitively validated without the possibility of checking them beforehand.",,,
 "Warning, there are still reconcile group proposals pending that correspond to the filters you have entered.",,,
+"Warning, you have more than one configuration for company %s, so make sure you only have one.",,,
 "Watch out, a record with same accounting voucher/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific accounting voucher/reference.",,,
 "Watch out, a record with same reference/accounting voucher (%s) already exists for the partner %s and the fiscal year %s.",,,
 "Watch out, an invoice already exist with same number (${supplierInvoiceNb}) and year for the supplier ${partner.fullName} . Do you want to proceed ?",,,
