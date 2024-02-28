@@ -220,7 +220,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   protected List<SaleOrderLine> filterSaleOrderLinesForTasks(SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
       Product product = saleOrderLine.getProduct();
       if (product != null
           && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
