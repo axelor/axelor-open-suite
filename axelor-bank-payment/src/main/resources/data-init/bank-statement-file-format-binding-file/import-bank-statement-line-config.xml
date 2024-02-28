@@ -17,6 +17,7 @@
     <bind to="credit" column="credit" if="credit"/>
     <bind to="reference" column="reference"/>
     <bind to="credit" column="credit"/>
+    <bind to="currency" column="currency_code" search="self.code = :currency_code"/>
   </input>
 
 </csv-inputs>
