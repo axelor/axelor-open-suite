@@ -21,6 +21,12 @@
     onNew="action-group-account-bank-details-form-onnew" name="bank-details-form"
     title="Bank details" onLoad="action-group-account-bank-details-form-onload"
     model="com.axelor.apps.base.db.BankDetails" width="large">
+    <panel name="sidebarPanel" sidebar="true">
+      <field name="active" widget="boolean-radio" colSpan="2" showTitle="false"
+        showIf="!$readonly()" x-true-text="Active" x-false-text="Inactive"/>
+      <field name="label"/>
+      <field name="currency"/>
+    </panel>
     <panel name="ownerPanel" title="Owner">
       <panel name="ownerInfoPanel" colSpan="12">
         <spacer colSpan="10"/>
@@ -33,15 +39,11 @@
           onChange="action-set-owner-name,action-bank-details-attrs-specific-notes"
           domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"
           colSpan="10"/>
-        <field name="active" widget="boolean-radio" colSpan="2" showTitle="false"
-          showIf="!$readonly()" x-true-text="Active" x-false-text="Inactive"/>
         <field name="ownerName" colSpan="12"/>
         <field name="company" hidden="true"/>
       </panel>
     </panel>
-    <panel name="currencyPanel">
-      <field name="label"/>
-      <field name="currency"/>
+    <panel name="currencyPanel" showIf="company != null">
       <field name="bankAccount" showIf="company != null"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
         if="__config__.app.isApp('account')" if-module="axelor-account"/>
@@ -58,28 +60,28 @@
         form-view="bank-address-form"/>
       <field name="bank.country.bankDetailsTemplate.bankDetailsTypeSelect" hidden="true"/>
     </panel>
-    <panel name="ibanPanel" title="IBAN / BBAN"
-      hideIf="bank.country.bankDetailsTemplate.bankDetailsTypeSelect != 1">
-      <panel name="ibanPanel">
+    <panel name="ibanPanel" title="IBAN / BBAN">
+      <panel name="ibanPanel" colSpan="6"
+        hideIf="bank.country.bankDetailsTemplate.bankDetailsTypeSelect != 1">
         <field name="bank.country.bankDetailsTemplate.bankDetailsTypeSelect"
-          title="Type of Bank Details Id" readonly="true"/>
+          title="Type of Bank Details Id" readonly="true" colSpan="12"/>
         <field name="iban" readonlyIf="bank==null"
           onChange="action-group-account-bankdetails-iban-onchange" colSpan="12"/>
         <static name="invalidIbanText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
         </static>
+        <field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}" colSpan="12"/>
       </panel>
+      <panel name="bbanPanel" colSpan="6">
+        <field name="bankCode" colSpan="12"/>
+        <field name="sortCode" colSpan="12"/>
+        <field name="accountNbr" colSpan="12"/>
+        <field name="bbanKey" colSpan="12"/>
+        <field name="bank.country.alpha2Code" hidden="true"/>
+        <field name="fullName" hidden="true"/>
+      </panel>
+    </panel>
 
-      <field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
-    </panel>
-    <panel name="bbanPanel" title="BBAN">
-      <field name="bankCode" colSpan="3"/>
-      <field name="sortCode" colSpan="3"/>
-      <field name="accountNbr" colSpan="3"/>
-      <field name="bbanKey" colSpan="3"/>
-      <field name="bank.country.alpha2Code" hidden="true"/>
-      <field name="fullName" hidden="true"/>
-    </panel>
     <panel name="specificNotesPanel" title="Specific notes" colSpan="12"
       if-module="axelor-account">
       <field name="specificNoteOnInvoice" widget="html" colSpan="12"/>
