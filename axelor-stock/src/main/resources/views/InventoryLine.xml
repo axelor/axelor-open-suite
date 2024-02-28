@@ -95,5 +95,7 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="popup.maximized" value="true"/>
     <context name="_product" expr="eval:__this__?.product"/>
+    <context name="_company" expr="eval:__parent__?.company"/>
+    <context name="_stockLocation" expr="eval:__this__?.stockLocation"/>
   </action-view>
 </object-views>
