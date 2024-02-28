@@ -21,4 +21,6 @@ public interface InvoiceSubLineService {
   Invoice getParentInvoiceLine(Context context);
 
   String getProductDomain(Invoice invoice, boolean isFilterOnSupplier);
+
+  void populateInvoiceLines(Invoice invoice);
 }

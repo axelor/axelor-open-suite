@@ -1303,4 +1303,10 @@ public class InvoiceController {
     Beans.get(InvoiceSubLineService.class).updateRelatedOrderLines(invoice);
     response.setReload(true);
   }
+
+  public void populateInvoiceLines(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Beans.get(InvoiceSubLineService.class).populateInvoiceLines(invoice);
+    response.setReload(true);
+  }
 }

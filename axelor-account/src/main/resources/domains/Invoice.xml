@@ -81,6 +81,8 @@
       title="Invoice Lines"/>
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice"
       title="Tax Lines" readonly="true"/>
+    <one-to-many name="invoiceLineDisplayList"
+      ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="invoiceDisplay" title="Invoice Lines"/>
 
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>

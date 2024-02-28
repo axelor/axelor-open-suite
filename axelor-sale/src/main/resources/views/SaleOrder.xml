@@ -474,7 +474,7 @@
           onChange="action-sale-order-method-on-line-change"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          orderBy="lineIndex"
+          orderBy="sequence" canMove="true"
           if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
 
         <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
@@ -500,7 +500,7 @@
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null || statusSelect != 1" colSpan="12" height="30"
           field="saleOrderLineList" form-view="sale-order-line-form"
-          grid-view="sale-order-line-editable-grid" orderBy="lineIndex"
+          grid-view="sale-order-line-editable-grid" orderBy="sequence" canMove="true"
           onChange="action-sale-order-method-on-line-change"
           onNew="action-sale-order-line-group-editable-onnew,action-sale-order-line-set-line-index"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
@@ -1497,7 +1497,6 @@
     <action name="action-sale-order-attrs-set-line-field-scale"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
     <action name="action-sale-order-attrs-editable-display-discount-amount"/>
-    <action name="action-sale-order-attrs-update-view-on-sub-slo-lines-config-change"/>
   </action-group>
 
   <action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -1542,7 +1541,6 @@
     <action name="action-sale-order-attrs-set-line-field-scale"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
     <action name="action-sale-order-attrs-editable-display-discount-amount"/>
-    <action name="action-sale-order-attrs-update-view-on-sub-slo-lines-config-change"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -2382,16 +2380,6 @@
   <action-method name="action-sale-order-update-order-lines">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateRelatedOrderLines"/>
   </action-method>
-
-  <action-attrs
-    name="action-sale-order-attrs-update-view-on-sub-slo-lines-config-change">
-    <attribute name="hidden" for="saleOrderLineList.lineIndex"
-      expr="eval: !__config__.app.getApp('sale')?.getIsSubLinesEnabled()"/>
-    <attribute name="canMove" for="saleOrderLineList"
-      expr="eval: !__config__.app.getApp('sale')?.getIsSubLinesEnabled()"/>
-    <attribute name="orderBy" for="saleOrderLineList"
-      if="!__config__.app.getApp('sale')?.getIsSubLinesEnabled()" expr="eval: sequence"/>
-  </action-attrs>
 
   <action-method name="action-sale-order-populate-so-lines">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="populateSOLines"/>

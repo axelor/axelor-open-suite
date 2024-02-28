@@ -52,6 +52,23 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
+  public void populateInvoiceLines(Invoice invoice) {
+
+    if (!appAccountService.getAppAccount().getIsSubLinesEnabled()) {
+      return;
+    }
+
+    invoice = invoiceRepository.find(invoice.getId());
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineDisplayList()) {
+      if (!invoiceLine.getIsNotCountable()) {
+        invoice.addInvoiceLineListItem(invoiceLine);
+      }
+    }
+    invoiceRepository.save(invoice);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void updateRelatedInvoiceLinesOnPriceChange(InvoiceLine invoiceLine, Invoice invoice)
       throws AxelorException {
     invoiceLine = calculateChildrenTotalsAndPrices(invoiceLine, invoice);
@@ -96,7 +113,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
       return;
     }
 
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineDisplayList();
     if (CollectionUtils.isEmpty(invoiceLineList)) {
       return;
     }
@@ -112,7 +129,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     if (invoiceLine.getInvoiceLineList() == null || invoiceLine.getInvoiceLineList().isEmpty()) {
       invoiceLine.setPriceBeforeUpdate(invoiceLine.getPrice());
       invoiceLine.setQtyBeforeUpdate(invoiceLine.getQty());
-      setDefaultSaleOrderLineProperties(invoiceLine, invoice);
+      setDefaultInvoiceLineProperties(invoiceLine, invoice);
       return;
     }
 
@@ -126,7 +143,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     computeAllValues(invoiceLine, invoice);
     invoiceLine.setPriceBeforeUpdate(invoiceLine.getPrice());
     invoiceLine.setQtyBeforeUpdate(invoiceLine.getQty());
-    setDefaultSaleOrderLineProperties(invoiceLine, invoice);
+    setDefaultInvoiceLineProperties(invoiceLine, invoice);
   }
 
   protected BigDecimal computeTotal(InvoiceLine invoiceLine, Invoice invoice)
@@ -139,32 +156,41 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     return total;
   }
 
-  protected void setDefaultSaleOrderLineProperties(InvoiceLine invoiceLine, Invoice invoice) {
+  protected void setDefaultInvoiceLineProperties(InvoiceLine invoiceLine, Invoice invoice) {
 
-    InvoiceLine parentSaleOrderLine = invoiceLine.getParentInvoiceLine();
+    InvoiceLine parentInvoiceLine = invoiceLine.getParentInvoiceLine();
     Integer countType = invoice.getCompany().getAccountConfig().getCountTypeSelect();
-    if (parentSaleOrderLine == null && countType == AccountConfigRepository.COUNT_ONLY_PARENTS) {
-      invoiceLine.setIsNotCountable(false);
-    }
-    if (parentSaleOrderLine != null && countType == AccountConfigRepository.COUNT_ONLY_PARENTS) {
-      invoiceLine.setIsNotCountable(true);
-    }
-    if (parentSaleOrderLine == null && countType == AccountConfigRepository.COUNT_ONLY_CHILDREN) {
-      invoiceLine.setIsNotCountable(true);
-    }
-    if (parentSaleOrderLine != null && countType == AccountConfigRepository.COUNT_ONLY_CHILDREN) {
-      invoiceLine.setIsNotCountable(false);
-    }
+    List<InvoiceLine> invoiceLineList = invoiceLine.getInvoiceLineList();
 
-    if (parentSaleOrderLine == null
-        && CollectionUtils.isEmpty(invoiceLine.getInvoiceLineList())
+    if (invoiceLine.getInvoice() == null) {
+      invoiceLine.setInvoiceDisplay(invoice);
+    }
+    if (parentInvoiceLine == null && countType == AccountConfigRepository.COUNT_ONLY_PARENTS) {
+      invoiceLine.setIsNotCountable(false);
+    }
+    if (parentInvoiceLine != null && countType == AccountConfigRepository.COUNT_ONLY_PARENTS) {
+      invoiceLine.setIsNotCountable(true);
+    }
+    if (parentInvoiceLine == null && countType == AccountConfigRepository.COUNT_ONLY_CHILDREN) {
+      invoiceLine.setIsNotCountable(true);
+    }
+    if (parentInvoiceLine != null
+        && CollectionUtils.isEmpty(invoiceLineList)
         && countType == AccountConfigRepository.COUNT_ONLY_CHILDREN) {
       invoiceLine.setIsNotCountable(false);
     }
 
-    if (invoiceLine.getInvoice() == null) {
-      invoiceLine.setInvoice(invoice);
+    if (parentInvoiceLine == null
+        && CollectionUtils.isEmpty(invoiceLine.getInvoiceLineList())
+        && countType == AccountConfigRepository.COUNT_ONLY_CHILDREN) {
+      invoiceLine.setIsNotCountable(false);
     }
+    if (parentInvoiceLine != null
+        && !CollectionUtils.isEmpty(invoiceLineList)
+        && countType == AccountConfigRepository.COUNT_ONLY_CHILDREN) {
+      invoiceLine.setIsNotCountable(true);
+    }
+
     if (invoiceLine.getIsProcessedLine()) {
       invoiceLine.setIsProcessedLine(false);
     }
@@ -223,7 +249,11 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
       Context parentContext = context.getParent();
       if (parentContext != null && parentContext.getContextClass().equals(Invoice.class)) {
         Invoice parent = parentContext.asType(Invoice.class);
-        invoiceLine.setLineIndex(calculateParentLineIndex(parent));
+        if (parent.getInvoiceLineDisplayList() != null) {
+          invoiceLine.setLineIndex(calculateParentLineIndex(parent));
+        } else {
+          invoiceLine.setLineIndex("1");
+        }
       }
 
       if (context.getParent() != null
@@ -237,7 +267,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
   }
 
   protected String calculateParentLineIndex(Invoice invoice) {
-    return invoice.getInvoiceLineList().stream()
+    return invoice.getInvoiceLineDisplayList().stream()
         .filter(slo -> slo.getLineIndex() != null)
         .map(slo -> slo.getLineIndex().split("\\.")[0])
         .mapToInt(Integer::parseInt)
