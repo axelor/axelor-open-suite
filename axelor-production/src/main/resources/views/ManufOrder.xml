@@ -109,7 +109,7 @@
         <field name="$viewerIsOutsourcing" showTitle="false" readonly="true"
           showIf="$readonly()" colSpan="2" depends="outsourcing">
           <viewer>
-					<![CDATA[
+                        <![CDATA[
 						<>
 							<Box d="flex" justifyContent="flex-end">
 								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
@@ -147,7 +147,7 @@
         <field name="$viewerIsPermanent" showTitle="false" colSpan="2"
           showIf="typeSelect == 2 &amp;&amp; $readonly()">
           <viewer depends="typeSelect">
-			<![CDATA[<><Badge style={{ backgroundColor: "green" }}>{_t('Permanent')}</Badge></>]]>
+                        <![CDATA[<><Badge style={{ backgroundColor: "green" }}>{_t('Permanent')}</Badge></>]]>
           </viewer>
         </field>
         <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
@@ -244,6 +244,8 @@
           <field name="plannedEndDateT" title="End date"
             onChange="action-manuf-order-validate-planned-end-date" requiredIf="statusSelect > 1"/>
           <field name="$totalPlannedDuration" title="Total Planned Duration" type="long"
+            readonly="true" widget="duration" x-seconds="true" x-big="true"/>
+          <field name="$totalLeadTimeDuration" title="Total lead time duration" type="long"
             readonly="true" widget="duration" x-seconds="true" x-big="true"/>
           <field name="cancelReason" hidden="true" grid-view="cancel-reason-grid"
             form-view="cancel-reason-form"/>
@@ -977,6 +979,9 @@
     <attribute name="value" for="$totalPlannedDuration"
       expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()"
       if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
+    <attribute name="value" for="$totalLeadTimeDuration"
+      expr="eval: java.time.Duration.between(plannedStartDateT,plannedEndDateT).toSeconds()"
+      if="plannedEndDateT != null &amp;&amp; plannedStartDateT != null"/>
     <attribute name="value" for="$totalRealDuration"
       expr="eval: operationOrderList.collect{it->it.realDuration}.sum()"
       if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>

@@ -46,6 +46,20 @@ public class InvoiceTermFinancialDiscountServiceImpl
   }
 
   @Override
+  public void computeFinancialDiscount(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm == null) {
+      return;
+    }
+    if (invoiceTerm.getMoveLine() != null
+        && invoiceTerm.getMoveLine().getFinancialDiscount() != null) {
+      computeFinancialDiscount(invoiceTerm, invoiceTerm.getMoveLine());
+    } else if (invoiceTerm.getInvoice() != null
+        && invoiceTerm.getInvoice().getFinancialDiscount() != null) {
+      computeFinancialDiscount(invoiceTerm, invoiceTerm.getInvoice());
+    }
+  }
+
+  @Override
   public void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
@@ -53,6 +67,15 @@ public class InvoiceTermFinancialDiscountServiceImpl
         invoice.getFinancialDiscount(),
         invoice.getFinancialDiscountTotalAmount(),
         invoice.getRemainingAmountAfterFinDiscount());
+  }
+
+  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, MoveLine moveLine) {
+    this.computeFinancialDiscount(
+        invoiceTerm,
+        moveLine.getCredit().max(moveLine.getDebit()),
+        moveLine.getFinancialDiscount(),
+        moveLine.getFinancialDiscountTotalAmount(),
+        moveLine.getRemainingAmountAfterFinDiscount());
   }
 
   @Override
