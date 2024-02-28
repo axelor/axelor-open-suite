@@ -19,23 +19,23 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
-import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ImportBankStatementLine {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   protected BankDetailsRepository bankDetailsRepository;
+  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
 
   @Inject
-  public ImportBankStatementLine(BankDetailsRepository bankDetailsRepository) {
+  public ImportBankStatementLine(
+      BankDetailsRepository bankDetailsRepository,
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
     this.bankDetailsRepository = bankDetailsRepository;
+    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
   }
 
   public Object importBankStatementLine(Object bean, Map<String, Object> values) {
@@ -47,6 +47,12 @@ public class ImportBankStatementLine {
           bankDetailsRepository.findByIban((String) values.get("bankDetails_iban"));
       bankStatementLine.setBankDetails(bankDetails);
     }
+
+    // Used for Bank reconcile process
+    bankStatementLine.setAmountRemainToReconcile(
+        currencyScaleServiceBankPayment.getScaledValue(
+            bankStatementLine, bankStatementLine.getDebit().add(bankStatementLine.getCredit())));
+
     return bankStatementLine;
   }
 }
