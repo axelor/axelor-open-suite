@@ -28,5 +28,14 @@
     </extend>
 
   </form>
+  	
+  <grid name="product-reservation-tracking-number-grid" title="Product reservation"
+    model="com.axelor.apps.production.db.ProductReservation" orderBy="product.code">
+    <field name="qty"/>
+    <field name="stockLocation"/>
+    <field name="originSaleOrderLine"/>
+    <field name="originManufOrder"/>
+    <field name="status"/>
+  </grid>
 
 </object-views>
