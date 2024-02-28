@@ -347,6 +347,11 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       contactPartnerList.add(contactPartner);
       // TODO check all required fields...
     }
+
+    if (lead.getContactSet() != null) {
+      contactPartnerList.addAll(lead.getContactSet());
+    }
+
     return contactPartnerList;
   }
 
