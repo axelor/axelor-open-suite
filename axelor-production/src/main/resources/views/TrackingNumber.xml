@@ -3,6 +3,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
+  <form id="production-tacking-number-form" name="tracking-number-form" title="Tracking number"
+    model="com.axelor.apps.stock.db.TrackingNumber" extension="true">
+    <extend target="//field[@name='note']">
+      <insert position="after">
+        <panel-dashlet title="Product allocations"
+          action="action-production-view-show-product-reservation" colSpan="12" showIf="id"/>
+      </insert>
+    </extend>
+  </form>
+
   <search name="tracking-number-search" title="Tracking number search" limit="50"
     id="tracking-number-production-search">
     <search-fields>
@@ -76,4 +86,12 @@
       </where>
     </select>
   </search>
+
+  <action-view name="action-production-view-show-product-reservation"
+    title="Product allocations">
+    <view type="grid" name="product-reservation-tracking-number-grid"/>
+    <view type="form" name="product-reservation-form"/>
+    <domain>self.trackingNumber.id = :_trackingNumberid</domain>
+    <context name="_trackingNumberid" expr="eval: id"/>
+  </action-view>
 </object-views>
