@@ -18,7 +18,10 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.interfaces.PdfViewer;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.dms.db.DMSFile;
@@ -27,7 +30,22 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import org.apache.commons.io.IOUtils;
 
 public class DMSServiceImpl implements DMSService {
 
@@ -91,6 +109,48 @@ public class DMSServiceImpl implements DMSService {
   }
 
   @Override
+  public void unzip(String zipFilePath, Model model) throws AxelorException {
+    try {
+      Map<String, DMSFile> dmsParentsMap = new HashMap<>();
+      DMSFile dmsRoot = getDMSRoot(model);
+      DMSFile dmsHome = getDMSHome(model, dmsRoot);
+      dmsParentsMap.put(File.separator, dmsHome);
+
+      ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFilePath));
+      ZipEntry entry;
+      while ((entry = zis.getNextEntry()) != null) {
+        String entryName = entry.getName();
+        Path entryNamePath = Paths.get(entryName);
+        String fileName = entryNamePath.getFileName().toString();
+        String parentPath =
+            Optional.ofNullable(entryNamePath.getParent()).map(Path::toString).orElse("")
+                + File.separator;
+        DMSFile currentFile;
+        if (entry.isDirectory()) {
+          currentFile = getDMSFolder(model, fileName, dmsParentsMap.get(parentPath));
+        } else {
+          MetaFile metaFile = metaFiles.upload(createFile(zis));
+          currentFile =
+              addDMSFileToParentFolder(model, fileName, dmsParentsMap.get(parentPath), metaFile);
+        }
+        dmsParentsMap.put(entryName, currentFile);
+        zis.closeEntry();
+      }
+      zis.close();
+    } catch (IOException ioe) {
+      throw new AxelorException(
+          ioe, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ioe.getLocalizedMessage());
+    }
+  }
+
+  protected File createFile(InputStream inputStream) throws IOException {
+    File file = File.createTempFile("tmp", "");
+    OutputStream outputStream = new FileOutputStream(file);
+    IOUtils.copy(inputStream, outputStream);
+    return file;
+  }
+
+  @Override
   public DMSFile getDMSRoot(Model model) {
     return dmsFileRepository
         .all()
@@ -100,7 +160,6 @@ public class DMSServiceImpl implements DMSService {
         .fetchOne();
   }
 
-  @Override
   public DMSFile getDMSHome(Model model, DMSFile dmsRoot) {
     String homeName = null;
     final Mapper mapper = Mapper.of(model.getClass());
@@ -110,13 +169,33 @@ public class DMSServiceImpl implements DMSService {
       homeName = Strings.padStart("" + model.getId(), 5, '0');
     }
 
+    return getDMSFolder(model, homeName, dmsRoot);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public DMSFile getDMSFolder(Model model, String fileName, DMSFile dmsRoot) {
     DMSFile dmsHome = new DMSFile();
-    dmsHome.setFileName(homeName);
+    dmsHome.setFileName(fileName);
     dmsHome.setRelatedId(model.getId());
-    dmsHome.setRelatedModel(model.getClass().getName());
+    dmsHome.setRelatedModel(EntityHelper.getEntityClass(model).getName());
     dmsHome.setParent(dmsRoot);
     dmsHome.setIsDirectory(true);
 
     return dmsFileRepository.save(dmsHome);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public DMSFile addDMSFileToParentFolder(
+      Model model, String fileName, DMSFile dmsFolder, MetaFile metaFile) {
+    DMSFile dmsFile = new DMSFile();
+    dmsFile.setFileName(fileName);
+    dmsFile.setMetaFile(metaFile);
+    dmsFile.setRelatedId(model.getId());
+    dmsFile.setRelatedModel(EntityHelper.getEntityClass(model).getName());
+    dmsFile.setParent(dmsFolder);
+
+    return dmsFileRepository.save(dmsFile);
   }
 }
