@@ -737,7 +737,6 @@ public class InventoryService {
       StockLocationLine stockLocationLine =
           stockLocationLineService.getStockLocationLine(toStockLocation, product);
       BigDecimal unitPrice = getAvgPrice(stockLocationLine);
-      ;
       if (!inventoryLineService.isPresentInStockLocation(inventoryLine)) {
         unitPrice = inventoryLine.getPrice();
       }

@@ -8,12 +8,12 @@
     onNew="action-inventory-line-method-check-presence-in-stock-location">
     <hilite if="!isPresentInStockLocation" color="lightgreen"/>
     <field name="product" canEdit="false"
-      onChange="action-inventory-line-group-update-inventory-line,action-inventory-line-method-check-presence-in-stock-location"
+      onChange="action-inventory-line-group-on-change-product-stock-location"
       domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
       form-view="product-form"/>
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
-      onChange="action-inventory-line-group-update-inventory-line,action-inventory-line-method-check-presence-in-stock-location"/>
+      onChange="action-inventory-line-group-on-change-product-stock-location"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
       width="120" x-scale="2"/>
@@ -35,12 +35,12 @@
     onLoad="action-inventory-line-attrs-scale-and-precision,action-inventory-line-method-check-presence-in-stock-location">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
-        onChange="action-inventory-line-group-update-inventory-line,action-inventory-line-method-check-presence-in-stock-location"
+        onChange="action-inventory-line-group-on-change-product-stock-location"
         domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product'"
         form-view="product-form" grid-view="product-grid"/>
       <field name="stockLocation"
         onSelect="action-inventory-line-method-set-stock-location-domain"
-        onChange="action-inventory-line-group-update-inventory-line,action-inventory-line-method-check-presence-in-stock-location"/>
+        onChange="action-inventory-line-group-on-change-product-stock-location"/>
       <field name="currentQty" readonly="true"
         help="Does not include quantities from sub stock locations"/>
       <field name="realQty" onChange="action-inventory-line-method-compute"/>
@@ -60,6 +60,11 @@
     <attribute name="scale" for="realQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
+
+  <action-attrs name="action-inventory-line-attrs-reset-price">
+    <attribute for="price" name="value" expr="0"/>
+  </action-attrs>
+
   <action-method name="action-inventory-line-method-on-change-tracking-number">
     <call class="com.axelor.apps.stock.web.InventoryLineController"
       method="updateInventoryLine"/>
@@ -68,6 +73,12 @@
   <action-group name="action-inventory-line-group-update-inventory-line">
     <action name="action-inventory-line-method-update-inventory-line"/>
     <action name="action-inventory-line-method-compute"/>
+  </action-group>
+
+  <action-group name="action-inventory-line-group-on-change-product-stock-location">
+    <action name="action-inventory-line-attrs-reset-price"/>
+    <action name="action-inventory-line-method-check-presence-in-stock-location"/>
+    <action name="action-inventory-line-group-update-inventory-line"/>
   </action-group>
 
   <action-method name="action-inventory-line-method-update-inventory-line">
