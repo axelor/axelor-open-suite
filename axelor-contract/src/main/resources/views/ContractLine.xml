@@ -237,8 +237,8 @@
           <field name="product" canEdit="false"
             onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
           <field name="productName"/>
-          <field name="taxLine" canEdit="false"
-            onChange="action-method-contract-line-compute-total"/>
+          <field name="taxLineSet" canEdit="false"
+            onChange="action-method-contract-line-compute-total" colSpan="12"/>
         </panel>
         <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
           <field name="pricing" canNew="true" canEdit="true"

@@ -406,10 +406,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceRepository.save(invoice);
     computeContractLines(contract, invoice);
     // Increase invoice period date
+    contractYearEndBonusService.invoiceYebContract(contract, invoice);
     increaseInvoiceDates(contract);
     setRevaluationFormulaDescription(contract, invoice);
-
-    contractYearEndBonusService.invoiceYebContract(contract, invoice);
 
     return computeAndSave(invoice);
   }
