@@ -35,8 +35,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AccountingSituationServiceImpl implements AccountingSituationService {
 
@@ -294,5 +299,23 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
           ? this.getHoldBackCustomerAccount(invoice.getPartner(), invoice.getCompany())
           : this.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
     }
+  }
+
+  @Override
+  public List<Company> getDuplicatedCompanies(Partner partner) {
+    if (partner == null
+        || ObjectUtils.isEmpty(partner.getAccountingSituationList())
+        || partner.getAccountingSituationList().size() == 1) {
+      return new ArrayList<>();
+    }
+
+    List<Company> duplicatedCompaniesList =
+        partner.getAccountingSituationList().stream()
+            .map(AccountingSituation::getCompany)
+            .collect(Collectors.toList());
+    return duplicatedCompaniesList.stream()
+        .filter(i -> Collections.frequency(duplicatedCompaniesList, i) > 1)
+        .distinct()
+        .collect(Collectors.toList());
   }
 }
