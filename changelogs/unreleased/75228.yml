@@ -1,0 +1,6 @@
+---
+title: "Financial discount: Fix financial discount amounts computation in WT and ATI"
+module: axelor-account
+developer: |
+  Remove getFinancialDiscountTaxAmount from FinancialDiscountService
+  Creation of public method computeRemainingAmountAfterFinDiscount in FinancialDiscountService, compute the remaining amount according to financial discount type

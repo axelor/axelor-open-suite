@@ -32,5 +32,13 @@ public interface FinancialDiscountService {
       BigDecimal taxTotal,
       Currency currency);
 
+  BigDecimal computeRemainingAmountAfterFinDiscount(
+      FinancialDiscount financialDiscount,
+      BigDecimal inTaxTotal,
+      BigDecimal exTaxTotal,
+      BigDecimal taxTotal,
+      BigDecimal financialDiscountTotalAmount,
+      Currency currency);
+
   Account getFinancialDiscountAccount(Company company, boolean isPurchase) throws AxelorException;
 }

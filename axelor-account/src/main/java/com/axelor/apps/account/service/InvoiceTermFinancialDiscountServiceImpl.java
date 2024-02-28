@@ -78,8 +78,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
       invoiceTerm.setRemainingAmountAfterFinDiscount(
           currencyScaleServiceAccount.getCompanyScaledValue(
               invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage)));
-      invoiceTerm.setFinancialDiscountAmount(
-          invoiceTerm.getAmount().subtract(invoiceTerm.getRemainingAmountAfterFinDiscount()));
+      invoiceTerm.setFinancialDiscountAmount(financialDiscountAmount.multiply(percentage));
 
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
 
@@ -149,10 +148,9 @@ public class InvoiceTermFinancialDiscountServiceImpl
 
     BigDecimal taxTotal = this.getTaxTotal(invoiceTerm);
 
-    if (taxTotal.signum() == 0) {
-      return BigDecimal.ZERO;
-    } else if (invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
-        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+    if (taxTotal.signum() != 0
+        && invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
       return taxTotal
           .multiply(invoiceTerm.getPercentage())
           .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
@@ -160,24 +158,9 @@ public class InvoiceTermFinancialDiscountServiceImpl
               BigDecimal.valueOf(10000),
               currencyScaleServiceAccount.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
-    } else {
-      BigDecimal exTaxTotal;
-
-      if (invoiceTerm.getInvoice() != null) {
-        exTaxTotal = invoiceTerm.getInvoice().getExTaxTotal();
-      } else {
-        exTaxTotal = invoiceTerm.getMoveLine().getCurrencyAmount().abs().subtract(taxTotal);
-      }
-
-      return taxTotal
-          .multiply(exTaxTotal)
-          .multiply(invoiceTerm.getPercentage())
-          .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
-          .divide(
-              taxTotal.add(exTaxTotal).multiply(BigDecimal.valueOf(10000)),
-              currencyScaleServiceAccount.getScale(invoiceTerm),
-              RoundingMode.HALF_UP);
     }
+
+    return BigDecimal.ZERO;
   }
 
   protected BigDecimal getTaxTotal(InvoiceTerm invoiceTerm) {
