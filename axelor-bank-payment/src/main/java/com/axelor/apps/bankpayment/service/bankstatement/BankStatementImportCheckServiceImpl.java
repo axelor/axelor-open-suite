@@ -41,39 +41,22 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
   public void checkImport(BankStatement bankStatement) throws AxelorException {
     try {
       boolean alreadyImported = false;
-
-      List<BankStatementLine> initialLines;
-      List<BankStatementLine> finalLines;
       List<BankDetails> bankDetails =
           bankStatementLineFetchService.getBankDetailsFromStatementLines(bankStatement);
       // Load lines
       for (BankDetails bd : bankDetails) {
-        initialLines =
-            bankStatementLineFetchService
-                .findByBankStatementBankDetailsAndLineType(
-                    bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
-                .fetch();
-
-        finalLines =
-            bankStatementLineFetchService
-                .findByBankStatementBankDetailsAndLineType(
-                    bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
-                .fetch();
-
-        alreadyImported =
-            bankStatementLineAlreadyExists(initialLines)
-                || bankStatementLineAlreadyExists(finalLines)
-                || alreadyImported;
+        alreadyImported = isAlreadyImported(bankStatement, bd, alreadyImported);
       }
-      if (!alreadyImported) {
-        checkAmountWithPreviousBankStatement(bankStatement, bankDetails);
-        checkAmountWithinBankStatement(bankStatement, bankDetails);
-      } else {
+
+      if (alreadyImported) {
         throw new AxelorException(
             bankStatement,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
       }
+
+      checkAmountWithPreviousBankStatement(bankStatement, bankDetails);
+      checkAmountWithinBankStatement(bankStatement, bankDetails);
 
     } catch (Exception e) {
       bankStatementLineDeleteService.deleteBankStatementLines(
@@ -82,9 +65,28 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
     }
   }
 
+  protected boolean isAlreadyImported(
+      BankStatement bankStatement, BankDetails bd, boolean alreadyImported) {
+    List<BankStatementLine> initialLines =
+        bankStatementLineFetchService
+            .findByBankStatementBankDetailsAndLineType(
+                bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
+            .fetch();
+
+    List<BankStatementLine> finalLines =
+        bankStatementLineFetchService
+            .findByBankStatementBankDetailsAndLineType(
+                bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
+            .fetch();
+
+    return bankStatementLineAlreadyExists(initialLines)
+        || bankStatementLineAlreadyExists(finalLines)
+        || alreadyImported;
+  }
+
   protected void checkAmountWithPreviousBankStatement(
       BankStatement bankStatement, List<BankDetails> bankDetails) throws AxelorException {
-    boolean deleteLines = false;
+
     for (BankDetails bd : bankDetails) {
       BankStatementLine initialBankStatementLine =
           bankStatementLineFetchService
@@ -100,35 +102,17 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
               .order("-operationDate")
               .order("-sequence")
               .fetchOne();
-      if (ObjectUtils.notEmpty(finalBankStatementLine)
-          && (currencyScaleServiceBankPayment
-                      .getScaledValue(initialBankStatementLine, initialBankStatementLine.getDebit())
-                      .compareTo(
-                          currencyScaleServiceBankPayment.getScaledValue(
-                              finalBankStatementLine, finalBankStatementLine.getDebit()))
-                  != 0
-              || currencyScaleServiceBankPayment
-                      .getScaledValue(
-                          initialBankStatementLine, initialBankStatementLine.getCredit())
-                      .compareTo(
-                          currencyScaleServiceBankPayment.getScaledValue(
-                              finalBankStatementLine, finalBankStatementLine.getCredit()))
-                  != 0)) {
-        deleteLines = true;
+      if (isDeleteLines(finalBankStatementLine, initialBankStatementLine)) {
+        throw new AxelorException(
+            bankStatement,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
       }
-    }
-    // delete imported
-    if (deleteLines) {
-      throw new AxelorException(
-          bankStatement,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
     }
   }
 
   protected void checkAmountWithinBankStatement(
       BankStatement bankStatement, List<BankDetails> bankDetails) throws AxelorException {
-    boolean deleteLines = false;
     for (BankDetails bd : bankDetails) {
       List<BankStatementLine> initialBankStatementLine =
           bankStatementLineFetchService
@@ -144,48 +128,43 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
               .fetch();
       initialBankStatementLine.remove(0);
       finalBankStatementLine.remove(finalBankStatementLine.size() - 1);
-      if (initialBankStatementLine.size() != finalBankStatementLine.size()) {
-        deleteLines = true;
-        break;
-      }
-      if (!deleteLines) {
-        for (int i = 0; i < initialBankStatementLine.size(); i++) {
-          deleteLines =
-              deleteLines
-                  || (currencyScaleServiceBankPayment
-                              .getScaledValue(
-                                  initialBankStatementLine.get(i),
-                                  initialBankStatementLine.get(i).getDebit())
-                              .compareTo(
-                                  currencyScaleServiceBankPayment.getScaledValue(
-                                      finalBankStatementLine.get(i),
-                                      finalBankStatementLine.get(i).getDebit()))
-                          != 0
-                      || currencyScaleServiceBankPayment
-                              .getScaledValue(
-                                  initialBankStatementLine.get(i),
-                                  initialBankStatementLine.get(i).getCredit())
-                              .compareTo(
-                                  currencyScaleServiceBankPayment.getScaledValue(
-                                      finalBankStatementLine.get(i),
-                                      finalBankStatementLine.get(i).getCredit()))
-                          != 0);
-          if (deleteLines) {
-            break;
-          }
-        }
-      }
-      if (deleteLines) {
-        break;
+
+      if (initialBankStatementLine.size() != finalBankStatementLine.size()
+          || isDeleteLinesFor(initialBankStatementLine, finalBankStatementLine)) {
+        throw new AxelorException(
+            bankStatement,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_INCOHERENT_BALANCE));
       }
     }
-    // delete imported
-    if (deleteLines) {
-      throw new AxelorException(
-          bankStatement,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_INCOHERENT_BALANCE));
+  }
+
+  protected boolean isDeleteLinesFor(
+      List<BankStatementLine> initialBankStatementLine,
+      List<BankStatementLine> finalBankStatementLine) {
+    for (int i = 0; i < initialBankStatementLine.size(); i++) {
+      if (isDeleteLines(initialBankStatementLine.get(i), finalBankStatementLine.get(i))) {
+        return true;
+      }
     }
+    return false;
+  }
+
+  protected boolean isDeleteLines(
+      BankStatementLine finalBankStatementLine, BankStatementLine initialBankStatementLine) {
+    return ObjectUtils.notEmpty(finalBankStatementLine)
+        && (currencyScaleServiceBankPayment
+                    .getScaledValue(initialBankStatementLine, initialBankStatementLine.getDebit())
+                    .compareTo(
+                        currencyScaleServiceBankPayment.getScaledValue(
+                            finalBankStatementLine, finalBankStatementLine.getDebit()))
+                != 0
+            || currencyScaleServiceBankPayment
+                    .getScaledValue(initialBankStatementLine, initialBankStatementLine.getCredit())
+                    .compareTo(
+                        currencyScaleServiceBankPayment.getScaledValue(
+                            finalBankStatementLine, finalBankStatementLine.getCredit()))
+                != 0);
   }
 
   protected boolean bankStatementLineAlreadyExists(List<BankStatementLine> initialLines) {
