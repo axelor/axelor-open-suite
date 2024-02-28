@@ -28,7 +28,7 @@
     </extend>
 
   </form>
-  	
+
   <grid name="product-reservation-tracking-number-grid" title="Product reservation"
     model="com.axelor.apps.production.db.ProductReservation" orderBy="product.code">
     <field name="qty"/>
