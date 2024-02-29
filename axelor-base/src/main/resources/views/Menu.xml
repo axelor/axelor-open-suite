@@ -1088,4 +1088,40 @@
     <view type="form" name="birt-template-form"/>
   </action-view>
 
+  <!-- Pricing menus -->
+
+  <menuitem title="Pricings" name="root-base-pricing" parent="admin-root" order="1500"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <menuitem title="Pricings" name="base-pricing" parent="root-base-pricing" order="10"
+    action="root.base.pricing"/>
+
+  <action-view name="root.base.pricing" title="Pricings"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+  </action-view>
+
+  <menuitem title="Pricing classification rules" name="base-pricing-classification-rule"
+    parent="root-base-pricing" order="20" action="action-base-pricing-classification-rule"/>
+
+  <action-view name="action-base-pricing-classification-rule"
+    title="Pricing classification rules" model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
+  </action-view>
+
+  <menuitem title="Pricing result rules" name="base-pricing-result-rule"
+    parent="root-base-pricing" order="30" action="action-base-pricing-result-rule"/>
+
+  <action-view name="action-base-pricing-result-rule" title="Pricing result rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: 2"/>
+  </action-view>
+
 </object-views>
