@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -202,7 +203,8 @@ public class PartnerController {
             "errorOnCompaniesLabel",
             "title",
             String.format(
-                AccountExceptionMessage.PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES,
+                I18n.get(
+                    AccountExceptionMessage.PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES),
                 duplicatedCompanyList.stream()
                     .map(Company::getName)
                     .collect(Collectors.joining(", "))));
