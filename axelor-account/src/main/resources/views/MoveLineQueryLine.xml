@@ -5,6 +5,7 @@
 
   <grid model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move lines"
     name="move-line-query-line-grid" editable="true">
+    <hilite if="isSelected" color="primary"/>
     <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelected"/>
     <button name="unselectBtn" onClick="action-move-line-query-line-group-set-isselected"
