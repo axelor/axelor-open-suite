@@ -359,9 +359,18 @@ public abstract class InvoiceGenerator {
     initCollections(invoice);
 
     if (invoice instanceof ContextEntity) {
-      invoice.getInvoiceLineList().addAll(invoiceLines);
+      if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()) {
+        invoice.getInvoiceLineDisplayList().addAll(invoiceLines);
+      } else {
+        invoice.getInvoiceLineList().addAll(invoiceLines);
+      }
+
     } else {
-      invoiceLines.forEach(invoice::addInvoiceLineListItem);
+      if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()) {
+        invoiceLines.forEach(invoice::addInvoiceLineDisplayListItem);
+      } else {
+        invoiceLines.forEach(invoice::addInvoiceLineListItem);
+      }
     }
     // Create tax lines.
     List<InvoiceLineTax> invoiceTaxLines =
@@ -440,9 +449,14 @@ public abstract class InvoiceGenerator {
     invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
     invoice.setCompanyTaxTotal(BigDecimal.ZERO);
     invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
-
+    List<InvoiceLine> invoiceLineList;
+    if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()) {
+      invoiceLineList = invoice.getInvoiceLineDisplayList();
+    } else {
+      invoiceLineList = invoice.getInvoiceLineList();
+    }
     for (InvoiceLine invoiceLine :
-        invoice.getInvoiceLineList().stream()
+        invoiceLineList.stream()
             .filter(line -> !line.getIsNotCountable())
             .collect(Collectors.toList())) {
 

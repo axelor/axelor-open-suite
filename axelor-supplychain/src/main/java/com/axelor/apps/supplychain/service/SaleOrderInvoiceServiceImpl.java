@@ -45,6 +45,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -227,8 +228,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   private Map<Long, BigDecimal> generateQtyToInvoiceMap(
       SaleOrder saleOrder, BigDecimal percentage) {
     Map<Long, BigDecimal> map = new HashMap<>();
+    List<SaleOrderLine> saleOrderLineList;
+    if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
+      saleOrderLineList = saleOrder.getSaleOrderLineDisplayList();
+    } else {
+      saleOrderLineList = saleOrder.getSaleOrderLineList();
+    }
 
-    for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine soLine : saleOrderLineList) {
       map.put(soLine.getId(), percentage);
     }
     return map;
@@ -253,7 +260,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (operationSelect == SaleOrderRepository.INVOICE_LINES) {
       amountToInvoice = BigDecimal.ZERO;
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      List<SaleOrderLine> saleOrderLineList;
+      if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
+        saleOrderLineList = saleOrder.getSaleOrderLineDisplayList();
+      } else {
+        saleOrderLineList = saleOrder.getSaleOrderLineList();
+      }
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         Long saleOrderLineId = saleOrderLine.getId();
         if (qtyToInvoiceMap.containsKey(saleOrderLineId) && priceMap.containsKey(saleOrderLineId)) {
           BigDecimal qtyToInvoice = qtyToInvoiceMap.get(saleOrderLineId);
@@ -397,7 +410,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           I18n.get(SupplychainExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
     }
 
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    List<SaleOrderLine> saleOrderLineList;
+    if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
+      saleOrderLineList = saleOrder.getSaleOrderLineDisplayList();
+    } else {
+      saleOrderLineList = saleOrder.getSaleOrderLineList();
+    }
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       Long SOrderId = saleOrderLine.getId();
       if (qtyToInvoiceMap.containsKey(SOrderId)) {
         if (isPercent) {
@@ -420,7 +440,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         }
       }
     }
-    return this.generateInvoice(saleOrder, saleOrder.getSaleOrderLineList(), qtyToInvoiceMap);
+    if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
+      return this.generateInvoice(
+          saleOrder, saleOrder.getSaleOrderLineDisplayList(), qtyToInvoiceMap);
+    } else {
+      return this.generateInvoice(saleOrder, saleOrder.getSaleOrderLineList(), qtyToInvoiceMap);
+    }
   }
 
   @Override
@@ -506,8 +531,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Override
   public Invoice createInvoice(SaleOrder saleOrder) throws AxelorException {
-
-    return createInvoice(saleOrder, saleOrder.getSaleOrderLineList());
+    if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
+      return createInvoice(saleOrder, saleOrder.getSaleOrderLineDisplayList());
+    } else {
+      return createInvoice(saleOrder, saleOrder.getSaleOrderLineList());
+    }
   }
 
   @Override

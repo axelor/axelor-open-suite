@@ -24,7 +24,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -184,7 +186,13 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
   @Override
   public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder) {
     BigDecimal price = BigDecimal.ZERO;
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    List<SaleOrderLine> saleOrderLineList;
+    if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
+      saleOrderLineList = saleOrder.getSaleOrderLineDisplayList();
+    } else {
+      saleOrderLineList = saleOrder.getSaleOrderLineList();
+    }
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       price = price.add(saleOrderLine.getQty().multiply(saleOrderLine.getPriceDiscounted()));
     }
     return price;
