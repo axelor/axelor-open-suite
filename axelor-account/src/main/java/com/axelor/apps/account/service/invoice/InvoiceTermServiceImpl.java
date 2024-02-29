@@ -1667,6 +1667,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     int companyScale = currencyScaleServiceAccount.getCompanyScale(company);
     BigDecimal moveLineAmountRemaining =
         companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
+    BigDecimal diff = BigDecimal.ZERO;
 
     BigDecimal invoiceTermAmountRemaining =
         invoiceTermList.stream()
@@ -1693,11 +1694,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTermAmountRemaining =
             invoiceTermAmountRemaining.subtract(amountToPayInCompanyCurrency);
       }
-    }
 
-    BigDecimal diff =
-        moveLineAmountRemaining.subtract(
-            invoiceTermAmountRemaining.setScale(companyScale, RoundingMode.HALF_UP));
+      diff =
+          moveLineAmountRemaining.subtract(
+              invoiceTermAmountRemaining.setScale(companyScale, RoundingMode.HALF_UP));
+    }
 
     return amountToPayInCompanyCurrency.add(diff).setScale(companyScale, RoundingMode.HALF_UP);
   }

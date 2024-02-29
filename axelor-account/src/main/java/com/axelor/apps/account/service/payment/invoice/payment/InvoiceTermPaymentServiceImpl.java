@@ -302,9 +302,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     try {
       invoiceTermPayment.setInvoicePayment(invoicePayment);
       invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
-
-      boolean isCompanyCurrency =
-          invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
       invoiceTermPayment.setPaidAmount(paidAmount);
 
       if (paidAmount.compareTo(invoiceTermToPay.getAmount()) == 0) {
@@ -341,6 +338,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       return paidAmount;
     }
 
+    BigDecimal companyPaidAmount = invoicePayment != null ? invoicePayment.getAmount() : paidAmount;
     BigDecimal ratio =
         paymentIsSameCurrency
             ? invoiceTerm
@@ -352,7 +350,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             : currencyService.getCurrencyConversionRate(moveCurrency, invoiceTerm.getCurrency());
 
     return currencyScaleServiceAccount.getCompanyScaledValue(
-        invoiceTerm, paidAmount.multiply(ratio));
+        invoiceTerm, companyPaidAmount.multiply(ratio));
   }
 
   protected BigDecimal computePaidAmount(InvoiceTerm invoiceTerm, BigDecimal companyPaidAmount) {
