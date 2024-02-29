@@ -25,6 +25,8 @@
     <boolean name="displayCustomerCodeOnPrinting" title="Display customer code on printing"/>
     <boolean name="displayProductPictureOnPrinting"
       title="Display product picture on printing"/>
+    <integer name="countTypeSelect" selection="sale.sale.config.count.type.select"
+      title="Count type" default="1"/>
     <many-to-one name="defaultValidityDuration" ref="com.axelor.apps.base.db.Duration"
       title="Validity duration per default"/>
     <boolean name="isAnalyticDistributionRequired"
@@ -32,6 +34,14 @@
     <decimal name="defaultHoldBackPercentage" title="Default holdback percentage"/>
     <many-to-one name="saleOrderBirtTemplate" title="Sale order template"
       ref="com.axelor.apps.base.db.BirtTemplate"/>
+
+    <extra-code>
+      <![CDATA[
+            // COUNT TYPE
+			public static final int COUNT_ONLY_PARENTS = 1;
+			public static final int COUNT_ONLY_CHILDREN = 2;
+   		]]>
+    </extra-code>
 
     <track>
       <field name="company" on="UPDATE"/>

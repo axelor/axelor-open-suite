@@ -29,6 +29,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -83,6 +84,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     try {
       AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
       SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
+      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
 
       if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);
@@ -95,9 +97,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       if (appSale.getManagePartnerComplementaryProduct()) {
         Beans.get(SaleOrderService.class).manageComplementaryProductSOLines(saleOrder);
       }
-
+      saleOrderComputeService.computeSaleOrder(saleOrder);
       computeSubMargin(saleOrder);
-      Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

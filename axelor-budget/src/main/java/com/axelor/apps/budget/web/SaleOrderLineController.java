@@ -29,6 +29,7 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -45,7 +46,7 @@ public class SaleOrderLineController {
       if (SaleOrder.class.equals(request.getContext().getParent().getContextClass())) {
         saleOrder = request.getContext().getParent().asType(SaleOrder.class);
       } else {
-        saleOrder = saleOrderLine.getSaleOrder();
+        saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(request.getContext());
       }
 
       if (saleOrderLine.getProduct() == null) {

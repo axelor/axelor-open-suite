@@ -70,6 +70,9 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
                 && !appSaleService.getAppSale().getConsiderZeroCost())) {
           continue;
         }
+        if (saleOrderLine.getIsNotCountable()) {
+          continue;
+        }
         totalGrossMargin = totalGrossMargin.add(saleOrderLine.getSubTotalGrossMargin());
         totalCostPrice = totalCostPrice.add(saleOrderLine.getSubTotalCostPrice());
         accountedRevenue = accountedRevenue.add(saleOrderLine.getCompanyExTaxTotal());

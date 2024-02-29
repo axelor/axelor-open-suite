@@ -21,6 +21,7 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
@@ -54,7 +55,9 @@ public class CurrencyScaleServiceSaleImpl extends CurrencyScaleServiceImpl
 
   @Override
   public int getScale(SaleOrder saleOrder) {
-    return this.getScale(saleOrder.getCurrency());
+    return saleOrder != null
+        ? this.getScale(saleOrder.getCurrency())
+        : AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
   }
 
   @Override
