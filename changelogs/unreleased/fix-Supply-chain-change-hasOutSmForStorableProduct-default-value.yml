@@ -1,3 +1,3 @@
 ---
-title : "Supply chain: fix change hasOutSmForStorableProduct default value"
-type: fix
+title: "SupplychainConfig: Fixed default value for generation of out stock move for products"
+module: axelor-supplychain
