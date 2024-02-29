@@ -97,10 +97,17 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
     resetInvoiceTermAmounts(invoice, oldInvoiceTermList);
     invoiceTermReplaceService.replaceInvoiceTerms(
         invoice, oldInvoiceTermList, billOfExchangeInvoiceTermList);
+    resetInvoiceTermAmounts(
+        invoice,
+        billOfExchangeMove.getMoveLineList().stream()
+            .filter(ml -> ml.getCredit().signum() != 0)
+            .findFirst()
+            .map(MoveLine::getInvoiceTermList)
+            .orElse(new ArrayList<>()));
   }
 
-  protected void resetInvoiceTermAmounts(Invoice invoice, List<InvoiceTerm> oldInvoiceTermList) {
-    for (InvoiceTerm invoiceTerm : oldInvoiceTermList) {
+  protected void resetInvoiceTermAmounts(Invoice invoice, List<InvoiceTerm> invoiceTermList) {
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
       if (!invoice.getInvoiceTermList().contains(invoiceTerm)) {
         invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
         invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getCompanyAmount());
