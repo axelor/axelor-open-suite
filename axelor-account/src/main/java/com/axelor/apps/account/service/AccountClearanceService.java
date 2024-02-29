@@ -175,12 +175,6 @@ public class AccountClearanceService {
         vatSystemSelect = accountClearance.getVatSystemSelect();
       }
 
-      if (vatSystemSelect == AccountingSituationRepository.VAT_SYSTEM_DEFAULT) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT_CLEARANCE);
-      }
-
       Account taxAccount =
           taxAccountService.getAccount(
               tax, company, journal, vatSystemSelect, false, MoveRepository.FUNCTIONAL_ORIGIN_SALE);
@@ -327,6 +321,13 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
+    }
+
+    if (accountClearance.getVatSystemSelect() == AccountingSituationRepository.VAT_SYSTEM_DEFAULT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_7),
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 

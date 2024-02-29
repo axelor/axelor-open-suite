@@ -176,7 +176,8 @@ public final class AccountExceptionMessage {
       "%s : You must configure a clearance sequence of the overpayments for the company %s" /*)*/;
   public static final String ACCOUNT_CLEARANCE_6 = /*$$(*/
       "%s : You must configure an overpayment account clearance journal for the company %s" /*)*/;
-  public static final String ACCOUNT_CLEARANCE_7 = /*$$(*/ "Move lines generated" /*)*/;
+  public static final String ACCOUNT_CLEARANCE_7 = /*$$(*/
+      "%s : You must configure a vat system in case it can't be computed" /*)*/;
 
   /** Account customer service */
   public static final String ACCOUNT_CUSTOMER_1 = /*$$(*/
@@ -1581,10 +1582,6 @@ public final class AccountExceptionMessage {
 
   public static final String MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION = /*$$(*/
       "Please create an accounting situation for partner %s and company %s and select a vat system in order to compute it" /*)*/;
-
-  public static final String MISSING_VAT_SYSTEM_ON_ACCOUNT_CLEARANCE = /*$$(*/
-      "Please select a vat system on the account clearance." /*)*/;
-
   public static final String CUSTOM_REPORT_TIMEOUT = /*$$(*/
       "Custom report %s couldn't be computed (timeout). Related anomalies can be viewed in the dedicated tab" /*)*/;
 
