@@ -60,19 +60,33 @@
         form-view="bank-address-form"/>
       <field name="bank.country.bankDetailsTemplate.bankDetailsTypeSelect" hidden="true"/>
     </panel>
-    <panel name="ibanPanel" title="IBAN / BBAN">
-      <panel name="ibanPanel" colSpan="6"
-        hideIf="bank.country.bankDetailsTemplate.bankDetailsTypeSelect != 1">
+
+    <panel name="ibanPanel" title="IBAN / BBAN"
+      hideIf="bank.country.bankDetailsTemplate.bankDetailsTypeSelect != 1">
+      <panel name="subIbanPanel" colSpan="6">
         <field name="bank.country.bankDetailsTemplate.bankDetailsTypeSelect"
           title="Type of Bank Details Id" readonly="true" colSpan="12"/>
         <field name="iban" readonlyIf="bank==null"
-          onChange="action-group-account-bankdetails-iban-onchange" colSpan="12"/>
+          onChange="action-group-account-bankdetails-iban-onchange" colSpan="12"
+          requiredIf="bank.country.bankDetailsTemplate.bankDetailsTypeSelect == 1"/>
         <static name="invalidIbanText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
         </static>
         <field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}" colSpan="12"/>
       </panel>
-      <panel name="bbanPanel" colSpan="6">
+      <panel name="IbanBbanPanel" colSpan="6">
+        <field name="bankCode" colSpan="12"/>
+        <field name="sortCode" colSpan="12"/>
+        <field name="accountNbr" colSpan="12"/>
+        <field name="bbanKey" colSpan="12"/>
+        <field name="bank.country.alpha2Code" hidden="true"/>
+        <field name="fullName" hidden="true"/>
+      </panel>
+    </panel>
+
+    <panel name="bbanPanel" title="BBAN or others"
+      hideIf="bank.country.bankDetailsTemplate.bankDetailsTypeSelect == 1">
+      <panel name="subBbanPanel" colSpan="12">
         <field name="bankCode" colSpan="12"/>
         <field name="sortCode" colSpan="12"/>
         <field name="accountNbr" colSpan="12"/>
