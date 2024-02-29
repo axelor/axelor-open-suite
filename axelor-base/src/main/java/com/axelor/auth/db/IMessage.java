@@ -36,4 +36,7 @@ public interface IMessage {
   public static final String ERR_IMPORT_WITH_MSG = /*$$(*/
       "Error in import: %s. Please check the server log" /*)*/;
   public static final String NO_MENU = /*$$(*/ "Menu not found: %s" /*)*/;
+
+  public static final String ALL_PERMISSIONS_OBJECT_OK = /*$$(*/
+      "All permissions' objects seem to be good." /*)*/;
 }

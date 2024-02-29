@@ -77,7 +77,8 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrder purchaseOrder;
 
-      if (PurchaseOrder.class.equals(request.getContext().getParent().getContextClass())) {
+      if (request.getContext().getParent() != null
+          && PurchaseOrder.class.equals(request.getContext().getParent().getContextClass())) {
         purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
       } else {
         purchaseOrder = request.getContext().asType(PurchaseOrderLine.class).getPurchaseOrder();
@@ -107,7 +108,8 @@ public class PurchaseOrderLineController {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder;
 
-      if (PurchaseOrder.class.equals(request.getContext().getParent().getContextClass())) {
+      if (request.getContext().getParent() != null
+          && PurchaseOrder.class.equals(request.getContext().getParent().getContextClass())) {
         purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
       } else {
         purchaseOrder = purchaseOrderLine.getPurchaseOrder();

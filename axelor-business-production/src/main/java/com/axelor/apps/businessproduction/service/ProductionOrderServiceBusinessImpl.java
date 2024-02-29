@@ -24,10 +24,10 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
+import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
+import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -40,11 +40,15 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
 
   @Inject
   public ProductionOrderServiceBusinessImpl(
-      ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ProductionOrderRepository productionOrderRepo,
-      ProductionConfigService productionConfigService) {
-    super(manufOrderService, sequenceService, productionOrderRepo, productionConfigService);
+      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
+      ProductionOrderUpdateService productionOrderUpdateService) {
+    super(
+        sequenceService,
+        productionOrderRepo,
+        productionOrderSaleOrderMOGenerationService,
+        productionOrderUpdateService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -62,7 +66,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
     ProductionOrder productionOrder = this.createProductionOrder(saleOrder);
     productionOrder.setProject(project);
 
-    this.addManufOrder(
+    productionOrderSaleOrderMOGenerationService.addManufOrder(
         productionOrder,
         product,
         billOfMaterial,

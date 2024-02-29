@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="move-template-grid" title="Move templates"
     model="com.axelor.apps.account.db.MoveTemplate">
@@ -16,7 +16,7 @@
 
   <form name="move-template-form" title="Move template"
     model="com.axelor.apps.account.db.MoveTemplate" width="large"
-    onNew="action-move-template-set-default" onLoad="action-move-template-method-compute-totals">
+    onNew="action-move-template-set-default" onLoad="action-move-template-method-onload">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true" colSpan="3"/>
@@ -25,7 +25,11 @@
       <field name="journal" canEdit="false"
         readonlyIf="moveTemplateLineList &amp;&amp; moveTemplateLineList.length > 0"
         onSelect="action-move-template-set-journal-domain" grid-view="journal-grid"
-        form-view="journal-form" required="true"/>
+        form-view="journal-form" required="true" colSpan="3"
+        onChange="action-move-template-method-journal-onchange"/>
+      <field name="functionalOriginSelect"
+        readonlyIf="moveTemplateLineList &amp;&amp; moveTemplateLineList.length > 0" colSpan="3"
+        hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
       <field name="moveTemplateType" canEdit="false"
         readonlyIf="moveTemplateLineList &amp;&amp; moveTemplateLineList.length > 0" required="true"
         grid-view="move-template-type-grid" form-view="move-template-type-form" colSpan="3"/>
@@ -33,6 +37,7 @@
       <field name="endOfValidityDate"/>
       <field name="automaticallyValidate"/>
       <field name="description" widget="text" colSpan="12"/>
+      <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
     </panel>
     <panel showIf="moveTemplateType.typeSelect == 2 &amp;&amp; journal &amp;&amp; company">
       <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList"
@@ -300,6 +305,14 @@
 
   <action-method name="action-move-template-method-compute-totals">
     <call class="com.axelor.apps.account.web.MoveTemplateController" method="computeTotals"/>
+  </action-method>
+
+  <action-method name="action-move-template-method-journal-onchange">
+    <call class="com.axelor.apps.account.web.MoveTemplateController" method="onChangeJournal"/>
+  </action-method>
+
+  <action-method name="action-move-template-method-onload">
+    <call class="com.axelor.apps.account.web.MoveTemplateController" method="onLoad"/>
   </action-method>
 
 </object-views>

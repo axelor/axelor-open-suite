@@ -1,3 +1,0 @@
----
-title: "ACCOUNTINGBATCH : Correct anomaly causing Account Opening/Closing batch to treat accounts in a random order"
-type: fix

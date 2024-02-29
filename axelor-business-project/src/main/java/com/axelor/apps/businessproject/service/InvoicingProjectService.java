@@ -108,6 +108,8 @@ public class InvoicingProjectService {
 
   @Inject protected SaleOrderLineRepository saleOrderLineRepository;
 
+  @Inject protected ProjectHoldBackLineService projectHoldBackLineService;
+
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
   protected int sequence = 0;
@@ -191,6 +193,7 @@ public class InvoicingProjectService {
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
+    invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
     Beans.get(InvoiceRepository.class).save(invoice);
 
     invoicingProject.setInvoice(invoice);
@@ -417,11 +420,12 @@ public class InvoicingProjectService {
     expenseLineQueryMap.put("statusReimbursed", ExpenseRepository.STATUS_REIMBURSED);
 
     StringBuilder taskQueryBuilder = new StringBuilder(commonQuery);
-    taskQueryBuilder.append(" AND self.invoicingType = :invoicingTypePackage");
-
+    taskQueryBuilder.append(
+        " AND (self.invoicingType = :invoicingTypePackage OR self.invoicingType = :invoicingTypeProgress)");
     Map<String, Object> taskQueryMap = new HashMap<>();
     taskQueryMap.put("project", project);
     taskQueryMap.put("invoicingTypePackage", ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+    taskQueryMap.put("invoicingTypeProgress", ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
 
     if (invoicingProject.getDeadlineDate() != null) {
       solQueryBuilder.append(" AND self.saleOrder.creationDate <= :deadlineDate");

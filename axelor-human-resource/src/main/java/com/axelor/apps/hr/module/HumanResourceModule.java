@@ -110,6 +110,10 @@ import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseLineServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
+import com.axelor.apps.hr.service.expense.ExpenseLineToolServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
+import com.axelor.apps.hr.service.expense.ExpenseLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentServiceImpl;
@@ -182,6 +186,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
@@ -328,5 +334,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetCheckResponseService.class).to(TimesheetCheckResponseServiceImpl.class);
     bind(TimesheetWorkflowCheckService.class).to(TimesheetWorkflowCheckServiceImpl.class);
     bind(TimesheetLineUpdateService.class).to(TimesheetLineUpdateServiceImpl.class);
+    bind(TimesheetLineCheckService.class).to(TimesheetLineCheckServiceImpl.class);
+    bind(ExpenseLineToolService.class).to(ExpenseLineToolServiceImpl.class);
+    bind(ExpenseLineUpdateService.class).to(ExpenseLineUpdateServiceImpl.class);
   }
 }

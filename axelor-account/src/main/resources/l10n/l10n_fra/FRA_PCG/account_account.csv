@@ -1,4 +1,4 @@
-"code";"parent_code";"name";"accountType.importId";"isRegulatoryAccount";"commonPosition";"reconcileOk";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"defaultTax.code";"vatSystemSelect";"isRetrievedOnPaymentSession";"serviceType.code";"manageCutOffPeriod";"statusSelect"
+"code";"parent_code";"name";"accountType.importId";"isRegulatoryAccount";"commonPosition";"reconcileOk";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"defaultTaxSet";"vatSystemSelect";"isRetrievedOnPaymentSession";"serviceType.code";"manageCutOffPeriod";"statusSelect"
 0;;"Racine PCG";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";1
 "CL1_5";0;"Comptes de bilan";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";1
 "CL6_7";0;"Comptes de gestion";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";1
@@ -465,7 +465,7 @@
 445511;445510;"TVA N à décaisser taux normal";"FRA_PCG250";"false";2;;;;"true";;"N_D";0;"false";"NDAS";"false";1
 445512;445510;"TVA R1 à décaisser taux intermédiaire";"FRA_PCG250";"false";2;;;;"true";;"R1_D";0;"false";"NDAS";"false";1
 445513;445510;"TVA R2 à décaisser taux réduit";"FRA_PCG250";"false";2;;;;"true";;"R2_D";0;"false";"NDAS";"false";1
-445514;445510;"TVA décaissée (autre taux : U...)";"FRA_PCG250";"false";2;;;;"true";;;0;"false";"NDAS";"false";1
+445514;445510;"TVA décaissée (autre taux : U...)";"FRA_PCG250";"false";2;;;;"true";;;0;"false";"NDAS";"false";1
 445580;445500;"Taxes assimilées à la TVA";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";1
 445600;445000;"Taxes sur le chiffre d'affaires déductibles";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";1
 445620;445600;"TVA sur immobilisations";"FRA_PCG250";"true";0;;;;"true";;"N_D";0;"false";"NDAS";"false";1
@@ -479,7 +479,7 @@
 445711;445710;"TVA N collectée taux normal";"FRA_PCG250";"false";1;;;;"true";;"N_C";0;"false";"NDAS";"false";1
 445712;445710;"TVA R1 collectée taux intermédiaire";"FRA_PCG250";"false";1;;;;"true";;"R1_C";0;"false";"NDAS";"false";1
 445713;445710;"TVA R2 collectée taux réduit";"FRA_PCG250";"false";0;;;;"true";;"R2_C";0;"false";"NDAS";"false";1
-445714;445710;"TVA collectée (autre taux : U...)";"FRA_PCG250";"false";0;;;;"true";;;0;"false";"NDAS";"false";1
+445714;445710;"TVA collectée (autre taux : U...)";"FRA_PCG250";"false";0;;;;"true";;;0;"false";"NDAS";"false";1
 445780;445700;"Taxes assimilées à la TVA";"FRA_PCG250";"true";0;;;;"true";;;0;"false";"NDAS";"false";1
 445800;445000;"Taxes sur le chiffre d'affaires à régulariser ou en attente";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";1
 445810;445800;"Acomptes - Régime simplifié d'imposition";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";1

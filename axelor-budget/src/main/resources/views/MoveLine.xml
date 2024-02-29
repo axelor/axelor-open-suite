@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form id="budget-move-line-tabs-form" name="move-line-tabs-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" extension="true">
@@ -23,35 +23,6 @@
             readonlyIf="isBudgetImputed"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-move-line-method-set-budget-domain"/>
-          <panel-related name="budgetDistributionListPanel" title="Budget"
-            field="budgetDistributionList" grid-view="move-line-budget-distribution-grid"
-            form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
-            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            onChange="action-method-move-line-budget-distribution-validate-amount"/>
-        </panel>
-      </insert>
-    </extend>
-  </form>
-
-  <form id="budget-move-line-form" name="move-line-form" title="Move line"
-    model="com.axelor.apps.account.db.MoveLine" extension="true">
-
-    <extend target="//panel[@name='othersPanel']">
-      <insert position="inside">
-        <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="account.accountType" hidden="true"/>
-        <field name="move.statusSelect" hidden="true"/>
-      </insert>
-      <insert position="after">
-        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')"
-          showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)">
-          <field name="budgetDistributionSumAmount" colSpan="6"
-            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true"/>
-          <field name="budget" onChange="action-reset-budget-distribution-list-method"
-            if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonlyIf="isBudgetImputed" canEdit="false"
-            onSelect="action-move-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel" title="Budget"
             field="budgetDistributionList" grid-view="move-line-budget-distribution-grid"
             form-view="move-line-budget-distribution-form" editable="true" colSpan="12"

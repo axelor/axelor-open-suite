@@ -137,16 +137,17 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addFunctionalOriginSelectDomain(
-      Move move, Map<String, Map<String, Object>> attrsMap) {
+  public Map<String, Map<String, Object>> addFunctionalOriginSelectDomain(Journal journal) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
     String selectionValue = null;
 
-    if (move.getJournal() != null) {
+    if (journal != null) {
       selectionValue =
-          Optional.ofNullable(move.getJournal().getAuthorizedFunctionalOriginSelect()).orElse("0");
+          Optional.ofNullable(journal.getAuthorizedFunctionalOriginSelect()).orElse("0");
     }
 
     this.addAttr("functionalOriginSelect", "selection-in", selectionValue, attrsMap);
+    return attrsMap;
   }
 
   @Override

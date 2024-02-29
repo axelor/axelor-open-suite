@@ -1,5 +1,24 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.rest.dto;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -21,6 +40,9 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
 
   @Min(0)
   private Long projectTaskId;
+
+  @Min(0)
+  private Long productId;
 
   @NotNull private LocalDate date;
 
@@ -54,6 +76,14 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
 
   public void setProjectTaskId(Long projectTaskId) {
     this.projectTaskId = projectTaskId;
+  }
+
+  public Long getProductId() {
+    return productId;
+  }
+
+  public void setProductId(Long productId) {
+    this.productId = productId;
   }
 
   public LocalDate getDate() {
@@ -104,5 +134,12 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
+  }
+
+  public Product fetchProduct() {
+    if (productId == null || productId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
   }
 }

@@ -337,6 +337,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoiceGenerator.populate(invoice, invoiceLinesList);
 
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 

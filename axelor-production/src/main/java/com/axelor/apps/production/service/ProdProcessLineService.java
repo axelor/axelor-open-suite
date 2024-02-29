@@ -39,4 +39,6 @@ public interface ProdProcessLineService {
       throws AxelorException;
 
   long computeEntireDuration(ProdProcess prodProcess, BigDecimal qty) throws AxelorException;
+
+  long computeLeadTimeDuration(ProdProcess prodProcess, BigDecimal qty) throws AxelorException;
 }

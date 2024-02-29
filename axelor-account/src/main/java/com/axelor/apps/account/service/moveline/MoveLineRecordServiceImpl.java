@@ -31,11 +31,14 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.common.ObjectUtils;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected AppAccountService appAccountService;
@@ -73,7 +76,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       }
     }
 
-    moveLine.setCurrencyRate(currencyRate);
+    moveLine.setCurrencyRate(currencyRate.setScale(5, RoundingMode.HALF_UP));
 
     BigDecimal total = moveLine.getCredit().add(moveLine.getDebit());
 
@@ -114,23 +117,27 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     Account accountingAccount = moveLine.getAccount();
 
     if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
-      moveLine.setTaxLine(null);
+      moveLine.setTaxLineSet(Sets.newHashSet());
       return;
     }
 
-    TaxLine taxLine = moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
+    Set<TaxLine> taxLineSet =
+        moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount);
     TaxEquiv taxEquiv = null;
-    moveLine.setTaxLineBeforeReverse(null);
-    if (taxLine != null) {
+    Set<TaxLine> taxLineBeforeReverseSet = moveLine.getTaxLineBeforeReverseSet();
+    moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
+
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
       if (move.getFiscalPosition() != null) {
-        taxEquiv = fiscalPositionService.getTaxEquiv(move.getFiscalPosition(), taxLine.getTax());
+        taxEquiv =
+            fiscalPositionService.getTaxEquiv(
+                move.getFiscalPosition(), taxLineSet.iterator().next().getTax());
       }
 
-      moveLine.setTaxLine(taxLine);
-
+      moveLine.setTaxLineSet(taxLineSet);
+      moveLine.setTaxLineBeforeReverseSet(taxLineBeforeReverseSet);
       if (taxEquiv != null) {
         moveLine.setTaxEquiv(taxEquiv);
-        moveLine.setTaxLineBeforeReverse(taxLine);
       }
     }
 

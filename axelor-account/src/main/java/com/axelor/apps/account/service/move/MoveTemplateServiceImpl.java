@@ -45,6 +45,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -53,7 +54,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,18 +179,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
         partner = creditPartner;
       }
       if (moveTemplate.getJournal().getCompany() != null) {
-        int[] functionalOriginTab = new int[0];
-        if (!ObjectUtils.isEmpty(moveTemplate.getJournal().getAuthorizedFunctionalOriginSelect())) {
-          functionalOriginTab =
-              Arrays.stream(
-                      moveTemplate
-                          .getJournal()
-                          .getAuthorizedFunctionalOriginSelect()
-                          .replace(" ", "")
-                          .split(","))
-                  .mapToInt(Integer::parseInt)
-                  .toArray();
-        }
         BankDetails companyBankDetails = null;
         if (moveTemplate != null
             && moveTemplate.getJournal() != null
@@ -210,7 +198,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                 null,
                 partner != null ? partner.getFiscalPosition() : null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
+                moveTemplate.getFunctionalOriginSelect(),
                 origin,
                 moveTemplate.getDescription(),
                 companyBankDetails);
@@ -259,7 +247,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
             if (tax != null) {
               TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
               if (taxLine != null) {
-                moveLine.setTaxLine(taxLine);
+                moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
                 moveLine.setTaxRate(taxLine.getValue());
                 moveLine.setTaxCode(tax.getCode());
                 moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
@@ -307,18 +295,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
           moveTemplateRepo.find(Long.valueOf((Integer) moveTemplateMap.get("id")));
 
       if (moveTemplate.getJournal().getCompany() != null) {
-        int[] functionalOriginTab = new int[0];
-        if (!ObjectUtils.isEmpty(moveTemplate.getJournal().getAuthorizedFunctionalOriginSelect())) {
-          functionalOriginTab =
-              Arrays.stream(
-                      moveTemplate
-                          .getJournal()
-                          .getAuthorizedFunctionalOriginSelect()
-                          .replace(" ", "")
-                          .split(","))
-                  .mapToInt(Integer::parseInt)
-                  .toArray();
-        }
         Partner moveTemplatePartner = fillPartnerWithMoveTemplate(moveTemplate);
 
         BankDetails companyBankDetails = null;
@@ -348,7 +324,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                     : moveTemplatePartner.getOutPaymentMode(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
+                moveTemplate.getFunctionalOriginSelect(),
                 moveTemplate.getFullName(),
                 moveTemplate.getDescription(),
                 companyBankDetails);
@@ -379,7 +355,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
             if (tax != null) {
               TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
               if (taxLine != null) {
-                moveLine.setTaxLine(taxLine);
+                moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
                 moveLine.setTaxRate(taxLine.getValue());
                 moveLine.setTaxCode(tax.getCode());
                 moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));

@@ -36,6 +36,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -50,6 +51,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -306,7 +308,7 @@ public class AccountClearanceService {
   protected void setTax(MoveLine moveLine, Tax tax, int vatSystemSelect) {
     TaxLine taxLine = tax.getActiveTaxLine();
 
-    moveLine.setTaxLine(taxLine);
+    moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
     moveLine.setTaxRate(taxLine.getValue());
     moveLine.setTaxCode(tax.getCode());
     moveLine.setVatSystemSelect(vatSystemSelect);
