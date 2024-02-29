@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,9 +20,11 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
@@ -40,15 +42,32 @@ import java.time.LocalDate;
 
 public class TrackingNumberService {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
+  protected TrackingNumberRepository trackingNumberRepo;
+  protected AppStockService appStockService;
 
-  @Inject private TrackingNumberRepository trackingNumberRepo;
+  protected ProductCompanyService productCompanyService;
 
-  @Inject private AppStockService appStockService;
+  @Inject
+  public TrackingNumberService(
+      SequenceService sequenceService,
+      TrackingNumberRepository trackingNumberRepo,
+      AppStockService appStockService,
+      ProductCompanyService productCompanyService) {
+    this.sequenceService = sequenceService;
+    this.trackingNumberRepo = trackingNumberRepo;
+    this.appStockService = appStockService;
+    this.productCompanyService = productCompanyService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
-      Product product, BigDecimal sizeOfLot, Company company, LocalDate date, String origin)
+      Product product,
+      BigDecimal sizeOfLot,
+      Company company,
+      LocalDate date,
+      String origin,
+      Partner supplier)
       throws AxelorException {
 
     TrackingNumber trackingNumber =
@@ -59,7 +78,8 @@ public class TrackingNumberService {
 
     if (trackingNumber == null) {
       trackingNumber =
-          trackingNumberRepo.save(this.createTrackingNumber(product, company, date, origin));
+          trackingNumberRepo.save(
+              this.createTrackingNumber(product, company, date, origin, supplier));
     }
 
     trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));
@@ -88,7 +108,8 @@ public class TrackingNumberService {
   }
 
   public TrackingNumber createTrackingNumber(
-      Product product, Company company, LocalDate date, String origin) throws AxelorException {
+      Product product, Company company, LocalDate date, String origin, Partner supplier)
+      throws AxelorException {
     Preconditions.checkNotNull(product, I18n.get("Product cannot be null."));
     Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
     if (date == null) {
@@ -114,7 +135,8 @@ public class TrackingNumberService {
     trackingNumber.setCounter(BigDecimal.ZERO);
 
     TrackingNumberConfiguration trackingNumberConfiguration =
-        product.getTrackingNumberConfiguration();
+        (TrackingNumberConfiguration)
+            productCompanyService.get(product, "trackingNumberConfiguration", company);
 
     if (trackingNumberConfiguration.getSequence() == null) {
       throw new AxelorException(
@@ -128,7 +150,9 @@ public class TrackingNumberService {
     Sequence sequence = trackingNumberConfiguration.getSequence();
     String seq;
     while (true) {
-      seq = sequenceService.getSequenceNumber(sequence, TrackingNumber.class, "trackingNumberSeq");
+      seq =
+          sequenceService.getSequenceNumber(
+              sequence, TrackingNumber.class, "trackingNumberSeq", trackingNumber);
       if (trackingNumberRepo
               .all()
               .filter("self.product = ?1 AND self.trackingNumberSeq = ?2", product, seq)
@@ -151,16 +175,23 @@ public class TrackingNumberService {
         trackingNumber.setSerialNumber(seq);
       }
     }
+    trackingNumber.setSupplier(supplier);
 
     return trackingNumber;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber generateTrackingNumber(
-      Product product, Company company, LocalDate date, String origin, String notes)
+      Product product,
+      Company company,
+      LocalDate date,
+      String origin,
+      Partner supplier,
+      String notes)
       throws AxelorException {
 
-    TrackingNumber trackingNumber = this.createTrackingNumber(product, company, date, origin);
+    TrackingNumber trackingNumber =
+        this.createTrackingNumber(product, company, date, origin, supplier);
     trackingNumber.setOrigin(origin);
     trackingNumber.setNote(notes);
     trackingNumberRepo.save(trackingNumber);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -32,6 +33,7 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -45,7 +47,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
       AccountManagementAccountService accountManagementAccountService,
       AnalyticToolService analyticToolService,
       SaleConfigService saleConfigService,
-      PurchaseConfigService purchaseConfigService) {
+      PurchaseConfigService purchaseConfigService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         appBaseService,
         appAccountService,
@@ -53,7 +56,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
         accountManagementAccountService,
         analyticToolService,
         saleConfigService,
-        purchaseConfigService);
+        purchaseConfigService,
+        currencyScaleServiceAccount);
   }
 
   @Override
@@ -81,7 +85,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
 
     super.createAnalyticDistributionWithTemplate(analyticLineModel);
 
-    if (analyticLineProjectModel.getProject() != null) {
+    if (analyticLineProjectModel.getProject() != null
+        && ObjectUtils.notEmpty(analyticLineProjectModel.getAnalyticMoveLineList())) {
       List<AnalyticMoveLine> analyticMoveLineList =
           analyticLineProjectModel.getAnalyticMoveLineList();
 

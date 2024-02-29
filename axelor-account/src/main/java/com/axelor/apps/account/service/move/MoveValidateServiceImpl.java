@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,11 +39,13 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -53,6 +55,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -104,6 +107,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveControlService moveControlService;
   protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
+  protected CompanyConfigService companyConfigService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -124,7 +130,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       PeriodServiceAccount periodServiceAccount,
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
-      MoveLineCheckService moveLineCheckService) {
+      MoveLineCheckService moveLineCheckService,
+      CompanyConfigService companyConfigService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -143,6 +152,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveControlService = moveControlService;
     this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
+    this.companyConfigService = companyConfigService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   /**
@@ -335,9 +347,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .map(InvoiceTerm::getCompanyAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-      if (totalMoveLineInvoiceTerm.compareTo(
-              moveLine.getDebit().max(moveLine.getCredit()).add(financialDiscount))
-          != 0) {
+      if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -610,7 +620,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
    * @param move
    */
   @Override
-  public void freezeFieldsOnMoveLines(Move move) {
+  public void freezeFieldsOnMoveLines(Move move) throws AxelorException {
     for (MoveLine moveLine : move.getMoveLineList()) {
 
       Account account = moveLine.getAccount();
@@ -635,7 +645,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine) {
+  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine) throws AxelorException {
     Company company = move.getCompany();
     Journal journal = move.getJournal();
     moveLine.setCompanyCode(company.getCode());
@@ -644,7 +654,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveLine.setJournalName(journal.getName());
     moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
     moveLine.setCurrencyCode(move.getCurrencyCode());
-    moveLine.setCompanyCurrencyCode(company.getCurrency().getCode());
+    moveLine.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
+    moveLine.setCompanyCurrencyCode(companyConfigService.getCompanyCurrency(company).getCode());
+    moveLine.setCompanyCurrencyDecimals(
+        companyConfigService.getCompanyCurrency(company).getNumberOfDecimals());
     moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
@@ -849,7 +862,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkTaxAmount(Move move) throws AxelorException {
-    if (this.isReverseCharge(move)) {
+    if (this.isReverseCharge(move) || this.isFinancialDiscount(move)) {
       return;
     }
 
@@ -899,7 +912,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         .multiply(moveLine.getTaxLine().getValue())
         .divide(
             BigDecimal.valueOf(100),
-            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+            currencyScaleServiceAccount.getCompanyScale(moveLine),
             RoundingMode.HALF_UP);
   }
 
@@ -923,6 +936,16 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           .filter(Objects::nonNull)
           .anyMatch(TaxEquiv::getReverseCharge);
     }
+  }
+
+  protected boolean isFinancialDiscount(Move move) throws AxelorException {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   protected void checkMoveLineDescription(Move move) throws AxelorException {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -69,6 +70,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -116,7 +118,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
-      PfpService pfpService) {
+      PfpService pfpService,
+      ProductCompanyService productCompanyService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -127,7 +130,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         productRepository,
         partnerStockSettingsService,
         stockConfigService,
-        appStockService);
+        appStockService,
+        productCompanyService);
     this.appSupplyChainService = appSupplyChainService;
     this.appAccountService = appAccountService;
     this.purchaseOrderRepo = purchaseOrderRepo;
@@ -261,8 +265,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void planStockMove(StockMove stockMove) throws AxelorException {
-    super.planStockMove(stockMove);
+  public void planStockMove(StockMove stockMove, boolean splitByTrackingNumber)
+      throws AxelorException {
+    super.planStockMove(stockMove, splitByTrackingNumber);
     updateReservedQuantity(stockMove);
   }
 
@@ -686,5 +691,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     stockMove = stockMoveRepo.find(stockMove.getId());
     stockMove.setInvoicingStatusSelect(StockMoveRepository.STATUS_VALIDATED_INVOICE);
     stockMoveRepo.save(stockMove);
+  }
+
+  @Override
+  public void fillRealQuantities(StockMove stockMove) {
+    Objects.requireNonNull(stockMove);
+
+    if (stockMove.getStockMoveLineList() != null) {
+      stockMove.getStockMoveLineList().forEach(sml -> sml.setRealQty(sml.getQty()));
+    }
   }
 }

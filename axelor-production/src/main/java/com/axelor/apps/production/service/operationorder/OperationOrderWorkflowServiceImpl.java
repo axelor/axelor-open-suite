@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -242,6 +242,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
     stopOperationOrderDuration(operationOrder);
+    operationOrderPlanningService.computeDuration(operationOrder);
 
     operationOrderStockMoveService.finish(operationOrder);
     operationOrderRepo.save(operationOrder);
@@ -406,7 +407,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected void computeFinishDuration(OperationOrder operationOrder) {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong =
-          DurationTool.getSecondsDuration(
+          DurationHelper.getSecondsDuration(
               operationOrderService.computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
       Machine machine = operationOrder.getMachine();

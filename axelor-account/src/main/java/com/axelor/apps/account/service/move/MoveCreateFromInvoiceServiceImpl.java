@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -189,7 +189,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setTradingName(invoice.getTradingName());
         paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
-        move.setSubrogationPartner(invoice.getSubrogationPartner());
+        move.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner());
 
         move.setDueDate(invoice.getDueDate());
 
@@ -361,7 +361,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               moveToolService
                   .getTotalCurrencyAmount(creditMoveLineList)
                   .min(invoiceCustomerMoveLine.getCurrencyAmount());
-          LocalDate date = appAccountService.getTodayDate(company);
+          LocalDate date = invoice.getInvoiceDate();
 
           // credit move line creation
           MoveLine creditMoveLine =
@@ -466,7 +466,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           moveToolService
               .getTotalCurrencyAmount(debitMoveLines)
               .min(invoiceCustomerMoveLine.getCurrencyAmount().abs());
-      LocalDate date = appAccountService.getTodayDate(company);
+      LocalDate date = invoice.getInvoiceDate();
 
       // debit move line creation
       MoveLine debitMoveLine =
@@ -497,7 +497,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           company,
           null,
           account,
-          appAccountService.getTodayDate(company));
+          invoice.getInvoiceDate());
 
       moveValidateService.accounting(oDmove);
 

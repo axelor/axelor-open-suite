@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,4 +38,7 @@ public final class BusinessProductionExceptionMessage {
 
   public static final String WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIME_LOGGING = /*$$(*/
       "Some working employees have their time logging preference set to 'days' or it is not matching with their current timesheet, do you want to continue anyway ?" /*)*/;
+
+  public static final String TIMESHEET_MANUF_ORDER_NOT_ENABLED = /*$$(*/
+      "Timesheet on manuf order is not enabled." /*)*/;
 }

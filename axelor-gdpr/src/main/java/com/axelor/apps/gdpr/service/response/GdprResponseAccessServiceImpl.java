@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,7 +42,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.*;
-import wslite.json.JSONException;
 
 public class GdprResponseAccessServiceImpl implements GdprResponseAccessService {
 
@@ -132,7 +131,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
       messageService.attachMetaFiles(message, metaFileList);
       messageService.sendMessage(message);
       return message;
-    } catch (ClassNotFoundException | IOException | JSONException e) {
+    } catch (ClassNotFoundException | IOException e) {
       throw new AxelorException(
           e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

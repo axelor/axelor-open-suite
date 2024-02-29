@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.FileTool;
+import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -168,7 +168,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     lines.addAll(generateN4DSLines(accountingExport));
 
     File file =
-        FileTool.writer(
+        FileHelper.writer(
             Beans.get(AppService.class).getDataExportDir(), fileName, (List<String>) lines);
     InputStream is = new FileInputStream(file);
     return Beans.get(MetaFiles.class).attach(is, fileName, accountingExport).getMetaFile();

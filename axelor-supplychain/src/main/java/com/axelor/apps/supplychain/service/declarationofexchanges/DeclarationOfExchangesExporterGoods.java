@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,7 +45,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.io.MoreFiles;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -139,7 +139,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
     try {
       MoreFiles.createParentDirectories(path);
-      CsvTool.csvWriter(
+      CsvHelper.csvWriter(
           path.getParent().toString(),
           path.getFileName().toString(),
           ';',

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
@@ -46,6 +47,7 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
   public InvoicePaymentCreateServiceBankPayImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyService currencyService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
@@ -56,6 +58,7 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
     super(
         invoicePaymentRepository,
         invoicePaymentToolService,
+        invoicePaymentFinancialDiscountService,
         currencyService,
         appBaseService,
         invoiceTermPaymentService,

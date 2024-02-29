@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,23 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetScenario;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
+import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface BudgetScenarioLineService {
   ArrayList<Integer> getFiscalYears(BudgetScenario budgetScenario);
 
   void removeUnusedYears(BudgetScenarioLine budgetScenarioLine, int size);
+
+  List<Map<String, Object>> getLineUsingSection(
+      BudgetLevel section,
+      Set<BudgetScenarioVariable> budgetScenarioVariableSet,
+      List<BudgetScenarioLine> budgetScenarioLineOriginList,
+      List<Map<String, Object>> budgetScenarioLineList);
 }

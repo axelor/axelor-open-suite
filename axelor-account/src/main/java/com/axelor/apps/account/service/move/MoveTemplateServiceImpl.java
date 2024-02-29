@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
@@ -75,6 +76,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected MoveLineToolService moveLineToolService;
   protected MoveRecordUpdateService moveRecordUpdateService;
 
   protected List<String> exceptionsList;
@@ -92,7 +94,8 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       MoveTemplateRepository moveTemplateRepo,
       MoveLineTaxService moveLineTaxService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveRecordUpdateService moveRecordUpdateService) {
+      MoveRecordUpdateService moveRecordUpdateService,
+      MoveLineToolService moveLineToolService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -106,6 +109,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     this.moveLineTaxService = moveLineTaxService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveRecordUpdateService = moveRecordUpdateService;
+    this.moveLineToolService = moveLineToolService;
 
     this.exceptionsList = Lists.newArrayList();
   }
@@ -275,6 +279,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);
             }
 
+            moveLineToolService.setDecimals(moveLine, move);
             moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveRecordUpdateService.updateDueDate(move, false, false);
 
@@ -392,6 +397,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
             moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveRecordUpdateService.updateDueDate(move, false, false);
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+            moveLineToolService.setDecimals(moveLine, move);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);

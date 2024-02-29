@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
-import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -39,16 +39,16 @@ import java.util.stream.Collectors;
 public class ExpenseLineCheckResponseServiceImpl implements ExpenseLineCheckResponseService {
   protected AppBaseService appBaseService;
   protected ExpenseLineService expenseLineService;
-  protected ExpenseToolService expenseToolService;
+  protected ExpenseLineToolService expenseLineToolService;
 
   @Inject
   public ExpenseLineCheckResponseServiceImpl(
       AppBaseService appBaseService,
       ExpenseLineService expenseLineService,
-      ExpenseToolService expenseToolService) {
+      ExpenseLineToolService expenseLineToolService) {
     this.appBaseService = appBaseService;
     this.expenseLineService = expenseLineService;
-    this.expenseToolService = expenseToolService;
+    this.expenseLineToolService = expenseLineToolService;
   }
 
   @Override
@@ -129,7 +129,7 @@ public class ExpenseLineCheckResponseServiceImpl implements ExpenseLineCheckResp
   }
 
   protected CheckResponseLine checkKilometricExpenseLineDistance(ExpenseLine expenseLine) {
-    if (!expenseToolService.isKilometricExpenseLine(expenseLine)) {
+    if (!expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
       return null;
     }
     if (expenseLine.getDistance().compareTo(BigDecimal.ZERO) == 0) {

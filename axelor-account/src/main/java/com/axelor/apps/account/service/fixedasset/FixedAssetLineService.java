@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -111,14 +111,6 @@ public interface FixedAssetLineService {
    * @param date
    */
   void filterListByDate(List<FixedAssetLine> fixedAssetLineList, LocalDate date);
-
-  /**
-   * Get Fixed asset of fixedAssetLine.
-   *
-   * @param fixedAssetLine
-   * @return fixedAsset : {@link FixedAsset}
-   */
-  FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException;
 
   /**
    * Set Fixed asset of fixedAssetLine.

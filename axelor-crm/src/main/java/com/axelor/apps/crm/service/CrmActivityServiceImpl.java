@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,6 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
@@ -208,7 +207,7 @@ public class CrmActivityServiceImpl implements CrmActivityService {
               "opportunity",
               opportunity.getOpportunityRating().toString(),
               opportunity.getOpportunityStatus().getName(),
-              opportunity.getOpportunityType());
+              opportunity.getOpportunityType().getName());
       data.put("closedWonStatus", closedWinStatus);
       data.put("closedLostStatus", closedLostStatus);
       eventMapList.add(data);
@@ -239,17 +238,14 @@ public class CrmActivityServiceImpl implements CrmActivityService {
       for (Map<String, String> item : (List<Map>) bodyData.get("tracks")) {
         if (LEAD_STATUS_FIELD.equals(item.get("name"))
             || PARTNER_STATUS_FIELD.equals(item.get("name"))) {
-          String value = item.get("value");
-          String oldValue = item.get("oldValue");
-
-          String name = "";
-          if (!StringUtils.isBlank(oldValue)) {
-            name = oldValue + " <i class='fa fa-long-arrow-right'></i> ";
-          }
-          name += value;
 
           Map<String, Object> data =
-              createActivityCardData(mailMessage.getCreatedOn(), "statusChange", name, "", "");
+              createActivityCardData(
+                  mailMessage.getCreatedOn(),
+                  "statusChange",
+                  json.writeValueAsString(item),
+                  "",
+                  "");
           statusTrackingData.add(data);
         }
       }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -76,7 +76,7 @@ public class ProjectManagementRepository extends ProjectRepository {
         String seq =
             Beans.get(SequenceService.class)
                 .getSequenceNumber(
-                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code");
+                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code", project);
 
         if (seq == null) {
           throw new AxelorException(

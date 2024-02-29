@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
@@ -41,6 +42,7 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -90,7 +92,6 @@ import org.slf4j.LoggerFactory;
 public class ReconcileServiceImpl implements ReconcileService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final int ALTERNATIVE_SCALE = 5;
 
   protected MoveToolService moveToolService;
   protected AccountCustomerService accountCustomerService;
@@ -114,6 +115,8 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected InvoiceTermPfpService invoiceTermPfpService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -138,7 +141,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       SubrogationReleaseWorkflowService subrogationReleaseWorkflowService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      InvoiceTermPfpService invoiceTermPfpService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -162,6 +167,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.invoiceTermPfpService = invoiceTermPfpService;
   }
 
   /**
@@ -179,10 +186,12 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal amount,
-      boolean canBeZeroBalanceOk) {
+      boolean canBeZeroBalanceOk)
+      throws AxelorException {
 
     if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)
         && amount.compareTo(BigDecimal.ZERO) > 0) {
+
       log.debug(
           "Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
           debitMoveLine.getMove().getCompany(),
@@ -194,7 +203,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile =
           new Reconcile(
               debitMoveLine.getMove().getCompany(),
-              amount.setScale(2, RoundingMode.HALF_UP),
+              currencyScaleServiceAccount.getCompanyScaledValue(debitMoveLine, amount),
               debitMoveLine,
               creditMoveLine,
               ReconcileRepository.STATUS_DRAFT,
@@ -227,7 +236,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     checkDifferentAccounts(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
-    reconcile = initReconcileConfirmation(reconcile);
+    reconcile = initReconcileConfirmation(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
     if (updateInvoicePayments) {
       this.updatePayments(reconcile, updateInvoiceTerms);
@@ -269,9 +278,11 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Reconcile initReconcileConfirmation(Reconcile reconcile) throws AxelorException {
+  public Reconcile initReconcileConfirmation(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerm)
+      throws AxelorException {
 
-    this.reconcilePreconditions(reconcile);
+    this.reconcilePreconditions(reconcile, updateInvoicePayments, updateInvoiceTerm);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
@@ -315,7 +326,9 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   @Override
-  public void reconcilePreconditions(Reconcile reconcile) throws AxelorException {
+  public void reconcilePreconditions(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
+      throws AxelorException {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
@@ -356,14 +369,16 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (reconcile
-                .getAmount()
-                .compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()))
-            > 0
-        || reconcile
-                .getAmount()
-                .compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()))
-            > 0) {
+    if (currencyScaleServiceAccount.isGreaterThan(
+            reconcile.getAmount(),
+            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
+            creditMoveLine,
+            false)
+        || currencyScaleServiceAccount.isGreaterThan(
+            reconcile.getAmount(),
+            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
+            debitMoveLine,
+            false)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -378,6 +393,31 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getName(),
           creditMoveLine.getAccount().getLabel(),
           creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()));
+    }
+
+    // Check tax lines
+    this.taxLinePrecondition(creditMoveLine.getMove());
+    this.taxLinePrecondition(debitMoveLine.getMove());
+
+    if (updateInvoiceTerms && updateInvoicePayments) {
+      invoiceTermPfpService.validatePfpValidatedAmount(
+          debitMoveLine, creditMoveLine, reconcile.getAmount());
+    }
+  }
+
+  protected void taxLinePrecondition(Move move) throws AxelorException {
+    if (move.getMoveLineList().stream()
+        .anyMatch(
+            it ->
+                it.getTaxLine() == null
+                    && it.getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          AccountExceptionMessage.RECONCILE_MISSING_TAX,
+          move.getReference());
     }
   }
 
@@ -489,7 +529,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         && !Objects.equals(creditCurrency, companyCurrency)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.RECONCILE_WRONG_CURRENCY);
+          I18n.get(AccountExceptionMessage.RECONCILE_WRONG_CURRENCY));
     }
   }
 
@@ -589,13 +629,13 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Recompute currency rate to avoid rounding issue
     total = amount.divide(rate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-    if (total.stripTrailingZeros().scale() > AppBaseService.DEFAULT_NB_DECIMAL_DIGITS) {
+    if (total.stripTrailingZeros().scale() > currencyScaleServiceAccount.getScale(otherMoveLine)) {
       total =
           computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
               .multiply(moveLine.getCurrencyAmount().abs());
     }
 
-    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    total = currencyScaleServiceAccount.getScaledValue(moveLine, total);
 
     if (amount.compareTo(otherMoveLine.getCredit().max(otherMoveLine.getDebit())) == 0
         && total.compareTo(otherMoveLine.getCurrencyAmount()) != 0) {
@@ -612,8 +652,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal computedAmount,
       boolean isInvoicePayment) {
     BigDecimal ratioPaid = BigDecimal.ONE;
-    int scale = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
-    BigDecimal percentage = amountToPay.divide(computedAmount, scale, RoundingMode.HALF_UP);
+    int percentageScale = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
+    BigDecimal percentage =
+        amountToPay.divide(computedAmount, percentageScale, RoundingMode.HALF_UP);
 
     if (isInvoicePayment) {
       // ReCompute percentage paid when it's partial payment with invoice payment
@@ -622,12 +663,12 @@ public class ReconcileServiceImpl implements ReconcileService {
               invoiceAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     } else if (moveLineAmount
             .multiply(percentage)
-            .setScale(scale, RoundingMode.HALF_UP)
+            .setScale(percentageScale, RoundingMode.HALF_UP)
             .compareTo(amountToPay)
         != 0) {
       // Compute ratio paid when it's invoice term partial payment
       if (amountToPay.compareTo(invoiceAmount) != 0) {
-        percentage = invoiceAmount.divide(computedAmount, scale, RoundingMode.HALF_UP);
+        percentage = invoiceAmount.divide(computedAmount, percentageScale, RoundingMode.HALF_UP);
       } else {
         percentage =
             invoiceAmount.divide(
@@ -717,7 +758,8 @@ public class ReconcileServiceImpl implements ReconcileService {
           }
         }
 
-        invoiceTermsToPay = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+        invoiceTermsToPay =
+            invoiceTermService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
       } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
         invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
@@ -975,6 +1017,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
       invoicePaymentCancelService.updateCancelStatus(invoicePayment);
     }
+
+    invoiceTermPaymentRepo
+        .findByReconcileId(reconcile.getId())
+        .fetch()
+        .forEach(it -> it.setInvoiceTerm(null));
   }
 
   public void updateInvoiceTermsAmountRemaining(Reconcile reconcile) throws AxelorException {

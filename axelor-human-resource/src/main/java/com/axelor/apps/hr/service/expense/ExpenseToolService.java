@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,8 +41,15 @@ public interface ExpenseToolService {
   void addExpenseLinesToExpense(Expense expense, List<ExpenseLine> expenseLineList)
       throws AxelorException;
 
+  void addExpenseLineToExpense(Expense expense, ExpenseLine expenseLine) throws AxelorException;
+
   void addExpenseLinesToExpenseAndCompute(Expense expense, List<ExpenseLine> expenseLineList)
       throws AxelorException;
 
-  boolean isKilometricExpenseLine(ExpenseLine expenseLine);
+  void addExpenseLineToExpenseAndCompute(Expense expense, ExpenseLine expenseLine)
+      throws AxelorException;
+
+  boolean hasSeveralCurrencies(List<ExpenseLine> expenseLineList);
+
+  boolean hasSeveralEmployees(List<ExpenseLine> expenseLineList);
 }

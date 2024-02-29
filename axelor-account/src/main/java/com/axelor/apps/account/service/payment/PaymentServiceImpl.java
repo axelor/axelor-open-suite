@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -282,7 +282,7 @@ public class PaymentServiceImpl implements PaymentService {
         invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
       }
 
-      LocalDate date = appAccountService.getTodayDate(company);
+      LocalDate date = paymentDate;
 
       MoveLine creditMoveLine =
           moveLineCreateService.createMoveLine(
@@ -345,7 +345,7 @@ public class PaymentServiceImpl implements PaymentService {
               account,
               remainingPaidAmount2,
               false,
-              appAccountService.getTodayDate(company),
+              paymentDate,
               moveLineNo2,
               null,
               null);

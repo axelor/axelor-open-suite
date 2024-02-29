@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -107,8 +107,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
     BankOrder paymentBankOrder = invoicePayment.getBankOrder();
 
     if (paymentBankOrder != null
-        && (paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
-            || paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED)) {
+        && (paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT)) {
       throw new AxelorException(
           invoicePayment,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

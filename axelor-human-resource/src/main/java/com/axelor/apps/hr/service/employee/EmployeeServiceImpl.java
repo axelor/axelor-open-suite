@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,47 +64,59 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
-
-    try {
-      Period period =
-          Period.between(
-              employee.getSeniorityDate(),
-              refDate == null
-                  ? Beans.get(AppBaseService.class)
-                      .getTodayDate(
-                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                  : refDate);
-      return period.getYears();
-    } catch (IllegalArgumentException e) {
+    if (employee.getSeniorityDate() == null) {
       throw new AxelorException(
-          e.getCause(),
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE),
           employee.getName());
     }
+
+    Period period =
+        Period.between(
+            employee.getSeniorityDate(),
+            refDate == null
+                ? Beans.get(AppBaseService.class)
+                    .getTodayDate(
+                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                : refDate);
+    return period.getYears();
   }
 
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException {
-
-    try {
-      Period period =
-          Period.between(
-              employee.getBirthDate(),
-              refDate == null
-                  ? Beans.get(AppBaseService.class)
-                      .getTodayDate(
-                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                  : refDate);
-      return period.getYears();
-    } catch (IllegalArgumentException e) {
+    if (employee.getBirthDate() == null) {
       throw new AxelorException(
-          e.getCause(),
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_BIRTH_DATE),
           employee.getName());
     }
+
+    if (employee.getUser() == null) {
+      throw new AxelorException(
+          employee,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_USER),
+          employee.getName());
+    }
+
+    if (employee.getUser().getActiveCompany() == null) {
+      throw new AxelorException(
+          employee,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_ACTIVE_COMPANY),
+          employee.getName());
+    }
+
+    Period period =
+        Period.between(
+            employee.getBirthDate(),
+            refDate == null
+                ? Beans.get(AppBaseService.class)
+                    .getTodayDate(
+                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                : refDate);
+    return period.getYears();
   }
 
   @Override
