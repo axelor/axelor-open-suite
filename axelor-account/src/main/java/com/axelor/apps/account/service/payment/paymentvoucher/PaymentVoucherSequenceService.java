@@ -65,7 +65,8 @@ public class PaymentVoucherSequenceService {
         paymentModeService.getPaymentModeSequence(
             paymentMode, company, paymentVoucher.getCompanyBankDetails()),
         PaymentVoucher.class,
-        "ref");
+        "ref",
+        paymentVoucher);
   }
 
   public void setReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)
@@ -84,7 +85,8 @@ public class PaymentVoucherSequenceService {
         SequenceRepository.PAYMENT_VOUCHER_RECEIPT_NUMBER,
         company,
         PaymentVoucher.class,
-        "receiptNo");
+        "receiptNo",
+        paymentVoucher);
   }
 
   public void checkReceipt(PaymentVoucher paymentVoucher) throws AxelorException {

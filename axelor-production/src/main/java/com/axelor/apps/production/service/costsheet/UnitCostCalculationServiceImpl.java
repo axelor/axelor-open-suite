@@ -51,8 +51,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringTool;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.StringHelper;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -167,7 +167,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       I18n.get("Cost_to_apply")
     };
 
-    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
+    CsvHelper.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
       DMSFile dmsFile = Beans.get(MetaFiles.class).attach(is, file.getName(), unitCostCalculation);
@@ -318,7 +318,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
 
     List<Integer> productSubTypeSelects =
-        StringTool.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
+        StringHelper.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
 
     if (!productCategorySet.isEmpty()) {
 
@@ -600,7 +600,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           && !unitCostCalculation.getProductCategorySet().isEmpty()) {
         domain +=
             " AND self.productCategory IN ("
-                + StringTool.getIdListString(unitCostCalculation.getProductCategorySet())
+                + StringHelper.getIdListString(unitCostCalculation.getProductCategorySet())
                 + ")";
       }
 
@@ -608,7 +608,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           && !unitCostCalculation.getProductFamilySet().isEmpty()) {
         domain +=
             " AND self.productFamily IN ("
-                + StringTool.getIdListString(unitCostCalculation.getProductFamilySet())
+                + StringHelper.getIdListString(unitCostCalculation.getProductFamilySet())
                 + ")";
       }
 
@@ -621,7 +621,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
               + unitCostCalculation.getProductSubTypeSelect()
               + ") AND (self.defaultBillOfMaterial.company IN ("
-              + StringTool.getIdListString(unitCostCalculation.getCompanySet())
+              + StringHelper.getIdListString(unitCostCalculation.getCompanySet())
               + ") OR self.id in ("
               + bomsProductsList
               + ")"

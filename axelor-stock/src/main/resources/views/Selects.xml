@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -17,6 +17,7 @@
     <option value="2">Planned</option>
     <option value="3">Realized</option>
     <option value="4">Canceled</option>
+    <option value="5">Merged</option>
   </selection>
 
   <selection name="stock.stock.move.available.status.select">

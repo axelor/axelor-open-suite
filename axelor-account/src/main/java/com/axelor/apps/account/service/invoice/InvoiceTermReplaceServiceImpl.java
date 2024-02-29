@@ -164,7 +164,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
             .filter(dml -> dml.getDebit().signum() != 0)
             .findFirst()
             .orElse(null);
-    if (!ObjectUtils.isEmpty(newDebitMoveLine.getInvoiceTermList())) {
+    if (newDebitMoveLine != null && !ObjectUtils.isEmpty(newDebitMoveLine.getInvoiceTermList())) {
       newInvoiceTermList.addAll(newDebitMoveLine.getInvoiceTermList());
     }
 
@@ -198,7 +198,18 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
       invoiceTerm.setInvoice(null);
     }
 
+    replaceInvoiceTermsToRemoveWithCopy(invoiceTermListToRemove);
     invoiceRepo.save(invoice);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void replaceInvoiceTermsToRemoveWithCopy(List<InvoiceTerm> invoiceTermListToRemove) {
+    for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
+      InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
+      invoiceTerm.getMoveLine().addInvoiceTermListItem(newInvoiceTerm);
+      invoiceTerm.getMoveLine().removeInvoiceTermListItem(invoiceTerm);
+      invoiceTermRepo.remove(invoiceTerm);
+    }
   }
 
   protected void updateInvoiceTerms(MoveLine creditMoveLine, MoveLine debitMoveLine) {

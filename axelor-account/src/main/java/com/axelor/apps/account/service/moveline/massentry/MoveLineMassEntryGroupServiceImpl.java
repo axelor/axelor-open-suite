@@ -27,9 +27,11 @@ import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -50,6 +52,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineRecordService moveLineRecordService;
   protected AnalyticAttrsService analyticAttrsService;
+  protected MoveLineToolService moveLineToolService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineMassEntryGroupServiceImpl(
@@ -63,7 +67,9 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineCheckService moveLineCheckService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveLineRecordService moveLineRecordService,
-      AnalyticAttrsService analyticAttrsService) {
+      AnalyticAttrsService analyticAttrsService,
+      MoveLineToolService moveLineToolService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.massEntryService = massEntryService;
     this.moveLineGroupService = moveLineGroupService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -75,6 +81,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineRecordService = moveLineRecordService;
     this.analyticAttrsService = analyticAttrsService;
+    this.moveLineToolService = moveLineToolService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   public MoveLineMassEntry initializeValues(MoveLineMassEntry moveLine, Move move)
@@ -101,7 +109,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineToolService.setDecimals(moveLine, move);
 
     valuesMap.put("inputAction", moveLine.getInputAction());
     valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
@@ -136,6 +145,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("deliveryDate", moveLine.getDeliveryDate());
     valuesMap.put("isEdited", moveLine.getIsEdited());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
 
     return valuesMap;
   }
@@ -167,7 +178,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -409,6 +420,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
     valuesMap.put("isEdited", moveLine.getIsEdited());
     valuesMap.put("fieldsErrorList", moveLine.getFieldsErrorList());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());

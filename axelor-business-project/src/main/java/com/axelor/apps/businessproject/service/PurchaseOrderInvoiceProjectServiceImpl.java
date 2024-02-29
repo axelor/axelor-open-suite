@@ -46,6 +46,7 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.service.CurrencyScaleServicePurchase;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
@@ -85,6 +86,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
+      CurrencyScaleServicePurchase currencyScaleServicePurchase,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
@@ -98,7 +100,8 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
         accountConfigService,
         commonInvoiceService,
         addressService,
-        invoiceLineOrderService);
+        invoiceLineOrderService,
+        currencyScaleServicePurchase);
     this.priceListService = priceListService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.appBusinessProjectService = appBusinessProjectService;

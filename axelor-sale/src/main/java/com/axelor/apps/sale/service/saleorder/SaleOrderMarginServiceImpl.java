@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -42,15 +43,18 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
   protected AppSaleService appSaleService;
   protected CurrencyService currencyService;
   protected ProductCompanyService productCompanyService;
+  protected CurrencyScaleServiceSale currencyScaleServiceSale;
 
   @Inject
   public SaleOrderMarginServiceImpl(
       AppSaleService appSaleService,
       CurrencyService currencyService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      CurrencyScaleServiceSale currencyScaleServiceSale) {
     this.appSaleService = appSaleService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
+    this.currencyScaleServiceSale = currencyScaleServiceSale;
   }
 
   @Override
@@ -99,14 +103,18 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
     if (product != null
         && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
         && subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
-      subTotalGrossMargin = totalWT.subtract(subTotalCostPrice);
+      subTotalGrossMargin =
+          currencyScaleServiceSale.getCompanyScaledValue(
+              saleOrder, totalWT.subtract(subTotalCostPrice));
       subMarginRate = computeRate(totalWT, subTotalGrossMargin);
     }
 
     if (appSaleService.getAppSale().getConsiderZeroCost()
         && (exTaxTotal.compareTo(BigDecimal.ZERO) == 0
             || subTotalCostPrice.compareTo(BigDecimal.ZERO) == 0)) {
-      subTotalGrossMargin = exTaxTotal.subtract(subTotalCostPrice);
+      subTotalGrossMargin =
+          currencyScaleServiceSale.getCompanyScaledValue(
+              saleOrder, exTaxTotal.subtract(subTotalCostPrice));
       subMarginRate = computeRate(exTaxTotal, subTotalGrossMargin);
     }
 

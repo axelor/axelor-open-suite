@@ -44,7 +44,11 @@ public class ReconcileGroupSequenceServiceImpl implements ReconcileGroupSequence
     String code =
         Beans.get(SequenceService.class)
             .getSequenceNumber(
-                sequenceCode, reconcileGroup.getCompany(), ReconcileGroup.class, "code");
+                sequenceCode,
+                reconcileGroup.getCompany(),
+                ReconcileGroup.class,
+                "code",
+                reconcileGroup);
 
     if (code == null) {
       throw new AxelorException(

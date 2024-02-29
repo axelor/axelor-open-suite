@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +80,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
         return "self.id IN (0)";
       } else {
         return "self.id IN ("
-            + StringTool.getIdListString(authorizedBankDetails)
+            + StringHelper.getIdListString(authorizedBankDetails)
             + ") AND self.active = true";
       }
     }

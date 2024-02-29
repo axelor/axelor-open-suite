@@ -50,7 +50,7 @@ import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -320,7 +320,7 @@ public class PayrollPreparationService {
     String fileName = this.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    CsvTool.csvWriter(file.getParent(), file.getName(), ';', headerLine, list);
+    CsvHelper.csvWriter(file.getParent(), file.getName(), ';', headerLine, list);
 
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, file.getName(), payrollPreparation);

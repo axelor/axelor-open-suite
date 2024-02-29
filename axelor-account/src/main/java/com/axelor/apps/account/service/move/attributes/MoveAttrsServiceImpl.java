@@ -400,7 +400,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addSubrogationPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
+  public void addThirdPartyPayerPartnerReadonly(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean isReadonly =
         move.getMoveLineList().stream()
             .map(MoveLine::getInvoiceTermList)
@@ -408,7 +409,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
             .flatMap(Collection::stream)
             .allMatch(InvoiceTerm::getIsPaid);
 
-    this.addAttr("subrogationPartner", "readonly", isReadonly, attrsMap);
+    this.addAttr("thirdPartyPayerPartner", "readonly", isReadonly, attrsMap);
   }
 
   @Override

@@ -51,7 +51,8 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
                       "logisticalForm",
                       logisticalForm.getCompany(),
                       LogisticalForm.class,
-                      "deliveryNumberSeq");
+                      "deliveryNumberSeq",
+                      logisticalForm);
           if (Strings.isNullOrEmpty(sequenceNumber)) {
             throw new AxelorException(
                 Sequence.class,
