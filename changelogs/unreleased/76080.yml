@@ -1,0 +1,6 @@
+---
+title: "SaleOrderLineSaleRepository : move from service to repository package"
+module: axelor-sale
+developer: |
+  SaleOrderLineSaleRepository is moved to repository package,which requires to update
+  all the refrences of this class to New package.
