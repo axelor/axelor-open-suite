@@ -16,6 +16,7 @@
       <field name="statementFileFormatSelect" required="true"
         onChange="action-bank-statement-file-format-record-compute-name"/>
       <field name="name" required="true"/>
+      <field name="bindingFile" widget="binary-link"/>
     </panel>
   </form>
 

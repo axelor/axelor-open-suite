@@ -1,37 +1,39 @@
-"importId";"statementFileFormatSelect";"name";"description"
-1;"camt.054.001.02.act";"camt.054.001.02.act - Relevé de virement reçu";"Relevé de virement reçu"
-2;"camt.054.001.02.add";"camt.054.001.02.add - Relevé de SDD reçu";"Relevé de SDD reçu"
-3;"camt.054.001.02.abb";"camt.054.001.02.abb- Relevé de SDD BtoB reçu";"Relevé de SDD BtoB reçu"
-4;"camt.xxx.cfonb240.act";"camt.xxx.cfonb240.act - Relevé de virement reçu";"Relevé de virement reçu"
-5;"camt.xxx.cfonb240.pco";"camt.xxx.cfonb240.pco - Relevé de LCR";"Relevé de LCR"
-6;"camt.xxx.cfonb240.rep";"camt.xxx.cfonb240.rep - Relevé de MCF PRESTO EUR CFONB";"Relevé de MCF PRESTO EUR CFONB"
-7;"camt.xxx.cfonb240.dri";"camt.xxx.cfonb240.dri - Retour d'opération";"Retour d'opération"
-8;"camt.xxx.cfonb240.rct";"camt.xxx.cfonb240.rct - Relevé de virement rejeté";"Relevé de virement rejeté"
-9;"camt.xxx.cfonb240.rsd";"camt.xxx.cfonb240.rsd - Relevé de prélèvement rejeté";"Relevé de prélèvement rejeté"
-10;"camt.xxx.cfonb240.rtg";"camt.xxx.cfonb240.rtg - Relevé de télérèglement rejeté";"Relevé de télérèglement rejeté"
-11;"camt.xxx.cfonb240.rti";"camt.xxx.cfonb240.rti - Relevé de TIP rejeté";"Relevé de TIP rejeté"
-12;"camt.xxx.cfonb240.rch";"camt.xxx.cfonb240.rch - Relevé de chèque impayé";"Relevé de chèque impayé"
-13;"camt.xxx.cfonb240.rco";"camt.xxx.cfonb240.rco - Relevé de LCR impayé";"Relevé de LCR impayé"
-14;"camt.xxx.cfonb240.ard";"camt.xxx.cfonb240.ard - Relevé de prélèvement reçu";"Relevé de prélèvement reçu"
-15;"camt.xxx.cfonb240.atg";"camt.xxx.cfonb240.atg - Relevé de télérèglement reçu";"Relevé de télérèglement reçu"
-16;"camt.xxx.cfonb240.ati";"camt.xxx.cfonb240.ati - Relevé de TIP reçu";"Relevé de TIP reçu"
-17;"camt.xxx.cfonb240.ach";"camt.xxx.cfonb240.ach - Relevé de chèque présenté au paiement";"Relevé de chèque présenté au paiement"
-18;"camt.xxx.cfonb240.cai";"camt.xxx.cfonb240.cai - Relevé de changement de domiciliation";"Relevé de changement de domiciliation"
-19;"camt.053.001.02.stm";"camt.053.001.02.stm - Relevé de compte comptable";"Relevé de compte comptable"
-20;"camt.xxx.cfonb120.stm";"camt.xxx.cfonb120.stm - Relevé de compte";"Relevé de compte"
-23;"camt.xxx.cfonb120.rep";"camt.xxx.cfonb120.rep - Relevé de compte intraday";"Relevé de compte intraday"
-24;"camt.fin.mt940.stm";"camt.fin.mt940.stm - Relevé de compte";"Relevé de compte"
-25;"camt.fin.mt942.rep";"camt.fin.mt942.rep - Relevé de mouvements previsionels télétransmis";"Relevé de mouvements previsionels télétransmis"
-26;"camt.xxx.cfonb560.ara";"camt.xxx.cfonb560.ara - Accusé de réception applicatif";"Accusé de réception applicatif"
-27;"pain.002.001.01.ara";"pain.002.001.01.ara - PSR";"Payment Initiation Status"
-28;"pain.002.001.02.ara";"pain.002.001.02.ara - PSR";"Payment Status Report"
-29;"pain.002.001.02.ack";"pain.002.001.02.ack - PSR niveau protocolaire";"Payment Status Report niveau protocolaire"
-30;"pain.002.001.03.ara";"pain.002.001.03.ara - PSR";"Payment Status Report"
-31;"pain.002.001.03.ack";"pain.002.001.03.ack - PSR niveau protocolaire";"Payment Status Report niveau protocolaire"
-32;"camt.xxx.cb2a.cbc";"camt.xxx.cb2a.cbc - Compte rendu de remises d’opérations cartes";"Compte rendu de remises d’opérations cartess"
-33;"camt.054.001.02.rct";"camt.054.001.02.rct - Relevé de virement rejeté";"Relevé de virement rejeté"
-34;"camt.054.001.02.ard";"camt.054.001.02.ard - Relevé de prélèvement reçu";"Relevé de prélèvement reçu"
-35;"camt.054.001.02.rsd";"camt.054.001.02.rsd - Relevé de prélèvement rejeté";"Relevé de prélèvement rejeté"
-36;"camt.052.001.02.rep";"camt.052.001.02.rep - Relevé prévisionnel intraday";"Relevé prévisionnel intraday"
-37;"camt.054.001.02.rdd";"camt.054.001.02.rdd - Relevé de SDD rejeté";"Relevé de SDD rejeté"
-38;"camt.054.001.xx.add";"camt.054.001.xx.add - Relevé de SDD reçu";"Relevé de SDD reçu"
+"importId";"statementFileFormatSelect";"name";"description";"binding_file"
+1;"camt.054.001.02.act";"camt.054.001.02.act - Relevé de virement reçu";"Relevé de virement reçu";
+2;"camt.054.001.02.add";"camt.054.001.02.add - Relevé de SDD reçu";"Relevé de SDD reçu";
+3;"camt.054.001.02.abb";"camt.054.001.02.abb- Relevé de SDD BtoB reçu";"Relevé de SDD BtoB reçu";
+4;"camt.xxx.cfonb240.act";"camt.xxx.cfonb240.act - Relevé de virement reçu";"Relevé de virement reçu";
+5;"camt.xxx.cfonb240.pco";"camt.xxx.cfonb240.pco - Relevé de LCR";"Relevé de LCR";
+6;"camt.xxx.cfonb240.rep";"camt.xxx.cfonb240.rep - Relevé de MCF PRESTO EUR CFONB";"Relevé de MCF PRESTO EUR CFONB";
+7;"camt.xxx.cfonb240.dri";"camt.xxx.cfonb240.dri - Retour d'opération";"Retour d'opération";
+8;"camt.xxx.cfonb240.rct";"camt.xxx.cfonb240.rct - Relevé de virement rejeté";"Relevé de virement rejeté";
+9;"camt.xxx.cfonb240.rsd";"camt.xxx.cfonb240.rsd - Relevé de prélèvement rejeté";"Relevé de prélèvement rejeté";
+10;"camt.xxx.cfonb240.rtg";"camt.xxx.cfonb240.rtg - Relevé de télérèglement rejeté";"Relevé de télérèglement rejeté";
+11;"camt.xxx.cfonb240.rti";"camt.xxx.cfonb240.rti - Relevé de TIP rejeté";"Relevé de TIP rejeté";
+12;"camt.xxx.cfonb240.rch";"camt.xxx.cfonb240.rch - Relevé de chèque impayé";"Relevé de chèque impayé";
+13;"camt.xxx.cfonb240.rco";"camt.xxx.cfonb240.rco - Relevé de LCR impayé";"Relevé de LCR impayé";
+14;"camt.xxx.cfonb240.ard";"camt.xxx.cfonb240.ard - Relevé de prélèvement reçu";"Relevé de prélèvement reçu";
+15;"camt.xxx.cfonb240.atg";"camt.xxx.cfonb240.atg - Relevé de télérèglement reçu";"Relevé de télérèglement reçu";
+16;"camt.xxx.cfonb240.ati";"camt.xxx.cfonb240.ati - Relevé de TIP reçu";"Relevé de TIP reçu";
+17;"camt.xxx.cfonb240.ach";"camt.xxx.cfonb240.ach - Relevé de chèque présenté au paiement";"Relevé de chèque présenté au paiement";
+18;"camt.xxx.cfonb240.cai";"camt.xxx.cfonb240.cai - Relevé de changement de domiciliation";"Relevé de changement de domiciliation";
+19;"camt.053.001.02.stm";"camt.053.001.02.stm - Relevé de compte comptable";"Relevé de compte comptable";
+20;"camt.xxx.cfonb120.stm";"camt.xxx.cfonb120.stm - Relevé de compte";"Relevé de compte";
+23;"camt.xxx.cfonb120.rep";"camt.xxx.cfonb120.rep - Relevé de compte intraday";"Relevé de compte intraday";
+24;"camt.fin.mt940.stm";"camt.fin.mt940.stm - Relevé de compte";"Relevé de compte";
+25;"camt.fin.mt942.rep";"camt.fin.mt942.rep - Relevé de mouvements previsionels télétransmis";"Relevé de mouvements previsionels télétransmis";
+26;"camt.xxx.cfonb560.ara";"camt.xxx.cfonb560.ara - Accusé de réception applicatif";"Accusé de réception applicatif";
+27;"pain.002.001.01.ara";"pain.002.001.01.ara - PSR";"Payment Initiation Status";
+28;"pain.002.001.02.ara";"pain.002.001.02.ara - PSR";"Payment Status Report";
+29;"pain.002.001.02.ack";"pain.002.001.02.ack - PSR niveau protocolaire";"Payment Status Report niveau protocolaire";
+30;"pain.002.001.03.ara";"pain.002.001.03.ara - PSR";"Payment Status Report";
+31;"pain.002.001.03.ack";"pain.002.001.03.ack - PSR niveau protocolaire";"Payment Status Report niveau protocolaire";
+32;"camt.xxx.cb2a.cbc";"camt.xxx.cb2a.cbc - Compte rendu de remises d’opérations cartes";"Compte rendu de remises d’opérations cartess";
+33;"camt.054.001.02.rct";"camt.054.001.02.rct - Relevé de virement rejeté";"Relevé de virement rejeté";
+34;"camt.054.001.02.ard";"camt.054.001.02.ard - Relevé de prélèvement reçu";"Relevé de prélèvement reçu";
+35;"camt.054.001.02.rsd";"camt.054.001.02.rsd - Relevé de prélèvement rejeté";"Relevé de prélèvement rejeté";
+36;"camt.052.001.02.rep";"camt.052.001.02.rep - Relevé prévisionnel intraday";"Relevé prévisionnel intraday";
+37;"camt.054.001.02.rdd";"camt.054.001.02.rdd - Relevé de SDD rejeté";"Relevé de SDD rejeté";
+38;"camt.054.001.xx.add";"camt.054.001.xx.add - Relevé de SDD reçu";"Relevé de SDD reçu";
+39;"csv.jma.dot";"csv.jma.dot - Relevé bancaire classique";"Relevé bancaire classique";"import-bank-statement-line-config.xml"
+40;"csv.ymd.dot";"csv.ymd.dot - Relevé bancaire classique";"Relevé bancaire classique";"import-bank-statement-line-config.xml"

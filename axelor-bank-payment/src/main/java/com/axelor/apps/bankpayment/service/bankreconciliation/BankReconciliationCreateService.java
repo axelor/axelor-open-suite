@@ -20,35 +20,40 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BankReconciliationCreateService {
 
   protected BankReconciliationRepository bankReconciliationRepository;
   protected CompanyRepository companyRepository;
   protected BankReconciliationAccountService bankReconciliationAccountService;
+  protected BankStatementLineRepository bankStatementLineRepository;
 
   @Inject
   public BankReconciliationCreateService(
       BankReconciliationRepository bankReconciliationRepository,
       CompanyRepository companyRepository,
-      BankReconciliationAccountService bankReconciliationAccountService) {
+      BankReconciliationAccountService bankReconciliationAccountService,
+      BankStatementLineRepository bankStatementLineRepository) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.companyRepository = companyRepository;
     this.bankReconciliationAccountService = bankReconciliationAccountService;
+    this.bankStatementLineRepository = bankStatementLineRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -94,15 +99,13 @@ public class BankReconciliationCreateService {
    * @return List of bank details
    */
   protected List<BankDetails> getDistinctBankDetails(BankStatement bankStatement) {
-
-    Query q =
-        JPA.em()
-            .createQuery(
-                "SELECT DISTINCT(BSL.bankDetails) FROM BankStatementLine BSL WHERE BSL.bankStatement = :bankStatement AND BSL.amountRemainToReconcile > 0");
-
-    q.setParameter("bankStatement", bankStatement);
-
-    return q.getResultList();
+    return bankStatementLineRepository.all()
+        .filter("self.bankStatement = :bankStatement AND self.amountRemainToReconcile > 0")
+        .bind("bankStatement", bankStatement).fetch().stream()
+        .filter(Objects::nonNull)
+        .map(BankStatementLine::getBankDetails)
+        .distinct()
+        .collect(Collectors.toList());
   }
 
   public BankReconciliation createBankReconciliation(
