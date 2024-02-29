@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -26,14 +25,12 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PartnerAccountService;
-import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -43,20 +40,6 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class PartnerController {
-
-  public void createAccountingSituations(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Partner partner = request.getContext().asType(Partner.class);
-
-    List<AccountingSituation> accountingSituationList =
-        Beans.get(AccountingSituationInitService.class)
-            .createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
-
-    if (accountingSituationList != null) {
-      response.setValue("accountingSituationList", accountingSituationList);
-    }
-  }
 
   public void getDefaultSpecificTaxNote(ActionRequest request, ActionResponse response) {
 
@@ -202,7 +185,8 @@ public class PartnerController {
             "errorOnCompaniesLabel",
             "title",
             String.format(
-                AccountExceptionMessage.PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES,
+                I18n.get(
+                    AccountExceptionMessage.PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES),
                 duplicatedCompanyList.stream()
                     .map(Company::getName)
                     .collect(Collectors.joining(", "))));

@@ -108,9 +108,7 @@ public class AccountingSituationAttrsServiceImpl implements AccountingSituationA
   }
 
   protected String getCompanyDomain(AccountingSituation accountingSituation, Partner partner) {
-    if (accountingSituation == null
-        || partner == null
-        || ObjectUtils.isEmpty(partner.getAccountingSituationList())) {
+    if (accountingSituation == null || partner == null) {
       return "self.id = 0";
     }
     String domain = "(self.archived = false OR self.archived is null)";

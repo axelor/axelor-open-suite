@@ -112,4 +112,6 @@ public interface AccountingSituationService {
   Account getPartnerAccount(Invoice invoice, boolean isHoldback) throws AxelorException;
 
   List<Company> getDuplicatedCompanies(Partner partner);
+
+  void checkDuplicatedCompaniesInAccountingSituation(Partner partner) throws AxelorException;
 }

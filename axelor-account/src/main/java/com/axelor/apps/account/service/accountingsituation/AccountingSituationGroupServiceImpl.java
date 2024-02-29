@@ -40,20 +40,7 @@ public class AccountingSituationGroupServiceImpl implements AccountingSituationG
     valuesMap.put("company", accountingSituation.getCompany());
     valuesMap.put("holdBackCustomerAccount", accountingSituation.getHoldBackCustomerAccount());
     valuesMap.put("holdBackSupplierAccount", accountingSituation.getHoldBackSupplierAccount());
-    valuesMap.put(
-        "vatSystemSelect",
-        partner != null && (partner.getIsSupplier() || partner.getIsCustomer())
-            ? AccountingSituationRepository.VAT_COMMON_SYSTEM
-            : null);
-
-    if (accountingSituation.getCompany() != null) {
-      AccountConfig accountConfig =
-          accountConfigService.getAccountConfig(accountingSituation.getCompany());
-      valuesMap.put("invoiceAutomaticMail", accountConfig.getInvoiceAutomaticMail());
-      valuesMap.put("invoiceMessageTemplate", accountConfig.getInvoiceMessageTemplate());
-    }
-
-    return valuesMap;
+    return resetValuesMap(accountingSituation, partner, valuesMap);
   }
 
   @Override
@@ -66,7 +53,7 @@ public class AccountingSituationGroupServiceImpl implements AccountingSituationG
     valuesMap.put("holdBackCustomerAccount", accountingSituation.getHoldBackCustomerAccount());
     valuesMap.put("holdBackSupplierAccount", accountingSituation.getHoldBackSupplierAccount());
 
-    return valuesMap;
+    return resetValuesMap(accountingSituation, partner, valuesMap);
   }
 
   @Override
@@ -112,5 +99,32 @@ public class AccountingSituationGroupServiceImpl implements AccountingSituationG
         accountingSituation, partner, isInBankDetails, attrsMap);
 
     return attrsMap;
+  }
+
+  protected Map<String, Object> resetValuesMap(
+      AccountingSituation accountingSituation, Partner partner, Map<String, Object> valuesMap)
+      throws AxelorException {
+    valuesMap.put("companyInBankDetails", null);
+    valuesMap.put("companyOutBankDetails", null);
+    valuesMap.put("customerAccount", null);
+    valuesMap.put("supplierAccount", null);
+    valuesMap.put("defaultIncomeAccount", null);
+    valuesMap.put("defaultExpenseAccount", null);
+    valuesMap.put("employeeAccount", null);
+    valuesMap.put("pfpValidatorUser", null);
+    valuesMap.put(
+        "vatSystemSelect",
+        partner != null && (partner.getIsSupplier() || partner.getIsCustomer())
+            ? AccountingSituationRepository.VAT_COMMON_SYSTEM
+            : AccountingSituationRepository.VAT_SYSTEM_DEFAULT);
+
+    if (accountingSituation.getCompany() != null) {
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(accountingSituation.getCompany());
+      valuesMap.put("invoiceAutomaticMail", accountConfig.getInvoiceAutomaticMail());
+      valuesMap.put("invoiceMessageTemplate", accountConfig.getInvoiceMessageTemplate());
+    }
+
+    return valuesMap;
   }
 }

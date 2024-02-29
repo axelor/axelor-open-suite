@@ -318,4 +318,17 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
         .distinct()
         .collect(Collectors.toList());
   }
+
+  @Override
+  public void checkDuplicatedCompaniesInAccountingSituation(Partner partner)
+      throws AxelorException {
+    List<Company> duplicatedCompanyList = getDuplicatedCompanies(partner);
+    if (!ObjectUtils.isEmpty(duplicatedCompanyList)) {
+      throw new AxelorException(
+          partner,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES),
+          duplicatedCompanyList.stream().map(Company::getName).collect(Collectors.joining(", ")));
+    }
+  }
 }

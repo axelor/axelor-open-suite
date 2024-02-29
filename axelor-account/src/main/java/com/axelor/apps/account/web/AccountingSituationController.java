@@ -89,9 +89,9 @@ public class AccountingSituationController {
         request.getContext().asType(AccountingSituation.class);
     Partner partner = getPartner(request, accountingSituation);
 
-    /*response.setAttrs(
-    Beans.get(AccountingSituationGroupService.class)
-        .getCompanyOnSelectAttrsMap(accountingSituation, partner));*/
+    response.setAttrs(
+        Beans.get(AccountingSituationGroupService.class)
+            .getCompanyOnSelectAttrsMap(accountingSituation, partner));
   }
 
   @ErrorException
