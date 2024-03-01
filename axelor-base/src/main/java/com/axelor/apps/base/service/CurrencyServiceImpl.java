@@ -75,6 +75,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   public BigDecimal getCurrencyConversionRate(
       Currency startCurrency, Currency endCurrency, LocalDate date) throws AxelorException {
+    return this.getCurrencyConversionRateAtDate(startCurrency, endCurrency, date)
+        .setScale(AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getCurrencyConversionRateAtDate(
+      Currency startCurrency, Currency endCurrency, LocalDate date) throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
@@ -115,7 +121,10 @@ public class CurrencyServiceImpl implements CurrencyService {
       }
 
       return isInverse
-          ? BigDecimal.ONE.divide(exchangeRate, 10, RoundingMode.HALF_UP)
+          ? BigDecimal.ONE.divide(
+              exchangeRate,
+              AppBaseService.DEFAULT_EXCHANGE_RATE_REVERSION_SCALE,
+              RoundingMode.HALF_UP)
           : exchangeRate;
     }
 
