@@ -88,7 +88,7 @@
       onChange="action-group-sale-saleorderline-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="inTaxPrice"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="description"/>
@@ -617,6 +617,7 @@
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-record-init-dummy-fields"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-onload">
@@ -771,6 +772,13 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="discountAmount"
       expr="eval: discountTypeSelect == __repo__(PriceListLine).AMOUNT_TYPE_FIXED ? discountDerogation * price / 100 : discountDerogation"/>
+  </action-record>
+
+  <action-record name="action-sale-order-line-record-init-dummy-fields"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="$nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-record>
 
   <!-- ACTION METHOD -->

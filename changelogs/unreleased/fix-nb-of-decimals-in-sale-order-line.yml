@@ -1,0 +1,3 @@
+---
+title: "SALEORDER / PURCHASEORDER : Fix number of decimals in price and totals"
+module: "axelor-base"
