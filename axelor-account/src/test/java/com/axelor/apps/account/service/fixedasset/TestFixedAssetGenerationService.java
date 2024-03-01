@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.interfaces.ArithmeticOperation;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
@@ -87,17 +88,13 @@ class TestFixedAssetGenerationService {
     FixedAssetImportService fixedAssetImportService = mock(FixedAssetImportService.class);
     FixedAssetLineToolService fixedAssetLineToolService = mock(FixedAssetLineToolService.class);
     when(fixedAssetLineToolService.getCompanyScaledValue(
-            any(),
-            any(),
-            any(FixedAsset.class),
-            any(FixedAssetLineToolService.ArithmeticOperation.class)))
+            any(), any(), any(FixedAsset.class), any(ArithmeticOperation.class)))
         .then(
             (Answer<BigDecimal>)
                 invocation ->
                     currencyScaleServiceAccount.getCompanyScaledValue(
                         ((FixedAsset) invocation.getArguments()[2]),
-                        ((FixedAssetLineToolService.ArithmeticOperation)
-                                invocation.getArguments()[3])
+                        ((ArithmeticOperation) invocation.getArguments()[3])
                             .operate(
                                 ((BigDecimal) invocation.getArguments()[0]),
                                 ((BigDecimal) invocation.getArguments()[1]))));
@@ -119,17 +116,13 @@ class TestFixedAssetGenerationService {
                                 ((FixedAsset) invocation.getArguments()[2])),
                             RoundingMode.HALF_UP));
     when(fixedAssetLineToolService.getCompanyScaledValue(
-            any(),
-            any(),
-            any(FixedAssetLine.class),
-            any(FixedAssetLineToolService.ArithmeticOperation.class)))
+            any(), any(), any(FixedAssetLine.class), any(ArithmeticOperation.class)))
         .then(
             (Answer<BigDecimal>)
                 invocation ->
                     currencyScaleServiceAccount.getCompanyScaledValue(
                         ((FixedAssetLine) invocation.getArguments()[2]),
-                        ((FixedAssetLineToolService.ArithmeticOperation)
-                                invocation.getArguments()[3])
+                        ((ArithmeticOperation) invocation.getArguments()[3])
                             .operate(
                                 ((BigDecimal) invocation.getArguments()[0]),
                                 ((BigDecimal) invocation.getArguments()[1]))));

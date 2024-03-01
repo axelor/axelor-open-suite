@@ -823,12 +823,18 @@ public class IrrecoverableService {
     if (isInvoiceReject) {
       prorataRate =
           (invoice.getRejectMoveLine().getAmountRemaining().abs())
-              .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
+              .divide(
+                  invoice.getCompanyInTaxTotal(),
+                  AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE,
+                  RoundingMode.HALF_UP);
     } else {
       prorataRate =
           invoice
               .getCompanyInTaxTotalRemaining()
-              .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
+              .divide(
+                  invoice.getCompanyInTaxTotal(),
+                  AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE,
+                  RoundingMode.HALF_UP);
     }
 
     log.debug("Prorata rate for the invoice {} : {}", invoice.getInvoiceId(), prorataRate);

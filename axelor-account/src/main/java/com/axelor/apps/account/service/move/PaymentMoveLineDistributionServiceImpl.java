@@ -150,7 +150,10 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
     BigDecimal exTaxProratedAmount =
         moveLineAmount
             .multiply(paymentAmount)
-            .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
+            .divide(
+                invoiceTotalAmount,
+                AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE,
+                RoundingMode.HALF_UP)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     BigDecimal taxProratedAmount = BigDecimal.ZERO;
