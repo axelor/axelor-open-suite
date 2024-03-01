@@ -206,6 +206,7 @@
   <action-group name="supplychain-action-sale-order-line-group-onnew">
     <action name="action-group-sale-saleorderline-onnew"/>
     <action name="action-record-sale-order-line-fill-request-qty"/>
+    <action name="action-record-sale-order-line-fill-show-product-reservation"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
     <action name="action-sale-order-line-group-manage-analytic"/>
   </action-group>
@@ -277,6 +278,11 @@
       expr="eval: __parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
     <field name="requestedReservedQty" expr="eval: qty"
       if="__parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
+  </action-record>
+
+  <action-record name="action-record-sale-order-line-fill-show-product-reservation"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="$showProductReservation" expr="eval: false"/>
   </action-record>
 
   <!-- ACTION ATTRS -->

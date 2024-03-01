@@ -51,6 +51,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.db.ProductReservation;
+import com.axelor.apps.supplychain.service.ProductReservationService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -883,6 +885,32 @@ public class ManufOrderController {
 
       response.setValue("consumedStockMoveLineList", manufOrder.getConsumedStockMoveLineList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkProductionReservation(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+
+      ProductReservationService productReservationService =
+          Beans.get(ProductReservationService.class);
+      List<ProductReservation> checkedProductReservationList = new ArrayList<ProductReservation>();
+      for (ProductReservation productReservation : manufOrder.getProductReservationList()) {
+        if (productReservation.getStatus() == null || productReservation.getStatus() == 0) {
+          try {
+            productReservation = productReservationService.updateStatus(productReservation);
+            checkedProductReservationList.add(productReservation);
+          } catch (AxelorException e) {
+            TraceBackService.trace(e);
+            response.setInfo(e.getMessage());
+          }
+        } else {
+          checkedProductReservationList.add(productReservation);
+        }
+      }
+      response.setValue("productReservationList", checkedProductReservationList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
