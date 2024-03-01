@@ -43,9 +43,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">28</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -203,10 +200,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/wip</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
-            <property name="odaJndiName">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -2978,7 +2972,7 @@ RETURNS table(inv_id bigint, product_name varchar, description text,
     "productCategory" bigint, "showTotal" boolean, "hideUnitAmounts" boolean,
     "PackHideUnitAmounts" boolean,number_of_decimals int,invoice_line_id bigint, 
     "coefficient" numeric, "previousProgress" numeric, "newProgress" numeric,
-    "display_previous_progress" bigint, "display_new_progress" bigint) as
+    "display_previous_progress" bigint, "display_new_progress" bigint, "previous_project_invoice_date" date) as
 $func$
 BEGIN
 IF (SELECT COUNT(to_regclass('sale_customer_catalog')) = 0) THEN
@@ -3019,7 +3013,13 @@ InvoiceLine.coefficient,
 InvoiceLine.previous_progress as "previousProgress",
 InvoiceLine.new_progress as "newProgress",
 (SELECT COUNT(previous_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_previous_progress",
-(SELECT COUNT(new_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_new_progress"
+(SELECT COUNT(new_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_new_progress",
+(SELECT MAX(inv.invoice_date) FROM account_invoice as inv
+left outer join account_invoice_line as ILine on (inv.id = ILine.invoice)
+left outer join account_invoice_line_project_task_set as taskSet on (taskSet.invoice_line_set = ILine.id)
+WHERE taskSet.project_task_set IN (SELECT project_task_set from account_invoice_line_project_task_set as taskSet
+WHERE (taskSet.invoice_line_set = InvoiceLine.id))
+AND inv.invoice_date IS NOT NULL AND inv.invoice_date < Invoice.invoice_date AND inv.status_select IN (2,3)) as "previous_project_invoice_date"
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join base_product as Product on (InvoiceLine.product = Product.id)
@@ -3067,7 +3067,13 @@ InvoiceLine.coefficient,
 InvoiceLine.previous_progress as "previousProgress",
 InvoiceLine.new_progress as "newProgress",
 (SELECT COUNT(previous_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_previous_progress",
-(SELECT COUNT(new_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_new_progress"
+(SELECT COUNT(new_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_new_progress",
+(SELECT MAX(inv.invoice_date) FROM account_invoice as inv
+left outer join account_invoice_line as ILine on (inv.id = ILine.invoice)
+left outer join account_invoice_line_project_task_set as taskSet on (taskSet.invoice_line_set = ILine.id)
+WHERE taskSet.project_task_set IN (SELECT project_task_set from account_invoice_line_project_task_set as taskSet
+WHERE (taskSet.invoice_line_set = InvoiceLine.id))
+AND inv.invoice_date IS NOT NULL AND inv.invoice_date < Invoice.invoice_date AND inv.status_select IN (2,3)) as "previous_project_invoice_date"
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join base_product as Product on (InvoiceLine.product = Product.id)
@@ -3258,6 +3264,12 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <text-property name="displayName">display_new_progress</text-property>
                     <text-property name="heading">display_new_progress</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">previous_project_invoice_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">previous_project_invoice_date</text-property>
+                    <text-property name="heading">previous_project_invoice_date</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -3418,6 +3430,11 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                         <property name="position">29</property>
                         <property name="name">display_new_progress</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">30</property>
+                        <property name="name">previous_project_invoice_date</property>
+                        <property name="dataType">date</property>
                     </structure>
                 </list-property>
             </structure>
@@ -3626,6 +3643,13 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">30</property>
+                    <property name="name">previous_project_invoice_date</property>
+                    <property name="nativeName">previous_project_invoice_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH INV AS (
     select * from invoice_line_proc(cast(? as bigint))
@@ -3660,7 +3684,8 @@ select
     INV."previousProgress",
     INV."newProgress",
     INV."display_previous_progress",
-    INV."display_new_progress"
+    INV."display_new_progress",
+    INV."previous_project_invoice_date"
     from INV
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -3707,7 +3732,8 @@ select
     SUM(INV."previousProgress") as "previousProgress",
     SUM(INV."newProgress") as "newProgress",
     SUM(INV."display_previous_progress") as "display_previous_progress",
-    SUM(INV."display_new_progress") as "display_new_progress"
+    SUM(INV."display_new_progress") as "display_new_progress",
+    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date"
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
@@ -3758,7 +3784,8 @@ select
     SUM(INV."previousProgress") as "previousProgress",
     SUM(INV."newProgress") as "newProgress",
     SUM(INV."display_previous_progress") as "display_previous_progress",
-    SUM(INV."display_new_progress") as "display_new_progress"
+    SUM(INV."display_new_progress") as "display_new_progress",
+    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date"
 from INV
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -7167,6 +7194,12 @@ row["partnerFirstName"]
                                 <expression name="expression" type="javascript">dataSetRow["display_new_progress"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
+                            <structure>
+                                <property name="name">previous_project_invoice_date</property>
+                                <text-property name="displayName">previous_project_invoice_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["previous_project_invoice_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
                         </list-property>
                         <list-property name="sort">
                             <structure>
@@ -7210,7 +7243,7 @@ row["partnerFirstName"]
                                     <expression name="valueExpr" type="javascript">row["display_previous_progress"] == 0</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.6in</property>
+                            <property name="width">0.7in</property>
                         </column>
                         <column id="6135">
                             <property name="repeat">1</property>
@@ -7391,11 +7424,56 @@ row["partnerFirstName"]
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
                                         <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["previous_project_invoice_date"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
                                                     <value type="javascript">'Invoice.previousProgress'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]+' ' +row._outer["previous_project_invoice_date"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                    <text id="6155">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["previous_project_invoice_date"] != null</expression>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Invoice.noPreviousProgress'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
