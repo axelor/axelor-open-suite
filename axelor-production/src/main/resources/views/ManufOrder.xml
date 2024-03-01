@@ -147,7 +147,11 @@
         <field name="$viewerIsPermanent" showTitle="false" colSpan="2"
           showIf="typeSelect == 2 &amp;&amp; $readonly()">
           <viewer depends="typeSelect">
-                        <![CDATA[<><Badge style={{ backgroundColor: "green" }}>{_t('Permanent')}</Badge></>]]>
+					<![CDATA[
+						<h4 style="text-align: left;">
+							<span class="label label-default" style="background-color: green; margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate>Permanent</span>
+						</h4>
+	                ]]>
           </viewer>
         </field>
         <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
@@ -162,12 +166,7 @@
           grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"
           edit-window="blank"/>
         <field name="outsourcing" colSpan="3"
-          hideIf="prodProcess.prodProcessLinesOutsourcable
-           || (!prodProcess.outsourcing &amp;&amp; !prodProcess.outsourcable)"
-          readonlyIf="prodProcess.outsourcing"
-          onChange="action-manuf-order-method-set-operation-orders-outsourcing"/>
-        <field name="outsourcingPartner" colSpan="3" showIf="outsourcing"
-          domain="self.isSubcontractor = true"/>
+          onChange="action-production-attrs-hide-purchaseOrder"/>
         <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
           readonly="true" hideIf="statusSelect != 1"/>
         <field name="product" canEdit="false" required="true"
@@ -188,6 +187,8 @@
         <field name="manufOrderMergeResult" showIf="manufOrderMergeResult"
           form-view="manuf-order-form" grid-view="manuf-order-grid" canNew="false" canEdit="false"
           canView="true"/>
+        <field name="purchaseOrder" form-view="purchase-order-form"
+          grid-view="purchase-order-grid" canEdit="false" canSelect="false" showIf="false"/>
         <field name="isConsProOnOperation" hidden="true"/>
         <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"
           if-module="axelor-business-production"
@@ -196,7 +197,7 @@
           if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations"
           hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0"
-          onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-method-update-lines-outsourced"/>
+          onClick="save,action-manuf-order-method-pre-fill-operations"/>
         <field name="product.isModel" hidden="true"/>
         <field name="typeSelect" hidden="true"/>
         <field name="prodProcess.outsourcing" hidden="true"/>
@@ -206,8 +207,7 @@
       <panel name="actionsPanel" title="Actions" colSpan="4">
         <button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 2"
-          onClick="save,action-manuf-order-method-plan,action-manuf-order-method-update-lines-outsourced"
-          hidden="true"/>
+          onClick="save,action-manuf-order-method-plan" hidden="true"/>
         <button name="startBtn" icon="fa-play" title="Start" colSpan="12"
           showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start" hidden="true"/>
         <button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12"
@@ -235,8 +235,13 @@
     <panel-tabs name="mainPanelTab" colSpan="4">
       <panel-related name="operationOrderListPanel" field="operationOrderList"
         readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form"
-        grid-view="operation-order-grid" canNew="false"
-        onChange="action-manuf-order-method-update-lines-outsourced"/>
+        grid-view="operation-order-grid" canNew="false"/>
+      <panel-related
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
+        if-module="axelor-supplychain" colSpan="12" name="productReservationListPanel"
+        field="productReservationList" grid-view="product-reservation-editable-grid"
+        form-view="product-reservation-form" hidden="true" showIf="product"
+        onChange="manuf-order-action-method-check-product-reservation"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
@@ -250,8 +255,8 @@
           <field name="cancelReason" hidden="true" grid-view="cancel-reason-grid"
             form-view="cancel-reason-form"/>
           <field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true"
-            showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12">
-            <viewer><![CDATA[<><Box color="danger">{cancelReasonStr}</Box></>]]></viewer>
+            showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">
+            <viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
           </field>
         </panel>
         <panel name="realDatesPanel" title="Real dates" showIf="statusSelect &gt; 3">
@@ -305,7 +310,7 @@
           onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
         <panel-related name="consumedStockMoveLineListPanel"
           field="consumedStockMoveLineList"
-          onChange="action-manuf-order-group-on-change-consumed-stock-move-line"
+          onChange="action-manuf-order-method-check-consumed-stock-move,save,action-manuf-order-method-update-consumed-stock-move"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-consumed-production-grid"/>
         <panel name="allocationToolsPanel" colSpan="12"
@@ -366,7 +371,7 @@
           onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
         <panel-related name="producedStockMoveLineListPanel"
           field="producedStockMoveLineList"
-          onChange="action-manuf-order-group-on-change-produced-stock-move-line"
+          onChange="action-manuf-order-method-check-produced-stock-move,save,action-manuf-order-method-update-produced-stock-move"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-produced-production-grid"/>
         <panel-related name="wasteProdProductListPanel" field="wasteProdProductList"
@@ -503,7 +508,7 @@
     name="multi-level-generated-draft-manuf-order-wizard-form"
     onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
     <panel name="mainPanel">
-      <field name="$draftManufOrderList" type="one-to-many" title="Manufacturing orders"
+      <field name="$draftManufOrderList" type="one-to-many"
         target="com.axelor.apps.production.db.ManufOrder" canNew="false" canEdit="false"
         canRemove="false" colSpan="12" grid-view="generated-manuf-order-grid"/>
 
@@ -884,6 +889,12 @@
       method="updateProducedStockMoveFromManufOrder"/>
   </action-method>
 
+  <action-method name="manuf-order-action-method-check-product-reservation">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="checkProductionReservation"/>
+  </action-method>
+
+
   <action-method name="action-manuf-order-method-allocate-all">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="allocateAll"/>
   </action-method>
@@ -924,6 +935,7 @@
     <view type="grid" name="stock-move-line-consumed-production-grid"/>
     <view type="form" name="stock-move-line-production-form"/>
     <domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
+    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-attrs name="action-manuf-order-reset">
