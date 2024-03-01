@@ -30,7 +30,7 @@
     <field name="productReservationTypeSelect" required="true" selection-in="[1,2]"/>
     <field name="product" readonly="true"/>
     <field name="qty" required="true" title="Quantity"
-      readonlyIf="!productReservationTypeSelect"/>
+      readonlyIf="!productReservationTypeSelect" validIf="qty &gt; 0"/>
     <field name="reservationTypeSelect" readonly="true"/>
     <field name="stockLocation"
       readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
