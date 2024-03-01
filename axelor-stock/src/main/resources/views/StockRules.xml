@@ -73,7 +73,8 @@
       <panel name="quantitiesPanel" title="Quantities" colSpan="6">
         <field name="minQty" colSpan="6" onChange="action-stock-rules-minqty-change"
           validIf="$number(minQty) >= 0"/>
-        <field name="reOrderQty" colSpan="6" validIf="$number(reOrderQty) >= 0"/>
+        <field name="reOrderQty" onChange="action-stock-rules-reorder-qty-change" colSpan="6"
+          validIf="$number(reOrderQty) >= 0"/>
         <field name="useIdealQty" colSpan="6"/>
         <field name="idealQty" showIf="useIdealQty" colSpan="6"
           onChange="action-stock-rules-idealqty-change"
@@ -113,6 +114,8 @@
     model="com.axelor.apps.stock.db.StockRules">
     <field name="idealQty" expr="eval: minQty" if="minQty > idealQty"/>
     <field name="maxQty" expr="eval: minQty" if="minQty > maxQty"/>
+    <field name="reOrderQty" expr="eval: (maxQty - minQty).max(BigDecimal.ZERO)"
+      if="(reOrderQty + minQty) > maxQty"/>
   </action-record>
 
   <action-record name="action-stock-rules-idealqty-change"
@@ -125,6 +128,13 @@
     model="com.axelor.apps.stock.db.StockRules">
     <field name="minQty" expr="eval: maxQty" if="minQty > maxQty"/>
     <field name="idealQty" expr="eval: maxQty" if="idealQty > maxQty"/>
+    <field name="reOrderQty" expr="eval: (maxQty - minQty).max(BigDecimal.ZERO)"
+      if="(reOrderQty + minQty) > maxQty"/>
+  </action-record>
+
+  <action-record name="action-stock-rules-reorder-qty-change"
+    model="com.axelor.apps.stock.db.StockRules">
+    <field name="maxQty" expr="eval: (reOrderQty + minQty).max(maxQty)"/>
   </action-record>
 
   <action-record name="action-stock-rules-record-product-change"

@@ -72,7 +72,7 @@ public final class StockExceptionMessage {
   public static final String LOCATION_LINE_2 = /*$$(*/
       "Product's stocks %s (%s), tracking number %s are not in sufficient quantity to realize the delivery" /*)*/;
   public static final String LOCATION_LINE_3 = /*$$(*/
-      "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
+      "The stock rule (%s) for product %s (%s) has generated an error, please check it." /*)*/;
 
   public static final String LOCATION_LINE_MISSING_UNIT = /*$$(*/
       "Please fill unit for the stock location line in %s for the product %s." /*)*/;
