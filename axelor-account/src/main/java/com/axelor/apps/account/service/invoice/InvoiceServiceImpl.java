@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
@@ -37,6 +38,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -69,6 +71,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -91,6 +94,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -257,7 +261,76 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected void validateProcess(Invoice invoice) throws AxelorException {
     log.debug("Invoice validation");
 
-    compute(invoice);
+    CurrencyScaleServiceAccount currencyScaleServiceAccount =
+        Beans.get(CurrencyScaleServiceAccount.class);
+
+    // In the invoice currency
+    invoice.setExTaxTotal(BigDecimal.ZERO);
+    invoice.setTaxTotal(BigDecimal.ZERO);
+    invoice.setInTaxTotal(BigDecimal.ZERO);
+
+    // In the company accounting currency
+    invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
+    invoice.setCompanyTaxTotal(BigDecimal.ZERO);
+    invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
+    List<InvoiceLine> invoiceLineList;
+    if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()) {
+      invoiceLineList = invoice.getInvoiceLineDisplayList();
+    } else {
+      invoiceLineList = invoice.getInvoiceLineList();
+    }
+    for (InvoiceLine invoiceLine :
+        invoiceLineList.stream()
+            .filter(line -> !line.getIsNotCountable())
+            .collect(Collectors.toList())) {
+
+      if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
+        continue;
+      }
+
+      // In the invoice currency
+      invoice.setExTaxTotal(
+          currencyScaleServiceAccount.getScaledValue(
+              invoice, invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal())));
+
+      // In the company accounting currency
+      invoice.setCompanyExTaxTotal(
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoice, invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal())));
+    }
+
+    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+
+      // In the invoice currency
+      invoice.setTaxTotal(
+          currencyScaleServiceAccount.getScaledValue(
+              invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal())));
+
+      // In the company accounting currency
+      invoice.setCompanyTaxTotal(
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoice, invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal())));
+    }
+
+    // In the invoice currency
+    invoice.setInTaxTotal(
+        currencyScaleServiceAccount.getScaledValue(
+            invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal())));
+
+    // In the company accounting currency
+    invoice.setCompanyInTaxTotal(
+        currencyScaleServiceAccount.getCompanyScaledValue(
+            invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal())));
+    invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
+
+    invoice.setAmountRemaining(invoice.getInTaxTotal());
+
+    invoice.setHasPendingPayments(false);
+
+    if (!ObjectUtils.isEmpty(invoice.getInvoiceLineList())
+        && ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
+    }
 
     validateFactory.getValidator(invoice).process();
 

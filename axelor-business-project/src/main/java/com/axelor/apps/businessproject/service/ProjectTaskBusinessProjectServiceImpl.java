@@ -290,6 +290,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
                 .bind("parentProjectTask", parentProjectTask)
                 .fetchOne();
         invoiceLine.setParentInvoiceLine(parentInvoiceLine);
+        invoiceLine.setInvoice(null);
+        invoiceLine.setIsNotCountable(true);
       }
       if (CollectionUtils.isNotEmpty(childrenProjectTasks)) {
         List<InvoiceLine> childrenInvoiceLineList =
@@ -298,7 +300,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
                 .filter(
                     "self.projectTaskSet.id IN ("
                         + StringHelper.getIdListString(childrenProjectTasks)
-                        + ")")
+                        + ")"
+                        + " AND self.parentInvoiceLine IS NULL")
                 .fetch();
         childrenInvoiceLineList.forEach(invoiceLine::addInvoiceLineListItem);
       }

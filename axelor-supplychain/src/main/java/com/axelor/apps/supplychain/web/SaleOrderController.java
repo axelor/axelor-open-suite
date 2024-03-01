@@ -19,9 +19,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.sublines.InvoiceSubLineService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -73,7 +71,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class SaleOrderController {
@@ -292,27 +289,6 @@ public class SaleOrderController {
               isPercent,
               qtyToInvoiceMap,
               timetableIdList);
-      if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
-        if (!CollectionUtils.isEmpty(saleOrder.getSaleOrderLineDisplayList())
-            && !CollectionUtils.isEmpty(invoice.getInvoiceLineDisplayList())) {
-          for (InvoiceLine invoiceLine : invoice.getInvoiceLineDisplayList()) {
-            SaleOrderLine relatedSaleOrderLine = invoiceLine.getSaleOrderLine();
-            invoiceLine.setInvoiceDisplay(invoice);
-            invoiceLine.setInvoice(null);
-            if (relatedSaleOrderLine.getParentSaleOrderLine() != null) {
-              invoiceLine.setParentInvoiceLine(
-                  invoice.getInvoiceLineDisplayList().stream()
-                      .filter(
-                          il ->
-                              il.getSaleOrderLine()
-                                  .equals(relatedSaleOrderLine.getParentSaleOrderLine()))
-                      .findFirst()
-                      .orElse(null));
-            }
-          }
-        }
-      }
-      Beans.get(InvoiceSubLineService.class).populateInvoiceLines(invoice);
 
       if (invoice != null) {
         response.setCanClose(true);

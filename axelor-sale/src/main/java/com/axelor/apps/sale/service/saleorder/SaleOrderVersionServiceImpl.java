@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
 
@@ -52,16 +53,29 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
   @Transactional(rollbackOn = {Exception.class})
   public void createNewVersion(SaleOrder saleOrder) {
     saleOrder
-        .getSaleOrderLineList()
-        .forEach(saleOrderLine -> historizeSaleOrderLine(saleOrder, saleOrderLine));
+        .getSaleOrderLineDisplayList()
+        .forEach(
+            saleOrderLine -> {
+              if (saleOrderLine.getParentSaleOrderLine() == null) {
+                historizeSaleOrderLine(saleOrder, saleOrderLine);
+              }
+            });
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrder.setVersionNumber(saleOrder.getVersionNumber() + 1);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void historizeSaleOrderLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+
+    if (CollectionUtils.isEmpty(saleOrderLine.getSaleOrderLineList())) {
+      return;
+    }
+    for (SaleOrderLine soLine : saleOrderLine.getSaleOrderLineList()) {
+      historizeSaleOrderLine(saleOrder, soLine);
+    }
     SaleOrderLine oldVersionSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, true);
     oldVersionSaleOrderLine.setSaleOrder(null);
+    oldVersionSaleOrderLine.setSaleOrderDisplay(null);
     oldVersionSaleOrderLine.setOldVersionSaleOrder(saleOrder);
     oldVersionSaleOrderLine.setVersionNumber(saleOrder.getVersionNumber());
     oldVersionSaleOrderLine.setVersionDateT(

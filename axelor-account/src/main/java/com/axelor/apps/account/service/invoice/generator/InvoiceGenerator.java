@@ -358,6 +358,12 @@ public abstract class InvoiceGenerator {
 
     initCollections(invoice);
 
+    if (invoice.getInvoiceLineDisplayList() == null) {
+      invoice.setInvoiceLineDisplayList(new ArrayList<InvoiceLine>());
+    } else {
+      invoice.getInvoiceLineDisplayList().clear();
+    }
+
     if (invoice instanceof ContextEntity) {
       if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()) {
         invoice.getInvoiceLineDisplayList().addAll(invoiceLines);

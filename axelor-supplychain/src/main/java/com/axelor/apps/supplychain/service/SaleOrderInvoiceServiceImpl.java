@@ -75,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -219,6 +220,30 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (appStockService.getAppStock().getIsIncotermEnabled()) {
       invoice.setIncoterm(saleOrder.getIncoterm());
+    }
+
+    if (Beans.get(AppSaleService.class).getAppSale().getIsSubLinesEnabled()) {
+      if (!CollectionUtils.isEmpty(saleOrder.getSaleOrderLineDisplayList())
+          && !CollectionUtils.isEmpty(invoice.getInvoiceLineDisplayList())) {
+        for (InvoiceLine invoiceLine : invoice.getInvoiceLineDisplayList()) {
+          SaleOrderLine relatedSaleOrderLine = invoiceLine.getSaleOrderLine();
+          invoiceLine.setInvoiceDisplay(invoice);
+          if (relatedSaleOrderLine.getParentSaleOrderLine() != null) {
+            invoiceLine.setInvoice(null);
+            invoiceLine.setParentInvoiceLine(
+                invoice.getInvoiceLineDisplayList().stream()
+                    .filter(
+                        il ->
+                            il.getSaleOrderLine()
+                                .equals(relatedSaleOrderLine.getParentSaleOrderLine()))
+                    .findFirst()
+                    .orElse(null));
+          }
+          if (!invoiceLine.getIsNotCountable()) {
+            invoice.addInvoiceLineListItem(invoiceLine);
+          }
+        }
+      }
     }
     invoice = invoiceRepo.save(invoice);
 
