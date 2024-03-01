@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -1653,6 +1653,12 @@ where SaleOrder.id = ?]]></xml-property>
                     <text-property name="displayName">packHideUnitAmounts</text-property>
                     <text-property name="heading">packHideUnitAmounts</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">index</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">index</text-property>
+                    <text-property name="heading">index</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1788,6 +1794,11 @@ where SaleOrder.id = ?]]></xml-property>
                         <property name="position">24</property>
                         <property name="name">packHideUnitAmounts</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">index</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1961,6 +1972,13 @@ where SaleOrder.id = ?]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">index</property>
+                    <property name="nativeName">index</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH SOL AS (
 SELECT
@@ -1999,10 +2017,11 @@ SELECT
     SOLine.is_hide_unit_amounts as "hideUnitAmounts",
     Unit.label_to_printing as "UnitCode",
 	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	SOLine.line_index as "index"
 
 from sale_sale_order as SaleOrder
-left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
+left outer join sale_sale_order_line as SOLine on (SOLine.sale_order_display = SaleOrder.id)
 left outer join base_product as Product on (SOLine.product = Product.id)
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 left outer join base_unit as Unit on (SOLine.unit = Unit.id)
@@ -2035,7 +2054,8 @@ SELECT
     SOL."showTotal",
     SOL."hideUnitAmounts",
     SOL."UnitCode",
-	SOL."packHideUnitAmounts"
+	SOL."packHideUnitAmounts",
+	SOL."index"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
@@ -2072,7 +2092,8 @@ SELECT
     BOOL_AND(SOL."showTotal") as "showTotal",
     BOOL_OR(SOL."hideUnitAmounts") as "hideUnitAmounts",
     SOL."UnitCode",
-	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
+	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts",
+	SOL."index"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
@@ -2080,7 +2101,7 @@ WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_produ
 AND AppBase.regroup_products_level_select = 'category'
 AND ((AppBase.regroup_products_type_select LIKE '%products%' AND SOL.product_type_select = 'storable')
     OR (AppBase.regroup_products_type_select LIKE '%services%' AND SOL.product_type_select = 'service'))
-group by product_category_name, product_category_code, product_type_select, "UnitCode", "CurrencyCode"
+group by product_category_name, product_category_code, product_type_select, "UnitCode", "CurrencyCode", "index"
 
 UNION
 SELECT
@@ -2112,7 +2133,8 @@ SELECT
     BOOL_AND(SOL."showTotal") as "showTotal",
     BOOL_OR(SOL."hideUnitAmounts") as "hideUnitAmounts",
     SOL."UnitCode",
-	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
+	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts",
+	SOL."index"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
@@ -2120,7 +2142,7 @@ WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_produ
 AND AppBase.regroup_products_level_select = 'global'
 AND ((AppBase.regroup_products_type_select LIKE '%products%' AND SOL.product_type_select = 'storable')
     OR (AppBase.regroup_products_type_select LIKE '%services%' AND SOL.product_type_select = 'service'))
-group by AppBase.regroup_products_label_products, AppBase.regroup_products_label_services, SOL.product_type_select, SOL."UnitCode", SOL."CurrencyCode";
+group by AppBase.regroup_products_label_products, AppBase.regroup_products_label_services, SOL.product_type_select, SOL."UnitCode", SOL."CurrencyCode", SOL."index";
 
 ]]></xml-property>
         </oda-data-set>
@@ -6025,7 +6047,55 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">showTotal_1</property>
+                                <text-property name="displayName">showTotal</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["showTotal"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">hideUnitAmounts_1</property>
+                                <text-property name="displayName">hideUnitAmounts</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">packHideUnitAmounts_1</property>
+                                <text-property name="displayName">packHideUnitAmounts</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["packHideUnitAmounts"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">index</property>
+                                <text-property name="displayName">index</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["index"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Index</property>
+                                <text-property name="displayName">Index</text-property>
+                                <expression name="expression" type="javascript">row["index"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
+                        <structure name="toc"/>
+                        <list-property name="sort">
+                            <structure>
+                                <expression name="key" type="javascript">row["Index"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                        </list-property>
+                        <column id="5818">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["displayProductPictureOnPrinting"] != 1 || (row._outer["displayProductPictureOnPrinting"] == 1 &amp;&amp; row["is_product_picture_available"] == 0)</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">4%</property>
+                        </column>
                         <column id="4611">
                             <list-property name="visibility">
                                 <structure>
@@ -6118,6 +6188,46 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                         </column>
                         <header>
                             <row id="4531">
+                                <cell id="5814">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="5819">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Index'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="4532">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -6514,13 +6624,22 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">row["sequence"]</expression>
+                                    <expression name="key" type="javascript">row["index"]</expression>
                                     <property name="direction">asc</property>
                                     <property name="strength">-1</property>
                                 </structure>
                             </list-property>
                             <header>
                                 <row id="4553">
+                                    <cell id="5815">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <data id="5820">
+                                            <property name="resultSetColumn">Index</property>
+                                        </data>
+                                    </cell>
                                     <cell id="4554">
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -7062,6 +7181,12 @@ if(row._outer._outer["hideDiscount"] == 1){
                                     </cell>
                                 </row>
                                 <row id="4585">
+                                    <cell id="5816">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </cell>
                                     <cell id="4586">
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -7129,6 +7254,12 @@ if(row._outer._outer["hideDiscount"] == 1){
                         </group>
                         <footer>
                             <row id="4598">
+                                <cell id="5817">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                </cell>
                                 <cell id="4599">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
