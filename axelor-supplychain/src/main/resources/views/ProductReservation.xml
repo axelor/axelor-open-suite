@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="product-reservation-grid" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation" orderBy="product.code"
+    canDelete="false">
+    <toolbar>
+      <button name="cancelBtn" title="Cancel"
+        onClick="action-product-reservation-method-cancel" showIf="id" icon="fa-times"/>
+    </toolbar>
+    <field name="typeSelect"/>
+    <field name="product"/>
+    <field name="qty"/>
+    <field name="reservationTypeSelect"/>
+    <field name="priorityReservationDateTime"/>
+    <field name="stockLocation"/>
+    <field name="trackingNumber"/>
+    <field name="originSaleOrderLine"/>
+    <field name="status"/>
+  </grid>
+
+  <form name="product-reservation-form" title="Reservations / allocations" canDelete="false"
+    model="com.axelor.apps.supplychain.db.ProductReservation" width="large"
+    onSave="action-method-product-reservation-update-status">
+    <toolbar>
+      <button name="cancelBtn" title="Cancel"
+        onClick="action-product-reservation-method-cancel" showIf="id" icon="fa-times"/>
+    </toolbar>
+    <panel name="mainPanel" itemSpan="12">
+      <panel name="general">
+        <field name="typeSelect" required="true"/>
+        <field name="status" readonly="true"/>
+        <field name="product" showIf="typeSelect" required="true"
+          domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"/>
+        <field name="qty" showIf="typeSelect" required="true" validIf="qty &gt; 0"/>
+        <field name="description" colSpan="12" showIf="typeSelect" widget="html" large="true"/>
+      </panel>
+      <panel name="reservation" showIf="typeSelect == 1 &amp;&amp; product">
+        <field name="priorityReservationDateTime" colSpan="6" requiredIf="typeSelect == 1"
+          widget="date-time"/>
+        <field name="reservationTypeSelect" colSpan="6" requiredIf="typeSelect == 1"/>
+      </panel>
+      <panel name="allocation" showIf="typeSelect == 2 &amp;&amp; product">
+        <field name="stockLocation" requiredIf="typeSelect == 2"/>
+        <field name="trackingNumber" title="Tracking number"
+          showIf="product.trackingNumberConfiguration != null"
+          requiredIf="product.trackingNumberConfiguration != null"/>
+        <field name="product.trackingNumberConfiguration" hidden="true"/>
+      </panel>
+      <panel name="origin" showIf="product">
+        <field name="originSaleOrderLine" required="true" domain="self.product.id = :product"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-method name="action-product-reservation-method-cancel">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="cancelReservation"/>
+  </action-method>
+
+  <action-method name="action-method-product-reservation-update-status">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="updateStatus"/>
+  </action-method>
+
+</object-views>

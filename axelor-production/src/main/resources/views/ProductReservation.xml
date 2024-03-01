@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+
+  <grid id="production-product-reservation-grid" name="product-reservation-grid"
+    title="Product reservation" model="com.axelor.apps.supplychain.db.ProductReservation"
+    extension="true">
+    <extend target="//field[@name='originSaleOrderLine']">
+      <insert position="after">
+        <field name="originManufOrder"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="production-product-reservation-form" name="product-reservation-form"
+    title="Reservations / allocations" model="com.axelor.apps.supplychain.db.ProductReservation"
+    extension="true">
+
+    <extend target="//field[@name='originSaleOrderLine']">
+      <attribute name="required" value="false"/>
+      <attribute name="requiredIf" value="!originManufOrder"/>
+      <insert position="after">
+        <field name="originManufOrder" requiredIf="!originSaleOrderLine"
+          domain="self.product.id = :product"/>
+      </insert>
+    </extend>
+
+  </form>
+
+</object-views>
