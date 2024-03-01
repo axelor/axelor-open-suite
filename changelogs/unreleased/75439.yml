@@ -1,0 +1,5 @@
+---
+title: "Bill of Material Import: Zip files are now unzipped and linked to the main BOM that will be generated."
+module: axelor-base
+developer: |
+  New generic unzipping method in base, may have to re-import previous zip files.
