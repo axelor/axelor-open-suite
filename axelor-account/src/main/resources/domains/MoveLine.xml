@@ -53,7 +53,7 @@
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
 
-    <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
+    <decimal name="currencyRate" title="Currency Rate" precision="20" scale="6"
       initParam="true"/>
     <decimal name="currencyAmount" title="Amount in move currency" initParam="true"
       scale="3" precision="20"/>
