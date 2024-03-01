@@ -45,6 +45,8 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isEditionOfDateAllowed;
   protected final Boolean isTimesheetProjectInvoicingEnabled;
   protected final Boolean isStockLocationManagementEnabled;
+
+  protected final String minimalRequiredMobileAppVersion;
   protected final List<String> fieldsToShowOnTimesheet;
 
   public MobileSettingsResponse(
@@ -70,6 +72,7 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isEditionOfDateAllowed,
       Boolean isTimesheetProjectInvoicingEnabled,
       Boolean isStockLocationManagementEnabled,
+      String minimalRequiredMobileAppVersion,
       List<String> fieldsToShowOnTimesheet) {
     super(version);
     this.apps = apps;
@@ -93,6 +96,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isEditionOfDateAllowed = isEditionOfDateAllowed;
     this.isTimesheetProjectInvoicingEnabled = isTimesheetProjectInvoicingEnabled;
     this.isStockLocationManagementEnabled = isStockLocationManagementEnabled;
+    this.minimalRequiredMobileAppVersion = minimalRequiredMobileAppVersion;
     this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
   }
 
@@ -198,6 +202,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isStockLocationManagementEnabled")
   public Boolean getStockLocationManagementEnabled() {
     return isStockLocationManagementEnabled;
+  }
+
+  @JsonProperty(value = "minimalRequiredMobileAppVersion")
+  public String getMinimalRequiredMobileAppVersion() {
+    return minimalRequiredMobileAppVersion;
   }
 
   @JsonProperty(value = "fieldsToShowOnTimesheet")
