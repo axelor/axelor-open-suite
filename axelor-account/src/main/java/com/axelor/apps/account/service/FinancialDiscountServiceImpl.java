@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -48,21 +49,14 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
       BigDecimal inTaxTotal,
       BigDecimal taxTotal,
       Currency currency) {
-    BigDecimal exTaxTotal = inTaxTotal.subtract(taxTotal);
+    BigDecimal financialDiscountTotalAmount = inTaxTotal;
 
     if (financialDiscount.getDiscountBaseSelect()
-        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
-      return this.getFinancialDiscountAmount(financialDiscount, inTaxTotal, currency);
-    } else {
-      BigDecimal financialDiscountAmountWithoutTax =
-          this.getFinancialDiscountAmount(financialDiscount, exTaxTotal, currency);
-
-      BigDecimal financialDiscountTaxAmount =
-          this.getFinancialDiscountTaxAmount(
-              financialDiscount, inTaxTotal, exTaxTotal, taxTotal, currency);
-
-      return financialDiscountAmountWithoutTax.add(financialDiscountTaxAmount);
+        != FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      financialDiscountTotalAmount = inTaxTotal.subtract(taxTotal);
     }
+    return this.getFinancialDiscountAmount(
+        financialDiscount, financialDiscountTotalAmount, currency);
   }
 
   protected BigDecimal getFinancialDiscountAmount(
@@ -76,21 +70,29 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
             RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal getFinancialDiscountTaxAmount(
+  @Override
+  public BigDecimal computeRemainingAmountAfterFinDiscount(
       FinancialDiscount financialDiscount,
       BigDecimal inTaxTotal,
       BigDecimal exTaxTotal,
       BigDecimal taxTotal,
+      BigDecimal financialDiscountTotalAmount,
       Currency currency) {
-    return inTaxTotal.signum() == 0
-        ? BigDecimal.ZERO
-        : taxTotal
-            .multiply(exTaxTotal)
-            .multiply(financialDiscount.getDiscountRate())
-            .divide(
-                inTaxTotal.multiply(BigDecimal.valueOf(100)),
-                currencyScaleServiceAccount.getScale(currency),
-                RoundingMode.HALF_UP);
+    if (financialDiscount.getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return inTaxTotal.subtract(financialDiscountTotalAmount);
+    } else {
+      BigDecimal financialDiscountAmountWithoutTax =
+          exTaxTotal.subtract(financialDiscountTotalAmount);
+      BigDecimal financialDiscountTaxAmount =
+          financialDiscountAmountWithoutTax.multiply(
+              taxTotal.divide(
+                  exTaxTotal, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP));
+
+      return currencyScaleServiceAccount.getScaledValue(
+          financialDiscountAmountWithoutTax.add(financialDiscountTaxAmount),
+          currency.getNumberOfDecimals());
+    }
   }
 
   @Override

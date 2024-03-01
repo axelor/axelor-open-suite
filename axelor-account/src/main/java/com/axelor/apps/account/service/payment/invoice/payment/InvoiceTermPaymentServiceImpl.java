@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -343,13 +344,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       InvoiceTerm invoiceTerm,
       boolean applyFinancialDiscount) {
     if (applyFinancialDiscount && invoiceTerm.getAmountRemainingAfterFinDiscount().signum() > 0) {
-      invoiceTermPayment.setPaidAmount(
-          currencyScaleServiceAccount.getScaledValue(
-              invoiceTerm,
-              invoiceTermPayment
-                  .getPaidAmount()
-                  .add(invoiceTermPayment.getFinancialDiscountAmount())));
-
+      BigDecimal newPaidAmount = invoiceTerm.getAmountRemainingAfterFinDiscount();
       BigDecimal ratioPaid =
           invoiceTermPayment
               .getPaidAmount()
@@ -357,17 +352,23 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                   invoiceTerm.getAmount(),
                   AppBaseService.COMPUTATION_SCALING,
                   RoundingMode.HALF_UP);
+      BigDecimal newFinancialDiscountAmount =
+          invoiceTerm.getFinancialDiscountAmount().multiply(ratioPaid);
 
-      invoiceTermPayment.setFinancialDiscountAmount(
-          currencyScaleServiceAccount.getScaledValue(
-              invoiceTerm, invoiceTerm.getFinancialDiscountAmount().multiply(ratioPaid)));
+      if (invoiceTerm.getFinancialDiscount() != null
+          && invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
+              == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+        newPaidAmount =
+            (invoiceTermPayment
+                    .getPaidAmount()
+                    .add(invoiceTermPayment.getFinancialDiscountAmount()))
+                .subtract(newFinancialDiscountAmount);
+      }
 
       invoiceTermPayment.setPaidAmount(
-          currencyScaleServiceAccount.getScaledValue(
-              invoiceTerm,
-              invoiceTermPayment
-                  .getPaidAmount()
-                  .subtract(invoiceTermPayment.getFinancialDiscountAmount())));
+          currencyScaleServiceAccount.getScaledValue(invoiceTerm, newPaidAmount));
+      invoiceTermPayment.setFinancialDiscountAmount(
+          currencyScaleServiceAccount.getScaledValue(invoiceTerm, newFinancialDiscountAmount));
     }
   }
 
@@ -388,7 +389,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     BigDecimal sum =
         invoicePayment.getInvoiceTermPaymentList().stream()
-            .map(it -> it.getPaidAmount().add(it.getFinancialDiscountAmount()))
+            .map(InvoiceTermPayment::getPaidAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 

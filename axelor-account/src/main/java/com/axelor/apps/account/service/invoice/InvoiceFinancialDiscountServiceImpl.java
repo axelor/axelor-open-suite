@@ -55,7 +55,7 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
       invoice.setFinancialDiscountTotalAmount(
           this.computeFinancialDiscountTotalAmount(financialDiscount, invoice));
       invoice.setRemainingAmountAfterFinDiscount(
-          invoice.getInTaxTotal().subtract(invoice.getFinancialDiscountTotalAmount()));
+          this.computeRemainingAmountAfterFinDiscount(financialDiscount, invoice));
 
       if (invoice.getDueDate() != null) {
         invoice.setFinancialDiscountDeadlineDate(
@@ -70,6 +70,17 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
       FinancialDiscount financialDiscount, Invoice invoice) {
     return financialDiscountService.computeFinancialDiscountTotalAmount(
         financialDiscount, invoice.getInTaxTotal(), invoice.getTaxTotal(), invoice.getCurrency());
+  }
+
+  protected BigDecimal computeRemainingAmountAfterFinDiscount(
+      FinancialDiscount financialDiscount, Invoice invoice) {
+    return financialDiscountService.computeRemainingAmountAfterFinDiscount(
+        financialDiscount,
+        invoice.getInTaxTotal(),
+        invoice.getExTaxTotal(),
+        invoice.getTaxTotal(),
+        invoice.getFinancialDiscountTotalAmount(),
+        invoice.getCurrency());
   }
 
   @Override

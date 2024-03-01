@@ -433,18 +433,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       }
 
       invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
-
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
-
-      invoicePayment.setTotalAmountWithFinancialDiscount(
-          currencyScaleServiceAccount.getScaledValue(invoicePayment, invoicePayment.getAmount()));
-
-      invoicePayment.setAmount(
-          currencyScaleServiceAccount.getScaledValue(
-              invoicePayment,
-              invoicePayment
-                  .getAmount()
-                  .subtract(invoicePayment.getFinancialDiscountTotalAmount())));
 
       invoiceTermIdList =
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
