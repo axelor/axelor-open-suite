@@ -128,6 +128,7 @@
 "Invoice.expenseTitle","Expense details",,
 "Invoice.expenseTotalAmount","Total amount",,
 "Invoice.invoiceNoAnnex","ANNEX OF INVOICE N°",,
+"Invoice.noPreviousProgress","No old progress",,
 "Invoice.previousProgress","Previous progress",,
 "Invoice.progressAt","Progress at",,
 "Invoice.purchaseCreditNoteNoAnnex","ANNEX OF PURCHASE CREDIT NOTE N°",,

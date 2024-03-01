@@ -200,5 +200,7 @@ public interface ITranslation {
   public static final String INVOICING_PROJECT_ANNEX_PROGRESS = /*$$(*/
       "InvoicingProjectAnnex.progress"; /*)*/
   public static final String INVOICE_PREVIOUS_PROGRESS = /*$$(*/ "Invoice.previousProgress"; /*)*/
+  public static final String INVOICE_NO_PREVIOUS_PROGRESS = /*$$(*/
+      "Invoice.noPreviousProgress"; /*)*/
   public static final String INVOICE_NEW_PROGRESS = /*$$(*/ "Invoice.progressAt"; /*)*/
 }
