@@ -54,7 +54,8 @@ class ImporterCSV extends Importer {
   @Override
   public void checkEntryFilesType(File bind, File data) throws AxelorException {
     super.checkEntryFilesType(bind, data);
-    if (!Files.getFileExtension(data.getAbsolutePath()).equals("csv")) {
+    if (!Files.getFileExtension(data.getAbsolutePath()).equals("csv")
+        && !Files.getFileExtension(data.getAbsolutePath()).equals("zip")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_CSV_MESSAGE));

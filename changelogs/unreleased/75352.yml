@@ -1,0 +1,3 @@
+---
+title: "SaleOrder: Fixed a bug where sale orders waiting for stock move were not displayed"
+module: axelor-supplychain
