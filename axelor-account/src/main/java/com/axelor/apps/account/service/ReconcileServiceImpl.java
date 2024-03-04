@@ -394,7 +394,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     if (updateInvoiceTerms && updateInvoicePayments) {
       invoiceTermPfpService.validatePfpValidatedAmount(
-          debitMoveLine, creditMoveLine, reconcile.getAmount());
+          debitMoveLine, creditMoveLine, reconcile.getAmount(), reconcileCompany);
     }
   }
 
