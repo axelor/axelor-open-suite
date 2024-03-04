@@ -1,0 +1,3 @@
+---
+title: "Doubtful batch : Fix NPE on doubtful customer batch"
+module: axelor-account

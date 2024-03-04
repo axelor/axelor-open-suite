@@ -421,45 +421,50 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       return;
     }
 
-    BigDecimal debitAmount =
-        debitMoveLine.getInvoiceTermList().stream()
-            .filter(
-                it ->
-                    Arrays.asList(
-                            InvoiceTermRepository.PFP_STATUS_NO_PFP,
-                            InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
-                            InvoiceTermRepository.PFP_STATUS_VALIDATED)
-                        .contains(it.getPfpValidateStatusSelect()))
-            .map(InvoiceTerm::getCompanyAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    if (amount.compareTo(debitAmount) > 0) {
-      throw new AxelorException(
-          debitMoveLine.getMove(),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
-          debitMoveLine.getMove().getReference(),
-          debitMoveLine.getAccount().getCode());
+    if (!ObjectUtils.isEmpty(debitMoveLine.getInvoiceTermList())) {
+      BigDecimal debitAmount =
+          debitMoveLine.getInvoiceTermList().stream()
+              .filter(
+                  it ->
+                      Arrays.asList(
+                              InvoiceTermRepository.PFP_STATUS_NO_PFP,
+                              InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
+                              InvoiceTermRepository.PFP_STATUS_VALIDATED)
+                          .contains(it.getPfpValidateStatusSelect()))
+              .map(InvoiceTerm::getCompanyAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (amount.compareTo(debitAmount) > 0) {
+        throw new AxelorException(
+            debitMoveLine.getMove(),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
+            debitMoveLine.getMove().getReference(),
+            debitMoveLine.getAccount().getCode());
+      }
     }
-    BigDecimal creditAmount =
-        creditMoveLine.getInvoiceTermList().stream()
-            .filter(
-                it ->
-                    Arrays.asList(
-                            InvoiceTermRepository.PFP_STATUS_NO_PFP,
-                            InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
-                            InvoiceTermRepository.PFP_STATUS_VALIDATED)
-                        .contains(it.getPfpValidateStatusSelect()))
-            .map(InvoiceTerm::getCompanyAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    if (amount.compareTo(creditAmount) > 0) {
-      throw new AxelorException(
-          creditMoveLine.getMove(),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
-          creditMoveLine.getMove().getReference(),
-          creditMoveLine.getAccount().getCode());
+
+    if (!ObjectUtils.isEmpty(creditMoveLine.getInvoiceTermList())) {
+      BigDecimal creditAmount =
+          creditMoveLine.getInvoiceTermList().stream()
+              .filter(
+                  it ->
+                      Arrays.asList(
+                              InvoiceTermRepository.PFP_STATUS_NO_PFP,
+                              InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
+                              InvoiceTermRepository.PFP_STATUS_VALIDATED)
+                          .contains(it.getPfpValidateStatusSelect()))
+              .map(InvoiceTerm::getCompanyAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (amount.compareTo(creditAmount) > 0) {
+        throw new AxelorException(
+            creditMoveLine.getMove(),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
+            creditMoveLine.getMove().getReference(),
+            creditMoveLine.getAccount().getCode());
+      }
     }
   }
 
