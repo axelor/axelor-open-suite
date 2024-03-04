@@ -266,7 +266,6 @@
       <move source="//field[@name='invoicingSequenceSelect']" position="inside"/>
       <move source="//field[@name='consolidatePhaseWhenInvoicing']" position="inside"/>
       <move source="//spacer[@name='invoicingSequenceSelectSpacer']" position="inside"/>
-      <move source="//button[@name='showInvoicingProjectsBtn']" position="inside"/>
       <move source="//field[@name='invoicingComment']" position="inside"/>
     </extend>
 

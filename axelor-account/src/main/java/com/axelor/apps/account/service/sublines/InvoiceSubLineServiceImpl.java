@@ -19,7 +19,6 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
-import com.axelor.rpc.ContextEntity;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -362,22 +361,15 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
               invoice, invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal())));
     }
 
-
-
-
-    if (invoice.getInvoiceLineTaxList() == null){
+    if (invoice.getInvoiceLineTaxList() == null) {
       invoice.setInvoiceLineTaxList(new ArrayList<InvoiceLineTax>());
     } else {
       invoice.getInvoiceLineTaxList().clear();
     }
     List<InvoiceLineTax> invoiceTaxLines =
-            (new TaxInvoiceLine(
-                    invoice,
-                    invoice.getInvoiceLineList()))
-                    .creates();
+        (new TaxInvoiceLine(invoice, invoice.getInvoiceLineList())).creates();
 
     invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
-
 
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 

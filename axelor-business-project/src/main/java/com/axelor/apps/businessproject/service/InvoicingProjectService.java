@@ -238,7 +238,6 @@ public class InvoicingProjectService {
       sequence++;
 
       invoiceLineService.compute(invoice, invoiceLine);
-
     }
 
     return invoiceLineList;

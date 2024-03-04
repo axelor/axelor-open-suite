@@ -94,10 +94,12 @@
             if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
           <field name="typeSelect" colSpan="3"
             onChange="action-invoice-line-method-empty-line"/>
-          <field name="isNotCountable" readonly="true" colSpan="1"/>
-          <button name="recalculate" onClick="action-invoice-line-group-recalculate"
+          <button name="recalculateBtn" onClick="action-invoice-line-group-recalculate"
             title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
-            if="__config__.app.getApp('account')?.isSubLinesEnabled" showIf="id"/>
+            if="__config__.app.getApp('account')?.isSubLinesEnabled"
+            showIf="id &amp;&amp; invoiceLineListSize"/>
+          <field name="isNotCountable" readonly="true" colSpan="1" hidden="true"/>
+          <field name="invoiceLineListSize" hidden="true"/>
         </panel>
 
         <panel name="supplierInvoicePanel" colSpan="12">
@@ -111,10 +113,12 @@
             if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
           <field name="typeSelect" colSpan="3"
             onChange="action-invoice-line-method-empty-line"/>
-          <field name="isNotCountable" readonly="true" colSpan="1"/>
-          <button name="recalculate" onClick="action-invoice-line-group-recalculate"
+          <field name="isNotCountable" readonly="true" colSpan="1" hidden="true"/>
+          <button name="recalculateBtn" onClick="action-invoice-line-group-recalculate"
             title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
-            if="__config__.app.getApp('account')?.isSubLinesEnabled" showIf="id"/>
+            if="__config__.app.getApp('account')?.isSubLinesEnabled"
+            showIf="id &amp;&amp; invoiceLineListSize"/>
+          <field name="invoiceLineListSize" hidden="true"/>
         </panel>
         <field name="productName" colSpan="12" requiredIf="typeSelect == 0"/>
         <field name="qty" colSpan="3" required="true"
@@ -135,13 +139,14 @@
             hideIf="discountTypeSelect == 0"/>
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" showIf="!parentInvoiceLine"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form"
           domain="self.endDate = null or self.endDate &gt; :__date__" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
-        <field name="inTaxTotal" colSpan="3" readonly="true"/>
+        <field name="inTaxTotal" colSpan="3" readonly="true" showIf="!parentInvoiceLine"/>
         <field name="$isReadOnly" hidden="true"/>
+        <field name="parentInvoiceLine" hidden="true"/>
         <field name="taxEquivSet" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="invoice" hidden="true"/>
@@ -295,12 +300,14 @@
           grid-view="unit-grid"/>
         <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="priceDiscounted" hidden="true"/>
-        <field name="taxLineSet" canEdit="false"
+
+        <field name="taxLineSet" canEdit="false" showIf="!parentInvoiceLine"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" readonly="true"/>
-        <field name="inTaxTotal" readonly="true"/>
+        <field name="inTaxTotal" readonly="true" showIf="!parentInvoiceLine"/>
         <field name="invoice" hidden="true"/>
+        <field name="parentInvoiceLine" hidden="true"/>
         <panel name="discountPanel" title="Discount" colSpan="12">
           <field name="discountTypeSelect"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>

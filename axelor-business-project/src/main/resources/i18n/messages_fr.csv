@@ -128,7 +128,7 @@
 "Invoice.expenseTitle","Détails des notes de frais",,
 "Invoice.expenseTotalAmount","Montant total",,
 "Invoice.invoiceNoAnnex","ANNEXE DE FACTURE N°",,
-"Invoice.noPreviousProgress","Pas d'avt. précédent",,
+"Invoice.noPreviousProgress","Avt prec",,
 "Invoice.previousProgress","Avt. précédent",,
 "Invoice.progressAt","Avt. au",,
 "Invoice.purchaseCreditNoteNoAnnex","ANNEXE D'AVOIR FOURNISSEUR N°",,

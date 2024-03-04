@@ -35,12 +35,12 @@ public class ProjectTaskProgressUpdateServiceImpl implements ProjectTaskProgress
 
       BigDecimal sumProgressTimesPlanifiedTime =
           childProjectTasks.stream()
-              .map(task -> task.getProgress().multiply(task.getPlannedTime()))
+              .map(task -> task.getProgress().multiply(task.getBudgetedTime()))
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 
       BigDecimal sumPlannedTime =
           childProjectTasks.stream()
-              .map(ProjectTask::getPlannedTime)
+              .map(ProjectTask::getBudgetedTime)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       BigDecimal averageProgress =
           sumPlannedTime.compareTo(BigDecimal.ZERO) != 0
