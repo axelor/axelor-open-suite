@@ -1,0 +1,2 @@
+title: "AccountingBatch/OpenClosureAccounts : remove the result move when no account are treated"
+module: axelor-account
