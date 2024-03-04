@@ -21,6 +21,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -104,7 +105,9 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
 
     try {
-      invoice = Beans.get(InvoiceService.class).compute(invoice);
+      // invoice = Beans.get(InvoiceService.class).compute(invoice);
+
+      Beans.get(InvoiceSubLineService.class).computeInvoice(invoice);
       response.setValues(invoice);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -1298,13 +1301,16 @@ public class InvoiceController {
 
   public void updateRelatedOrderLines(ActionRequest request, ActionResponse response)
       throws AxelorException {
+
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
     Beans.get(InvoiceSubLineService.class).updateRelatedOrderLines(invoice);
     response.setReload(true);
   }
 
-  public void populateInvoiceLines(ActionRequest request, ActionResponse response) {
+  public void populateInvoiceLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
     Beans.get(InvoiceSubLineService.class).populateInvoiceLines(invoice);
     response.setReload(true);

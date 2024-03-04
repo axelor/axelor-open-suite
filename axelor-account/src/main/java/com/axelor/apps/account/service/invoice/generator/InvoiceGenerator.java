@@ -379,13 +379,7 @@ public abstract class InvoiceGenerator {
       }
     }
     // Create tax lines.
-    List<InvoiceLineTax> invoiceTaxLines =
-        (new TaxInvoiceLine(
-                invoice,
-                invoiceLines.stream()
-                    .filter(line -> !line.getIsNotCountable())
-                    .collect(Collectors.toList())))
-            .creates();
+    List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
 
     // Workaround for #9759
     if (invoice instanceof ContextEntity) {
@@ -414,6 +408,9 @@ public abstract class InvoiceGenerator {
    * @param invoice
    */
   protected void initInvoiceLineList(Invoice invoice) {
+    if (invoice.getInvoiceLineDisplayList() == null) {
+      invoice.setInvoiceLineDisplayList(new ArrayList<InvoiceLine>());
+    }
 
     if (invoice.getInvoiceLineList() == null) {
       invoice.setInvoiceLineList(new ArrayList<InvoiceLine>());

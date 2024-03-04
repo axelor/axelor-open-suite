@@ -84,8 +84,6 @@
           </viewer>
         </field>
         <panel name="customerInvoicePanel" colSpan="12">
-          <field name="invoice"/>
-          <field name="invoiceDisplay"/>
           <field name="lineIndex" colSpan="1"/>
           <field name="product" canEdit="false"
             onChange="action-group-account-invoice-line-product-onchange"

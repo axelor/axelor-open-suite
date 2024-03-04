@@ -22,5 +22,7 @@ public interface InvoiceSubLineService {
 
   String getProductDomain(Invoice invoice, boolean isFilterOnSupplier);
 
-  void populateInvoiceLines(Invoice invoice);
+  void populateInvoiceLines(Invoice invoice) throws AxelorException;
+
+  void computeInvoice(Invoice invoice) throws AxelorException;
 }

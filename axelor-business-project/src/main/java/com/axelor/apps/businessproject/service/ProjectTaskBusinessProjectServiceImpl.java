@@ -288,6 +288,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
                 .all()
                 .filter(":parentProjectTask MEMBER OF self.projectTaskSet")
                 .bind("parentProjectTask", parentProjectTask)
+                .order("-id")
                 .fetchOne();
         invoiceLine.setParentInvoiceLine(parentInvoiceLine);
         invoiceLine.setInvoice(null);
@@ -342,7 +343,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             projectTask.addInvoiceLineSetItem(invoiceLine);
             invoiceLine.setInvoiceLineListSize(
                 projectTask.getSaleOrderLine().getSaleOrderLineListSize());
-            invoiceLine.setLineIndex(projectTask.getSaleOrderLine().getLineIndex());
 
             setProgressAndCoefficient(invoiceLine, projectTask);
 

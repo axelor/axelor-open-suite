@@ -620,6 +620,7 @@
           grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
           orderBy="lineIndex" height="30"
           if="__config__.app.getApp('account')?.getIsSubLinesEnabled()"/>
+        <field name="invoiceLineList"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" form-view="invoice-line-form"

@@ -179,6 +179,7 @@ public class InvoicingProjectService {
           public Invoice generate() throws AxelorException {
 
             Invoice invoice = super.createInvoiceHeader();
+
             invoice.setProject(project);
             invoice.setPriceList(project.getPriceList());
             return invoice;
@@ -191,6 +192,7 @@ public class InvoicingProjectService {
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
+
     Beans.get(InvoiceRepository.class).save(invoice);
 
     invoicingProject.setInvoice(invoice);
@@ -236,6 +238,7 @@ public class InvoicingProjectService {
       sequence++;
 
       invoiceLineService.compute(invoice, invoiceLine);
+
     }
 
     return invoiceLineList;
