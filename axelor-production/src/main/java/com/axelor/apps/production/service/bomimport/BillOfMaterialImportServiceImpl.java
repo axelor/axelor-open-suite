@@ -139,7 +139,8 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     MetaFile metaFile = billOfMaterialImport.getDocumentMetaFile();
 
     if (metaFile != null) {
-      if (metaFile.getFileType().equals("application/zip")) {
+      if (metaFile.getFileType().equals("application/zip")
+          || metaFile.getFileType().equals("application/x-zip-compressed")) {
         String zipFilePath = MetaFiles.getPath(metaFile).toFile().getAbsolutePath();
         dmsService.unzip(zipFilePath, billOfMaterialImport.getMainBillOfMaterialGenerated());
       } else {
