@@ -17,12 +17,13 @@
       <field name="$amountToInvoice" title="Amount to invoice" type="decimal" min="0"
         showIf="$contains([3],$number($operationSelect))"/>
     </panel>
-    <panel-related name="saleOrderLineListPanel" field="saleOrderLineDisplayList"
-      hideIf="$operationSelect != 2" canNew="false"
-      grid-view="invoicing-wizard-sale-order-line-grid" editable="true"/>
+    <panel-related name="saleOrderLineListDisplayPanel"
+      field="saleOrderLineDisplayList" hideIf="$operationSelect != 2" canNew="false"
+      grid-view="invoicing-wizard-sale-order-line-grid" editable="true"
+      if="__config__.app.getApp('sale')?.getIsSubLinesEnabled()"/>
     <panel-related name="saleOrderLineListPanel" field="saleOrderLineList"
-      hideIf="$operationSelect != 2" canNew="false"
-      grid-view="invoicing-wizard-sale-order-line-grid" editable="true"/>
+      hideIf="$operationSelect != 2" if="!__config__.app.getApp('sale')?.getIsSubLinesEnabled()"
+      canNew="false" grid-view="invoicing-wizard-sale-order-line-grid" editable="true"/>
     <panel name="timetablePanel" colSpan="12" showTitle="false" hidden="true"
       showIf="$operationSelect == 4">
       <field name="$uninvoicedTimetablesList" title="Select the lines to invoice"

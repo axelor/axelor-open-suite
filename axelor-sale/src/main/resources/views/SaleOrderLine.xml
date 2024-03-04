@@ -646,7 +646,15 @@
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
     <action name="action-sale-order-line-set-line-index"/>
+    <action name="action-sale-order-line-record-set-default-business-project-config"/>
   </action-group>
+
+  <action-record
+    name="action-sale-order-line-record-set-default-business-project-config"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="toInvoice" expr="true"/>
+    <field name="invoicingModeSelect" expr="eval: 3"/>
+  </action-record>
 
   <action-group name="action-group-sale-saleorderline-onload">
     <action name="action-sale-order-line-attrs-show-availabilty-request"

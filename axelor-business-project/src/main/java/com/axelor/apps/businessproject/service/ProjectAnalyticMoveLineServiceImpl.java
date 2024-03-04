@@ -20,11 +20,13 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -54,7 +56,13 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
   @Override
   @Transactional
   public SaleOrder updateLines(SaleOrder saleOrder) {
-    for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+    List<SaleOrderLine> saleOrderLineList;
+    if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()) {
+      saleOrderLineList = saleOrder.getSaleOrderLineDisplayList();
+    } else {
+      saleOrderLineList = saleOrder.getSaleOrderLineList();
+    }
+    for (SaleOrderLine orderLine : saleOrderLineList) {
       orderLine.setProject(saleOrder.getProject());
       List<AnalyticMoveLine> analyticMoveLines = orderLine.getAnalyticMoveLineList();
       if (ObjectUtils.notEmpty(analyticMoveLines)) {
