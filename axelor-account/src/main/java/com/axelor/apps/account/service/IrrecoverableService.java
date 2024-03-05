@@ -59,6 +59,7 @@ import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -106,6 +107,7 @@ public class IrrecoverableService {
   protected IrrecoverableRepository irrecoverableRepo;
 
   protected AppAccountService appAccountService;
+  protected CurrencyService currencyService;
 
   @Inject
   public IrrecoverableService(
@@ -126,7 +128,8 @@ public class IrrecoverableService {
       IrrecoverableCustomerLineRepository irrecoverableCustomerLineRepo,
       InvoiceRepository invoiceRepo,
       ManagementObjectRepository managementObjectRepo,
-      IrrecoverableRepository irrecoverableRepo) {
+      IrrecoverableRepository irrecoverableRepo,
+      CurrencyService currencyService) {
 
     this.sequenceService = sequenceService;
     this.moveToolService = moveToolService;
@@ -147,6 +150,7 @@ public class IrrecoverableService {
     this.irrecoverableRepo = irrecoverableRepo;
 
     this.appAccountService = appAccountService;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -819,22 +823,15 @@ public class IrrecoverableService {
    * @return the remaining invoice rate
    */
   public BigDecimal getProrataRate(Invoice invoice, boolean isInvoiceReject) {
-    BigDecimal prorataRate = null;
+    BigDecimal prorataRate =
+        currencyService.computeScaledExchangeRate(
+            invoice.getCompanyInTaxTotalRemaining(), invoice.getCompanyInTaxTotal());
+
     if (isInvoiceReject) {
       prorataRate =
-          (invoice.getRejectMoveLine().getAmountRemaining().abs())
-              .divide(
-                  invoice.getCompanyInTaxTotal(),
-                  AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE,
-                  RoundingMode.HALF_UP);
-    } else {
-      prorataRate =
-          invoice
-              .getCompanyInTaxTotalRemaining()
-              .divide(
-                  invoice.getCompanyInTaxTotal(),
-                  AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE,
-                  RoundingMode.HALF_UP);
+          currencyService.computeScaledExchangeRate(
+              invoice.getRejectMoveLine().getAmountRemaining().abs(),
+              invoice.getCompanyInTaxTotal());
     }
 
     log.debug("Prorata rate for the invoice {} : {}", invoice.getInvoiceId(), prorataRate);

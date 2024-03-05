@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -42,12 +43,15 @@ import java.util.Set;
 public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDistributionService {
 
   protected PaymentMoveLineDistributionRepository paymentMvlDistributionRepository;
+  protected CurrencyService currencyService;
 
   @Inject
   public PaymentMoveLineDistributionServiceImpl(
-      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository) {
+      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository,
+      CurrencyService currencyService) {
 
     this.paymentMvlDistributionRepository = paymentMvlDistributionRepository;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -148,12 +152,8 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
       TaxLine taxLine) {
 
     BigDecimal exTaxProratedAmount =
-        moveLineAmount
-            .multiply(paymentAmount)
-            .divide(
-                invoiceTotalAmount,
-                AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE,
-                RoundingMode.HALF_UP)
+        currencyService
+            .computeScaledExchangeRate(moveLineAmount.multiply(paymentAmount), invoiceTotalAmount)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     BigDecimal taxProratedAmount = BigDecimal.ZERO;
