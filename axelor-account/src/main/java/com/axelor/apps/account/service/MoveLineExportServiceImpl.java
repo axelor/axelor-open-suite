@@ -384,8 +384,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     if (!administration) {
       moveLineQueryList.add("self.move.journal.notExportOk = false");
-      moveLineQueryList.add(
-          String.format("self.move.journal.id = %s", accountingReport.getJournal().getId()));
+
+      if (accountingReport.getJournal() != null) {
+        moveLineQueryList.add(
+            String.format("self.move.journal.id = %s", accountingReport.getJournal().getId()));
+      }
 
       if (replay) {
         moveLineQueryList.add(
