@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
+    id="hr-invoice-form" extension="true">
+    <extend target="//field[@name='bankDetails']">
+      <insert position="after">
+        <field name="bankCard" colSpan="12" showIf="paymentMode.typeSelect == 6"
+          onSelect="action-invoice-method-on-bank-card-select" form-view="bank-card-form"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-invoice-attrs-on-bank-card-select">
+    <attribute for="bankCard" name="domain" if="bankDetails"
+      expr="eval: &quot;self.id IN (${bankDetails?.bankCardList?.collect{it.id}.join(',')})&quot;"/>
+    <attribute for="bankCard" name="domain" if="!bankDetails"
+      expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.bankCardList?.collect{it.id}.join(',')}})&quot;"/>
+  </action-attrs>
+
+  <action-method name="action-invoice-method-on-bank-card-select">
+    <call class="com.axelor.apps.hr.web.InvoiceHRController" method="setBankCardDomain"/>
+  </action-method>
+
+</object-views>
