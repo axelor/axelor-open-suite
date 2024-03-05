@@ -22,7 +22,6 @@
     <view-param name="popup" value="true"/>
     <domain>self.customerPartner = :_partner</domain>
     <context name="_partner" expr="eval: __self__"/>
-
   </action-view>
 
 </object-views>
