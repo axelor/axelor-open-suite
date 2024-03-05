@@ -103,7 +103,6 @@ public class MoveLineQueryController {
   public void massReconcile(ActionRequest request, ActionResponse response) {
     try {
       MoveLineQuery moveLineQuery = request.getContext().asType(MoveLineQuery.class);
-      moveLineQuery = Beans.get(MoveLineQueryRepository.class).find(moveLineQuery.getId());
       List<MoveLine> moveLineList = new ArrayList<>();
       if (!ObjectUtils.isEmpty(moveLineQuery.getMoveLineQueryLineList())) {
         List<MoveLine> moveLineSelectedList =
