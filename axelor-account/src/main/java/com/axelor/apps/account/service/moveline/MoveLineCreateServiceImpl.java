@@ -297,8 +297,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             date,
             dueDate,
             counter,
-            currencyScaleServiceAccount.getScaledValue(move, debit),
-            currencyScaleServiceAccount.getScaledValue(move, credit),
+            currencyScaleServiceAccount.getCompanyScaledValue(move, debit),
+            currencyScaleServiceAccount.getCompanyScaledValue(move, credit),
             Strings.isNullOrEmpty(move.getDescription())
                 ? StringHelper.cutTooLongString(
                     moveLineToolService.determineDescriptionMoveLine(

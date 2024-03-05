@@ -661,7 +661,7 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeCompanyStr(Partner partner) {
     String companyStr = "";
-    if (partner.getCompanySet() != null && partner.getCompanySet().size() > 0) {
+    if (partner.getCompanySet() != null && !partner.getCompanySet().isEmpty()) {
       for (Company company : partner.getCompanySet()) {
         companyStr += company.getCode() + ",";
       }
@@ -674,9 +674,8 @@ public class PartnerServiceImpl implements PartnerService {
   public String getTaxNbrFromRegistrationCode(Partner partner) {
     String taxNbr = "";
 
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
+    if (partner.getMainAddress() != null && partner.getMainAddress().getCountry() != null) {
+      String countryCode = partner.getMainAddress().getCountry().getAlpha2Code();
       String regCode = partner.getRegistrationCode();
 
       if (regCode != null) {
@@ -775,15 +774,14 @@ public class PartnerServiceImpl implements PartnerService {
         || Strings.isNullOrEmpty(registrationCode)
         || CollectionUtils.isEmpty(addresses)
         || addresses.stream()
-                .filter(
-                    address ->
-                        address.getAddress() != null
-                            && address.getAddress().getAddressL7Country() != null
-                            && "FR"
-                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
-                .collect(Collectors.toList())
-                .size()
-            == 0) {
+            .filter(
+                address ->
+                    address.getAddress() != null
+                        && address.getAddress().getCountry() != null
+                        && "FR".equals(address.getAddress().getCountry().getAlpha2Code()))
+            .collect(Collectors.toList())
+            .isEmpty()) {
+
       return true;
     }
 

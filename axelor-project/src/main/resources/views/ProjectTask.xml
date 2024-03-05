@@ -161,11 +161,13 @@
         <field name="projectTaskTagSet" widget="TagSelect" x-color-field="colorSelect"
           form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
         <field name="progress" onChange="action-project-task-group-progress-onchange"
-          showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4"/>
+          showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
         <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
         <field name="progress" showIf="project.isShowProgress &amp;&amp; $readonly()"
           colSpan="4" widget="SelectProgress"/>
         <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; $readonly()"/>
+        <field name="invoicingProgress" readonly="true" colSpan="6"
+          showIf="invoicingType == 4"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="project.isShowProgress" hidden="true"/>
         <field name="project.isShowSection" hidden="true"/>
@@ -873,7 +875,6 @@
     <field name="project.invoicingSequenceSelect" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
     <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="invoiceLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="invoicingUnit" hidden="true" if="!__config__.app.isApp('business-project')"/>

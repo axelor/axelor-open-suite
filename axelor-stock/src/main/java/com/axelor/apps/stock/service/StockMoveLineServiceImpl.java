@@ -629,7 +629,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockMoveLine stockMoveLine,
       LocalDate date,
       String origin,
-      int toStatus) {
+      int toStatus)
+      throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
             stockLocation, stockMoveLine.getProduct());
@@ -1273,8 +1274,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     Address fromAddress = stockMoveToolService.getFromAddress(stockMove, stockMoveLine);
     Address toAddress = stockMoveToolService.getToAddress(stockMove, stockMoveLine);
 
-    Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
-    Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
+    Country fromCountry = fromAddress != null ? fromAddress.getCountry() : null;
+    Country toCountry = toAddress != null ? toAddress.getCountry() : null;
 
     return fromCountry != null
         && toCountry != null
