@@ -18,16 +18,9 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.stock.db.StockMove;
-import java.util.List;
 
 public interface ManufOrderOutgoingStockMoveService {
 
   void setManufOrderOnOutgoingMove(ManufOrder manufOrder);
-
-  List<StockMove> getResidualOutStockMoveLineList(ManufOrder manufOrder) throws AxelorException;
-
-  List<StockMove> getNonResidualOutStockMoveLineList(ManufOrder manufOrder) throws AxelorException;
 }

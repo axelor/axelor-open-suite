@@ -37,6 +37,8 @@ import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
@@ -57,7 +59,6 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
 
   @Inject
   public ManufOrderServiceBusinessImpl(
@@ -78,9 +79,10 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       PartnerRepository partnerRepository,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
-      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ManufOrderGetStockMoveService manufOrderGetStockMoveService,
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     super(
         sequenceService,
         operationOrderService,
@@ -100,8 +102,9 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         billOfMaterialService,
         stockMoveService,
         manufOrderOutgoingStockMoveService,
-        manufOrderStockMoveService);
-    this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
+        manufOrderStockMoveService,
+        manufOrderGetStockMoveService,
+        manufOrderCreateStockMoveLineService);
   }
 
   @Transactional

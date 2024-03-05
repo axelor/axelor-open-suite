@@ -26,6 +26,8 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
@@ -53,6 +55,8 @@ public class OperationOrderStockMoveService {
   protected ProductCompanyService productCompanyService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
+  protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
+  protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
 
   @Inject
   public OperationOrderStockMoveService(
@@ -61,13 +65,17 @@ public class OperationOrderStockMoveService {
       StockLocationRepository stockLocationRepo,
       ProductCompanyService productCompanyService,
       ManufOrderStockMoveService manufOrderStockMoveService,
-      ManufOrderOutsourceService manufOrderOutsourceService) {
+      ManufOrderOutsourceService manufOrderOutsourceService,
+      ManufOrderGetStockMoveService manufOrderGetStockMoveService,
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationRepo = stockLocationRepo;
     this.productCompanyService = productCompanyService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
+    this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
+    this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
   }
 
   public void createToConsumeStockMove(OperationOrder operationOrder) throws AxelorException {
@@ -292,7 +300,7 @@ public class OperationOrderStockMoveService {
     List<ProdProduct> diffProdProductList;
     Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
     diffProdProductList = new ArrayList<>(operationOrder.getDiffConsumeProdProductList());
-    manufOrderStockMoveService.createNewStockMoveLines(
+    manufOrderCreateStockMoveLineService.createNewStockMoveLines(
         diffProdProductList,
         stockMove,
         StockMoveLineService.TYPE_IN_PRODUCTIONS,
@@ -328,7 +336,7 @@ public class OperationOrderStockMoveService {
 
     // find planned stock move
     Optional<StockMove> stockMoveOpt =
-        manufOrderStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
+        manufOrderGetStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
     if (!stockMoveOpt.isPresent()) {
       return;
     }
@@ -351,7 +359,7 @@ public class OperationOrderStockMoveService {
       BigDecimal qty =
           manufOrderStockMoveService.getFractionQty(
               operationOrder.getManufOrder(), prodProduct, qtyToUpdate);
-      manufOrderStockMoveService._createStockMoveLine(
+      manufOrderCreateStockMoveLineService._createStockMoveLine(
           prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty, null, null);
       // Update consumed StockMoveLineList with created stock move lines
       stockMove.getStockMoveLineList().stream()

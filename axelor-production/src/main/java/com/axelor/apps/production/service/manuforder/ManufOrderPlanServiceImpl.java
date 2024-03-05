@@ -61,6 +61,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService;
+  protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
+  protected ManufOrderResidualProductService manufOrderResidualProductService;
 
   @Inject
   public ManufOrderPlanServiceImpl(
@@ -76,7 +78,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
-      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService) {
+      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderResidualProductService manufOrderResidualProductService) {
     this.manufOrderRepo = manufOrderRepo;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
@@ -90,6 +94,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.manufOrderCreatePurchaseOrderService = manufOrderCreatePurchaseOrderService;
+    this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
+    this.manufOrderResidualProductService = manufOrderResidualProductService;
   }
 
   @Override
@@ -172,7 +178,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
   protected void planStockMoves(ManufOrder manufOrder) throws AxelorException {
     if (!manufOrder.getIsConsProOnOperation()) {
-      manufOrderStockMoveService
+      manufOrderPlanStockMoveService
           .createAndPlanToConsumeStockMoveWithLines(manufOrder)
           .ifPresent(
               stockMove -> {
@@ -183,7 +189,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
               });
     }
 
-    manufOrderStockMoveService
+    manufOrderPlanStockMoveService
         .createAndPlanToProduceStockMoveWithLines(manufOrder)
         .ifPresent(
             sm -> {
@@ -191,8 +197,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
               addToProducedStockMoveLineList(manufOrder, sm);
             });
 
-    if (manufOrderStockMoveService.hasResidualProduct(manufOrder)) {
-      manufOrderStockMoveService
+    if (manufOrderResidualProductService.hasResidualProduct(manufOrder)) {
+      manufOrderPlanStockMoveService
           .createAndPlanResidualStockMoveWithLines(manufOrder)
           .ifPresent(
               sm -> {
