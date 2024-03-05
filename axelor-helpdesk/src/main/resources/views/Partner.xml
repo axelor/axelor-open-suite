@@ -15,7 +15,6 @@
     </extend>
   </form>
 
-  <!-- </form> -->
   <action-view name="action-ticket-dashlet-all-partner-tickets"
     model="com.axelor.apps.helpdesk.db.Ticket" title="Tickets">
     <view type="grid" name="ticket-grid"/>
