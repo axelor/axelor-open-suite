@@ -148,13 +148,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       moveLine.getInvoiceTermList().stream()
           .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
           .forEach(
-              it ->
-                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
-                      it,
-                      moveLine.getCredit().max(moveLine.getDebit()),
-                      moveLine.getFinancialDiscount(),
-                      moveLine.getFinancialDiscountTotalAmount(),
-                      moveLine.getRemainingAmountAfterFinDiscount()));
+              it -> invoiceTermFinancialDiscountService.computeFinancialDiscount(it, moveLine));
     }
   }
 
