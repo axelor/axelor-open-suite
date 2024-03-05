@@ -1,5 +1,6 @@
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.inject.Beans;
@@ -23,6 +24,10 @@ public class InventoryLineManagementRepository extends InventoryLineRepository {
       } else {
         json.put("isPresentInStockLocation", false);
       }
+
+      json.put(
+          "nbDecimalDigitForUnitPrice",
+          Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
     }
     return super.populate(json, context);
   }

@@ -5,7 +5,7 @@
 
   <grid name="inventory-line-grid" title="Inventory lines"
     model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code"
-    onNew="action-inventory-line-method-check-presence-in-stock-location">
+    onNew="action-inventory-line-attrs-scale-and-precision">
     <hilite if="!isPresentInStockLocation" color="lightgreen"/>
     <field name="product" canEdit="false"
       onChange="action-inventory-line-group-on-change-product-stock-location"
@@ -25,11 +25,13 @@
     <field name="gap"/>
     <field name="gapValue"/>
     <field name="realValue"/>
-    <field name="price" readonlyIf="isPresentInStockLocation"/>
+    <field name="price" readonlyIf="isPresentInStockLocation"
+      x-scale="nbDecimalDigitForUnitPrice"/>
     <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
     <button name="showDetailStockProduct" icon="fa-cubes"
       onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product"
       if="__config__.app.isApp('supplychain')"/>
+    <field name="nbDecimalDigitForUnitPrice" x-dirty="false" hidden="true" type="integer"/>
   </grid>
 
   <form name="inventory-line-form" title="Inventory line"
@@ -65,6 +67,8 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     <attribute name="scale" for="realQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 
   <action-attrs name="action-inventory-line-attrs-reset-price">

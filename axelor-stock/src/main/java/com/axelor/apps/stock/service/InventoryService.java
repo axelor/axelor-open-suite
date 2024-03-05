@@ -770,7 +770,7 @@ public class InventoryService {
     }
   }
 
-  private BigDecimal getAvgPrice(StockLocationLine stockLocationLine) {
+  protected BigDecimal getAvgPrice(StockLocationLine stockLocationLine) {
     BigDecimal avgPrice;
     if (stockLocationLine != null) {
       avgPrice = stockLocationLine.getAvgPrice();
