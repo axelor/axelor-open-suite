@@ -28,7 +28,7 @@ public interface SaleOrderWorkflowService {
 
   Partner validateCustomer(SaleOrder saleOrder);
 
-  String getSequence(Company company) throws AxelorException;
+  String getSequence(Company company, SaleOrder saleOrder) throws AxelorException;
 
   void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException;

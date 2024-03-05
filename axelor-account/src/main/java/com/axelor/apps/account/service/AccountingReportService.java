@@ -84,4 +84,6 @@ public interface AccountingReportService {
    */
   public Map<String, Object> getFieldsFromReportTypeModelAccountingReport(
       AccountingReport accountingReport) throws AxelorException;
+
+  void checkReportType(AccountingReport accountingReport) throws AxelorException;
 }

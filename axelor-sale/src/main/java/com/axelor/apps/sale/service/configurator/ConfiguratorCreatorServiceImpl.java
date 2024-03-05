@@ -66,8 +66,8 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.ScriptBindings;
-import com.axelor.utils.MetaTool;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.MetaHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -303,7 +303,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       typeName = metaField.getTypeName();
     }
     completeSelection(metaField, newField);
-    newField.setType(MetaTool.typeToJsonType(typeName));
+    newField.setType(MetaHelper.typeToJsonType(typeName));
     newField.setName(computeFormulaMetaFieldName(creator, formulaMetaField));
     newField.setTitle(formulaMetaField.getLabel());
 
@@ -521,7 +521,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
             !creator.getAuthorizedUserSet().contains(user)
                 && !creator.getAuthorizedGroupSet().contains(group));
 
-    return "self.id in (" + StringTool.getIdListString(configuratorCreatorList) + ")";
+    return "self.id in (" + StringHelper.getIdListString(configuratorCreatorList) + ")";
   }
 
   @Override

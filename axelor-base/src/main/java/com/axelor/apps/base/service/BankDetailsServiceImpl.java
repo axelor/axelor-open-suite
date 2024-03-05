@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -53,10 +53,10 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 
     if (bankDetails.getIban() != null) {
 
-      bankDetails.setBankCode(StringTool.extractStringFromRight(bankDetails.getIban(), 23, 5));
-      bankDetails.setSortCode(StringTool.extractStringFromRight(bankDetails.getIban(), 18, 5));
-      bankDetails.setAccountNbr(StringTool.extractStringFromRight(bankDetails.getIban(), 13, 11));
-      bankDetails.setBbanKey(StringTool.extractStringFromRight(bankDetails.getIban(), 2, 2));
+      bankDetails.setBankCode(StringHelper.extractStringFromRight(bankDetails.getIban(), 23, 5));
+      bankDetails.setSortCode(StringHelper.extractStringFromRight(bankDetails.getIban(), 18, 5));
+      bankDetails.setAccountNbr(StringHelper.extractStringFromRight(bankDetails.getIban(), 13, 11));
+      bankDetails.setBbanKey(StringHelper.extractStringFromRight(bankDetails.getIban(), 2, 2));
     }
     return bankDetails;
   }
@@ -113,7 +113,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
 
     return "self.id IN ("
-        + StringTool.getIdListString(company.getBankDetailsList())
+        + StringHelper.getIdListString(company.getBankDetailsList())
         + ") AND self.active = true";
   }
 
@@ -159,7 +159,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 
     if (company != null) {
 
-      String bankDetailsIds = StringTool.getIdListString(company.getBankDetailsList());
+      String bankDetailsIds = StringHelper.getIdListString(company.getBankDetailsList());
 
       if (company.getDefaultBankDetails() != null) {
         bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";

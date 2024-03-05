@@ -22,7 +22,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -43,7 +43,7 @@ public class CfonbToolService {
    * @throws AxelorException
    */
   public void testDigital(String value, String zone) throws AxelorException {
-    if (!StringTool.isDigital(value)) {
+    if (!StringHelper.isDigital(value)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT),
@@ -88,7 +88,7 @@ public class CfonbToolService {
   public List<String> toUpperCase(List<String> cFONB) {
     List<String> upperCase = new ArrayList<String>();
     for (String s : cFONB) {
-      upperCase.add(StringTool.deleteAccent(s.toUpperCase()));
+      upperCase.add(StringHelper.deleteAccent(s.toUpperCase()));
     }
     return upperCase;
   }
@@ -101,7 +101,7 @@ public class CfonbToolService {
    */
   public String toUpperCase(String record) {
 
-    return StringTool.deleteAccent(record.toUpperCase());
+    return StringHelper.deleteAccent(record.toUpperCase());
   }
 
   public void checkFilled(String value, String numZone) throws AxelorException {
@@ -177,18 +177,18 @@ public class CfonbToolService {
     /** la colonne "Format" correspond au format des données et peut prendre les valeurs : * */
     switch (format) {
       case FORMAT_ALPHA_NUMERIC:
-        zone = StringTool.deleteAccent(zone);
-        zone = StringTool.fillStringRight(zone, ' ', length);
+        zone = StringHelper.deleteAccent(zone);
+        zone = StringHelper.fillStringRight(zone, ' ', length);
         break;
 
       case FORMAT_NUMERIC:
         this.testDigital(zone, numOfZone);
-        zone = StringTool.fillStringLeft(zone, '0', length);
+        zone = StringHelper.fillStringLeft(zone, '0', length);
         break;
 
       case FORMAT_ALPHA:
-        zone = StringTool.deleteAccent(zone);
-        zone = StringTool.fillStringRight(zone, ' ', length);
+        zone = StringHelper.deleteAccent(zone);
+        zone = StringHelper.fillStringRight(zone, ' ', length);
         break;
 
       default:

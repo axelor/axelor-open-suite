@@ -18,14 +18,16 @@
  */
 package com.axelor.apps.budget.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
+import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -48,11 +50,12 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       PurchaseOrderBudgetService purchaseOrderBudgetService =
           Beans.get(PurchaseOrderBudgetService.class);
+      BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
       if (purchaseOrder != null
           && purchaseOrder.getCompany() != null
-          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
-        if (!Beans.get(BudgetToolsService.class)
-                .checkBudgetKeyAndRole(purchaseOrder.getCompany(), AuthUtils.getUser())
+          && budgetToolsService.checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
+        if (!budgetToolsService.checkBudgetKeyAndRole(
+                purchaseOrder.getCompany(), AuthUtils.getUser())
             && purchaseOrderBudgetService.isBudgetInLines(purchaseOrder)) {
           response.setInfo(
               I18n.get(
@@ -119,12 +122,12 @@ public class PurchaseOrderController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
-
+      BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
       if (purchaseOrder != null
           && purchaseOrder.getCompany() != null
-          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
-        if (!Beans.get(BudgetToolsService.class)
-            .checkBudgetKeyAndRole(purchaseOrder.getCompany(), AuthUtils.getUser())) {
+          && budgetToolsService.checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
+        if (!budgetToolsService.checkBudgetKeyAndRole(
+            purchaseOrder.getCompany(), AuthUtils.getUser())) {
           response.setInfo(
               I18n.get(
                   BudgetExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
@@ -182,6 +185,35 @@ public class PurchaseOrderController {
           .updateBudgetDistributionAmountAvailable(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    PurchaseOrderBudgetService purchaseOrderBudgetService =
+        Beans.get(PurchaseOrderBudgetService.class);
+    if (purchaseOrder != null
+        && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())
+        && !purchaseOrderBudgetService.isBudgetInLines(purchaseOrder)) {
+      purchaseOrderBudgetService.autoComputeBudgetDistribution(purchaseOrder);
+      response.setReload(true);
+    }
+  }
+
+  public void validateRequest(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    PurchaseOrderBudgetService purchaseOrderBudgetService =
+        Beans.get(PurchaseOrderBudgetService.class);
+    if (purchaseOrder != null
+        && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      if (purchaseOrderBudgetService.isBudgetInLines(purchaseOrder)) {
+        String budgetExceedAlert = purchaseOrderBudgetService.getBudgetExceedAlert(purchaseOrder);
+        BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, true, response);
+      } else {
+        BudgetControllerTool.verifyMissingBudget(response);
+      }
     }
   }
 }

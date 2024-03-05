@@ -43,7 +43,7 @@ import com.axelor.apps.production.service.operationorder.planning.OperationOrder
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningInfiniteCapacityService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
@@ -180,7 +180,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
             operationOrderPlanningInfiniteCapacityService.computePlannedEndDateT(operationOrder));
 
         operationOrder.setPlannedDuration(
-            DurationTool.getSecondsDuration(
+            DurationHelper.getSecondsDuration(
                 Duration.between(
                     operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
       }
@@ -326,7 +326,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     if (operationOrder.getPlannedStartDateT() != null
         && operationOrder.getPlannedEndDateT() != null) {
       duration =
-          DurationTool.getSecondsDuration(
+          DurationHelper.getSecondsDuration(
               Duration.between(
                   operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
       operationOrder.setPlannedDuration(duration);
@@ -377,7 +377,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   @Override
   public void updateRealDuration(OperationOrder operationOrder) {
     long durationLong =
-        DurationTool.getSecondsDuration(operationOrderService.computeRealDuration(operationOrder));
+        DurationHelper.getSecondsDuration(
+            operationOrderService.computeRealDuration(operationOrder));
     operationOrder.setRealDuration(durationLong);
   }
 }

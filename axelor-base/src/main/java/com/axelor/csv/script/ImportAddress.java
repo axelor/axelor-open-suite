@@ -19,7 +19,9 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -32,6 +34,11 @@ public class ImportAddress {
     Address address = (Address) bean;
     address.setFullName(addressService.computeFullName(address));
     address.setZip(addressService.getZipCode(address));
+    try {
+      addressService.setFormattedFullName(address);
+    } catch (Exception e) {
+      TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
+    }
 
     return address;
   }

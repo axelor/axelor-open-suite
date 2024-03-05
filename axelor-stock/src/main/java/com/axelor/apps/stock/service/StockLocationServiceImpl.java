@@ -37,7 +37,6 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
@@ -50,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,6 +72,9 @@ public class StockLocationServiceImpl implements StockLocationService {
   protected UnitRepository unitRepository;
   protected UnitConversionService unitConversionService;
 
+  protected final StockRulesRepository stockRulesRepository;
+  protected final StockLocationLineRepository stockLocationLineRepository;
+
   protected Set<Long> locationIdSet = new HashSet<>();
 
   @Inject
@@ -82,7 +85,9 @@ public class StockLocationServiceImpl implements StockLocationService {
       StockConfigService stockConfigService,
       AppBaseService appBaseService,
       UnitRepository unitRepository,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      StockRulesRepository stockRulesRepository,
+      StockLocationLineRepository stockLocationLineRepository) {
     this.stockLocationRepo = stockLocationRepo;
     this.stockLocationLineService = stockLocationLineService;
     this.productRepo = productRepo;
@@ -90,6 +95,8 @@ public class StockLocationServiceImpl implements StockLocationService {
     this.appBaseService = appBaseService;
     this.unitRepository = unitRepository;
     this.unitConversionService = unitConversionService;
+    this.stockRulesRepository = stockRulesRepository;
+    this.stockLocationLineRepository = stockLocationLineRepository;
   }
 
   protected List<StockLocation> getNonVirtualStockLocations(Long companyId) {
@@ -196,14 +203,12 @@ public class StockLocationServiceImpl implements StockLocationService {
   public List<Long> getBadStockLocationLineId() {
 
     List<StockLocationLine> stockLocationLineList =
-        Beans.get(StockLocationLineRepository.class)
+        stockLocationLineRepository
             .all()
             .filter("self.stockLocation.typeSelect = 1 OR self.stockLocation.typeSelect = 2")
             .fetch();
 
     List<Long> idList = new ArrayList<>();
-
-    StockRulesRepository stockRulesRepository = Beans.get(StockRulesRepository.class);
 
     for (StockLocationLine stockLocationLine : stockLocationLineList) {
       StockRules stockRules =
@@ -242,6 +247,27 @@ public class StockLocationServiceImpl implements StockLocationService {
     return locationIdSet;
   }
 
+  @Override
+  public Set<StockLocation> getListOfStockLocationAndAllItsParentsStockLocations(
+      StockLocation stockLocation) {
+    Set<StockLocation> allStockLocations = new HashSet<>();
+    allStockLocations.add(stockLocation);
+    if (stockLocation == null) {
+      return allStockLocations;
+    }
+    StockLocation parentStockLocation = stockLocation.getParentStockLocation();
+    if (parentStockLocation == null) {
+      return allStockLocations;
+    }
+    while (allStockLocations.add(parentStockLocation)) {
+      parentStockLocation = parentStockLocation.getParentStockLocation();
+      if (parentStockLocation == null) {
+        break;
+      }
+    }
+    return allStockLocations;
+  }
+
   public List<StockLocation> getAllLocationAndSubLocation(
       StockLocation stockLocation, boolean isVirtualInclude) {
 
@@ -273,6 +299,27 @@ public class StockLocationServiceImpl implements StockLocationService {
       }
     }
     resultList.add(stockLocation);
+
+    return resultList;
+  }
+
+  public List<Long> getAllLocationAndSubLocation(Long stockLocationId, boolean isVirtualInclude) {
+
+    List<Long> resultList = new ArrayList<>();
+    if (stockLocationId == null) {
+      return resultList;
+    }
+    for (Long subLocationId :
+        JPA.em()
+            .createQuery(
+                "SELECT sl.id FROM StockLocation sl WHERE sl.parentStockLocation.id = :stockLocationId AND (:isVirtual is true OR sl.typeSelect != :isVirtual)",
+                Long.class)
+            .setParameter("stockLocationId", stockLocationId)
+            .setParameter("isVirtual", isVirtualInclude)
+            .getResultList()) {
+      resultList.addAll(this.getAllLocationAndSubLocation(subLocationId, isVirtualInclude));
+    }
+    resultList.add(stockLocationId);
 
     return resultList;
   }
@@ -350,5 +397,22 @@ public class StockLocationServiceImpl implements StockLocationService {
         getAllLocationAndSubLocation(stockLocation, false).stream()
             .map(location -> location.getId().toString())
             .collect(Collectors.joining(",")));
+  }
+
+  @Override
+  public Set<Long> getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(
+      StockLocation stockLocation) {
+    Set<Long> resultSet = new LinkedHashSet<>();
+    if (stockLocation == null) {
+      return resultSet;
+    }
+    resultSet.add(stockLocation.getId());
+    StockLocation parentStockLocation = stockLocation.getParentStockLocation();
+    /* Adding to the set returns false if the value already exists, in our case this could be a good
+    way to prevent an infinite loop */
+    while (parentStockLocation != null && resultSet.add(parentStockLocation.getId())) {
+      parentStockLocation = parentStockLocation.getParentStockLocation();
+    }
+    return resultSet;
   }
 }

@@ -20,19 +20,23 @@ package com.axelor.apps.bankpayment.service.moveline;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class MoveLineRecordBankPaymentServiceImpl implements MoveLineRecordBankPaymentService {
   MoveLineToolBankPaymentService moveLineToolBankPaymentService;
   MoveLineRepository moveLineRepo;
+  CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineRecordBankPaymentServiceImpl(
       MoveLineToolBankPaymentService moveLineToolBankPaymentService,
-      MoveLineRepository moveLineRepo) {
+      MoveLineRepository moveLineRepo,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.moveLineToolBankPaymentService = moveLineToolBankPaymentService;
     this.moveLineRepo = moveLineRepo;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -59,7 +63,9 @@ public class MoveLineRecordBankPaymentServiceImpl implements MoveLineRecordBankP
 
     if (moveLine.getId() == null) {
       MoveLine savedMoveLine = moveLineRepo.find(moveLine.getId());
-      moveLine.setBankReconciledAmount(savedMoveLine.getBankReconciledAmount());
+      moveLine.setBankReconciledAmount(
+          currencyScaleServiceAccount.getScaledValue(
+              savedMoveLine, savedMoveLine.getBankReconciledAmount()));
     } else {
       moveLine.setBankReconciledAmount(BigDecimal.ZERO);
     }

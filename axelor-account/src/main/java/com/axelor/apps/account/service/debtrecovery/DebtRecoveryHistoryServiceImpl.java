@@ -22,13 +22,13 @@ import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.utils.FileExportTools;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.file.PdfTool;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class DebtRecoveryHistoryServiceImpl implements DebtRecoveryHistoryServic
                         .orElse(null))
                 .format(DateTimeFormatter.BASIC_ISO_DATE)
             + ".pdf";
-    return PdfTool.mergePdfToFileLink(printedDebtRecoveryHistory, fileName);
+    return PdfHelper.mergePdfToFileLink(printedDebtRecoveryHistory, fileName);
   }
 
   @Override

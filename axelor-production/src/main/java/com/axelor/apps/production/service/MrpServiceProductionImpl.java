@@ -66,7 +66,7 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.message.service.MailMessageService;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -177,7 +177,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED, mrp.getMrpTypeSelect());
 
     String statusSelect = manufOrderMrpLineType.getStatusSelect();
-    List<Integer> statusList = StringTool.getIntegerList(statusSelect);
+    List<Integer> statusList = StringHelper.getIntegerList(statusSelect);
 
     if (statusList.isEmpty()) {
       statusList.add(ManufOrderRepository.STATUS_FINISHED);
@@ -448,7 +448,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
-      maturityDate = updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty);
+      maturityDate =
+          updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty)
+              .minusDays(mrpLineType.getSecurityDelay());
     }
 
     super.createProposalMrpLine(

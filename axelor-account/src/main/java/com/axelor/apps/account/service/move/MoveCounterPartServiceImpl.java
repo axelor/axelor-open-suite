@@ -116,6 +116,8 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             .findAny()
             .orElse(BigDecimal.ONE));
 
+    moveLineToolService.setDecimals(moveLine, move);
+
     return moveLine;
   }
 

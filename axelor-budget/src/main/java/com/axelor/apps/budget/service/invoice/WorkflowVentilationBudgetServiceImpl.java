@@ -20,6 +20,7 @@ package com.axelor.apps.budget.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -42,6 +43,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.studio.db.AppBudget;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -103,8 +105,15 @@ public class WorkflowVentilationBudgetServiceImpl extends WorkflowVentilationPro
   @Transactional(rollbackOn = {Exception.class})
   public void afterVentilation(Invoice invoice) throws AxelorException {
     super.afterVentilation(invoice);
+    AppBudget appBudget = appBudgetService.getAppBudget();
+    if (appBudget != null) {
+      if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
+        if (!appBudget.getManageMultiBudget()) {
+          budgetInvoiceService.generateBudgetDistribution(invoice);
+        }
+      }
 
-    if (appBudgetService.getAppBudget() != null) {
       budgetInvoiceService.updateBudgetLinesFromInvoice(invoice);
     }
   }

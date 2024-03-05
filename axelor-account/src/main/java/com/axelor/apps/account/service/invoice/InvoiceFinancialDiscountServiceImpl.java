@@ -20,18 +20,27 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.service.FinancialDiscountService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.List;
 import java.util.Objects;
 
 public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDiscountService {
 
   protected InvoiceService invoiceService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
+  protected FinancialDiscountService financialDiscountService;
 
   @Inject
-  public InvoiceFinancialDiscountServiceImpl(InvoiceService invoiceService) {
+  public InvoiceFinancialDiscountServiceImpl(
+      InvoiceService invoiceService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      FinancialDiscountService financialDiscountService) {
     this.invoiceService = invoiceService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
+    this.financialDiscountService = financialDiscountService;
   }
 
   @Override
@@ -44,7 +53,7 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
       invoice.setLegalNotice(financialDiscount.getLegalNotice());
       invoice.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       invoice.setFinancialDiscountTotalAmount(
-          computeFinancialDiscountTotalAmount(invoice, financialDiscount));
+          this.computeFinancialDiscountTotalAmount(financialDiscount, invoice));
       invoice.setRemainingAmountAfterFinDiscount(
           invoice.getInTaxTotal().subtract(invoice.getFinancialDiscountTotalAmount()));
 
@@ -58,15 +67,9 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
   }
 
   protected BigDecimal computeFinancialDiscountTotalAmount(
-      Invoice invoice, FinancialDiscount financialDiscount) {
-
-    // the scale is the default scale for a decimal field, so 2.
-    int financialDiscountTotalAmountScale = 2;
-
-    return financialDiscount
-        .getDiscountRate()
-        .multiply(invoice.getInTaxTotal())
-        .divide(new BigDecimal(100), financialDiscountTotalAmountScale, RoundingMode.HALF_UP);
+      FinancialDiscount financialDiscount, Invoice invoice) {
+    return financialDiscountService.computeFinancialDiscountTotalAmount(
+        financialDiscount, invoice.getInTaxTotal(), invoice.getTaxTotal(), invoice.getCurrency());
   }
 
   @Override
@@ -78,5 +81,14 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
     invoice.setFinancialDiscountRate(BigDecimal.ZERO);
     invoice.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
     invoice.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+  }
+
+  @Override
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> it.getAmountRemaining().compareTo(it.getAmount()) == 0)
+        .forEach(it -> invoiceTermFinancialDiscountService.computeFinancialDiscount(it, invoice));
+
+    return invoice.getInvoiceTermList();
   }
 }

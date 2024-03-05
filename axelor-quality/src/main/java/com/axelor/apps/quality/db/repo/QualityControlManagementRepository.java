@@ -42,7 +42,11 @@ public class QualityControlManagementRepository extends QualityControlRepository
       try {
         qualityControl.setReference(
             sequenceService.getSequenceNumber(
-                SequenceRepository.QUALITY_CONTROL, null, QualityControl.class, "reference"));
+                SequenceRepository.QUALITY_CONTROL,
+                null,
+                QualityControl.class,
+                "reference",
+                qualityControl));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
       }

@@ -37,9 +37,11 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
@@ -59,6 +61,7 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
   @Inject
   public SaleOrderInvoiceProjectServiceImpl(
       AppBaseService appBaseService,
+      AppStockService appStockService,
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
@@ -70,9 +73,12 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
+      CurrencyScaleServiceSale currencyScaleServiceSale,
       AppBusinessProjectService appBusinessProjectService) {
+
     super(
         appBaseService,
+        appStockService,
         appSupplychainService,
         saleOrderRepo,
         invoiceRepo,
@@ -83,7 +89,8 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
         saleOrderWorkflowService,
         commonInvoiceService,
         invoiceLineOrderService,
-        saleInvoicingStateService);
+        saleInvoicingStateService,
+        currencyScaleServiceSale);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

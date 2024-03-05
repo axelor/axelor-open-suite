@@ -43,11 +43,12 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
   @Inject
   public InvoiceMergingServiceBusinessProjectImpl(
       InvoiceService invoiceService,
+      InvoiceRepository invoiceRepository,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceProjectServiceImpl purchaseOrderInvoiceProjectServiceImpl,
       SaleOrderInvoiceProjectServiceImpl saleOrderInvoiceProjectServiceImpl) {
-    super(invoiceService, purchaseOrderInvoiceService, saleOrderInvoiceService);
+    super(invoiceService, invoiceRepository, purchaseOrderInvoiceService, saleOrderInvoiceService);
     this.purchaseOrderInvoiceProjectServiceImpl = purchaseOrderInvoiceProjectServiceImpl;
     this.saleOrderInvoiceProjectServiceImpl = saleOrderInvoiceProjectServiceImpl;
   }

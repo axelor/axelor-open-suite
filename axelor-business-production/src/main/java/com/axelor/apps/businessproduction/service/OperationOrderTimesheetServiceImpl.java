@@ -27,7 +27,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class OperationOrderTimesheetServiceImpl implements OperationOrderTimeshe
             .filter(timesheetLine -> operationOrder.equals(timesheetLine.getOperationOrder()))
             .collect(Collectors.toList()));
     long durationLong =
-        DurationTool.getSecondsDuration(
+        DurationHelper.getSecondsDuration(
             Beans.get(TimesheetLineService.class).computeTotalDuration(operationOrderTsLineList));
     operationOrder.setRealDuration(durationLong);
   }
