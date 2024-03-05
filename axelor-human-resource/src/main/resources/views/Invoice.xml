@@ -8,20 +8,18 @@
     <extend target="//field[@name='bankDetails']">
       <insert position="after">
         <field name="bankCard" colSpan="12" showIf="paymentMode.typeSelect == 6"
-          onSelect="action-invoice-method-on-bank-card-select" form-view="bank-card-form"/>
+          form-view="bank-card-form" onChange="action-invoice-attrs-on-bank-card-change"
+          onSelect="action-invoice-method-on-bank-card-select"/>
       </insert>
     </extend>
   </form>
 
-  <action-attrs name="action-invoice-attrs-on-bank-card-select">
-    <attribute for="bankCard" name="domain" if="bankDetails"
-      expr="eval: &quot;self.id IN (${bankDetails?.bankCardList?.collect{it.id}.join(',')})&quot;"/>
-    <attribute for="bankCard" name="domain" if="!bankDetails"
-      expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.bankCardList?.collect{it.id}.join(',')}})&quot;"/>
-  </action-attrs>
-
   <action-method name="action-invoice-method-on-bank-card-select">
     <call class="com.axelor.apps.hr.web.InvoiceHRController" method="setBankCardDomain"/>
   </action-method>
+
+  <action-attrs name="action-invoice-attrs-on-bank-card-change">
+    <attribute for="bankDetails" name="value" expr="eval: bankCard?.bankDetails"/>
+  </action-attrs>
 
 </object-views>
