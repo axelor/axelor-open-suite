@@ -62,6 +62,8 @@
     <many-to-many name="projectFolderSet"
       ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
 
+    <one-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
+
     <!-- planification fields -->
     <decimal name="numberHoursADay" title="Number of hours in a day" min="0"/>
     <many-to-one name="projectTimeUnit" ref="com.axelor.apps.base.db.Unit"

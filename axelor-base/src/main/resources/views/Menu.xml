@@ -301,6 +301,15 @@
       partnerPriceList.isExclusive IS TRUE )</domain>
   </action-view>
 
+  <menuitem title="Sites" name="referential-sites" parent="referential-root"
+    action="referential.sites" order="510"/>
+
+  <action-view name="referential.sites" title="Sites"
+    model="com.axelor.apps.base.db.Site">
+    <view type="grid" name="site-grid"/>
+    <view type="form" name="site-form"/>
+  </action-view>
+
   <menuitem title="Address templates" name="referential-conf-address-template"
     parent="referential-conf" action="referential.conf.address.templates" order="650"/>
 
