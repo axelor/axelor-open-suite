@@ -64,6 +64,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     if (!appAccountService.getAppAccount().getIsSubLinesEnabled()) {
       return;
     }
+    updateRelatedOrderLines(invoice);
 
     invoice = invoiceRepository.find(invoice.getId());
     invoice.getInvoiceLineList().clear();
@@ -71,6 +72,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
       if (!invoiceLine.getIsNotCountable()) {
         invoice.addInvoiceLineListItem(invoiceLine);
       }
+      // invoiceRepository.save(invoice);
     }
     computeInvoice(invoice);
     invoiceRepository.save(invoice);
@@ -116,7 +118,6 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void updateRelatedOrderLines(Invoice invoice) throws AxelorException {
     if (!appAccountService.getAppAccount().getIsSubLinesEnabled()) {
       return;
@@ -127,9 +128,9 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     }
     for (InvoiceLine invoiceLine : invoiceLineDisplayListList) {
       calculateAllParentsTotalsAndPrices(invoiceLine, invoice);
+      // invoiceLineRepository.save(invoiceLine);
     }
-
-    invoiceRepository.save(invoice);
+    // invoiceRepository.save(invoice);
   }
 
   protected void calculateAllParentsTotalsAndPrices(InvoiceLine invoiceLine, Invoice invoice)

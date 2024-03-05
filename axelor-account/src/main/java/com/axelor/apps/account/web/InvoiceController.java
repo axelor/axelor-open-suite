@@ -1304,13 +1304,13 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
-    Beans.get(InvoiceSubLineService.class).updateRelatedOrderLines(invoice);
-    response.setReload(true);
+    // response.setReload(true);
   }
 
   public void populateInvoiceLines(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
     Beans.get(InvoiceSubLineService.class).populateInvoiceLines(invoice);
     response.setReload(true);
   }

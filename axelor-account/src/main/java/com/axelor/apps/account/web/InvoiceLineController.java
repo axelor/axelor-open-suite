@@ -275,7 +275,7 @@ public class InvoiceLineController {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
     Invoice invoice = this.getInvoice(request.getContext());
-    invoiceLine.setInvoice(invoice);
+    // invoiceLine.setInvoice(invoice);
 
     response.setValue("inTaxPrice", Beans.get(InvoiceLineService.class).getInTaxPrice(invoiceLine));
   }

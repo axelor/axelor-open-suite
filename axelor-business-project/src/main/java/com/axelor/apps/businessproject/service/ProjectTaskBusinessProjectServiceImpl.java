@@ -64,7 +64,6 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.helpers.QueryBuilder;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -78,6 +77,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
@@ -273,45 +273,28 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     int count = 0;
-    for (ProjectTask projectTask : projectTaskList) {
-      invoiceLineList.addAll(this.createInvoiceLine(invoice, projectTask, priority * 100 + count));
+    int index = 1;
+    for (ProjectTask projectTask :
+        projectTaskList.stream()
+            .filter(task -> task.getParentTask() == null)
+            .collect(Collectors.toList())) {
+      invoiceLineList.add(
+          this.createInvoiceLine(
+              invoice, projectTask, priority * 100 + count, String.valueOf(index), null));
+      index++;
       count++;
     }
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      ProjectTask projectTask =
-          invoiceLine.getProjectTaskSet().stream().findFirst().orElseGet(null);
-      List<ProjectTask> childrenProjectTasks = projectTask.getProjectTaskList();
-      ProjectTask parentProjectTask = projectTask.getParentTask();
-      if (parentProjectTask != null) {
-        InvoiceLine parentInvoiceLine =
-            invoiceLineRepository
-                .all()
-                .filter(":parentProjectTask MEMBER OF self.projectTaskSet")
-                .bind("parentProjectTask", parentProjectTask)
-                .order("-id")
-                .fetchOne();
-        invoiceLine.setParentInvoiceLine(parentInvoiceLine);
-        invoiceLine.setInvoice(null);
-        invoiceLine.setIsNotCountable(true);
-      }
-      if (CollectionUtils.isNotEmpty(childrenProjectTasks)) {
-        List<InvoiceLine> childrenInvoiceLineList =
-            invoiceLineRepository
-                .all()
-                .filter(
-                    "self.projectTaskSet.id IN ("
-                        + StringHelper.getIdListString(childrenProjectTasks)
-                        + ")"
-                        + " AND self.parentInvoiceLine IS NULL")
-                .fetch();
-        childrenInvoiceLineList.forEach(invoiceLine::addInvoiceLineListItem);
-      }
-    }
+
     return invoiceLineList;
   }
 
   @Override
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, ProjectTask projectTask, int priority)
+  public InvoiceLine createInvoiceLine(
+      Invoice invoice,
+      ProjectTask projectTask,
+      int priority,
+      String index,
+      InvoiceLine parentInvoiceLine)
       throws AxelorException {
 
     InvoiceLineGenerator invoiceLineGenerator =
@@ -343,8 +326,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             projectTask.addInvoiceLineSetItem(invoiceLine);
             invoiceLine.setInvoiceLineListSize(
                 projectTask.getSaleOrderLine().getSaleOrderLineListSize());
+            if (parentInvoiceLine != null) {
+              parentInvoiceLine.addInvoiceLineListItem(invoiceLine);
+              invoiceLine.setInvoice(null);
+              invoiceLine.setInvoiceDisplay(invoice);
+              invoiceLine.setIsNotCountable(true);
+            }
 
             setProgressAndCoefficient(invoiceLine, projectTask);
+            invoiceLine.setLineIndex(String.valueOf(index));
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
             invoiceLines.add(invoiceLine);
@@ -353,7 +343,16 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
           }
         };
 
-    return invoiceLineGenerator.creates();
+    InvoiceLine invoiceLine = invoiceLineGenerator.creates().get(0);
+    int counter = 1;
+    for (ProjectTask childProjectTask : projectTask.getProjectTaskList()) {
+      String nextIndex = index + "." + counter;
+      invoiceLine.addInvoiceLineListItem(
+          createInvoiceLine(invoice, childProjectTask, priority++, nextIndex, invoiceLine));
+      counter++;
+    }
+
+    return invoiceLine;
   }
 
   protected void setProgressAndCoefficient(InvoiceLine invoiceLine, ProjectTask projectTask) {

@@ -50,7 +50,12 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<ProjectTask> projectTaskList, int priority) throws AxelorException;
 
-  List<InvoiceLine> createInvoiceLine(Invoice invoice, ProjectTask projectTask, int priority)
+  InvoiceLine createInvoiceLine(
+      Invoice invoice,
+      ProjectTask projectTask,
+      int priority,
+      String index,
+      InvoiceLine parentInvoiceLine)
       throws AxelorException;
 
   ProjectTask updateTaskFinancialInfo(ProjectTask projectTask) throws AxelorException;
