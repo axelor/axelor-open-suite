@@ -21,6 +21,12 @@
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
+  <grid name="contract-line-yer-grid" title="Contract Lines"
+    model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
+    <field name="productName"/>
+    <field name="pricing"/>
+  </grid>
+
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <hilite if="isInvoiced" background="success"/>
@@ -417,17 +423,14 @@ In case you have contract lines with different invoicing duration, you can activ
 
   <action-group name="action-contract-line-group-pricing-onnew">
     <action name="action-contract-line-group-onnew"/>
-    <action name="action-contract-line-attrs-pricing-used-in-another-line"/>
   </action-group>
 
   <action-group name="action-contract-line-group-pricing-onload">
     <action name="action-contract-line-group-edit-view"/>
-    <action name="action-contract-line-attrs-pricing-used-in-another-line"/>
     <action name="action-contract-line-condition-check-pricing"/>
   </action-group>
 
   <action-group name="action-contract-line-group-pricing-onchange">
-    <action name="action-contract-line-attrs-pricing-used-in-another-line"/>
     <action name="action-contract-line-condition-check-pricing"/>
   </action-group>
 </object-views>

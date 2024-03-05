@@ -141,7 +141,7 @@
           <field name="note" showTitle="false"/>
         </panel>
         <panel name="pricesPerYearPanel" title="Prices per year"
-          showIf="currentContractVersion.isPeriodicInvoicing">
+          showIf="currentContractVersion.isPeriodicInvoicing &amp;&amp; targetTypeSelect &lt;= 2">
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false" readonly="true">
             <viewer
@@ -179,7 +179,7 @@
             x-show-icons="false">
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
               <field name="contractLineList" showTitle="false" colSpan="12"
-                form-view="contract-line-yer-form" grid-view="contract-line-grid"/>
+                form-view="contract-line-yer-form" grid-view="contract-line-yer-grid"/>
             </editor>
           </field>
         </panel>
