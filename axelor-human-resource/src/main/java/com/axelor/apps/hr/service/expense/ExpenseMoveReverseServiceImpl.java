@@ -22,13 +22,13 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
@@ -37,6 +37,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
@@ -79,6 +80,7 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
     this.appService = appService;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Move generateReverse(
       Move move,

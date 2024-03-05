@@ -32,13 +32,13 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
+    <field name="invoicingProgress"/>
     <field name="progress"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="quantity" aggregate="sum"/>
     <field name="toInvoice" readonly="true"
       if="!__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if="__config__.app.getApp('business-project').automaticInvoicing"/>
-    <field name="invoiced"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
       readonlyIf="invoiced" icon="fa-check-circle"
@@ -118,7 +118,8 @@
             <field name="exTaxTotal" readonly="true" colSpan="3"/>
             <field name="totalCosts" colSpan="3"/>
             <field name="invoicingType" colSpan="3"
-              onChange="action-project-task-attrs-onchange-invoice-type"/>
+              onChange="action-project-task-attrs-onchange-invoice-type"
+              readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
             <field name="toInvoice" colSpan="2" readonly="true"
               if="__config__.app.getApp('business-project').automaticInvoicing"/>
             <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
@@ -147,8 +148,8 @@
             </panel>
             <field name="project.invoicingSequenceSelect" hidden="true"
               if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-            <field name="invoiceLine" readonly="true" showIf="invoiceLine"
-              form-view="invoice-line-form" grid-view="invoice-line-grid"/>
+            <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
+              form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           </panel>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>

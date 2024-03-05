@@ -16,7 +16,7 @@
       onChange="action-inventory-line-group-on-change-product-stock-location"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
-      width="120" x-scale="2"/>
+      width="120" x-scale="2" min="0"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
     <field name="description"/>
     <field name="rack" width="150"/>
@@ -27,6 +27,9 @@
     <field name="realValue"/>
     <field name="price" readonlyIf="isPresentInStockLocation"/>
     <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
+    <button name="showDetailStockProduct" icon="fa-cubes"
+      onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product"
+      if="__config__.app.isApp('supplychain')"/>
   </grid>
 
   <form name="inventory-line-form" title="Inventory line"
@@ -43,7 +46,7 @@
         onChange="action-inventory-line-group-on-change-product-stock-location"/>
       <field name="currentQty" readonly="true"
         help="Does not include quantities from sub stock locations"/>
-      <field name="realQty" onChange="action-inventory-line-method-compute"/>
+      <field name="realQty" onChange="action-inventory-line-method-compute" min="0"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
       <field name="description"/>
       <field name="rack"/>
@@ -51,6 +54,9 @@
         onChange="action-inventory-line-group-update-inventory-line"/>
       <field name="price" hideIf="isPresentInStockLocation"/>
       <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
+      <button name="showDetailStockProduct" title="See stock details" colSpan="3"
+        onClick="action-inventory-line-view-for-a-product-from-product-view"
+        if="__config__.app.isApp('supplychain')" widget="info-button" icon="fa-cubes"/>
     </panel>
   </form>
 
@@ -103,4 +109,14 @@
   <action-method name="action-inventory-line-method-update-current-qty">
     <call class="com.axelor.apps.stock.web.InventoryLineController" method="updateCurrentQty"/>
   </action-method>
+
+  <action-view name="action-inventory-line-view-for-a-product-from-product-view"
+    title="Stock location lines by product" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="supplychain-stock-details-by-product-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <context name="_product" expr="eval:__this__?.product"/>
+    <context name="_company" expr="eval:__parent__?.company"/>
+  </action-view>
 </object-views>

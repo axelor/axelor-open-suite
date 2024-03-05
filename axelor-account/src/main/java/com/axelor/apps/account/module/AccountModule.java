@@ -28,6 +28,8 @@ import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.db.repo.AccountingReportTypeManagementRepository;
+import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.ChequeRejectionManagementRepository;
@@ -204,6 +206,12 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermAttrsService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermAttrsServiceImpl;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupServiceImpl;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermRecordService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermRecordServiceImpl;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeServiceImpl;
 import com.axelor.apps.account.service.journal.JournalControlService;
@@ -330,6 +338,20 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueEleme
 import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueElementServiceImpl;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupServiceImpl;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupFetchService;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupFetchServiceImpl;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupLetterService;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupLetterServiceImpl;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupProposalService;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupProposalServiceImpl;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceService;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceServiceImpl;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterService;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.account.util.TaxAccountToolService;
@@ -457,6 +479,14 @@ public class AccountModule extends AxelorModule {
     bind(ReconcileGroupRepository.class).to(ReconcileGroupAccountRepository.class);
 
     bind(ReconcileGroupService.class).to(ReconcileGroupServiceImpl.class);
+
+    bind(ReconcileGroupFetchService.class).to(ReconcileGroupFetchServiceImpl.class);
+
+    bind(ReconcileGroupLetterService.class).to(ReconcileGroupLetterServiceImpl.class);
+
+    bind(ReconcileGroupUnletterService.class).to(ReconcileGroupUnletterServiceImpl.class);
+
+    bind(ReconcileGroupProposalService.class).to(ReconcileGroupProposalServiceImpl.class);
 
     bind(SubrogationReleaseRepository.class).to(SubrogationReleaseManagementRepository.class);
 
@@ -732,6 +762,12 @@ public class AccountModule extends AxelorModule {
 
     bind(AnalyticAttrsService.class).to(AnalyticAttrsServiceImpl.class);
 
+    bind(InvoiceTermAttrsService.class).to(InvoiceTermAttrsServiceImpl.class);
+
+    bind(InvoiceTermGroupService.class).to(InvoiceTermGroupServiceImpl.class);
+
+    bind(InvoiceTermRecordService.class).to(InvoiceTermRecordServiceImpl.class);
+
     bind(AnalyticGroupService.class).to(AnalyticGroupServiceImpl.class);
 
     bind(TradingNameAnalyticService.class).to(TradingNameAnalyticServiceImpl.class);
@@ -780,6 +816,8 @@ public class AccountModule extends AxelorModule {
 
     bind(FixedAssetDerogatoryLineRepository.class)
         .to(FixedAssetDerogatoryLineManagementRepository.class);
+
+    bind(AccountingReportTypeRepository.class).to(AccountingReportTypeManagementRepository.class);
 
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
   }

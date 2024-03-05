@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockLocationLineHistory;
 import java.time.LocalDateTime;
@@ -32,12 +33,11 @@ public interface StockLocationLineHistoryService {
    * @param date
    * @param origin
    * @return StockLocationLineHistory created.
+   * @throws AxelorException
    */
   StockLocationLineHistory saveHistory(
-      StockLocationLine stockLocationLine,
-      LocalDateTime dateTime,
-      String origin,
-      String typeSelect);
+      StockLocationLine stockLocationLine, LocalDateTime dateTime, String origin, String typeSelect)
+      throws AxelorException;
 
   List<StockLocationLineHistory> getStockLineHistoryLines(StockLocationLine stockLocationLine);
 }
