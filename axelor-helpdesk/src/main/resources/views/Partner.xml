@@ -9,7 +9,8 @@
     <extend target="//panel[@name='supplierPanel']">
       <insert position="after">
         <panel-dashlet action="action-ticket-dashlet-all-partner-tickets"
-          title="Tickets" colSpan="12" canSearch="true"/>
+          title="Tickets" colSpan="12" canSearch="true" if="__config__.app.isApp('helpdesk')"
+          if-module="axelor-helpdesk"/>
       </insert>
     </extend>
   </form>
