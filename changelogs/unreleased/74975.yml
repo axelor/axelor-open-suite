@@ -1,4 +1,3 @@
 ---
-title: "PayrollPreparation : fix the problem the exported file is not found 
-        when the export dir is different from upload dir."
-type: fix
+title: "Payroll preparation: fixed 'the exported file is not found' error on payroll generation when the export dir is different from upload dir."
+module: axelor-human-resource
