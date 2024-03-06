@@ -228,8 +228,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineDisplayList()) {
           SaleOrderLine relatedSaleOrderLine = invoiceLine.getSaleOrderLine();
           invoiceLine.setInvoiceDisplay(invoice);
+          invoiceLine.setInvoice(null);
           if (relatedSaleOrderLine.getParentSaleOrderLine() != null) {
-            invoiceLine.setInvoice(null);
             invoiceLine.setParentInvoiceLine(
                 invoice.getInvoiceLineDisplayList().stream()
                     .filter(

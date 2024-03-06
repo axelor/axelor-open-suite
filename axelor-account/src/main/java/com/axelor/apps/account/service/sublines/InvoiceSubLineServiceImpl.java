@@ -66,7 +66,6 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     }
     updateRelatedOrderLines(invoice);
 
-    invoice = invoiceRepository.find(invoice.getId());
     invoice.getInvoiceLineList().clear();
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineDisplayList()) {
       if (!invoiceLine.getIsNotCountable()) {
@@ -126,23 +125,34 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     if (CollectionUtils.isEmpty(invoiceLineDisplayListList)) {
       return;
     }
+    List<InvoiceLine> newInvoiceLineListDisplay = new ArrayList<>();
     for (InvoiceLine invoiceLine : invoiceLineDisplayListList) {
-      calculateAllParentsTotalsAndPrices(invoiceLine, invoice);
+      if (invoiceLine.getParentInvoiceLine() == null) {
+        calculateAllParentsTotalsAndPrices(invoiceLine, invoice, newInvoiceLineListDisplay);
+      }
+
       // invoiceLineRepository.save(invoiceLine);
     }
+    invoiceLineDisplayListList.clear();
+    for (InvoiceLine il : newInvoiceLineListDisplay) {
+      invoice.addInvoiceLineDisplayListItem(il);
+    }
+    // invoice.setInvoiceLineDisplayList(newInvoiceLineListDisplay);
     // invoiceRepository.save(invoice);
   }
 
-  protected void calculateAllParentsTotalsAndPrices(InvoiceLine invoiceLine, Invoice invoice)
+  protected void calculateAllParentsTotalsAndPrices(
+      InvoiceLine invoiceLine, Invoice invoice, List<InvoiceLine> newInvoiceLineListDisplay)
       throws AxelorException {
     if (invoiceLine.getInvoiceLineList() == null || invoiceLine.getInvoiceLineList().isEmpty()) {
       invoiceLine.setPriceBeforeUpdate(invoiceLine.getPrice());
       invoiceLine.setQtyBeforeUpdate(invoiceLine.getQty());
       setDefaultInvoiceLineProperties(invoiceLine, invoice);
+      newInvoiceLineListDisplay.add(invoiceLine);
       return;
     }
 
-    BigDecimal total = computeTotal(invoiceLine, invoice);
+    BigDecimal total = computeTotal(invoiceLine, invoice, newInvoiceLineListDisplay);
     invoiceLine.setPrice(
         total.divide(
             invoiceLine.getQty(),
@@ -153,13 +163,15 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     invoiceLine.setPriceBeforeUpdate(invoiceLine.getPrice());
     invoiceLine.setQtyBeforeUpdate(invoiceLine.getQty());
     setDefaultInvoiceLineProperties(invoiceLine, invoice);
+    newInvoiceLineListDisplay.add(invoiceLine);
   }
 
-  protected BigDecimal computeTotal(InvoiceLine invoiceLine, Invoice invoice)
+  protected BigDecimal computeTotal(
+      InvoiceLine invoiceLine, Invoice invoice, List<InvoiceLine> newInvoiceLineListDisplay)
       throws AxelorException {
     BigDecimal total = BigDecimal.ZERO;
     for (InvoiceLine subline : invoiceLine.getInvoiceLineList()) {
-      calculateAllParentsTotalsAndPrices(subline, invoice);
+      calculateAllParentsTotalsAndPrices(subline, invoice, newInvoiceLineListDisplay);
       total = total.add(subline.getExTaxTotal());
     }
     return total;
@@ -170,10 +182,11 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     InvoiceLine parentInvoiceLine = invoiceLine.getParentInvoiceLine();
     Integer countType = invoice.getCompany().getAccountConfig().getCountTypeSelect();
     List<InvoiceLine> invoiceLineList = invoiceLine.getInvoiceLineList();
-
-    if (invoiceLine.getInvoiceDisplay() == null) {
-      invoiceLine.setInvoiceDisplay(invoice);
-    }
+    //    if (invoiceLine.getInvoiceDisplay() == null) {
+    //      invoiceLine.setInvoiceDisplay(invoice);
+    //      invoice.addInvoiceLineDisplayListItem(invoiceLine);
+    //    }
+    // invoice.addInvoiceLineDisplayListItem(invoiceLine);
     if (parentInvoiceLine == null && countType == AccountConfigRepository.COUNT_ONLY_PARENTS) {
       invoiceLine.setIsNotCountable(false);
     }

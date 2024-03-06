@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
@@ -284,8 +285,24 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       index++;
       count++;
     }
+    List<InvoiceLine> newInvoiceLineList = new ArrayList<>();
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      newInvoiceLineList.add(invoiceLine);
+      fillInvoiceLineList(invoiceLine, newInvoiceLineList);
+    }
 
-    return invoiceLineList;
+    return newInvoiceLineList;
+  }
+
+  protected void fillInvoiceLineList(
+      InvoiceLine invoiceLine, List<InvoiceLine> newInvoiceLineList) {
+    if (CollectionUtils.isEmpty(invoiceLine.getInvoiceLineList())) {
+      return;
+    }
+    for (InvoiceLine il : invoiceLine.getInvoiceLineList()) {
+      newInvoiceLineList.add(il);
+      fillInvoiceLineList(il, newInvoiceLineList);
+    }
   }
 
   @Override
@@ -296,6 +313,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       String index,
       InvoiceLine parentInvoiceLine)
       throws AxelorException {
+    Integer countType = invoice.getCompany().getAccountConfig().getCountTypeSelect();
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -324,13 +342,25 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             invoiceLine.setSaleOrderLine(projectTask.getSaleOrderLine());
             invoiceLine.addProjectTaskSetItem(projectTask);
             projectTask.addInvoiceLineSetItem(invoiceLine);
+            invoiceLine.setInvoiceDisplay(invoice);
             invoiceLine.setInvoiceLineListSize(
                 projectTask.getSaleOrderLine().getSaleOrderLineListSize());
+
             if (parentInvoiceLine != null) {
               parentInvoiceLine.addInvoiceLineListItem(invoiceLine);
-              invoiceLine.setInvoice(null);
-              invoiceLine.setInvoiceDisplay(invoice);
-              invoiceLine.setIsNotCountable(true);
+            }
+            if (countType == AccountConfigRepository.COUNT_ONLY_PARENTS) {
+              if (parentInvoiceLine != null) {
+                invoiceLine.setInvoice(null);
+                invoiceLine.setIsNotCountable(true);
+              }
+            }
+
+            if (countType == AccountConfigRepository.COUNT_ONLY_CHILDREN) {
+              if (invoiceLine.getInvoiceLineListSize() != 0) {
+                invoiceLine.setInvoice(null);
+                invoiceLine.setIsNotCountable(true);
+              }
             }
 
             setProgressAndCoefficient(invoiceLine, projectTask);

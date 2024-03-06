@@ -139,14 +139,16 @@
             hideIf="discountTypeSelect == 0"/>
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
-        <field name="taxLineSet" canEdit="false" showIf="!parentInvoiceLine"
+        <field name="taxLineSet" canEdit="false" showIf="(account.company.accountConfig.countTypeSelect == 2 &amp;&amp; invoiceLineListSize == 0) || (account.company.accountConfig.countTypeSelect == 1 &amp;&amp; !parentInvoiceLine)"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form"
           domain="self.endDate = null or self.endDate &gt; :__date__" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
-        <field name="inTaxTotal" colSpan="3" readonly="true" showIf="!parentInvoiceLine"/>
+        <field name="inTaxTotal" colSpan="3" readonly="true" showIf="(account.company.accountConfig.countTypeSelect == 2 &amp;&amp; invoiceLineListSize == 0) || (account.company.accountConfig.countTypeSelect == 1 &amp;&amp; !parentInvoiceLine)"/>
         <field name="$isReadOnly" hidden="true"/>
         <field name="parentInvoiceLine" hidden="true"/>
+        <field name="invoiceLineListSize" hidden="true"/>
+        <field name="account.company.accountConfig.countTypeSelect" hidden="true"/>
         <field name="taxEquivSet" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="invoice" hidden="true"/>
@@ -301,13 +303,15 @@
         <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="priceDiscounted" hidden="true"/>
 
-        <field name="taxLineSet" canEdit="false" showIf="!parentInvoiceLine"
+        <field name="taxLineSet" canEdit="false" showIf="(account.company.accountConfig.countTypeSelect == 2 &amp;&amp; invoiceLineListSize == 0) || (account.company.accountConfig.countTypeSelect == 1 &amp;&amp; !parentInvoiceLine)"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" readonly="true"/>
-        <field name="inTaxTotal" readonly="true" showIf="!parentInvoiceLine"/>
+        <field name="inTaxTotal" readonly="true" showIf="(account.company.accountConfig.countTypeSelect == 2 &amp;&amp; invoiceLineListSize == 0) || (account.company.accountConfig.countTypeSelect == 1 &amp;&amp; !parentInvoiceLine)"/>
         <field name="invoice" hidden="true"/>
+        <field name="account.company.accountConfig.countTypeSelect" hidden="true"/>
         <field name="parentInvoiceLine" hidden="true"/>
+        <field name="invoiceLineListSize" hidden="true"/>
         <panel name="discountPanel" title="Discount" colSpan="12">
           <field name="discountTypeSelect"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>

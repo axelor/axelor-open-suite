@@ -154,7 +154,7 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
 
   protected void setDefaultSaleOrderLineProperties(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    if (saleOrderLine.getSaleOrder() == null) {
+    if (saleOrderLine.getSaleOrderDisplay() == null) {
       saleOrderLine.setSaleOrderDisplay(saleOrder);
     }
 
