@@ -286,6 +286,7 @@
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
     <column name="assignedTo" type="reference"/>
+    <column name="progress" type="string"/>
 
     <node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id"
       onClick="action-project-task-view-task" orderBy="taskDate">
