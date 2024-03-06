@@ -30,12 +30,16 @@ public class CurrencyScaleServiceContractImpl extends CurrencyScaleServiceImpl
 
   @Override
   public BigDecimal getScaledValue(Contract contract, BigDecimal amount) {
-    return this.getScaledValue(amount, this.getScale(contract.getCurrency()));
+    return contract != null
+        ? this.getScaledValue(amount, this.getScale(contract.getCurrency()))
+        : this.getScaledValue(amount);
   }
 
   @Override
   public BigDecimal getCompanyScaledValue(Contract contract, BigDecimal amount) {
-    return this.getScaledValue(amount, this.getCompanyScale(contract.getCompany()));
+    return contract != null
+        ? this.getScaledValue(amount, this.getCompanyScale(contract.getCompany()))
+        : this.getScaledValue(amount);
   }
 
   @Override
@@ -54,7 +58,7 @@ public class CurrencyScaleServiceContractImpl extends CurrencyScaleServiceImpl
 
   @Override
   public int getScale(Contract contract) {
-    return this.getCurrencyScale(contract.getCurrency());
+    return contract != null ? this.getCurrencyScale(contract.getCurrency()) : this.getScale();
   }
 
   @Override
