@@ -15,6 +15,14 @@
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="address" title="Address" ref="com.axelor.apps.base.db.Address"/>
 
+    <extra-code><![CDATA[
+
+	   	// TYPE SELECT
+		public static final int TYPE_INTERNAL = 1;
+		public static final int TYPE_EXTERNAL = 2;
+
+	]]></extra-code>
+
     <entity-listener class="com.axelor.apps.base.db.repo.SiteListener"/>
   </entity>
 
