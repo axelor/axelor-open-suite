@@ -148,8 +148,12 @@ import com.axelor.apps.production.service.operationorder.OperationOrderPlanningS
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
+import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningInfiniteCapacityService;
+import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningInfiniteCapacityServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
@@ -268,5 +272,8 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderCreateStockMoveLineService.class)
         .to(ManufOrderCreateStockMoveLineServiceImpl.class);
     bind(ManufOrderUpdateStockMoveService.class).to(ManufOrderUpdateStockMoveServiceImpl.class);
+    bind(OperationOrderStockMoveService.class).to(OperationOrderStockMoveServiceImpl.class);
+    bind(OperationOrderPlanningInfiniteCapacityService.class)
+        .to(OperationOrderPlanningInfiniteCapacityServiceImpl.class);
   }
 }
