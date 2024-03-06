@@ -302,7 +302,7 @@
   </action-view>
 
   <menuitem title="Sites" name="referential-sites" parent="referential-root"
-    action="referential.sites" order="510"/>
+    action="referential.sites" order="310"/>
 
   <action-view name="referential.sites" title="Sites"
     model="com.axelor.apps.base.db.Site">
