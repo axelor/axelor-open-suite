@@ -889,7 +889,6 @@
     <field name="externalReference"/>
     <field name="creationDate"/>
     <field name="exTaxTotal" aggregate="sum"/>
-    <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
   </grid>
 
