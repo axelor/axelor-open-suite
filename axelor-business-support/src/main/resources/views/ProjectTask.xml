@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-support-version-project-task-grid" orderBy="-taskDate">
@@ -37,6 +37,7 @@
     <panel name="mainPanel">
       <panel name="statusPanel" showIf="project.isShowStatus" stacked="true" colSpan="12">
         <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"/>
+        <field name="typeSelect" hidden="true"/>
       </panel>
       <field name="$viewerTags" showTitle="false" readonly="true"
         showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="4" hidden="true">
@@ -81,7 +82,7 @@
       </panel>
       <panel name="actionsPanel" colSpan="4">
         <button name="acceptOrderBtn" title="Accept Order" hidden="true"
-          showIf="typeSelect == 'ticket'" hideIf="!invoicingType || isOrderAccepted"
+          showIf="typeSelect == 'ticket' &amp;&amp; invoicingType &amp;&amp; !isOrderAccepted"
           onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12"/>
         <button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider"
           hidden="true" onClick="action-project-task-attrs-assginment-provider,save"

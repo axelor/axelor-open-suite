@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
 import com.google.inject.Inject;
@@ -40,8 +41,14 @@ public class FixedAssetLineFiscalServiceImpl extends AbstractFixedAssetLineServi
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       YearService yearService,
       PeriodService periodService,
-      FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService) {
-    super(fixedAssetLineRepository, fixedAssetDerogatoryLineService, yearService, periodService);
+      FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService,
+      CurrencyScaleService currencyScaleService) {
+    super(
+        fixedAssetLineRepository,
+        fixedAssetDerogatoryLineService,
+        yearService,
+        periodService,
+        currencyScaleService);
     this.fixedAssetLineFiscalComputationService = fixedAssetLineFiscalComputationService;
   }
 

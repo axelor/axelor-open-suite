@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.FinancialDiscount;
@@ -8,6 +26,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -17,14 +36,13 @@ import java.time.LocalDate;
 public class InvoiceTermFinancialDiscountServiceImpl
     implements InvoiceTermFinancialDiscountService {
   protected AppAccountService appAccountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public InvoiceTermFinancialDiscountServiceImpl(
-      AppAccountService appAccountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      AppAccountService appAccountService, CurrencyScaleService currencyScaleService) {
     this.appAccountService = appAccountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -58,7 +76,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage)));
       invoiceTerm.setFinancialDiscountAmount(
           invoiceTerm.getAmount().subtract(invoiceTerm.getRemainingAmountAfterFinDiscount()));
@@ -98,7 +116,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
               .multiply(invoiceTerm.getRemainingAmountAfterFinDiscount())
               .divide(
                   invoiceTerm.getAmount(),
-                  currencyScaleServiceAccount.getScale(invoiceTerm),
+                  currencyScaleService.getScale(invoiceTerm),
                   RoundingMode.HALF_UP));
     }
   }
@@ -140,7 +158,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
           .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
           .divide(
               BigDecimal.valueOf(10000),
-              currencyScaleServiceAccount.getScale(invoiceTerm),
+              currencyScaleService.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     } else {
       BigDecimal exTaxTotal;
@@ -157,7 +175,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
           .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
           .divide(
               taxTotal.add(exTaxTotal).multiply(BigDecimal.valueOf(10000)),
-              currencyScaleServiceAccount.getScale(invoiceTerm),
+              currencyScaleService.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     }
   }

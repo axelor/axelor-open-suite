@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -138,9 +138,10 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    SaleOrderMarginService saleOrderMarginService = Beans.get(SaleOrderMarginService.class);
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Beans.get(SaleOrderMarginService.class).computeSubMargin(saleOrder, saleOrderLine);
+        saleOrderMarginService.computeSubMargin(saleOrder, saleOrderLine);
       }
     }
   }

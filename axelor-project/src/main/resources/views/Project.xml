@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
@@ -893,7 +893,7 @@
 
   <action-view name="action-open-user-gantt" title="User Gantt"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="gantt" name="user-project-task-gantt"/>
+    <view type="gantt" name="user-task-gantt"/>
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain>self.assignedTo.id IN (:_userIds) </domain>
@@ -1057,10 +1057,10 @@
 
   <search-filters name="project-topic-filters"
     model="com.axelor.apps.project.db.Topic" title="Topics">
-    <filter title="My topics">
+    <filter name="project-topic-filters-my-topics" title="My topics">
       <domain>self.createdBy.id = :userId</domain>
     </filter>
-    <filter title="New topics">
+    <filter name="project-topic-filters-new-topics" title="New topics">
       <domain>self.createdOn &gt; date(now())</domain>
     </filter>
   </search-filters>

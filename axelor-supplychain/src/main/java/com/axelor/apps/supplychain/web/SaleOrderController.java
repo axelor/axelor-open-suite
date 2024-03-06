@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -452,8 +453,7 @@ public class SaleOrderController {
     StockMove stockMove =
         stockMoveRepo
             .all()
-            .filter(
-                ":saleOrderId MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect")
+            .filter("self.saleOrder.id = :saleOrderId AND self.statusSelect = :statusSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
@@ -729,7 +729,7 @@ public class SaleOrderController {
             "scale",
             isPercent
                 ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
-                : saleOrder.getCurrency().getNumberOfDecimals());
+                : Beans.get(CurrencyScaleService.class).getScale(saleOrder));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

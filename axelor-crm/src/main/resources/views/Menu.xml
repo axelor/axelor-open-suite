@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <menuitem name="crm-root" title="CRM" order="-2100" if="__config__.app.isApp('crm')"
     icon="fa-user" icon-background="#2fa042"/>
@@ -73,7 +73,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
@@ -84,7 +83,6 @@
 
   <action-view name="crm.all.prospects" title="All prospects"
     model="com.axelor.apps.base.db.Partner">
-    <view type="kanban" name="partner-prospect-kanban"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>
@@ -94,7 +92,6 @@
     <domain>self.isContact = false AND self.isProspect = true</domain>
     <context name="_isProspect" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -116,7 +113,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = true"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -126,6 +122,7 @@
 
   <action-view name="crm.closed.prospects" title="Closed prospects"
     model="com.axelor.apps.base.db.Partner">
+    <view type="kanban" name="partner-prospect-kanban"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>
@@ -136,7 +133,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = false"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -156,7 +152,6 @@
     <domain>self.isContact = false AND self.isCustomer = true</domain>
     <context name="_isCustomer" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isCustomer = true"/>
-    <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-root-contacts" parent="crm-root-customer-follow-up" title="Contacts"

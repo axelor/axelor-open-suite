@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -10,8 +10,8 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <datetime name="todayDateT" title="Today date" tz="true"/>
-    <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
-      title="Default Partner language"/>
+    <many-to-one name="defaultPartnerLocalization"
+      ref="com.axelor.apps.base.db.Localization" title="Default Partner Localization"/>
 
     <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
     <boolean name="emailAccountByCompany" title="Manage mail account by company"
@@ -158,9 +158,6 @@
       default="false"/>
     <boolean name="manageCcBccRelatedTo" title="Manage related CC &amp; BCC emails"/>
 
-    <string name="customAppStyle" title="Custom style" large="true"
-      help="Custom css to personnalize web user interface."/>
-
     <integer name="processTimeout" default="10" title="Timeout for processes (seconds)"
       help="Maximum time before a process called by an user starts running in the background"
       min="1"/>
@@ -199,7 +196,7 @@
 
     <track>
       <field name="todayDateT" on="UPDATE"/>
-      <field name="defaultPartnerLanguage" on="UPDATE"/>
+      <field name="defaultPartnerLocalization" on="UPDATE"/>
       <field name="emailAccountByUser" on="UPDATE"/>
       <field name="emailAccountByCompany" on="UPDATE"/>
 
@@ -257,7 +254,6 @@
       <field name="geoNamesZipUrl" on="UPDATE"/>
       <field name="manageSubsidiaryPartner" on="UPDATE"/>
       <field name="manageCcBccRelatedTo" on="UPDATE"/>
-      <field name="customAppStyle" on="UPDATE"/>
       <field name="processTimeout" on="UPDATE"/>
       <field name="activatePartnerRelations" on="UPDATE"/>
       <field name="enablePricingScale" on="UPDATE"/>

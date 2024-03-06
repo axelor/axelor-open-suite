@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,8 @@ import com.axelor.apps.crm.db.repo.LeadManagementRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.TourManagementRepository;
+import com.axelor.apps.crm.db.repo.TourRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.CatalogService;
@@ -88,5 +90,6 @@ public class CrmModule extends AxelorModule {
     bind(LeadDuplicateService.class).to(LeadDuplicateServiceImpl.class);
     bind(TourService.class).to(TourServiceImpl.class);
     bind(TourLineService.class).to(TourLineServiceImpl.class);
+    bind(TourRepository.class).to(TourManagementRepository.class);
   }
 }

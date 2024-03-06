@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -50,6 +49,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.common.ObjectUtils;
@@ -421,8 +421,7 @@ public abstract class InvoiceGenerator {
    * @throws AxelorException
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
-    CurrencyScaleServiceAccount currencyScaleServiceAccount =
-        Beans.get(CurrencyScaleServiceAccount.class);
+    CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
@@ -442,12 +441,12 @@ public abstract class InvoiceGenerator {
 
       // In the invoice currency
       invoice.setExTaxTotal(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoice, invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal())));
 
       // In the company accounting currency
       invoice.setCompanyExTaxTotal(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoice, invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal())));
     }
 
@@ -455,23 +454,23 @@ public abstract class InvoiceGenerator {
 
       // In the invoice currency
       invoice.setTaxTotal(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal())));
 
       // In the company accounting currency
       invoice.setCompanyTaxTotal(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoice, invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal())));
     }
 
     // In the invoice currency
     invoice.setInTaxTotal(
-        currencyScaleServiceAccount.getScaledValue(
+        currencyScaleService.getScaledValue(
             invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal())));
 
     // In the company accounting currency
     invoice.setCompanyInTaxTotal(
-        currencyScaleServiceAccount.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal())));
     invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 

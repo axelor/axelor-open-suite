@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
 
   <input file="account_accountType.csv" separator=";"
     type="com.axelor.apps.account.db.AccountType"/>
@@ -17,19 +17,6 @@
 
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"/>
-
-  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.importId = :importId" update="true"
-    prepare-context="com.axelor.csv.script.ImportAccount:resetLineNo"
-    call="com.axelor.csv.script.ImportAccount:importAccount">
-    <bind to="importId" column="importId"/>
-    <bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1"
-      update="true">
-      <bind to="code" column="parent_code"/>
-    </bind>
-    <bind column="compatibleAccounts" to="compatibleAccountSet"
-      search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
-  </input>
 
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
     search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
@@ -57,7 +44,7 @@
       search="self.technicalTypeSelect in :validAccountTypes"
       eval="validAccountTypes.split('\\|') as List"/>
     <bind column="validAccounts" to="validAccountSet"
-      search="self.code in :validAccounts and self.company.importId = :company_importId"
+      search="self.importId in :validAccounts and self.company.importId = :company_importId"
       eval="validAccounts.split('\\|') as List"/>
     <bind to="company" search="self.importId = :company_importId"/>
   </input>
@@ -216,7 +203,32 @@
     type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
   <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
+    <bind column="temporaryClosureAuthorizedRoleList" to="temporaryClosureAuthorizedRoleList"
+      search="self.name in :temporaryClosureAuthorizedRoleList"
+      eval="temporaryClosureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="moveOnTempClosureAuthorizedRoleList" to="moveOnTempClosureAuthorizedRoleList"
+      search="self.name in :moveOnTempClosureAuthorizedRoleList"
+      eval="moveOnTempClosureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="closureAuthorizedRoleList" to="closureAuthorizedRoleList"
+      search="self.name in :closureAuthorizedRoleList"
+      eval="closureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="clearanceAccountSet" to="clearanceAccountSet"
+      search="self.code in :clearanceAccountSet" eval="clearanceAccountSet.split('\\|') as List"/>
+  </input>
+
+  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
+    search="self.importId = :importId" update="true"
+    prepare-context="com.axelor.csv.script.ImportAccount:resetLineNo"
+    call="com.axelor.csv.script.ImportAccount:importAccount">
+    <bind to="importId" column="importId"/>
+    <bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1"
+      update="true">
+      <bind to="code" column="parent_code"/>
+    </bind>
+    <bind column="compatibleAccounts" to="compatibleAccountSet"
+      search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
+  </input>
 
   <input file="account_debtRecoveryConfigLine.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryConfigLine"/>
@@ -230,7 +242,6 @@
     <bind to="isContact" eval="isContact == 'true' ? true : false"/>
     <bind to="isCustomer" eval="isCustomer == 'true' ? true : false"/>
     <bind to="isSupplier" eval="isSupplier == 'true' ? true : false"/>
-    <bind to="language" search="self.code = :languageCode"/>
   </input>
 
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"

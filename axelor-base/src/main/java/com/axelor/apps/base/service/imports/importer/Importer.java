@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -99,6 +100,7 @@ public abstract class Importer {
 
     File bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile();
     File data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
+    checkEntryFilesType(bind, data);
 
     if (!bind.exists()) {
       throw new AxelorException(
@@ -124,9 +126,11 @@ public abstract class Importer {
   }
 
   protected abstract ImportHistory process(
-      String bind, String data, Map<String, Object> importContext) throws IOException;
+      String bind, String data, Map<String, Object> importContext)
+      throws IOException, AxelorException;
 
-  protected abstract ImportHistory process(String bind, String data) throws IOException;
+  protected abstract ImportHistory process(String bind, String data)
+      throws IOException, AxelorException;
 
   protected void deleteFinalWorkspace(File workspace) throws IOException {
 
@@ -212,7 +216,8 @@ public abstract class Importer {
   protected ImportHistory addHistory(ImporterListener listener) throws IOException {
 
     ImportHistory importHistory =
-        new ImportHistory(AuthUtils.getUser(), configuration.getDataMetaFile());
+        new ImportHistory(
+            AuthUtils.getUser(), JPA.find(MetaFile.class, configuration.getDataMetaFile().getId()));
     File logFile = File.createTempFile("importLog", ".log");
 
     try (FileWriter writer = new FileWriter(logFile)) {
@@ -225,7 +230,6 @@ public abstract class Importer {
             "importLog-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".log");
     importHistory.setLogMetaFile(logMetaFile);
     importHistory.setImportConfiguration(configuration);
-
     return importHistory;
   }
 
@@ -252,6 +256,14 @@ public abstract class Importer {
 
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  public void checkEntryFilesType(File bind, File data) throws AxelorException {
+    if (!Files.getFileExtension(bind.getAbsolutePath()).equals("xml")) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE));
     }
   }
 }

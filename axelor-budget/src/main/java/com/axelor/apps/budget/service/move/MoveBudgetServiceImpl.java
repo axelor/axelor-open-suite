@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -107,20 +107,22 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 
       for (MoveLine moveLine : moveLineList) {
-        if (CollectionUtils.isNotEmpty(moveLine.getBudgetDistributionList())
-            && !AccountTypeRepository.TYPE_INCOME.equals(
-                moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-
-          for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
-            Budget budget = budgetDistribution.getBudget();
-
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(budget, budgetDistribution.getAmount());
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.remove(budget);
-              amountPerBudgetMap.put(budget, oldAmount.add(budgetDistribution.getAmount()));
+        if (!AccountTypeRepository.TYPE_INCOME.equals(
+            moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          if (appBudgetService.getAppBudget().getManageMultiBudget()
+              && CollectionUtils.isNotEmpty(moveLine.getBudgetDistributionList())) {
+            for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
+              budgetToolsService.fillAmountPerBudgetMap(
+                  budgetDistribution.getBudget(),
+                  budgetDistribution.getAmount(),
+                  amountPerBudgetMap);
             }
+          } else if (!appBudgetService.getAppBudget().getManageMultiBudget()
+              && moveLine.getBudget() != null) {
+            budgetToolsService.fillAmountPerBudgetMap(
+                moveLine.getBudget(),
+                moveLine.getCredit().max(moveLine.getDebit()),
+                amountPerBudgetMap);
           }
         }
       }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
 import com.google.inject.Inject;
@@ -56,6 +57,7 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected YearService yearService;
   protected PeriodService periodService;
+  protected CurrencyScaleService currencyScaleService;
 
   protected abstract int getPeriodicityTypeSelect(FixedAsset fixedAsset);
 
@@ -76,11 +78,13 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
       FixedAssetLineRepository fixedAssetLineRepository,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       YearService yearService,
-      PeriodService periodService) {
+      PeriodService periodService,
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetLineRepository = fixedAssetLineRepository;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.yearService = yearService;
     this.periodService = periodService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -122,9 +126,12 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
           lastRealizedLine != null
               ? lastRealizedLine.getCumulativeDepreciation().add(deprecationValue)
               : deprecationValue;
-      firstPlannedLine.setCumulativeDepreciation(cumulativeValue);
+      firstPlannedLine.setCumulativeDepreciation(
+          currencyScaleService.getCompanyScaledValue(fixedAsset, cumulativeValue));
       firstPlannedLine.setAccountingValue(
-          fixedAsset.getGrossValue().subtract(firstPlannedLine.getCumulativeDepreciation()));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset,
+              fixedAsset.getGrossValue().subtract(firstPlannedLine.getCumulativeDepreciation())));
       firstPlannedLine.setDepreciationDate(disposalDate);
     }
     return firstPlannedLine;
@@ -141,16 +148,12 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
               .multiply(prorataTemporis)
               .divide(
                   BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
-                  FixedAssetServiceImpl.RETURNED_SCALE,
+                  currencyScaleService.getCompanyScale(fixedAsset),
                   RoundingMode.HALF_UP);
     } else {
-      deprecationValue =
-          firstPlannedLine
-              .getDepreciation()
-              .multiply(prorataTemporis)
-              .setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
+      deprecationValue = firstPlannedLine.getDepreciation().multiply(prorataTemporis);
     }
-    return deprecationValue;
+    return currencyScaleService.getCompanyScaledValue(fixedAsset, deprecationValue);
   }
 
   @Transactional
@@ -292,29 +295,6 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
                     line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
             .collect(Collectors.toList());
     clear(fixedAssetLineList, linesToRemove);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @throws AxelorException
-   * @throws NullPointerException if fixedAssetLine is null.
-   */
-  @Override
-  public FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException {
-    Objects.requireNonNull(fixedAssetLine);
-    switch (fixedAssetLine.getTypeSelect()) {
-      case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
-        return fixedAssetLine.getFixedAsset();
-      case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
-        return fixedAssetLine.getFiscalFixedAsset();
-      case FixedAssetLineRepository.TYPE_SELECT_IFRS:
-        return fixedAssetLine.getIfrsFixedAsset();
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            "Fixed asset line type is not recognized to get fixed asset");
-    }
   }
 
   @Override

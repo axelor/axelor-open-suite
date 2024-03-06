@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="invoice-payment-grid" title="Payments"
     model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
@@ -66,6 +66,7 @@
       <field name="invoice.financialDiscount" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
       <field name="$isPartialPayment" type="boolean" hidden="true"/>
+      <field name="invoice.invoiceTermList" hidden="true"/>
       <field name="$currencyScale" hidden="true"/>
     </panel>
     <panel name="discountPanel" title="Financial discount"

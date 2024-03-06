@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -489,7 +489,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       return Collections.emptyList();
     }
     String stringQuery =
-        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
+        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1) AND self.product IS NOT NULL";
     Query query = JPA.em().createQuery(stringQuery, Long.class);
 
     query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));

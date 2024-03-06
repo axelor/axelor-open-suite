@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -39,22 +38,21 @@ public class BankReconciliationCreateService {
 
   protected BankReconciliationRepository bankReconciliationRepository;
   protected CompanyRepository companyRepository;
-  protected BankReconciliationService bankReconciliationService;
+  protected BankReconciliationAccountService bankReconciliationAccountService;
 
   @Inject
   public BankReconciliationCreateService(
       BankReconciliationRepository bankReconciliationRepository,
       CompanyRepository companyRepository,
-      BankReconciliationService bankReconciliationService) {
+      BankReconciliationAccountService bankReconciliationAccountService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.companyRepository = companyRepository;
-    this.bankReconciliationService = bankReconciliationService;
+    this.bankReconciliationAccountService = bankReconciliationAccountService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement)
-      throws IOException {
+  public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement) {
 
     List<BankReconciliation> bankReconciliationList = new ArrayList<>();
 
@@ -113,8 +111,7 @@ public class BankReconciliationCreateService {
       LocalDate toDate,
       Currency currency,
       BankDetails bankDetails,
-      BankStatement bankStatement)
-      throws IOException {
+      BankStatement bankStatement) {
 
     BankReconciliation bankReconciliation = new BankReconciliation();
     bankReconciliation.setCompany(company);
@@ -124,8 +121,9 @@ public class BankReconciliationCreateService {
     bankReconciliation.setBankDetails(bankDetails);
     bankReconciliation.setBankStatement(bankStatement);
     bankReconciliation.setName(this.computeName(bankReconciliation));
-    bankReconciliation.setJournal(bankReconciliationService.getJournal(bankReconciliation));
-    bankReconciliation.setCashAccount(bankReconciliationService.getCashAccount(bankReconciliation));
+    bankReconciliation.setJournal(bankReconciliationAccountService.getJournal(bankReconciliation));
+    bankReconciliation.setCashAccount(
+        bankReconciliationAccountService.getCashAccount(bankReconciliation));
 
     return bankReconciliation;
   }

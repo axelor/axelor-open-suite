@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.globalbudget;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
@@ -63,6 +64,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected BudgetToolsService budgetToolsService;
   protected GlobalBudgetToolsService globalBudgetToolsService;
   protected BudgetScenarioLineService budgetScenarioLineService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public GlobalBudgetServiceImpl(
@@ -75,7 +77,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       BudgetScenarioService budgetScenarioService,
       BudgetToolsService budgetToolsService,
       GlobalBudgetToolsService globalBudgetToolsService,
-      BudgetScenarioLineService budgetScenarioLineService) {
+      BudgetScenarioLineService budgetScenarioLineService,
+      CurrencyScaleService currencyScaleService) {
     this.budgetLevelService = budgetLevelService;
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetService = budgetService;
@@ -86,6 +89,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     this.budgetToolsService = budgetToolsService;
     this.globalBudgetToolsService = globalBudgetToolsService;
     this.budgetScenarioLineService = budgetScenarioLineService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -103,7 +107,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   @Override
   public void computeBudgetLevelTotals(Budget budget) {
-
     budgetService.computeAvailableFields(budget);
 
     budgetLevelService.computeBudgetLevelTotals(budget);
@@ -132,16 +135,20 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     globalBudget.setRealizedWithNoPo(amountByField.get("realizedWithNoPo"));
     globalBudget.setRealizedWithPo(amountByField.get("realizedWithPo"));
     globalBudget.setTotalAmountAvailable(
-        (amountByField
-                .get("totalAmountExpected")
-                .subtract(amountByField.get("realizedWithPo"))
-                .subtract(amountByField.get("realizedWithNoPo")))
-            .max(BigDecimal.ZERO));
+        currencyScaleService.getCompanyScaledValue(
+            globalBudget,
+            (amountByField
+                    .get("totalAmountExpected")
+                    .subtract(amountByField.get("realizedWithPo"))
+                    .subtract(amountByField.get("realizedWithNoPo")))
+                .max(BigDecimal.ZERO)));
     globalBudget.setTotalFirmGap(amountByField.get("totalFirmGap"));
     globalBudget.setSimulatedAmount(amountByField.get("simulatedAmount"));
     globalBudget.setAvailableAmountWithSimulated(
-        (globalBudget.getTotalAmountAvailable().subtract(amountByField.get("simulatedAmount")))
-            .max(BigDecimal.ZERO));
+        currencyScaleService.getCompanyScaledValue(
+            globalBudget,
+            (globalBudget.getTotalAmountAvailable().subtract(amountByField.get("simulatedAmount")))
+                .max(BigDecimal.ZERO)));
   }
 
   @Override

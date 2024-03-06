@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -24,6 +24,14 @@
     <boolean name="isMergedStockMoveLine" transient="true"/>
 
     <datetime name="reservationDateTime" readonly="true"/>
+
+    <finder-method name="findAllBySaleOrder"
+      using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
+      filter="self.stockMove.saleOrder.id = :saleOrder.id"/>
+
+    <finder-method name="findAllBySaleOrderAndStatusSelect"
+      using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect" all="true"
+      filter="self.stockMove.saleOrder.id = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect"/>
 
 
     <finder-method name="findForDeclarationOfExchanges"

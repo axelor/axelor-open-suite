@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <menuitem name="sc-root-sale" title="Sales" order="-1900"
@@ -21,7 +21,6 @@
     <context name="_isCustomer" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
-    <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
   <menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="200" title="Contacts"
@@ -107,7 +106,7 @@
 
   <search-filters name="sc.root.sale.templates.filter"
     model="com.axelor.apps.sale.db.SaleOrder" title="My Templates">
-    <filter title="My templates">
+    <filter name="sc.root.sale.templates.filter-my-templates" title="My templates">
       <domain>self.template = true AND self.templateUser = :_user</domain>
       <context name="_user" value="__user__"/>
     </filter>

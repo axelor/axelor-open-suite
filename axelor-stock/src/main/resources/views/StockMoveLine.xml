@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -58,7 +58,7 @@
       width="100px" readonlyIf="lineTypeSelect == 1"/>
     <field name="wapPrice" x-scale="2" hidden="true"/>
     <field name="trackingNumber"
-      canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('product.trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isSaleTrackingManaged'))"
+      canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
       onSelect="action-stock-move-line-attrs-tracking-number-domain"
       form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
       readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2"/>
@@ -215,16 +215,14 @@
       <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
       <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
       <field name="trackingNumber"
-        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('product.trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isSaleTrackingManaged'))"
+        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
         onChange="action-stock-move-line-record-product"
         form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"/>
-      <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged"
-        hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
-        hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
       <field name="stockMove.typeSelect" hidden="true"/>
       <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
@@ -459,16 +457,14 @@
       <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
       <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
       <field name="trackingNumber"
-        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('product.trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isSaleTrackingManaged'))"
+        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
         onChange="action-stock-move-line-record-product" form-view="tracking-number-form"
         grid-view="tracking-number-grid"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"/>
-      <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged"
-        hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
-        hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
       <field name="description" colSpan="12" widget="html"/>
       <field name="regime"/>
@@ -856,17 +852,17 @@
 
   <action-attrs name="action-stock-move-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.partner?.language?.code?.equals(__user__.getLanguage())"
+      expr="eval: __parent__?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
       if="__parent__ &amp;&amp; __parent__.partner"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__?.partner?.language?.code?.toUpperCase()"
+      expr="eval: __parent__?.partner?.localization?.language?.code?.toUpperCase()"
       if="__parent__ &amp;&amp; __parent__.partner"/>
 
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: stockMove?.partner?.language?.code?.equals(__user__.getLanguage())"
+      expr="eval: stockMove?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
       if="stockMove &amp;&amp; stockMove.partner"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: stockMove?.partner?.language?.code?.toUpperCase()"
+      expr="eval: stockMove?.partner?.localization?.language?.code?.toUpperCase()"
       if="stockMove &amp;&amp; stockMove.partner"/>
   </action-attrs>
 

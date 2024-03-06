@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,6 +53,8 @@ import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.SupplierCatalogServiceImpl;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.app.AppPurchaseServiceImpl;
+import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
+import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsServiceImpl;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
 
@@ -78,5 +80,6 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseOrderLineTaxService.class).to(PurchaseOrderLineTaxServiceImpl.class);
     bind(PurchaseOrderMergingService.class).to(PurchaseOrderMergingServiceImpl.class);
     bind(PurchaseOrderMergingViewService.class).to(PurchaseOrderMergingViewServiceImpl.class);
+    bind(PurchaseOrderAttrsService.class).to(PurchaseOrderAttrsServiceImpl.class);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,13 @@
  */
 package com.axelor.apps.budget.db.repo;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetLevelResetToolService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.inject.Beans;
+import java.util.Map;
 
 public class BudgetLevelManagementRepository extends BudgetLevelRepository {
 
@@ -28,8 +32,22 @@ public class BudgetLevelManagementRepository extends BudgetLevelRepository {
   public BudgetLevel copy(BudgetLevel entity, boolean deep) {
     BudgetLevel copy = super.copy(entity, deep);
 
-    Beans.get(BudgetLevelResetToolService.class).resetBudgetLevel(copy);
-
+    if (Beans.get(AppBudgetService.class).isApp("budget")) {
+      Beans.get(BudgetLevelResetToolService.class).resetBudgetLevel(copy);
+    }
     return copy;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put(
+        "$currencyNumberOfDecimals",
+        Beans.get(CurrencyScaleService.class)
+            .getCompanyScale(
+                Beans.get(BudgetToolsService.class)
+                    .getGlobalBudgetUsingBudgetLevel(
+                        Beans.get(BudgetLevelRepository.class).find((Long) json.get("id")))));
+
+    return super.populate(json, context);
   }
 }

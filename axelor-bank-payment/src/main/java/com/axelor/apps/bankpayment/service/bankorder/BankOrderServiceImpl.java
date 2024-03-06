@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -66,6 +66,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -78,7 +79,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.bind.JAXBException;
+import java.util.Objects;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -207,7 +208,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankOrderLines != null) {
       for (BankOrderLine bankOrderLine : bankOrderLines) {
         bankOrderLine.setCompanyCurrencyAmount(
-            bankOrderLine.getBankOrder().getIsMultiCurrency()
+            BankOrderToolService.isMultiCurrency(bankOrder)
                 ? currencyService
                     .getAmountCurrencyConvertedAtDate(
                         bankOrder.getBankOrderCurrency(),
@@ -233,9 +234,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
     }
 
-    if (!bankOrder.getIsMultiCurrency()) {
-      bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
-    }
+    bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
 
     bankOrder.setCompanyCurrencyTotalAmount(this.computeCompanyCurrencyTotalAmount(bankOrder));
   }
@@ -635,7 +634,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     // filter on the currency if it is set in file format
     if (bankOrder.getBankOrderCurrency() != null) {
       if (bankDetails.getCurrency() != null
-          && bankDetails.getCurrency() != bankOrder.getBankOrderCurrency()) {
+          && !Objects.equals(bankDetails.getCurrency(), bankOrder.getBankOrderCurrency())) {
         return false;
       }
     }

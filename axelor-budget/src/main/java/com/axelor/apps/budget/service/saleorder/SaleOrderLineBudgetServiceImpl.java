@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -116,32 +116,6 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     return budgetStr;
   }
 
-  @Transactional
-  @Override
-  public List<BudgetDistribution> addBudgetDistribution(SaleOrderLine saleOrderLine) {
-    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
-    if (appBudgetService.getAppBudget() != null
-        && !appBudgetService.getAppBudget().getManageMultiBudget()
-        && saleOrderLine.getBudget() != null) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(saleOrderLine.getBudget());
-      LocalDate date = null;
-      if (saleOrderLine.getSaleOrder() != null) {
-        date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
-      }
-
-      budgetDistribution.setBudgetAmountAvailable(
-          budgetToolsService.getAvailableAmountOnBudget(saleOrderLine.getBudget(), date));
-      budgetDistribution.setAmount(saleOrderLine.getExTaxTotal());
-      budgetDistributionList.add(budgetDistribution);
-      saleOrderLine.setBudgetDistributionList(budgetDistributionList);
-    }
-    return budgetDistributionList;
-  }
-
   @Override
   public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Company company = null;
@@ -168,6 +142,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   public void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getBudgetDistributionList() != null
         && !saleOrderLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
           throw new AxelorException(
@@ -175,7 +150,15 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_PO),
               budgetDistribution.getBudget().getCode(),
               saleOrderLine.getProductName());
+        } else {
+          totalAmount = totalAmount.add(budgetDistribution.getAmount());
         }
+      }
+      if (totalAmount.compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO),
+            saleOrderLine.getProductName());
       }
     }
   }

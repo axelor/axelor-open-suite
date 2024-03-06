@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingCutOffServiceImpl;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -58,6 +57,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -72,7 +72,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -125,7 +124,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       TaxAccountToolService taxAccountToolService,
       BankDetailsService bankDetailsService,
       MoveLineRepository moveLineRepository,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
 
     super(
         moveCreateService,
@@ -148,7 +147,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         currencyService,
         taxAccountToolService,
         moveLineRepository,
-        currencyScaleServiceAccount);
+        currencyScaleService);
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.saleOrderRepository = saleOrderRepository;
@@ -315,8 +314,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     Account partnerAccount = null;
 
     Currency currency = null;
-    if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
-      SaleOrder saleOrder = stockMove.getSaleOrderSet().iterator().next();
+    if (stockMove.getSaleOrder() != null) {
+      SaleOrder saleOrder = stockMove.getSaleOrder();
       currency = saleOrder.getCurrency();
       if (partner == null) {
         partner = saleOrder.getClientPartner();
@@ -329,8 +328,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
       }
     }
-    if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
-      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrderSet().iterator().next();
+    if (stockMove.getPurchaseOrder() != null) {
+      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
       currency = purchaseOrder.getCurrency();
       if (partner == null) {
         partner = purchaseOrder.getSupplierPartner();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,7 +38,6 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
@@ -51,6 +50,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -92,7 +92,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected UserRepository userRepo;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected PfpService pfpService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -107,7 +107,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       UserRepository userRepo,
       PfpService pfpService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -119,7 +119,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.journalService = journalService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.pfpService = pfpService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -155,8 +155,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
 
-    return currencyScaleServiceAccount.getScaledValue(
-        invoice, sum.multiply(BigDecimal.valueOf(100)));
+    return currencyScaleService.getScaledValue(invoice, sum.multiply(BigDecimal.valueOf(100)));
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -243,7 +242,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(paymentConditionLine.getPaymentPercentage())
             .divide(
                 BigDecimal.valueOf(100),
-                currencyScaleServiceAccount.getScale(invoice),
+                currencyScaleService.getScale(invoice),
                 RoundingMode.HALF_UP);
 
     User pfpUser = null;
@@ -311,9 +310,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
 
       companyAmountRemaining =
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoiceTerm, companyAmount.multiply(ratioPaid));
-      companyAmount = currencyScaleServiceAccount.getCompanyScaledValue(invoiceTerm, companyAmount);
+      companyAmount = currencyScaleService.getCompanyScaledValue(invoiceTerm, companyAmount);
     }
 
     invoiceTerm.setCompanyAmount(companyAmount);
@@ -405,7 +404,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTermPercentage)
             .divide(
                 BigDecimal.valueOf(100),
-                currencyScaleServiceAccount.getScale(invoice),
+                currencyScaleService.getScale(invoice),
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
@@ -452,7 +451,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTermPercentage)
             .divide(
                 BigDecimal.valueOf(100),
-                currencyScaleServiceAccount.getScale(moveLine),
+                currencyScaleService.getScale(moveLine),
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
@@ -576,9 +575,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException {
+    boolean pfpCondition = invoiceVisibilityService.getPfpCondition(invoice);
+
+    return buildUnpaidInvoiceTermsQuery(invoice, pfpCondition);
+  }
+
+  @Override
+  public List<InvoiceTerm> getUnpaidInvoiceTermsWithoutPfpCheck(Invoice invoice)
+      throws AxelorException {
+
+    return buildUnpaidInvoiceTermsQuery(invoice, false);
+  }
+
+  protected List<InvoiceTerm> buildUnpaidInvoiceTermsQuery(Invoice invoice, boolean pfpCondition) {
     String queryStr =
         "self.invoice = :invoice AND (self.isPaid IS NOT TRUE OR self.amountRemaining > 0)";
-    boolean pfpCondition = invoiceVisibilityService.getPfpCondition(invoice);
 
     if (pfpCondition) {
       queryStr =
@@ -616,6 +627,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException {
 
     return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTerms(invoice));
+  }
+
+  @Override
+  public List<InvoiceTerm> getUnpaidInvoiceTermsFilteredWithoutPfpCheck(Invoice invoice)
+      throws AxelorException {
+
+    return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTermsWithoutPfpCheck(invoice));
   }
 
   @Override
@@ -896,15 +914,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
 
-      return currencyScaleServiceAccount.getScaledValue(
-          invoiceTerm, total.subtract(totalWithoutCurrent));
+      return currencyScaleService.getScaledValue(invoiceTerm, total.subtract(totalWithoutCurrent));
     } else {
       return invoiceTerm
           .getPercentage()
           .multiply(total)
           .divide(
               new BigDecimal(100),
-              currencyScaleServiceAccount.getScale(invoiceTerm),
+              currencyScaleService.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     }
   }
@@ -1049,7 +1066,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());
 
-      this.setSubrogationPartner(invoiceTerm);
+      this.setThirdPartyPayerPartner(invoiceTerm);
 
       if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
         invoiceTerm.setOrigin(invoice.getInvoiceId());
@@ -1075,8 +1092,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           invoiceTerm.setPartner(move.getPartner());
         }
 
-        if (journalService.isSubrogationOk(move.getJournal())) {
-          this.setSubrogationPartner(invoiceTerm);
+        if (journalService.isThirdPartyPayerOk(move.getJournal())) {
+          this.setThirdPartyPayerPartner(invoiceTerm);
         }
       }
     }
@@ -1086,19 +1103,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  protected void setSubrogationPartner(InvoiceTerm invoiceTerm) {
+  protected void setThirdPartyPayerPartner(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
       if (invoiceTerm.getInvoice() != null) {
-        invoiceTerm.setSubrogationPartner(invoiceTerm.getInvoice().getSubrogationPartner());
+        invoiceTerm.setThirdPartyPayerPartner(invoiceTerm.getInvoice().getThirdPartyPayerPartner());
       } else {
-        Partner subrogationPartner =
+        Partner thirdPartyPayerPartner =
             Optional.of(invoiceTerm)
                 .map(InvoiceTerm::getMoveLine)
                 .map(MoveLine::getMove)
-                .map(Move::getSubrogationPartner)
+                .map(Move::getThirdPartyPayerPartner)
                 .orElse(null);
 
-        invoiceTerm.setSubrogationPartner(subrogationPartner);
+        invoiceTerm.setThirdPartyPayerPartner(thirdPartyPayerPartner);
       }
     }
   }
@@ -1645,7 +1662,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountToPay,
       BigDecimal currencyRate,
       Company company) {
-    int companyScale = currencyScaleServiceAccount.getCompanyScale(company);
+    int companyScale = currencyScaleService.getCompanyCurrencyScale(company);
     BigDecimal moveLineAmountRemaining =
         companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
 

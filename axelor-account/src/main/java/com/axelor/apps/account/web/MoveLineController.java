@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -46,6 +45,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -184,9 +184,8 @@ public class MoveLineController {
         finalBalance = totalDebit.subtract(totalCredit);
 
         if (!differentCompanies) {
-          CurrencyScaleServiceAccount currencyScaleServiceAccount =
-              Beans.get(CurrencyScaleServiceAccount.class);
-          int scale = currencyScaleServiceAccount.getCompanyScale(company);
+          CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
+          int scale = currencyScaleService.getCompanyCurrencyScale(company);
 
           totalCredit = totalCredit.setScale(scale, RoundingMode.HALF_UP);
           totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);
@@ -292,16 +291,17 @@ public class MoveLineController {
   }
 
   @SuppressWarnings("unchecked")
-  public void validateCutOffBatch(ActionRequest request, ActionResponse response) {
+  public void validatePreviewBatch(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
 
       if (!context.containsKey("_ids")) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       }
 
+      Long id = (long) (int) context.get("_batchId");
+      int actionSelect = (int) context.get("_actionSelect");
       List<Long> ids =
           (List)
               (((List) context.get("_ids"))
@@ -309,14 +309,12 @@ public class MoveLineController {
                       .filter(ObjectUtils::notEmpty)
                       .map(input -> Long.parseLong(input.toString()))
                       .collect(Collectors.toList()));
-      Long id = (long) (int) context.get("_batchId");
 
       if (CollectionUtils.isEmpty(ids)) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       } else {
-        Batch batch = Beans.get(MoveLineService.class).validateCutOffBatch(ids, id);
+        Batch batch = Beans.get(MoveLineService.class).validatePreviewBatch(ids, id, actionSelect);
         response.setInfo(batch.getComments());
       }
 

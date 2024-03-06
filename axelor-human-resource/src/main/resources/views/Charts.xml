@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <chart name="chart.total.hours.per.day" title="" stacked="true">
     <dataset type="jpql"><![CDATA[
@@ -69,46 +69,6 @@
 		]]></dataset>
     <category key="_employee" type="text" title="Employee"/>
     <series key="_amount" aggregate="sum" type="bar" title="amount"/>
-  </chart>
-
-  <chart title="Leave requests left by type" name="chart.leave.request.by.status">
-    <dataset type="jpql">
-      <![CDATA[
-        SELECT
-          self.quantity AS quantity,
-          self.leaveReason.name AS leaveReason
-        FROM
-          LeaveLine AS self
-        WHERE
-          self.employee.user = :__user__
-    ]]>
-    </dataset>
-    <category key="leaveReason" title="Type" type="text"/>
-    <series key="quantity" type="donut" title="Left"/>
-  </chart>
-
-  <chart title="Timesheet by project" name="chart.timesheet.by.project">
-    <search-fields>
-      <field name="fromDate" type="date" title="From date" x-required="true"/>
-      <field name="toDate" type="date" title="To date" x-required="true"/>
-    </search-fields>
-    <dataset type="jpql">
-      <![CDATA[
-        SELECT
-          SUM(self.duration) AS duration,
-          self.project.fullName AS projectName
-        FROM
-          TimesheetLine AS self
-        WHERE
-          self.employee.user.id = :userId
-          AND self.date >= :fromDate
-          AND self.date <= :toDate
-        GROUP BY
-          self.project.fullName
-    ]]>
-    </dataset>
-    <category key="projectName" title="Type" type="text"/>
-    <series key="duration" type="donut" title="Left"/>
   </chart>
 
   <custom name="my-leave-request-custom-view" title="Leave Requests"

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid id="budget-purchase-order-line-purchase-order-grid"
     name="purchase-order-line-purchase-order-grid" extension="true" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <extend target="//field[@name='inTaxTotal']">
       <insert position="after">
-        <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
-        <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budgetStr"
+          if="__config__.app.getApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budget"
+          if="__config__.app.getApp('budget') &amp;&amp; !__config__.app.getApp('budget').getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -19,7 +21,7 @@
     name="purchase-order-line-grid" extension="true">
     <extend target="//field[@name='estimatedReceiptDate']">
       <insert position="after">
-        <field name="budget"/>
+        <field name="budget" if="__config__.app.getApp('budget')"/>
       </insert>
     </extend>
   </grid>
@@ -46,16 +48,14 @@
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain" colSpan="12">
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-            hidden="false" x-currency="$currencySymbol">
-            <viewer depends="companyExTaxTotal">
-              <![CDATA[
-							<dd>{{$fmt('companyExTaxTotal')}}</dd>
-						]]>
+            hidden="false" x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
+            <viewer depends="companyExTaxTotal,$currencySymbol">
+              <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-            x-currency="$currencySymbol">
+            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
             <viewer depends="budgetDistributionSumAmount">
               <![CDATA[
 				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
@@ -68,13 +68,14 @@
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
             showIf="product != null"
             onSelect="action-budget-purchase-order-line-method-budget-domain"
-            onChange="action-budget-purchase-order-line-method-set-account,action-budget-purchase-order-line-method-fill-budget-str"/>
+            onChange="action-budget-purchase-order-line-method-fill-budget-str, action-reset-budget-distribution-list-method"/>
           <panel-related name="budgetDistributionListPanel"
             field="budgetDistributionList" form-view="purchase-order-budget-distribution-form"
             grid-view="reduce-budget-distribution-grid" editable="true" colSpan="12"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" showIf="account"
             onChange="action-group-budget-purchase-order-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
+          <field name="$companyCurrencyScale" hidden="true"/>
         </panel>
       </insert>
     </extend>
@@ -131,10 +132,6 @@
     <context name="status" expr="eval: _status"/>
   </action-view>
 
-  <action-method name="action-budget-purchase-order-line-method-set-account">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController" method="setAccount"/>
-  </action-method>
-
   <action-method name="action-method-budget-purchase-orderline-set-product-account">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
       method="setProductAccount"/>
@@ -164,6 +161,12 @@
   <action-method name="action-budget-purchase-order-line-set-account-domain">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
       method="setAccountDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-purchase-order-method-compute-budget-distribution-sum-amount">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="computeBudgetDistributionSumAmount"/>
   </action-method>
 
 </object-views>

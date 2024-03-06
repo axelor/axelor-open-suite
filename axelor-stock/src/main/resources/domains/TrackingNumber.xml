@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -13,6 +13,7 @@
     <string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr." required="true"/>
     <decimal name="counter" title="Counter" precision="20" scale="10"/>
     <string name="origin" title="Origin"/>
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="supplier" title="Supplier"/>
     <string name="note" title="Note" large="true"/>
 
     <many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>

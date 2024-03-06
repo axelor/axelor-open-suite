@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,6 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -54,7 +53,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -106,7 +107,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveControlService moveControlService;
   protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CompanyConfigService companyConfigService;
+  protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
@@ -129,7 +131,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CompanyConfigService companyConfigService,
+      CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -149,7 +152,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveControlService = moveControlService;
     this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.companyConfigService = companyConfigService;
+    this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
@@ -616,7 +620,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
    * @param move
    */
   @Override
-  public void freezeFieldsOnMoveLines(Move move) {
+  public void freezeFieldsOnMoveLines(Move move) throws AxelorException {
     for (MoveLine moveLine : move.getMoveLineList()) {
 
       Account account = moveLine.getAccount();
@@ -641,7 +645,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine) {
+  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine) throws AxelorException {
     Company company = move.getCompany();
     Journal journal = move.getJournal();
     moveLine.setCompanyCode(company.getCode());
@@ -651,8 +655,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
     moveLine.setCurrencyCode(move.getCurrencyCode());
     moveLine.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
-    moveLine.setCompanyCurrencyCode(company.getCurrency().getCode());
-    moveLine.setCompanyCurrencyDecimals(company.getCurrency().getNumberOfDecimals());
+    moveLine.setCompanyCurrencyCode(companyConfigService.getCompanyCurrency(company).getCode());
+    moveLine.setCompanyCurrencyDecimals(
+        companyConfigService.getCompanyCurrency(company).getNumberOfDecimals());
     moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
@@ -907,7 +912,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         .multiply(moveLine.getTaxLine().getValue())
         .divide(
             BigDecimal.valueOf(100),
-            currencyScaleServiceAccount.getCompanyScale(moveLine),
+            currencyScaleService.getCompanyScale(moveLine),
             RoundingMode.HALF_UP);
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -352,4 +352,10 @@ public final class ProductionExceptionMessage {
 
   public static final String BOM_IMPORT_NO_MAIN_BILL_OF_MATERIALS_GENERATED = /*$$(*/
       "Could not find main bill of materials generated (BoM level 0)." /*)*/;
+
+  public static final String TOO_MANY_CALL_GETTING_START_DATE = /*$$(*/
+      "Max loop call reached when trying to compute start date." /*)*/;
+
+  public static final String TOO_MANY_CALL_GETTING_END_DATE = /*$$(*/
+      "Max loop call reached when trying to compute end date." /*)*/;
 }

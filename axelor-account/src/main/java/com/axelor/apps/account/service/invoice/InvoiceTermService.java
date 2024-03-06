@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -87,6 +87,8 @@ public interface InvoiceTermService {
    */
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException;
 
+  List<InvoiceTerm> getUnpaidInvoiceTermsWithoutPfpCheck(Invoice invoice) throws AxelorException;
+
   /**
    * Method that filters invoiceTerm List and returns only invoice terms with holdback status same
    * as first invoice term of the list.
@@ -104,6 +106,9 @@ public interface InvoiceTermService {
    * @return
    */
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException;
+
+  List<InvoiceTerm> getUnpaidInvoiceTermsFilteredWithoutPfpCheck(Invoice invoice)
+      throws AxelorException;
 
   /**
    * Return the latest invoice terms due date by ignoring holdback invoice terms Return invoice due

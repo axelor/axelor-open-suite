@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.budget.db.repo;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -39,12 +40,14 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
 
   @Override
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {
+    if (!Beans.get(AppBudgetService.class).isApp("budget")) {
+      return super.save(purchaseOrder);
+    }
     try {
 
       Beans.get(PurchaseOrderBudgetService.class).generateBudgetDistribution(purchaseOrder);
 
       purchaseOrder = super.save(purchaseOrder);
-
       Beans.get(PurchaseOrderBudgetService.class)
           .validatePurchaseAmountWithBudgetDistribution(purchaseOrder);
 
@@ -65,10 +68,16 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
   // be calculated again, which is done in cancel method.
   @Override
   public void remove(PurchaseOrder entity) {
+    if (!Beans.get(AppBudgetService.class).isApp("budget")) {
+      super.remove(entity);
+      return;
+    }
+
     List<Budget> budgetList = new ArrayList<>();
     if (entity.getStatusSelect() >= PurchaseOrderRepository.STATUS_REQUESTED) {
       budgetList = cancelPurchaseOrder(entity);
     }
+
     super.remove(entity);
     resetBudgets(budgetList);
   }

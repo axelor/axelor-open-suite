@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,21 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY = 2;
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
+
+  void setProducedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
+
+  void setConsumedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * This method check if operation orders regardless of manufOrder. If manufOrder is outsourced,
+   * the method will return false as they are outsourced because of manufOrder.
+   *
+   * @param manufOrder
+   * @return true if lines are outsourced regardless of manufOrder, else false.
+   */
+  boolean areLinesOutsourced(ManufOrder manufOrder);
+
+  void setOperationOrdersOutsourcing(ManufOrder manufOrder);
 
   public interface ManufOrderOriginType {}
 
@@ -282,4 +297,6 @@ public interface ManufOrderService {
    * @param manufOrder
    */
   public void updatePlannedDates(ManufOrder manufOrder);
+
+  void checkApplicableManufOrder(ManufOrder manufOrder) throws AxelorException;
 }

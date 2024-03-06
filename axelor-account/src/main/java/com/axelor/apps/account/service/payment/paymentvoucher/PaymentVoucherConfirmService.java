@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,6 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -55,6 +54,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
@@ -97,7 +97,7 @@ public class PaymentVoucherConfirmService {
   protected InvoiceTermRepository invoiceTermRepository;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -119,7 +119,7 @@ public class PaymentVoucherConfirmService {
       InvoiceTermRepository invoiceTermRepository,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -139,7 +139,7 @@ public class PaymentVoucherConfirmService {
     this.invoiceTermRepository = invoiceTermRepository;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -458,7 +458,7 @@ public class PaymentVoucherConfirmService {
       setMove(paymentVoucher, move, valueForCollection);
       // Create move lines for payment lines
       BigDecimal paidLineTotal = BigDecimal.ZERO;
-      BigDecimal financialDiscountAmount = BigDecimal.ZERO;
+      BigDecimal financialDiscountTotalAmount = BigDecimal.ZERO;
       BigDecimal companyPaidAmount = BigDecimal.ZERO;
       int moveLineNo = 1;
 
@@ -512,11 +512,13 @@ public class PaymentVoucherConfirmService {
                     isDebitToPay,
                     financialDiscountVat);
 
-            financialDiscountAmount =
-                financialDiscountAmount
-                    .add(payVoucherElementToPay.getFinancialDiscountAmount())
+            BigDecimal financialDiscountAmount =
+                payVoucherElementToPay
+                    .getFinancialDiscountAmount()
                     .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
 
+            financialDiscountTotalAmount =
+                financialDiscountTotalAmount.add(financialDiscountAmount);
             paidLineTotal = paidLineTotal.subtract(financialDiscountAmount);
           }
         }
@@ -546,7 +548,7 @@ public class PaymentVoucherConfirmService {
         companyPaidAmount =
             companyPaidAmount.subtract(
                 currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                    financialDiscountAmount, currencyRate, company.getCurrency()));
+                    financialDiscountTotalAmount, currencyRate, company.getCurrency()));
       }
 
       if (paymentVoucher.getMoveLine() != null) {
@@ -819,7 +821,7 @@ public class PaymentVoucherConfirmService {
             .divide(
                 invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     BigDecimal companyAmountToPay =
-        currencyScaleServiceAccount.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             payVoucherElementToPay.getPaymentVoucher(),
             payVoucherElementToPay.getAmountToPayCurrency().multiply(ratio));
 

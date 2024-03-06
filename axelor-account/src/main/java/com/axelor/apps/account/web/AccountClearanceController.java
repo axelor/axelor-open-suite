@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,19 +19,13 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountClearance;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountClearanceRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountClearanceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 public class AccountClearanceController {
@@ -62,16 +56,5 @@ public class AccountClearanceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void showAccountClearanceMoveLines(ActionRequest request, ActionResponse response) {
-
-    Map<String, Object> viewMap = new HashMap<String, Object>();
-
-    Context context = request.getContext();
-    viewMap.put("title", I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_7));
-    viewMap.put("resource", MoveLine.class.getName());
-    viewMap.put("domain", "self.accountClearance.id = " + context.get("id"));
-    response.setView(viewMap);
   }
 }

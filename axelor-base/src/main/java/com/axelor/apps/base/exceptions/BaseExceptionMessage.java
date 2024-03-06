@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -633,4 +633,20 @@ public final class BaseExceptionMessage {
 
   public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
       "Pricing process unavailable for this class : %s" /*)*/;
+
+  /** Import Configuration */
+  public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/
+      "There is an error in the import configuration." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
+      "The import configuration executed successfully." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE = /*$$(*/
+      "The binding file should be only an XML file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_CSV_MESSAGE = /*$$(*/
+      "The data file should be only a CSV or ZIP file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
+      "The data file should be only an XML or ZIP file." /*)*/;
 }

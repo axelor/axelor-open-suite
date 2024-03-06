@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.auth.db.User;
 import java.util.List;
 
 public interface ExpenseCreateService {
@@ -38,4 +39,6 @@ public interface ExpenseCreateService {
       Integer companyCbSelect,
       List<ExpenseLine> expenseLineList)
       throws AxelorException;
+
+  Expense createExpense(User user) throws AxelorException;
 }

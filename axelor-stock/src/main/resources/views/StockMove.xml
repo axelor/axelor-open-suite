@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -66,6 +66,8 @@
     <hilite
       if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || $moment(invoiceBlockedToDate) &gt; $moment())"
       color="danger"/>
+    <hilite color="orange" if="$get('toStockLocation.isOutsourcingLocation')"/>
+    <field name="toStockLocation.isOutsourcingLocation" hidden="true"/>
     <field name="stockMoveSeq" width="120">
       <hilite color="warning" strong="true" if="pickingIsEdited"/>
     </field>
@@ -93,6 +95,7 @@
       if="__config__.app.isApp('supplychain')"/>
     <field name="pickingIsEdited" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
+    <field name="toStockLocation" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="near_me"
@@ -483,6 +486,10 @@
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
           readonlyIf="statusSelect == 3 || statusSelect == 4"
           form-view="address-partner-address-form"/>
+        <field name="toStockLocation" showIf="_fromOutsource &amp;&amp; typeSelect == 2"
+          canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)"
+          onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
+          form-view="stock-location-form"/>
         <static name="deliveryAddressText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
         </static>
@@ -599,7 +606,7 @@
           <field name="trackingNumber"/>
           <field name="modeOfTransport"/>
           <field name="deliveryCondition" height="3"
-            showIf="typeSelect == 2 &amp;&amp; saleOrderSet != null &amp;&amp; saleOrderSet.length>0"/>
+            showIf="typeSelect == 2 &amp;&amp; saleOrder != null"/>
         </panel>
 
         <panel itemSpan="3">
@@ -640,17 +647,14 @@
         <panel name="OriginPanel" colSpan="12">
           <panel colSpan="3" itemSpan="3" stacked="true" readonly="true">
             <field name="inventory" hidden="true" showIf="inventory != null"/>
+            <field name="saleOrder" hidden="true" showIf="saleOrder != null"/>
+            <field name="purchaseOrder" hidden="true" showIf="purchaseOrder != null"/>
             <field name="manufOrder" hidden="true" showIf="manufOrder != null"
               if-module="axelor-production"/>
             <field name="operationOrder" hidden="true" showIf="operationOrder != null"
               if-module="axelor-production"/>
             <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
           </panel>
-          <field name="saleOrderSet" hidden="true"
-            showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"/>
-          <field name="purchaseOrderSet" hidden="true"
-            showIf="purchaseOrderSet &amp;&amp; purchaseOrderSet.length > 0" colSpan="12"
-            readonly="true"/>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"
             form-view="stock-move-form" showIf="reversionOriginStockMove"/>
           <field name="invoiceSet" readonly="true" grid-view="invoice-grid"
@@ -692,7 +696,8 @@
           domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
-        <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false"
+        <field name="toStockLocation"
+          showIf="typeSelect == 2 || (_fromOutsource &amp;&amp; typeSelect != 2)" canEdit="false"
           domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
@@ -1182,6 +1187,18 @@
     <call class="com.axelor.apps.stock.web.StockMoveController" method="cancel"/>
   </action-method>
 
+  <action-method name="action-supply-chain-method-update-so-on-cancel"
+    if-module="axelor-supplychain">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateSaleOrderOnCancel"/>
+  </action-method>
+
+  <action-method name="action-supply-chain-method-update-po-on-cancel"
+    if-module="axelor-supplychain">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="updatePurchaseOrderOnCancel"/>
+  </action-method>
+
   <action-method name="action-print-picking-stock-move">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="printPickingStockMove"/>
   </action-method>
@@ -1310,16 +1327,18 @@
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <filter title="Deliveries to prepare">
+    <filter name="customer-deliveries-filters-deliveries-to-prepare"
+      title="Deliveries to prepare">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Late Deliveries">
+    <filter name="customer-deliveries-filters-late-deliveries" title="Late Deliveries">
       <domain>self.estimatedDate &lt; CURRENT_DATE</domain>
     </filter>
-    <filter title="Deliveries History">
+    <filter name="customer-deliveries-filters-deliveries-history" title="Deliveries History">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Deliveries Cancelled">
+    <filter name="customer-deliveries-filters-deliveries-cancelled"
+      title="Deliveries Cancelled">
       <domain>self.statusSelect = 4</domain>
     </filter>
   </search-filters>
@@ -1340,16 +1359,16 @@
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <filter title="Today Arrivals">
+    <filter name="supplier-arrivals-filters-today-arrivals" title="Today Arrivals">
       <domain>self.estimatedDate = CURRENT_DATE</domain>
     </filter>
-    <filter title="Upcoming arrivals">
+    <filter name="supplier-arrivals-filters-upcoming-arrivals" title="Upcoming arrivals">
       <domain>self.estimatedDate &lt; :_newDate</domain>
     </filter>
-    <filter title="Arrivals History">
+    <filter name="supplier-arrivals-filters-arrivals-history" title="Arrivals History">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Cancelled Arrivals">
+    <filter name="supplier-arrivals-filters-cancelled-arrivals" title="Cancelled Arrivals">
       <domain>self.statusSelect = 4</domain>
     </filter>
   </search-filters>
@@ -1370,13 +1389,13 @@
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <filter title="Moves To Prepare">
+    <filter name="internal-stock-move-filters-moves-to-prepare" title="Moves To Prepare">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Moves History">
+    <filter name="internal-stock-move-filters-moves-history" title="Moves History">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Moves Cancelled">
+    <filter name="internal-stock-move-filters-moves-cancelled" title="Moves Cancelled">
       <domain>self.statusSelect = 4</domain>
     </filter>
   </search-filters>

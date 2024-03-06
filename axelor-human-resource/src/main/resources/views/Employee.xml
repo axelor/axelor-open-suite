@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
@@ -873,10 +873,10 @@
       title="Main employment contract status"/>
     <field name="socialSecurityNumber" title="Social security number" hidden="true"/>
     <field name="contactPartner.firstName" title="First name"/>
-    <filter title="New employees">
+    <filter name="employee-filters-new-employees" title="New employees">
       <domain>self.leavingDate IS NULL AND self.hireDate &gt; CURRENT_DATE - 30</domain>
     </filter>
-    <filter title="Active employees">
+    <filter name="employee-filters-active-employees" title="Active employees">
       <domain>(self.hireDate IS NULL AND self.leavingDate &gt;= CURRENT_DATE)
         OR (self.leavingDate IS
         NULL AND (self.hireDate + 30) &lt;= CURRENT_DATE)
@@ -885,7 +885,7 @@
         AND (self.hireDate + 30) &lt;= CURRENT_DATE AND self.leavingDate
         &gt;= CURRENT_DATE)</domain>
     </filter>
-    <filter title="Former employees">
+    <filter name="employee-filters-former-employees" title="Former employees">
       <domain>self.leavingDate &lt; CURRENT_DATE</domain>
     </filter>
   </search-filters>

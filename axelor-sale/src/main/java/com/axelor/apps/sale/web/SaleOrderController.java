@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -171,6 +171,16 @@ public class SaleOrderController {
 
         SaleOrder saleOrder =
             Beans.get(SaleOrderRepository.class).find(Long.parseLong(context.get("id").toString()));
+        title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
+        fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        response.setCanClose(true);
+
+        logger.debug("Printing " + title);
+      } else if (context.get("_saleOrderId") != null) {
+
+        SaleOrder saleOrder =
+            Beans.get(SaleOrderRepository.class)
+                .find(Long.parseLong(context.get("_saleOrderId").toString()));
         title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
         fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
         response.setCanClose(true);

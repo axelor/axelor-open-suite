@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="move-grid" orderBy="-date" canArchive="false" title="Account moves"
     model="com.axelor.apps.account.db.Move" canDelete="false">
@@ -126,8 +126,9 @@
             onChange="action-account-move-method-partner-onchange"
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
-          <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
-            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || subrogationPartner"
+          <field name="thirdPartyPayerPartner" colSpan="2"
+            domain="self.isThirdPartyPayer IS TRUE"
+            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || thirdPartyPayerPartner"
             form-view="partner-form" grid-view="partner-grid"
             if="__config__.app.getApp('base')?.activatePartnerRelations"
             onSelect="action-move-method-subrogation-partner-onselect"/>
@@ -421,12 +422,12 @@
         </field>
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
-            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            readonlyIf="moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-method-company-onchange" form-view="company-form"
             grid-view="company-grid" colSpan="3" onSelect="action-move-method-company-onselect"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
-            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
-            canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+            readonlyIf="moveLineMassEntryList.length &gt; 0 || statusSelect == 3" canNew="false"
+            form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-account-move-method-journal-onchange" colSpan="3"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="3" canEdit="false"
@@ -436,7 +437,7 @@
             hideIf="(journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect) || (!journal.authorizedFunctionalOriginSelect &amp;&amp; !functionalOriginSelect) || !journal || !journal.authorizedFunctionalOriginSelect.split(',').length"
             onChange="action-move-mass-entry-method-get-mass-entry-attribute"/>
           <field name="currency"
-            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
+            readonlyIf="moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
             colSpan="3" onChange="action-move-method-currency-onchange" required="true"
             hidden="true"/>
           <field name="createdOn" title="Created on" readonly="true" colSpan="3"
@@ -446,7 +447,7 @@
           <field name="updatedBy" title="Updated by" readonly="true" colSpan="3"
             if="updatedBy != null"/>
           <field name="massEntryManageCutOff" colSpan="3" title="Manage Cut off period"
-            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            readonlyIf="moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             widget="boolean-switch"
             onChange="action-move-mass-entry-method-get-mass-entry-attribute"
             if="__config__.app.getApp('account').manageCutOffPeriod"/>
@@ -743,7 +744,7 @@
 
   <action-method name="action-move-method-subrogation-partner-onselect">
     <call class="com.axelor.apps.account.web.MoveController"
-      method="onSelectSubrogationPartner"/>
+      method="onSelectThirdPartyPayerPartner"/>
   </action-method>
 
   <action-method name="action-move-method-partner-bank-details-onchange">
@@ -895,39 +896,40 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <filter title="Current Period Entries">
+    <filter name="move-filters-current-period-entries" title="Current Period Entries">
       <domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;=
         self.period.toDate)</domain>
     </filter>
-    <filter title="Exported moves">
+    <filter name="move-filters-exported-moves" title="Exported moves">
       <domain>self.accountingOk = true</domain>
     </filter>
-    <filter title="Moves to export">
+    <filter name="move-filters-moves-to-export" title="Moves to export">
       <domain>self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND
         self.accountingOk = false</domain>
     </filter>
-    <filter title="Moves from invoices/credit notes">
+    <filter name="move-filters-moves-from-invoices-and-refunds"
+      title="Moves from invoices/credit notes">
       <domain>self.invoice IS NOT NULL</domain>
     </filter>
-    <filter title="Moves from payment">
+    <filter name="move-filters-moves-from-payment" title="Moves from payment">
       <domain>self.paymentMode IS NOT NULL</domain>
     </filter>
-    <filter title="Misc. Moves">
+    <filter name="move-filters-misc-moves" title="Misc. Moves">
       <domain>self.date IS NOT NULL</domain>
     </filter>
-    <filter title="Draft Moves">
+    <filter name="move-filters-draft-moves" title="Draft Moves">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Daybook Moves">
+    <filter name="move-filters-daybook-moves" title="Daybook Moves">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Validated Moves">
+    <filter name="move-filters-validated-moves" title="Validated Moves">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Canceled Moves">
+    <filter name="move-filters-canceled-moves" title="Canceled Moves">
       <domain>self.statusSelect = 4</domain>
     </filter>
-    <filter title="Simulated Moves">
+    <filter name="move-filters-simulated-moves" title="Simulated Moves">
       <domain>self.statusSelect = 5</domain>
     </filter>
   </search-filters>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service.globalbudget;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
@@ -34,10 +35,16 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
 
   protected BudgetLevelResetToolService budgetLevelResetToolService;
   protected BudgetResetToolService budgetResetToolService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
-  public GlobalBudgetResetToolServiceImpl(BudgetLevelResetToolService budgetLevelResetToolService) {
+  public GlobalBudgetResetToolServiceImpl(
+      BudgetLevelResetToolService budgetLevelResetToolService,
+      CurrencyScaleService currencyScaleService,
+      BudgetResetToolService budgetResetToolService) {
     this.budgetLevelResetToolService = budgetLevelResetToolService;
+    this.currencyScaleService = currencyScaleService;
+    this.budgetResetToolService = budgetResetToolService;
   }
 
   public void resetGlobalBudget(GlobalBudget globalBudget) {
@@ -46,8 +53,12 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     globalBudget.setArchived(false);
 
     globalBudget.setTotalAmountCommitted(BigDecimal.ZERO);
-    globalBudget.setTotalAmountAvailable(globalBudget.getTotalAmountExpected());
-    globalBudget.setAvailableAmountWithSimulated(globalBudget.getTotalAmountExpected());
+    globalBudget.setTotalAmountAvailable(
+        currencyScaleService.getCompanyScaledValue(
+            globalBudget, globalBudget.getTotalAmountExpected()));
+    globalBudget.setAvailableAmountWithSimulated(
+        currencyScaleService.getCompanyScaledValue(
+            globalBudget, globalBudget.getTotalAmountExpected()));
     globalBudget.setRealizedWithNoPo(BigDecimal.ZERO);
     globalBudget.setRealizedWithPo(BigDecimal.ZERO);
     globalBudget.setSimulatedAmount(BigDecimal.ZERO);

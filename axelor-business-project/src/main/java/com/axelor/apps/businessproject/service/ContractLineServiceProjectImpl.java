@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PriceListService;
@@ -47,7 +48,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       ContractVersionRepository contractVersionRepo,
       DurationService durationService,
       AnalyticLineModelService analyticLineModelService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      CurrencyScaleService currencyScaleService) {
     super(
         appBaseService,
         accountManagementService,
@@ -57,7 +59,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
         contractVersionRepo,
         durationService,
         analyticLineModelService,
-        appAccountService);
+        appAccountService,
+        currencyScaleService);
   }
 
   @Override

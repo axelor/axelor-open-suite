@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -226,7 +227,7 @@ public class ConvertLeadWizardController {
       partnerMap.put("isProspect", true);
     }
 
-    if (!isCompany) {
+    if (!isCompany || StringUtils.isEmpty(lead.getEnterpriseName())) {
       partnerMap.put("firstName", lead.getFirstName());
       partnerMap.put("name", lead.getName());
       partnerMap.put("titleSelect", lead.getTitleSelect());
@@ -236,7 +237,7 @@ public class ConvertLeadWizardController {
       partnerMap.put("partnerTypeSelect", 1);
       partnerMap.put("name", lead.getEnterpriseName());
     }
-    partnerMap.put("language", appBase.getDefaultPartnerLanguage());
+    partnerMap.put("localization", appBase.getDefaultPartnerLocalization());
     return partnerMap;
   }
 

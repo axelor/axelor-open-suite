@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -33,6 +34,7 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
     json.put(
         "$nbDecimalDigitForUnitPrice",
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
 
     if (context.get("_model") != null
         && (context.get("_model").equals(SaleOrder.class.getName())
@@ -56,8 +58,7 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
                 ? saleOrderLine.getSaleOrder()
                 : saleOrderLine.getOldVersionSaleOrder();
         json.put(
-            "$currencyNumberOfDecimals",
-            Beans.get(CurrencyScaleServiceSale.class).getScale(saleOrder));
+            "$currencyNumberOfDecimals", Beans.get(CurrencyScaleService.class).getScale(saleOrder));
       }
     }
     return super.populate(json, context);

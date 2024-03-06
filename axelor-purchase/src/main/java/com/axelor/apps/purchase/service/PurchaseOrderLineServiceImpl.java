@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -84,6 +85,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Inject protected TaxService taxService;
 
+  @Inject protected CurrencyScaleService currencyScaleService;
+
   @Deprecated private int sequence = 0;
 
   @Override
@@ -110,16 +113,35 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
 
     if (!purchaseOrder.getInAti()) {
-      exTaxTotal = computeAmount(purchaseOrderLine.getQty(), priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+      exTaxTotal =
+          computeAmount(
+              purchaseOrderLine.getQty(),
+              priceDiscounted,
+              currencyScaleService.getScale(purchaseOrder));
+      inTaxTotal =
+          currencyScaleService.getScaledValue(
+              purchaseOrder, exTaxTotal.add(exTaxTotal.multiply(taxRate)));
       companyExTaxTotal = getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
-      companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
+      companyInTaxTotal =
+          currencyScaleService.getCompanyScaledValue(
+              purchaseOrder, companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate)));
     } else {
-      inTaxTotal = computeAmount(purchaseOrderLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      inTaxTotal =
+          computeAmount(
+              purchaseOrderLine.getQty(),
+              priceDiscounted,
+              currencyScaleService.getScale(purchaseOrder));
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE),
+              currencyScaleService.getScale(purchaseOrder),
+              RoundingMode.HALF_UP);
       companyInTaxTotal = getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
       companyExTaxTotal =
-          companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+          companyInTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE),
+              currencyScaleService.getCompanyScale(purchaseOrder),
+              RoundingMode.HALF_UP);
     }
 
     if (purchaseOrderLine.getProduct() != null) {
@@ -146,12 +168,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
    * @param price Le prix.
    * @return Le montant HT de la ligne.
    */
-  public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
+  public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {
 
-    BigDecimal amount =
-        quantity
-            .multiply(price)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal amount = quantity.multiply(price).setScale(scale, RoundingMode.HALF_UP);
 
     LOG.debug(
         "Computation of amount W.T. with a quantity of {} for {} : {}",
@@ -437,13 +456,13 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder)
       throws AxelorException {
 
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
+    return currencyScaleService.getCompanyScaledValue(
+        purchaseOrder,
+        currencyService.getAmountCurrencyConvertedAtDate(
             purchaseOrder.getCurrency(),
             purchaseOrder.getCompany().getCurrency(),
             exTaxTotal,
-            purchaseOrder.getOrderDate())
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            purchaseOrder.getOrderDate()));
   }
 
   @Override
@@ -679,11 +698,18 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                   purchaseOrderLine.getProduct(), "purchasePrice", purchaseOrder.getCompany());
 
       purchaseOrderLine.setInTaxTotal(
-          taxService.convertUnitPrice(
-              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+          currencyScaleService.getScaledValue(
+              purchaseOrder,
+              taxService.convertUnitPrice(
+                  false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice())));
       purchaseOrderLine.setCompanyInTaxTotal(
-          taxService.convertUnitPrice(
-              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+          currencyScaleService.getCompanyScaledValue(
+              purchaseOrder,
+              taxService.convertUnitPrice(
+                  false,
+                  taxLine,
+                  companyExTaxTotal,
+                  appBaseService.getNbDecimalDigitForUnitPrice())));
       purchaseOrderLine.setInTaxPrice(
           taxService.convertUnitPrice(
               false, taxLine, purchasePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
