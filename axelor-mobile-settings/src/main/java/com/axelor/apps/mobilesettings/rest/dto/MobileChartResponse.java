@@ -26,9 +26,8 @@ public class MobileChartResponse extends ResponseStructure {
   protected Long chartId;
   protected String chartName;
   protected String chartType;
-  protected String metaActionName;
-
   protected List<MobileChartValueResponse> valueList;
+  protected String metaActionName;
 
   public MobileChartResponse(
       MobileChart mobileChart, String chartName, List<MobileChartValueResponse> valueList) {
@@ -43,7 +42,6 @@ public class MobileChartResponse extends ResponseStructure {
     super(mobileChart.getVersion());
     this.chartId = mobileChart.getId();
     this.chartName = chartName;
-    this.chartType = mobileChart.getChartTypeSelect();
     this.metaActionName = metaActionName;
   }
 
