@@ -26,7 +26,6 @@ public class ManufOrderPlanStockMoveServiceImpl implements ManufOrderPlanStockMo
   public ManufOrderPlanStockMoveServiceImpl(
       StockMoveService stockMoveService,
       ManufOrderStockMoveService manufOrderStockMoveService,
-      ManufOrderResidualProductService manufOrderResidualProductService,
       SupplyChainConfigService supplyChainConfigService,
       ReservedQtyService reservedQtyService,
       ManufOrderCreateStockMoveService manufOrderCreateStockMoveService,

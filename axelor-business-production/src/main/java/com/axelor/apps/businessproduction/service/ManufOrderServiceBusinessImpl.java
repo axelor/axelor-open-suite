@@ -59,7 +59,6 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-
   @Inject
   public ManufOrderServiceBusinessImpl(
       SequenceService sequenceService,
