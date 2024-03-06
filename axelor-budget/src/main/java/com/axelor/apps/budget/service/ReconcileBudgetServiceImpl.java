@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.ReconcileSequenceService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
@@ -47,6 +46,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -86,7 +86,7 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       InvoiceTermPfpService invoiceTermPfpService,
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService) {
@@ -113,7 +113,7 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
         moveCreateService,
         moveLineCreateService,
         moveValidateService,
-        currencyScaleServiceAccount,
+        currencyScaleService,
         invoiceTermPfpService);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;
