@@ -34,7 +34,12 @@ public class MobileChartResponseComputeServiceImpl implements MobileChartRespons
   @Override
   public MobileChartResponse computeMobileChartResponse(MobileChart mobileChart)
       throws AxelorException {
-    return new MobileChartResponse(
-        mobileChart, mobileChart.getName(), mobileChartService.getValueList(mobileChart));
+    if (mobileChart.getIsCustomChart()) {
+      return new MobileChartResponse(
+          mobileChart, mobileChart.getName(), mobileChartService.getValueList(mobileChart));
+    } else {
+      return new MobileChartResponse(
+          mobileChart, mobileChart.getName(), mobileChart.getChartMetaAction().getName());
+    }
   }
 }

@@ -15,14 +15,18 @@
         <![CDATA[A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value. <br>Example : <br>SELECT partner.fullName, count(so.id) FROM Partner partner LEFT JOIN SaleOrder so on partner.id = so.clientPartner GROUP BY partner.fullName <br>Note : <br>- The JPQL query must select at least 2 values. <br>- The first selected value must be a string type. <br>- The second selected value must be a number type (long, decimal, integer). <br>- If more than 2 values are selected, they will be ignored. <br>
         ]]>
       </help>
-      <field name="name" colSpan="6"/>
-      <field name="chartTypeSelect" colSpan="6"/>
-      <field name="query" colSpan="12" height="10"/>
-      <button name="runBtn" title="Run" onClick="action-mobile-dashboard-method-run-query"
-        colSpan="3"/>
-      <spacer colSpan="9"/>
-      <field type="string" name="$response" title="Response" colSpan="12" height="10"
-        widget="text" showIf="$response" readonly="true"/>
+      <field name="name" colSpan="4"/>
+      <field name="chartTypeSelect" colSpan="4"/>
+      <field name="isCustomChart" colSpan="4" widget="boolean-switch"/>
+      <field name="chartMetaAction" domain="self.type = 'action-view'" showIf="!isCustomChart"/>
+      <panel name="queryPanel" colSpan="12" showIf="isCustomChart">
+        <field name="query" colSpan="12" height="10"/>
+        <button name="runBtn" title="Run" onClick="action-mobile-dashboard-method-run-query"
+          colSpan="3"/>
+        <spacer colSpan="9"/>
+        <field type="string" name="$response" title="Response" colSpan="12" height="10"
+          widget="text" showIf="$response" readonly="true"/>
+      </panel>
     </panel>
   </form>
 

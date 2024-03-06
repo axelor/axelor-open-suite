@@ -10,6 +10,9 @@
     <string name="query" title="Query" large="true"/>
     <string name="chartTypeSelect" title="Chart type"
       selection="mobilesettings.mobile.chart.type.select" required="true"/>
+    <boolean name="isCustomChart" title="Use custom chart"/>
+    <many-to-one name="chartMetaAction" title="Chart"
+      ref="com.axelor.meta.db.MetaAction"/>
   </entity>
 
 </domain-models>
