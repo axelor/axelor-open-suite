@@ -218,4 +218,6 @@ public interface MoveToolService {
   List<Integer> getMoveStatusSelectWithoutAccounted(String moveStatusSelect, Company company);
 
   List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
+
+  Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
 }

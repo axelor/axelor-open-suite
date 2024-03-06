@@ -37,6 +37,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
@@ -79,6 +80,7 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
     this.appService = appService;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Move generateReverse(
       Move move,

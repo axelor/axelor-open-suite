@@ -17,6 +17,9 @@
     <one-to-many name="moveTemplateLineList" ref="MoveTemplateLine"
       mappedBy="moveTemplate" title="Template Move Lines"/>
     <date name="endOfValidityDate" title="End of validity date"/>
+    <integer name="functionalOriginSelect" title="Functional origin"
+      selection="iaccount.move.functional.origin.select"/>
+
     <string name="fullName" namecolumn="true" search="code,name">
 	    <![CDATA[
     		return code+" - " + name;
