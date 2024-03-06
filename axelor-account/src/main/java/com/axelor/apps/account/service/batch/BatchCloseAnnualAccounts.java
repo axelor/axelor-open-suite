@@ -471,7 +471,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             null,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE,
+            MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
             false,
             false,
             false,
