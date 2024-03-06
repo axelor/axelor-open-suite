@@ -80,7 +80,7 @@
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction()"
           name="manufOrderSetPanel"/>
 
-        <panel-related field="projectTaskSet" colSpan="12" canNew="false"
+        <panel-related field="projectTaskSet" colSpan="12" canNew="false" orderBy="taskIndex"
           canEdit="false" canSelect="false" form-view="project-task-form"
           grid-view="project-task-invoicing-project-grid"
           showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0" readonlyIf="invoice"

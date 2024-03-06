@@ -364,6 +364,8 @@ public class InvoicingProjectService {
       this.setLines(invoicingProject, projectChild, counter);
     }
 
+    Beans.get(InvoiceServiceProject.class).setTasksIndex(invoicingProject.getProjectTaskSet());
+
     return;
   }
 

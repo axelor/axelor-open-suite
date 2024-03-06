@@ -38,6 +38,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
@@ -45,6 +47,9 @@ import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     implements InvoiceServiceProject {
@@ -101,7 +106,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public Invoice updateLines(Invoice invoice) {
     AnalyticMoveLineRepository analyticMoveLineRepository =
         Beans.get(AnalyticMoveLineRepository.class);
@@ -113,5 +118,45 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       }
     }
     return invoice;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  @Override
+  public void setTasksIndex(Set<ProjectTask> projectTaskSet) {
+    for (ProjectTask projectTask : projectTaskSet) {
+      if (projectTask.getTaskIndex() == null) {
+        ProjectTask parent = projectTask.getParentTask();
+        if (parent == null) {
+          projectTask.setTaskIndex(calculatePrentSolLineIndex(projectTaskSet));
+          setSubTasksIndex(projectTask);
+        }
+      }
+    }
+    for (ProjectTask projectTask : projectTaskSet) {
+      Beans.get(ProjectTaskRepository.class).save(projectTask);
+    }
+  }
+
+  protected void setSubTasksIndex(ProjectTask projectTask) {
+    int count = 1;
+    for (ProjectTask subTask : projectTask.getProjectTaskList()) {
+      subTask.setTaskIndex(projectTask.getTaskIndex() + "." + count);
+      count++;
+      if (CollectionUtils.isEmpty(subTask.getProjectTaskList())) {
+        return;
+      }
+      setSubTasksIndex(subTask);
+    }
+  }
+
+  protected String calculatePrentSolLineIndex(Set<ProjectTask> projectTaskSet) {
+    return projectTaskSet.stream()
+        .filter(slo -> slo.getTaskIndex() != null)
+        .map(slo -> slo.getTaskIndex().split("\\.")[0])
+        .mapToInt(Integer::parseInt)
+        .boxed()
+        .collect(Collectors.maxBy(Integer::compareTo))
+        .map(max -> String.valueOf(max + 1))
+        .orElse("1");
   }
 }
