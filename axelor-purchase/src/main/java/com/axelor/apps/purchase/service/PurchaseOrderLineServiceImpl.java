@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -84,7 +85,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Inject protected TaxService taxService;
 
-  @Inject protected CurrencyScaleServicePurchase currencyScaleServicePurchase;
+  @Inject protected CurrencyScaleService currencyScaleService;
 
   @Deprecated private int sequence = 0;
 
@@ -116,30 +117,30 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
           computeAmount(
               purchaseOrderLine.getQty(),
               priceDiscounted,
-              currencyScaleServicePurchase.getScale(purchaseOrder));
+              currencyScaleService.getScale(purchaseOrder));
       inTaxTotal =
-          currencyScaleServicePurchase.getScaledValue(
+          currencyScaleService.getScaledValue(
               purchaseOrder, exTaxTotal.add(exTaxTotal.multiply(taxRate)));
       companyExTaxTotal = getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
       companyInTaxTotal =
-          currencyScaleServicePurchase.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               purchaseOrder, companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate)));
     } else {
       inTaxTotal =
           computeAmount(
               purchaseOrderLine.getQty(),
               priceDiscounted,
-              currencyScaleServicePurchase.getScale(purchaseOrder));
+              currencyScaleService.getScale(purchaseOrder));
       exTaxTotal =
           inTaxTotal.divide(
               taxRate.add(BigDecimal.ONE),
-              currencyScaleServicePurchase.getScale(purchaseOrder),
+              currencyScaleService.getScale(purchaseOrder),
               RoundingMode.HALF_UP);
       companyInTaxTotal = getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
       companyExTaxTotal =
           companyInTaxTotal.divide(
               taxRate.add(BigDecimal.ONE),
-              currencyScaleServicePurchase.getCompanyScale(purchaseOrder),
+              currencyScaleService.getCompanyScale(purchaseOrder),
               RoundingMode.HALF_UP);
     }
 
@@ -419,7 +420,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder)
       throws AxelorException {
 
-    return currencyScaleServicePurchase.getCompanyScaledValue(
+    return currencyScaleService.getCompanyScaledValue(
         purchaseOrder,
         currencyService.getAmountCurrencyConvertedAtDate(
             purchaseOrder.getCurrency(),
@@ -661,12 +662,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                   purchaseOrderLine.getProduct(), "purchasePrice", purchaseOrder.getCompany());
 
       purchaseOrderLine.setInTaxTotal(
-          currencyScaleServicePurchase.getScaledValue(
+          currencyScaleService.getScaledValue(
               purchaseOrder,
               taxService.convertUnitPrice(
                   false, taxLineSet, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice())));
       purchaseOrderLine.setCompanyInTaxTotal(
-          currencyScaleServicePurchase.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               purchaseOrder,
               taxService.convertUnitPrice(
                   false,

@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.TaxRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
@@ -39,6 +38,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
@@ -65,7 +65,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
   protected MoveLineCreateService moveLineCreateService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected MoveLineToolService moveLineToolService;
   protected TaxService taxService;
   protected TaxRepository taxRepository;
@@ -77,7 +77,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
       MoveLineCreateService moveLineCreateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       MoveLineToolService moveLineToolService,
       TaxService taxService,
       TaxRepository taxRepository) {
@@ -86,7 +86,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
     this.moveLineCreateService = moveLineCreateService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.moveLineToolService = moveLineToolService;
     this.taxService = taxService;
     this.taxRepository = taxRepository;
@@ -123,7 +123,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
 
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               moveLine,
               this.computeFinancialDiscountTotalAmount(financialDiscount, moveLine, amount)));
       moveLine.setRemainingAmountAfterFinDiscount(
@@ -280,7 +280,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean isDebit,
       boolean financialDiscountVat)
       throws AxelorException {
-    int scale = currencyScaleServiceAccount.getScale(move);
+    int scale = currencyScaleService.getScale(move);
 
     financialDiscountAmount =
         financialDiscountAmount.multiply(prorata.getLeft()).setScale(scale, RoundingMode.HALF_UP);

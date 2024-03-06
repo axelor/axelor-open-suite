@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
 import com.google.inject.Inject;
@@ -42,13 +42,13 @@ public class FixedAssetLineFiscalServiceImpl extends AbstractFixedAssetLineServi
       YearService yearService,
       PeriodService periodService,
       FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     super(
         fixedAssetLineRepository,
         fixedAssetDerogatoryLineService,
         yearService,
         periodService,
-        currencyScaleServiceAccount);
+        currencyScaleService);
     this.fixedAssetLineFiscalComputationService = fixedAssetLineFiscalComputationService;
   }
 
