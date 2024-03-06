@@ -4,23 +4,27 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid title="Site" name="site-grid" model="com.axelor.apps.base.db.Site">
-    <field name="name"/>
     <field name="code"/>
+    <field name="name"/>
     <field name="typeSelect"/>
     <field name="partner"/>
     <field name="address"/>
-
   </grid>
 
   <form title="Site" name="site-form" model="com.axelor.apps.base.db.Site">
-    <panel>
-      <field name="name"/>
-      <field name="code"/>
+    <panel name="mainPanel">
+      <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
+        <editor x-show-titles="false">
+          <field name="code" showTitle="false" css="label-bold bold large" colSpan="3"/>
+          <field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
+        </editor>
+      </field>
+      <field name="address" canNew="true" colSpan="12"/>
+    </panel>
+    <panel name="siteTypePanel" sidebar="true">
       <field name="typeSelect"/>
       <field name="partner" hidden="true" showIf="typeSelect == 2"
         requiredIf="typeSelect == 2"/>
-      <field name="address" canNew="true"/>
     </panel>
   </form>
-
 </object-views>

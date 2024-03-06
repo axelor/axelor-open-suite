@@ -9,11 +9,13 @@
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
+    <string name="fullName" namecolumn="true"/>
     <integer name="typeSelect" title="Type" required="true"
-      selection="base.site.type.select"/>
+      selection="base.site.type.select" default="1"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="address" title="Address" ref="com.axelor.apps.base.db.Address"/>
 
+    <entity-listener class="com.axelor.apps.base.db.repo.SiteListener"/>
   </entity>
 
 </domain-models>

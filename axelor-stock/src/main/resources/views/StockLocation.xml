@@ -80,7 +80,6 @@
         domain="self.isContact = false AND :company member of self.companySet"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="address" canEdit="false" form-view="address-form" grid-view="address-grid"/>
-
       <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
       <field name="stockLocationValue" readonly="true" showIf="isValued">
         <viewer>
@@ -89,7 +88,8 @@
 					]]>
         </viewer>
       </field>
-      <field name="siteSet" widget="tag-select"/>
+      <field name="site" if="__config__.app.getApp('stock')?.enableSiteManagement"
+        domain="self.typeSelect = 1"/>
       <panel name="barcodePanel" title="Barcode" colSpan="12"
         if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
         <field name="barCode" showTitle="false" widget="Image" colSpan="2"/>

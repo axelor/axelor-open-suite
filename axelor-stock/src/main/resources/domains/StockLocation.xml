@@ -33,12 +33,10 @@
     <string name="serialNumber" title="Serial Nbr"/>
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
-
-    <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
+    <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
     <finder-method name="findByCompany" using="company"/>
     <finder-method name="findByPartner" using="partner"/>
-
 
     <extra-code><![CDATA[
 
