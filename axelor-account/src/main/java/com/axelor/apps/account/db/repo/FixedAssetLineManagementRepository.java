@@ -21,6 +21,7 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class FixedAssetLineManagementRepository extends FixedAssetLineRepository
             "$currencyNumberOfDecimals",
             Beans.get(FixedAssetLineToolService.class).getCompanyScale(fixedAssetLine));
       } catch (AxelorException e) {
-        throw new RuntimeException(e);
+        TraceBackService.trace(e);
       }
     }
 
