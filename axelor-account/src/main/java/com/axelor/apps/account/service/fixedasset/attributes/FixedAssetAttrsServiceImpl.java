@@ -20,8 +20,8 @@ package com.axelor.apps.account.service.fixedasset.attributes;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -30,11 +30,11 @@ import java.util.Map;
 
 public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
-  public FixedAssetAttrsServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+  public FixedAssetAttrsServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
   }
 
   protected void addAttr(
@@ -74,10 +74,7 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
   public void addDisposalAmountScale(
       FixedAsset fixedAsset, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "disposalAmount",
-        "scale",
-        currencyScaleServiceAccount.getCompanyScale(fixedAsset),
-        attrsMap);
+        "disposalAmount", "scale", currencyScaleService.getCompanyScale(fixedAsset), attrsMap);
   }
 
   @Override
@@ -98,6 +95,6 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
   @Override
   public void addGrossValueScale(Company company, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "grossValue", "scale", currencyScaleServiceAccount.getCompanyScale(company), attrsMap);
+        "grossValue", "scale", currencyScaleService.getCompanyCurrencyScale(company), attrsMap);
   }
 }
