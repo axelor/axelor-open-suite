@@ -33,6 +33,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import org.slf4j.Logger;
@@ -70,6 +71,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
     updateBatch(moveDate, accountingCutOffTypeSelect);
     Company company = supplychainBatch.getCompany();
     boolean includeNotStockManagedProduct = supplychainBatch.getIncludeNotStockManagedProduct();
+    BigDecimal lowerAmountLimit = supplychainBatch.getLowerAmountLimit();
+    BigDecimal upperAmountLimit = supplychainBatch.getUpperAmountLimit();
 
     if (accountingCutOffTypeSelect == 0) {
       return;
@@ -88,6 +91,10 @@ public class BatchAccountingCutOff extends BatchStrategy {
         ++offset;
 
         try {
+          if (!cutOffService.checkPriceLimit(
+              stockMove, lowerAmountLimit, upperAmountLimit, accountingCutOffTypeSelect, ati)) {
+            continue;
+          }
           List<Move> moveList =
               cutOffService.generateCutOffMoves(
                   stockMove,

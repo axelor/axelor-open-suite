@@ -39,7 +39,10 @@
     <boolean name="ati" title="A.T.I."/>
     <string name="moveDescription" title="Move description"/>
     <boolean name="includeNotStockManagedProduct" title="Include not stock managed product"/>
-
+    <decimal name="lowerAmountLimit" title="Move trigger lower limit" precision="20"
+      scale="2"/>
+    <decimal name="upperAmountLimit" title="Move trigger upper limit" precision="20"
+      scale="2"/>
     <!-- STOCK HISTORY INFORMATION -->
 
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
