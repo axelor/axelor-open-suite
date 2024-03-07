@@ -521,7 +521,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         }
       }
       BigDecimal amount =
-          currencyScaleService.getCompanyScaledValue(fixedAsset, fixedAssetLine.getDepreciation());
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset,
+              isDisposal ? fixedAsset.getDisposalValue() : fixedAssetLine.getDepreciation());
 
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(
