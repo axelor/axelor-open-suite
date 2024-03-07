@@ -167,19 +167,16 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   protected boolean checkUserRoles(User user, Set<Role> roleSet) {
-    return roleSet != null && checkUserRoles(user, new ArrayList<>(roleSet));
-  }
-
-  protected boolean checkUserRoles(User user, List<Role> roleList) {
-    if (user == null || ObjectUtils.isEmpty(roleList)) {
+    if (user == null || ObjectUtils.isEmpty(roleSet)) {
       return false;
     }
-    Set<Role> userRoleSet = user.getRoles();
+    List<Role> userRoleList =
+        user.getRoles() != null ? new ArrayList<>(user.getRoles()) : new ArrayList<>();
     if (user.getGroup() != null && !ObjectUtils.isEmpty(user.getGroup().getRoles())) {
-      userRoleSet.addAll(user.getGroup().getRoles());
+      userRoleList.addAll(user.getGroup().getRoles());
     }
-    for (Role role : roleList) {
-      if (userRoleSet.contains(role)) {
+    for (Role role : roleSet) {
+      if (userRoleList.contains(role)) {
         return true;
       }
     }
