@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.List;
 
@@ -27,4 +29,7 @@ public interface SaleOrderLineProjectService {
   public void setProject(List<Long> saleOrderLineIds, Project project);
 
   public SaleOrderLine updateAnalyticDistributionWithProject(SaleOrderLine saleOrderLine);
+
+  SaleOrderLine createLinesForSubProducts(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 }

@@ -705,7 +705,7 @@
 
   <action-method
     name="action-sale-order-line-method-creat-related-slo-for-sub-products">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+    <call class="com.axelor.apps.businessproject.web.SaleOrderLineProjectController"
       method="createLinesForSubProducts"/>
   </action-method>
 

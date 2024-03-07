@@ -38,8 +38,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
@@ -47,9 +45,6 @@ import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     implements InvoiceServiceProject {
@@ -120,7 +115,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     return invoice;
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  /*@Transactional(rollbackOn = Exception.class)
   @Override
   public void setTasksIndex(Set<ProjectTask> projectTaskSet) {
     for (ProjectTask projectTask : projectTaskSet) {
@@ -158,5 +153,5 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         .collect(Collectors.maxBy(Integer::compareTo))
         .map(max -> String.valueOf(max + 1))
         .orElse("1");
-  }
+  }*/
 }

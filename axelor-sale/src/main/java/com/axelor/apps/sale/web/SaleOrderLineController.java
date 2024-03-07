@@ -498,7 +498,7 @@ public class SaleOrderLineController {
     response.setValues(saleOrderLine);
   }
 
-  public void createLinesForSubProducts(ActionRequest request, ActionResponse response)
+  /*  public void createLinesForSubProducts(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
@@ -507,5 +507,5 @@ public class SaleOrderLineController {
         Beans.get(RelatedSaleOrderLineService.class)
             .createLinesForSubProducts(saleOrderLine, saleOrder);
     response.setValues(saleOrderLine);
-  }
+  }*/
 }

@@ -19,12 +19,10 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.project.db.ProjectTask;
-import java.util.Set;
 
 public interface InvoiceServiceProject {
 
   public Invoice updateLines(Invoice invoice);
 
-  void setTasksIndex(Set<ProjectTask> projectTaskSet);
+  // void setTasksIndex(Set<ProjectTask> projectTaskSet);
 }

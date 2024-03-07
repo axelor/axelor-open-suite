@@ -299,22 +299,4 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     }
     return saleOrderLine;
   }
-
-  @Override
-  public SaleOrderLine createLinesForSubProducts(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    List<SubProduct> productList = saleOrderLine.getProduct().getSubProductList();
-    if (productList == null || productList.isEmpty()) {
-      return saleOrderLine;
-    }
-    for (SubProduct subProduct : productList) {
-      SaleOrderLine relatedSaleOrderLine = createSaleOrderline(subProduct, saleOrder);
-      saleOrderLine.addSaleOrderLineListItem(relatedSaleOrderLine);
-      saleOrderLine.setSaleOrderLineListSize(saleOrderLine.getSaleOrderLineList().size());
-      relatedSaleOrderLine.setLineIndex(
-          saleOrderLine.getLineIndex() + "." + (saleOrderLine.getSaleOrderLineListSize()));
-      createLinesForSubProducts(relatedSaleOrderLine, saleOrder);
-    }
-    return saleOrderLine;
-  }
 }

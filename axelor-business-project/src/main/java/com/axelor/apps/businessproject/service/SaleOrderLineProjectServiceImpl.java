@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.SubProduct;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -31,19 +33,24 @@ import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyChainImpl
     implements SaleOrderLineProjectService {
@@ -111,6 +118,39 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
   public SaleOrderLine updateAnalyticDistributionWithProject(SaleOrderLine saleOrderLine) {
     for (AnalyticMoveLine analyticMoveLine : saleOrderLine.getAnalyticMoveLineList()) {
       analyticMoveLine.setProject(saleOrderLine.getProject());
+    }
+    return saleOrderLine;
+  }
+
+  @Override
+  public SaleOrderLine createLinesForSubProducts(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    List<SubProduct> productList = saleOrderLine.getProduct().getSubProductList();
+    if (productList == null || productList.isEmpty()) {
+      return saleOrderLine;
+    }
+    for (SubProduct subProduct : productList) {
+      SaleOrderLine relatedSaleOrderLine = createSaleOrderline(subProduct, saleOrder);
+      saleOrderLine.addSaleOrderLineListItem(relatedSaleOrderLine);
+      saleOrderLine.setSaleOrderLineListSize(saleOrderLine.getSaleOrderLineList().size());
+      relatedSaleOrderLine.setToInvoice(true);
+      relatedSaleOrderLine.setInvoicingModeSelect(3);
+      relatedSaleOrderLine.setLineIndex(
+          saleOrderLine.getLineIndex() + "." + (saleOrderLine.getSaleOrderLineListSize()));
+      createLinesForSubProducts(relatedSaleOrderLine, saleOrder);
+    }
+    return saleOrderLine;
+  }
+
+  public SaleOrderLine createSaleOrderline(SubProduct subProduct, SaleOrder saleOrder)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = new SaleOrderLine();
+    saleOrderLine.setProduct(subProduct.getProduct());
+    saleOrderLine.setQty(subProduct.getQty());
+    Beans.get(SaleOrderLineService.class).computeProductInformation(saleOrderLine, saleOrder);
+    Beans.get(SaleOrderLineService.class).computeValues(saleOrder, saleOrderLine);
+    if (Objects.equals(saleOrderLine.getPriceBeforeUpdate(), BigDecimal.ZERO)) {
+      saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
     }
     return saleOrderLine;
   }

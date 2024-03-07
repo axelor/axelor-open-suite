@@ -28,8 +28,6 @@
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="project-task-invoicing-project-grid" orderBy="-taskDate" groupBy="project">
-    <field name="saleOrderLine"/>
-    <field name="taskIndex"/>
     <field name="project"/>
     <field name="name"/>
     <field name="taskDate"/>
