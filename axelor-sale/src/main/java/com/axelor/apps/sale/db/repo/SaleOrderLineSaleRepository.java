@@ -16,14 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
