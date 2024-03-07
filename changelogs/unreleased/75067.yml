@@ -1,2 +1,5 @@
 title: "FixedAsset : fix disposal wizard view and disposal sale move"
 module: axelor-account
+developer: |
+  Change FixedAssetGroupService.getDisposalWizardValuesMap parameters : 
+      fixedAsset,disposalTypeSelect -> disposal, fixedAsset, disposalTypeSelect
