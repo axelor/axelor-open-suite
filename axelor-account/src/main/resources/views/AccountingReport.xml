@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <!-- ACCOUNTING REPORT -->
 
@@ -53,7 +53,8 @@
         hideIf="([19,20].indexOf(reportType.typeSelect) == -1)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
       <button name="exportBtn" title="Print" icon="fa-print"
-        onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click"/>
+        onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click"
+        readonlyIf="!reportType"/>
       <button name="createAccountingExportBtn" title="Create accounting export"
         icon="fa-cogs" showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19"
         onClick="save,action-accounting-report-method-create-export-from-report"/>

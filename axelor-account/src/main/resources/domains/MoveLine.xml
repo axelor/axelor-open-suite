@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" implements="com.axelor.apps.account.db.repo.AnalyticLine"
+  <entity name="MoveLine"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine,com.axelor.apps.base.interfaces.Currenciable"
     strategy="CLASS">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
@@ -198,6 +199,18 @@
     <decimal name="amountBeforeCutOffProrata" title="Original amount" scale="3"
       precision="20"/>
     <string name="durationCutOffProrata" title="Prorata duration"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return move != null ? move.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return move != null ? move.getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>

@@ -16,27 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.service;
+package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.contract.db.Contract;
-import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.meta.db.MetaFile;
 import java.math.BigDecimal;
 
-public interface CurrencyScaleServiceContract {
+public interface ExpenseLineToolService {
+  void computeAmount(Employee employee, ExpenseLine expenseLine) throws AxelorException;
 
-  BigDecimal getScaledValue(Contract contract, BigDecimal amount);
+  void computeDistance(BigDecimal distance, ExpenseLine expenseLine) throws AxelorException;
 
-  BigDecimal getCompanyScaledValue(Contract contract, BigDecimal amount);
+  void setGeneralExpenseLineInfo(
+      Product expenseProduct,
+      BigDecimal totalAmount,
+      BigDecimal totalTax,
+      MetaFile justificationMetaFile,
+      ExpenseLine expenseLine)
+      throws AxelorException;
 
-  BigDecimal getScaledValue(ContractLine contractLine, BigDecimal amount);
-
-  BigDecimal getCompanyScaledValue(ContractLine contractLine, BigDecimal amount);
-
-  int getScale(Contract contract);
-
-  int getCompanyScale(Company company);
-
-  int getScale(Currency currency);
+  boolean isKilometricExpenseLine(ExpenseLine expenseLine);
 }

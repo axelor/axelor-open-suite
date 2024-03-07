@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <action-record name="action-product-set-stock"
     model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
@@ -182,11 +182,11 @@
     <context name="_id" expr="eval: id"/>
   </action-view>
 
-  <action-view name="action-stock-view-stock-history-line" title="Stock history line"
-    model="com.axelor.apps.stock.db.StockHistoryLine">
-    <view type="grid" name="stock-history-line-all-grid"/>
-    <view type="form" name="stock-history-line-all-form"/>
-    <domain>self.product.id = :_id</domain>
+  <action-view name="action-stock-view-stock-location-line-history"
+    title="Stock location line history" model="com.axelor.apps.stock.db.StockLocationLineHistory">
+    <view type="grid" name="stock-location-line-history-grid"/>
+    <view type="form" name="stock-location-line-history-form"/>
+    <domain>self.stockLocationLine.product.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
