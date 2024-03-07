@@ -27,6 +27,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +41,8 @@ public interface ManufOrderService {
   public static boolean IS_TO_INVOICE = false;
 
   void setProducedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
+
+  void setResidualStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
 
   void setConsumedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
 
@@ -189,6 +192,9 @@ public interface ManufOrderService {
    */
   void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
+  @Transactional(rollbackOn = {Exception.class})
+  void updateResidualStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
   StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   /**
@@ -209,6 +215,9 @@ public interface ManufOrderService {
    * @throws AxelorException if the check fails.
    */
   void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
+      throws AxelorException;
+
+  void checkResidualStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
       throws AxelorException;
 
   /**
