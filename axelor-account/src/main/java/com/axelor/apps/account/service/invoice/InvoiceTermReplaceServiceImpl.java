@@ -164,7 +164,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
             .filter(dml -> dml.getDebit().signum() != 0)
             .findFirst()
             .orElse(null);
-    if (!ObjectUtils.isEmpty(newDebitMoveLine.getInvoiceTermList())) {
+    if (newDebitMoveLine != null && !ObjectUtils.isEmpty(newDebitMoveLine.getInvoiceTermList())) {
       newInvoiceTermList.addAll(newDebitMoveLine.getInvoiceTermList());
     }
 

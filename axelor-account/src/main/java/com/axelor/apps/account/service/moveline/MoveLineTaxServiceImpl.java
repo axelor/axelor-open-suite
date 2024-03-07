@@ -44,7 +44,6 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -172,7 +171,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
       TaxPaymentMoveLine taxPaymentMoveLine =
-          createTaxPaymentMoveLine(
+          new TaxPaymentMoveLine(
               customerPaymentMoveLine,
               taxLine,
               reconcile,
@@ -191,23 +190,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       taxPaymentMoveLineList.add(taxPaymentMoveLine);
     }
     return taxPaymentMoveLineList;
-  }
-
-  protected TaxPaymentMoveLine createTaxPaymentMoveLine(
-      MoveLine customerPaymentMoveLine,
-      TaxLine taxLine,
-      Reconcile reconcile,
-      BigDecimal vatRate,
-      BigDecimal detailPaymentAmount,
-      LocalDate localDate) {
-    TaxPaymentMoveLine taxPaymentMoveLine = new TaxPaymentMoveLine();
-    taxPaymentMoveLine.setMoveLine(customerPaymentMoveLine);
-    taxPaymentMoveLine.setOriginTaxLine(taxLine);
-    taxPaymentMoveLine.setReconcile(reconcile);
-    taxPaymentMoveLine.setTaxRate(vatRate);
-    taxPaymentMoveLine.setDetailPaymentAmount(detailPaymentAmount);
-    taxPaymentMoveLine.setDate(localDate);
-    return taxPaymentMoveLine;
   }
 
   @Override
