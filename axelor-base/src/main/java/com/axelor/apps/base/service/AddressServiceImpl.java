@@ -36,9 +36,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.Context;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
@@ -67,7 +65,7 @@ import wslite.json.JSONException;
 @Singleton
 public class AddressServiceImpl implements AddressService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*$(\\n|\\r\\n)";
+  protected static final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*\\R";
   private static final char TEMPLATE_DELIMITER = '$';
   private GroovyTemplates groovyTemplates;
   protected AddressHelper ads;
@@ -290,32 +288,23 @@ public class AddressServiceImpl implements AddressService {
     AddressTemplate addressTemplate = addressL7Country.getAddressTemplate();
     String content = addressTemplate.getTemplateStr();
 
-    try {
-      Templates templates;
-      if (addressTemplate.getEngineSelect() == AddressTemplateRepository.GROOVY_TEMPLATE) {
-        templates = this.groovyTemplates;
-      } else {
-        templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
-      }
-
-      Map<String, Object> templatesContext = Maps.newHashMap();
-      Class<?> klass = EntityHelper.getEntityClass(address);
-      Context context = new Context(Mapper.toMap(address), klass);
-      templatesContext.put(klass.getSimpleName(), context.asType(klass));
-      String fullFormattedString = templates.fromText(content).make(templatesContext).render();
-
-      if (StringUtils.isBlank(fullFormattedString)) {
-        throw new RuntimeException(
-            String.format(
-                I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR), addressTemplate.getName()));
-      }
-
-      fullFormattedString = fullFormattedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
-      address.setFormattedFullName(fullFormattedString);
-
-    } catch (Exception e) {
-      LOG.error("Runtime Exception Address: {}", addressTemplate.getName());
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    Templates templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    if (addressTemplate.getEngineSelect() == AddressTemplateRepository.GROOVY_TEMPLATE) {
+      templates = this.groovyTemplates;
     }
+
+    Map<String, Object> templatesContext = Maps.newHashMap();
+    templatesContext.put(Address.class.getSimpleName(), EntityHelper.getEntity(address));
+    String fullFormattedString = templates.fromText(content).make(templatesContext).render();
+
+    if (StringUtils.isBlank(fullFormattedString)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR),
+          addressTemplate.getName());
+    }
+
+    fullFormattedString = fullFormattedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
+    address.setFormattedFullName(fullFormattedString);
   }
 }
