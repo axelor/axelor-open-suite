@@ -156,4 +156,6 @@ public interface InvoiceMergingService {
       String supplierInvoiceNb,
       LocalDate originDate)
       throws AxelorException;
+
+  List<Invoice> convertSelectedLinesToMergeLines(List<Integer> idList);
 }

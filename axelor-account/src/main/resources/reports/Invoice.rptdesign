@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -747,6 +747,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="displayName">tableFontSize</text-property>
                     <text-property name="heading">tableFontSize</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1129,9 +1135,14 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">69</property>
+                        <property name="position">74</property>
                         <property name="name">tableFontSize</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">75</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1649,35 +1660,42 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">69</property>
+                    <property name="position">74</property>
                     <property name="name">tableFontSize</property>
                     <property name="nativeName">tableFontSize</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">75</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select distinct Invoice.id as inv_id, 
-	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path, 
-	Invoice.invoice_id, 
-	Invoice.operation_type_select, 
+            <xml-property name="queryText"><![CDATA[select distinct Invoice.id as inv_id,
+	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
+	Invoice.invoice_id,
+	Invoice.operation_type_select,
 	Invoice.status_select as status_select,
 	Invoice.invoice_date,
 	Invoice.operation_sub_type_select,
-	Partner.partner_type_select, 
-	Partner.name as "partnerName", 
+	Partner.partner_type_select,
+	Partner.name as "partnerName",
 	Partner.first_name as "partnerFirstName",
 	Partner.partner_seq as "partnerSeq",
 	Partner.title_select,
 	Partner.siren,
-	ContactPartner.name as "contactName", 
+	ContactPartner.name as "contactName",
 	ContactPartner.first_name as "contactFirstName",
 	Invoice.address_str,
-	PaymentCondition.name as "paymentConditionName", 
-	Invoice.due_date, 
-	Currency.code as "currencyCode", 
-	Invoice.in_tax_total as "invoice_in_tax_total", 
-	Invoice.ex_tax_total as "invoice_ex_tax_total", 
-	Invoice.tax_total as "invoice_tax_total", 
+	PaymentCondition.name as "paymentConditionName",
+	Invoice.due_date,
+	Currency.code as "currencyCode",
+	Invoice.in_tax_total as "invoice_in_tax_total",
+	Invoice.ex_tax_total as "invoice_ex_tax_total",
+	Invoice.tax_total as "invoice_tax_total",
 	Company.name as "companyName",
 	Company.height as "logo_height",
 	Company.width as "logo_width",
@@ -1689,20 +1707,20 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	Invoice.note,
 	Invoice.specific_notes,
 	Invoice.origin_date,
-	Invoice.internal_reference, 
+	Invoice.internal_reference,
 	Invoice.partner_tax_nbr,
 	Invoice.external_reference,
-	PrintingSettings.pdf_header as "header", 
+	PrintingSettings.pdf_header as "header",
 	PrintingSettings.pdf_footer as "footer",
 	PrintingSettings.logo_position_select as "logoPosition",
-	AccountConfig.invoice_client_box as "ClientBox", 
+	AccountConfig.invoice_client_box as "ClientBox",
 	Accountconfig.sale_invoice_legal_note as "SaleLegalNote",
 	AccountConfig.display_del_addr_on_printing as "DisplayDelAddr",
-	AccountConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting", 
+	AccountConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting",
 	AccountConfig.terms_and_conditions as "termsAndConditions",
 	AccountConfig.display_partner_seq_on_printing as "displayPartnerSeqOnPrinting",
 	AccountConfig.display_no_financial_discount_applied_on_printing as "displayNoFinancialDiscountAppliedOnPrinting",
-	Invoice.hide_discount as "hideDiscount", 
+	Invoice.hide_discount as "hideDiscount",
 	AccountConfig.display_product_code_on_printing as "displayProductCodeOnPrinting",
 	Invoice.subscription_from_date,
 	Invoice.subscription_to_date,
@@ -1729,8 +1747,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
 	Invoice.invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
-	PrintingSettings.table_font_size as "tableFontSize"
-from account_invoice as Invoice 
+	PrintingSettings.table_font_size as "tableFontSize",
+	Currency.number_of_decimals
+from account_invoice as Invoice
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join studio_app_sale as AppSale on true
 left outer join studio_app_account as AppAccount on true
@@ -1783,6 +1802,12 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     <text-property name="displayName">tax_total</text-property>
                     <text-property name="heading">tax_total</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1819,6 +1844,11 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                         <property name="name">tax_total</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1851,11 +1881,19 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, TaxLine.value, InvoiceLineTax.ex_tax_base, InvoiceLineTax.tax_total
+            <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, TaxLine.value, InvoiceLineTax.ex_tax_base, InvoiceLineTax.tax_total, Currency.number_of_decimals
 from account_invoice_line_tax as InvoiceLineTax
 inner join account_invoice as Invoice on (InvoiceLineTax.invoice = Invoice.id)
 left outer join account_tax_line as TaxLine on (InvoiceLineTax.tax_line = TaxLine.id)
+left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 where Invoice.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1949,7 +1987,7 @@ where Invoice.id = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2240,19 +2278,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_emp.name AS ts_user, 
-product.name AS ts_activity, 
+            <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_emp.name AS ts_user,
+product.name AS ts_activity,
 line.hours_duration AS ts_duration,
-product_unit.name AS ts_product_unit, 
+product_unit.name AS ts_product_unit,
 line.date_val AS ts_date,
 invproj.invoice AS invoice_id,
 (CASE WHEN project.unit_on_printing IS NULL THEN product_unit.label_to_printing
 	ELSE select_item.title END ) AS ts_project_unit,
-(CASE WHEN select_item.order_seq = 0 THEN general.unit_days 
-	 WHEN select_item.order_seq = 1 THEN general.unit_hours 
-	 WHEN select_item.order_seq = 2 THEN general.unit_minutes 
+(CASE WHEN select_item.order_seq = 0 THEN general.unit_days
+	 WHEN select_item.order_seq = 1 THEN general.unit_hours
+	 WHEN select_item.order_seq = 2 THEN general.unit_minutes
 	 WHEN project.unit_on_printing IS NULL THEN general.unit_hours END ) AS ts_project_unit_id
-FROM hr_timesheet_line line 
+FROM hr_timesheet_line line
 JOIN businessproject_invoicing_project_log_times_set logset ON logset.log_times_set = line.id
 JOIN businessproject_invoicing_project invproj ON invproj.id = logset.businessproject_invoicing_project
 JOIN project_project project ON project.id = invproj.project
@@ -2303,6 +2341,12 @@ JOIN base_unit product_unit ON product_unit.id = product.unit]]></xml-property>
                     <text-property name="displayName">imputedAmount</text-property>
                     <text-property name="heading">imputedAmount</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -2343,6 +2387,11 @@ JOIN base_unit product_unit ON product_unit.id = product.unit]]></xml-property>
                         <property name="name">totalAmount</property>
                         <property name="dataType">float</property>
                     </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -2375,15 +2424,24 @@ JOIN base_unit product_unit ON product_unit.id = product.unit]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select AdvanceInvoice.invoice_id as "advanceInvoiceId", 
+            <xml-property name="queryText"><![CDATA[select AdvanceInvoice.invoice_id as "advanceInvoiceId",
        AdvanceInvoice.invoice_date as "advanceInvoiceDate",
        AdvanceInvoice.in_tax_total as "advanceInvoiceTotalAmount",
-       ImputedPayment.amount as "imputedAmount"
+       ImputedPayment.amount as "imputedAmount",
+       Currency.number_of_decimals
 from account_invoice as AdvanceInvoice
 left join account_invoice_payment as AdvancePayment on AdvancePayment.invoice = AdvanceInvoice.id
 left join account_invoice_payment as ImputedPayment on ImputedPayment.id = AdvancePayment.imputed_by
 left join account_invoice as Invoice on ImputedPayment.invoice = Invoice.id
+left join base_currency as Currency on (AdvancePayment.currency = Currency.id)
 where Invoice.id = ? and ImputedPayment.status_select=1;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2489,6 +2547,12 @@ where Invoice.id = ? and ImputedPayment.status_select=1;]]></xml-property>
                     <text-property name="displayName">totalImputedAmount</text-property>
                     <text-property name="heading">totalImputedAmount</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -2509,6 +2573,11 @@ where Invoice.id = ? and ImputedPayment.status_select=1;]]></xml-property>
                         <property name="name">totalImputedAmount</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -2520,14 +2589,22 @@ where Invoice.id = ? and ImputedPayment.status_select=1;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select SUM(ImputedPayment.amount) as "totalImputedAmount"
+            <xml-property name="queryText"><![CDATA[select SUM(ImputedPayment.amount) as "totalImputedAmount", Currency.number_of_decimals
 from account_invoice as AdvanceInvoice
 left join account_invoice_payment as AdvancePayment on AdvancePayment.invoice = AdvanceInvoice.id
 left join account_invoice_payment as ImputedPayment on ImputedPayment.id = AdvancePayment.imputed_by
 left join account_invoice as Invoice on ImputedPayment.invoice = Invoice.id
+left join base_currency as Currency on (AdvancePayment.currency = Currency.id)
 where Invoice.id = ? and ImputedPayment.status_select=1
-group by AdvanceInvoice.id]]></xml-property>
+group by AdvanceInvoice.id, Currency.number_of_decimals]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2722,7 +2799,8 @@ RETURNS table(inv_id bigint, product_name varchar, description text,
     sequence int, "typeSelect" int, in_ati boolean, "productCode" varchar,
     "CustomerProductCode" varchar, "CustomerProductName" varchar,
     "productCategory" bigint, "showTotal" boolean, "hideUnitAmounts" boolean,
-    "PackHideUnitAmounts" boolean) as
+    "PackHideUnitAmounts" boolean,
+    number_of_decimals int) as
 $func$
 BEGIN
 IF (SELECT COUNT(to_regclass('sale_customer_catalog')) = 0) THEN
@@ -2757,7 +2835,8 @@ CustomerCatalog.product_customer_name as "CustomerProductName",
 ProductCategory.id as "productCategory",
 InvoiceLine.is_show_total as showTotal,
 InvoiceLine.is_hide_unit_amounts as hideUnitAmounts,
-(SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts"
+(SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts",
+Currency.number_of_decimals
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
@@ -2800,7 +2879,8 @@ InvoiceLine.product_code as "productCode",
 ProductCategory.id as "productCategory",
 InvoiceLine.is_show_total as showTotal,
 InvoiceLine.is_hide_unit_amounts as hideUnitAmounts,
-(SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts"
+(SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts",
+Currency.number_of_decimals
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
@@ -2956,6 +3036,12 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <text-property name="displayName">PackHideUnitAmounts</text-property>
                     <text-property name="heading">PackHideUnitAmounts</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -3085,6 +3171,11 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <structure>
                         <property name="position">23</property>
                         <property name="name">PackHideUnitAmounts</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -3252,6 +3343,13 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH INV AS (
     select * from invoice_line_proc(cast(? as bigint))
@@ -3280,10 +3378,12 @@ select
     INV."productCategory",
     INV."showTotal",
     INV."hideUnitAmounts",
-    INV."PackHideUnitAmounts"
+    INV."PackHideUnitAmounts",
+    Currency.number_of_decimals
     from INV
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
+    LEFT JOIN base_currency Currency ON (Currency.id = Invoice.currency)
     WHERE  AppBase.is_regroup_products_on_printings IS NULL OR AppBase.is_regroup_products_on_printings IS FALSE
     OR Invoice.group_products_on_printings IS NULL OR Invoice.group_products_on_printings IS FALSE
     OR ((AppBase.regroup_products_type_select NOT LIKE '%products%' AND INV."productType" = 'storable')
@@ -3320,16 +3420,18 @@ select
     INV."productCategory",
     BOOL_AND(INV."showTotal") as "showTotal",
     BOOL_OR(INV."hideUnitAmounts") as "hideUnitAmounts",
-    BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts"
+    BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts",
+    Currency.number_of_decimals
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
+    LEFT JOIN base_currency Currency ON (Currency.id = Invoice.currency)
     WHERE AppBase.is_regroup_products_on_printings IS TRUE AND Invoice.group_products_on_printings IS TRUE
     AND AppBase.regroup_products_level_select = 'category'
     AND ((AppBase.regroup_products_type_select LIKE '%products%' AND INV."productType" = 'storable')
         OR (AppBase.regroup_products_type_select LIKE '%services%' AND INV."productType" = 'service'))
-    group by INV."productCategory", ProductCategory.name, ProductCategory.code, INV."productType", INV."taxValue", INV."unitName", INV."currencyCode"
+    group by INV."productCategory", ProductCategory.name, ProductCategory.code, INV."productType", INV."taxValue", INV."unitName", INV."currencyCode", Currency.number_of_decimals
 
 UNION ALL
 
@@ -3364,16 +3466,18 @@ select
     null as "productCategory",
     BOOL_AND(INV."showTotal") as "showTotal",
     BOOL_OR(INV."hideUnitAmounts") as "hideUnitAmounts",
-    BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts"
+    BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts",
+    Currency.number_of_decimals
 from INV
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
+LEFT JOIN base_currency Currency ON (Currency.id = Invoice.currency)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND Invoice.group_products_on_printings IS TRUE
     AND AppBase.regroup_products_level_select = 'global'
     AND ((AppBase.regroup_products_type_select LIKE '%products%' AND INV."productType" = 'storable')
         OR (AppBase.regroup_products_type_select LIKE '%services%' AND INV."productType" = 'service'))
 group by AppBase.regroup_products_label_products, AppBase.regroup_products_label_services,
-        INV."productType", INV."taxValue", INV."unitName", INV."currencyCode";
+        INV."productType", INV."taxValue", INV."unitName", INV."currencyCode", Currency.number_of_decimals;
 
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -3484,6 +3588,12 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                     <text-property name="displayName">AllowMultiInvoiceTerms</text-property>
                     <text-property name="heading">AllowMultiInvoiceTerms</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -3558,6 +3668,11 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                     <structure>
                         <property name="position">12</property>
                         <property name="name">AllowMultiInvoiceTerms</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -3648,8 +3763,15 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
+            <xml-property name="queryText"><![CDATA[select
 PaymentMode.name as "PaymentModeName",
 Currency.code as "InvoiceCurrencyCode",
 FinancialDiscount.name as "FinancialDiscountName",
@@ -3661,7 +3783,8 @@ InvoiceTerm.estimated_payment_date as "InvoiceTermEstimatedPaymentDate",
 InvoiceTerm.percentage as "InvoiceTermPercentage",
 InvoiceTerm.is_hold_back as "InvoiceTermIsHoldBack",
 InvoiceTerm.is_paid as "InvoiceTermIsPaid",
-AppAccount.allow_multi_invoice_terms as "AllowMultiInvoiceTerms"
+AppAccount.allow_multi_invoice_terms as "AllowMultiInvoiceTerms",
+Currency.number_of_decimals
 from account_invoice_term as InvoiceTerm
 left outer join account_payment_mode as PaymentMode on (InvoiceTerm.payment_mode = PaymentMode.id)
 left outer join studio_app_account as AppAccount on true
@@ -3734,6 +3857,12 @@ where Invoice = ?]]></xml-property>
                     <text-property name="displayName">type_select</text-property>
                     <text-property name="heading">type_select</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -3774,6 +3903,11 @@ where Invoice = ?]]></xml-property>
                         <property name="name">type_select</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -3813,6 +3947,13 @@ where Invoice = ?]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select InvoicePayment.payment_date,
 PaymentMode.name as payment_mode,InvoicePayment.amount,
@@ -3822,7 +3963,8 @@ WHEN InvoicePayment.type_select = 2 THEN 'Payment'
 WHEN InvoicePayment.type_select = 3 THEN 'Refund invoice'
 WHEN InvoicePayment.type_select = 4 THEN 'Invoice'
 WHEN InvoicePayment.type_select = 5 THEN 'Other'
-WHEN InvoicePayment.type_select = 6 THEN 'Advance Payment Imputation' END) AS type_select
+WHEN InvoicePayment.type_select = 6 THEN 'Advance Payment Imputation' END) AS type_select,
+Currency.number_of_decimals
 from account_invoice_payment as InvoicePayment
 left join account_invoice as Invoice on Invoice.id = InvoicePayment.invoice
 left join base_currency as Currency on Currency.id = InvoicePayment.currency
@@ -4142,37 +4284,38 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">if (row["status_select"] == "1") {
-	'Invoice.draftInvoiceNo'
-} else if(row["status_select"] == "2") {
-	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.invoiceAdvPaymentNo'
-	} else {
-		'Invoice.draftInvoiceNo'
-	}
-} else if(row["status_select"] == "3") {
-	if (row["operation_type_select"] == "1") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.purchaseInvoiceBalanceNo'
-		} else {
-			'Invoice.purchaseInvoiceNo'
-		}
-	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
-	} else if (row["operation_type_select"] == "3") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.invoiceBalanceNo'
-		} else {
-			'Invoice.invoiceNo'
-		}
-	} else if (row["operation_type_select"] == "4") {
-		'Invoice.refundNo'
-	}
-} else if(row["status_select"] == "4") {
-	'Invoice.cancelInvoiceNo'
-}</value>
+                                            <value type="javascript">
+                                                if (row["status_select"] == "1") {
+                                                    'Invoice.draftInvoiceNo'
+                                                } else if(row["status_select"] == "2") {
+                                                    if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                        'Invoice.purchaseInvoiceAdvPaymentNo'
+                                                    } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                        'Invoice.invoiceAdvPaymentNo'
+                                                    } else {
+                                                        'Invoice.draftInvoiceNo'
+                                                    }
+                                                } else if(row["status_select"] == "3") {
+                                                    if (row["operation_type_select"] == "1") {
+                                                        if (row["operation_sub_type_select"] == "3") {
+                                                            'Invoice.purchaseInvoiceBalanceNo'
+                                                        } else {
+                                                            'Invoice.purchaseInvoiceNo'
+                                                        }
+                                                    } else if (row["operation_type_select"] == "2") {
+                                                        'Invoice.purchaseCreditNoteNo'
+                                                    } else if (row["operation_type_select"] == "3") {
+                                                        if (row["operation_sub_type_select"] == "3") {
+                                                            'Invoice.invoiceBalanceNo'
+                                                        } else {
+                                                            'Invoice.invoiceNo'
+                                                        }
+                                                    } else if (row["operation_type_select"] == "4") {
+                                                        'Invoice.refundNo'
+                                                    }
+                                                } else if(row["status_select"] == "4") {
+                                                    'Invoice.cancelInvoiceNo'
+                                                }</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -4800,37 +4943,38 @@ this.height=row["logo_height"];]]></method>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if (row["status_select"] == "1") {
-	'Invoice.draftInvoiceNo'
-} else if(row["status_select"] == "2") {
-	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.invoiceAdvPaymentNo'
-	} else {
-		'Invoice.draftInvoiceNo'
-	}
-} else if(row["status_select"] == "3") {
-	if (row["operation_type_select"] == "1") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.purchaseInvoiceBalanceNo'
-		} else {
-			'Invoice.purchaseInvoiceNo'
-		}
-	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
-	} else if (row["operation_type_select"] == "3") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.invoiceBalanceNo'
-		} else {
-			'Invoice.invoiceNo'
-		}
-	} else if (row["operation_type_select"] == "4") {
-		'Invoice.refundNo'
-	}
-} else if(row["status_select"] == "4") {
-	'Invoice.cancelInvoiceNo'
-}</value>
+                                    <value type="javascript">
+                                        if (row["status_select"] == "1") {
+                                            'Invoice.draftInvoiceNo'
+                                        } else if(row["status_select"] == "2") {
+                                            if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.purchaseInvoiceAdvPaymentNo'
+                                            } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.invoiceAdvPaymentNo'
+                                            } else {
+                                                'Invoice.draftInvoiceNo'
+                                            }
+                                        } else if(row["status_select"] == "3") {
+                                            if (row["operation_type_select"] == "1") {
+                                                if (row["operation_sub_type_select"] == "3") {
+                                                    'Invoice.purchaseInvoiceBalanceNo'
+                                                } else {
+                                                    'Invoice.purchaseInvoiceNo'
+                                                }
+                                            } else if (row["operation_type_select"] == "2") {
+                                                'Invoice.purchaseCreditNoteNo'
+                                            } else if (row["operation_type_select"] == "3") {
+                                                if (row["operation_sub_type_select"] == "3") {
+                                                    'Invoice.invoiceBalanceNo'
+                                                } else {
+                                                    'Invoice.invoiceNo'
+                                                }
+                                            } else if (row["operation_type_select"] == "4") {
+                                                'Invoice.refundNo'
+                                            }
+                                        } else if(row["status_select"] == "4") {
+                                            'Invoice.cancelInvoiceNo'
+                                        }</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5143,12 +5287,12 @@ this.height=row["logo_height"];]]></method>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
-'Invoice.supplierPartnerSeq'
-}
-else {
-'Invoice.customerPartnerSeq'
-}</value>
+                                                <value type="javascript">
+                                                    if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
+                                                        'Invoice.supplierPartnerSeq'
+                                                    } else {
+                                                        'Invoice.customerPartnerSeq'
+                                                    }</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -5224,11 +5368,12 @@ else {
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2"){
-'Invoice.supplyRef'
-}else{
-'Invoice.clientRef'
-}</value>
+                                                <value type="javascript">
+                                                    if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2") {
+                                                        'Invoice.supplyRef'
+                                                    } else {
+                                                        'Invoice.clientRef'
+                                                    }</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -5311,10 +5456,11 @@ else {
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["title_select"] == "1"){'M.'}
-else if(row["title_select"] == "2"){'Ms.'}
-else if(row["title_select"] == "3"){'Dr'}
-else if(row["title_select"] == "4"){'Prof.'}</value>
+                                    <value type="javascript">
+                                        if(row["title_select"] == "1"){'M.'}
+                                        else if(row["title_select"] == "2"){'Ms.'}
+                                        else if(row["title_select"] == "3"){'Dr'}
+                                        else if(row["title_select"] == "4"){'Prof.'}</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5334,7 +5480,7 @@ else if(row["title_select"] == "4"){'Prof.'}</value>
                         </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["partner_type_select"] != "1"){
-			if(params["Locale"].value != 'en') {
+			if(params["Locale"].value.substring(0, 2) != 'en') {
 				row["translation"]
 			} else {
 				row["message_key"]
@@ -5353,9 +5499,9 @@ row._outer["partnerFirstName"]
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">if(row["contactPartnerTitleSelect"] == "1"){'M.'}
-else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
-else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
-else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
+                                        else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
+                                        else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
+                                        else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5374,11 +5520,11 @@ else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value.substring(0, 2) != 'en') {
 row["translation"]
 } else {
 row["message_key"]
-}</VALUE-OF> 
+}</VALUE-OF>
 <VALUE-OF format="^">"  "</VALUE-OF>
 <VALUE-OF>row._outer["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["contactFirstName"]</VALUE-OF>]]></text-property>
                     </text>
@@ -5488,37 +5634,38 @@ row["message_key"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if (row["status_select"] == "1") {
-	'Invoice.draftInvoiceNo'
-} else if(row["status_select"] == "2") {
-	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.invoiceAdvPaymentNo'
-	} else {
-		'Invoice.draftInvoiceNo'
-	}
-} else if(row["status_select"] == "3") {
-	if (row["operation_type_select"] == "1") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.purchaseInvoiceBalanceNo'
-		} else {
-			'Invoice.purchaseInvoiceNo'
-		}
-	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
-	} else if (row["operation_type_select"] == "3") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.invoiceBalanceNo'
-		} else {
-			'Invoice.invoiceNo'
-		}
-	} else if (row["operation_type_select"] == "4") {
-		'Invoice.refundNo'
-	}
-} else if(row["status_select"] == "4") {
-	'Invoice.cancelInvoiceNo'
-}</value>
+                                    <value type="javascript">
+                                        if (row["status_select"] == "1") {
+                                            'Invoice.draftInvoiceNo'
+                                        } else if(row["status_select"] == "2") {
+                                            if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.purchaseInvoiceAdvPaymentNo'
+                                            } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.invoiceAdvPaymentNo'
+                                            } else {
+                                                'Invoice.draftInvoiceNo'
+                                            }
+                                        } else if(row["status_select"] == "3") {
+                                            if (row["operation_type_select"] == "1") {
+                                                if (row["operation_sub_type_select"] == "3") {
+                                                    'Invoice.purchaseInvoiceBalanceNo'
+                                                } else {
+                                                    'Invoice.purchaseInvoiceNo'
+                                                }
+                                            } else if (row["operation_type_select"] == "2") {
+                                                'Invoice.purchaseCreditNoteNo'
+                                            } else if (row["operation_type_select"] == "3") {
+                                                if (row["operation_sub_type_select"] == "3") {
+                                                    'Invoice.invoiceBalanceNo'
+                                                } else {
+                                                    'Invoice.invoiceNo'
+                                                }
+                                            } else if (row["operation_type_select"] == "4") {
+                                                'Invoice.refundNo'
+                                            }
+                                        } else if(row["status_select"] == "4") {
+                                            'Invoice.cancelInvoiceNo'
+                                        }</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5562,9 +5709,9 @@ row["message_key"]
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">if(row["contactPartnerTitleSelect"] == "1"){'M.'}
-else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
-else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
-else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
+                                        else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
+                                        else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
+                                        else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5583,11 +5730,11 @@ else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value.substring(0, 2) != 'en') {
 row["translation"]
 } else {
 row["message_key"]
-}</VALUE-OF> 
+}</VALUE-OF>
 <VALUE-OF format="^">"  "</VALUE-OF>
 <VALUE-OF>row._outer["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["contactFirstName"]</VALUE-OF>]]></text-property>
                     </text>
@@ -5873,12 +6020,12 @@ row["partnerFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
-'Invoice.supplierPartnerSeq'
-}
-else {
-'Invoice.customerPartnerSeq'
-}</value>
+                                                <value type="javascript">
+                                                    if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
+                                                        'Invoice.supplierPartnerSeq'
+                                                    } else {
+                                                        'Invoice.customerPartnerSeq'
+                                                    }</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -5916,11 +6063,12 @@ else {
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2"){
-'Invoice.supplyRef'
-}else{
-'Invoice.clientRef'
-}</value>
+                                                <value type="javascript">
+                                                    if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2"){
+                                                        'Invoice.supplyRef'
+                                                    } else {
+                                                        'Invoice.clientRef'
+                                                    }</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -6466,6 +6614,13 @@ else {
                                 <text-property name="displayName">tableFontSize</text-property>
                                 <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
@@ -7022,11 +7177,12 @@ else {
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">if (row["typeselect"] == 3) {
-row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
-} else {
-'value:'+ row["product_name"]
-}</value>
+                                                    <value type="javascript">
+                                                        if (row["typeselect"] == 3) {
+                                                            row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
+                                                        } else {
+                                                            'value:'+ row["product_name"]
+                                                        }</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -7305,9 +7461,17 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["totaldiscountamount"] >= 0 || row["typeselect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packhideunitamounts"])</expression>
                                             </structure>
                                         </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">number_of_decimals</property>
+                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                        </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["totaldiscountamount"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totaldiscountamount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5397">
@@ -7325,9 +7489,18 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packhideunitamounts"])</expression>
                                             </structure>
                                         </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">number_of_decimals_1</property>
+                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">row["number_of_decimals"]</expression>
+                                                <property name="dataType">integer</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">if(row["ex_tax_total"] != 0) {row["ex_tax_total"]}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["ex_tax_total"] != 0) {Formatter.format(row["ex_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))}</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5731">
                                         <property name="fontFamily">sans-serif</property>
@@ -7340,9 +7513,18 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">!row["enablePackMangement"] || row["typeselect"] != 3 || !row["showtotal"] || row["ex_tax_total"] == 0</expression>
                                             </structure>
                                         </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">number_of_decimals_1</property>
+                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">row["number_of_decimals"]</expression>
+                                                <property name="dataType">integer</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5399">
@@ -7393,9 +7575,18 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packhideunitamounts"])</expression>
                                             </structure>
                                         </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">number_of_decimals_1</property>
+                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">row["number_of_decimals"]</expression>
+                                                <property name="dataType">integer</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["in_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5662">
                                         <property name="fontSize">8pt</property>
@@ -7407,9 +7598,18 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">!row["enablePackMangement"] || row["typeselect"] != 3 || !row["showtotal"] || row["in_tax_total"] == 0</expression>
                                             </structure>
                                         </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">number_of_decimals_1</property>
+                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">row["number_of_decimals"]</expression>
+                                                <property name="dataType">integer</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["in_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5403">
@@ -7548,6 +7748,13 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                 <text-property name="displayName">imputedAmount</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["imputedAmount"]</expression>
                                 <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <column id="4407">
@@ -7698,8 +7905,17 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         <property name="paddingRight">5pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="display">inline</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">number_of_decimals_1</property>
+                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">row["number_of_decimals"]</expression>
+                                                <property name="dataType">integer</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["imputedAmount"]</VALUE-OF>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["imputedAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
 <VALUE-OF format="^">" "</VALUE-OF>
 <VALUE-OF>row._outer["currencyCode"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -8214,6 +8430,13 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="expression" type="javascript">dataSetRow["inv_id"]</expression>
                                                 <property name="dataType">decimal</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">number_of_decimals</property>
+                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                                <property name="dataType">integer</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
                                         <list-property name="filter">
                                             <structure>
@@ -8402,8 +8625,17 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="borderTopWidth">thin</property>
                                                     <text id="4716">
                                                         <property name="textAlign">right</property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">number_of_decimals_1</property>
+                                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                                <expression name="expression" type="javascript">row["number_of_decimals"]</expression>
+                                                                <property name="dataType">integer</property>
+                                                                <property name="allowExport">true</property>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_base"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_base"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="4717">
@@ -8421,8 +8653,17 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="borderTopWidth">thin</property>
                                                     <text id="4718">
                                                         <property name="textAlign">right</property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">number_of_decimals_1</property>
+                                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                                <expression name="expression" type="javascript">row["number_of_decimals"]</expression>
+                                                                <property name="dataType">integer</property>
+                                                                <property name="allowExport">true</property>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                             </row>
@@ -8504,6 +8745,13 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                         <expression name="value" type="javascript">row["payment_date"]</expression>
                                                     </structure>
                                                 </list-property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">number_of_decimals</property>
+                                                <text-property name="displayName">number_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                                <property name="dataType">integer</property>
                                                 <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
@@ -8813,13 +9061,13 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                         <property name="textAlign">right</property>
                                                         <property name="display">inline</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["amount"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                     </text>
                                                     <text id="5580">
                                                         <property name="textAlign">left</property>
                                                         <property name="display">inline</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["symbol"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF> row["symbol"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                             </row>
@@ -8832,7 +9080,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">((row._outer["operation_type_select"] == 1 || row._outer["operation_type_select"] == 2) &amp;&amp; row._outer["supplierVatSystemSelect"] != 2)
-|| ((row._outer["operation_type_select"] == 3 || row._outer["operation_type_select"] ==  4) &amp;&amp; row._outer["companyVatSystemSelect"] != 2)</expression>
+                                                    || ((row._outer["operation_type_select"] == 3 || row._outer["operation_type_select"] ==  4) &amp;&amp; row._outer["companyVatSystemSelect"] != 2)</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -8956,7 +9204,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_ex_tax_total_before_discount"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["invoice_ex_tax_total_before_discount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5675">
@@ -9038,7 +9286,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="textAlign">right</property>
                                                     <property name="display">inline</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_sum_discount_line"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["invoice_sum_discount_line"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5682">
@@ -9105,7 +9353,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_ex_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["invoice_ex_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5689">
@@ -9216,8 +9464,9 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
+                                                    <structure name="toc"/>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["invoice_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5696">
@@ -9335,7 +9584,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_in_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["invoice_in_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5703">
@@ -9464,14 +9713,24 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="display">inline</property>
+                                                    <property name="dataSet">InvoiceDB</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
                                                             <expression name="valueExpr" type="javascript">row["invoice_sum_discount_line"] == 0 || !row["in_ati"]</expression>
                                                         </structure>
                                                     </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">number_of_decimals</property>
+                                                            <text-property name="displayName">number_of_decimals</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                                            <property name="dataType">integer</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
+                                                    </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_total_discount"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["invoice_total_discount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5710">
@@ -9644,7 +9903,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer._outer["invoice_in_tax_total"] - row["totalImputedAmount"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer._outer["invoice_in_tax_total"] - row["totalImputedAmount"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5717">
@@ -9786,9 +10045,16 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                             <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
                                                             <property name="dataType">decimal</property>
                                                         </structure>
+                                                        <structure>
+                                                            <property name="name">number_of_decimals</property>
+                                                            <text-property name="displayName">number_of_decimals</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                                            <property name="dataType">integer</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["amount_remaining"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount_remaining"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5724">
@@ -10683,6 +10949,13 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                             <expression name="expression" type="javascript">dataSetRow["PaymentModeName"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
+                                                        <structure>
+                                                            <property name="name">number_of_decimals</property>
+                                                            <text-property name="displayName">number_of_decimals</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                                            <property name="dataType">integer</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
                                                     </list-property>
                                                     <column id="5882">
                                                         <property name="width">15%</property>
@@ -10966,7 +11239,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                                 <property name="borderTopWidth">thin</property>
                                                                 <text id="5940">
                                                                     <property name="contentType">html</property>
-                                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["InvoiceTermAmount"]</VALUE-OF>]]></text-property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["InvoiceTermAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                                 </text>
                                                             </cell>
                                                             <cell id="5862">
@@ -11148,7 +11421,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">((row._outer["status_select"] == 1 || row._outer["status_select"] == 2 ) &amp;&amp; (row._outer["proforma_comments"] == null || row._outer["proforma_comments"] == "")) ||
-((row._outer["status_select"] == 3 || (row._outer["status_select"] == 2 &amp;&amp; row._outer["operation_sub_type_select"] == 2)) &amp;&amp; (row._outer["note"] == null || row._outer["note"] == "") &amp;&amp; (row._outer["invoice_comments"] == null || row._outer["invoice_comments"] == "" ) )</expression>
+                                                    ((row._outer["status_select"] == 3 || (row._outer["status_select"] == 2 &amp;&amp; row._outer["operation_sub_type_select"] == 2)) &amp;&amp; (row._outer["note"] == null || row._outer["note"] == "") &amp;&amp; (row._outer["invoice_comments"] == null || row._outer["invoice_comments"] == "" ) )</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">

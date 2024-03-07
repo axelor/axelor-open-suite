@@ -37,7 +37,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -190,7 +190,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
     fileName = fileName + ".csv";
 
-    CsvTool.csvWriter(
+    CsvHelper.csvWriter(
         file.getParent(), file.getName(), ';', getStockHistoryLineExportHeader(), list);
 
     FileInputStream inStream = new FileInputStream(file);

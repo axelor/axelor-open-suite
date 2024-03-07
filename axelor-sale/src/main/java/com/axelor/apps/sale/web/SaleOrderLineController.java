@@ -103,14 +103,9 @@ public class SaleOrderLineController {
         product = Beans.get(ProductRepository.class).find(product.getId());
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
 
-        if (Beans.get(AppSaleService.class).getAppSale().getEnablePricingScale()) {
+        if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
-              pricingService.getRandomPricing(
-                  saleOrder.getCompany(),
-                  saleOrderLine.getProduct(),
-                  saleOrderLine.getProduct().getProductCategory(),
-                  SaleOrderLine.class.getSimpleName(),
-                  null);
+              pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
 
           if (defaultPricing.isPresent()
               && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {

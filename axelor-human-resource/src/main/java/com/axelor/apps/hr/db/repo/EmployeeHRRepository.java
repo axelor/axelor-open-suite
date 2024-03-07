@@ -118,6 +118,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
       Partner partner = partnerRepo.find(employee.getContactPartner().getId());
       if (partner != null) {
         partner.setEmployee(null);
+        employee.setContactPartner(partner);
         partnerRepo.save(partner);
       }
     }

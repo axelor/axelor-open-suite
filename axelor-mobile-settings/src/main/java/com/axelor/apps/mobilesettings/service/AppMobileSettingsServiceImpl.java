@@ -20,6 +20,7 @@ package com.axelor.apps.mobilesettings.service;
 
 import com.axelor.apps.mobilesettings.db.MobileConfig;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
+import com.axelor.db.Query;
 import com.axelor.studio.db.AppMobileSettings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -31,6 +32,11 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
   @Inject
   public AppMobileSettingsServiceImpl(MobileConfigRepository mobileConfigRepository) {
     this.mobileConfigRepository = mobileConfigRepository;
+  }
+
+  @Override
+  public AppMobileSettings getAppMobileSettings() {
+    return Query.of(AppMobileSettings.class).fetchOne();
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -57,5 +63,7 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
         appMobileSettings.getIsHelpdeskAppEnabled(), MobileConfigRepository.APP_SEQUENCE_HELPDESK);
     updateMobileConfig(
         appMobileSettings.getIsHRAppEnabled(), MobileConfigRepository.APP_SEQUENCE_HR);
+    updateMobileConfig(
+        appMobileSettings.getIsQualityAppEnabled(), MobileConfigRepository.APP_SEQUENCE_QUALITY);
   }
 }

@@ -27,11 +27,13 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -40,9 +42,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -86,12 +87,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException {
     String fileName =
-        I18n.get(InvoiceToolService.isRefund(invoice) ? "Refund" : "Invoice")
+        I18n.get(InvoiceToolService.isRefund(invoice) ? "Credit note" : "Invoice").replace(" ", "")
             + "-"
             + invoice.getInvoiceId()
             + "."
             + format;
-    return PdfTool.getFileLinkFromPdfFile(
+    return PdfHelper.getFileLinkFromPdfFile(
         printCopiesToFile(invoice, forceRefresh, reportType, format, locale), fileName);
   }
 
@@ -103,7 +104,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     int copyNumber = invoice.getInvoicesCopySelect();
     copyNumber = copyNumber == 0 ? 1 : copyNumber;
     return format.equals(ReportSettings.FORMAT_PDF)
-        ? PdfTool.printCopiesToFile(file, copyNumber)
+        ? PdfHelper.printCopiesToFile(file, copyNumber)
         : file;
   }
 
@@ -184,7 +185,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     }
 
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             Invoice.class,
             ids,
             new ThrowConsumer<Invoice, Exception>() {
@@ -215,7 +216,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
                         .orElse(null))
                 .format(DateTimeFormatter.BASIC_ISO_DATE)
             + ".pdf";
-    return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
+    return PdfHelper.mergePdfToFileLink(printedInvoices, fileName);
   }
 
   public List<String> checkInvalidPrintSettingsInvoices(List<Long> ids) {
@@ -250,27 +251,31 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    String title = I18n.get(InvoiceToolService.isRefund(invoice) ? "Refund" : "Invoice");
+    String title =
+        I18n.get(InvoiceToolService.isRefund(invoice) ? "Credit note" : "Invoice").replace(" ", "");
     if (invoice.getInvoiceId() != null) {
       title += " " + invoice.getInvoiceId();
     }
 
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
-      String userLanguageCode =
-          Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
-      String companyLanguageCode =
-          invoice.getCompany().getLanguage() != null
-              ? invoice.getCompany().getLanguage().getCode()
-              : userLanguageCode;
-      String partnerLanguageCode =
-          invoice.getPartner().getLanguage() != null
-              ? invoice.getPartner().getLanguage().getCode()
-              : userLanguageCode;
+      String userLocalizationCode =
+          Optional.ofNullable(AuthUtils.getUser())
+              .map(User::getLocalization)
+              .map(Localization::getCode)
+              .orElse(null);
+      String companyLocalizationCode =
+          invoice.getCompany().getLocalization() != null
+              ? invoice.getCompany().getLocalization().getCode()
+              : userLocalizationCode;
+      String partnerLocalizationCode =
+          invoice.getPartner().getLocalization() != null
+              ? invoice.getPartner().getLocalization().getCode()
+              : userLocalizationCode;
       locale =
           accountConfig.getIsPrintInvoicesInCompanyLanguage()
-              ? companyLanguageCode
-              : partnerLanguageCode;
+              ? companyLocalizationCode
+              : partnerLocalizationCode;
     }
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();

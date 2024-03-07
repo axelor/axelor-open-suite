@@ -38,8 +38,8 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
-import com.axelor.utils.reader.DataReaderFactory;
-import com.axelor.utils.reader.DataReaderService;
+import com.axelor.utils.service.reader.DataReader;
+import com.axelor.utils.service.reader.DataReaderFactory;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -122,14 +122,14 @@ public class ValidatorService {
           I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
 
-    DataReaderService reader = dataReaderFactory.getDataReader(extension);
+    DataReader reader = dataReaderFactory.getDataReader(extension);
     reader.initialize(advancedImport.getImportFile(), advancedImport.getFileSeparator());
 
     return validate(reader, advancedImport);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public boolean validate(DataReaderService reader, AdvancedImport advancedImport)
+  public boolean validate(DataReader reader, AdvancedImport advancedImport)
       throws IOException, ClassNotFoundException, AxelorException {
 
     boolean isLog = false;
@@ -292,7 +292,7 @@ public class ValidatorService {
   }
 
   protected void validateFieldAndData(
-      DataReaderService reader,
+      DataReader reader,
       String sheet,
       FileTab fileTab,
       boolean isConfig,

@@ -21,6 +21,7 @@ package com.axelor.apps.budget.db.repo;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
@@ -40,6 +41,10 @@ public class SaleOrderBudgetRepository extends SaleOrderProjectRepository {
 
   @Override
   public SaleOrder save(SaleOrder saleOrder) {
+    if (!Beans.get(AppBudgetService.class).isApp("budget")) {
+      return super.save(saleOrder);
+    }
+
     try {
       if (!CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
         SaleOrderLineBudgetService saleOrderBudgetService =

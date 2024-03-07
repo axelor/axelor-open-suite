@@ -36,9 +36,11 @@ import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -55,6 +57,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
 
   protected BankReconciliationService bankReconciliationService;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
+  protected BankReconciliationLineService bankReconciliationLineService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public MoveReverseServiceBankPaymentImpl(
@@ -68,7 +72,9 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       InvoicePaymentCancelService invoicePaymentCancelService,
       MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
-      BankReconciliationLineRepository bankReconciliationLineRepository) {
+      BankReconciliationLineRepository bankReconciliationLineRepository,
+      BankReconciliationLineService bankReconciliationLineService,
+      CurrencyScaleService currencyScaleService) {
     super(
         moveCreateService,
         reconcileService,
@@ -81,6 +87,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         moveToolService);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
+    this.bankReconciliationLineService = bankReconciliationLineService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -113,7 +121,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     if (isHiddenMoveLinesInBankReconciliation) {
       fillBankReconciledAmount(newMove);
 
-      bankReconciliationService.unreconcileLines(
+      bankReconciliationLineService.unreconcileLines(
           bankReconciliationLineList.stream()
               .filter(
                   bankReconciliationLine ->
@@ -163,7 +171,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
                 .bind("moveLines", move.getMoveLineList())
                 .bind("statusUnderCorrection", BankReconciliationRepository.STATUS_UNDER_CORRECTION)
                 .fetch();
-        bankReconciliationService.unreconcileLines(bankReconciliationUnderCorrectionLineList);
+        bankReconciliationLineService.unreconcileLines(bankReconciliationUnderCorrectionLineList);
       }
     }
     if (CollectionUtils.isNotEmpty(movesReconciled)) {
@@ -209,11 +217,14 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         .getAccountType()
         .getTechnicalTypeSelect()
         .equals(AccountTypeRepository.TYPE_CASH)) {
-      reverseMoveLine.setBankReconciledAmount(
-          reverseMoveLine
-              .getCurrencyAmount()
-              .abs()
-              .subtract(orgineMoveLine.getBankReconciledAmount()));
+      BigDecimal amount =
+          currencyScaleService.getScaledValue(
+              reverseMoveLine,
+              reverseMoveLine
+                  .getCurrencyAmount()
+                  .abs()
+                  .subtract(orgineMoveLine.getBankReconciledAmount()));
+      reverseMoveLine.setBankReconciledAmount(amount);
     }
     return reverseMoveLine;
   }
@@ -233,7 +244,9 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
               accountType ->
                   AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
           .orElse(false)) {
-        moveLine.setBankReconciledAmount(moveLine.getCurrencyAmount().abs());
+        BigDecimal amount =
+            currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
+        moveLine.setBankReconciledAmount(amount);
       }
     }
   }

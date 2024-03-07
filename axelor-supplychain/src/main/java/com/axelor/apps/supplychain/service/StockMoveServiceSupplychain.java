@@ -42,4 +42,6 @@ public interface StockMoveServiceSupplychain {
   public void setInvoicingStatusInvoicedDelayed(StockMove stockMove);
 
   public void setInvoicingStatusInvoicedValidated(StockMove stockMove);
+
+  void fillRealQuantities(StockMove stockMove);
 }

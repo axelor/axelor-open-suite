@@ -23,12 +23,14 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
@@ -42,6 +44,7 @@ import java.util.Map;
 public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceServiceImpl {
 
   protected BudgetInvoiceService budgetInvoiceService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public StockMoveInvoiceBudgetServiceImpl(
@@ -55,7 +58,9 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
       AppSupplychainService appSupplychainService,
-      BudgetInvoiceService budgetInvoiceService) {
+      AppStockService appStockService,
+      BudgetInvoiceService budgetInvoiceService,
+      AppBudgetService appBudgetService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -66,8 +71,10 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
         stockMoveLineRepository,
         invoiceLineRepository,
         supplyChainConfigService,
-        appSupplychainService);
+        appSupplychainService,
+        appStockService);
     this.budgetInvoiceService = budgetInvoiceService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -80,7 +87,9 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
     List<InvoiceLine> invoiceLineList =
         super.createInvoiceLines(invoice, stockMove, stockMoveLineList, qtyToInvoiceMap);
 
-    budgetInvoiceService.setComputedBudgetLinesAmount(invoiceLineList);
+    if (appBudgetService.isApp("budget")) {
+      budgetInvoiceService.setComputedBudgetLinesAmount(invoiceLineList);
+    }
 
     return invoiceLineList;
   }

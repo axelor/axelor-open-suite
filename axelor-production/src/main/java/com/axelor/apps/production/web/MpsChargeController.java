@@ -61,8 +61,9 @@ public class MpsChargeController {
 
   public void getMpsWeeklyScheduleChartFirstYear(ActionRequest request, ActionResponse response) {
 
-    LocalDate startMonthDate = (LocalDate) request.getContext().getParent().get("startMonthDate");
-    LocalDate endMonthDate = (LocalDate) request.getContext().getParent().get("endMonthDate");
+    LocalDate startMonthDate =
+        LocalDate.parse(request.getContext().get("startMonthDate").toString());
+    LocalDate endMonthDate = LocalDate.parse(request.getContext().get("endMonthDate").toString());
 
     if (startMonthDate.getYear() != endMonthDate.getYear()) {
       endMonthDate = startMonthDate.with(TemporalAdjusters.lastDayOfYear());
@@ -80,8 +81,9 @@ public class MpsChargeController {
 
   public void getMpsWeeklyScheduleChartSecondYear(ActionRequest request, ActionResponse response) {
 
-    LocalDate startMonthDate = (LocalDate) request.getContext().getParent().get("startMonthDate");
-    LocalDate endMonthDate = (LocalDate) request.getContext().getParent().get("endMonthDate");
+    LocalDate startMonthDate =
+        LocalDate.parse(request.getContext().get("startMonthDate").toString());
+    LocalDate endMonthDate = LocalDate.parse(request.getContext().get("endMonthDate").toString());
 
     if (startMonthDate.getYear() == endMonthDate.getYear()) {
       return;

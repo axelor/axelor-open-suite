@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="employee-file-grid" title="Files" model="com.axelor.apps.hr.db.EmployeeFile">
     <field name="fileType"/>
@@ -29,7 +29,9 @@
       <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
         <viewer depends="$inlineUrl">
           <![CDATA[
-              <iframe ng-src="{{record.$inlineUrl}}" frameborder="0" height="900" scrolling="auto"/>
+              <>
+                  <Box as="iframe" height="900" border="0" src={$inlineUrl}></Box>
+              </>
             ]]>
         </viewer>
       </field>

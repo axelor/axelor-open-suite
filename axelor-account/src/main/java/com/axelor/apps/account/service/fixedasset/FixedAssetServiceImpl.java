@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceF
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -75,11 +76,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected DateService dateService;
 
   protected FixedAssetLineService fixedAssetLineService;
+  protected CurrencyScaleService currencyScaleService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final int CALCULATION_SCALE = 20;
-  protected static final int RETURNED_SCALE = 2;
 
   @Inject
   public FixedAssetServiceImpl(
@@ -93,7 +94,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetGenerationService fixedAssetGenerationService,
       FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetDateService fixedAssetDateService,
-      DateService dateService) {
+      DateService dateService,
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -105,6 +107,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.dateService = dateService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -361,27 +364,23 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     if (fixedAsset.getGrossValue() != null) {
       fixedAsset.setGrossValue(
-          prorata
-              .multiply(fixedAsset.getGrossValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getGrossValue())));
     }
     if (fixedAsset.getResidualValue() != null) {
       fixedAsset.setResidualValue(
-          prorata
-              .multiply(fixedAsset.getResidualValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getResidualValue())));
     }
     if (fixedAsset.getAccountingValue() != null) {
       fixedAsset.setAccountingValue(
-          prorata
-              .multiply(fixedAsset.getAccountingValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getAccountingValue())));
     }
     if (fixedAsset.getCorrectedAccountingValue() != null) {
       fixedAsset.setCorrectedAccountingValue(
-          prorata
-              .multiply(fixedAsset.getCorrectedAccountingValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getCorrectedAccountingValue())));
     }
   }
 

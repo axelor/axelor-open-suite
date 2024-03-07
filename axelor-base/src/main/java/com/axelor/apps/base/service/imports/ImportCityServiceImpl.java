@@ -31,7 +31,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.studio.db.AppBase;
-import com.axelor.utils.net.URLService;
+import com.axelor.utils.helpers.net.UrlHelper;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.BufferedReader;
@@ -253,7 +253,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
       File cityTextFile = new File(tempDir, CITYTEXTFILE);
 
-      URLService.fileUrl(downloadFile, downloadUrl + downloadFileName, null, null);
+      UrlHelper.fileUrl(downloadFile, downloadUrl + downloadFileName, null, null);
 
       LOG.debug("path for downloaded zip file : {}", downloadFile.getPath());
 

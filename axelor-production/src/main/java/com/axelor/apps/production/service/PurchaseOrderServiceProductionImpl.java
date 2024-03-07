@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -61,7 +62,8 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       ManufOrderRepository manufOrderRepo,
       AppProductionService appProductionService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      CurrencyScaleService currencyScaleService) {
     super(
         appSupplychainService,
         accountConfigService,
@@ -71,7 +73,8 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
         purchaseOrderLineRepository,
         purchaseOrderLineService,
         partnerStockSettingsService,
-        stockConfigService);
+        stockConfigService,
+        currencyScaleService);
     this.manufOrderRepo = manufOrderRepo;
     this.appProductionService = appProductionService;
   }
@@ -90,7 +93,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
 
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
+    manufOrderList.forEach(manufOrder -> manufOrder.clearPurchaseOrderSet());
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -102,7 +105,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
+    manufOrderList.forEach(manufOrder -> manufOrder.addPurchaseOrderSetItem(mergedPurchaseOrder));
     return mergedPurchaseOrder;
   }
 
@@ -121,7 +124,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
 
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
+    manufOrderList.forEach(manufOrder -> manufOrder.clearPurchaseOrderSet());
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -134,7 +137,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
+    manufOrderList.forEach(manufOrder -> manufOrder.addPurchaseOrderSetItem(mergedPurchaseOrder));
 
     return mergedPurchaseOrder;
   }

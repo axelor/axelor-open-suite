@@ -78,7 +78,16 @@ public interface SupplierCatalogService {
   BigDecimal getMinQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException;
 
-  void checkMinQty(
+  boolean checkMinQty(
+      Product product,
+      Partner supplierPartner,
+      Company company,
+      BigDecimal qty,
+      ActionRequest request,
+      ActionResponse response)
+      throws AxelorException;
+
+  boolean checkMaxQty(
       Product product,
       Partner supplierPartner,
       Company company,

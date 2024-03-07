@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -52,6 +53,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -106,6 +108,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
   protected CompanyConfigService companyConfigService;
+  protected CurrencyScaleService currencyScaleService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -127,7 +131,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
-      CompanyConfigService companyConfigService) {
+      CompanyConfigService companyConfigService,
+      CurrencyScaleService currencyScaleService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -147,6 +153,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
     this.companyConfigService = companyConfigService;
+    this.currencyScaleService = currencyScaleService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   /**
@@ -339,9 +347,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .map(InvoiceTerm::getCompanyAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-      if (totalMoveLineInvoiceTerm.compareTo(
-              moveLine.getDebit().max(moveLine.getCredit()).add(financialDiscount))
-          != 0) {
+      if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -648,7 +654,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveLine.setJournalName(journal.getName());
     moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
     moveLine.setCurrencyCode(move.getCurrencyCode());
+    moveLine.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
     moveLine.setCompanyCurrencyCode(companyConfigService.getCompanyCurrency(company).getCode());
+    moveLine.setCompanyCurrencyDecimals(
+        companyConfigService.getCompanyCurrency(company).getNumberOfDecimals());
     moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
@@ -853,7 +862,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkTaxAmount(Move move) throws AxelorException {
-    if (this.isReverseCharge(move)) {
+    if (this.isReverseCharge(move) || this.isFinancialDiscount(move)) {
       return;
     }
 
@@ -903,7 +912,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         .multiply(moveLine.getTaxLine().getValue())
         .divide(
             BigDecimal.valueOf(100),
-            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+            currencyScaleService.getCompanyScale(moveLine),
             RoundingMode.HALF_UP);
   }
 
@@ -927,6 +936,16 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           .filter(Objects::nonNull)
           .anyMatch(TaxEquiv::getReverseCharge);
     }
+  }
+
+  protected boolean isFinancialDiscount(Move move) throws AxelorException {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   protected void checkMoveLineDescription(Move move) throws AxelorException {

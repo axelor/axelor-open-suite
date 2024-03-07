@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -75,6 +76,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -86,7 +88,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PurchaseOrderLineRepository purchaseOrderLineRepository,
       PurchaseOrderLineService purchaseOrderLineService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      CurrencyScaleService currencyScaleService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -97,6 +100,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -254,7 +258,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
       }
     }
-    purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
+    purchaseOrder.setAmountToBeSpreadOverTheTimetable(
+        currencyScaleService.getScaledValue(
+            totalHT.subtract(sumTimetableAmount),
+            currencyScaleService.getCurrencyScale(purchaseOrder.getCurrency())));
   }
 
   @Override
