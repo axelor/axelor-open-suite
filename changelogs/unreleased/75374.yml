@@ -1,3 +1,0 @@
----
-title: "ManufOrder: Fixed a bug a producible quantity was not correctly computed when a component was not available."
-module: "axelor-production"

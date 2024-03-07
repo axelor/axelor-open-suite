@@ -1,6 +1,0 @@
----
-title: "AccountClearance : Add fix to open a generated move line from account clearance"
-module: axelor-account
-developer: |
-  Removal of action-method-account-clearance-show-move-lines and creation of action-account-clearance-view-move-lines for its replacement
-  showAccountClearanceMoveLines has been removed from AccountClearanceController
