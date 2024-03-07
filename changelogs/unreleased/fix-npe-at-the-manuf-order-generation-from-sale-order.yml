@@ -1,3 +1,0 @@
----
-title: "SaleOrder: Fixed a NPE that occured at the manuf order generation"
-module: "axelor-production"

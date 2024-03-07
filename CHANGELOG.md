@@ -1,3 +1,58 @@
+## [7.2.9] (2024-03-07)
+
+### Fixes
+
+* The format of this file has been updated: the fixes are now separated by modules to improve readability, and a new `developer` section was added with technical information that could be useful for developers working on modules on top of Axelor Open Suite.
+
+#### Account
+
+* Account clearance: fixed issue when opening a generated move line from account clearance.
+* Doubtful batch: fixed NPE errors on doubtful customer batch.
+* Invoice payment: added missing french translation for error message.
+* Period: fixed an issue when checking user permission where the roles in user's group were not checked.
+* Reconcile: fixed passed for payment check at reconcile confirmation.
+* Reconcile: fixed selected amount with negative values.
+* Move: fixed missing label in accounting move printing.
+
+#### CRM
+
+* CRM App: fixed small typos in english titles.
+* Lead: fixed anomaly which was forcing a lead to have a company.
+
+#### Human Resource
+
+* Leave request: fixed Payroll input display so it is visible for HR manager only.
+* Payroll preparation: fixed 'the exported file is not found' error on payroll generation when the export dir is different from upload dir.
+
+#### Production
+
+* Sale order: fixed a NPE that occured at the manuf order generation.
+* Manufacturing order: fixed an issue when the products to consume are by operation where the product list to consume was not filled when planning.
+* Manufacturing order: real process are now correctly computed in cost sheet.
+* Manufacturing order: fixed a bug a producible quantity was not correctly computed when a component was not available.
+
+#### Sale
+
+* Sale order: improve performance on sale order save.
+
+#### Supply Chain
+
+* Stock move: fixed a bug that prevented to totally invoice a stock move when partial invoicing for out stock move was activated.
+* Supplychain configuration: fixed default value for "Generation of out stock move for products".
+* Sale order: fixed a bug where sale orders waiting for stock move were not displayed.
+
+
+### Developer
+
+#### Account
+
+- Removal of `action-method-account-clearance-show-move-lines` and creation of `action-account-clearance-view-move-lines` for its replacement
+- `showAccountClearanceMoveLines` has been removed from `AccountClearanceController`
+
+#### CRM
+
+- In `lead-form-view`, removed `required` from `enterpriseName`
+
 ## [7.2.8] (2024-02-22)
 
 #### Fixed
@@ -589,6 +644,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.9]: https://github.com/axelor/axelor-open-suite/compare/v7.2.8...v7.2.9
 [7.2.8]: https://github.com/axelor/axelor-open-suite/compare/v7.2.7...v7.2.8
 [7.2.7]: https://github.com/axelor/axelor-open-suite/compare/v7.2.6...v7.2.7
 [7.2.6]: https://github.com/axelor/axelor-open-suite/compare/v7.2.5...v7.2.6
