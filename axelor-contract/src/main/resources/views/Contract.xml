@@ -41,6 +41,8 @@
 
 							{targetTypeSelect == 1 && <Badge bg="info">{_t('Customer')}</Badge>}
 							{targetTypeSelect == 2 && <Badge bg="warning">{_t('Supplier')}</Badge>}
+							{targetTypeSelect == 3 && <Badge bg="info">{_t('YEB/YER Customer')}</Badge>}
+							{targetTypeSelect == 4 && <Badge bg="warning">{_t('YEB/YER Supplier')}</Badge>}
 
 							{statusSelect == 1 && <Badge bg="secondary">{_t('Draft')}</Badge>}
 							{statusSelect == 2 && <Badge bg="info">{_t('Active')}</Badge>}
@@ -103,7 +105,7 @@
       </panel>
       <panel colSpan="3" stacked="true" name="actionPanel">
         <panel name="templatePanel" hidden="true"
-          showIf="(statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2) &amp;&amp; targetTypeSelect &lt;= 2"
+          showIf="(statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2)"
           stacked="true">
           <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE"
             canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
