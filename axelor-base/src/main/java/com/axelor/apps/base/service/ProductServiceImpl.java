@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.SubProduct;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
@@ -48,6 +49,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -564,5 +566,21 @@ public class ProductServiceImpl implements ProductService {
     copy.setProductCompanyList(null);
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void setSubProducts(Product product) {
+
+    for (SubProduct subProduct : product.getSubProductList()) {
+      if (CollectionUtils.isNotEmpty(subProduct.getSubProductList())) {
+        subProduct.getProduct().getSubProductList().clear();
+        for (SubProduct sbp : subProduct.getSubProductList()) {
+          subProduct.getProduct().addSubProductListItem(sbp);
+        }
+        subProduct.setParentProduct(product);
+        setSubProducts(subProduct.getProduct());
+      }
+    }
   }
 }

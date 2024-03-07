@@ -204,8 +204,12 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     if (saleOrderLine == null) {
       return null;
     }
-
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    SaleOrder saleOrder;
+    if (saleOrderLine.getSaleOrderDisplay() != null) {
+      saleOrder = saleOrderLine.getSaleOrderDisplay();
+    } else {
+      saleOrder = saleOrderLine.getSaleOrder();
+    }
 
     // Update invoiced amount on sale order line
     BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();

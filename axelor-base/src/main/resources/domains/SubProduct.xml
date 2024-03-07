@@ -10,6 +10,8 @@
       title="Parent"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <decimal name="qty" title="Quantity"/>
+    <one-to-many name="subProductList" ref="com.axelor.apps.base.db.SubProduct"
+      title="Children"/>
   </entity>
 
 </domain-models>

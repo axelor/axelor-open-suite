@@ -16,7 +16,7 @@
       title="Customer catalog lines"/>
 
     <one-to-many name="complementaryProductList"
-      ref="com.axelor.apps.sale.db.ComplementaryProduct"/>
+      ref="com.axelor.apps.sale.db.ComplementaryProduct" mappedBy="originalProduct"/>
 
   </entity>
 

@@ -7,7 +7,6 @@
     model="com.axelor.apps.account.db.InvoiceLine">
     <hilite strong="true" color="default" if="typeSelect != 0"/>
     <hilite strong="true" color="default" if="invoiceLineListSize &gt; 0"/>
-    <field name="saleOrderline"/>
     <field name="lineIndex"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>

@@ -967,9 +967,14 @@
   </action-attrs>
 
   <action-group name="action-group-product-onsave">
+    <action name="action-product-method-set-sub-product-list"/>
     <action name="action-product-method-check-anomaly"/>
     <action name="action-product-method-set-anomaly"/>
   </action-group>
+
+  <action-method name="action-product-method-set-sub-product-list">
+    <call class="com.axelor.apps.base.web.ProductController" method="setSubProducts"/>
+  </action-method>
 
   <action-method name="action-product-method-check-anomaly">
     <call class="com.axelor.apps.base.web.ProductController" method="checkPriceList"/>

@@ -12,6 +12,8 @@
     <panel name="mainPanel">
       <field name="product"/>
       <field name="qty"/>
+      <panel-related field="subProductList" grid-view="sub-product-grid"
+        form-view="sub-product-form" colSpan="12"/>
       <field name="parentProduct" hidden="true"/>
     </panel>
   </form>

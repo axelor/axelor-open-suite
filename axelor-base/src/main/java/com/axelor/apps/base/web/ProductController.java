@@ -41,6 +41,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Criteria;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,5 +176,15 @@ public class ProductController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void setSubProducts(ActionRequest request, ActionResponse response) {
+    Product product = request.getContext().asType(Product.class);
+    product = Beans.get(ProductRepository.class).find(product.getId());
+    Beans.get(ProductService.class).setSubProducts(product);
+    Beans.get(ProductRepository.class).save(product);
+
+    // response.setValues(product);
   }
 }
