@@ -201,7 +201,7 @@
         form-view="employee-advance-usage-expense-form"
         grid-view="employee-advance-usage-expense-grid"/>
       <panel name="accountInfoPanel" title="Account information" hidden="true"
-        showIf="typeSelect=1">
+        showIf="typeSelect==1">
         <panel name="moveInfoPanel" title="Account information">
           <field name="moveDate" readonly="true" colSpan="4"/>
         </panel>
