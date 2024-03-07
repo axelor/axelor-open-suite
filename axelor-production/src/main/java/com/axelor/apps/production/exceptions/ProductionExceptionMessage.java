@@ -48,6 +48,9 @@ public final class ProductionExceptionMessage {
   public static final String BATCH_COMPUTE_VALUATION = /*$$(*/
       "* %s Computed work in progress valuation" /*)*/;
 
+  /** Batch Fill SOP real values */
+  public static final String BATCH_FILL_SOP = /*$$(*/ "* %s Filled SOP lines" /*)*/;
+
   public static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid" /*)*/;
 
   /** Bill of Materials Service */

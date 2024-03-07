@@ -20,5 +20,5 @@ package com.axelor.apps.supplierportal.translation;
 
 public interface ITranslation {
 
-  public static final String SUPPLIER_PORTAL_APP = /*$$(*/ "Supplier Portal"; /*)*/
+  public static final String SUPPLIER_PORTAL_APP_NAME = /*$$(*/ "value:Supplier Portal"; /*)*/
 }

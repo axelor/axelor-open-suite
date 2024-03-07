@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.sale.service.saleorder.attributes;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -27,13 +27,13 @@ import java.util.Map;
 
 public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
 
-  protected CurrencyScaleServiceSale currencyScaleServiceSale;
+  protected CurrencyScaleService currencyScaleService;
   protected SaleOrderService saleOrderService;
 
   @Inject
   public SaleOrderAttrsServiceImpl(
-      CurrencyScaleServiceSale currencyScaleServiceSale, SaleOrderService saleOrderService) {
-    this.currencyScaleServiceSale = currencyScaleServiceSale;
+      CurrencyScaleService currencyScaleService, SaleOrderService saleOrderService) {
+    this.currencyScaleService = currencyScaleService;
     this.saleOrderService = saleOrderService;
   }
 
@@ -49,7 +49,7 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
   @Override
   public void setSaleOrderLineScale(
       SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
-    int currencyScale = currencyScaleServiceSale.getScale(saleOrder);
+    int currencyScale = currencyScaleService.getScale(saleOrder);
 
     this.addAttr("saleOrderLineList.exTaxTotal", "scale", currencyScale, attrsMap);
     this.addAttr("saleOrderLineList.inTaxTotal", "scale", currencyScale, attrsMap);
@@ -58,7 +58,7 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
   @Override
   public void setSaleOrderLineTaxScale(
       SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
-    int currencyScale = currencyScaleServiceSale.getScale(saleOrder);
+    int currencyScale = currencyScaleService.getScale(saleOrder);
 
     this.addAttr("saleOrderLineTaxList.inTaxTotal", "scale", currencyScale, attrsMap);
     this.addAttr("saleOrderLineTaxList.exTaxBase", "scale", currencyScale, attrsMap);

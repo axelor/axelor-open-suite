@@ -46,6 +46,9 @@ public class ProductionBatchService extends AbstractBatchService {
       case ProductionBatchRepository.ACTION_COMPUTE_WORK_IN_PROGRESS_VALUATION:
         batch = computeValuation(productionBatch);
         break;
+      case ProductionBatchRepository.ACTION_FILL_SOP_REAL_VALUES:
+        batch = fillSopRealValues(productionBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -58,5 +61,9 @@ public class ProductionBatchService extends AbstractBatchService {
 
   public Batch computeValuation(ProductionBatch productionBatch) {
     return Beans.get(BatchComputeWorkInProgressValuation.class).run(productionBatch);
+  }
+
+  public Batch fillSopRealValues(ProductionBatch productionBatch) {
+    return Beans.get(BatchFillSopRealValues.class).run(productionBatch);
   }
 }

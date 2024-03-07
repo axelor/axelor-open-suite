@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -57,8 +58,7 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
                 ? saleOrderLine.getSaleOrder()
                 : saleOrderLine.getOldVersionSaleOrder();
         json.put(
-            "$currencyNumberOfDecimals",
-            Beans.get(CurrencyScaleServiceSale.class).getScale(saleOrder));
+            "$currencyNumberOfDecimals", Beans.get(CurrencyScaleService.class).getScale(saleOrder));
       }
     }
     return super.populate(json, context);

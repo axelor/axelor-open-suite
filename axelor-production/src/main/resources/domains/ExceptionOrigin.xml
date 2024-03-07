@@ -10,6 +10,7 @@
     <extra-code>
       <![CDATA[
 			public static final String COST_SHEET = "costSheet";
+			public static final String SOP = "sop";
 			]]>
     </extra-code>
 

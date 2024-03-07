@@ -101,4 +101,12 @@ public class InventoryLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkPresenceInStockLocation(ActionRequest request, ActionResponse response) {
+    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+
+    response.setValue(
+        "isPresentInStockLocation",
+        Beans.get(InventoryLineService.class).isPresentInStockLocation(inventoryLine));
+  }
 }

@@ -16,27 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.service;
+package com.axelor.apps.budget.translation;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.contract.db.Contract;
-import com.axelor.apps.contract.db.ContractLine;
-import java.math.BigDecimal;
+public interface ITranslation {
 
-public interface CurrencyScaleServiceContract {
-
-  BigDecimal getScaledValue(Contract contract, BigDecimal amount);
-
-  BigDecimal getCompanyScaledValue(Contract contract, BigDecimal amount);
-
-  BigDecimal getScaledValue(ContractLine contractLine, BigDecimal amount);
-
-  BigDecimal getCompanyScaledValue(ContractLine contractLine, BigDecimal amount);
-
-  int getScale(Contract contract);
-
-  int getCompanyScale(Company company);
-
-  int getScale(Currency currency);
+  public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
 }

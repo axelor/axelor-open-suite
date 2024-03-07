@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -40,6 +39,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -64,7 +64,7 @@ public class PaymentVoucherLoadService {
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected InvoiceTermService invoiceTermService;
   protected PfpService pfpService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public PaymentVoucherLoadService(
@@ -76,7 +76,7 @@ public class PaymentVoucherLoadService {
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       InvoiceTermService invoiceTermService,
       PfpService pfpService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.paymentVoucherRepository = paymentVoucherRepository;
@@ -85,7 +85,7 @@ public class PaymentVoucherLoadService {
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.invoiceTermService = invoiceTermService;
     this.pfpService = pfpService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -179,10 +179,9 @@ public class PaymentVoucherLoadService {
     payVoucherDueElement.setMoveLine(invoiceTerm.getMoveLine());
 
     payVoucherDueElement.setDueAmount(
-        currencyScaleServiceAccount.getScaledValue(invoiceTerm, invoiceTerm.getAmount()));
-
+        currencyScaleService.getScaledValue(invoiceTerm, invoiceTerm.getAmount()));
     payVoucherDueElement.setAmountRemaining(
-        currencyScaleServiceAccount.getScaledValue(
+        currencyScaleService.getScaledValue(
             invoiceTerm, this.getAmountRemaining(paymentVoucher, invoiceTerm)));
 
     payVoucherDueElement.setCurrency(
@@ -293,7 +292,7 @@ public class PaymentVoucherLoadService {
     payVoucherElementToPay.setCurrency(payVoucherDueElement.getCurrency());
 
     BigDecimal amountRemainingInElementCurrency =
-        currencyScaleServiceAccount.getScaledValue(
+        currencyScaleService.getScaledValue(
             paymentVoucher,
             currencyService.getAmountCurrencyConvertedAtDate(
                 paymentVoucher.getCurrency(),
@@ -305,7 +304,7 @@ public class PaymentVoucherLoadService {
         amountRemainingInElementCurrency.min(payVoucherElementToPay.getRemainingAmount());
 
     BigDecimal amountImputedInPayVouchCurrency =
-        currencyScaleServiceAccount.getScaledValue(
+        currencyScaleService.getScaledValue(
             paymentVoucher,
             currencyService.getAmountCurrencyConvertedAtDate(
                 payVoucherElementToPay.getCurrency(),

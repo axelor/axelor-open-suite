@@ -71,7 +71,7 @@ public class MoveLineQueryController {
           MoveLine moveLine = moveLineQueryLine.getMoveLine();
 
           if (moveLine.getCredit().signum() > 0) {
-            selectedCreditTotal = selectedCreditTotal.add(moveLine.getAmountRemaining());
+            selectedCreditTotal = selectedCreditTotal.add(moveLine.getAmountRemaining().abs());
           }
 
           if (moveLine.getDebit().signum() > 0) {

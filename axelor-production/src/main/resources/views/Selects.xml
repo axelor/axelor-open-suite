@@ -123,6 +123,7 @@
 
   <selection name="production.batch.action.select">
     <option value="1">Compute work in progress valuation</option>
+    <option value="2">Fill SOP real values</option>
   </selection>
 
   <selection name="production.cost.sheet.calculation.type.select">

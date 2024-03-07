@@ -65,4 +65,13 @@ public interface InventoryLineService {
       String rack,
       BigDecimal realQty)
       throws AxelorException;
+
+  /**
+   * Will check if the inventory line is present in its stock location as a stockLocationLine. This
+   * method will return true if the inventory line product or stock location is null
+   *
+   * @param inventoryLine
+   * @return false if not present in its stock location, else true
+   */
+  public boolean isPresentInStockLocation(InventoryLine inventoryLine);
 }

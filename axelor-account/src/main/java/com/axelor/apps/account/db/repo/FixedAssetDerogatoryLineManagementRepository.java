@@ -19,7 +19,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class FixedAssetDerogatoryLineManagementRepository
       FixedAssetDerogatoryLine fixedAssetDerogatoryLine = this.find((Long) json.get("id"));
       json.put(
           "$currencyNumberOfDecimals",
-          Beans.get(CurrencyScaleServiceAccount.class)
+          Beans.get(CurrencyScaleService.class)
               .getCompanyScale(fixedAssetDerogatoryLine.getFixedAsset()));
     }
 
