@@ -25,7 +25,6 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -34,7 +33,6 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -165,60 +163,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       default:
         return duration;
     }
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments) {
-
-    TimesheetLine timesheetLine = new TimesheetLine();
-
-    timesheetLine.setDate(date);
-    timesheetLine.setComments(comments);
-    timesheetLine.setProduct(product);
-    timesheetLine.setProject(project);
-    timesheetLine.setEmployee(employee);
-    timesheetLine.setHoursDuration(hours);
-    try {
-      timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
-    } catch (AxelorException e) {
-      log.error(e.getLocalizedMessage());
-      TraceBackService.trace(e);
-    }
-    timesheet.addTimesheetLineListItem(timesheetLine);
-
-    return timesheetLine;
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
-    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      ProjectTask projectTask,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments,
-      TSTimer timer) {
-    TimesheetLine timesheetLine =
-        createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
-    timesheetLine.setProjectTask(projectTask);
-    timesheetLine.setTimer(timer);
-
-    return timesheetLine;
   }
 
   @Override
