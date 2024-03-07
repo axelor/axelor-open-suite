@@ -1,3 +1,55 @@
+## [7.1.17] (2024-03-07)
+
+### Fixes
+
+* The format of this file has been updated: the fixes are now separated by modules to improve readability, and a new `developer` section was added with technical information that could be useful for developers working on modules on top of Axelor Open Suite.
+
+#### Account
+
+* Account clearance: fixed issue when opening a generated move line from account clearance.
+* Invoice payment: added missing french translation for error message.
+* Period: fixed an issue when checking user permission where the roles in user's group were not checked.
+* Reconcile: fixed passed for payment check at reconcile confirmation.
+* Reconcile: fixed selected amount with negative values.
+* Move: fixed missing label in accounting move printing.
+
+#### CRM
+
+* CRM App: fixed small typos in english titles.
+* Lead: fixed anomaly which was forcing a lead to have a company.
+
+#### Human Resource
+
+* Payroll preparation: fixed 'the exported file is not found' error on payroll generation when the export dir is different from upload dir.
+
+#### Production
+
+* Sale order: fixed a NPE that occured at the manuf order generation.
+* Manufacturing order: real process are now correctly computed in cost sheet.
+* Manufacturing order: fixed a bug a producible quantity was not correctly computed when a component was not available.
+
+#### Sale
+
+* Sale order: improve performance on sale order save.
+
+#### Supply Chain
+
+* Stock move: fixed a bug that prevented to totally invoice a stock move when partial invoicing for out stock move was activated.
+* Supplychain configuration: fixed default value for "Generation of out stock move for products".
+* Sale order: fixed a bug where sale orders waiting for stock move were not displayed.
+
+
+### Developer
+
+#### Account
+
+- Removal of `action-method-account-clearance-show-move-lines` and creation of `action-account-clearance-view-move-lines` for its replacement
+- `showAccountClearanceMoveLines` has been removed from `AccountClearanceController`
+
+#### CRM
+
+- in `lead-form-view`, removed `required` from `enterpriseName`
+
 ## [7.1.16] (2024-02-22)
 
 #### Fixed
@@ -871,6 +923,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.17]: https://github.com/axelor/axelor-open-suite/compare/v7.1.16...v7.1.17
 [7.1.16]: https://github.com/axelor/axelor-open-suite/compare/v7.1.15...v7.1.16
 [7.1.15]: https://github.com/axelor/axelor-open-suite/compare/v7.1.14...v7.1.15
 [7.1.14]: https://github.com/axelor/axelor-open-suite/compare/v7.1.13...v7.1.14
