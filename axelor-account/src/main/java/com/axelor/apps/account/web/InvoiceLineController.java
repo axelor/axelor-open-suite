@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -46,6 +45,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -262,7 +262,7 @@ public class InvoiceLineController {
                   false,
                   taxLine,
                   exTaxPrice,
-                  Beans.get(CurrencyScaleServiceAccount.class).getScale(invoiceLine)));
+                  Beans.get(CurrencyScaleService.class).getScale(invoiceLine)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

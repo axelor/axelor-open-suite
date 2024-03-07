@@ -106,30 +106,35 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">PaymentVoucherRef</property>
+                    <property name="alias">PaymentVoucherRef</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PaymentVoucherRef</text-property>
                     <text-property name="heading">PaymentVoucherRef</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PaymentVoucherId</property>
+                    <property name="alias">PaymentVoucherId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">PaymentVoucherId</text-property>
                     <text-property name="heading">PaymentVoucherId</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">Global</property>
+                    <property name="alias">Global</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Global</text-property>
                     <text-property name="heading">Global</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PartnerFullName</property>
+                    <property name="alias">PartnerFullName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PartnerFullName</text-property>
                     <text-property name="heading">PartnerFullName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">AmountPaid</property>
+                    <property name="alias">AmountPaid</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">AmountPaid</text-property>
                     <text-property name="heading">AmountPaid</text-property>
@@ -174,6 +179,11 @@
                         <property name="name">AmountPaid</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
@@ -184,40 +194,42 @@
                     <property name="name">PaymentVoucherRef</property>
                     <property name="nativeName">PaymentVoucherRef</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">PaymentVoucherId</property>
                     <property name="nativeName">PaymentVoucherId</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">Global</property>
                     <property name="nativeName">Global</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">PartnerFullName</property>
                     <property name="nativeName">PartnerFullName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">AmountPaid</property>
                     <property name="nativeName">AmountPaid</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select PaymentVoucher.ref as "PaymentVoucherRef", PaymentVoucher.id as "PaymentVoucherId", 
 AccountingReport.global as "Global", 
-Partner.full_name as "PartnerFullName", PaymentVoucher.paid_amount as "AmountPaid"  
+Partner.full_name as "PartnerFullName", PaymentVoucher.paid_amount as "AmountPaid",
+Currency.number_of_decimals
 -- Récupération des informations de l'en-tête du reporting comptable passé en paramètre
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_payment_voucher as PaymentVoucher on (AccountingReport.id = ?) 
@@ -225,7 +237,8 @@ left outer join public.base_partner as Partner on (PaymentVoucher.partner  = Par
 
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
-left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.base_currency as Currency on (Currency.id = Company.currency) 
 
 -- Récupération des éléments des saisies paiements
 left outer join public.account_payment_mode as PaymentMode on (PaymentVoucher.payment_mode = PaymentMode.id) 
@@ -922,6 +935,12 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">number_of_decimals</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
             <column id="944">
@@ -1070,14 +1089,12 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="3155">
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                        <text id="6468">
+                            <property name="fontSize">10pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">AmountPaid</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["AmountPaid"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </detail>
@@ -1133,15 +1150,13 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="3159">
+                        <text id="6473">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">Total</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["Total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="2663">
