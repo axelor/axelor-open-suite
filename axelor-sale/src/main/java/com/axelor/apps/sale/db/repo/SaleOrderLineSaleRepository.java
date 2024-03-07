@@ -22,7 +22,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
