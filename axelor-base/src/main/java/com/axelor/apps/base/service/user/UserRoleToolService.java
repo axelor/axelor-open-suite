@@ -4,6 +4,8 @@ import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.servlet.RequestScoped;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @RequestScoped
@@ -45,11 +47,12 @@ public class UserRoleToolService {
     if (user == null) {
       return false;
     }
-    Set<Role> userRoleSet = user.getRoles();
+    List<Role> userRoleList =
+        user.getRoles() != null ? new ArrayList<>(user.getRoles()) : new ArrayList<>();
     if (user.getGroup() != null && !ObjectUtils.isEmpty(user.getGroup().getRoles())) {
-      userRoleSet.addAll(user.getGroup().getRoles());
+      userRoleList.addAll(user.getGroup().getRoles());
     }
 
-    return roleSet.stream().anyMatch(userRoleSet::contains);
+    return roleSet.stream().anyMatch(userRoleList::contains);
   }
 }
