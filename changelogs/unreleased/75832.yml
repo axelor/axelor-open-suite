@@ -1,0 +1,3 @@
+---
+title: "InvoicePayment : fix financial discount management when VAT is exempted"
+module: axelor-account

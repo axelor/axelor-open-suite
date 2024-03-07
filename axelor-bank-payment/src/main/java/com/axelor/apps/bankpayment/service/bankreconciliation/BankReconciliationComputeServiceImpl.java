@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
@@ -5,8 +23,8 @@ import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -16,16 +34,16 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
 
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationComputeServiceImpl(
       BankReconciliationRepository bankReconciliationRepository,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      CurrencyScaleService currencyScaleService) {
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -40,14 +58,14 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
       totalCashed = totalCashed.add(bankReconciliationLine.getCredit());
     }
     bankReconciliation.setComputedBalance(
-        currencyScaleServiceBankPayment.getScaledValue(
+        currencyScaleService.getScaledValue(
             bankReconciliation,
             bankReconciliation.getAccountBalance().add(totalCashed).subtract(totalPaid)));
 
     bankReconciliation.setTotalPaid(
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliation, totalPaid));
+        currencyScaleService.getScaledValue(bankReconciliation, totalPaid));
     bankReconciliation.setTotalCashed(
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliation, totalCashed));
+        currencyScaleService.getScaledValue(bankReconciliation, totalCashed));
     bankReconciliationRepository.save(bankReconciliation);
   }
 
@@ -87,7 +105,7 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
       }
     }
     bankReconciliation.setStartingBalance(
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliation, startingBalance));
+        currencyScaleService.getScaledValue(bankReconciliation, startingBalance));
     return bankReconciliation;
   }
 
@@ -109,7 +127,7 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
       endingBalance = endingBalance.add(amount);
     }
     bankReconciliation.setEndingBalance(
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliation, endingBalance));
+        currencyScaleService.getScaledValue(bankReconciliation, endingBalance));
     return bankReconciliation;
   }
 }

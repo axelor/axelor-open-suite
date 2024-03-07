@@ -51,11 +51,11 @@ import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -398,6 +398,11 @@ public class InvoiceController {
       response.setReload(true);
       response.setNotify(I18n.get(AccountExceptionMessage.INVOICE_2));
 
+      int refundType =
+          invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+              ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+              : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+
       response.setView(
           ActionView.define(
                   String.format(
@@ -408,6 +413,7 @@ public class InvoiceController {
               .param("search-filters", "customer-invoices-filters")
               .param("forceTitle", "true")
               .context("_showRecord", refund.getId().toString())
+              .context("_operationTypeSelect", refundType)
               .domain("self.originalInvoice.id = " + invoice.getId())
               .map());
     } catch (Exception e) {

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
@@ -30,17 +48,20 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected ProjectRepository projectRepository;
   protected TimesheetLineService timesheetLineService;
   protected TimesheetRepository timesheetRepository;
+  protected TimesheetLineCreateService timesheetLineCreateService;
 
   @Inject
   public TimesheetCreateServiceImpl(
       UserHrService userHrService,
       ProjectRepository projectRepository,
       TimesheetLineService timesheetLineService,
-      TimesheetRepository timesheetRepository) {
+      TimesheetRepository timesheetRepository,
+      TimesheetLineCreateService timesheetLineCreateService) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
     this.timesheetRepository = timesheetRepository;
+    this.timesheetLineCreateService = timesheetLineCreateService;
   }
 
   @Transactional
@@ -108,7 +129,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
 
     for (Project project : projects) {
       TimesheetLine line =
-          timesheetLineService.createTimesheetLine(
+          timesheetLineCreateService.createTimesheetLine(
               project,
               product,
               timesheet.getEmployee(),

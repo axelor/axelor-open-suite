@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -35,7 +37,6 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -45,6 +46,7 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
@@ -88,7 +90,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
-      CurrencyScaleServiceSale currencyScaleServiceSale,
+      CurrencyScaleService currencyScaleService,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService) {
     super(
@@ -105,7 +107,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         commonInvoiceService,
         invoiceLineOrderService,
         saleInvoicingStateService,
-        currencyScaleServiceSale,
+        currencyScaleService,
         appBusinessProjectService);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
@@ -170,10 +172,15 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   public void validateSaleAmountWithBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
     if (!CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
       for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
-        budgetService.validateBudgetDistributionAmounts(
-            soLine.getBudgetDistributionList(),
-            soLine.getCompanyExTaxTotal(),
-            soLine.getProduct().getCode());
+        String productCode =
+            Optional.of(soLine)
+                .map(SaleOrderLine::getProduct)
+                .map(Product::getCode)
+                .orElse(soLine.getProductName());
+        if (StringUtils.notEmpty(productCode)) {
+          budgetService.validateBudgetDistributionAmounts(
+              soLine.getBudgetDistributionList(), soLine.getCompanyExTaxTotal(), productCode);
+        }
       }
     }
   }
@@ -196,6 +203,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       Invoice invoice, SaleOrderLine saleOrderLine, BigDecimal qtyToInvoice)
       throws AxelorException {
     List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, saleOrderLine, qtyToInvoice);
+    if (!appBudgetService.isApp("budget")) {
+      return invoiceLines;
+    }
 
     for (InvoiceLine invoiceLine : invoiceLines) {
       if (saleOrderLine != null && saleOrderLine.getQty().signum() > 0) {

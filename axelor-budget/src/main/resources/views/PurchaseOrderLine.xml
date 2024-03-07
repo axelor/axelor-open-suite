@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid id="budget-purchase-order-line-purchase-order-grid"
     name="purchase-order-line-purchase-order-grid" extension="true" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <extend target="//field[@name='inTaxTotal']">
       <insert position="after">
-        <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
-        <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budgetStr"
+          if="__config__.app.getApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budget"
+          if="__config__.app.getApp('budget') &amp;&amp; !__config__.app.getApp('budget').getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -19,7 +21,7 @@
     name="purchase-order-line-grid" extension="true">
     <extend target="//field[@name='estimatedReceiptDate']">
       <insert position="after">
-        <field name="budget"/>
+        <field name="budget" if="__config__.app.getApp('budget')"/>
       </insert>
     </extend>
   </grid>

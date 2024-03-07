@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -60,18 +61,18 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   protected AccountConfigService accountConfigService;
   protected AppBudgetService appBudgetService;
   protected AppBaseService appBaseService;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetToolsServiceImpl(
       AccountConfigService accountConfigService,
       AppBudgetService appBudgetService,
       AppBaseService appBaseService,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
+      CurrencyScaleService currencyScaleService) {
     this.accountConfigService = accountConfigService;
     this.appBudgetService = appBudgetService;
     this.appBaseService = appBaseService;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -187,7 +188,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     }
     Integer budgetControlLevel = getBudgetControlLevel(budget);
     if (budgetControlLevel == null) {
-      return currencyScaleServiceBudget.getCompanyScaledValue(budget, budget.getAvailableAmount());
+      return currencyScaleService.getCompanyScaledValue(budget, budget.getAvailableAmount());
     }
     GlobalBudget globalBudget = getGlobalBudgetUsingBudget(budget);
 
@@ -199,16 +200,15 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
 
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
           if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
-            return currencyScaleServiceBudget.getCompanyScaledValue(
+            return currencyScaleService.getCompanyScaledValue(
                 budget, budgetLine.getAvailableAmount());
           }
         }
         break;
       case GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET:
-        return currencyScaleServiceBudget.getCompanyScaledValue(
-            budget, budget.getAvailableAmount());
+        return currencyScaleService.getCompanyScaledValue(budget, budget.getAvailableAmount());
       default:
-        return currencyScaleServiceBudget.getCompanyScaledValue(
+        return currencyScaleService.getCompanyScaledValue(
             budget,
             Optional.of(globalBudget)
                 .map(GlobalBudget::getTotalAmountAvailable)
@@ -265,48 +265,48 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
       for (BudgetLevel budgetLevelObj : budgetLevelList) {
         amountByField.replace(
             "totalAmountExpected",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetLevelObj,
                 amountByField
                     .get("totalAmountExpected")
                     .add(budgetLevelObj.getTotalAmountExpected())));
         amountByField.replace(
             "totalAmountCommitted",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetLevelObj,
                 amountByField
                     .get("totalAmountCommitted")
                     .add(budgetLevelObj.getTotalAmountCommitted())));
         amountByField.replace(
             "totalAmountRealized",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetLevelObj,
                 amountByField
                     .get("totalAmountRealized")
                     .add(budgetLevelObj.getTotalAmountCommitted())));
         amountByField.replace(
             "realizedWithPo",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetLevelObj,
                 amountByField.get("realizedWithPo").add(budgetLevelObj.getRealizedWithPo())));
         amountByField.replace(
             "realizedWithNoPo",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetLevelObj,
                 amountByField.get("realizedWithNoPo").add(budgetLevelObj.getRealizedWithNoPo())));
         amountByField.replace(
             "totalAmountPaid",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetLevelObj,
                 amountByField.get("totalAmountPaid").add(budgetLevelObj.getTotalAmountPaid())));
         amountByField.replace(
             "totalFirmGap",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetLevelObj,
                 amountByField.get("totalFirmGap").add(budgetLevelObj.getTotalFirmGap())));
         amountByField.replace(
             "simulatedAmount",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetLevelObj,
                 amountByField.get("simulatedAmount").add(budgetLevelObj.getSimulatedAmount())));
       }
@@ -314,38 +314,38 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
       for (Budget budget : budgetList) {
         amountByField.replace(
             "totalAmountExpected",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budget,
                 amountByField.get("totalAmountExpected").add(budget.getTotalAmountExpected())));
         amountByField.replace(
             "totalAmountCommitted",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budget,
                 amountByField.get("totalAmountCommitted").add(budget.getTotalAmountCommitted())));
         amountByField.replace(
             "totalAmountRealized",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budget,
                 amountByField.get("totalAmountRealized").add(budget.getTotalAmountCommitted())));
         amountByField.replace(
             "realizedWithPo",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budget, amountByField.get("realizedWithPo").add(budget.getRealizedWithPo())));
         amountByField.replace(
             "realizedWithNoPo",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budget, amountByField.get("realizedWithNoPo").add(budget.getRealizedWithNoPo())));
         amountByField.replace(
             "totalAmountPaid",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budget, amountByField.get("totalAmountPaid").add(budget.getTotalAmountPaid())));
         amountByField.replace(
             "totalFirmGap",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budget, amountByField.get("totalFirmGap").add(budget.getTotalFirmGap())));
         amountByField.replace(
             "simulatedAmount",
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budget, amountByField.get("simulatedAmount").add(budget.getSimulatedAmount())));
       }
     }
@@ -373,7 +373,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     return BigDecimal.ZERO.max(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             company, maxAmount.subtract(imputedAmount.abs())));
   }
 }

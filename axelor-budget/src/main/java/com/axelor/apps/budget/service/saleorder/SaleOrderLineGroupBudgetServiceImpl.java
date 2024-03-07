@@ -5,6 +5,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -17,7 +18,6 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -54,7 +54,7 @@ public class SaleOrderLineGroupBudgetServiceImpl extends SaleOrderLineServiceSup
       InvoiceLineRepository invoiceLineRepository,
       SaleInvoicingStateService saleInvoicingStateService,
       AnalyticLineModelService analyticLineModelService,
-      CurrencyScaleServiceSale currencyScaleServiceSale,
+      CurrencyScaleService currencyScaleService,
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService) {
     super(
@@ -76,7 +76,7 @@ public class SaleOrderLineGroupBudgetServiceImpl extends SaleOrderLineServiceSup
         invoiceLineRepository,
         saleInvoicingStateService,
         analyticLineModelService,
-        currencyScaleServiceSale);
+        currencyScaleService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }

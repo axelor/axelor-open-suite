@@ -23,30 +23,16 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
-import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.InternationalService;
-import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
-import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -58,56 +44,29 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @RequestScoped
-public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
-    implements BudgetInvoiceLineService {
+public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
 
+  protected InvoiceLineRepository invoiceLineRepo;
+  protected AppBaseService appBaseService;
   protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
   protected BudgetDistributionService budgetDistributionService;
   protected BudgetToolsService budgetToolsService;
-  protected AppBudgetService appBudgetService;
 
   @Inject
   public BudgetInvoiceLineServiceImpl(
-      CurrencyService currencyService,
-      PriceListService priceListService,
-      AppAccountService appAccountService,
-      AccountManagementAccountService accountManagementAccountService,
-      ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService,
-      InvoiceLineAnalyticService invoiceLineAnalyticService,
-      SupplierCatalogService supplierCatalogService,
-      TaxService taxService,
-      InternationalService internationalService,
-      InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
       BudgetService budgetService,
       BudgetRepository budgetRepository,
       BudgetDistributionService budgetDistributionService,
-      BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
-    super(
-        currencyService,
-        priceListService,
-        appAccountService,
-        accountManagementAccountService,
-        productCompanyService,
-        invoiceLineRepo,
-        appBaseService,
-        accountConfigService,
-        invoiceLineAnalyticService,
-        supplierCatalogService,
-        taxService,
-        internationalService,
-        invoiceLineAttrsService,
-        currencyScaleServiceAccount);
+      BudgetToolsService budgetToolsService) {
+    this.appBaseService = appBaseService;
+    this.invoiceLineRepo = invoiceLineRepo;
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
     this.budgetToolsService = budgetToolsService;
-    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -200,15 +159,5 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
     invoiceLine.setBudgetRemainingAmountToAllocate(
         budgetToolsService.getBudgetRemainingAmountToAllocate(
             invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
-  }
-
-  @Override
-  public void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
-    super.compute(invoice, invoiceLine);
-    if (appBudgetService.isApp("budget")) {
-      invoiceLine.setBudgetRemainingAmountToAllocate(
-          budgetToolsService.getBudgetRemainingAmountToAllocate(
-              invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
-    }
   }
 }

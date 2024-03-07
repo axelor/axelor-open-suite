@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.Account;
@@ -5,13 +23,12 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.db.JPA;
@@ -31,8 +48,7 @@ public class BankReconciliationBalanceComputationServiceImpl
   protected CurrencyService currencyService;
   protected DateService dateService;
   protected BankReconciliationComputeService bankReconciliationComputeService;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationBalanceComputationServiceImpl(
@@ -43,7 +59,7 @@ public class BankReconciliationBalanceComputationServiceImpl
       CurrencyService currencyService,
       DateService dateService,
       BankReconciliationComputeService bankReconciliationComputeService,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      CurrencyScaleService currencyScaleService) {
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
@@ -51,7 +67,7 @@ public class BankReconciliationBalanceComputationServiceImpl
     this.currencyService = currencyService;
     this.dateService = dateService;
     this.bankReconciliationComputeService = bankReconciliationComputeService;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -77,11 +93,11 @@ public class BankReconciliationBalanceComputationServiceImpl
             .fetch(limit, offset);
     if (bankReconciliations.size() != 0) {
       statementReconciledLineBalance =
-          currencyScaleServiceBankPayment.getScaledValue(
+          currencyScaleService.getScaledValue(
               bankReconciliation,
               statementReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance()));
       movesReconciledLineBalance =
-          currencyScaleServiceBankPayment.getScaledValue(
+          currencyScaleService.getScaledValue(
               bankReconciliation,
               movesReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance()));
     }
@@ -182,7 +198,7 @@ public class BankReconciliationBalanceComputationServiceImpl
       movesReconciledLineBalance =
           movesReconciledLineBalance.subtract(moveLine.getBankReconciledAmount());
     }
-    return currencyScaleServiceAccount.getCompanyScaledValue(moveLine, movesReconciledLineBalance);
+    return currencyScaleService.getCompanyScaledValue(moveLine, movesReconciledLineBalance);
   }
 
   protected BigDecimal computeMovesUnreconciledLineBalance(
@@ -196,8 +212,7 @@ public class BankReconciliationBalanceComputationServiceImpl
           movesUnreconciledLineBalance.subtract(
               moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()));
     }
-    return currencyScaleServiceAccount.getCompanyScaledValue(
-        moveLine, movesUnreconciledLineBalance);
+    return currencyScaleService.getCompanyScaledValue(moveLine, movesUnreconciledLineBalance);
   }
 
   protected BigDecimal computeStatementReconciledLineBalance(
@@ -207,7 +222,7 @@ public class BankReconciliationBalanceComputationServiceImpl
       statementReconciledLineBalance = statementReconciledLineBalance.subtract(brl.getDebit());
       statementReconciledLineBalance = statementReconciledLineBalance.add(brl.getCredit());
     }
-    return currencyScaleServiceBankPayment.getScaledValue(brl, statementReconciledLineBalance);
+    return currencyScaleService.getScaledValue(brl, statementReconciledLineBalance);
   }
 
   protected BigDecimal computeStatementUnreconciledLineBalance(
@@ -216,7 +231,7 @@ public class BankReconciliationBalanceComputationServiceImpl
       statementUnreconciledLineBalance = statementUnreconciledLineBalance.subtract(brl.getDebit());
       statementUnreconciledLineBalance = statementUnreconciledLineBalance.add(brl.getCredit());
     }
-    return currencyScaleServiceBankPayment.getScaledValue(brl, statementUnreconciledLineBalance);
+    return currencyScaleService.getScaledValue(brl, statementUnreconciledLineBalance);
   }
 
   protected BigDecimal computeStatementOngoingReconciledLineBalance(
@@ -234,7 +249,7 @@ public class BankReconciliationBalanceComputationServiceImpl
             statementOngoingReconciledBalance.add(bankReconciliationLine.getCredit());
       }
     }
-    return currencyScaleServiceBankPayment.getScaledValue(brl, statementOngoingReconciledBalance);
+    return currencyScaleService.getScaledValue(brl, statementOngoingReconciledBalance);
   }
 
   protected BigDecimal computeMovesOngoingReconciledLineBalance(
@@ -253,7 +268,7 @@ public class BankReconciliationBalanceComputationServiceImpl
         }
       }
     }
-    return currencyScaleServiceBankPayment.getScaledValue(brl, movesOngoingReconciledBalance);
+    return currencyScaleService.getScaledValue(brl, movesOngoingReconciledBalance);
   }
 
   protected BigDecimal getConvertedAmount(BigDecimal value, BankReconciliation bankReconciliation)

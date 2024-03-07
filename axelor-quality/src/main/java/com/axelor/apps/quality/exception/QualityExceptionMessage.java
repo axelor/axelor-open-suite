@@ -48,4 +48,10 @@ public final class QualityExceptionMessage {
 
   public static final String QI_DECISION_DISTRIBUTION_SEQUENCE_NOT_FOUND = /*$$(*/
       "Please configure a sequence for decision distribution." /*)*/;
+
+  public static final String API_NO_CHARACTERISTIC_OR_SAMPLE_ID = /*$$(*/
+      "Please provide one of the two fields, characteristicId or sampleId, in request body." /*)*/;
+
+  public static final String API_CHARACTERISTIC_NOT_IN_CONTROL_ENTRY = /*$$(*/
+      "Characteristic or sample does not belong to this control entry." /*)*/;
 }

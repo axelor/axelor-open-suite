@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -157,6 +157,7 @@
 				public static final int SALE_SUPPLY_FROM_STOCK = 1;
 				public static final int SALE_SUPPLY_PURCHASE = 2;
 				public static final int SALE_SUPPLY_PRODUCE = 3;
+				public static final int SALE_SUPPLY_FROM_STOCK_AND_PRODUCE = 4;
 
 				public static final String PROCUREMENT_METHOD_BUY = "buy";
 				public static final String PROCUREMENT_METHOD_PRODUCE = "produce";
