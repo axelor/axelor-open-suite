@@ -645,8 +645,8 @@ public final class BaseExceptionMessage {
       "The binding file should be only an XML file." /*)*/;
 
   public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_CSV_MESSAGE = /*$$(*/
-      "The data file should be only a CSV file." /*)*/;
+      "The data file should be only a CSV or ZIP file." /*)*/;
 
   public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
-      "The data file should be only an XML file." /*)*/;
+      "The data file should be only an XML or ZIP file." /*)*/;
 }

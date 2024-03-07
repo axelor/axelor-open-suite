@@ -26,13 +26,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -729,7 +729,7 @@ public class SaleOrderController {
             "scale",
             isPercent
                 ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
-                : Beans.get(CurrencyScaleServiceSale.class).getScale(saleOrder));
+                : Beans.get(CurrencyScaleService.class).getScale(saleOrder));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

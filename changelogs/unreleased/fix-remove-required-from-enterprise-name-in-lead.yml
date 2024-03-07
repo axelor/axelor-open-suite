@@ -1,0 +1,5 @@
+---
+title: "LEADS : Correct anomaly which was forcing a lead to have a company"
+module: "axelor-crm"
+developer: |
+  "Remove required from enterprise name"

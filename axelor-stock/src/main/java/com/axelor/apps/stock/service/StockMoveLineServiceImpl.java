@@ -70,7 +70,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1693,15 +1695,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException {
     Integer type = stockMove.getTypeSelect();
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    if (type == StockMoveRepository.TYPE_INTERNAL
-        || stockMoveLineList == null
-        || stockMoveLineList.isEmpty()) {
+    if (type == StockMoveRepository.TYPE_INTERNAL || CollectionUtils.isEmpty(stockMoveLineList)) {
       return;
     }
     // Does not manage the case where line is already splited
     // Works when generating a tracking number
     // But not when assigning one
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+    for (StockMoveLine stockMoveLine : new CopyOnWriteArrayList<>(stockMoveLineList)) {
       Product product = stockMoveLine.getProduct();
       if (product == null) {
         return;
