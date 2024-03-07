@@ -70,6 +70,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -578,13 +579,18 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       throws AxelorException {
     int vatSystemSelect =
         accountingSituationService.determineVatSystemSelect(accountingSituation, invoiceLineTax);
+    Account originalAccount =
+        Optional.of(invoiceLineTax)
+            .map(InvoiceLineTax::getInvoiceLine)
+            .map(InvoiceLine::getAccount)
+            .orElse(null);
 
     Account account =
         taxAccountService.getAccount(
             tax,
             company,
             move.getJournal(),
-            invoiceLineTax.getInvoiceLine().getAccount(),
+            originalAccount,
             vatSystemSelect,
             isFixedAsset,
             move.getFunctionalOriginSelect());
