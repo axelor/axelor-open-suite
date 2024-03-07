@@ -78,7 +78,7 @@
           </viewer>
         </field>
         <panel name="generalInfoPanel" colSpan="12">
-          <field name="typeSelect" readonlyIf="_isExpenseDeclaration"/>
+          <field name="typeSelect" readonlyIf="_isExpenseDeclaration || statusSelect > 1"/>
           <spacer/>
           <field name="company" canEdit="false" form-view="company-form"
             grid-view="company-grid"
