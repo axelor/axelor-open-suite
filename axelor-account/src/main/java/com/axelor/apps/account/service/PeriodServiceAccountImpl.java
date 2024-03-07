@@ -38,6 +38,8 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.inject.Singleton;
 import javax.persistence.PersistenceException;
@@ -165,14 +167,18 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   protected boolean checkUserRoles(User user, Set<Role> roleSet) {
-    if (user == null || ObjectUtils.isEmpty(roleSet)) {
+    return roleSet != null && checkUserRoles(user, new ArrayList<>(roleSet));
+  }
+
+  protected boolean checkUserRoles(User user, List<Role> roleList) {
+    if (user == null || ObjectUtils.isEmpty(roleList)) {
       return false;
     }
     Set<Role> userRoleSet = user.getRoles();
     if (user.getGroup() != null && !ObjectUtils.isEmpty(user.getGroup().getRoles())) {
       userRoleSet.addAll(user.getGroup().getRoles());
     }
-    for (Role role : roleSet) {
+    for (Role role : roleList) {
       if (userRoleSet.contains(role)) {
         return true;
       }
