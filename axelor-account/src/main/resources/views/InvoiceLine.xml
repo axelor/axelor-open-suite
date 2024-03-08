@@ -36,7 +36,7 @@
     <field name="invoice.invoiceId" width="120"/>
     <field name="invoice.invoiceDate" title="Date"/>
     <field name="invoice.statusSelect" title="invoiceLineMenu.status"/>
-    <field name="invoice.address.addressL7Country"/>
+    <field name="invoice.address.country"/>
     <field name="product.code" title="product.code" width="120"/>
     <field name="productName" width="170"/>
     <field name="qty" width="50" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
@@ -176,6 +176,8 @@
         <field name="project" canEdit="false"
           onSelect="action-invoice-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
+        <field name="previousProgress" readonly="true"/>
+        <field name="newProgress" readonly="true"/>
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
           action="action-invoice-line-view-project-tasks" colSpan="12"/>
       </panel>
@@ -744,7 +746,7 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
-    <domain>self.invoiceLine = :id</domain>
+    <domain>:id IN self.invoiceLineSet.id</domain>
   </action-view>
 
   <search-filters name="invoice-line-filters"

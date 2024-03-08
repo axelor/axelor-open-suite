@@ -412,6 +412,17 @@ public class ManufOrderController {
     }
   }
 
+  public void checkResidualStockMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderService.class).checkResidualStockMoveLineList(manufOrder, oldManufOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
+
   /**
    * Called from manuf order form, on produced stock move line change. Call {@link
    * ManufOrderService#updateProducedStockMoveFromManufOrder(ManufOrder)}.
@@ -425,6 +436,18 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
       Beans.get(ManufOrderService.class).updateProducedStockMoveFromManufOrder(manufOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateResidualStockMoveFromManufOrder(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderService.class).updateResidualStockMoveFromManufOrder(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -869,6 +892,19 @@ public class ManufOrderController {
       Beans.get(ManufOrderService.class).setProducedStockMoveLineStockLocation(manufOrder);
 
       response.setValue("producedStockMoveLineList", manufOrder.getProducedStockMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setResidualStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      Beans.get(ManufOrderService.class).setResidualStockMoveLineStockLocation(manufOrder);
+
+      response.setValue("residualStockMoveLineList", manufOrder.getResidualStockMoveLineList());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

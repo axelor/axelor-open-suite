@@ -42,6 +42,15 @@
     <datetime name="plannedStartDateT" title="Planned start"/>
     <datetime name="plannedEndDateT" title="Planned end"/>
 
+    <datetime name="plannedEndWithWaitingDateT" readonly="true">
+      <![CDATA[
+      if (plannedEndDateT != null) {
+        return plannedEndDateT.plusSeconds(prodProcessLine.getTimeBeforeNextOperation());
+      }
+      return null;
+      ]]>
+    </datetime>
+
     <datetime name="realStartDateT" title="Real start"/>
     <datetime name="realEndDateT" title="Real end"/>
 

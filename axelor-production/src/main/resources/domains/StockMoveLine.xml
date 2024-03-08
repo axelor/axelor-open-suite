@@ -11,6 +11,8 @@
       ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
     <many-to-one name="producedManufOrder"
       ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
+    <many-to-one name="residualManufOrder"
+      ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
 
     <many-to-one name="consumedOperationOrder"
       ref="com.axelor.apps.production.db.OperationOrder" title="Manufacturing operation"/>

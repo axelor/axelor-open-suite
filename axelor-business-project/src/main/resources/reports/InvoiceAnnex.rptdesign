@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -105,23 +105,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="3676">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -1037,7 +1020,7 @@ left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
 left outer join base_partner as ContactPartner on (Invoice.contact_partner = ContactPartner.id)
 left outer join base_address as Address on (Invoice.address = Address.id)
-left outer join base_country as Country on (Address.addressl7country = Country.id)
+left outer join base_country as Country on (Address.country = Country.id)
 left outer join account_payment_condition as PaymentCondition on (Invoice.payment_condition = PaymentCondition.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join base_bank_details as BankDetail on (Invoice.company_bank_details = BankDetail.id)
@@ -1413,7 +1396,7 @@ where Invoice.id in (@INJECTID)]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>

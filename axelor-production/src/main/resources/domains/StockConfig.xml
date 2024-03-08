@@ -14,12 +14,15 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Components default stock location"/>
     <many-to-one name="finishedProductsDefaultStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Finished products default stock location"/>
+    <many-to-one name="residualProductsDefaultStockLocation"
+      title="Residual products default stock location" ref="com.axelor.apps.stock.db.StockLocation"/>
 
     <track>
       <field name="productionVirtualStockLocation" on="UPDATE"/>
       <field name="wasteStockLocation" on="UPDATE"/>
       <field name="componentDefaultStockLocation" on="UPDATE"/>
       <field name="finishedProductsDefaultStockLocation" on="UPDATE"/>
+      <field name="residualProductsDefaultStockLocation" on="UPDATE"/>
     </track>
 
   </entity>

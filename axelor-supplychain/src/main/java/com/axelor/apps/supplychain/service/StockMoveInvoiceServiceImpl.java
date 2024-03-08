@@ -29,7 +29,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -141,11 +141,14 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public Invoice createInvoiceFromStockMove(
       StockMove stockMove, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
     Invoice invoice;
-    if (stockMove.getSaleOrder() != null) {
-      invoice = createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder(), qtyToInvoiceMap);
-    } else if (stockMove.getPurchaseOrder() != null) {
+    if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
       invoice =
-          createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder(), qtyToInvoiceMap);
+          createInvoiceFromSaleOrder(
+              stockMove, stockMove.getSaleOrderSet().iterator().next(), qtyToInvoiceMap);
+    } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+      invoice =
+          createInvoiceFromPurchaseOrder(
+              stockMove, stockMove.getPurchaseOrderSet().iterator().next(), qtyToInvoiceMap);
     } else {
       invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
     }
@@ -174,7 +177,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     Invoice invoice = invoiceGenerator.generate();
 
-    checkSplitSalePartiallyInvoicedStockMoveLines(stockMove, stockMove.getStockMoveLineList());
+    // When not null, we are in a partial invoicing
+    if (qtyToInvoiceMap != null) {
+      checkSplitSalePartiallyInvoicedStockMoveLines(stockMove, stockMove.getStockMoveLineList());
+    }
 
     invoiceGenerator.populate(
         invoice,
@@ -390,11 +396,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
-    if ((stockMove.getPurchaseOrder() != null
+    if ((ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateIncStockMovePartialInvoicing())
-        || (stockMove.getSaleOrder() != null
+        || (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateOutStockMovePartialInvoicing())) {

@@ -51,6 +51,9 @@
       title="Produced products" orphanRemoval="false"/>
     <one-to-many name="wasteProdProductList"
       ref="com.axelor.apps.production.db.ProdProduct" mappedBy="wasteManufOrder" title="Waste"/>
+    <one-to-many name="residualStockMoveLineList"
+      ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="residualManufOrder"
+      title="Residual products" orphanRemoval="false"/>
 
 
     <boolean name="isConsProOnOperation" title="Manage consumed products on operations"

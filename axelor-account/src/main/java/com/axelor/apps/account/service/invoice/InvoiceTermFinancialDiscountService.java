@@ -25,6 +25,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface InvoiceTermFinancialDiscountService {
+  void computeFinancialDiscount(InvoiceTerm invoiceTerm);
+
   void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
 
   void computeFinancialDiscount(

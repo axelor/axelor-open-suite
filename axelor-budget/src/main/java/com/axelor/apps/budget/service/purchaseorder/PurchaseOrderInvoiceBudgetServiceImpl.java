@@ -24,16 +24,16 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.CurrencyScaleServicePurchase;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
@@ -60,7 +60,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
-      CurrencyScaleServicePurchase currencyScaleServicePurchase,
+      CurrencyScaleService currencyScaleService,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
@@ -77,7 +77,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         commonInvoiceService,
         addressService,
         invoiceLineOrderService,
-        currencyScaleServicePurchase,
+        currencyScaleService,
         priceListService,
         purchaseOrderLineService,
         appBusinessProjectService,

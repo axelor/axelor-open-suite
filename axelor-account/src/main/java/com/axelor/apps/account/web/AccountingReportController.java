@@ -194,6 +194,7 @@ public class AccountingReportController {
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
       AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
+      accountingReportService.checkReportType(accountingReport);
       int typeSelect = accountingReport.getReportType().getTypeSelect();
 
       if (accountingReport.getExportTypeSelect() == null
@@ -204,7 +205,7 @@ public class AccountingReportController {
         return;
       }
 
-      if (accountingReportService.isThereTooManyLines(accountingReport)) {
+      if (accountingReportService.areThereTooManyLines(accountingReport)) {
         response.setAlert(
             I18n.get(
                 "A large number of recording has been fetched in this period. Edition can take a while. Do you want to proceed ?"));
@@ -306,5 +307,20 @@ public class AccountingReportController {
     actionViewBuilder.context("_accountingReportId", accountingReport.getId());
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void setAccountingReportTypeDomain(ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    boolean isCustom = (boolean) request.getContext().get("_isCustom");
+    String accountingReportTypeIds = "0";
+
+    if (!isCustom || CollectionUtils.isNotEmpty(accountingReport.getCompanySet())) {
+      accountingReportTypeIds =
+          Beans.get(AccountingReportToolService.class)
+              .getAccountingReportTypeIds(accountingReport, isCustom);
+    }
+
+    response.setAttr(
+        "reportType", "domain", String.format("self.id IN (%s)", accountingReportTypeIds));
   }
 }

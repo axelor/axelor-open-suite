@@ -19,9 +19,9 @@
 package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
@@ -39,8 +39,7 @@ import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.PurchaseOrderManagementBudgetRepository;
 import com.axelor.apps.budget.db.repo.SaleOrderBudgetRepository;
-import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
-import com.axelor.apps.budget.export.ExportGlobalBudgetLevelServiceImpl;
+import com.axelor.apps.budget.export.ExportBudgetCallableService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.AppBudgetServiceImpl;
 import com.axelor.apps.budget.service.BudgetAccountConfigService;
@@ -73,8 +72,6 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.BudgetVersionServiceImpl;
-import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
-import com.axelor.apps.budget.service.CurrencyScaleServiceBudgetImpl;
 import com.axelor.apps.budget.service.ReconcileBudgetServiceImpl;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupServiceImpl;
@@ -123,6 +120,7 @@ import com.axelor.apps.businessproject.service.WorkflowVentilationProjectService
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
+import java.util.concurrent.Callable;
 
 public class BudgetModule extends AxelorModule {
 
@@ -135,7 +133,6 @@ public class BudgetModule extends AxelorModule {
     bind(PurchaseOrderSupplychainRepository.class)
         .to(PurchaseOrderManagementBudgetRepository.class);
     bind(AppBudgetService.class).to(AppBudgetServiceImpl.class);
-    bind(ExportGlobalBudgetLevelService.class).to(ExportGlobalBudgetLevelServiceImpl.class);
     bind(AdvancedExportRepository.class).to(AdvancedExportBudgetRepository.class);
     bind(BudgetLineService.class).to(BudgetLineServiceImpl.class);
     bind(BudgetToolsService.class).to(BudgetToolsServiceImpl.class);
@@ -186,7 +183,7 @@ public class BudgetModule extends AxelorModule {
     bind(MoveLineConsolidateServiceImpl.class).to(MoveLineConsolidateBudgetServiceImpl.class);
     bind(BudgetGroupService.class).to(BudgetGroupServiceImpl.class);
     bind(GlobalBudgetToolsService.class).to(GlobalBudgetToolsServiceImpl.class);
-    bind(CurrencyScaleServiceBudget.class).to(CurrencyScaleServiceBudgetImpl.class);
     bind(BudgetComputeHiddenDateService.class).to(BudgetComputeHiddenDateServiceImpl.class);
+    bind(Callable.class).to(ExportBudgetCallableService.class);
   }
 }

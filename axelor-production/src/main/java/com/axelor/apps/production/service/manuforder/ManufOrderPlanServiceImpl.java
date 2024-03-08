@@ -190,12 +190,30 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
               manufOrder.addOutStockMoveListItem(sm);
               addToProducedStockMoveLineList(manufOrder, sm);
             });
+
+    if (manufOrderStockMoveService.hasResidualProduct(manufOrder)) {
+      manufOrderStockMoveService
+          .createAndPlanResidualStockMoveWithLines(manufOrder)
+          .ifPresent(
+              sm -> {
+                manufOrder.addOutStockMoveListItem(sm);
+                addToResidualStockMoveLineList(manufOrder, sm);
+              });
+    }
   }
 
   protected void addToProducedStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {
     if (stockMove.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+      }
+    }
+  }
+
+  protected void addToResidualStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        manufOrder.addResidualStockMoveLineListItem(stockMoveLine);
       }
     }
   }

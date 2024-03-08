@@ -92,6 +92,15 @@
   <input file="base_economicArea.csv" separator=";"
     type="com.axelor.apps.base.db.EconomicArea" search="self.importId = :importId"/>
 
+  <input file="base_addressTemplateLine.csv" separator=";"
+    type="com.axelor.apps.base.db.AddressTemplateLine" search="self.importId = :importId">
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+  </input>
+
+  <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
+    search="self.importId = :importId"/>
+
   <input file="base_region.csv" separator=";" type="com.axelor.apps.base.db.Region"/>
 
   <input file="base_departement.csv" separator=";" type="com.axelor.apps.base.db.Department"/>
@@ -109,7 +118,7 @@
 
   <input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportAddress:importAddress">
-    <bind to="city" search="concat(self.zip,' ',self.name) = :addressL6" update="true"/>
+    <bind column="cityName" to="city" search="self.name = :cityName" update="true"/>
   </input>
 
   <input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency"
