@@ -19,13 +19,17 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.sublines.InvoiceSubLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.businessproject.service.InvoiceLineProjectService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProject;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -40,5 +44,16 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void createInvoiceLinesForSubProducts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    Invoice invoice = Beans.get(InvoiceSubLineService.class).getParentInvoiceLine(context);
+    invoiceLine =
+        Beans.get(InvoiceLineProjectService.class)
+            .createInvoiceLinesForSubProducts(invoiceLine, invoice);
+    response.setValues(invoiceLine);
   }
 }

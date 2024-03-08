@@ -357,6 +357,12 @@
     <action name="action-invoice-line-set-line-index"/>
   </action-group>
 
+  <action-method
+          name="action-invoice-line-method-creat-related-il-for-sub-products">
+    <call class="com.axelor.apps.businessproject.web.InvoiceController"
+          method="createInvoiceLinesForSubProducts"/>
+  </action-method>
+
   <action-group name="action-group-account-invoice-line-onload">
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-invoice-line-attrs-readonly-form"/>
@@ -385,6 +391,7 @@
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-sale-order-line-record-update-old-price-and-qty"/>
+    <action name="action-invoice-line-method-creat-related-il-for-sub-products"/>
   </action-group>
 
   <action-record name="action-sale-order-line-record-update-old-price-and-qty"

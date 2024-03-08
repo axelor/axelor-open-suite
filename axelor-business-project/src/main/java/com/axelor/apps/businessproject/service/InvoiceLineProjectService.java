@@ -19,7 +19,9 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import java.util.List;
 
@@ -31,4 +33,7 @@ public interface InvoiceLineProjectService {
       InvoiceLine invoiceLine, List<AnalyticMoveLine> analyticMoveLines);
 
   List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine);
+
+  InvoiceLine createInvoiceLinesForSubProducts(InvoiceLine invoiceLine, Invoice invoice)
+      throws AxelorException;
 }
