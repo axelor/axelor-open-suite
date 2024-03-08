@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid id="construction-sale-order-line-editable-grid" name="sale-order-line-editable-grid"
+    title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" editable="true" extension="true">
+
+    <extend target="//field[@name='lineIndex']">
+      <attribute name="width" value="70"/>
+    </extend>
+    <extend target="//field[@name='product']">
+      <attribute name="width" value="300"/>
+    </extend>
+    <extend target="//field[@name='productName']">
+      <attribute name="width" value="200"/>
+    </extend>
+    <extend target="//field[@name='description']">
+      <attribute name="width" value="400"/>
+    </extend>
+    <extend target="//field[@name='costPrice']">
+      <attribute name="width" value="130"/>
+    </extend>
+    <extend target="//field[@name='generalExpenses']">
+      <attribute name="width" value="130"/>
+    </extend>
+    <extend target="//field[@name='price']">
+      <insert position="before">
+        <field name="costPrice" onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="generalExpenses" onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="grossMarging" onChange="action-sale-order-line-group-calculate-price"/>
+      </insert>
+      <attribute name="width" value="160"/>
+      <attribute name="readonlyIf" value="true"/>
+    </extend>
+    <extend target="//field[@name='availableStatus']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='discountTypeSelect']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='discountAmount']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='qty']">
+      <move position="before" source="//field[@name='unit']"/>
+    </extend>
+    <extend target="//field[@name='description']">
+      <move position="before" source="//field[@name='taxLine']"/>
+    </extend>
+
+  </grid>
+
+  <form id="construction-sale-order-line-form" name="sale-order-line-form" title="SO line"
+    model="com.axelor.apps.sale.db.SaleOrderLine"
+    onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
+    onNew="action-group-sale-saleorderline-onnew" width="large" extension="true">
+    <extend target="//field[@name='price']">
+      <insert position="before">
+        <field name="costPrice" onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="generalExpenses" onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="grossMarging" onChange="action-sale-order-line-group-calculate-price"/>
+      </insert>
+      <attribute name="readonlyIf" value="true"/>
+    </extend>
+  </form>
+
+  <action-group name="action-sale-order-line-group-calculate-price">
+    <action name="action-sale-order-line-record-calculate-price"/>
+    <action name="action-sale-order-line-method-onchange-price"/>
+    <action name="action-sale-order-line-method-compute"/>
+    <action name="action-sale-order-line-method-compute-analytic-distribution"/>
+  </action-group>
+
+  <action-record name="action-sale-order-line-record-calculate-price"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="price" expr="eval: costPrice * grossMarging * generalExpenses"/>
+  </action-record>
+</object-views>

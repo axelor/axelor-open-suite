@@ -66,10 +66,7 @@
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-empty-line"/>
-    <field name="product" canEdit="false"
-      onChange="action-group-sale-saleorderline-product-onchange"
-      onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
-      grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+
     <field name="product" canEdit="false"
       onChange="action-group-sale-saleorderline-product-onchange"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"

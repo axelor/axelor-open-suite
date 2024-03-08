@@ -51,6 +51,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyChainImpl
     implements SaleOrderLineProjectService {
@@ -125,11 +126,11 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
   @Override
   public SaleOrderLine createLinesForSubProducts(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    List<SubProduct> productList = saleOrderLine.getProduct().getSubProductList();
-    if (productList == null || productList.isEmpty()) {
+    Set<SubProduct> productSet = saleOrderLine.getProduct().getSubProductList();
+    if (productSet == null || productSet.isEmpty()) {
       return saleOrderLine;
     }
-    for (SubProduct subProduct : productList) {
+    for (SubProduct subProduct : productSet) {
       SaleOrderLine relatedSaleOrderLine = createSaleOrderline(subProduct, saleOrder);
       saleOrderLine.addSaleOrderLineListItem(relatedSaleOrderLine);
       saleOrderLine.setSaleOrderLineListSize(saleOrderLine.getSaleOrderLineList().size());

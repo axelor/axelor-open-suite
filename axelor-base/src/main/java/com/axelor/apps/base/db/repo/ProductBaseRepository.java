@@ -85,6 +85,7 @@ public class ProductBaseRepository extends ProductRepository {
         product.setBarCode(barcodeFile);
       }
     }
+    Beans.get(ProductService.class).setSubProducts(product);
     return super.save(product);
   }
 

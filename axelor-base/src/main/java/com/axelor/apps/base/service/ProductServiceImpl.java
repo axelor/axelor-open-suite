@@ -574,11 +574,11 @@ public class ProductServiceImpl implements ProductService {
 
     for (SubProduct subProduct : product.getSubProductList()) {
       if (CollectionUtils.isNotEmpty(subProduct.getSubProductList())) {
-        subProduct.getProduct().getSubProductList().clear();
+        // subProduct.getProduct().getSubProductList().clear();
         for (SubProduct sbp : subProduct.getSubProductList()) {
           subProduct.getProduct().addSubProductListItem(sbp);
         }
-        subProduct.setParentProduct(product);
+        // subProduct.setParentProduct(product);
         setSubProducts(subProduct.getProduct());
       }
     }

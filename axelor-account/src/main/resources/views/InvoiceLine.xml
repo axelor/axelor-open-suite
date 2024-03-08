@@ -357,10 +357,9 @@
     <action name="action-invoice-line-set-line-index"/>
   </action-group>
 
-  <action-method
-          name="action-invoice-line-method-creat-related-il-for-sub-products">
+  <action-method name="action-invoice-line-method-creat-related-il-for-sub-products">
     <call class="com.axelor.apps.businessproject.web.InvoiceController"
-          method="createInvoiceLinesForSubProducts"/>
+      method="createInvoiceLinesForSubProducts"/>
   </action-method>
 
   <action-group name="action-group-account-invoice-line-onload">

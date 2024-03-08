@@ -183,7 +183,7 @@ public class ProductController {
     Product product = request.getContext().asType(Product.class);
     product = Beans.get(ProductRepository.class).find(product.getId());
     Beans.get(ProductService.class).setSubProducts(product);
-    Beans.get(ProductRepository.class).save(product);
+    // Beans.get(ProductRepository.class).save(product);
 
     // response.setValues(product);
   }

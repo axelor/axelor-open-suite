@@ -140,8 +140,8 @@
 
     <string name="dtype" insertable="false" updatable="false"/>
 
-    <one-to-many name="subProductList" ref="com.axelor.apps.base.db.SubProduct"
-      title="Children" mappedBy="parentProduct"/>
+    <many-to-many name="subProductList" ref="com.axelor.apps.base.db.SubProduct"
+      title="Children"/>
 
     <!-- Json field -->
     <string name="productAttrs" title="Fields" json="true"/>

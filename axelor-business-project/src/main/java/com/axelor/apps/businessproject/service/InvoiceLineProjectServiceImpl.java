@@ -18,12 +18,10 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -31,7 +29,6 @@ import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.AxelorException;
@@ -47,13 +44,10 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppInvoice;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
@@ -132,14 +126,14 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
   @Override
   public InvoiceLine createInvoiceLinesForSubProducts(InvoiceLine invoiceLine, Invoice invoice)
       throws AxelorException {
-    if (invoiceLine.getProduct() == null){
+    if (invoiceLine.getProduct() == null) {
       return invoiceLine;
     }
-    List<SubProduct> productList = invoiceLine.getProduct().getSubProductList();
-    if (productList == null || productList.isEmpty()) {
+    Set<SubProduct> productSet = invoiceLine.getProduct().getSubProductList();
+    if (productSet == null || productSet.isEmpty()) {
       return invoiceLine;
     }
-    for (SubProduct subProduct : productList) {
+    for (SubProduct subProduct : productSet) {
       InvoiceLine relatedInvoiceLine = createInvoiceLine(subProduct, invoice);
       invoiceLine.addInvoiceLineListItem(relatedInvoiceLine);
       invoiceLine.setInvoiceLineListSize(invoiceLine.getInvoiceLineList().size());
@@ -170,10 +164,11 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
     invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
     invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
 
-
-    invoiceLine.setTaxEquivSet(accountManagementAccountService.getProductTaxEquivSet(
+    invoiceLine.setTaxEquivSet(
+        accountManagementAccountService.getProductTaxEquivSet(
             product, company, fiscalPosition, isPurchase));
-    invoiceLine.setAccount(accountManagementAccountService.getProductAccount(
+    invoiceLine.setAccount(
+        accountManagementAccountService.getProductAccount(
             product, company, fiscalPosition, isPurchase, invoiceLine.getFixedAssets()));
 
     invoiceLine.setPrice(this.getExTaxUnitPrice(invoice, invoiceLine, taxLineSet, isPurchase));
@@ -185,9 +180,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
 
     AppInvoice appInvoice = appAccountService.getAppInvoice();
     Boolean isEnabledProductDescriptionCopy =
-            isPurchase
-                    ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
-                    : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
+        isPurchase
+            ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
+            : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
 
     if (isEnabledProductDescriptionCopy) {
       invoiceLine.setDescription(product.getDescription());
