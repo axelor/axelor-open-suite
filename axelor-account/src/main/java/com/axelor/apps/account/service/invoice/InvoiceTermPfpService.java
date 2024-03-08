@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.util.List;
@@ -46,5 +47,6 @@ public interface InvoiceTermPfpService {
       throws AxelorException;
 
   void validatePfpValidatedAmount(
-      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount) throws AxelorException;
+      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, Company company)
+      throws AxelorException;
 }

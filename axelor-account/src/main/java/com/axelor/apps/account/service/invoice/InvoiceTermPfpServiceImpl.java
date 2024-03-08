@@ -27,6 +27,8 @@ import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -51,15 +53,21 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
+  protected AppAccountService appAccountService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
       InvoiceTermRepository invoiceTermRepo,
-      InvoiceRepository invoiceRepo) {
+      InvoiceRepository invoiceRepo,
+      AppAccountService appAccountService,
+      AccountConfigService accountConfigService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
+    this.appAccountService = appAccountService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -331,53 +339,17 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
   @Override
   public void validatePfpValidatedAmount(
-      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount) throws AxelorException {
+      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, Company company)
+      throws AxelorException {
     if (debitMoveLine == null
         || creditMoveLine == null
-        || isSupplierRefundRelated(debitMoveLine, creditMoveLine)) {
+        || isSupplierRefundRelated(debitMoveLine, creditMoveLine)
+        || !isManagePassedForPayment(company)) {
       return;
     }
 
-    BigDecimal debitAmount =
-        debitMoveLine.getInvoiceTermList().stream()
-            .filter(
-                it ->
-                    Arrays.asList(
-                            InvoiceTermRepository.PFP_STATUS_NO_PFP,
-                            InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
-                            InvoiceTermRepository.PFP_STATUS_VALIDATED)
-                        .contains(it.getPfpValidateStatusSelect()))
-            .map(InvoiceTerm::getCompanyAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    if (amount.compareTo(debitAmount) > 0) {
-      throw new AxelorException(
-          debitMoveLine.getMove(),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
-          debitMoveLine.getMove().getReference(),
-          debitMoveLine.getAccount().getCode());
-    }
-    BigDecimal creditAmount =
-        creditMoveLine.getInvoiceTermList().stream()
-            .filter(
-                it ->
-                    Arrays.asList(
-                            InvoiceTermRepository.PFP_STATUS_NO_PFP,
-                            InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
-                            InvoiceTermRepository.PFP_STATUS_VALIDATED)
-                        .contains(it.getPfpValidateStatusSelect()))
-            .map(InvoiceTerm::getCompanyAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    if (amount.compareTo(creditAmount) > 0) {
-      throw new AxelorException(
-          creditMoveLine.getMove(),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
-          creditMoveLine.getMove().getReference(),
-          creditMoveLine.getAccount().getCode());
-    }
+    validatePfpValidatedAmount(debitMoveLine, amount);
+    validatePfpValidatedAmount(creditMoveLine, amount);
   }
 
   protected boolean isSupplierRefundRelated(MoveLine debitMoveLine, MoveLine creditMoveLine) {
@@ -401,5 +373,45 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     }
 
     return false;
+  }
+
+  protected void validatePfpValidatedAmount(MoveLine moveLine, BigDecimal amount)
+      throws AxelorException {
+    Invoice invoice =
+        Optional.of(moveLine).map(MoveLine::getMove).map(Move::getInvoice).orElse(null);
+
+    if (!ObjectUtils.isEmpty(moveLine.getInvoiceTermList())
+        && invoice != null
+        && InvoiceRepository.PFP_STATUS_AWAITING == invoice.getPfpValidateStatusSelect()) {
+      BigDecimal debitAmount =
+          moveLine.getInvoiceTermList().stream()
+              .filter(
+                  it ->
+                      Arrays.asList(
+                              InvoiceTermRepository.PFP_STATUS_NO_PFP,
+                              InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
+                              InvoiceTermRepository.PFP_STATUS_VALIDATED)
+                          .contains(it.getPfpValidateStatusSelect()))
+              .map(InvoiceTerm::getCompanyAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (amount.compareTo(debitAmount) > 0
+          && moveLine.getMove() != null
+          && moveLine.getAccount() != null) {
+        throw new AxelorException(
+            moveLine.getMove(),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
+            moveLine.getMove().getReference(),
+            moveLine.getAccount().getCode());
+      }
+    }
+  }
+
+  protected boolean isManagePassedForPayment(Company company) throws AxelorException {
+    return company != null
+        && appAccountService.getAppAccount() != null
+        && appAccountService.getAppAccount().getActivatePassedForPayment()
+        && accountConfigService.getAccountConfig(company).getIsManagePassedForPayment();
   }
 }
