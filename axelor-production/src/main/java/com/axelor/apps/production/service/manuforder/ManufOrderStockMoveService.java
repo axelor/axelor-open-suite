@@ -63,6 +63,11 @@ public interface ManufOrderStockMoveService {
   Optional<StockMove> createAndPlanToProduceStockMoveWithLines(ManufOrder manufOrder)
       throws AxelorException;
 
+  Optional<StockMove> createAndPlanResidualStockMoveWithLines(ManufOrder manufOrder)
+      throws AxelorException;
+
+  boolean hasResidualProduct(ManufOrder manufOrder);
+
   Optional<StockMove> createAndPlanToProduceStockMove(ManufOrder manufOrder) throws AxelorException;
 
   /**
@@ -197,6 +202,8 @@ public interface ManufOrderStockMoveService {
 
   StockLocation getProducedProductStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException;
+
+  StockLocation getResidualProductStockLocation(ManufOrder manufOrder) throws AxelorException;
 
   StockLocation getVirtualStockLocationForProducedStockMove(ManufOrder manufOrder, Company company)
       throws AxelorException;

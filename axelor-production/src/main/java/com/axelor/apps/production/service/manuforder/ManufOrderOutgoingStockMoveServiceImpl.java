@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -30,18 +32,22 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ManufOrderOutgoingStockMoveServiceImpl implements ManufOrderOutgoingStockMoveService {
 
   protected AppSupplychainService appSupplychainService;
+  protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public ManufOrderOutgoingStockMoveServiceImpl(
       AppSupplychainService appSupplychainService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      ManufOrderStockMoveService manufOrderStockMoveService) {
     this.appSupplychainService = appSupplychainService;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.manufOrderStockMoveService = manufOrderStockMoveService;
   }
 
   @Override
@@ -118,5 +124,37 @@ public class ManufOrderOutgoingStockMoveServiceImpl implements ManufOrderOutgoin
     copy.setQty(BigDecimal.ZERO);
     copy.setSaleOrderLine(producedStockMoveLine.getSaleOrderLine());
     return copy;
+  }
+
+  @Override
+  public List<StockMove> getResidualOutStockMoveLineList(ManufOrder manufOrder)
+      throws AxelorException {
+    Objects.requireNonNull(manufOrder);
+    StockLocation residualProductStockLocation =
+        manufOrderStockMoveService.getResidualProductStockLocation(manufOrder);
+
+    if (manufOrder.getOutStockMoveList() == null || residualProductStockLocation == null) {
+      return manufOrder.getOutStockMoveList();
+    }
+
+    return manufOrder.getOutStockMoveList().stream()
+        .filter(sm -> residualProductStockLocation.equals(sm.getToStockLocation()))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<StockMove> getNonResidualOutStockMoveLineList(ManufOrder manufOrder)
+      throws AxelorException {
+    Objects.requireNonNull(manufOrder);
+    StockLocation residualProductStockLocation =
+        manufOrderStockMoveService.getResidualProductStockLocation(manufOrder);
+
+    if (manufOrder.getOutStockMoveList() == null || residualProductStockLocation == null) {
+      return manufOrder.getOutStockMoveList();
+    }
+
+    return manufOrder.getOutStockMoveList().stream()
+        .filter(sm -> !residualProductStockLocation.equals(sm.getToStockLocation()))
+        .collect(Collectors.toList());
   }
 }

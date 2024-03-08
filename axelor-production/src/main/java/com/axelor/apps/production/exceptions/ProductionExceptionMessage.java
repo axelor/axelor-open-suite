@@ -48,6 +48,9 @@ public final class ProductionExceptionMessage {
   public static final String BATCH_COMPUTE_VALUATION = /*$$(*/
       "* %s Computed work in progress valuation" /*)*/;
 
+  /** Batch Fill SOP real values */
+  public static final String BATCH_FILL_SOP = /*$$(*/ "* %s Filled SOP lines" /*)*/;
+
   public static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid" /*)*/;
 
   /** Bill of Materials Service */
@@ -84,6 +87,9 @@ public final class ProductionExceptionMessage {
 
   public static final String UNRECOGNIZED_CAPACITY_FOR_COMPANY_PRODUCTION_CONFIG = /*$$(*/
       "Unrecognized capacity for company %s production configuration" /*)*/;
+
+  public static final String PRODUCTION_RESIDUAL_STOCK_LOCATION_MISSING = /*$$(*/
+      "You must configure a residual products default stock location for company %s." /*)*/;
 
   /** Manuf Order Controller */
   public static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
