@@ -19,5 +19,5 @@ public interface RelatedSaleOrderLineService {
 
   SaleOrderLine updateOnSaleOrderLineListChange(SaleOrderLine saleOrderLine);
 
-  void populateSOLines(SaleOrder saleOrder);
+  void populateSOLines(SaleOrder saleOrder) throws AxelorException;
 }

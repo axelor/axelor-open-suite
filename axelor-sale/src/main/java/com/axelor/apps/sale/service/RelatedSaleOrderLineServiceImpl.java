@@ -50,19 +50,20 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void populateSOLines(SaleOrder saleOrder) {
+  public void populateSOLines(SaleOrder saleOrder) throws AxelorException {
 
     if (!appSaleService.getAppSale().getIsSubLinesEnabled()) {
       return;
     }
 
-    saleOrder = saleOrderRepository.find(saleOrder.getId());
+    updateRelatedOrderLines(saleOrder);
+    saleOrder.getSaleOrderLineList().clear();
+
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
       if (!saleOrderLine.getIsNotCountable()) {
         saleOrder.addSaleOrderLineListItem(saleOrderLine);
       }
     }
-    saleOrderRepository.save(saleOrder);
   }
 
   @Override
@@ -118,7 +119,6 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       calculateAllParentsTotalsAndPrices(saleOrderLine, saleOrder);
     }
-    saleOrderRepository.save(saleOrder);
   }
 
   protected void calculateAllParentsTotalsAndPrices(

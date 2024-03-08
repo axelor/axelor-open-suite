@@ -235,7 +235,7 @@
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
     onNew="action-group-sale-saleorder-onnew"
-    onSave="action-sale-order-line-tree-method-update-hasTree,save,action-sale-order-update-order-lines,action-sale-order-populate-so-lines">
+    onSave="action-sale-order-line-tree-method-update-hasTree">
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print"
         hideIf="clientPartner == null" readonlyIf="!id"
@@ -680,7 +680,8 @@
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
-    <panel name="actionsPanel" hideIf="clientPartner == null" sidebar="true" stacked="true">
+    <panel name="actionsPanel" hideIf="clientPartner == null" sidebar="true" stacked="true"
+      hidden="true">
       <button name="addPackBtn" title="Add a pack"
         onClick="save,action-sale-order-view-add-pack"
         if="__config__.app.getApp('sale')?.enablePackManagement"
@@ -758,7 +759,7 @@
         if="__config__.app.getApp('base')?.getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
-      sidebar="true">
+      sidebar="true" hidden="true">
       <field name="currency.symbol" hidden="true"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
       <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
@@ -2376,11 +2377,4 @@
       expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
 
-  <action-method name="action-sale-order-update-order-lines">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateRelatedOrderLines"/>
-  </action-method>
-
-  <action-method name="action-sale-order-populate-so-lines">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="populateSOLines"/>
-  </action-method>
 </object-views>

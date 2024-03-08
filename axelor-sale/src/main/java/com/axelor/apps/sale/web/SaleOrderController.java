@@ -44,7 +44,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.RelatedSaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -736,20 +735,6 @@ public class SaleOrderController {
     } else {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
     }
-    response.setReload(true);
-  }
-
-  public void updateRelatedOrderLines(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-    Beans.get(RelatedSaleOrderLineService.class).updateRelatedOrderLines(saleOrder);
-    response.setReload(true);
-  }
-
-  public void populateSOLines(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(RelatedSaleOrderLineService.class).populateSOLines(saleOrder);
     response.setReload(true);
   }
 }
