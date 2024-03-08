@@ -1,0 +1,6 @@
+---
+title: "BillOfMaterial: Fixed name and full name computation"
+module: "axelor-production"
+developer: |
+  Renamed method computeName to computeFullName and removed unused
+  BillOfMaterialComputeNameService class variable and related references.
