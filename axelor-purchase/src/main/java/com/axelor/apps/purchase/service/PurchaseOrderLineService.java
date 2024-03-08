@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public interface PurchaseOrderLineService {
@@ -106,5 +107,6 @@ public interface PurchaseOrderLineService {
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException;
 
-  LocalDate getEstimatedReceiptDate(PurchaseOrderLine purchaseOrderLine, Partner supplierPartner);
+  Optional<LocalDate> getEstimatedReceiptDate(
+      PurchaseOrderLine purchaseOrderLine, Partner supplierPartner);
 }

@@ -474,6 +474,7 @@ public class PurchaseOrderLineController {
     response.setValue(
         "estimatedReceiptDate",
         Beans.get(PurchaseOrderLineService.class)
-            .getEstimatedReceiptDate(purchaseOrderLine, purchaseOrder.getSupplierPartner()));
+            .getEstimatedReceiptDate(purchaseOrderLine, purchaseOrder.getSupplierPartner())
+            .orElse(null));
   }
 }

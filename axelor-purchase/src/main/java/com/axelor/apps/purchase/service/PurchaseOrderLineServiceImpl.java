@@ -685,13 +685,13 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public LocalDate getEstimatedReceiptDate(
+  public Optional<LocalDate> getEstimatedReceiptDate(
       PurchaseOrderLine purchaseOrderLine, Partner supplierPartner) {
     LocalDate estimatedShippingDate = purchaseOrderLine.getEstimatedShippingDate();
 
     if (!appPurchaseService.getAppPurchase().getManageSupplierCatalog()
         || estimatedShippingDate == null) {
-      return null;
+      return Optional.empty();
     }
 
     int deliveryTime =
@@ -703,6 +703,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
             .map(SupplierCatalog::getDeliveryTime)
             .orElse(0);
 
-    return estimatedShippingDate.plusDays(deliveryTime);
+    return Optional.of(estimatedShippingDate.plusDays(deliveryTime));
   }
 }
