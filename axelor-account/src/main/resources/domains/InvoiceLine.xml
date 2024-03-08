@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
+  <entity name="InvoiceLine"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine,com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
@@ -96,6 +97,18 @@
 			return BigDecimal.ZERO;
 	    ]]>
     </decimal>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return invoice != null ? invoice.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return invoice != null ? invoice.getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <extra-code>
 		<![CDATA[

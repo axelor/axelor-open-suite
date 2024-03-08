@@ -6,7 +6,7 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrderLine"
-    implements="com.axelor.apps.base.interfaces.PricedOrderLine">
+    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable">
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
 	  		String fullName = "";
@@ -66,6 +66,18 @@
     <boolean name="isTitleLine" title="Title Line"/>
 
     <boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return purchaseOrder != null ? purchaseOrder.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return purchaseOrder != null ? purchaseOrder.getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <track>
       <field name="desiredReceiptDate"/>

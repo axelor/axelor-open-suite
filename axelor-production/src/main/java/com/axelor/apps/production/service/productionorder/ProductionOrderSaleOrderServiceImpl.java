@@ -218,6 +218,9 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
       for (BillOfMaterial childBom : childBomList) {
 
+        if (childBom.getProdProcess() == null) {
+          continue;
+        }
         ManufOrder manufOrder =
             productionOrderService.generateManufOrder(
                 childBom.getProduct(),
