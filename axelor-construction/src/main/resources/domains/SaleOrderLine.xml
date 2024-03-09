@@ -8,7 +8,7 @@
   <entity name="SaleOrderLine" implements="com.axelor.apps.base.interfaces.PricedOrderLine">
     <decimal name="costPrice" title="Cost price" min="0"/>
     <decimal name="generalExpenses" title="General expenses" min="0" default="1"/>
-    <decimal name="grossMarging" title="Gross marging" min="0" default="1"/>
+    <decimal name="grossMarging" title="Gross margin" min="0" default="1"/>
   </entity>
 
 </domain-models>

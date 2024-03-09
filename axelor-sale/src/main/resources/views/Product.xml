@@ -14,7 +14,7 @@
     </extend>
     <extend target="//panel[@name='packingPanel']">
       <insert position="after">
-        <panel title="Children">
+        <panel name="structuresPanel" title="Structures">
           <panel-related field="subProductList" grid-view="sub-product-grid"
             form-view="sub-product-form" colSpan="12" title="Children"/>
         </panel>

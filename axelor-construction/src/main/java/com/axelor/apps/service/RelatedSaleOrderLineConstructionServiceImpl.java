@@ -12,7 +12,6 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.math.RoundingMode;
 
 public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrderLineServiceImpl {
@@ -42,7 +41,10 @@ public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrde
       saleOrderLine.setGrossMarging(
           saleOrderLine
               .getPrice()
-              .divide(saleOrderLine.getGeneralExpenses().multiply(saleOrderLine.getCostPrice()),2, RoundingMode.HALF_UP));
+              .divide(
+                  saleOrderLine.getGeneralExpenses().multiply(saleOrderLine.getCostPrice()),
+                  2,
+                  RoundingMode.HALF_UP));
     }
   }
 }
