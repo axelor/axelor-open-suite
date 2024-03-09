@@ -492,7 +492,7 @@
           field="saleOrderLineDisplayList" form-view="sale-order-line-form"
           grid-view="sale-order-line-editable-grid" orderBy="lineIndex"
           onChange="action-sale-order-method-on-line-change"
-          onNew="action-sale-order-line-group-editable-onnew,action-sale-order-line-set-line-index"
+          onNew="action-sale-order-line-group-editable-onnew,action-sale-order-line-set-line-index,action-sale-order-line-record-set-default-business-project-config"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           if="__config__.app.getApp('sale')?.getIsEditableGridEnabled() &amp;&amp; __config__.app.getApp('sale')?.getIsSubLinesEnabled()"/>
@@ -501,7 +501,7 @@
           field="saleOrderLineList" form-view="sale-order-line-form"
           grid-view="sale-order-line-editable-grid" orderBy="sequence" canMove="true"
           onChange="action-sale-order-method-on-line-change"
-          onNew="action-sale-order-line-group-editable-onnew,action-sale-order-line-set-line-index"
+          onNew="action-sale-order-line-group-editable-onnew,action-sale-order-line-set-line-index,action-sale-order-line-record-set-default-business-project-config"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           if="__config__.app.getApp('sale')?.getIsEditableGridEnabled() &amp;&amp; !__config__.app.getApp('sale')?.getIsSubLinesEnabled()"/>

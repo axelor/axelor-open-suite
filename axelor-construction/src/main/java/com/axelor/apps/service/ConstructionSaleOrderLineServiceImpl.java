@@ -107,7 +107,7 @@ public class ConstructionSaleOrderLineServiceImpl
         saleOrderLine
             .getCostPrice()
             .multiply(saleOrderLine.getGrossMarging())
-            .add(saleOrderLine.getGeneralExpenses());
+            .multiply(saleOrderLine.getGeneralExpenses());
 
     BigDecimal price =
         (productInAti == resultInAti)
@@ -115,12 +115,14 @@ public class ConstructionSaleOrderLineServiceImpl
             : taxService.convertUnitPrice(
                 productInAti, taxLineSet, productSalePrice, AppBaseService.COMPUTATION_SCALING);
 
-    return currencyService
+    /*return currencyService
         .getAmountCurrencyConvertedAtDate(
             (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
             saleOrder.getCurrency(),
             price,
             saleOrder.getCreationDate())
-        .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+        .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);*/
+
+    return price;
   }
 }

@@ -25,13 +25,13 @@
       <attribute name="width" value="130"/>
     </extend>
     <extend target="//field[@name='price']">
+      <attribute name="readonlyIf" value="true"/>
+      <attribute name="width" value="160"/>
       <insert position="before">
         <field name="costPrice" onChange="action-sale-order-line-group-calculate-price"/>
         <field name="generalExpenses" onChange="action-sale-order-line-group-calculate-price"/>
         <field name="grossMarging" onChange="action-sale-order-line-group-calculate-price"/>
       </insert>
-      <attribute name="width" value="160"/>
-      <attribute name="readonlyIf" value="true"/>
     </extend>
     <extend target="//field[@name='availableStatus']">
       <replace/>

@@ -17,6 +17,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -57,8 +58,14 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     }
 
     updateRelatedOrderLines(saleOrder);
-    saleOrder.getSaleOrderLineList().clear();
+    if(saleOrder.getSaleOrderLineList() == null){
+      saleOrder.setSaleOrderLineList(new ArrayList<>());
+    }
 
+    saleOrder.getSaleOrderLineList().clear();
+    if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineDisplayList())){
+      return;
+    }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
       if (!saleOrderLine.getIsNotCountable()) {
         saleOrder.addSaleOrderLineListItem(saleOrderLine);

@@ -67,15 +67,20 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     }
     updateRelatedOrderLines(invoice);
 
+    if (invoice.getInvoiceLineList() == null){
+      invoice.setInvoiceLineList(new ArrayList<>());
+    }
     invoice.getInvoiceLineList().clear();
+    if (CollectionUtils.isEmpty(invoice.getInvoiceLineDisplayList())){
+      return;
+    }
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineDisplayList()) {
       if (!invoiceLine.getIsNotCountable()) {
         invoice.addInvoiceLineListItem(invoiceLine);
       }
-      // invoiceRepository.save(invoice);
     }
     computeInvoice(invoice);
-    invoiceRepository.save(invoice);
+    //invoiceRepository.save(invoice);
   }
 
   @Override

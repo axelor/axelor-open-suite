@@ -568,7 +568,6 @@ public class ProductServiceImpl implements ProductService {
     copy.setCode(null);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void setSubProducts(Product product) {
 

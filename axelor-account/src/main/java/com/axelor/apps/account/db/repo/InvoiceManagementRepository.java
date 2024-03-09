@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.sublines.InvoiceSubLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -50,6 +51,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
   @Override
   public Invoice save(Invoice invoice) {
     try {
+
       List<InvoicePayment> invoicePayments = invoice.getInvoicePaymentList();
       if (CollectionUtils.isNotEmpty(invoicePayments)) {
         LocalDate latestPaymentDate =

@@ -10,5 +10,6 @@ modules:
    axelor-construction
 dependsOn:
    - business-project
+   - budget
 sequence:
    101

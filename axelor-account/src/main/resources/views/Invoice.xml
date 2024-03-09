@@ -1738,7 +1738,6 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-invoice-onsave-group">
     <action name="save"/>
-    <action name="action-invoice-update-lines"/>
     <action name="action-invoice-populate-invoice-lines"/>
     <action name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner"/>
     <action name="action-invoice-line-check-distribution-template-account"/>

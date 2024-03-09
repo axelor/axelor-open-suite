@@ -305,6 +305,7 @@
 
         <panel name="taxPanel" colSpan="12">
           <field name="taxLineSet" canEdit="false" colSpan="6"
+                 showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"
             readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
             onChange="action-group-sale-saleorderline-tax-line-onchange"
             domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
@@ -312,7 +313,7 @@
           <field name="exTaxTotal" readonly="true" colSpan="3"
             x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" readonly="true" colSpan="3"
-            x-scale="$currency.numberOfDecimals"/>
+            x-scale="$currency.numberOfDecimals" showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"/>
           <field name="$currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
             hidden="true"/>
           <field name="$currency.numberOfDecimals" hidden="true"/>
@@ -359,6 +360,7 @@
         <field name="isProcessedLine" hidden="true"/>
         <field name="isDisabledFromCalculation" hidden="true"/>
         <field name="saleOrderLineListSize" hidden="true"/>
+        <field name="saleOrder.company.saleConfig.countTypeSelect" hidden="true"/>
         <panel-related field="saleOrderLineList" name="saleOrderLineListPanel"
           colSpan="12" form-view="sale-order-line-form" grid-view="sale-order-line-grid"
           onChange="action-sale-order-line-method-update-on-sale-order-line-list-change"
@@ -509,11 +511,12 @@
         </panel>
       </panel>
       <field name="taxLineSet" canEdit="false" colSpan="4"
+             showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"
         onChange="action-group-sale-saleorderline-tax-line-onchange"
         domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form" widget="TagSelect"/>
       <field name="exTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
-      <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
+      <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals" showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
         form-view="tax-equiv-form"/>
       <field name="$currency" hidden="true" type="many-to-one"

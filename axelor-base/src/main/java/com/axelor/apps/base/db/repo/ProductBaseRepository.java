@@ -30,6 +30,7 @@ import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductBaseRepository extends ProductRepository {
 
@@ -85,7 +86,9 @@ public class ProductBaseRepository extends ProductRepository {
         product.setBarCode(barcodeFile);
       }
     }
-    Beans.get(ProductService.class).setSubProducts(product);
+    if (CollectionUtils.isNotEmpty(product.getSubProductList())) {
+      Beans.get(ProductService.class).setSubProducts(product);
+    }
     return super.save(product);
   }
 

@@ -9,7 +9,7 @@
     <many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product"
       title="Parent"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <decimal name="qty" title="Quantity"/>
+    <decimal name="qty" title="Quantity" default="1"/>
     <one-to-many name="subProductList" ref="com.axelor.apps.base.db.SubProduct"
       title="Children"/>
   </entity>
