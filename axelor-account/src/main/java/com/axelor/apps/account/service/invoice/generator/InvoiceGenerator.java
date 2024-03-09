@@ -37,6 +37,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.sublines.InvoiceSubLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
@@ -379,7 +380,9 @@ public abstract class InvoiceGenerator {
       }
     }
     // Create tax lines.
-    List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
+    List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines.stream()
+            .filter(line -> !line.getIsNotCountable())
+            .collect(Collectors.toList()))).creates();
 
     // Workaround for #9759
     if (invoice instanceof ContextEntity) {
@@ -388,7 +391,7 @@ public abstract class InvoiceGenerator {
       invoiceTaxLines.forEach(invoice::addInvoiceLineTaxListItem);
     }
 
-    computeInvoice(invoice);
+    Beans.get(InvoiceSubLineService.class).computeInvoice(invoice);
   }
 
   /**

@@ -159,11 +159,20 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     }
 
     BigDecimal total = computeTotal(invoiceLine, invoice, newInvoiceLineListDisplay);
-    invoiceLine.setPrice(
-        total.divide(
-            invoiceLine.getQty(),
-            appBaseService.getNbDecimalDigitForUnitPrice(),
-            RoundingMode.HALF_UP));
+    if (invoice.getCompany().getAccountConfig().getIsInvoiceCoefficientEnabled()){
+      invoiceLine.setPrice(
+              total.divide(
+                      invoiceLine.getQty().multiply(invoiceLine.getCoefficient()),
+                      appBaseService.getNbDecimalDigitForUnitPrice(),
+                      RoundingMode.HALF_UP));
+    } else {
+      invoiceLine.setPrice(
+              total.divide(
+                      invoiceLine.getQty(),
+                      appBaseService.getNbDecimalDigitForUnitPrice(),
+                      RoundingMode.HALF_UP));
+    }
+
 
     computeAllValues(invoiceLine, invoice);
     invoiceLine.setPriceBeforeUpdate(invoiceLine.getPrice());
@@ -360,11 +369,19 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     invoice.setCompanyTaxTotal(BigDecimal.ZERO);
     invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
-    if (CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
-      invoice.setInvoiceLineList(new ArrayList<InvoiceLine>());
+    if (CollectionUtils.isEmpty(invoice.getInvoiceLineDisplayList())) {
+      invoice.setInvoiceLineDisplayList(new ArrayList<InvoiceLine>());
+    }
+    List<InvoiceLine> invoiceLineList;
+    if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()){
+      invoiceLineList = invoice.getInvoiceLineDisplayList().stream()
+              .filter(line -> !line.getIsNotCountable())
+              .collect(Collectors.toList());
+    } else {
+      invoiceLineList = invoice.getInvoiceLineList();
     }
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    for (InvoiceLine invoiceLine : invoiceLineList) {
 
       if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
         continue;
@@ -387,7 +404,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
       invoice.getInvoiceLineTaxList().clear();
     }
     List<InvoiceLineTax> invoiceTaxLines =
-        (new TaxInvoiceLine(invoice, invoice.getInvoiceLineList())).creates();
+        (new TaxInvoiceLine(invoice, invoiceLineList)).creates();
 
     invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
 

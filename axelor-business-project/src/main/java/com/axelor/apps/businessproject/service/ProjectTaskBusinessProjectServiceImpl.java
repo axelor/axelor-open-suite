@@ -290,7 +290,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       newInvoiceLineList.add(invoiceLine);
       fillInvoiceLineList(invoiceLine, newInvoiceLineList);
     }
-
     return newInvoiceLineList;
   }
 
@@ -377,8 +376,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     int counter = 1;
     for (ProjectTask childProjectTask : projectTask.getProjectTaskList()) {
       String nextIndex = index + "." + counter;
-      invoiceLine.addInvoiceLineListItem(
-          createInvoiceLine(invoice, childProjectTask, priority++, nextIndex, invoiceLine));
+      /*invoiceLine.addInvoiceLineListItem(
+          createInvoiceLine(invoice, childProjectTask, priority++, nextIndex, invoiceLine));*/
+      createInvoiceLine(invoice, childProjectTask, priority++, nextIndex, invoiceLine);
       counter++;
     }
 
