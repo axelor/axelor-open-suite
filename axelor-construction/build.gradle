@@ -16,4 +16,5 @@ axelor {
 dependencies {
 	api project(":modules:axelor-business-support")
 	api project(":modules:axelor-business-production")
+	api project(":modules:axelor-budget")
 }
