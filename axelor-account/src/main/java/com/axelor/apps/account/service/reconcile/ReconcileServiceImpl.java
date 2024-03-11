@@ -822,6 +822,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException {
+
+    //TODO Add process for Foreign Exchage gains/losses
+
     BigDecimal amount =
         debitMoveLine.getAmountRemaining().abs().min(creditMoveLine.getAmountRemaining().abs());
     Reconcile reconcile =
@@ -866,6 +869,8 @@ public class ReconcileServiceImpl implements ReconcileService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException {
+
+    //TODO Add process for Foreign Exchage gains/losses
 
     log.debug("unreconcile : reconcile : {}", reconcile);
 
