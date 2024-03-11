@@ -104,9 +104,9 @@
       <attribute name="readonlyIf" value="true"/>
     </extend>
 
-    <extend target="//button[@name='recalculateBtn']">
+<!--    <extend target="//button[@name='recalculateBtn']">
       <attribute name="showIf" value="false"/>
-    </extend>
+    </extend>-->
   </form>
 
   <action-group name="action-sale-order-line-group-calculate-price">
@@ -128,7 +128,6 @@
   </action-record>
   <action-attrs name="action-sale-order-line-attrs-enable-recalculation">
     <attribute for="recalculateBtn" name="showIf" expr="id &amp;&amp; saleOrderLineListSize"/>
-
   </action-attrs>
 
 </object-views>
