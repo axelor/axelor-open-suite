@@ -22,7 +22,8 @@
       <field name="name"/>
       <field name="priority" colSpan="3"/>
       <panel name="workCenterGroupPanel" colSpan="12">
-        <field name="workCenterTypeSelect"/>
+        <field name="workCenterTypeSelect"
+          onChange="action-prod-process-line-group-work-center-type-group-onchange"/>
         <button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
           onClick="save,action-production-view-work-center-group-wizard"
           readonlyIf="workCenterTypeSelect == 0 || workCenterTypeSelect == null"/>
@@ -120,6 +121,13 @@
       expr="eval: workCenter?.timingOfImplementation"/>
   </action-attrs>
 
+  <action-record
+    name="action-prod-process-line-record-work-center-type-reset-work-center"
+    model="com.axelor.apps.production.db.ProdProcessLine">
+    <field name="workCenter" expr="eval: null"
+      if="workCenter?.workCenterTypeSelect != workCenterTypeSelect"/>
+  </action-record>
+
   <action-group name="action-prod-process-line-group-work-center-onchange">
     <action name="action-prod-process-line-method-duration"/>
     <action name="action-prod-process-line-attrs-set-timing-of-implementation"/>
@@ -128,6 +136,11 @@
 
   <action-group name="action-prod-process-line-group-work-center-group-onchange">
     <action name="action-prod-process-line-method-work-center-group-fill-work-center"/>
+    <action name="action-prod-process-line-group-work-center-onchange"/>
+  </action-group>
+
+  <action-group name="action-prod-process-line-group-work-center-type-group-onchange">
+    <action name="action-prod-process-line-record-work-center-type-reset-work-center"/>
     <action name="action-prod-process-line-group-work-center-onchange"/>
   </action-group>
 
@@ -164,8 +177,6 @@
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="hidden" for="workCenterGroupPanel"
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
-
-
   </action-attrs>
 
   <action-attrs name="action-prod-process-line-attrs-machine-tool-domain">
@@ -179,8 +190,10 @@
     <attribute name="domain" for="workCenter"
       expr="eval: 'self.id IN (' + workCenterGroup?.workCenterSet?.collect{ it.id }.join(',') + ')'"
       if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; workCenterGroup?.workCenterSet &amp;&amp; !workCenterGroup?.workCenterSet.isEmpty()"/>
+    <attribute name="domain" for="workCenter"
+      expr="eval: workCenterTypeSelect ? 'self.workCenterTypeSelect =  :workCenterTypeSelect' : 'self.id IS NOT NULL'"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; (!workCenterGroup || !workCenterGroup.workCenterSet  || workCenterGroup.workCenterSet.isEmpty())"/>
   </action-attrs>
-
 
 
 </object-views>
