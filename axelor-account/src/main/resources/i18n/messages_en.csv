@@ -2227,6 +2227,7 @@
 "No move lines to reconcile.",,,
 "No of Units",,,
 "No partner account was found for company %s.",,,
+"No partner involved, please look for your blocking configuration if necessary.",,,
 "No period found for the date %s and the company %s. The move cannot be created.",,,
 "No record has been selected",,,
 "No record has been updated. Please make sure the selection can be updated accordingly (e.g. Status different from selected one).",,,

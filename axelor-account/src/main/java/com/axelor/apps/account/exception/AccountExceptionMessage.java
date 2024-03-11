@@ -1625,4 +1625,7 @@ public final class AccountExceptionMessage {
       "The move lines are still linked to invoice payment(s) related to invoices: <br> %s <br> You can't modify them." /*)*/;
   public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
       "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
+      "No partner involved, please look for your blocking configuration if necessary." /*)*/;
 }
