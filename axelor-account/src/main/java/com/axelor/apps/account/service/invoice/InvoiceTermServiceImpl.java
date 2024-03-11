@@ -251,7 +251,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             paymentConditionLine.getIsHoldback());
 
     invoiceTerm.setPaymentConditionLine(paymentConditionLine);
-    this.computeFinancialDiscount(invoiceTerm, invoice);
+    this.computeFinancialDiscount(invoiceTerm, invoice, null);
 
     return invoiceTerm;
   }
@@ -344,13 +344,31 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
+  public void computeFinancialDiscount(
+      InvoiceTerm invoiceTerm, Invoice invoice, MoveLine moveLine) {
+    if (invoice != null) {
+      this.computeFinancialDiscount(invoiceTerm, invoice);
+    } else if (moveLine != null) {
+      this.computeFinancialDiscount(invoiceTerm, moveLine);
+    }
+  }
+
+  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
         invoice.getInTaxTotal(),
         invoice.getFinancialDiscount(),
         invoice.getFinancialDiscountTotalAmount(),
         invoice.getRemainingAmountAfterFinDiscount());
+  }
+
+  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, MoveLine moveLine) {
+    this.computeFinancialDiscount(
+        invoiceTerm,
+        moveLine.getCredit().max(moveLine.getDebit()),
+        moveLine.getFinancialDiscount(),
+        moveLine.getFinancialDiscountTotalAmount(),
+        moveLine.getRemainingAmountAfterFinDiscount());
   }
 
   @Override
@@ -451,7 +469,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
     this.computeCompanyAmounts(invoiceTerm, false, false);
-    this.computeFinancialDiscount(invoiceTerm, invoice);
+    this.computeFinancialDiscount(invoiceTerm, invoice, null);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
       findInvoiceTermsInInvoice(invoice.getMove().getMoveLineList(), invoiceTerm, invoice);
@@ -816,7 +834,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
     invoice.getInvoiceTermList().stream()
         .filter(it -> it.getAmountRemaining().compareTo(it.getAmount()) == 0)
-        .forEach(it -> this.computeFinancialDiscount(it, invoice));
+        .forEach(it -> this.computeFinancialDiscount(it, invoice, null));
 
     return invoice.getInvoiceTermList();
   }

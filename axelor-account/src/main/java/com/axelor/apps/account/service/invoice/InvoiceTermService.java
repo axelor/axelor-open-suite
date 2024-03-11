@@ -58,7 +58,7 @@ public interface InvoiceTermService {
 
   void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate, boolean isHoldback);
 
-  void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
+  void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice, MoveLine moveLine);
 
   void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,

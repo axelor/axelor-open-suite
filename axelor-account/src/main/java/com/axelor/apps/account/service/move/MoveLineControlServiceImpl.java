@@ -181,7 +181,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           moveLineService.computeFinancialDiscount(moveLine);
         } else {
           invoiceTermList.forEach(
-              it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
+              it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached, moveLine));
         }
       }
 
