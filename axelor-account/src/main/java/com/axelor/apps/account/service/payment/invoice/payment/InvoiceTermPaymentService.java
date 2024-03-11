@@ -49,7 +49,8 @@ public interface InvoiceTermPaymentService {
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
-      BigDecimal reconcileAmount);
+      BigDecimal reconcileAmount)
+      throws AxelorException;
 
   /**
    * Method to create invoiceTermPayments for an invoicePayment
