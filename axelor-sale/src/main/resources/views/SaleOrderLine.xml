@@ -104,6 +104,8 @@
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="parentSaleOrderLine" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -683,7 +685,11 @@
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-disable-recalculation" if="__config__.app.isApp('construction')"/>
   </action-group>
+  <action-record name="action-sale-order-line-record-disable-recalculation" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="$isEnabledForCalculation" expr="false"/>
+  </action-record>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
     <action name="action-sale-order-line-method-get-product-information"/>

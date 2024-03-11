@@ -50,7 +50,7 @@
       <attribute name="width" value="100"/>
       <attribute name="colSpan" value="6"/>
       <attribute name="x-scale"
-        value="__config__.app.getApp('base')?.getNbDecimalDigitForUnitPrice()"/>
+        value="$nbDecimalDigitForUnitPrice"/>
       <attribute name="title" value="PR HT"/>
       <insert position="before">
         <field name="costPrice" title="Cost Pr"
@@ -72,7 +72,7 @@
     <extend target="//field[@name='qty']">
       <attribute name="width" value="80"/>
       <attribute name="x-scale"
-        value="__config__.app.getApp('base')?.getNbDecimalDigitForQty()"/>
+        value="$nbDecimalDigitForQty"/>
       <move position="before" source="//field[@name='unit']"/>
     </extend>
     <extend target="//field[@name='description']">
@@ -104,13 +104,16 @@
       <attribute name="readonlyIf" value="true"/>
     </extend>
 
-<!--    <extend target="//button[@name='recalculateBtn']">
-      <attribute name="showIf" value="false"/>
-    </extend>-->
+    <extend target="//button[@name='recalculateBtn']">
+      <insert position="after">
+        <field name="$isEnabledForCalculation" hidden="true"/>
+      </insert>
+      <attribute name="showIf" value="$isEnabledForCalculation"/>
+    </extend>
   </form>
 
   <action-group name="action-sale-order-line-group-calculate-price">
-    <action name="action-sale-order-line-attrs-enable-recalculation"/>
+    <action name="action-sale-order-line-record-enable-recalculation"/>
     <action name="action-sale-order-line-record-calculate-price"/>
     <action name="action-sale-order-line-method-onchange-price"/>
     <action name="action-sale-order-line-method-compute"/>
@@ -126,8 +129,9 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="typeSelect" expr="eval: 0"/>
   </action-record>
-  <action-attrs name="action-sale-order-line-attrs-enable-recalculation">
-    <attribute for="recalculateBtn" name="showIf" expr="id &amp;&amp; saleOrderLineListSize"/>
-  </action-attrs>
+
+  <action-record name="action-sale-order-line-record-enable-recalculation" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="$isEnabledForCalculation" expr="true"/>
+  </action-record>
 
 </object-views>
