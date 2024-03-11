@@ -127,6 +127,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
                 ProductionExceptionMessage.BOM_IMPORT_NO_MAIN_BILL_OF_MATERIALS_GENERATED));
 
     generateBillOfMaterialFromImportLine(billOfMaterialImportLineOp.get());
+    updateProducts(billOfMaterialImport.getMainBillOfMaterialGenerated());
 
     attachMetaFile(billOfMaterialImport);
   }
@@ -156,33 +157,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     if (billOfMaterialImportLine.getBillOfMaterialImportLineList() != null) {
       for (BillOfMaterialImportLine billOfMaterialImportLineChild :
           billOfMaterialImportLine.getBillOfMaterialImportLineList()) {
-        generateBillOfMaterialFromImportLine(billOfMaterialImportLineChild)
-            .map(
-                bom -> {
-                  if (billOfMaterial.getProduct() != null
-                      && billOfMaterial.getProduct().getProductSubTypeSelect()
-                          == ProductRepository.PRODUCT_SUB_TYPE_COMPONENT) {
-                    billOfMaterial
-                        .getProduct()
-                        .setProductSubTypeSelect(
-                            ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
-                  }
-                  return bom;
-                })
-            .ifPresentOrElse(
-                childBom -> {
-                  billOfMaterial.addBillOfMaterialLineListItem(
-                      billOfMaterialLineService.createFromBillOfMaterial(childBom));
-                },
-                () ->
-                    billOfMaterial.addBillOfMaterialLineListItem(
-                        billOfMaterialLineService.createBillOfMaterialLine(
-                            billOfMaterialImportLineChild.getProduct(),
-                            billOfMaterial,
-                            billOfMaterialImportLineChild.getQuantity(),
-                            billOfMaterialImportLineChild.getUnit(),
-                            null,
-                            false)));
+        processChildLines(billOfMaterialImportLineChild, billOfMaterial);
       }
     }
 
@@ -194,6 +169,43 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
         .getBillOfMaterialImport()
         .setMainBillOfMaterialGenerated(billOfMaterial);
     return Optional.of(billOfMaterialRepository.save(billOfMaterial));
+  }
+
+  protected void processChildLines(
+      BillOfMaterialImportLine billOfMaterialImportLineChild, BillOfMaterial billOfMaterial) {
+    generateBillOfMaterialFromImportLine(billOfMaterialImportLineChild)
+        .ifPresentOrElse(
+            childBom -> {
+              billOfMaterial.addBillOfMaterialLineListItem(
+                  billOfMaterialLineService.createFromBillOfMaterial(childBom));
+            },
+            () ->
+                billOfMaterial.addBillOfMaterialLineListItem(
+                    billOfMaterialLineService.createBillOfMaterialLine(
+                        billOfMaterialImportLineChild.getProduct(),
+                        null,
+                        billOfMaterialImportLineChild.getQuantity(),
+                        billOfMaterialImportLineChild.getUnit(),
+                        null,
+                        false)));
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void updateProducts(BillOfMaterial billOfMaterial) {
+    if (billOfMaterial == null) {
+      return;
+    }
+    if (billOfMaterial.getProduct() != null
+        && billOfMaterial.getProduct().getProductSubTypeSelect()
+            == ProductRepository.PRODUCT_SUB_TYPE_COMPONENT) {
+      billOfMaterial
+          .getProduct()
+          .setProductSubTypeSelect(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
+    }
+
+    billOfMaterial
+        .getBillOfMaterialLineList()
+        .forEach(bomLine -> updateProducts(bomLine.getBillOfMaterial()));
   }
 
   protected void setBillOfMaterialFields(

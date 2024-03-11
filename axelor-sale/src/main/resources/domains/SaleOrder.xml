@@ -5,7 +5,8 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrder" implements="com.axelor.apps.base.interfaces.PricedOrder">
+  <entity name="SaleOrder"
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
@@ -163,6 +164,13 @@
 
     <many-to-one name="taxNumber" title="Tax number"
       ref="com.axelor.apps.account.db.TaxNumber"/>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <unique-constraint columns="saleOrderSeq,company"/>
 

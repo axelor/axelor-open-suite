@@ -44,4 +44,12 @@ public class TourManagementRepository extends TourRepository {
     map.put("$isValidated", isValidated);
     return map;
   }
+
+  public Tour copy(Tour entity, boolean deep) {
+    Tour tour = super.copy(entity, deep);
+    for (TourLine line : tour.getTourLineList()) {
+      line.setIsValidated(false);
+    }
+    return tour;
+  }
 }
