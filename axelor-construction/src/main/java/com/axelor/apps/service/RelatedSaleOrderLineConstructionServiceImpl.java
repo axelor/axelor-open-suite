@@ -12,10 +12,9 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.collections.CollectionUtils;
-
+import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collection;
+import org.apache.commons.collections.CollectionUtils;
 
 public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrderLineServiceImpl {
 
@@ -40,17 +39,23 @@ public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrde
   @Transactional(rollbackOn = {Exception.class})
   public void updateRelatedOrderLines(SaleOrder saleOrder) throws AxelorException {
     super.updateRelatedOrderLines(saleOrder);
-    if(CollectionUtils.isEmpty(saleOrder.getSaleOrderLineDisplayList())){
+    if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineDisplayList())) {
       return;
     }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
-      saleOrderLine.setGrossMarging(
-          saleOrderLine
-              .getPrice()
-              .divide(
-                  saleOrderLine.getGeneralExpenses().multiply(saleOrderLine.getCostPrice()),
-                  AppSaleService.DEFAULT_NB_DECIMAL_DIGITS,
-                  RoundingMode.HALF_UP));
+      if (saleOrderLine.getGeneralExpenses().compareTo(BigDecimal.ZERO) == 0
+          || saleOrderLine.getCostPrice().compareTo(BigDecimal.ZERO) == 0) {
+
+        saleOrderLine.setGrossMarging(BigDecimal.ZERO);
+      } else {
+        saleOrderLine.setGrossMarging(
+            saleOrderLine
+                .getPrice()
+                .divide(
+                    saleOrderLine.getGeneralExpenses().multiply(saleOrderLine.getCostPrice()),
+                    AppSaleService.DEFAULT_NB_DECIMAL_DIGITS,
+                    RoundingMode.HALF_UP));
+      }
     }
   }
 }
