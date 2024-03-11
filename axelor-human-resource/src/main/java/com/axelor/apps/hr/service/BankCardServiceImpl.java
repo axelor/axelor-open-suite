@@ -1,22 +1,21 @@
 package com.axelor.apps.hr.service;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.BankCard;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InvoiceHRServiceImpl implements InvoiceHRService {
+public class BankCardServiceImpl implements BankCardService {
   @Override
-  public String createDomainForBankCard(Invoice invoice) {
-    BankDetails bankDetails = invoice.getBankDetails();
+  public String createDomainForBankCard(BankDetails bankDetails, Company company) {
     if (bankDetails != null) {
       List<Long> ids =
           bankDetails.getBankCardList().stream().map(BankCard::getId).collect(Collectors.toList());
       return "self.id IN " + ids.toString().replace("[", "(").replace("]", ")");
     }
 
-    List<BankDetails> bankDetailsList = invoice.getCompany().getBankDetailsList();
+    List<BankDetails> bankDetailsList = company.getBankDetailsList();
     if (bankDetailsList != null) {
       List<Long> ids =
           bankDetailsList.stream()

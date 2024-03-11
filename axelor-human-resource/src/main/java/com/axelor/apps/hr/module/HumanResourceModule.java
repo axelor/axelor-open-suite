@@ -53,14 +53,14 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.service.BankCardService;
+import com.axelor.apps.hr.service.BankCardServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
 import com.axelor.apps.hr.service.EmployeeComputeStatusServiceImpl;
 import com.axelor.apps.hr.service.EmployeeFileDMSService;
 import com.axelor.apps.hr.service.EmployeeFileDMSServiceImpl;
 import com.axelor.apps.hr.service.HRDashboardService;
 import com.axelor.apps.hr.service.HRDashboardServiceImpl;
-import com.axelor.apps.hr.service.InvoiceHRService;
-import com.axelor.apps.hr.service.InvoiceHRServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
@@ -339,6 +339,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetLineCheckService.class).to(TimesheetLineCheckServiceImpl.class);
     bind(ExpenseLineToolService.class).to(ExpenseLineToolServiceImpl.class);
     bind(ExpenseLineUpdateService.class).to(ExpenseLineUpdateServiceImpl.class);
-    bind(InvoiceHRService.class).to(InvoiceHRServiceImpl.class);
+    bind(BankCardService.class).to(BankCardServiceImpl.class);
   }
 }

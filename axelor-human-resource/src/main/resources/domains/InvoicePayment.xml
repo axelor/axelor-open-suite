@@ -5,8 +5,9 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Invoice">
-    <many-to-one name="bankCard" title="Bank card" ref="com.axelor.apps.hr.db.BankCard"/>
+  <entity name="InvoicePayment">
+    <many-to-one name="companyBankCard" ref="com.axelor.apps.hr.db.BankCard"
+      title="Company bank card"/>
   </entity>
 
 </domain-models>
