@@ -65,15 +65,15 @@ public class InvoiceLineController {
     }
   }
 
-  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+  public void computeBudgetRemainingAmountToAllocate(
+      ActionRequest request, ActionResponse response) {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-    Invoice invoice = request.getContext().getParent().asType(Invoice.class);
 
-    Beans.get(BudgetInvoiceLineService.class)
-        .computeBudgetDistributionSumAmount(invoiceLine, invoice);
-
-    response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
-    response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
+    response.setValue(
+        "budgetRemainingAmountToAllocate",
+        Beans.get(BudgetToolsService.class)
+            .getBudgetRemainingAmountToAllocate(
+                invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
   }
 
   public void setBudgetDomain(ActionRequest request, ActionResponse response) {

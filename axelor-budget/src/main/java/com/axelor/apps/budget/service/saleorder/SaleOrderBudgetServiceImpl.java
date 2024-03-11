@@ -147,7 +147,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         budgetDistributionService.linkBudgetDistributionWithParent(
             budgetDistribution, saleOrderLine);
       }
-      saleOrderLine.setBudgetDistributionSumAmount(saleOrderLine.getCompanyExTaxTotal());
+      saleOrderLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
     }
   }
 
@@ -327,6 +327,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           date,
           saleOrderLine.getCompanyExTaxTotal(),
           saleOrderLine);
+      saleOrderLine.setBudgetRemainingAmountToAllocate(
+          budgetToolsService.getBudgetRemainingAmountToAllocate(
+              saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
     }
   }

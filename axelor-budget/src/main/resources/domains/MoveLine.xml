@@ -11,7 +11,8 @@
     <one-to-many ref="com.axelor.apps.budget.db.BudgetDistribution"
       name="budgetDistributionList" mappedBy="moveLine" title="Budget Distribution"/>
     <boolean name="isBudgetImputed" title="Budget distribution imputed"/>
-    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
+    <decimal name="budgetRemainingAmountToAllocate"
+      title="Remaining amount to allocate on budgets"/>
 
   </entity>
 

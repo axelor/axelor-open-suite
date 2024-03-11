@@ -193,7 +193,10 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
             && !appBudget.getManageMultiBudget()) {
           purchaseOrderLine.clearBudgetDistributionList();
         }
-        purchaseOrderLine.setBudgetDistributionSumAmount(purchaseOrderLine.getCompanyExTaxTotal());
+        purchaseOrderLine.setBudgetRemainingAmountToAllocate(
+            budgetToolsService.getBudgetRemainingAmountToAllocate(
+                purchaseOrderLine.getBudgetDistributionList(),
+                purchaseOrderLine.getCompanyExTaxTotal()));
       }
     }
   }
@@ -288,8 +291,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
 
       budgetDistributionRepository.save(newBudgetDistribution);
-      purchaseOrderLineBudgetService.computeBudgetDistributionSumAmount(
-          purchaseOrderLine, purchaseOrder);
+      purchaseOrderLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
     }
   }
 
@@ -362,6 +364,10 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
           purchaseOrder.getOrderDate(),
           purchaseOrderLine.getCompanyExTaxTotal(),
           purchaseOrderLine);
+      purchaseOrderLine.setBudgetRemainingAmountToAllocate(
+          budgetToolsService.getBudgetRemainingAmountToAllocate(
+              purchaseOrderLine.getBudgetDistributionList(),
+              purchaseOrderLine.getCompanyExTaxTotal()));
       purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, true);
     }
   }

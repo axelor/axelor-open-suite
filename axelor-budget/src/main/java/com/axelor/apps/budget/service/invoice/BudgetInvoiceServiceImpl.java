@@ -295,7 +295,7 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
           budgetDistributionService.linkBudgetDistributionWithParent(
               budgetDistribution, invoiceLine);
         }
-        invoiceLine.setBudgetDistributionSumAmount(invoiceLine.getCompanyExTaxTotal());
+        invoiceLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
       }
     }
   }
@@ -370,6 +370,9 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
           date,
           invoiceLine.getCompanyExTaxTotal(),
           invoiceLine);
+      invoiceLine.setBudgetRemainingAmountToAllocate(
+          budgetToolsService.getBudgetRemainingAmountToAllocate(
+              invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
     }
   }
 }

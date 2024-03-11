@@ -11,8 +11,8 @@
     <one-to-many name="budgetDistributionList"
       ref="com.axelor.apps.budget.db.BudgetDistribution" title="Budget Distribution"
       mappedBy="invoiceLine"/>
-    <decimal name="budgetDistributionSumAmount" title="Total amount attributed" scale="3"
-      precision="20"/>
+    <decimal name="budgetRemainingAmountToAllocate"
+      title="Remaining amount to allocate on budgets" scale="3" precision="20"/>
 
   </entity>
 
