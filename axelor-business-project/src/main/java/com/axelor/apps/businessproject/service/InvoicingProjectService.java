@@ -424,6 +424,7 @@ public class InvoicingProjectService {
     StringBuilder taskQueryBuilder = new StringBuilder(commonQuery);
     taskQueryBuilder.append(
         " AND (self.invoicingType = :invoicingTypePackage OR self.invoicingType = :invoicingTypeProgress)");
+    taskQueryBuilder.append(" AND (self.progress > 0 AND self.progress > self.invoicingProgress)");
     Map<String, Object> taskQueryMap = new HashMap<>();
     taskQueryMap.put("project", project);
     taskQueryMap.put("invoicingTypePackage", ProjectTaskRepository.INVOICING_TYPE_PACKAGE);

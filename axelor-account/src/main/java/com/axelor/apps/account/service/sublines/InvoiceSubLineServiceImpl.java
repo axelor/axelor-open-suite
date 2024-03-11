@@ -67,11 +67,11 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     }
     updateRelatedOrderLines(invoice);
 
-    if (invoice.getInvoiceLineList() == null){
+    if (invoice.getInvoiceLineList() == null) {
       invoice.setInvoiceLineList(new ArrayList<>());
     }
     invoice.getInvoiceLineList().clear();
-    if (CollectionUtils.isEmpty(invoice.getInvoiceLineDisplayList())){
+    if (CollectionUtils.isEmpty(invoice.getInvoiceLineDisplayList())) {
       return;
     }
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineDisplayList()) {
@@ -80,7 +80,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
       }
     }
     computeInvoice(invoice);
-    //invoiceRepository.save(invoice);
+    // invoiceRepository.save(invoice);
   }
 
   @Override
@@ -159,20 +159,19 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     }
 
     BigDecimal total = computeTotal(invoiceLine, invoice, newInvoiceLineListDisplay);
-    if (invoice.getCompany().getAccountConfig().getIsInvoiceCoefficientEnabled()){
+    if (invoice.getCompany().getAccountConfig().getIsInvoiceCoefficientEnabled()) {
       invoiceLine.setPrice(
-              total.divide(
-                      invoiceLine.getQty().multiply(invoiceLine.getCoefficient()),
-                      appBaseService.getNbDecimalDigitForUnitPrice(),
-                      RoundingMode.HALF_UP));
+          total.divide(
+              invoiceLine.getQty().multiply(invoiceLine.getCoefficient()),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              RoundingMode.HALF_UP));
     } else {
       invoiceLine.setPrice(
-              total.divide(
-                      invoiceLine.getQty(),
-                      appBaseService.getNbDecimalDigitForUnitPrice(),
-                      RoundingMode.HALF_UP));
+          total.divide(
+              invoiceLine.getQty(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              RoundingMode.HALF_UP));
     }
-
 
     computeAllValues(invoiceLine, invoice);
     invoiceLine.setPriceBeforeUpdate(invoiceLine.getPrice());
@@ -373,8 +372,9 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
       invoice.setInvoiceLineDisplayList(new ArrayList<InvoiceLine>());
     }
     List<InvoiceLine> invoiceLineList;
-    if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()){
-      invoiceLineList = invoice.getInvoiceLineDisplayList().stream()
+    if (Beans.get(AppAccountService.class).getAppAccount().getIsSubLinesEnabled()) {
+      invoiceLineList =
+          invoice.getInvoiceLineDisplayList().stream()
               .filter(line -> !line.getIsNotCountable())
               .collect(Collectors.toList());
     } else {
@@ -403,8 +403,7 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
     } else {
       invoice.getInvoiceLineTaxList().clear();
     }
-    List<InvoiceLineTax> invoiceTaxLines =
-        (new TaxInvoiceLine(invoice, invoiceLineList)).creates();
+    List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLineList)).creates();
 
     invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
 

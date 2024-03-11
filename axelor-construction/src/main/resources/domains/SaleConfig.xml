@@ -6,7 +6,7 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleConfig" cacheable="true">
-    <decimal name="defaultGrossMarging" min="0" default="1" title="Default gross margin"/>
+    <decimal name="defaultGrossMarging" default="1" title="Default gross margin"/>
   </entity>
 
 </domain-models>

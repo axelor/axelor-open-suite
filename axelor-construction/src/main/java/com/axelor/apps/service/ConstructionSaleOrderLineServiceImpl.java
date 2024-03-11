@@ -6,7 +6,6 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -28,7 +27,6 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Set;
 
 public class ConstructionSaleOrderLineServiceImpl
@@ -106,8 +104,7 @@ public class ConstructionSaleOrderLineServiceImpl
     BigDecimal productSalePrice =
         saleOrderLine
             .getCostPrice()
-            .multiply(saleOrderLine.getGrossMarging())
-            .multiply(saleOrderLine.getGeneralExpenses());
+            .multiply(saleOrderLine.getGrossMarging().add(saleOrderLine.getGeneralExpenses().add(BigDecimal.ONE)));
 
     BigDecimal price =
         (productInAti == resultInAti)
@@ -116,12 +113,12 @@ public class ConstructionSaleOrderLineServiceImpl
                 productInAti, taxLineSet, productSalePrice, AppBaseService.COMPUTATION_SCALING);
 
     /*return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
-            saleOrder.getCurrency(),
-            price,
-            saleOrder.getCreationDate())
-        .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);*/
+    .getAmountCurrencyConvertedAtDate(
+        (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
+        saleOrder.getCurrency(),
+        price,
+        saleOrder.getCreationDate())
+    .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);*/
 
     return price;
   }

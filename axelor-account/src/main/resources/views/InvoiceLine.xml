@@ -94,10 +94,6 @@
             if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
           <field name="typeSelect" colSpan="3"
             onChange="action-invoice-line-method-empty-line"/>
-          <button name="recalculateBtn" onClick="action-invoice-line-group-recalculate"
-            title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
-            if="__config__.app.getApp('account')?.isSubLinesEnabled"
-            showIf="id &amp;&amp; invoiceLineListSize"/>
           <field name="isNotCountable" readonly="true" colSpan="1" hidden="true"/>
           <field name="invoiceLineListSize" hidden="true"/>
         </panel>
@@ -114,10 +110,6 @@
           <field name="typeSelect" colSpan="3"
             onChange="action-invoice-line-method-empty-line"/>
           <field name="isNotCountable" readonly="true" colSpan="1" hidden="true"/>
-          <button name="recalculateBtn" onClick="action-invoice-line-group-recalculate"
-            title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
-            if="__config__.app.getApp('account')?.isSubLinesEnabled"
-            showIf="id &amp;&amp; invoiceLineListSize"/>
           <field name="invoiceLineListSize" hidden="true"/>
         </panel>
         <field name="productName" colSpan="12" requiredIf="typeSelect == 0"/>
@@ -128,6 +120,11 @@
         <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="price" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
+        <spacer colSpan="3"/>
+        <button name="recalculateBtn" onClick="action-invoice-line-group-recalculate"
+                title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
+                if="__config__.app.getApp('account')?.isSubLinesEnabled"
+                showIf="id &amp;&amp; invoiceLineListSize"/>
         <field name="inTaxPrice" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           hidden="true"/>

@@ -377,7 +377,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     for (ProjectTask childProjectTask : projectTask.getProjectTaskList()) {
       String nextIndex = index + "." + counter;
       /*invoiceLine.addInvoiceLineListItem(
-          createInvoiceLine(invoice, childProjectTask, priority++, nextIndex, invoiceLine));*/
+      createInvoiceLine(invoice, childProjectTask, priority++, nextIndex, invoiceLine));*/
       createInvoiceLine(invoice, childProjectTask, priority++, nextIndex, invoiceLine);
       counter++;
     }

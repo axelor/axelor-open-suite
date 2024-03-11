@@ -126,7 +126,7 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
   @Override
   public SaleOrderLine createLinesForSubProducts(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    if (saleOrderLine.getProduct() == null){
+    if (saleOrderLine.getProduct() == null) {
       return saleOrderLine;
     }
     Set<SubProduct> productSet = saleOrderLine.getProduct().getSubProductList();

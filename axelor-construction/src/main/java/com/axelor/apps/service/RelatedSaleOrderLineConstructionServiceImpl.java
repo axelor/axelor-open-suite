@@ -43,8 +43,7 @@ public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrde
       return;
     }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
-      if (saleOrderLine.getGeneralExpenses().compareTo(BigDecimal.ZERO) == 0
-          || saleOrderLine.getCostPrice().compareTo(BigDecimal.ZERO) == 0) {
+      if (saleOrderLine.getCostPrice().compareTo(BigDecimal.ZERO) == 0) {
 
         saleOrderLine.setGrossMarging(BigDecimal.ZERO);
       } else {
@@ -52,9 +51,10 @@ public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrde
             saleOrderLine
                 .getPrice()
                 .divide(
-                    saleOrderLine.getGeneralExpenses().multiply(saleOrderLine.getCostPrice()),
+                    saleOrderLine.getCostPrice(),
                     AppSaleService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_UP));
+                    RoundingMode.HALF_UP)
+                .subtract(saleOrderLine.getGeneralExpenses().add(BigDecimal.ONE)));
       }
     }
   }

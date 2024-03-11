@@ -6,11 +6,22 @@
   <grid id="construction-sale-order-line-editable-grid" name="sale-order-line-editable-grid"
     title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" editable="true" extension="true">
 
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-sale-order-line-record-set-default-type-select"/>
+    </extend>
+    <extend target="//field[@name='typeSelect']">
+      <attribute name="hidden" value="true"/>
+    </extend>
+    <extend target="//field[@name='typeSelect']">
+      <attribute name="hidden" value="true"/>
+    </extend>
     <extend target="//field[@name='product.code']">
       <replace/>
     </extend>
     <extend target="//field[@name='lineIndex']">
-      <attribute name="width" value="70"/>
+      <attribute name="width" value="50"/>
+      <attribute name="title" value="I"/>
     </extend>
     <extend target="//field[@name='product']">
       <attribute name="width" value="300"/>
@@ -23,8 +34,7 @@
     </extend>
 
     <extend target="//field[@name='inTaxPrice']">
-      <attribute name="width" value="150"/>
-      <attribute name="colSpan" value="6"/>
+      <replace/>
     </extend>
     <extend target="//field[@name='exTaxTotal']">
       <attribute name="width" value="110"/>
@@ -37,12 +47,16 @@
       <attribute name="readonlyIf" value="true"/>
       <attribute name="readonly" value="true"/>
       <attribute name="hidden" value="false"/>
-      <attribute name="width" value="160"/>
+      <attribute name="width" value="100"/>
       <attribute name="colSpan" value="6"/>
-      <attribute name="x-scale" value="2"/>
+      <attribute name="x-scale"
+        value="__config__.app.getApp('base')?.getNbDecimalDigitForUnitPrice()"/>
+      <attribute name="title" value="PR HT"/>
       <insert position="before">
-        <field name="costPrice" onChange="action-sale-order-line-group-calculate-price" width="130"/>
-        <field name="generalExpenses" onChange="action-sale-order-line-group-calculate-price" width="130"/>
+        <field name="costPrice" title="Cost Pr"
+          onChange="action-sale-order-line-group-calculate-price" width="130"/>
+        <field name="generalExpenses" title="GE"
+          onChange="action-sale-order-line-group-calculate-price" width="80"/>
         <field name="grossMarging" onChange="action-sale-order-line-group-calculate-price"/>
       </insert>
     </extend>
@@ -56,8 +70,9 @@
       <replace/>
     </extend>
     <extend target="//field[@name='qty']">
-      <attribute name="width" value="100"/>
-      <attribute name="x-scale" value="2"/>
+      <attribute name="width" value="80"/>
+      <attribute name="x-scale"
+        value="__config__.app.getApp('base')?.getNbDecimalDigitForQty()"/>
       <move position="before" source="//field[@name='unit']"/>
     </extend>
     <extend target="//field[@name='description']">
@@ -88,9 +103,14 @@
       </insert>
       <attribute name="readonlyIf" value="true"/>
     </extend>
+
+    <extend target="//button[@name='recalculateBtn']">
+      <attribute name="showIf" value="false"/>
+    </extend>
   </form>
 
   <action-group name="action-sale-order-line-group-calculate-price">
+    <action name="action-sale-order-line-attrs-enable-recalculation"/>
     <action name="action-sale-order-line-record-calculate-price"/>
     <action name="action-sale-order-line-method-onchange-price"/>
     <action name="action-sale-order-line-method-compute"/>
@@ -99,6 +119,16 @@
 
   <action-record name="action-sale-order-line-record-calculate-price"
     model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="price" expr="eval: costPrice * grossMarging * generalExpenses"/>
+    <field name="price" expr="eval: costPrice * (grossMarging + generalExpenses + 1)"/>
   </action-record>
+
+  <action-record name="action-sale-order-line-record-set-default-type-select"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="typeSelect" expr="eval: 0"/>
+  </action-record>
+  <action-attrs name="action-sale-order-line-attrs-enable-recalculation">
+    <attribute for="recalculateBtn" name="showIf" expr="id &amp;&amp; saleOrderLineListSize"/>
+
+  </action-attrs>
+
 </object-views>

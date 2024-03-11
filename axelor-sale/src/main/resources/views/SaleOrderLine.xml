@@ -66,10 +66,9 @@
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-empty-line"/>
-<!--    <field name="product" canEdit="false"
-      onChange="action-group-sale-saleorderline-product-onchange"
-      onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
-      grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>-->
+    <!-- <field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange"
+      onSelect="action-sale-order-line-method-domain-product" form-view="product-form" grid-view="product-grid"
+      if="!__config__.app.isApp('supplychain')"/> -->
     <field name="product" canEdit="false"
       onChange="action-group-sale-saleorderline-product-onchange"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
@@ -252,10 +251,7 @@
           <field name="enableFreezeFields" colSpan="2"/>
           <field name="typeSelect" colSpan="2"
             onChange="action-sale-order-line-method-empty-line,action-sale-order-method-hide-ati"/>
-          <field name="isNotCountable" readonly="true" colSpan="1"/>
-          <button name="recalculate" onClick="action-sale-order-line-group-recalculate"
-            title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
-            if="__config__.app.getApp('sale')?.isSubLinesEnabled" showIf="id"/>
+          <field name="isNotCountable" readonly="true" colSpan="1" hidden="true"/>
           <field name="productName" colSpan="12"/>
           <field name="oldQty"/>
         </panel>
@@ -268,10 +264,13 @@
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
             onChange="action-group-sale-saleorderline-unit-onchange" requiredIf="typeSelect == 0"
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-          <field name="price" colSpan="3"
+          <field name="price" colSpan="6"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
             onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
             hidden="true"/>
+          <button name="recalculateBtn" onClick="action-sale-order-line-group-recalculate"
+            title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation" showIf="id &amp;&amp; saleOrderLineListSize"
+            if="__config__.app.getApp('sale')?.isSubLinesEnabled"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
             onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
@@ -305,7 +304,7 @@
 
         <panel name="taxPanel" colSpan="12">
           <field name="taxLineSet" canEdit="false" colSpan="6"
-                 showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"
+            showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"
             readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
             onChange="action-group-sale-saleorderline-tax-line-onchange"
             domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
@@ -313,7 +312,8 @@
           <field name="exTaxTotal" readonly="true" colSpan="3"
             x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" readonly="true" colSpan="3"
-            x-scale="$currency.numberOfDecimals" showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"/>
+            x-scale="$currency.numberOfDecimals"
+            showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"/>
           <field name="$currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
             hidden="true"/>
           <field name="$currency.numberOfDecimals" hidden="true"/>
@@ -511,12 +511,13 @@
         </panel>
       </panel>
       <field name="taxLineSet" canEdit="false" colSpan="4"
-             showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"
+        showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"
         onChange="action-group-sale-saleorderline-tax-line-onchange"
         domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form" widget="TagSelect"/>
       <field name="exTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
-      <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals" showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"/>
+      <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"
+        showIf="(saleOrder.company.saleConfig.countTypeSelect == 2 &amp;&amp; saleOrderLineListSize == 0) || (saleOrder.company.saleConfig.countTypeSelect == 1 &amp;&amp; !parentSaleOrderLine)"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
         form-view="tax-equiv-form"/>
       <field name="$currency" hidden="true" type="many-to-one"

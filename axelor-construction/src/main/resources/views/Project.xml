@@ -278,6 +278,10 @@
       <move source="//panel[@name='datePanel']" position="inside"/>
     </extend>
 
+    <extend target="//panel[@name='activityPanel']">
+      <move source="//panel[@name='configurationsPanel']" position="after"/>
+    </extend>
+
   </form>
 
 
