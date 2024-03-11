@@ -39,7 +39,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -332,18 +331,12 @@ public class AccountController {
   public void viewMoveTemplates(ActionRequest request, ActionResponse response) {
     Account account = request.getContext().asType(Account.class);
 
-    Query<MoveTemplateLine> moveTemplateLineList =
-        Beans.get(MoveTemplateLineRepository.class).findByAccount(account);
-    List<Long> moveTemplateIdList = List.of(0L);
-
-    if (moveTemplateLineList.count() > 0) {
-      moveTemplateIdList =
-          moveTemplateLineList.fetch().stream()
-              .map(MoveTemplateLine::getMoveTemplate)
-              .map(MoveTemplate::getId)
-              .distinct()
-              .collect(Collectors.toList());
-    }
+    List<Long> moveTemplateIdList =
+        Beans.get(MoveTemplateLineRepository.class).findByAccount(account).fetch().stream()
+            .map(MoveTemplateLine::getMoveTemplate)
+            .map(MoveTemplate::getId)
+            .distinct()
+            .collect(Collectors.toList());
 
     ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Move templates"));
     actionViewBuilder.model(MoveTemplate.class.getName());

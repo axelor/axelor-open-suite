@@ -9,6 +9,7 @@ import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -24,17 +25,20 @@ public class MoveTemplateGroupServiceImpl implements MoveTemplateGroupService {
   protected UserService userService;
   protected MoveTemplateTypeRepository moveTemplateTypeRepository;
   protected MoveTemplateRepository moveTemplateRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MoveTemplateGroupServiceImpl(
       CompanyRepository companyRepository,
       UserService userService,
       MoveTemplateTypeRepository moveTemplateTypeRepository,
-      MoveTemplateRepository moveTemplateRepository) {
+      MoveTemplateRepository moveTemplateRepository,
+      AppBaseService appBaseService) {
     this.companyRepository = companyRepository;
     this.userService = userService;
     this.moveTemplateTypeRepository = moveTemplateTypeRepository;
     this.moveTemplateRepository = moveTemplateRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -55,7 +59,7 @@ public class MoveTemplateGroupServiceImpl implements MoveTemplateGroupService {
       if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
         valuesMap.put("moveTemplate", moveTemplate);
       } else {
-        valuesMap.put("moveDate", LocalDate.now());
+        valuesMap.put("moveDate", appBaseService.getTodayDate(company));
         valuesMap.put("moveTemplateSet", new HashSet<>(Arrays.asList(moveTemplate)));
       }
       valuesMap.put("popup", true);
