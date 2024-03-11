@@ -58,12 +58,12 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     }
 
     updateRelatedOrderLines(saleOrder);
-    if(saleOrder.getSaleOrderLineList() == null){
+    if (saleOrder.getSaleOrderLineList() == null) {
       saleOrder.setSaleOrderLineList(new ArrayList<>());
     }
 
     saleOrder.getSaleOrderLineList().clear();
-    if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineDisplayList())){
+    if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineDisplayList())) {
       return;
     }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
