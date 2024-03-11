@@ -2252,6 +2252,7 @@
 "No move lines to reconcile.","Aucune ligne d'écriture comptable à lettrer.",,
 "No of Units","Nbre d'unités",,
 "No partner account was found for company %s.","Aucun compte de tiers trouvé pour la société %s.",,
+"No partner involved, please look for your blocking configuration if necessary.","Aucun tiers affecté, veuillez revoir votre configuration de blocage si besoin.",,
 "No period found for the date %s and the company %s. The move cannot be created.","Aucune période comptable trouvée pour la date %s et la société %s.",,
 "No record has been selected","Aucune ligne n'a été sélectionnée",,
 "No record has been updated. Please make sure the selection can be updated accordingly (e.g. Status different from selected one).","Aucun enregistrement n'a été mis à jour. Veuillez vous assurer que la sélection peut bien être mise à jour (ex : Statut différent de celui sélectionné).",,
