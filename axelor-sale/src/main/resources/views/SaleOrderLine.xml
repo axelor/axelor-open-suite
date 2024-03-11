@@ -271,7 +271,8 @@
             onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
             hidden="true"/>
           <button name="recalculateBtn" onClick="action-sale-order-line-group-recalculate"
-            title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation" showIf="id &amp;&amp; saleOrderLineListSize"
+            title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
+            showIf="id &amp;&amp; saleOrderLineListSize"
             if="__config__.app.getApp('sale')?.isSubLinesEnabled"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
@@ -685,9 +686,11 @@
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
-    <action name="action-sale-order-line-attrs-disable-recalculation" if="__config__.app.isApp('construction')"/>
+    <action name="action-sale-order-line-attrs-disable-recalculation"
+      if="__config__.app.isApp('construction')"/>
   </action-group>
-  <action-record name="action-sale-order-line-record-disable-recalculation" model="com.axelor.apps.sale.db.SaleOrderLine">
+  <action-record name="action-sale-order-line-record-disable-recalculation"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="$isEnabledForCalculation" expr="false"/>
   </action-record>
 

@@ -104,7 +104,10 @@ public class ConstructionSaleOrderLineServiceImpl
     BigDecimal productSalePrice =
         saleOrderLine
             .getCostPrice()
-            .multiply(saleOrderLine.getGrossMarging().add(saleOrderLine.getGeneralExpenses().add(BigDecimal.ONE)));
+            .multiply(
+                saleOrderLine
+                    .getGrossMarging()
+                    .add(saleOrderLine.getGeneralExpenses().add(BigDecimal.ONE)));
 
     BigDecimal price =
         (productInAti == resultInAti)

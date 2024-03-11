@@ -49,8 +49,7 @@
       <attribute name="hidden" value="false"/>
       <attribute name="width" value="100"/>
       <attribute name="colSpan" value="6"/>
-      <attribute name="x-scale"
-        value="$nbDecimalDigitForUnitPrice"/>
+      <attribute name="x-scale" value="$nbDecimalDigitForUnitPrice"/>
       <attribute name="title" value="PR HT"/>
       <insert position="before">
         <field name="costPrice" title="Cost Pr"
@@ -70,9 +69,9 @@
       <replace/>
     </extend>
     <extend target="//field[@name='qty']">
-      <attribute name="width" value="80"/>
-      <attribute name="x-scale"
-        value="$nbDecimalDigitForQty"/>
+      <attribute name="width" value="60"/>
+      <attribute name="colSpan" value="6"/>
+      <attribute name="x-scale" value="$nbDecimalDigitForQty"/>
       <move position="before" source="//field[@name='unit']"/>
     </extend>
     <extend target="//field[@name='description']">
@@ -130,7 +129,8 @@
     <field name="typeSelect" expr="eval: 0"/>
   </action-record>
 
-  <action-record name="action-sale-order-line-record-enable-recalculation" model="com.axelor.apps.sale.db.SaleOrderLine">
+  <action-record name="action-sale-order-line-record-enable-recalculation"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="$isEnabledForCalculation" expr="true"/>
   </action-record>
 

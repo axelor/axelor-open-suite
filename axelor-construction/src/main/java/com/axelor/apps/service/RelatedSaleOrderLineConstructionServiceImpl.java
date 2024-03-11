@@ -58,4 +58,48 @@ public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrde
       }
     }
   }
+
+  @Override
+  protected void calculateAllParentsTotalsAndPrices(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+    if (saleOrderLine.getSaleOrderLineList() == null
+        || saleOrderLine.getSaleOrderLineList().isEmpty()) {
+      saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
+      saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
+      setDefaultSaleOrderLineProperties(saleOrderLine, saleOrder);
+      return;
+    }
+
+    BigDecimal[] totals = computeTotals(saleOrderLine, saleOrder);
+    BigDecimal total = totals[0];
+    BigDecimal costPriceTotal = totals[1];
+    saleOrderLine.setPrice(
+        total.divide(
+            saleOrderLine.getQty(),
+            appBaseService.getNbDecimalDigitForUnitPrice(),
+            RoundingMode.HALF_UP));
+
+    saleOrderLine.setCostPrice(
+        costPriceTotal.divide(
+            saleOrderLine.getQty(),
+            appBaseService.getNbDecimalDigitForUnitPrice(),
+            RoundingMode.HALF_UP));
+
+    computeAllValues(saleOrderLine, saleOrder);
+    saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
+    saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
+    setDefaultSaleOrderLineProperties(saleOrderLine, saleOrder);
+  }
+
+  protected BigDecimal[] computeTotals(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    BigDecimal total = BigDecimal.ZERO;
+    BigDecimal costPriceTotal = BigDecimal.ZERO;
+    for (SaleOrderLine subline : saleOrderLine.getSaleOrderLineList()) {
+      calculateAllParentsTotalsAndPrices(subline, saleOrder);
+      total = total.add(subline.getExTaxTotal());
+      costPriceTotal = costPriceTotal.add(subline.getCostPrice().multiply(subline.getQty()));
+    }
+    return new BigDecimal[] {total, costPriceTotal};
+  }
 }
