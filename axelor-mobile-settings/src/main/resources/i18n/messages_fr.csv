@@ -104,6 +104,7 @@
 "Mobile tracebacks",,,
 "Mobile translations","Traductions mobiles",,
 "Name","Nom",,
+"None",,,
 "On customer deliveries","Sur les livraisons client",,
 "On internal moves","Sur les mouvements internes",,
 "On inventories","Sur les inventaires",,
@@ -134,3 +135,4 @@
 "View tracebacks","Voir les tracebacks",,
 "Visible in mobile application","Visible dans l'application mobile",,
 "all","tous",,
+"value:Axelor Mobile Settings",,,

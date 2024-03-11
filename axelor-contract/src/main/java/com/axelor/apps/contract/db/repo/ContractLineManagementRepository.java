@@ -21,9 +21,9 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.apps.contract.service.CurrencyScaleServiceContract;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
@@ -76,7 +76,7 @@ public class ContractLineManagementRepository extends ContractLineRepository {
 
       json.put(
           "$currencyNumberOfDecimals",
-          Beans.get(CurrencyScaleServiceContract.class).getScale(contractVersion.getContract()));
+          Beans.get(CurrencyScaleService.class).getScale(contractVersion.getContract()));
     }
 
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
