@@ -1,0 +1,5 @@
+---
+title: Fixed error when loading the customer map
+module: axelor-base
+developer: |
+  Fixed osm/objs/index.html view causing Request failed: SyntaxError: JSON.parse when opening a customer map 
