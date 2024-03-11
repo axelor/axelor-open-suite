@@ -20,10 +20,31 @@ package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.crm.db.Tour;
 import com.axelor.apps.crm.db.TourLine;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TourManagementRepository extends TourRepository {
 
   @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    Map<String, Object> map = super.populate(json, context);
+
+    Long id = (Long) map.get("id");
+    Tour tour = find(id);
+    List<TourLine> tourLineList = tour.getTourLineList();
+
+    boolean isValidated = false;
+
+    if (CollectionUtils.isNotEmpty(tourLineList)) {
+      isValidated = tourLineList.stream().noneMatch(Predicate.not(TourLine::getIsValidated));
+    }
+
+    map.put("$isValidated", isValidated);
+    return map;
+  }
+
   public Tour copy(Tour entity, boolean deep) {
     Tour tour = super.copy(entity, deep);
     for (TourLine line : tour.getTourLineList()) {
