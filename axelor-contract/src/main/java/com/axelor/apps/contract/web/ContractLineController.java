@@ -27,7 +27,6 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
-import com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
@@ -80,8 +79,6 @@ public class ContractLineController {
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
-      Beans.get(AnalyticMoveLineContractServiceImpl.class)
-          .setCompanyExTaxTotal(analyticLineContractModel, contractLine);
 
       Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineContractModel);

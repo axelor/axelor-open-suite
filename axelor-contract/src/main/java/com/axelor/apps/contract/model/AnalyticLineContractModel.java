@@ -136,10 +136,6 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     return this.fiscalPosition;
   }
 
-  public Contract getContract() {
-    return this.contract;
-  }
-
   @Override
   public void copyToModel() {
     super.copyToModel();
