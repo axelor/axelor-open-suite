@@ -47,6 +47,7 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
@@ -570,6 +571,9 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public void setSubProducts(Product product) {
+    if(product.getSubProductList() == null){
+      product.setSubProductList(new HashSet<>());
+    }
 
     for (SubProduct subProduct : product.getSubProductList()) {
       if (CollectionUtils.isNotEmpty(subProduct.getSubProductList())) {
