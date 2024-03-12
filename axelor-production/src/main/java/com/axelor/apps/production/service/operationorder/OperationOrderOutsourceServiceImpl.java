@@ -95,17 +95,17 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
 
     // Get products for purchaseOrder from prodProcessLine
     if (operationOrder.getProdProcessLine().getGeneratedPurchaseOrderProductSet() != null) {
-      List<PurchaseOrderLine> list = new ArrayList<>();
+      List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<>();
       for (Product product :
           operationOrder.getProdProcessLine().getGeneratedPurchaseOrderProductSet()) {
         PurchaseOrderLine purchaseOrderLine =
             this.createPurchaseOrderLine(operationOrder, purchaseOrder, product).orElse(null);
         if (purchaseOrderLine != null) {
-          list.add(purchaseOrderLine);
+          purchaseOrderLineList.add(purchaseOrderLine);
           purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
         }
       }
-      return list;
+      return purchaseOrderLineList;
     }
 
     return Collections.emptyList();
@@ -116,24 +116,16 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
       OperationOrder operationOrder, PurchaseOrder purchaseOrder, Product product)
       throws AxelorException {
 
-    BigDecimal quantity = BigDecimal.ONE;
-
     Unit productUnit = getProductUnit(product);
 
-    // If product unit is appBase.unithours or unitDay or unitMinutes
-    AppBase appBase = appBaseService.getAppBase();
-    if (List.of(appBase.getUnitDays(), appBase.getUnitHours(), appBase.getUnitMinutes())
-        .contains(productUnit)) {
-      // Quantity must be computed based on plannedHumanDuration
-      quantity = recomputeQty(operationOrder.getPlannedHumanDuration(), productUnit);
-    }
+    BigDecimal quantity = recomputeQty(operationOrder.getPlannedHumanDuration(), productUnit);
 
     return Optional.ofNullable(
         purchaseOrderLineService.createPurchaseOrderLine(
             purchaseOrder, product, null, null, quantity, productUnit));
   }
 
-  private Unit getProductUnit(Product product) throws AxelorException {
+  protected Unit getProductUnit(Product product) throws AxelorException {
     return Optional.ofNullable(product.getPurchasesUnit())
         .or(() -> Optional.ofNullable(product.getUnit()))
         .orElseThrow(
@@ -147,24 +139,15 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
   public Optional<PurchaseOrderLine> createPurchaseOrderLine(
       ManufOrder manufOrder, PurchaseOrder purchaseOrder, Product product) throws AxelorException {
 
-    BigDecimal quantity = BigDecimal.ONE;
-
     Unit productUnit = getProductUnit(product);
 
-    // If product unit is appBase.unithours or unitDay or unitMinutes
-    AppBase appBase = appBaseService.getAppBase();
-    if (List.of(appBase.getUnitDays(), appBase.getUnitHours(), appBase.getUnitMinutes())
-        .contains(productUnit)) {
-
-      // Quantity must be computed based on hrDurationPerCycle sums of operationOrders
-      quantity =
-          recomputeQty(
-              manufOrder.getOperationOrderList().stream()
-                  .map(OperationOrder::getPlannedHumanDuration)
-                  .reduce(Long::sum)
-                  .orElse(0L),
-              productUnit);
-    }
+    BigDecimal quantity =
+        recomputeQty(
+            manufOrder.getOperationOrderList().stream()
+                .map(OperationOrder::getPlannedHumanDuration)
+                .reduce(Long::sum)
+                .orElse(0L),
+            productUnit);
 
     return Optional.ofNullable(
         purchaseOrderLineService.createPurchaseOrderLine(
@@ -193,23 +176,24 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
   protected BigDecimal recomputeQty(Long duration, Unit productUnit) {
     AppBase appBase = appBaseService.getAppBase();
 
-    // Product is in unit day
-    if (productUnit.equals(appBase.getUnitDays())) {
+    if (List.of(appBase.getUnitDays(), appBase.getUnitHours(), appBase.getUnitMinutes())
+        .contains(productUnit)) {
+      long secondsInProductUnit;
+      // Product is in unit day
+      if (productUnit.equals(appBase.getUnitDays())) {
+        secondsInProductUnit = 86400;
+      }
+      // Product is in unit hours
+      else if (productUnit.equals(appBase.getUnitHours())) {
+        secondsInProductUnit = 3600;
+      }
+      // Product is in unit minute
+      else {
+        secondsInProductUnit = 60;
+      }
       return new BigDecimal(duration)
           .divide(
-              BigDecimal.valueOf(86400),
-              appBaseService.getNbDecimalDigitForQty(),
-              RoundingMode.HALF_UP);
-    } else if (productUnit.equals(appBase.getUnitHours())) {
-      return new BigDecimal(duration)
-          .divide(
-              BigDecimal.valueOf(3600),
-              appBaseService.getNbDecimalDigitForQty(),
-              RoundingMode.HALF_UP);
-    } else if (productUnit.equals(appBase.getUnitMinutes())) {
-      return new BigDecimal(duration)
-          .divide(
-              BigDecimal.valueOf(60),
+              BigDecimal.valueOf(secondsInProductUnit),
               appBaseService.getNbDecimalDigitForQty(),
               RoundingMode.HALF_UP);
     }
