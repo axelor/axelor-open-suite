@@ -56,9 +56,12 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -679,5 +682,27 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               false, taxLineSet, purchasePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return purchaseOrderLineList;
+  }
+
+  @Override
+  public Optional<LocalDate> getEstimatedReceiptDate(
+      PurchaseOrderLine purchaseOrderLine, Partner supplierPartner) {
+    LocalDate estimatedShippingDate = purchaseOrderLine.getEstimatedShippingDate();
+
+    if (!appPurchaseService.getAppPurchase().getManageSupplierCatalog()
+        || estimatedShippingDate == null) {
+      return Optional.empty();
+    }
+
+    int deliveryTime =
+        Optional.ofNullable(purchaseOrderLine.getProduct()).map(Product::getSupplierCatalogList)
+            .stream()
+            .flatMap(Collection::stream)
+            .filter(supplierCatalog -> supplierCatalog.getSupplierPartner().equals(supplierPartner))
+            .findFirst()
+            .map(SupplierCatalog::getDeliveryTime)
+            .orElse(0);
+
+    return Optional.of(estimatedShippingDate.plusDays(deliveryTime));
   }
 }

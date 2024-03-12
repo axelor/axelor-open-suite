@@ -48,4 +48,11 @@ public class PurchaseProductController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateDeliveryTime(ActionRequest request, ActionResponse response) {
+    Product product = request.getContext().asType(Product.class);
+    response.setValue(
+        "supplierDeliveryTime",
+        Beans.get(PurchaseProductService.class).getSupplierPartnerCatalogDeliveryTime(product));
+  }
 }

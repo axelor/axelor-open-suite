@@ -461,4 +461,20 @@ public class PurchaseOrderLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateReceiptDate(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+
+    PurchaseOrder purchaseOrder = context.getParent().asType(PurchaseOrder.class);
+    if (purchaseOrder.getId() != null) {
+      purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    }
+
+    response.setValue(
+        "estimatedReceiptDate",
+        Beans.get(PurchaseOrderLineService.class)
+            .getEstimatedReceiptDate(purchaseOrderLine, purchaseOrder.getSupplierPartner())
+            .orElse(null));
+  }
 }

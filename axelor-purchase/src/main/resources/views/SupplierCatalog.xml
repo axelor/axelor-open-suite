@@ -13,6 +13,7 @@
     <field name="minQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="maxQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="deliveryTime"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
@@ -28,6 +29,7 @@
     <field name="minQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="maxQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="deliveryTime"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
@@ -55,6 +57,7 @@
       <field name="productMultipleQtyList"
         if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()"
         hideIf="isTakeProductMultipleQty"/>
+      <field name="deliveryTime"/>
     </panel>
     <panel name="descriptionPanel" title="Description" colSpan="12">
       <field name="description" showTitle="false" colSpan="12"/>
@@ -87,6 +90,7 @@
       <field name="productMultipleQtyList"
         if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()"
         hideIf="isTakeProductMultipleQty"/>
+      <field name="deliveryTime"/>
       <field name="supplierPartner" hidden="true"/>
     </panel>
     <panel name="descriptionPanel" title="Description" colSpan="12">

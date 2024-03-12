@@ -28,6 +28,7 @@
     <decimal name="maxQty" title="Quantity max" precision="20" scale="10" min="0"/>
     <boolean name="isTakingProductPurchasePrice" title="Take product purchase price"
       default="false"/>
+    <integer name="deliveryTime" title="Delivery time (days)" min="0"/>
   </entity>
 
 </domain-models>

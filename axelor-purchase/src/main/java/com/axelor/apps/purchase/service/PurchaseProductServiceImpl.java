@@ -26,12 +26,22 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class PurchaseProductServiceImpl implements PurchaseProductService {
+
+  protected AppPurchaseService appPurchaseService;
+
+  @Inject
+  public PurchaseProductServiceImpl(AppPurchaseService appPurchaseService) {
+    this.appPurchaseService = appPurchaseService;
+  }
 
   @Override
   public BigDecimal getLastShippingCoef(Product product) throws AxelorException {
@@ -64,5 +74,19 @@ public class PurchaseProductServiceImpl implements PurchaseProductService {
     } else {
       return BigDecimal.ONE;
     }
+  }
+
+  @Override
+  public int getSupplierPartnerCatalogDeliveryTime(Product product) {
+    if (!appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
+      return 0;
+    }
+    return product.getSupplierCatalogList().stream()
+        .filter(
+            supplierCatalog ->
+                supplierCatalog.getSupplierPartner().equals(product.getDefaultSupplierPartner()))
+        .findFirst()
+        .map(SupplierCatalog::getDeliveryTime)
+        .orElse(0);
   }
 }
