@@ -49,7 +49,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class MoveLineToolServiceImpl implements MoveLineToolService {
@@ -289,22 +291,6 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
-  public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException {
-    TaxLine taxLine = null;
-    LocalDate date = moveLine.getDate();
-    if (date == null) {
-      throw new AxelorException(
-          moveLine,
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE));
-    }
-    if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
-      taxLine = taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
-    }
-    return taxLine;
-  }
-
-  @Override
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
     boolean isDebit = moveLine.getDebit().compareTo(moveLine.getCredit()) > 0;
@@ -345,9 +331,9 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   public boolean isEqualTaxMoveLine(
-      Account account, TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml) {
-    return ml.getTaxLine() != null
-        && ml.getTaxLine().equals(taxLine)
+      Account account, Set<TaxLine> taxLineSet, Integer vatSystem, Long id, MoveLine ml) {
+    return CollectionUtils.isNotEmpty(ml.getTaxLineSet())
+        && ml.getTaxLineSet().equals(taxLineSet)
         && Objects.equals(ml.getVatSystemSelect(), vatSystem)
         && !Objects.equals(ml.getId(), id)
         && ml.getAccount().getAccountType() != null

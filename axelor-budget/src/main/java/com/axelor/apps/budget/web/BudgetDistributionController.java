@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.BudgetDistributionService;
@@ -39,6 +41,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BudgetDistributionController {
 
@@ -200,6 +204,16 @@ public class BudgetDistributionController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void resetBudgetDistributionList(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    if (Arrays.asList(
+            InvoiceLine.class, MoveLine.class, PurchaseOrderLine.class, SaleOrderLine.class)
+        .contains(request.getContext().getContextClass())) {
+      response.setValue("budgetDistributionList", new ArrayList<>());
     }
   }
 }

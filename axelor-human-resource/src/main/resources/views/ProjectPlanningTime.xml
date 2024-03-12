@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="project-planning-time-grid" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <toolbar>
+      <button name="addMultipleLinesBtn" title="Add multiple lines" icon="fa-plus"
+        onClick="action-project-view-add-multiple-project-planning-time" hideIf="$popup()"/>
+      <button name="newLineBtn" title="New line" icon="fa-plus"
+        onClick="action-project-view-project-planning-time-add-new"/>
+      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+        onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
+    </toolbar>
     <field name="plannedTime"/>
     <field name="timeUnit"/>
     <field name="project"/>
@@ -84,14 +92,14 @@
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
-    <context name="_projectTask" expr="eval:__self__"
-      if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__self__.project"
-      if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__self__"
-      if="_model == 'com.axelor.apps.project.db.Project'"/>
-    <context name="_employee" expr="eval:assignedTo.employee"
-      if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_projectTask" expr="eval:__parent__"
+      if="eval: __parent__._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__.project"
+      if="eval: __parent__._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__"
+      if="eval: __parent__._model == 'com.axelor.apps.project.db.Project'"/>
+    <context name="_employee" expr="eval:__parent__.assignedTo.employee"
+      if="eval: __parent__._model == 'com.axelor.apps.project.db.ProjectTask'"/>
   </action-view>
 
   <action-view name="action-project-dashlet-project-planning-time"
@@ -113,7 +121,7 @@
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="forceTitle" value="true"/>
-    <context name="_project" expr="eval:__self__"/>
+    <context name="_project" expr="eval:__parent__"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
   </action-view>
 
@@ -163,28 +171,6 @@
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' || _projectTask"/>
     <attribute name="value" for="product" expr="eval: __user__.employee.product"
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet &amp;&amp; __user__.employee"/>
-  </action-attrs>
-
-  <action-attrs name="action-project-attrs-project-planning-time-remove">
-    <attribute name="readonly" for="removeProjectPlanningTimeLineBtn" expr="eval:true"/>
-    <attribute name="hidden" for="cancelRemovePlanningTimeBtn" expr="eval:false"/>
-    <attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:false"/>
-    <attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
-    <attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
-    <attribute name="title" for="$projectPlanningTimeSet"
-      expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
-    <attribute name="domain" for="$projectPlanningTimeSet"
-      expr="eval:&quot;self.project.id = :id&quot;" if="!isShowPhasesElements"/>
-    <attribute name="domain" for="$projectPlanningTimeSet"
-      expr="eval:&quot;(self.project.id = :id OR self.project.parentProject.id = :id)&quot;"
-      if="isShowPhasesElements"/>
-  </action-attrs>
-
-  <action-attrs name="action-project-attrs-project-planning-time-cancel-remove">
-    <attribute name="readonly" for="removeProjectPlanningTimeLineBtn" expr="eval:false"/>
-    <attribute name="hidden" for="cancelRemovePlanningTimeBtn" expr="eval:true"/>
-    <attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:true"/>
-    <attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:true"/>
   </action-attrs>
 
   <action-method

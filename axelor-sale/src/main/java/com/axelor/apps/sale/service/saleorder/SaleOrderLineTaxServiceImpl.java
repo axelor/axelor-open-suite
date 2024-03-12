@@ -1,12 +1,32 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -14,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -23,13 +44,13 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected OrderLineTaxService orderLineTaxService;
-  protected CurrencyScaleServiceSale currencyScaleServiceSale;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderLineTaxServiceImpl(
-      OrderLineTaxService orderLineTaxService, CurrencyScaleServiceSale currencyScaleServiceSale) {
+      OrderLineTaxService orderLineTaxService, CurrencyScaleService currencyScaleService) {
     this.orderLineTaxService = orderLineTaxService;
-    this.currencyScaleServiceSale = currencyScaleServiceSale;
+    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -73,9 +94,18 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
       Map<TaxLine, SaleOrderLineTax> map,
       boolean customerSpecificNote,
       Set<String> specificNotes) {
-    TaxLine taxLine = saleOrderLine.getTaxLine();
-    getOrCreateLine(saleOrder, saleOrderLine, map, taxLine);
-    orderLineTaxService.addTaxEquivSpecificNote(saleOrderLine, customerSpecificNote, specificNotes);
+    Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      for (TaxLine taxLine : taxLineSet) {
+        getOrCreateLine(saleOrder, saleOrderLine, map, taxLine);
+      }
+    }
+    if (!customerSpecificNote) {
+      TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
+      if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
+        specificNotes.add(taxEquiv.getSpecificNote());
+      }
+    }
   }
 
   protected void getOrCreateLine(
@@ -88,7 +118,7 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
       if (map.containsKey(taxLine)) {
         SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
         saleOrderLineTax.setExTaxBase(
-            currencyScaleServiceSale.getScaledValue(
+            currencyScaleService.getScaledValue(
                 saleOrder, saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal())));
       } else {
         SaleOrderLineTax saleOrderLineTax =
@@ -104,6 +134,8 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
     saleOrderLineTax.setSaleOrder(saleOrder);
     saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
     saleOrderLineTax.setTaxLine(taxLine);
+    saleOrderLineTax.setTaxType(
+        Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
     return saleOrderLineTax;
   }
 

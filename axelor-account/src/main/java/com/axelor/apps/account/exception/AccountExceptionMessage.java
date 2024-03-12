@@ -1692,4 +1692,10 @@ public final class AccountExceptionMessage {
       "Fiscal year and periods have been generated successfully." /*)*/;
   public static final String ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS = /*$$(*/
       "The accounting configurations have been imported successfully for the company %s." /*)*/;
+
+  public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
+      "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
+      "No partner involved, please look for your blocking configuration if necessary." /*)*/;
 }

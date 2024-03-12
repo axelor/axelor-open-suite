@@ -19,9 +19,9 @@
 package com.axelor.apps.account.service.debtrecovery;
 
 import com.axelor.apps.account.db.DebtRecoveryHistory;
-import com.axelor.apps.account.util.FileExportTools;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.FileExportTools;
 import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;

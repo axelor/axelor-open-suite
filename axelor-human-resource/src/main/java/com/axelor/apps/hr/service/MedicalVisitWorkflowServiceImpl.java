@@ -61,7 +61,9 @@ public class MedicalVisitWorkflowServiceImpl implements MedicalVisitWorkflowServ
     }
 
     medicalVisit.setStatusSelect(MedicalVisitRepository.STATUS_PLANNED);
-    createEvent(medicalVisit);
+    if (medicalVisit.getEmployee().getUser() != null) {
+      createEvent(medicalVisit);
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})

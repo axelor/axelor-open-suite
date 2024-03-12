@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
@@ -128,8 +128,9 @@
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
-        <item name="cancelReceiptItem" title="Cancel receipt" showIf="statusSelect &gt;= 3"
-          action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
+        <item name="cancelReceiptItem" title="Cancel receipt"
+          showIf="statusSelect &gt;= 3 &amp;&amp; supplierPartner != null"
+          action="save,action-purchase-order-method-cancel-receipt"/>
       </menu>
     </menubar>
     <panel name="overviewPanel">
@@ -842,7 +843,7 @@
     model="com.axelor.apps.stock.db.StockMove" title="Stock move">
     <view name="stock-move-grid" type="grid"/>
     <view name="stock-move-form" type="form"/>
-    <domain>self.purchaseOrder.id = :purchaseOrder</domain>
+    <domain>:purchaseOrder MEMBER OF self.purchaseOrderSet</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 

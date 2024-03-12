@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -39,7 +40,6 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -54,9 +54,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -108,8 +110,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
   protected CompanyConfigService companyConfigService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected TaxService taxService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -132,8 +135,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
       CompanyConfigService companyConfigService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
-      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
+      CurrencyScaleService currencyScaleService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      TaxService taxService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -153,8 +157,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
     this.companyConfigService = companyConfigService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.taxService = taxService;
   }
 
   /**
@@ -281,7 +286,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         Account account = moveLine.getAccount();
         if (account.getIsTaxAuthorizedOnMoveLine()
             && account.getIsTaxRequiredOnMoveLine()
-            && moveLine.getTaxLine() == null
+            && CollectionUtils.isEmpty(moveLine.getTaxLineSet())
             && functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -636,9 +641,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLine.setPartnerFullName(partner.getSimpleFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
       }
-      if (moveLine.getTaxLine() != null) {
-        moveLine.setTaxRate(moveLine.getTaxLine().getValue());
-        moveLine.setTaxCode(moveLine.getTaxLine().getTax().getCode());
+      Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
+      if (CollectionUtils.isNotEmpty(taxLineSet)) {
+        moveLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
+        moveLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
       }
 
       setMoveLineFixedInformation(move, moveLine);
@@ -824,7 +830,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected boolean isConfiguredVatSystem(Move move) {
     for (MoveLine moveline : move.getMoveLineList()) {
-      if (moveline.getTaxLine() != null
+      if (CollectionUtils.isNotEmpty(moveline.getTaxLineSet())
           && moveline.getAccount() != null
           && moveline.getAccount().getAccountType() != null
           && !AccountTypeRepository.TYPE_TAX.equals(
@@ -902,17 +908,17 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   protected BigDecimal getTaxAmount(MoveLine moveLine) {
-    if (moveLine.getTaxLine() == null) {
+    if (CollectionUtils.isEmpty(moveLine.getTaxLineSet())) {
       return BigDecimal.ZERO;
     }
 
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
 
     return lineTotal
-        .multiply(moveLine.getTaxLine().getValue())
+        .multiply(taxService.getTotalTaxRateInPercentage(moveLine.getTaxLineSet()))
         .divide(
             BigDecimal.valueOf(100),
-            currencyScaleServiceAccount.getCompanyScale(moveLine),
+            currencyScaleService.getCompanyScale(moveLine),
             RoundingMode.HALF_UP);
   }
 
@@ -927,8 +933,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected boolean isReverseCharge(Move move) {
     if (move.getInvoice() != null) {
       return move.getInvoice().getInvoiceLineList().stream()
-          .map(InvoiceLine::getTaxEquiv)
+          .map(InvoiceLine::getTaxEquivSet)
           .filter(Objects::nonNull)
+          .flatMap(Collection::stream)
           .anyMatch(TaxEquiv::getReverseCharge);
     } else {
       return move.getMoveLineList().stream()

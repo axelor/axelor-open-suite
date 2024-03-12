@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="payment-voucher-grid" title="Payment vouchers"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
@@ -218,7 +218,8 @@
 
   <action-record name="action-record-fill-paidAmount-fromMoveLine"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <field name="paidAmount" expr="eval: moveLine?.amountRemaining"/>
+    <field name="paidAmount" expr="eval: moveLine?.amountRemaining?.abs()"/>
+    <field name="remainingAmount" expr="eval: paidAmount"/>
   </action-record>
 
   <action-attrs name="action-pv-attrs-auto-imputation">

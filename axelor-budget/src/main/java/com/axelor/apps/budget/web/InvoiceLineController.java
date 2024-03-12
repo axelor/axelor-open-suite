@@ -75,4 +75,16 @@ public class InvoiceLineController {
     response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
     response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
   }
+
+  public void setBudgetDomain(ActionRequest request, ActionResponse response) {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+    if (invoice == null && request.getContext().getParent() != null) {
+      invoice = request.getContext().getParent().asType(Invoice.class);
+    }
+    response.setAttr(
+        "budget",
+        "domain",
+        Beans.get(BudgetInvoiceLineService.class).getBudgetDomain(invoice, invoiceLine));
+  }
 }

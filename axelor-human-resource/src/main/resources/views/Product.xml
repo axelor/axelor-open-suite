@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="product-expense-grid" title="Expense types"
     model="com.axelor.apps.base.db.Product" orderBy="name">
@@ -134,16 +134,14 @@
                 css="label-bold bold large" placeholder="Name"/>
             </editor>
           </field>
-          <panel name="productTypologyPanel" title="Product typology" colSpan="6"
-            colWidths="30%,70%">
+          <panel name="productTypologyPanel" title="Product typology" colSpan="6">
             <field name="inAti"/>
             <field name="isAnalyticCapture" if-module="axelor-account"
               if="__config__.app.isApp('account')"/>
             <field name="deductLunchVoucher" hideIf="!expense" colSpan="12"/>
             <field name="expense" hidden="true"/>
           </panel>
-          <panel name="categorizationPanel" title="Categorization" colSpan="6"
-            colWidths="30%,70%">
+          <panel name="categorizationPanel" title="Categorization" colSpan="6">
             <field name="productFamily" colSpan="12" form-view="product-family-form"
               grid-view="product-family-grid"/>
             <field name="productCategory" colSpan="12" form-view="product-category-form"

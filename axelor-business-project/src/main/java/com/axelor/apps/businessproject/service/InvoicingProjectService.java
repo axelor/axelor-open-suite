@@ -65,6 +65,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -82,6 +83,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InvoicingProjectService {
 
@@ -100,6 +103,12 @@ public class InvoicingProjectService {
   @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
 
   @Inject protected InvoiceLineService invoiceLineService;
+
+  @Inject protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
+
+  @Inject protected SaleOrderLineRepository saleOrderLineRepository;
+
+  @Inject protected ProjectHoldBackLineService projectHoldBackLineService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -120,7 +129,8 @@ public class InvoicingProjectService {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()) {
+        && invoicingProject.getProjectTaskSet().isEmpty()
+        && invoicingProject.getStockMoveLineSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -183,6 +193,7 @@ public class InvoicingProjectService {
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
+    invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
     Beans.get(InvoiceRepository.class).save(invoice);
 
     invoicingProject.setInvoice(invoice);
@@ -202,6 +213,9 @@ public class InvoicingProjectService {
     List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>(folder.getProjectTaskSet());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+    invoiceLineList.addAll(
+        invoicingProjectStockMovesService.createStockMovesInvoiceLines(
+            invoice, folder.getStockMoveLineSet()));
     invoiceLineList.addAll(
         this.createSaleOrderInvoiceLines(
             invoice, saleOrderLineList, folder.getSaleOrderLineSetPrioritySelect()));
@@ -406,11 +420,12 @@ public class InvoicingProjectService {
     expenseLineQueryMap.put("statusReimbursed", ExpenseRepository.STATUS_REIMBURSED);
 
     StringBuilder taskQueryBuilder = new StringBuilder(commonQuery);
-    taskQueryBuilder.append(" AND self.invoicingType = :invoicingTypePackage");
-
+    taskQueryBuilder.append(
+        " AND (self.invoicingType = :invoicingTypePackage OR self.invoicingType = :invoicingTypeProgress)");
     Map<String, Object> taskQueryMap = new HashMap<>();
     taskQueryMap.put("project", project);
     taskQueryMap.put("invoicingTypePackage", ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+    taskQueryMap.put("invoicingTypeProgress", ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
 
     if (invoicingProject.getDeadlineDate() != null) {
       solQueryBuilder.append(" AND self.saleOrder.creationDate <= :deadlineDate");
@@ -423,14 +438,18 @@ public class InvoicingProjectService {
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
 
+    List<SaleOrderLine> saleOrderLineList =
+        saleOrderLineRepository.all().filter(solQueryBuilder.toString()).bind(solQueryMap).fetch();
+
     invoicingProject
         .getSaleOrderLineSet()
         .addAll(
-            Beans.get(SaleOrderLineRepository.class)
-                .all()
-                .filter(solQueryBuilder.toString())
-                .bind(solQueryMap)
-                .fetch());
+            saleOrderLineList.stream()
+                .filter(
+                    sol ->
+                        sol.getInvoicingModeSelect()
+                            == SaleOrderLineRepository.INVOICING_MODE_DIRECTLY)
+                .collect(Collectors.toList()));
 
     invoicingProject
         .getPurchaseOrderLineSet()
@@ -458,6 +477,10 @@ public class InvoicingProjectService {
                 .filter(taskQueryBuilder.toString())
                 .bind(taskQueryMap)
                 .fetch());
+
+    Set<StockMoveLine> stockMoveLineSet =
+        invoicingProjectStockMovesService.processDeliveredSaleOrderLines(saleOrderLineList);
+    invoicingProject.getStockMoveLineSet().addAll(stockMoveLineSet);
   }
 
   public void clearLines(InvoicingProject invoicingProject) {
@@ -467,6 +490,7 @@ public class InvoicingProjectService {
     invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
     invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
+    invoicingProject.setStockMoveLineSet(new HashSet<StockMoveLine>());
   }
 
   public Company getRootCompany(Project project) {

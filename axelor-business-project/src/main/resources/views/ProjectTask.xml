@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-project-project-task-grid" orderBy="-taskDate">
@@ -9,7 +9,7 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress" if="isShowProgress"/>
+    <field name="progress" widget="SelectProgress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
     <field name="invoicingType"/>
     <field name="taskDuration" if="isShowTimeSpent"/>
@@ -32,13 +32,13 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress"/>
+    <field name="invoicingProgress"/>
+    <field name="progress"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="quantity" aggregate="sum"/>
     <field name="toInvoice" readonly="true"
       if="!__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if="__config__.app.getApp('business-project').automaticInvoicing"/>
-    <field name="invoiced"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
       readonlyIf="invoiced" icon="fa-check-circle"
@@ -118,7 +118,8 @@
             <field name="exTaxTotal" readonly="true" colSpan="3"/>
             <field name="totalCosts" colSpan="3"/>
             <field name="invoicingType" colSpan="3"
-              onChange="action-project-task-attrs-onchange-invoice-type"/>
+              onChange="action-project-task-attrs-onchange-invoice-type"
+              readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
             <field name="toInvoice" colSpan="2" readonly="true"
               if="__config__.app.getApp('business-project').automaticInvoicing"/>
             <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
@@ -147,8 +148,8 @@
             </panel>
             <field name="project.invoicingSequenceSelect" hidden="true"
               if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-            <field name="invoiceLine" readonly="true" showIf="invoiceLine"
-              form-view="invoice-line-form" grid-view="invoice-line-grid"/>
+            <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
+              form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           </panel>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>
@@ -234,7 +235,7 @@
       <field name="realMarkup" as="real"/>
       <field name="landingMarkup" as="landing"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
@@ -249,7 +250,7 @@
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"

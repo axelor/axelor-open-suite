@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="template-grid" id="template-grid-base" title="Templates"
     model="com.axelor.message.db.Template">
@@ -32,8 +32,8 @@
         </editor>
       </field>
       <field name="mediaTypeSelect"/>
-      <field name="localization" canEdit="false" form-view="localization-form"
-        grid-view="localization-grid"/>
+      <field name="localizationSet" widget="TagSelect" canEdit="false" canNew="false"
+        form-view="localization-form" grid-view="localization-grid"/>
       <field name="templateEngineSelect"/>
       <field name="isJson" onChange="action-template-record-is-json-change"/>
       <panel itemSpan="12">
