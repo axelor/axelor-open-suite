@@ -1,3 +1,2 @@
-title: "DurationHelper is properly used in xml actions"
-type: fix
-module: axelor-crm
+title: "Event: fixed an error preventing the computation of the event duration."
+module: axelor-base
