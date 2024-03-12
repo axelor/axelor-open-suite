@@ -110,13 +110,12 @@ public class DMSServiceImpl implements DMSService {
 
   @Override
   public void unzip(String zipFilePath, Model model) throws AxelorException {
-    try {
-      Map<String, DMSFile> dmsParentsMap = new HashMap<>();
-      DMSFile dmsRoot = getDMSRoot(model);
-      DMSFile dmsHome = getDMSHome(model, dmsRoot);
-      dmsParentsMap.put(File.separator, dmsHome);
+    Map<String, DMSFile> dmsParentsMap = new HashMap<>();
+    DMSFile dmsRoot = getDMSRoot(model);
+    DMSFile dmsHome = getDMSHome(model, dmsRoot);
+    dmsParentsMap.put(File.separator, dmsHome);
 
-      ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFilePath));
+    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFilePath))) {
       ZipEntry entry;
       while ((entry = zis.getNextEntry()) != null) {
         String entryName = entry.getName();
@@ -136,7 +135,6 @@ public class DMSServiceImpl implements DMSService {
         dmsParentsMap.put(entryName, currentFile);
         zis.closeEntry();
       }
-      zis.close();
     } catch (IOException ioe) {
       throw new AxelorException(
           ioe, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ioe.getLocalizedMessage());
@@ -160,6 +158,7 @@ public class DMSServiceImpl implements DMSService {
         .fetchOne();
   }
 
+  @Override
   public DMSFile getDMSHome(Model model, DMSFile dmsRoot) {
     String homeName = null;
     final Mapper mapper = Mapper.of(model.getClass());
