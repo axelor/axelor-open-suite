@@ -25,6 +25,9 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
@@ -33,6 +36,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -40,12 +44,16 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
 
   protected ExpenseLineRepository expenseLineRepository;
   protected HRConfigService hrConfigService;
+  protected ProjectRepository projectRepository;
 
   @Inject
   public ExpenseLineServiceImpl(
-      ExpenseLineRepository expenseLineRepository, HRConfigService hrConfigService) {
+      ExpenseLineRepository expenseLineRepository,
+      HRConfigService hrConfigService,
+      ProjectRepository projectRepository) {
     this.expenseLineRepository = expenseLineRepository;
     this.hrConfigService = hrConfigService;
+    this.projectRepository = projectRepository;
   }
 
   @Override
@@ -145,5 +153,33 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
       }
     }
     return null;
+  }
+
+  @Override
+  public String computeProjectTaskDomain(ExpenseLine expenseLine) {
+    Project project = expenseLine.getProject();
+    if (project != null) {
+      List<Long> ids =
+          project.getProjectTaskList().stream()
+              .map(ProjectTask::getId)
+              .collect(Collectors.toList());
+      return "self.id IN " + ids.toString().replace("[", "(").replace("]", ")");
+    }
+    List<Project> projectList =
+        projectRepository
+            .all()
+            .filter(":userId IN self.membersUserSet.id")
+            .bind("userId", expenseLine.getEmployee().getUser().getId())
+            .fetch();
+    if (!projectList.isEmpty()) {
+      List<Long> ids =
+          projectList.stream()
+              .map(Project::getProjectTaskList)
+              .flatMapToLong(x -> x.stream().mapToLong(ProjectTask::getId))
+              .boxed()
+              .collect(Collectors.toList());
+      return "self.id IN " + ids.toString().replace("[", "(").replace("]", ")");
+    }
+    return "self.id IN (0)";
   }
 }
