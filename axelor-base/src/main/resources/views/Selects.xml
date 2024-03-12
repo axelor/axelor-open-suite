@@ -759,4 +759,9 @@
     <option value="2">Other</option>
   </selection>
 
+  <selection name="base.site.type.select">
+    <option value="1">Internal</option>
+    <option value="2">External</option>
+  </selection>
+
 </object-views>

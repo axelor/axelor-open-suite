@@ -11,9 +11,11 @@
       ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
     <many-to-one name="producedManufOrder"
       ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
+    <many-to-one name="residualManufOrder"
+      ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
 
     <many-to-one name="consumedOperationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+      ref="com.axelor.apps.production.db.OperationOrder" title="Manufacturing operation"/>
     <many-to-one name="copiedManufOrder" ref="com.axelor.apps.production.db.ManufOrder"
       title="Manufacturing order"/>
 

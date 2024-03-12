@@ -796,8 +796,6 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceLineRepository.class).to(InvoiceLineManagementRepository.class);
 
-    bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
-
     bind(InvoiceLineAttrsService.class).to(InvoiceLineAttrsServiceImpl.class);
 
     bind(InvoiceLineTaxAttrsService.class).to(InvoiceLineTaxAttrsServiceImpl.class);

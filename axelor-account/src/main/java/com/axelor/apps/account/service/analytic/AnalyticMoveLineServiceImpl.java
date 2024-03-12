@@ -35,7 +35,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -44,6 +43,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -72,7 +72,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   protected AccountRepository accountRepository;
   protected AppBaseService appBaseService;
   protected AccountingSituationService accountingSituationService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
@@ -84,7 +84,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       AccountRepository accountRepository,
       AppBaseService appBaseService,
       AccountingSituationService accountingSituationService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
 
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.appAccountService = appAccountService;
@@ -94,7 +94,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     this.accountRepository = accountRepository;
     this.appBaseService = appBaseService;
     this.accountingSituationService = accountingSituationService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   public AnalyticMoveLineRepository getAnalyticMoveLineRepository() {
@@ -109,7 +109,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         .multiply(analyticMoveLine.getOriginalPieceAmount())
         .divide(
             new BigDecimal(100),
-            currencyScaleServiceAccount.getScale(analyticMoveLine),
+            currencyScaleService.getScale(analyticMoveLine),
             RoundingMode.HALF_UP);
   }
 
@@ -259,10 +259,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     }
     if (moveLine.getCredit().signum() > 0) {
       analyticMoveLine.setAmount(
-          currencyScaleServiceAccount.getScaledValue(analyticMoveLine, moveLine.getCredit()));
+          currencyScaleService.getScaledValue(analyticMoveLine, moveLine.getCredit()));
     } else if (moveLine.getDebit().signum() > 0) {
       analyticMoveLine.setAmount(
-          currencyScaleServiceAccount.getScaledValue(analyticMoveLine, moveLine.getDebit()));
+          currencyScaleService.getScaledValue(analyticMoveLine, moveLine.getDebit()));
     }
     return analyticMoveLine;
   }
@@ -275,8 +275,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     this.setAnalyticCurrency(company, analyticMoveLine);
 
     analyticMoveLine.setAmount(
-        currencyScaleServiceAccount.getScaledValue(
-            analyticMoveLine, invoiceLine.getCompanyExTaxTotal()));
+        currencyScaleService.getScaledValue(analyticMoveLine, invoiceLine.getCompanyExTaxTotal()));
     analyticMoveLine.setDate(this.getAnalyticMoveLineDate(invoice));
     if (invoiceLine.getAccount() != null) {
       analyticMoveLine.setAccount(invoiceLine.getAccount());
@@ -334,7 +333,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     reverse.setOriginAnalyticMoveLine(analyticMoveLine);
     moveLine.addAnalyticMoveLineListItem(reverse);
     reverse.setAmount(
-        currencyScaleServiceAccount.getScaledValue(
+        currencyScaleService.getScaledValue(
             analyticMoveLine, analyticMoveLine.getAmount().negate()));
     reverse.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_REVERSE);
 

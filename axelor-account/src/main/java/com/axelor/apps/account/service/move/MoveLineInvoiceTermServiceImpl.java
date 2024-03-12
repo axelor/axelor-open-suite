@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -37,6 +36,7 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
@@ -56,7 +56,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
@@ -67,7 +67,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       MoveLineCreateService moveLineCreateService,
       MoveLineToolService moveLineToolService,
       AccountingSituationService accountingSituationService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
@@ -75,7 +75,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
@@ -233,9 +233,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         total
             .multiply(paymentConditionLine.getPaymentPercentage())
             .divide(
-                BigDecimal.valueOf(100),
-                currencyScaleServiceAccount.getScale(move),
-                RoundingMode.HALF_UP);
+                BigDecimal.valueOf(100), currencyScaleService.getScale(move), RoundingMode.HALF_UP);
 
     if (holdbackMoveLine == null) {
       if (!canCreateHolbackMoveLine) {
@@ -321,19 +319,19 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
-            ? currencyScaleServiceAccount.getScaledValue(move, total)
+            ? currencyScaleService.getScaledValue(move, total)
             : total
                 .multiply(percentage)
                 .divide(
                     BigDecimal.valueOf(100),
-                    currencyScaleServiceAccount.getScale(move),
+                    currencyScaleService.getScale(move),
                     RoundingMode.HALF_UP);
 
     if (isHoldback) {
       amount =
           amount.divide(
               moveLine.getCurrencyRate(),
-              currencyScaleServiceAccount.getScale(move),
+              currencyScaleService.getScale(move),
               RoundingMode.HALF_UP);
     }
 
