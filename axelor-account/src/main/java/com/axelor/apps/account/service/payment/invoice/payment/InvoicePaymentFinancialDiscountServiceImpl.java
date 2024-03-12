@@ -98,8 +98,8 @@ public class InvoicePaymentFinancialDiscountServiceImpl
     LocalDate financialDiscountDeadlineDate =
         this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList);
 
-    if (invoicePayment.getFinancialDiscountDeadlineDate() == null
-        && financialDiscountDeadlineDate.isBefore(invoicePayment.getPaymentDate())) {
+    if (financialDiscountDeadlineDate == null
+        || financialDiscountDeadlineDate.isBefore(invoicePayment.getPaymentDate())) {
       invoicePayment.setApplyFinancialDiscount(false);
       this.resetFinancialDiscount(invoicePayment);
     }
@@ -183,13 +183,6 @@ public class InvoicePaymentFinancialDiscountServiceImpl
           invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
 
       this.computeFinancialDiscount(invoicePayment);
-
-      if (invoicePayment.getApplyFinancialDiscount()) {
-        invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
-
-        invoicePayment.setAmount(
-            invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
-      }
     }
     return invoiceTermIdList;
   }

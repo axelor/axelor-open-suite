@@ -174,7 +174,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       if (invoicePayment != null) {
         invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
 
-        if (invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
+        if (invoicePayment.getApplyFinancialDiscount()) {
           BigDecimal previousAmount =
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
           invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
@@ -300,7 +300,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     invoiceTermPayment.setPaidAmount(paidAmount);
 
-    if (paidAmount.compareTo(invoiceTermToPay.getAmount()) == 0) {
+    if (paidAmount.compareTo(invoiceTermToPay.getAmount()) == 0
+        || paidAmount.compareTo(invoiceTermToPay.getRemainingAmountAfterFinDiscount()) == 0) {
       manageInvoiceTermFinancialDiscount(
           invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
     }
@@ -348,24 +349,34 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                   .getPaidAmount()
                   .add(invoiceTermPayment.getFinancialDiscountAmount())));
 
-      BigDecimal ratioPaid =
-          invoiceTermPayment
-              .getPaidAmount()
-              .divide(
-                  invoiceTerm.getAmount(),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP);
+      BigDecimal ratioPaid = BigDecimal.ONE;
+      boolean isFinancialDiscountAlreadyComputed = true;
+      if (invoiceTerm
+              .getRemainingAmountAfterFinDiscount()
+              .compareTo(invoiceTermPayment.getPaidAmount())
+          != 0) {
+        ratioPaid =
+            invoiceTermPayment
+                .getPaidAmount()
+                .divide(
+                    invoiceTerm.getAmount(),
+                    AppBaseService.COMPUTATION_SCALING,
+                    RoundingMode.HALF_UP);
+        isFinancialDiscountAlreadyComputed = false;
+      }
 
       invoiceTermPayment.setFinancialDiscountAmount(
           currencyScaleService.getScaledValue(
               invoiceTerm, invoiceTerm.getFinancialDiscountAmount().multiply(ratioPaid)));
 
-      invoiceTermPayment.setPaidAmount(
-          currencyScaleService.getScaledValue(
-              invoiceTerm,
-              invoiceTermPayment
-                  .getPaidAmount()
-                  .subtract(invoiceTermPayment.getFinancialDiscountAmount())));
+      if (!isFinancialDiscountAlreadyComputed) {
+        invoiceTermPayment.setPaidAmount(
+            currencyScaleService.getScaledValue(
+                invoiceTerm,
+                invoiceTermPayment
+                    .getPaidAmount()
+                    .subtract(invoiceTermPayment.getFinancialDiscountAmount())));
+      }
     }
   }
 

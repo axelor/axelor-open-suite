@@ -376,7 +376,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
             invoicePayment, invoiceTerms, amount, amount);
 
-        if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
+        if (this.isPartialPayment(invoicePayment)) {
+          invoicePayment.setAmount(amount);
+          invoicePayment.clearInvoiceTermPaymentList();
+          invoicePayment.setApplyFinancialDiscount(false);
+          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+              invoicePayment, invoiceTerms, amount, amount);
+        } else if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
           BigDecimal financialDiscountAmount =
               invoicePayment.getInvoiceTermPaymentList().stream()
                   .map(InvoiceTermPayment::getInvoiceTerm)
@@ -391,15 +397,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               invoiceTerms,
               amountWithFinancialDiscount,
               amountWithFinancialDiscount);
-        } else if (this.isPartialPayment(invoicePayment)) {
-          invoicePayment.clearInvoiceTermPaymentList();
-          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTerms, amount, amount);
         }
 
-        if (this.isPartialPayment(invoicePayment)) {
-          invoicePayment.setApplyFinancialDiscount(false);
-        }
         invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
       }
     }
