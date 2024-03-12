@@ -146,7 +146,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
   }
 
   @Override
-  public String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) {
+  public String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
     Company company = null;
     LocalDate date = null;
     if (invoice != null) {
@@ -166,7 +166,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
             .orElse(null);
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, technicalTypeSelect, new HashSet<>());
+        company, date, technicalTypeSelect, invoiceLine.getAccount(), new HashSet<>());
   }
 
   @Override
