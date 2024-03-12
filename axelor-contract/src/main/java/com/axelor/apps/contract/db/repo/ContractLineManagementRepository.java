@@ -21,8 +21,13 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -59,6 +64,26 @@ public class ContractLineManagementRepository extends ContractLineRepository {
         json.put("statusSelect", statusSelect);
       }
     }
+
+    if (context.containsKey("_field")
+        && context.get("_field").equals("contractLineList")
+        && context.get("_parent") != null) {
+      Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
+
+      ContractVersion contractVersion =
+          Beans.get(ContractVersionRepository.class)
+              .find(Long.parseLong(_parent.get("id").toString()));
+
+      json.put(
+          "$currencyNumberOfDecimals",
+          Beans.get(CurrencyScaleService.class).getScale(contractVersion.getContract()));
+    }
+
+    AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
+
+    json.put("$nbDecimalDigitForQty", appBase.getNbDecimalDigitForQty());
+    json.put("$nbDecimalDigitForUnitPrice", appBase.getNbDecimalDigitForUnitPrice());
+
     return super.populate(json, context);
   }
 }

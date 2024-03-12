@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -167,6 +167,12 @@
   <selection name="production.config.scheduling.select">
     <option value="1">As soon as possible</option>
     <option value="2">At the latest</option>
+  </selection>
+
+  <selection name="production.bill.of.material.import.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Imported</option>
+    <option value="3">Validated</option>
   </selection>
 
 </object-views>

@@ -34,8 +34,8 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.meta.loader.ModuleManager;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.CsvTool;
-import com.axelor.utils.xml.XPathParse;
+import com.axelor.utils.helpers.file.CsvHelper;
+import com.axelor.utils.xml.XPathParser;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -142,7 +142,7 @@ public class ExportDbObjectService {
               .fetch();
       log.debug("Total root menus: {}", menuList.size());
       generateMenuGraph(menuList);
-      CsvTool.csvWriter(
+      CsvHelper.csvWriter(
           objectFile.getParent(), objectFile.getName(), ';', csvHeaders, fieldDataList);
     } catch (IOException e) {
       e.printStackTrace();
@@ -238,7 +238,7 @@ public class ExportDbObjectService {
 
   public static String getActionViewType(String xml) {
 
-    DocumentBuilderFactory domFactory = Beans.get(XPathParse.class).getDocumentBuilderFactory();
+    DocumentBuilderFactory domFactory = Beans.get(XPathParser.class).getDocumentBuilderFactory();
     domFactory.setNamespaceAware(true); // never forget this!
     DocumentBuilder builder;
 

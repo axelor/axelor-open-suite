@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.db.Model;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,15 +40,9 @@ public interface PricingService {
    * @param pricing {@link Pricing}: can be null
    * @return a {@link Optional} of Pricing.
    */
-  Optional<Pricing> getRandomPricing(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing pricing);
+  Optional<Pricing> getRandomPricing(Company company, Model model, Pricing pricing);
 
-  Optional<Pricing> getRootPricingForNextPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName);
+  Optional<Pricing> getRootPricingForNextPricings(Company company, Model model);
 
   /**
    * This method will get all pricings filtered with company, product, productCategory, modelName,
@@ -60,15 +55,9 @@ public interface PricingService {
    * @param pricing {@link Pricing}: can be null
    * @return a {@link Optional} of Pricing.
    */
-  List<Pricing> getPricings(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing pricing);
+  List<Pricing> getPricings(Company company, Model model, Pricing pricing);
 
-  List<Pricing> getAllPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName);
+  List<Pricing> getAllPricings(Company company, Model model);
 
   public void historizePricing(Pricing pricing) throws AxelorException;
 

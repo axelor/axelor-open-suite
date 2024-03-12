@@ -65,19 +65,23 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
   public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
-    ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
+    ProductionOrder productionOrder = new ProductionOrder();
     if (saleOrder != null) {
       productionOrder.setClientPartner(saleOrder.getClientPartner());
       productionOrder.setSaleOrder(saleOrder);
     }
+    productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder));
     return productionOrder;
   }
 
-  public String getProductionOrderSeq() throws AxelorException {
+  public String getProductionOrderSeq(ProductionOrder productionOrder) throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.PRODUCTION_ORDER, ProductionOrder.class, "productionOrderSeq");
+            SequenceRepository.PRODUCTION_ORDER,
+            ProductionOrder.class,
+            "productionOrderSeq",
+            productionOrder);
 
     if (seq == null) {
       throw new AxelorException(
@@ -200,6 +204,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
           manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
+        manufOrder.setSaleOrderLine(saleOrderLine);
       }
 
       manufOrder.setParentMO(manufOrderParent);

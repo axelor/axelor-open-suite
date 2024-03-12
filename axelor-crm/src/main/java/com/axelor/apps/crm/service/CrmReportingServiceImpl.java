@@ -32,7 +32,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.studio.db.AppCrm;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.HashSet;
@@ -80,7 +80,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       this.prepareQuery(crmReporting, isPartner, model);
 
       String idList =
-          StringTool.getIdListString(
+          StringHelper.getIdListString(
               !Strings.isNullOrEmpty(query)
                   ? Query.of((Class<Model>) klass).filter(query).fetch()
                   : null);
@@ -130,7 +130,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
           "self."
               + model
               + "agency IN ("
-              + StringTool.getIdListString(crmReporting.getAgencySet())
+              + StringHelper.getIdListString(crmReporting.getAgencySet())
               + ")");
 
     if (!crmReporting.getIndustrySectorSet().isEmpty())
@@ -138,12 +138,12 @@ public class CrmReportingServiceImpl implements CrmReportingService {
           "self."
               + model
               + "industrySector IN ("
-              + StringTool.getIdListString(crmReporting.getIndustrySectorSet())
+              + StringHelper.getIdListString(crmReporting.getIndustrySectorSet())
               + ")");
 
     if (appBaseService.getAppBase().getTeamManagement() && !crmReporting.getTeamSet().isEmpty())
       this.addParams(
-          "self.team IN (" + StringTool.getIdListString(crmReporting.getTeamSet()) + ")");
+          "self.team IN (" + StringHelper.getIdListString(crmReporting.getTeamSet()) + ")");
 
     if (crmReporting.getFromDate() != null)
       this.addParams("date(self.createdOn) >= '" + crmReporting.getFromDate() + "'");
@@ -166,7 +166,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
               + model
               + "partnerCategory "
               + "IN ("
-              + StringTool.getIdListString(crmReporting.getCategorySet())
+              + StringHelper.getIdListString(crmReporting.getCategorySet())
               + ")");
 
     if (!crmReporting.getCountrySet().isEmpty())
@@ -175,7 +175,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
               + model
               + "partnerAddressList.address.addressL7Country "
               + "IN ("
-              + StringTool.getIdListString(crmReporting.getCountrySet())
+              + StringHelper.getIdListString(crmReporting.getCountrySet())
               + ")");
   }
 
@@ -186,7 +186,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
           "self."
               + model
               + "company IN ("
-              + StringTool.getIdListString(crmReporting.getCompanySet())
+              + StringHelper.getIdListString(crmReporting.getCompanySet())
               + ")");
 
     if (!crmReporting.getCategorySet().isEmpty())
@@ -195,7 +195,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
               + model
               + "type "
               + "IN ("
-              + StringTool.getIdListString(crmReporting.getCategorySet())
+              + StringHelper.getIdListString(crmReporting.getCategorySet())
               + ")");
 
     if (!crmReporting.getCountrySet().isEmpty())
@@ -204,7 +204,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
               + model
               + "primaryCountry "
               + "IN ("
-              + StringTool.getIdListString(crmReporting.getCountrySet())
+              + StringHelper.getIdListString(crmReporting.getCountrySet())
               + ")");
   }
 

@@ -41,7 +41,7 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.db.repo.MetaPermissionRuleRepository;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -363,8 +363,8 @@ public class PermissionAssistantService {
       String translated = itTranslated.next();
       String name = it.next();
 
-      if (!StringTool.equalsIgnoreCaseAndAccents(standard, name)
-          && !StringTool.equalsIgnoreCaseAndAccents(translated, name)) {
+      if (!StringHelper.equalsIgnoreCaseAndAccents(standard, name)
+          && !StringHelper.equalsIgnoreCaseAndAccents(translated, name)) {
         return false;
       }
     }

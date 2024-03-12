@@ -30,12 +30,13 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
@@ -55,6 +56,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
+  protected CurrencyScaleService currencyScaleService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
@@ -63,13 +66,17 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       MoveLineService moveLineService,
       MoveLineCreateService moveLineCreateService,
       MoveLineToolService moveLineToolService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      CurrencyScaleService currencyScaleService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineService = moveLineService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
+    this.currencyScaleService = currencyScaleService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   @Override
@@ -190,7 +197,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (moveLine.getPartner() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount()) {
       moveLine.setFinancialDiscount(moveLine.getPartner().getFinancialDiscount());
-      moveLineService.computeFinancialDiscount(moveLine);
+      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
     }
   }
 
@@ -226,9 +233,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         total
             .multiply(paymentConditionLine.getPaymentPercentage())
             .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+                BigDecimal.valueOf(100), currencyScaleService.getScale(move), RoundingMode.HALF_UP);
 
     if (holdbackMoveLine == null) {
       if (!canCreateHolbackMoveLine) {
@@ -258,6 +263,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
       moveLineToolService.setCurrencyAmount(moveLine);
       moveLineToolService.setCurrencyAmount(holdbackMoveLine);
+      moveLineToolService.setDecimals(holdbackMoveLine, move);
 
       move.addMoveLineListItem(holdbackMoveLine);
     }
@@ -313,19 +319,19 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
-            ? total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
+            ? currencyScaleService.getScaledValue(move, total)
             : total
                 .multiply(percentage)
                 .divide(
                     BigDecimal.valueOf(100),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    currencyScaleService.getScale(move),
                     RoundingMode.HALF_UP);
 
     if (isHoldback) {
       amount =
           amount.divide(
               moveLine.getCurrencyRate(),
-              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              currencyScaleService.getScale(move),
               RoundingMode.HALF_UP);
     }
 

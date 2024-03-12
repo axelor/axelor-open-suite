@@ -26,9 +26,10 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
-import com.axelor.utils.service.ListToolService;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -41,19 +42,21 @@ public class InvoiceLineAnalyticContractServiceImpl
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListToolService listToolService,
+      ListHelper listHelper,
       AppAccountService appAccountService,
       AnalyticLineModelService analyticLineModelService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      CurrencyScaleService currencyScaleService) {
     super(
         analyticAccountRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
-        listToolService,
+        listHelper,
         appAccountService,
         analyticLineModelService,
-        analyticMoveLineRepository);
+        analyticMoveLineRepository,
+        currencyScaleService);
   }
 
   @Override

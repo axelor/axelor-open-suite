@@ -41,6 +41,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
@@ -49,7 +50,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGenerato
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -76,6 +77,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected InvoiceLineRepository invoiceLineRepository;
   protected SupplyChainConfigService supplyChainConfigService;
   protected AppBaseService appBaseService;
+  protected AppStockService appStockService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -88,7 +90,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AppStockService appStockService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -99,6 +102,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
   }
 
   @Override
@@ -170,7 +174,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     Invoice invoice = invoiceGenerator.generate();
 
-    checkSplitSalePartiallyInvoicedStockMoveLines(stockMove, stockMove.getStockMoveLineList());
+    // When not null, we are in a partial invoicing
+    if (qtyToInvoiceMap != null) {
+      checkSplitSalePartiallyInvoicedStockMoveLines(stockMove, stockMove.getStockMoveLineList());
+    }
 
     invoiceGenerator.populate(
         invoice,
@@ -187,7 +194,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setDeliveryAddress(stockMove.getToAddress());
       invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
-      invoice.setIncoterm(saleOrder.getIncoterm());
+      if (appStockService.getAppStock().getIsIncotermEnabled()) {
+        invoice.setIncoterm(saleOrder.getIncoterm());
+      }
 
       // fill default advance payment invoice
       if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
@@ -367,7 +376,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice) {
 
     invoice.setInternalReference(
-        StringTool.cutTooLongString(
+        StringHelper.cutTooLongString(
             stockMove.getStockMoveSeq() + ":" + invoice.getInternalReference()));
 
     return invoice;

@@ -166,41 +166,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   }
 
   @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments) {
-
-    TimesheetLine timesheetLine = new TimesheetLine();
-
-    timesheetLine.setDate(date);
-    timesheetLine.setComments(comments);
-    timesheetLine.setProduct(product);
-    timesheetLine.setProject(project);
-    timesheetLine.setEmployee(employee);
-    timesheetLine.setHoursDuration(hours);
-    try {
-      timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
-    } catch (AxelorException e) {
-      log.error(e.getLocalizedMessage());
-      TraceBackService.trace(e);
-    }
-    timesheet.addTimesheetLineListItem(timesheetLine);
-
-    return timesheetLine;
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
-    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
-  }
-
-  @Override
   public TimesheetLine updateTimesheetLine(
       TimesheetLine timesheetLine,
       Project project,
@@ -284,7 +249,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
   }
 
-  protected Integer getDailyLimitFromApp() {
+  @Override
+  public Integer getDailyLimitFromApp() {
     return appHumanResourceService.getAppTimesheet().getDailyLimit();
   }
 
@@ -299,7 +265,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
-  protected boolean isExceedingDailyLimit(
+  @Override
+  public boolean isExceedingDailyLimit(
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit) {
     return totalHoursDuration.add(hoursDuration).compareTo(new BigDecimal(dailyLimit)) > 0;
   }

@@ -160,16 +160,16 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             Beans.get(ReconcileRepository.class)
                 .all()
                 .filter(
-                    "self.statusSelect != ?1 AND (self.debitMoveLine = ?2 OR self.creditMoveLine = ?2)",
+                    "self.statusSelect != ?1 AND (self.debitMoveLine.id = ?2 OR self.creditMoveLine.id = ?2)",
                     ReconcileRepository.STATUS_CANCELED,
-                    moveLine)
+                    moveLine.getId())
                 .fetch();
         for (Reconcile reconcile : reconcileList) {
           reconcileService.unreconcile(reconcile);
         }
+      } else {
+        cancelInvoicePayment(move);
       }
-
-      cancelInvoicePayment(move);
 
       if (validatedMove && isAutomaticReconcile) {
         if (isDebit) {

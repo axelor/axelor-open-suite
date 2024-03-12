@@ -19,17 +19,15 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
@@ -39,12 +37,9 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.inject.Beans;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
@@ -53,6 +48,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   protected ProjectRepository projectRepo;
   protected ProjectTaskRepository projectTaskRepo;
   protected TimesheetLineRepository timesheetLineRepo;
+  protected TimesheetCreateService timesheetCreateService;
 
   @Inject
   public TimesheetLineProjectServiceImpl(
@@ -64,7 +60,8 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       TimesheetLineRepository timesheetLineRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
-      DateService dateService) {
+      DateService dateService,
+      TimesheetCreateService timesheetCreateService) {
     super(
         timesheetService,
         employeeRepository,
@@ -77,28 +74,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     this.projectTaskRepo = projectTaskaRepo;
     this.timesheetLineRepo = timesheetLineRepo;
     this.timesheetRepo = timesheetRepo;
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments) {
-    TimesheetLine timesheetLine =
-        super.createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
-
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")
-        && project != null
-        && (project.getIsInvoicingTimesheet()
-            || (project.getParentProject() != null
-                && project.getParentProject().getIsInvoicingTimesheet())))
-      timesheetLine.setToInvoice(true);
-
-    return timesheetLine;
+    this.timesheetCreateService = timesheetCreateService;
   }
 
   @Override
@@ -152,7 +128,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
               .order("-toDate")
               .fetchOne();
       timesheet =
-          timesheetService.createTimesheet(
+          timesheetCreateService.createTimesheet(
               timesheetLine.getEmployee(),
               lastTimesheet != null && lastTimesheet.getToDate() != null
                   ? lastTimesheet.getToDate().plusDays(1)

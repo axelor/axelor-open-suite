@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.service.batch.HrBatchService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -57,5 +58,12 @@ public class HrBatchController {
     } finally {
       response.setReload(true);
     }
+  }
+
+  public void getIncrementLeaveReasonTypeSelects(ActionRequest request, ActionResponse response) {
+    response.setAttr(
+        "leaveReasonTypeSelect",
+        "selection-in",
+        Beans.get(LeaveReasonService.class).getIncrementLeaveReasonTypeSelects());
   }
 }

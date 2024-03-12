@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.repo.IndicatorGeneratorGroupingRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -106,7 +106,7 @@ public class IndicatorGeneratorGroupingService {
     }
 
     try {
-      CsvTool.csvWriter(
+      CsvHelper.csvWriter(
           indicatorGeneratorGrouping.getPath() == null
               ? null
               : dataExportDir + indicatorGeneratorGrouping.getPath(),

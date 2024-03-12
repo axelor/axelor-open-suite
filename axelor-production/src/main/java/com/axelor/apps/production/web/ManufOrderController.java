@@ -21,7 +21,9 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -35,18 +37,22 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.ProdProductProductionRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.exception.MessageExceptionMessage;
@@ -57,6 +63,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -65,6 +72,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -230,7 +238,7 @@ public class ManufOrderController {
                 .fetch();
       }
 
-      String message = Beans.get(ManufOrderWorkflowService.class).planManufOrders(manufOrders);
+      String message = Beans.get(ManufOrderPlanService.class).planManufOrders(manufOrders);
 
       response.setReload(true);
       if (!message.isEmpty()) {
@@ -373,7 +381,7 @@ public class ManufOrderController {
 
         if (manufOrderView.getPlannedStartDateT() != null) {
           if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
-            Beans.get(ManufOrderWorkflowService.class)
+            Beans.get(ManufOrderPlanService.class)
                 .updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
             response.setReload(true);
           }
@@ -737,6 +745,144 @@ public class ManufOrderController {
       BigDecimal producibleQty =
           Beans.get(ManufOrderService.class).computeProducibleQty(manufOrder);
       response.setValue("$producibleQty", producibleQty);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showOutgoingStockMoves(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    List<Long> ids = Lists.newArrayList(0l);
+    if (manufOrder.getId() != null) {
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      ids = Beans.get(ManufOrderStockMoveService.class).getOutgoingStockMoves(manufOrder);
+    }
+    response.setView(
+        ActionView.define(I18n.get("Outgoing moves"))
+            .model(StockMove.class.getName())
+            .add("grid", "stock-move-grid")
+            .add("form", "stock-move-form")
+            .domain("self.id in :ids")
+            .context("ids", ids)
+            .map());
+  }
+
+  public void updateLinesOutsourced(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      response.setValue(
+          "$areLinesOutsourced", Beans.get(ManufOrderService.class).areLinesOutsourced(manufOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setOperationOrdersOutsourcing(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+
+    Beans.get(ManufOrderService.class).setOperationOrdersOutsourcing(manufOrder);
+    response.setValue("operationOrderList", manufOrder.getOperationOrderList());
+  }
+
+  public void outsourceDeclarationOnNew(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().get("_manufOrderId") != null) {
+        ManufOrder manufOrder =
+            Beans.get(ManufOrderRepository.class)
+                .find((long) (int) request.getContext().get("_manufOrderId"));
+
+        if (manufOrder != null) {
+          fillDomainPartner(manufOrder, response);
+          response.setValue("$prodProductsList", manufOrder.getToConsumeProdProductList());
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected void fillDomainPartner(ManufOrder manufOrder, ActionResponse response)
+      throws AxelorException {
+
+    List<Partner> manufOrderPartners =
+        Beans.get(ManufOrderWorkflowService.class).getOutsourcePartners(manufOrder);
+
+    response.setAttr(
+        "$partnerToDeclare",
+        "domain",
+        String.format(
+            "self.id in (%s)",
+            manufOrderPartners.isEmpty()
+                ? "0"
+                : manufOrderPartners.stream()
+                    .map(Partner::getId)
+                    .map(Objects::toString)
+                    .collect(Collectors.joining(","))));
+  }
+
+  @SuppressWarnings("unchecked")
+  public void declareDelivery(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder;
+      if (request.getContext().get("_manufOrderId") != null) {
+        manufOrder =
+            Beans.get(ManufOrderRepository.class)
+                .find((long) (int) request.getContext().get("_manufOrderId"));
+      } else {
+        return;
+      }
+
+      ProdProductRepository prodProductRepository = Beans.get(ProdProductRepository.class);
+      Partner partner =
+          Beans.get(PartnerRepository.class)
+              .find(
+                  Mapper.toBean(
+                          Partner.class,
+                          (Map<String, Object>) request.getContext().get("partnerToDeclare"))
+                      .getId());
+
+      List<ProdProduct> prodProductList =
+          ((List<Map<String, Object>>) request.getContext().get("prodProductsList"))
+              .stream()
+                  .map(o -> Mapper.toBean(ProdProduct.class, o))
+                  .filter(ProdProduct::isSelected)
+                  .map(prodProduct -> prodProductRepository.find(prodProduct.getId()))
+                  .collect(Collectors.toList());
+
+      if (partner == null || manufOrder == null || prodProductList.isEmpty()) {
+        return;
+      }
+
+      Beans.get(ManufOrderOutsourceService.class)
+          .validateOutsourceDeclaration(manufOrder, partner, prodProductList);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setProducedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      Beans.get(ManufOrderService.class).setProducedStockMoveLineStockLocation(manufOrder);
+
+      response.setValue("producedStockMoveLineList", manufOrder.getProducedStockMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setConsumedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      Beans.get(ManufOrderService.class).setConsumedStockMoveLineStockLocation(manufOrder);
+
+      response.setValue("consumedStockMoveLineList", manufOrder.getConsumedStockMoveLineList());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

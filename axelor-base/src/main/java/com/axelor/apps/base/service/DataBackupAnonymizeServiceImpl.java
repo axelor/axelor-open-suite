@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.db.repo.AnonymizerLineRepository;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaJsonField;
-import com.axelor.utils.ComputeNameTool;
+import com.axelor.utils.helpers.ComputeNameHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -176,13 +176,13 @@ public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeServic
 
     dataArr.set(
         headerArr.indexOf("simpleFullName"),
-        ComputeNameTool.computeSimpleFullName(
+        ComputeNameHelper.computeSimpleFullName(
             dataArr.get(headerArr.indexOf("firstName")),
             dataArr.get(headerArr.indexOf("name")),
             dataArr.get(headerArr.indexOf("importId"))));
     dataArr.set(
         headerArr.indexOf("fullName"),
-        ComputeNameTool.computeFullName(
+        ComputeNameHelper.computeFullName(
             dataArr.get(headerArr.indexOf("firstName")),
             dataArr.get(headerArr.indexOf("name")),
             dataArr.get(headerArr.indexOf("partnerSeq")),

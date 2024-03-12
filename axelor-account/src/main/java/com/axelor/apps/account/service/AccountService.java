@@ -35,7 +35,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -247,7 +247,7 @@ public class AccountService {
           && account.getAccountType() != null
           && !AccountTypeRepository.TYPE_VIEW.equals(
               account.getAccountType().getTechnicalTypeSelect())) {
-        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+        account.setCode(StringHelper.fillStringRight(code, '0', accountCodeNbrCharSelect));
       }
     }
     return account;
@@ -271,7 +271,7 @@ public class AccountService {
           && account.getAccountType() != null
           && !AccountTypeRepository.TYPE_VIEW.equals(
               account.getAccountType().getTechnicalTypeSelect())) {
-        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+        account.setCode(StringHelper.fillStringRight(code, '0', accountCodeNbrCharSelect));
       }
     }
     return account;

@@ -20,159 +20,126 @@ package com.axelor.apps.bankpayment.report;
 
 public interface ITranslation {
 
-  public static final String EBICS_CERTIFICATE_SIGNATURE_TITLE = /*$$(*/
-      "EbicsCertificateReport.signatureTitle"; /*)*/
-  public static final String EBICS_CERTIFICATE_AUTHENTICATION_TITLE = /*$$(*/
-      "EbicsCertificateReport.authenticationTitle"; /*)*/
-  public static final String EBICS_CERTIFICATE_ENCRYPTION_TITLE = /*$$(*/
-      "EbicsCertificateReport.encryptionTitle"; /*)*/
-  public static final String EBICS_CERTIFICATE_SIGNATURE = /*$$(*/
-      "EbicsCertificateReport.signature"; /*)*/
-  public static final String EBICS_CERTIFICATE_AUTHENTICATION = /*$$(*/
-      "EbicsCertificateReport.authentication"; /*)*/
-  public static final String EBICS_CERTIFICATE_ENCRYPTION = /*$$(*/
-      "EbicsCertificateReport.encryption"; /*)*/
-  public static final String EBICS_CERTIFICATE_SIGNATURE_HASH = /*$$(*/
-      "EbicsCertificateReport.signatureHash"; /*)*/
-  public static final String EBICS_CERTIFICATE_AUTHENTICATION_HASH = /*$$(*/
-      "EbicsCertificateReport.authenticationHash"; /*)*/
-  public static final String EBICS_CERTIFICATE_ENCRYPTION_HASH = /*$$(*/
-      "EbicsCertificateReport.encryptionHash"; /*)*/
-  public static final String EBICS_CERTIFICATE_ISSUED_TO = /*$$(*/
-      "EbicsCertificateReport.issuedTo"; /*)*/
-  public static final String EBICS_CERTIFICATE_ISSUED_BY = /*$$(*/
-      "EbicsCertificateReport.issuedBy"; /*)*/
-  public static final String EBICS_CERTIFICATE_BANK = /*$$(*/ "EbicsCertificateReport.bank"; /*)*/
-  public static final String EBICS_CERTIFICATE_SIGNATURE_VERSION = /*$$(*/
-      "EbicsCertificateReport.signatureVersion"; /*)*/
-  public static final String EBICS_CERTIFICATE_AUTHENTICATION_VERSION = /*$$(*/
-      "EbicsCertificateReport.authenticationVersion"; /*)*/
-  public static final String EBICS_CERTIFICATE_ENCRYPTION_VERSION = /*$$(*/
-      "EbicsCertificateReport.encryptionVersion"; /*)*/
-
-  public static final String BANK_STATEMENT_TITLE = /*$$(*/ "BankStatement.title"; /*)*/;
+  public static final String BANK_STATEMENT_TITLE = /*$$(*/ "BankStatement.title"; /*)*/
   public static final String BANK_STATEMENT_CREATION_DATE_FROM = /*$$(*/
-      "BankStatement.creationDateFrom"; /*)*/;
+      "BankStatement.creationDateFrom"; /*)*/
   public static final String BANK_STATEMENT_CREATION_DATE_TO = /*$$(*/
-      "BankStatement.creationDateTo"; /*)*/;
-  public static final String BANK_STATEMENT_HEADER_TEXT = /*$$(*/ "BankStatement.headerText"; /*)*/;
+      "BankStatement.creationDateTo"; /*)*/
+  public static final String BANK_STATEMENT_HEADER_TEXT = /*$$(*/ "BankStatement.headerText"; /*)*/
   public static final String BANK_STATEMENT_OPERATION_DATE = /*$$(*/
-      "BankStatement.operationDate"; /*)*/;
-  public static final String BANK_STATEMENT_VALUE_DATE = /*$$(*/ "BankStatement.valueDate"; /*)*/;
-  public static final String BANK_STATEMENT_LABEL = /*$$(*/ "BankStatement.label"; /*)*/;
-  public static final String BANK_STATEMENT_REFERENCE = /*$$(*/ "BankStatement.reference"; /*)*/;
-  public static final String BANK_STATEMENT_EXEMPT = /*$$(*/ "BankStatement.exempt"; /*)*/;
-  public static final String BANK_STATEMENT_UNAVAILABLE = /*$$(*/
-      "BankStatement.unavailable"; /*)*/;
-  public static final String BANK_STATEMENT_ORIGIN = /*$$(*/ "BankStatement.origin"; /*)*/;
-  public static final String BANK_STATEMENT_DEBIT = /*$$(*/ "BankStatement.debit"; /*)*/;
-  public static final String BANK_STATEMENT_CREDIT = /*$$(*/ "BankStatement.credit"; /*)*/;
+      "BankStatement.operationDate"; /*)*/
+  public static final String BANK_STATEMENT_VALUE_DATE = /*$$(*/ "BankStatement.valueDate"; /*)*/
+  public static final String BANK_STATEMENT_LABEL = /*$$(*/ "BankStatement.label"; /*)*/
+  public static final String BANK_STATEMENT_REFERENCE = /*$$(*/ "BankStatement.reference"; /*)*/
+  public static final String BANK_STATEMENT_EXEMPT = /*$$(*/ "BankStatement.exempt"; /*)*/
+  public static final String BANK_STATEMENT_UNAVAILABLE = /*$$(*/ "BankStatement.unavailable"; /*)*/
+  public static final String BANK_STATEMENT_ORIGIN = /*$$(*/ "BankStatement.origin"; /*)*/
+  public static final String BANK_STATEMENT_DEBIT = /*$$(*/ "BankStatement.debit"; /*)*/
+  public static final String BANK_STATEMENT_CREDIT = /*$$(*/ "BankStatement.credit"; /*)*/
   public static final String BANK_STATEMENT_YES = /*$$(*/ "BankStatement.yes"; /*)*/
   public static final String BANK_STATEMENT_INITIAL_BALANCE = /*$$(*/
-      "BankStatement.initialBalance"; /*)*/;
-  public static final String BANK_STATEMENT_MOVEMENT = /*$$(*/ "BankStatement.movement"; /*)*/;
+      "BankStatement.initialBalance"; /*)*/
+  public static final String BANK_STATEMENT_MOVEMENT = /*$$(*/ "BankStatement.movement"; /*)*/
   public static final String BANK_STATEMENT_FINAL_BALANCE = /*$$(*/
-      "BankStatement.finalBalance"; /*)*/;
+      "BankStatement.finalBalance"; /*)*/
   public static final String BANK_STATEMENT_TOTAL_OF_OPERATIONS = /*$$(*/
-      "BankStatement.totalOfOperations"; /*)*/;
+      "BankStatement.totalOfOperations"; /*)*/
   public static final String BANK_STATEMENT_BANK_ACCOUNT = /*$$(*/
-      "BankStatement.bankAccount"; /*)*/;
-  public static final String BANK_STATEMENT_IBAN = /*$$(*/ "BankStatement.iban"; /*)*/;
+      "BankStatement.bankAccount"; /*)*/
+  public static final String BANK_STATEMENT_IBAN = /*$$(*/ "BankStatement.iban"; /*)*/
   public static final String BANK_STATEMENT_ACCOUNT_CURRENCY = /*$$(*/
-      "BankStatement.accountCurrency"; /*)*/;
+      "BankStatement.accountCurrency"; /*)*/
 
   public static final String BANK_RECONCILIATION_REPORT_EDITION_DATE = /*$$(*/
-      "BankReconciliation.report_edition_date"; /*)*/;
+      "BankReconciliation.report_edition_date"; /*)*/
   public static final String BANK_RECONCILIATION_PAGE1_TITLE = /*$$(*/
-      "BankReconciliation.page1Title"; /*)*/;
+      "BankReconciliation.page1Title"; /*)*/
   public static final String BANK_RECONCILIATION_PAGE2_TITLE = /*$$(*/
-      "BankReconciliation.page2Title"; /*)*/;
+      "BankReconciliation.page2Title"; /*)*/
   public static final String BANK_RECONCILIATION_ACOUNT = /*$$(*/
-      "BankReconciliation.account"; /*)*/;
+      "BankReconciliation.account"; /*)*/
   public static final String BANK_RECONCILIATION_JOURNAL = /*$$(*/
-      "BankReconciliation.journal"; /*)*/;
+      "BankReconciliation.journal"; /*)*/
   public static final String BANK_RECONCILIATION_CURRENCY = /*$$(*/
-      "BankReconciliation.currency"; /*)*/;
+      "BankReconciliation.currency"; /*)*/
   public static final String BANK_RECONCILIATION_COMPANY = /*$$(*/
-      "BankReconciliation.company"; /*)*/;
+      "BankReconciliation.company"; /*)*/
   public static final String BANK_RECONCILIATION_REPORT_DATE = /*$$(*/
-      "BankReconciliation.report_date"; /*)*/;
+      "BankReconciliation.report_date"; /*)*/
   public static final String BANK_RECONCILIATION_CASH_ACCOUNT = /*$$(*/
-      "BankReconciliation.cash_account"; /*)*/;
+      "BankReconciliation.cash_account"; /*)*/
 
-  public static final String BANK_RECONCILIATION_TYPE = /*$$(*/ "BankReconciliation.type"; /*)*/;
-  public static final String BANK_RECONCILIATION_CODE = /*$$(*/ "BankReconciliation.code"; /*)*/;
+  public static final String BANK_RECONCILIATION_TYPE = /*$$(*/ "BankReconciliation.type"; /*)*/
+  public static final String BANK_RECONCILIATION_CODE = /*$$(*/ "BankReconciliation.code"; /*)*/
   public static final String BANK_RECONCILIATION_TO_DATE = /*$$(*/
-      "BankReconciliation.to_date"; /*)*/;
+      "BankReconciliation.to_date"; /*)*/
   public static final String BANK_RECONCILIATION_REFERENCE = /*$$(*/
-      "BankReconciliation.reference"; /*)*/;
-  public static final String BANK_RECONCILIATION_NAME = /*$$(*/ "BankReconciliation.name"; /*)*/;
-  public static final String BANK_RECONCILIATION_DEBIT = /*$$(*/ "BankReconciliation.debit"; /*)*/;
-  public static final String BANK_RECONCILIATION_CREDIT = /*$$(*/
-      "BankReconciliation.credit"; /*)*/;
-  public static final String BANK_RECONCILIATION_AMOUNT = /*$$(*/
-      "BankReconciliation.amount"; /*)*/;
+      "BankReconciliation.reference"; /*)*/
+  public static final String BANK_RECONCILIATION_NAME = /*$$(*/ "BankReconciliation.name"; /*)*/
+  public static final String BANK_RECONCILIATION_DEBIT = /*$$(*/ "BankReconciliation.debit"; /*)*/
+  public static final String BANK_RECONCILIATION_CREDIT = /*$$(*/ "BankReconciliation.credit"; /*)*/
+  public static final String BANK_RECONCILIATION_AMOUNT = /*$$(*/ "BankReconciliation.amount"; /*)*/
   public static final String BANK_RECONCILIATION_UNRECONCILED_MOVE_LINES = /*$$(*/
-      "BankReconciliation.unreconciled_move_lines"; /*)*/;
+      "BankReconciliation.unreconciled_move_lines"; /*)*/
   public static final String BANK_RECONCILIATION_MOVES_UNACCOUNTED = /*$$(*/
-      "BankReconciliation.moves_unaccounted"; /*)*/;
+      "BankReconciliation.moves_unaccounted"; /*)*/
 
   public static final String BANK_RECONCILIATION_STATEMENT_COMPANY = /*$$(*/
-      "BankReconciliationStatement.company"; /*)*/;
+      "BankReconciliationStatement.company"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_CURRENCY = /*$$(*/
-      "BankReconciliationStatement.currency"; /*)*/;
+      "BankReconciliationStatement.currency"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_JOURNAL = /*$$(*/
-      "BankReconciliationStatement.journal"; /*)*/;
+      "BankReconciliationStatement.journal"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_DATE = /*$$(*/
-      "BankReconciliationStatement.date"; /*)*/;
+      "BankReconciliationStatement.date"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_PAGE1TITLE = /*$$(*/
-      "BankReconciliationStatement.page1Title"; /*)*/;
+      "BankReconciliationStatement.page1Title"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_PAGE2TITLE = /*$$(*/
-      "BankReconciliationStatement.page2Title"; /*)*/;
+      "BankReconciliationStatement.page2Title"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_CODE = /*$$(*/
-      "BankReconciliationStatement.code"; /*)*/;
+      "BankReconciliationStatement.code"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_REFERENCE = /*$$(*/
-      "BankReconciliationStatement.reference"; /*)*/;
+      "BankReconciliationStatement.reference"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_DESCRIPTION = /*$$(*/
-      "BankReconciliationStatement.description"; /*)*/;
+      "BankReconciliationStatement.description"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_DEBIT = /*$$(*/
-      "BankReconciliationStatement.debit"; /*)*/;
+      "BankReconciliationStatement.debit"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_CREDIT = /*$$(*/
-      "BankReconciliationStatement.credit"; /*)*/;
+      "BankReconciliationStatement.credit"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_AMOUNT_REMAINING = /*$$(*/
-      "BankReconciliationStatement.amountRemaining"; /*)*/;
+      "BankReconciliationStatement.amountRemaining"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_NAME = /*$$(*/
-      "BankReconciliationStatement.name"; /*)*/;
+      "BankReconciliationStatement.name"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT_CODE = /*$$(*/
-      "BankReconciliationStatement.accountCode"; /*)*/;
+      "BankReconciliationStatement.accountCode"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_JOURNAL_CODE = /*$$(*/
-      "BankReconciliationStatement.journalCode"; /*)*/;
+      "BankReconciliationStatement.journalCode"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_LINE = /*$$(*/
-      "BankReconciliationStatement.line"; /*)*/;
+      "BankReconciliationStatement.line"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_AMOUNT_TO_RECONCILE = /*$$(*/
-      "BankReconciliationStatement.amountToReconcile"; /*)*/;
+      "BankReconciliationStatement.amountToReconcile"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_NO_LINE_FOUND_MESSAGE = /*$$(*/
-      "BankReconciliationStatement.noLineFoundMessage"; /*)*/;
+      "BankReconciliationStatement.noLineFoundMessage"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT = /*$$(*/
-      "BankReconciliationStatement.account"; /*)*/;
+      "BankReconciliationStatement.account"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_BANK_DETAILS = /*$$(*/
-      "BankReconciliationStatement.bankDetails"; /*)*/;
+      "BankReconciliationStatement.bankDetails"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_ACTUAL_BALANCE = /*$$(*/
-      "BankReconciliationStatement.actualBalance"; /*)*/;
+      "BankReconciliationStatement.actualBalance"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_MAIN_TITLE = /*$$(*/
-      "BankReconciliationStatement.mainTitle"; /*)*/;
+      "BankReconciliationStatement.mainTitle"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_SUMMARY_TITLE = /*$$(*/
-      "BankReconciliationStatement.SummaryTitle"; /*)*/;
+      "BankReconciliationStatement.SummaryTitle"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT_BALANCE = /*$$(*/
-      "BankReconciliationStatement.accountBalance"; /*)*/;
+      "BankReconciliationStatement.accountBalance"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_BANK_BALANCE = /*$$(*/
-      "BankReconciliationStatement.bankBalance"; /*)*/;
+      "BankReconciliationStatement.bankBalance"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT_BANK_GAP = /*$$(*/
-      "BankReconciliationStatement.accountBankGap"; /*)*/;
+      "BankReconciliationStatement.accountBankGap"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_UNRECONCILE_ACCOUNT_BALANCE = /*$$(*/
-      "BankReconciliationStatement.unreconileAccountBalance"; /*)*/;
+      "BankReconciliationStatement.unreconileAccountBalance"; /*)*/
   public static final String BANK_RECONCILIATION_STATEMENT_RECONCILIATION_GAP = /*$$(*/
-      "BankReconciliationStatement.reconciliationGap"; /*)*/;
+      "BankReconciliationStatement.reconciliationGap"; /*)*/
   public static final String BANK_RECONCILIATION_NEW_MAIN_TITLE = /*$$(*/
       "BankReconciliationStatementNew.mainTitle"; /*)*/
   public static final String BANK_RECONCILIATION_NEW_BANK = /*$$(*/
