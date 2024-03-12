@@ -229,6 +229,11 @@ public class InvoicePaymentController {
       Pair<List<Long>, Boolean> result =
           Beans.get(InvoicePaymentToolService.class).changeAmount(invoicePayment, invoiceId);
 
+      if (result == null) {
+        response.setAttr("amountErrorPanel", "hidden", true);
+        return;
+      }
+
       response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, result.getLeft()));
       response.setAttr("amountErrorPanel", "hidden", result.getRight());
     } catch (Exception e) {
