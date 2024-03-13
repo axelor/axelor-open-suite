@@ -20,6 +20,8 @@ package com.axelor.apps.quality.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.quality.db.repo.ControlEntryManagementRepository;
+import com.axelor.apps.quality.db.repo.ControlEntryPlanLineManagementRepository;
+import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanManagementRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanRepository;
@@ -79,5 +81,6 @@ public class QualityModule extends AxelorModule {
         .to(ControlEntryProgressValuesComputeServiceImpl.class);
     bind(ControlEntryRepository.class).to(ControlEntryManagementRepository.class);
     bind(ControlPlanRepository.class).to(ControlPlanManagementRepository.class);
+    bind(ControlEntryPlanLineRepository.class).to(ControlEntryPlanLineManagementRepository.class);
   }
 }
