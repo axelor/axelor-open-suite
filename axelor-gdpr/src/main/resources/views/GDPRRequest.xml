@@ -71,7 +71,8 @@
           <field name="dataFile" showIf="dataFile" readonly="true"/>
           <field name="sendingDateT" widget="date-time" showIf="sendingDateT" readonly="true"/>
           <field name="responseMessage" showIf="responseMessage" readonly="true"/>
-          <field name="anonymizationResult" colSpan="12" readonly="true" showIf="typeSelect == 1"/>
+          <field name="anonymizationResult" colSpan="12" readonly="true"
+            showIf="typeSelect == 1"/>
           <field name="responseErasureLogList" colSpan="12"
             showIf="responseErasureLogList.length > 0" readonly="true" showTitle="false"/>
         </editor>
