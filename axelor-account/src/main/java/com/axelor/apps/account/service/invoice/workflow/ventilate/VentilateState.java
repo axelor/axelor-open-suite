@@ -314,7 +314,7 @@ public class VentilateState extends WorkflowInvoice {
     Sequence sequence = this.getSequence();
 
     if (!InvoiceToolService.isPurchase(invoice)) {
-      // this.checkInvoiceDate(sequence);
+      this.checkInvoiceDate(sequence);
     }
 
     invoice.setInvoiceId(
