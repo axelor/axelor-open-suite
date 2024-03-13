@@ -33,7 +33,7 @@
     onLoad="action-accounting-situation-method-onload"
     onNew="action-accounting-situation-method-onnew" width="large">
     <panel name="mainPanel">
-      <field name="company" widget="SuggestBox" canEdit="false"
+      <field name="company" widget="SuggestBox" canEdit="false" required="true"
         onChange="action-accounting-situation-method-company-onchange" form-view="company-form"
         grid-view="company-grid" onSelect="action-accounting-situation-method-company-onselect"/>
       <spacer/>

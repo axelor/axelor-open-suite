@@ -122,11 +122,10 @@ public class AccountingSituationAttrsServiceImpl implements AccountingSituationA
         domain.concat(
             String.format(
                 " AND self.id NOT IN (%s)",
-                partnerAccountingSituationList.stream()
-                    .map(AccountingSituation::getCompany)
-                    .map(Company::getId)
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(","))));
+                StringHelper.getIdListString(
+                    partnerAccountingSituationList.stream()
+                        .map(AccountingSituation::getCompany)
+                        .collect(Collectors.toList()))));
 
     return domain;
   }
