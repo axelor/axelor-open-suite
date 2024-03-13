@@ -38,11 +38,9 @@
       <field name="product.trackingNumberConfiguration.hasWarranty" hidden="true"/>
       <field name="product.trackingNumberConfiguration.isPerishable" hidden="true"/>
       <field name="hasWarranty" hideIf="!product.trackingNumberConfiguration.hasWarranty"/>
-      <field name="warrantyExpirationDate" readonly="false"
-        hideIf="!hasWarranty"/>
+      <field name="warrantyExpirationDate" readonly="false" hideIf="!hasWarranty"/>
       <field name="isPerishable" hideIf="!product.trackingNumberConfiguration.isPerishable"/>
-      <field name="perishableExpirationDate" readonly="false"
-        hideIf="!isPerishable"/>
+      <field name="perishableExpirationDate" readonly="false" hideIf="!isPerishable"/>
       <field name="checkExpirationDateAtStockMoveRealization" hideIf="!isPerishable"/>
       <field name="counter"/>
       <field name="origin"/>
