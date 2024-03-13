@@ -181,7 +181,7 @@ public class ProductController {
   @Transactional(rollbackOn = {Exception.class})
   public void setSubProducts(ActionRequest request, ActionResponse response) {
     Product product = request.getContext().asType(Product.class);
-    //product = Beans.get(ProductRepository.class).find(product.getId());
+    // product = Beans.get(ProductRepository.class).find(product.getId());
     Beans.get(ProductService.class).setSubProducts(product);
     // Beans.get(ProductRepository.class).save(product);
 

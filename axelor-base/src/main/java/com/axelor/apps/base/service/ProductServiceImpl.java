@@ -571,7 +571,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public void setSubProducts(Product product) {
-    if(product.getSubProductList() == null){
+    if (product.getSubProductList() == null) {
       product.setSubProductList(new HashSet<>());
     }
 

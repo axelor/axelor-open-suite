@@ -37,7 +37,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.account.service.sublines.InvoiceSubLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
@@ -394,8 +393,6 @@ public abstract class InvoiceGenerator {
     } else {
       invoiceTaxLines.forEach(invoice::addInvoiceLineTaxListItem);
     }
-
-    Beans.get(InvoiceSubLineService.class).computeInvoice(invoice);
   }
 
   /**
