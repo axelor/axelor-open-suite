@@ -498,13 +498,15 @@ public class FixedAssetController {
   public void computeDisposalWizardDisposalAmount(ActionRequest request, ActionResponse response) {
     try {
       int disposalTypeSelect = (int) request.getContext().get("disposalTypeSelect");
+      FixedAsset disposal = request.getContext().asType(FixedAsset.class);
       FixedAsset fixedAsset =
           Beans.get(FixedAssetRepository.class)
               .find(Long.valueOf(request.getContext().get("_id").toString()));
       FixedAssetGroupService fixedAssetGroupService = Beans.get(FixedAssetGroupService.class);
 
       response.setValues(
-          fixedAssetGroupService.getDisposalWizardValuesMap(fixedAsset, disposalTypeSelect));
+          fixedAssetGroupService.getDisposalWizardValuesMap(
+              disposal, fixedAsset, disposalTypeSelect));
       response.setAttrs(
           fixedAssetGroupService.getDisposalWizardAttrsMap(disposalTypeSelect, fixedAsset));
     } catch (Exception e) {
