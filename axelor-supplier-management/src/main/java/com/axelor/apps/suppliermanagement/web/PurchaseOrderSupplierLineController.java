@@ -37,6 +37,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -89,7 +90,7 @@ public class PurchaseOrderSupplierLineController {
     List<SupplierCatalog> supplierCatalogList =
         Optional.ofNullable(purchaseOrderLine.getProduct())
             .map(Product::getSupplierCatalogList)
-            .orElse(List.of());
+            .orElse(new ArrayList<>());
     if (manageSupplierCatalog && CollectionUtils.isNotEmpty(supplierCatalogList)) {
       domain +=
           "self.id != "
