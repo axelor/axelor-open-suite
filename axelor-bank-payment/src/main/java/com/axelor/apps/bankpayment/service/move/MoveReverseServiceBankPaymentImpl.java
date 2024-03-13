@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -41,6 +40,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -58,7 +58,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   protected BankReconciliationService bankReconciliationService;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public MoveReverseServiceBankPaymentImpl(
@@ -74,7 +74,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
       BankReconciliationLineService bankReconciliationLineService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     super(
         moveCreateService,
         reconcileService,
@@ -88,7 +88,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -218,7 +218,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         .getTechnicalTypeSelect()
         .equals(AccountTypeRepository.TYPE_CASH)) {
       BigDecimal amount =
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               reverseMoveLine,
               reverseMoveLine
                   .getCurrencyAmount()
@@ -245,8 +245,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
                   AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
           .orElse(false)) {
         BigDecimal amount =
-            currencyScaleServiceAccount.getScaledValue(
-                moveLine, moveLine.getCurrencyAmount().abs());
+            currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
         moveLine.setBankReconciledAmount(amount);
       }
     }

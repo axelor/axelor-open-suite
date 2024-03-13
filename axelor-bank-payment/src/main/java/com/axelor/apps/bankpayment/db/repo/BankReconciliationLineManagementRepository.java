@@ -19,7 +19,7 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class BankReconciliationLineManagementRepository extends BankReconciliati
 
     json.put(
         "$currencyNumberOfDecimals",
-        Beans.get(CurrencyScaleServiceBankPayment.class).getScale(bankReconciliationLine));
+        Beans.get(CurrencyScaleService.class).getScale(bankReconciliationLine));
 
     return super.populate(json, context);
   }

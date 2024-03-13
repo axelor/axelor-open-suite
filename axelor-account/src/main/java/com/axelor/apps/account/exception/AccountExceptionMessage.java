@@ -1698,4 +1698,7 @@ public final class AccountExceptionMessage {
 
   public static final String PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES = /*$$(*/
       "Warning, you have more than one configuration for company %s, so make sure you only have one." /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
+      "No partner involved, please look for your blocking configuration if necessary." /*)*/;
 }
