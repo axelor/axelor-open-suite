@@ -177,7 +177,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         if (invoicePayment.getApplyFinancialDiscount()) {
           BigDecimal previousAmount =
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
-          invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
+          invoicePaymentFinancialDiscountService.computeFinancialDiscountFields(invoicePayment);
           availableAmount =
               baseAvailableAmount.subtract(this.getCurrentInvoicePaymentAmount(invoicePayment));
           invoicePayment.setAmount(

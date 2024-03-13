@@ -380,6 +380,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           invoicePayment.setAmount(amount);
           invoicePayment.clearInvoiceTermPaymentList();
           invoicePayment.setApplyFinancialDiscount(false);
+          invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
               invoicePayment, invoiceTerms, amount, amount);
         } else if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
