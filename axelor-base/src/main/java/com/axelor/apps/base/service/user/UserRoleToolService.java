@@ -3,14 +3,15 @@ package com.axelor.apps.base.service.user;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.servlet.RequestScoped;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@RequestScoped
 public class UserRoleToolService {
 
+  private UserRoleToolService() {
+    throw new IllegalStateException("Utility class");
+  }
   /**
    * Method to check if the user's roles and group's roles are in a role set. Return true if role
    * set is empty
