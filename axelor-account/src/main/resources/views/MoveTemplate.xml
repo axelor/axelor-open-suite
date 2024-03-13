@@ -12,7 +12,7 @@
     <field name="journal" grid-view="journal-grid" form-view="journal-form"/>
     <field name="isValid"/>
     <field name="endOfValidityDate"/>
-    <button name="generateMoveBtn" help="Generate move from using this template"
+    <button name="generateMoveBtn" help="Generate move from this template"
       onClick="action-view-move-template-open-wizard" icon="box-arrow-right" readonlyIf="!isValid"/>
   </grid>
 
