@@ -31,16 +31,12 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import javax.inject.Singleton;
 import javax.persistence.PersistenceException;
 
@@ -113,35 +109,38 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   public boolean isManageClosedPeriod(Period period, User user) throws AxelorException {
-    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
+    if (period != null && period.getYear().getCompany() != null && user != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
 
-      return checkUserRoles(user, accountConfig.getClosureAuthorizedRoleList());
+      return UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+          user, accountConfig.getClosureAuthorizedRoleList());
     }
     return false;
   }
 
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
-    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
+    if (period != null && period.getYear().getCompany() != null && user != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
 
-      return checkUserRoles(user, accountConfig.getTemporaryClosureAuthorizedRoleList());
+      return UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+          user, accountConfig.getTemporaryClosureAuthorizedRoleList());
     }
     return false;
   }
 
   @Override
   public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException {
-    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
+    if (period != null && period.getYear().getCompany() != null && user != null) {
       if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
         return false;
       }
       if (period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
         AccountConfig accountConfig =
             accountConfigService.getAccountConfig(period.getYear().getCompany());
-        return checkUserRoles(user, accountConfig.getMoveOnTempClosureAuthorizedRoleList());
+        return UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+            user, accountConfig.getMoveOnTempClosureAuthorizedRoleList());
       }
       return true;
     }
@@ -164,22 +163,5 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     User user = AuthUtils.getUser();
 
     return super.isClosedPeriod(period) && !this.isAuthorizedToAccountOnPeriod(period, user);
-  }
-
-  protected boolean checkUserRoles(User user, Set<Role> roleSet) {
-    if (user == null || ObjectUtils.isEmpty(roleSet)) {
-      return false;
-    }
-    List<Role> userRoleList =
-        user.getRoles() != null ? new ArrayList<>(user.getRoles()) : new ArrayList<>();
-    if (user.getGroup() != null && !ObjectUtils.isEmpty(user.getGroup().getRoles())) {
-      userRoleList.addAll(user.getGroup().getRoles());
-    }
-    for (Role role : roleSet) {
-      if (userRoleList.contains(role)) {
-        return true;
-      }
-    }
-    return false;
   }
 }
