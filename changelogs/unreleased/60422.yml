@@ -1,5 +1,0 @@
----
-title: "[RGPD] Erasure Request: Add the possibility to break links to an anonymised object"
-type: feature
-description: |
-  Search through other models to find a link to the object to anonymize and break it
