@@ -221,7 +221,6 @@
   <action-group name="action-move-template-wizard-group-generate-move">
     <action name="save"/>
     <action name="action-move-template-wizard-method-generate-move"/>
-    <action name="close" if="popup"/>
   </action-group>
 
   <!-- ACTION VALIDATE -->
@@ -330,6 +329,7 @@
     <context name="_company" expr="eval: __parent__?.company?.id"/>
     <context name="_moveTemplateType" expr="eval: moveTemplateType?.id"/>
     <context name="_moveTemplateId" expr="eval: id"/>
+    <context name="_isPopup" expr="eval: true"/>
   </action-view>
 
 </object-views>

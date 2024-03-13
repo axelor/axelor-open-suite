@@ -975,6 +975,7 @@
     <context name="_company" expr="eval: company?.id"/>
     <context name="_moveTemplateType" expr="eval: moveTemplateType?.id"/>
     <context name="_moveTemplateId" expr="eval: id"/>
+    <context name="_isPopup" expr="eval: false"/>
   </action-view>
 
   <menuitem name="move-template-root" title="Move Templates" parent="account-conf"

@@ -8,11 +8,9 @@ import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.user.UserService;
 import com.google.inject.Inject;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,21 +19,18 @@ import java.util.Objects;
 
 public class MoveTemplateGroupServiceImpl implements MoveTemplateGroupService {
 
-  protected CompanyRepository companyRepository;
-  protected UserService userService;
+  protected CompanyService companyService;
   protected MoveTemplateTypeRepository moveTemplateTypeRepository;
   protected MoveTemplateRepository moveTemplateRepository;
   protected AppBaseService appBaseService;
 
   @Inject
   public MoveTemplateGroupServiceImpl(
-      CompanyRepository companyRepository,
-      UserService userService,
+      CompanyService companyService,
       MoveTemplateTypeRepository moveTemplateTypeRepository,
       MoveTemplateRepository moveTemplateRepository,
       AppBaseService appBaseService) {
-    this.companyRepository = companyRepository;
-    this.userService = userService;
+    this.companyService = companyService;
     this.moveTemplateTypeRepository = moveTemplateTypeRepository;
     this.moveTemplateRepository = moveTemplateRepository;
     this.appBaseService = appBaseService;
@@ -47,7 +42,7 @@ public class MoveTemplateGroupServiceImpl implements MoveTemplateGroupService {
     Map<String, Object> valuesMap = new HashMap<>();
 
     MoveTemplateType moveTemplateType = moveTemplateTypeRepository.find(moveTemplateTypeId);
-    Company company = getDefaultCompany(companyId);
+    Company company = companyService.getDefaultCompany(companyId);
     MoveTemplate moveTemplate = getDefaultMoveTemplate(moveTemplateOriginId, company);
 
     valuesMap.put("company", company);
@@ -62,26 +57,9 @@ public class MoveTemplateGroupServiceImpl implements MoveTemplateGroupService {
         valuesMap.put("moveDate", appBaseService.getTodayDate(company));
         valuesMap.put("moveTemplateSet", new HashSet<>(Arrays.asList(moveTemplate)));
       }
-      valuesMap.put("popup", true);
     }
 
     return valuesMap;
-  }
-
-  protected Company getDefaultCompany(Long companyId) {
-    Company company = companyRepository.find(companyId);
-    if (company != null) {
-      return company;
-    }
-
-    company = userService.getUserActiveCompany();
-    if (company != null) {
-      return company;
-    } else if (companyRepository.all().count() == 1) {
-      return companyRepository.all().fetchOne();
-    }
-
-    return null;
   }
 
   protected MoveTemplate getDefaultMoveTemplate(Long moveTemplateOriginId, Company company) {
@@ -93,7 +71,7 @@ public class MoveTemplateGroupServiceImpl implements MoveTemplateGroupService {
     if (moveTemplate != null
         && moveTemplate.getIsValid()
         && (moveTemplate.getEndOfValidityDate() == null
-            || moveTemplate.getEndOfValidityDate().isAfter(LocalDate.now()))) {
+            || moveTemplate.getEndOfValidityDate().isAfter(appBaseService.getTodayDate(company)))) {
       Journal journal = moveTemplate.getJournal();
       if (journal != null
           && Objects.equals(company, journal.getCompany())

@@ -49,6 +49,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -121,6 +122,10 @@ public class MoveTemplateController {
           response.setInfo(Joiner.on("<br>").join(exceptionsList));
         }
         if (!CollectionUtils.isEmpty(moveList)) {
+          if (Objects.equals(Boolean.TRUE, request.getContext().get("_isPopup"))) {
+            response.setCanClose(true);
+          }
+
           response.setView(
               ActionView.define(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_3))
                   .model(Move.class.getName())
