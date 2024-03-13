@@ -5,7 +5,8 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" implements="com.axelor.apps.base.interfaces.PricedOrderLine">
+  <entity name="SaleOrderLine"
+    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
@@ -109,6 +110,18 @@
 
     <one-to-many name="saleOrderLineTreeList" title="Sale order line trees"
       ref="com.axelor.apps.sale.db.SaleOrderLineTree" mappedBy="saleOrderLine"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return saleOrder != null ? saleOrder.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return saleOrder != null ? saleOrder.getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
