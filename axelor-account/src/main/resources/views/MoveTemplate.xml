@@ -10,8 +10,10 @@
     <field name="moveTemplateType" grid-view="move-template-type-grid"
       form-view="move-template-type-form"/>
     <field name="journal" grid-view="journal-grid" form-view="journal-form"/>
-    <field name="endOfValidityDate"/>
     <field name="isValid"/>
+    <field name="endOfValidityDate"/>
+    <button name="generateMoveBtn" help="Generate move from using this template"
+      onClick="action-view-move-template-open-wizard" icon="box-arrow-right" readonlyIf="!isValid"/>
   </grid>
 
   <form name="move-template-form" title="Move template"
@@ -94,7 +96,7 @@
 
   <form name="move-template-wizard-form" title="Generate move from template"
     model="com.axelor.utils.db.Wizard" width="large"
-    onNew="action-move-template-wizard-set-active-company"
+    onNew="action-move-template-method-wizard-onnew"
     onLoad="action-move-template-group-wizard-onload">
     <panel name="mainPanel">
       <field name="moveTemplateType" canEdit="false" title="Type" target-name="name"
@@ -137,7 +139,7 @@
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="generateMovesBtn"
         readonlyIf="(dataInputList == null || dataInputList.length == 0) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.length == 0) || (moveTemplateType == null)"
-        title="Generate Moves" onClick="save,action-move-template-wizard-method-generate-move"
+        title="Generate Moves" onClick="action-move-template-wizard-group-generate-move"
         colSpan="12"/>
     </panel>
   </form>
@@ -208,13 +210,17 @@
   </action-group>
 
   <action-group name="action-move-template-group-wizard-onload">
-    <action name="action-move-template-wizard-set-active-company"/>
     <action name="action-move-template-attrs-wizard-hide-subrogation"/>
   </action-group>
 
   <action-group name="action-move-template-wizard-group-onnew">
     <action name="action-move-template-wizard-line-set-move-template"/>
     <action name="action-move-template-wizard-attrs-set-number-of-decimals"/>
+  </action-group>
+
+  <action-group name="action-move-template-wizard-group-generate-move">
+    <action name="save"/>
+    <action name="action-move-template-wizard-method-generate-move"/>
   </action-group>
 
   <!-- ACTION VALIDATE -->
@@ -244,14 +250,6 @@
       name="date" expr="eval:null"/>
     <field name="moveBalance" expr="eval:0"
       if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0"/>
-  </action-record>
-
-  <action-record model="com.axelor.utils.db.Wizard"
-    name="action-move-template-wizard-set-active-company">
-    <field name="company" expr="eval:__user__.activeCompany"
-      if="__user__.activeCompany != null"/>
-    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-record name="action-move-template-wizard-line-set-move-template"
@@ -314,5 +312,24 @@
   <action-method name="action-move-template-method-onload">
     <call class="com.axelor.apps.account.web.MoveTemplateController" method="onLoad"/>
   </action-method>
+
+  <action-method name="action-move-template-method-wizard-onnew">
+    <call class="com.axelor.apps.account.web.MoveTemplateController"
+      method="selectDefaultFields"/>
+  </action-method>
+
+  <action-view name="action-view-move-template-open-wizard" title="Move From Template"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="move-template-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="width" value="800"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_company" expr="eval: __parent__?.company?.id"/>
+    <context name="_moveTemplateType" expr="eval: moveTemplateType?.id"/>
+    <context name="_moveTemplateId" expr="eval: id"/>
+    <context name="_isPopup" expr="eval: true"/>
+  </action-view>
 
 </object-views>
