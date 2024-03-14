@@ -79,16 +79,14 @@ public class ContractLineManagementRepository extends ContractLineRepository {
                   .find(Long.parseLong(_parent.get("id").toString()));
           json.put(
               "$currencyNumberOfDecimals",
-              Beans.get(CurrencyScaleService.class)
-                  .getScale(contractVersion.getContract()));
+              Beans.get(CurrencyScaleService.class).getScale(contractVersion.getContract()));
         } else if (ContractTemplate.class.equals(model)) {
           ContractTemplate contractTemplate =
               Beans.get(ContractTemplateRepository.class)
                   .find(Long.parseLong(_parent.get("id").toString()));
           json.put(
               "$currencyNumberOfDecimals",
-              Beans.get(CurrencyScaleService.class)
-                  .getScale(contractTemplate);
+              Beans.get(CurrencyScaleService.class).getScale(contractTemplate));
         }
       }
     } catch (ClassNotFoundException e) {
