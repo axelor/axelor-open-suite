@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -50,7 +49,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -119,7 +117,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
 
       this.testCloseAnnualBatchFields(resultMoveAmount);
       if (accountingBatch.getGenerateResultMove()) {
-        this.generateResultMove(resultMoveAmount);
+        accountingCloseAnnualService.generateResultMove(
+            accountingBatch.getCompany(),
+            accountingBatch.getYear().getReportedBalanceDate(),
+            accountingBatch.getResultMoveDescription(),
+            accountingBatch.getBankDetails(),
+            accountingBatch.getSimulateGeneratedMoves(),
+            resultMoveAmount);
       }
     } catch (AxelorException | PersistenceException e) {
       TraceBackService.trace(e, ExceptionOriginRepository.REPORTED_BALANCE, batch.getId());
@@ -450,86 +454,6 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
     }
     return BigDecimal.ZERO;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void generateResultMove(BigDecimal amount) throws AxelorException {
-    Company company = accountingBatch.getCompany();
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    LocalDate date = accountingBatch.getYear().getReportedBalanceDate();
-    String description = accountingBatch.getResultMoveDescription();
-    Journal journal = accountConfigService.getReportedBalanceJournal(accountConfig);
-    Move move =
-        moveCreateService.createMove(
-            journal,
-            company,
-            company.getCurrency(),
-            null,
-            date,
-            date,
-            null,
-            null,
-            null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
-            false,
-            false,
-            false,
-            null,
-            description,
-            accountingBatch.getBankDetails());
-
-    Account accountCredit = null;
-    Account accountDebit = null;
-    if (amount.compareTo(BigDecimal.ZERO) < 0) {
-      accountCredit = accountConfig.getYearOpeningAccount();
-      accountDebit = accountConfig.getResultLossAccount();
-    } else {
-      accountCredit = accountConfig.getResultProfitAccount();
-      accountDebit = accountConfig.getYearOpeningAccount();
-    }
-    MoveLine credit =
-        new MoveLine(
-            move,
-            null,
-            accountCredit,
-            date,
-            date,
-            1,
-            BigDecimal.ZERO,
-            amount.abs(),
-            description,
-            null,
-            BigDecimal.ONE,
-            amount.abs(),
-            date);
-    MoveLine debit =
-        new MoveLine(
-            move,
-            null,
-            accountDebit,
-            date,
-            date,
-            2,
-            amount.abs(),
-            BigDecimal.ZERO,
-            description,
-            null,
-            BigDecimal.ONE,
-            amount.abs(),
-            date);
-    move.addMoveLineListItem(credit);
-    move.addMoveLineListItem(debit);
-
-    moveRepo.save(move);
-
-    if (accountConfig.getIsActivateSimulatedMove()
-        && accountingBatch.getSimulateGeneratedMoves()
-        && journal.getAuthorizeSimulatedMove()) {
-      moveSimulateService.simulate(move);
-    } else {
-      moveValidateService.accounting(move);
-    }
   }
 
   class AccountByPartner {

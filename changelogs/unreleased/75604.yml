@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed 'concurrent modification' error preventing from planning a stock move."
-module: axelor-stock
