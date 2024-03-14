@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -51,6 +52,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
+  protected InvoiceTermToolService invoiceTermToolService;
 
   @Inject
   public InvoiceTermPaymentServiceImpl(
@@ -58,12 +60,14 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
-      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService) {
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
+      InvoiceTermToolService invoiceTermToolService) {
     this.currencyService = currencyService;
     this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
+    this.invoiceTermToolService = invoiceTermToolService;
   }
 
   @Override
@@ -268,7 +272,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             .isEmpty()
         && (!invoiceTerm.getIsSelectedOnPaymentSession()
             || invoiceTerm.getApplyFinancialDiscountOnPaymentSession())
-        && !invoiceTermService.isPartiallyPaid(invoiceTerm)) {
+        && !invoiceTermToolService.isPartiallyPaid(invoiceTerm)) {
       invoicePayment.setApplyFinancialDiscount(
           invoiceTerm.getFinancialDiscountDeadlineDate() != null
               && invoiceTerm.getApplyFinancialDiscount()

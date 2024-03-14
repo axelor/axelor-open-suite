@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
@@ -35,16 +35,16 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicePaymentFinancialDiscountServiceImpl
     implements InvoicePaymentFinancialDiscountService {
-  protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
-      InvoiceTermService invoiceTermService,
+      InvoiceTermToolService invoiceTermToolService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       CurrencyScaleService currencyScaleService) {
-    this.invoiceTermService = invoiceTermService;
+    this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
   }
@@ -65,7 +65,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
                 it ->
                     it.getInvoiceTerm() != null
                         && it.getInvoiceTerm().getApplyFinancialDiscount()
-                        && !invoiceTermService.isPartiallyPaid(it.getInvoiceTerm()))
+                        && !invoiceTermToolService.isPartiallyPaid(it.getInvoiceTerm()))
             .collect(Collectors.toList());
 
     if (CollectionUtils.isEmpty(invoiceTermPaymentList)) {

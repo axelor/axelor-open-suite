@@ -1679,9 +1679,4 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     return amountToPayInCompanyCurrency.add(diff).setScale(companyScale, RoundingMode.HALF_UP);
   }
-
-  @Override
-  public boolean isPartiallyPaid(InvoiceTerm invoiceTerm) {
-    return invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0;
-  }
 }

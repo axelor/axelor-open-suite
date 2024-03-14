@@ -188,6 +188,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineTaxAttrsService;
@@ -784,5 +786,7 @@ public class AccountModule extends AxelorModule {
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
 
     bind(InvoicePaymentComputeService.class).to(InvoicePaymentComputeServiceImpl.class);
+
+    bind(InvoiceTermToolService.class).to(InvoiceTermToolServiceImpl.class);
   }
 }
