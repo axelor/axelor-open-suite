@@ -118,6 +118,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveValidateService moveValidateService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermPfpService invoiceTermPfpService;
+  protected ForeignExchangeGapService foreignExchangeGapService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -144,7 +145,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
       CurrencyScaleService currencyScaleService,
-      InvoiceTermPfpService invoiceTermPfpService) {
+      InvoiceTermPfpService invoiceTermPfpService,
+      ForeignExchangeGapService foreignExchangeGapService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -170,6 +172,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveValidateService = moveValidateService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermPfpService = invoiceTermPfpService;
+    this.foreignExchangeGapService = foreignExchangeGapService;
   }
 
   /**
@@ -235,6 +238,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException {
 
+    this.manageForeignExchangeGap(reconcile, updateInvoicePayments, updateInvoiceTerms);
     checkDifferentAccounts(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
     reconcile = initReconcileConfirmation(reconcile, updateInvoicePayments, updateInvoiceTerms);
@@ -822,9 +826,6 @@ public class ReconcileServiceImpl implements ReconcileService {
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException {
-
-    //TODO Add process for Foreign Exchage gains/losses
-
     BigDecimal amount =
         debitMoveLine.getAmountRemaining().abs().min(creditMoveLine.getAmountRemaining().abs());
     Reconcile reconcile =
@@ -870,7 +871,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException {
 
-    //TODO Add process for Foreign Exchage gains/losses
+    // TODO Add process for Foreign Exchage gains/losses
 
     log.debug("unreconcile : reconcile : {}", reconcile);
 
@@ -1288,7 +1289,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             debitAccount,
             reconciledAmount,
             false,
-            debitMoveLine.getDate(),
+            move.getDate(),
             1,
             null,
             null);
@@ -1301,7 +1302,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             creditAccount,
             reconciledAmount,
             true,
-            creditMoveLine.getDate(),
+            move.getDate(),
             2,
             null,
             null);
@@ -1320,5 +1321,14 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     return newReconcile;
+  }
+
+  protected void manageForeignExchangeGap(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
+      throws AxelorException {
+    Move foreignExchangeGapMove =
+        foreignExchangeGapService.manageForeignExchangeGap(
+            reconcile, updateInvoicePayments, updateInvoiceTerms);
+    // confirmReconcile(newReconcile, updateInvoicePayments, updateInvoiceTerms);
   }
 }
