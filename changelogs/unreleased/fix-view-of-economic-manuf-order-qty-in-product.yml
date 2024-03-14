@@ -1,4 +1,3 @@
-
 ---
-title: "[Product] When productSubTypeSelect=Finished product, we can see economicManufOrderQty field twice"
-type: fix
+title: "Product: fixed an issue where 'economic manuf order qty' field was displayed twice."
+module: axelor-production
