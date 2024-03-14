@@ -19,6 +19,7 @@
     <field name="typeSelect" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="invoiceLineNumber" hidden="true"/>
   </grid>
 
   <grid name="invoice-line-menu-grid" title="Invoice lines"

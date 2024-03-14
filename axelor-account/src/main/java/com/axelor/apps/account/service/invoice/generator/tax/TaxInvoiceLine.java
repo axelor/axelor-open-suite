@@ -81,9 +81,10 @@ public class TaxInvoiceLine extends TaxGenerator {
 
       LOG.debug("Creation of lines with taxes for the invoices lines");
 
+      int invoiceLineNumber = 0;
       for (InvoiceLine invoiceLine : invoiceLines) {
         // map is updated with created invoice line taxes
-        createInvoiceLineTaxes(invoiceLine, invoiceLineTaxList);
+        createInvoiceLineTaxes(invoiceLine, invoiceLineTaxList, invoiceLineNumber++);
       }
     }
 
@@ -109,7 +110,8 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected void createInvoiceLineTaxes(
-      InvoiceLine invoiceLine, List<InvoiceLineTax> invoiceLineTaxList) throws AxelorException {
+      InvoiceLine invoiceLine, List<InvoiceLineTax> invoiceLineTaxList, int invoiceLineNumber)
+      throws AxelorException {
     Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     int vatSystem = 0;
@@ -128,7 +130,7 @@ public class TaxInvoiceLine extends TaxGenerator {
                 isPurchase,
                 !isPurchase);
       }
-      createInvoiceLineTax(invoiceLine, taxLine, vatSystem, invoiceLineTaxList);
+      createInvoiceLineTax(invoiceLine, taxLine, vatSystem, invoiceLineTaxList, invoiceLineNumber);
     }
 
     LocalDate todayDate =
@@ -152,7 +154,8 @@ public class TaxInvoiceLine extends TaxGenerator {
                 .orElse(taxService.getTaxLine(taxEquiv.getReverseChargeTax(), todayDate));
 
         if (taxLineRC != null) {
-          createInvoiceLineTaxRc(invoiceLine, taxLineRC, vatSystem, invoiceLineTaxList);
+          createInvoiceLineTaxRc(
+              invoiceLine, taxLineRC, vatSystem, invoiceLineTaxList, invoiceLineNumber);
         }
       }
     }
@@ -162,12 +165,13 @@ public class TaxInvoiceLine extends TaxGenerator {
       InvoiceLine invoiceLine,
       TaxLine taxLine,
       int vatSystem,
-      List<InvoiceLineTax> invoiceLineTaxList) {
+      List<InvoiceLineTax> invoiceLineTaxList,
+      int invoiceLineNumber) {
     LOG.debug("Tax {}", taxLine);
 
     InvoiceLineTax invoiceLineTax = createInvoiceLineTax(invoiceLine, taxLine, vatSystem);
     invoiceLineTax.setReverseCharged(false);
-    invoiceLineTax.setInvoiceLine(invoiceLine);
+    invoiceLineTax.setInvoiceLineNumber(invoiceLineNumber);
     invoiceLineTaxList.add(invoiceLineTax);
   }
 
@@ -175,10 +179,11 @@ public class TaxInvoiceLine extends TaxGenerator {
       InvoiceLine invoiceLine,
       TaxLine taxLineRC,
       int vatSystem,
-      List<InvoiceLineTax> invoiceLineTaxList) {
+      List<InvoiceLineTax> invoiceLineTaxList,
+      int invoiceLineNumber) {
     InvoiceLineTax invoiceLineTaxRC = createInvoiceLineTax(invoiceLine, taxLineRC, vatSystem);
     invoiceLineTaxRC.setReverseCharged(true);
-    invoiceLineTaxRC.setInvoiceLine(invoiceLine);
+    invoiceLineTaxRC.setInvoiceLineNumber(invoiceLineNumber);
     invoiceLineTaxList.add(invoiceLineTaxRC);
   }
 
