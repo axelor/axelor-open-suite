@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -42,6 +41,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
@@ -76,7 +76,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected TaxService taxService;
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -92,7 +92,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -105,7 +105,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.taxService = taxService;
     this.internationalService = internationalService;
     this.invoiceLineAttrsService = invoiceLineAttrsService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -135,7 +135,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
       throws AxelorException {
 
-    return currencyScaleServiceAccount.getScaledValue(
+    return currencyScaleService.getScaledValue(
         invoice, this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase, true));
   }
 
@@ -212,7 +212,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             invoice.getCompany().getCurrency(),
             exTaxTotal,
             invoice.getInvoiceDate())
-        .setScale(currencyScaleServiceAccount.getCompanyScale(invoice), RoundingMode.HALF_UP);
+        .setScale(currencyScaleService.getCompanyScale(invoice), RoundingMode.HALF_UP);
   }
 
   @Override
@@ -267,7 +267,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         != 0) {
       if (invoiceLine.getProduct().getInAti()) {
         processedDiscounts.put(
-            "inTaxPrice", currencyScaleServiceAccount.getScaledValue(invoiceLine, price));
+            "inTaxPrice", currencyScaleService.getScaledValue(invoiceLine, price));
         processedDiscounts.put(
             "price",
             taxService.convertUnitPrice(
@@ -279,7 +279,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         processedDiscounts.put("price", price);
         processedDiscounts.put(
             "inTaxPrice",
-            currencyScaleServiceAccount.getScaledValue(
+            currencyScaleService.getScaledValue(
                 invoiceLine,
                 taxService.convertUnitPrice(
                     false,
@@ -371,7 +371,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal inTaxTotal;
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(invoiceLine, invoice.getInAti());
-    int currencyScale = currencyScaleServiceAccount.getScale(invoice);
+    int currencyScale = currencyScaleService.getScale(invoice);
 
     invoiceLine.setPriceDiscounted(priceDiscounted);
 
@@ -529,7 +529,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
     TaxLine taxLine = invoiceLine.getTaxLine();
     BigDecimal priceDiscounted = this.computeDiscount(invoiceLine, invoice.getInAti());
-    int currencyScale = currencyScaleServiceAccount.getScale(invoice);
+    int currencyScale = currencyScaleService.getScale(invoice);
 
     if (taxLine != null) {
       taxRate = taxLine.getValue();
@@ -651,12 +651,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       BigDecimal price = getPrice(invoice, invoiceLine);
 
       invoiceLine.setInTaxTotal(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoice,
               taxService.convertUnitPrice(
                   false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice())));
       invoiceLine.setCompanyInTaxTotal(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoice,
               taxService.convertUnitPrice(
                   false,
@@ -664,7 +664,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
                   companyExTaxTotal,
                   appBaseService.getNbDecimalDigitForUnitPrice())));
       invoiceLine.setInTaxPrice(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoice,
               taxService.convertUnitPrice(
                   false, taxLine, price, appBaseService.getNbDecimalDigitForUnitPrice())));
@@ -721,8 +721,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
                         .divide(new BigDecimal(100), RoundingMode.HALF_UP))
             .orElse(BigDecimal.ZERO);
 
-    return currencyScaleServiceAccount.getScaledValue(
-        invoiceLine, invoiceLine.getPrice().add(taxValue));
+    return currencyScaleService.getScaledValue(invoiceLine, invoiceLine.getPrice().add(taxValue));
   }
 
   @Override

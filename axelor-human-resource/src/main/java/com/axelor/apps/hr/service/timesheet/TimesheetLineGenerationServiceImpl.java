@@ -45,15 +45,18 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
   protected LeaveRequestService leaveRequestService;
   protected PublicHolidayHrService publicHolidayHrService;
   protected TimesheetLineService timesheetLineService;
+  protected TimesheetLineCreateService timesheetLineCreateService;
 
   @Inject
   public TimesheetLineGenerationServiceImpl(
       LeaveRequestService leaveRequestService,
       PublicHolidayHrService publicHolidayHrService,
-      TimesheetLineService timesheetLineService) {
+      TimesheetLineService timesheetLineService,
+      TimesheetLineCreateService timesheetLineCreateService) {
     this.leaveRequestService = leaveRequestService;
     this.publicHolidayHrService = publicHolidayHrService;
     this.timesheetLineService = timesheetLineService;
+    this.timesheetLineCreateService = timesheetLineCreateService;
   }
 
   @Override
@@ -122,7 +125,7 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
           && !publicHolidayHrService.checkPublicHolidayDay(fromDate, employee)) {
 
         TimesheetLine timesheetLine =
-            timesheetLineService.createTimesheetLine(
+            timesheetLineCreateService.createTimesheetLine(
                 project,
                 product,
                 employee,

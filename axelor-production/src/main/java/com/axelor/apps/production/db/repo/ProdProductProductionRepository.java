@@ -16,10 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -28,6 +27,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProdProductProductionRepository extends ProdProductRepository {
 
@@ -48,7 +48,11 @@ public class ProdProductProductionRepository extends ProdProductRepository {
               ? null
               : ((HashMap<String, Object>) json.get("toConsumeManufOrder")).get("id");
     } else {
-      toProduceManufOrderIdFromView = context.get("id");
+      toProduceManufOrderIdFromView =
+          Optional.ofNullable(context.get("_parent"))
+              .map(o -> (Map<String, Object>) o)
+              .map(parentMap -> Long.parseLong(parentMap.get("id").toString()))
+              .orElse(null);
     }
     if (productFromView == null || qtyFromView == null || toProduceManufOrderIdFromView == null) {
       return super.populate(json, context);

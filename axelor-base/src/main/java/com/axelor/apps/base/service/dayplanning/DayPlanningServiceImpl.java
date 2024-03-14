@@ -138,7 +138,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
     }
 
     LocalDateTime previousDay = dateT.minusDays(1).with(LocalTime.MAX);
-    return getAllowedStartDateTPeriodAt(
+    return getAllowedEndDateTPeriodAt(
         weeklyPlanningService.findDayPlanning(
             dayPlanning.getWeeklyPlanning(), previousDay.toLocalDate()),
         previousDay,
