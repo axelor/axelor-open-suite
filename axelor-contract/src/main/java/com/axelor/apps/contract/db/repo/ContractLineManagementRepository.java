@@ -21,11 +21,11 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.apps.contract.service.CurrencyScaleServiceContract;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
@@ -79,16 +79,16 @@ public class ContractLineManagementRepository extends ContractLineRepository {
                   .find(Long.parseLong(_parent.get("id").toString()));
           json.put(
               "$currencyNumberOfDecimals",
-              Beans.get(CurrencyScaleServiceContract.class)
-                  .getScale(contractVersion.getContract().getCurrency()));
+              Beans.get(CurrencyScaleService.class)
+                  .getScale(contractVersion.getContract()));
         } else if (ContractTemplate.class.equals(model)) {
           ContractTemplate contractTemplate =
               Beans.get(ContractTemplateRepository.class)
                   .find(Long.parseLong(_parent.get("id").toString()));
           json.put(
               "$currencyNumberOfDecimals",
-              Beans.get(CurrencyScaleServiceContract.class)
-                  .getScale(contractTemplate.getCurrency()));
+              Beans.get(CurrencyScaleService.class)
+                  .getScale(contractTemplate);
         }
       }
     } catch (ClassNotFoundException e) {
