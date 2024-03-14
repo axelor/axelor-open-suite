@@ -132,19 +132,20 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
       return;
     }
     List<InvoiceLine> newInvoiceLineListDisplay = new ArrayList<>();
+    int i = 1;
     for (InvoiceLine invoiceLine : invoiceLineDisplayListList) {
       if (invoiceLine.getParentInvoiceLine() == null) {
+        if (!invoiceLine.getLineIndex().equals("RT")) {
+          invoiceLine.setLineIndex(String.valueOf(i));
+          i++;
+        }
         calculateAllParentsTotalsAndPrices(invoiceLine, invoice, newInvoiceLineListDisplay);
       }
-
-      // invoiceLineRepository.save(invoiceLine);
     }
     invoiceLineDisplayListList.clear();
     for (InvoiceLine il : newInvoiceLineListDisplay) {
       invoice.addInvoiceLineDisplayListItem(il);
     }
-    // invoice.setInvoiceLineDisplayList(newInvoiceLineListDisplay);
-    // invoiceRepository.save(invoice);
   }
 
   protected void calculateAllParentsTotalsAndPrices(
@@ -184,7 +185,10 @@ public class InvoiceSubLineServiceImpl implements InvoiceSubLineService {
       InvoiceLine invoiceLine, Invoice invoice, List<InvoiceLine> newInvoiceLineListDisplay)
       throws AxelorException {
     BigDecimal total = BigDecimal.ZERO;
+    int j = 1;
     for (InvoiceLine subline : invoiceLine.getInvoiceLineList()) {
+      subline.setLineIndex(invoiceLine.getLineIndex() + "." + j);
+      j++;
       calculateAllParentsTotalsAndPrices(subline, invoice, newInvoiceLineListDisplay);
       total = total.add(subline.getExTaxTotal());
     }

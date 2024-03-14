@@ -95,7 +95,10 @@ public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrde
       throws AxelorException {
     BigDecimal total = BigDecimal.ZERO;
     BigDecimal costPriceTotal = BigDecimal.ZERO;
+    int j = 1;
     for (SaleOrderLine subline : saleOrderLine.getSaleOrderLineList()) {
+      subline.setLineIndex(saleOrderLine.getLineIndex() + "." + j);
+      j++;
       calculateAllParentsTotalsAndPrices(subline, saleOrder);
       total = total.add(subline.getExTaxTotal());
       costPriceTotal = costPriceTotal.add(subline.getCostPrice().multiply(subline.getQty()));

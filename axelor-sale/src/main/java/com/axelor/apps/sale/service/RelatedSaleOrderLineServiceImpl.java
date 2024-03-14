@@ -123,8 +123,13 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
       return;
     }
+    int i = 1;
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      calculateAllParentsTotalsAndPrices(saleOrderLine, saleOrder);
+      if (saleOrderLine.getParentSaleOrderLine() == null) {
+        saleOrderLine.setLineIndex(String.valueOf(i));
+        i++;
+        calculateAllParentsTotalsAndPrices(saleOrderLine, saleOrder);
+      }
     }
   }
 
@@ -154,7 +159,10 @@ public class RelatedSaleOrderLineServiceImpl implements RelatedSaleOrderLineServ
   protected BigDecimal computeTotal(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     BigDecimal total = BigDecimal.ZERO;
+    int j = 1;
     for (SaleOrderLine subline : saleOrderLine.getSaleOrderLineList()) {
+      subline.setLineIndex(saleOrderLine.getLineIndex() + "." + j);
+      j++;
       calculateAllParentsTotalsAndPrices(subline, saleOrder);
       total = total.add(subline.getExTaxTotal());
     }

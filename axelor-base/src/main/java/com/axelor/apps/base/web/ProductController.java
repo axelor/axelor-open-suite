@@ -41,7 +41,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Criteria;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
