@@ -475,14 +475,15 @@
         </panel>
       </panel>
       <panel name="accountingSituationPanel" if-module="axelor-account"
-        if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact"
-        onSelect="action-account-accounting-situation-method-update-customer-account">
+        if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact">
         <field name="isCompensation" colSpan="12" widget="boolean-switch"
           showIf="isCustomer &amp;&amp; isSupplier"/>
+        <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>
         <panel-related name="accountingSituationListPanel"
           field="accountingSituationList" title="Accounting situation" hideIf="isContact"
           colSpan="12" grid-view="accounting-situation-partner-grid"
-          form-view="accounting-situation-partner-form"/>
+          form-view="accounting-situation-partner-form"
+          onChange="action-partner-account-method-accounting-situation-label"/>
       </panel>
       <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
         if="__config__.app.isApp('account')"/>
