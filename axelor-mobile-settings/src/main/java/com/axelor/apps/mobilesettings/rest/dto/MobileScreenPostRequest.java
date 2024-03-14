@@ -23,11 +23,11 @@ public class MobileScreenPostRequest extends RequestPostStructure {
     this.screenTitle = screenTitle;
   }
 
-  public boolean isUsableOnShortcut() {
+  public boolean getIsUsableOnShortcut() {
     return isUsableOnShortcut;
   }
 
-  public void setUsableOnShortcut(boolean usableOnShortcut) {
+  public void setIsUsableOnShortcut(boolean usableOnShortcut) {
     isUsableOnShortcut = usableOnShortcut;
   }
 }

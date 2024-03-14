@@ -31,7 +31,7 @@ public class MobileScreenCreateServiceImpl implements MobileScreenCreateService 
           createMobileScreen(
               mobileScreenPostRequest.getScreenKey(),
               mobileScreenPostRequest.getScreenTitle(),
-              mobileScreenPostRequest.isUsableOnShortcut()));
+              mobileScreenPostRequest.getIsUsableOnShortcut()));
     }
     return mobileScreenList;
   }
