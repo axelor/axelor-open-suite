@@ -1,0 +1,3 @@
+---
+title: "StockRule : Fix qty fields rules and improve error message on rule check"
+module: axelor-stock
