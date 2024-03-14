@@ -1,3 +1,3 @@
 ---
-title: "ContractLine : Fix Analytic lines creation using amount in company currency"
+title: "Contract line: fixed analytic lines creation using amount in company currency."
 module: axelor-contract
