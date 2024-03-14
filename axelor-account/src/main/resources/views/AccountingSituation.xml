@@ -33,15 +33,9 @@
     onLoad="action-accounting-situation-method-onload"
     onNew="action-accounting-situation-method-onnew" width="large">
     <panel name="mainPanel">
-<<<<<<< HEAD
       <field name="company" widget="SuggestBox" canEdit="false" required="true"
         onChange="action-accounting-situation-method-company-onchange" form-view="company-form"
         grid-view="company-grid" onSelect="action-accounting-situation-method-company-onselect"/>
-=======
-      <field name="company" widget="SuggestBox" canEdit="false"
-        onChange="action-accounting-situation-group-company-onchange" form-view="company-form"
-        grid-view="company-grid" required="true"/>
->>>>>>> 628f3687ec2f44cef872779ccf87d352612c3487
       <spacer/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
         onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
@@ -159,13 +153,8 @@
     onLoad="action-accounting-situation-method-onload">
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-<<<<<<< HEAD
         onSelect="action-accounting-situation-method-company-onselect" grid-view="company-grid"
-        onChange="action-accounting-situation-method-company-onchange"/>
-=======
-        required="true" grid-view="company-grid"
-        onChange="action-accounting-situation-method-set-holdback-accounts"/>
->>>>>>> 628f3687ec2f44cef872779ccf87d352612c3487
+        onChange="action-accounting-situation-method-company-onchange" required="true"/>
       <field name="partner" domain=":company member of self.companySet"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="customerAccount"
