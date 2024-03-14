@@ -28,6 +28,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
@@ -36,7 +37,6 @@ import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
@@ -79,20 +79,10 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   public boolean checkBudgetKeyAndRole(Company company, User user) throws AxelorException {
     if (company != null && user != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-      if (!accountConfig.getEnableBudgetKey()
-          || CollectionUtils.isEmpty(accountConfig.getBudgetDistributionRoleSet())) {
-        return true;
-      }
-      for (Role role : user.getRoles()) {
-        if (accountConfig.getBudgetDistributionRoleSet().contains(role)) {
-          return true;
-        }
-      }
-      for (Role role : user.getGroup().getRoles()) {
-        if (accountConfig.getBudgetDistributionRoleSet().contains(role)) {
-          return true;
-        }
-      }
+
+      return !accountConfig.getEnableBudgetKey()
+          || UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
+              user, accountConfig.getBudgetDistributionRoleSet());
     }
     return false;
   }

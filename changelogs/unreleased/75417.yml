@@ -1,0 +1,5 @@
+---
+title: "Contract template: fixed error when opening an existing contract template or saving a new one."
+module: axelor-contract
+developer: |
+  A new transient field `companyCurrency` was added in `ContractTemplate` so the model can implement the `Currenciable` interface.

@@ -16,29 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.move;
+package com.axelor.apps.base.service.printing.template;
 
-import com.axelor.apps.account.db.MoveTemplate;
-import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.base.AxelorException;
-import java.time.LocalDate;
-import java.util.HashMap;
+import com.axelor.apps.base.db.PrintingTemplate;
 import java.util.List;
-import java.util.Map;
 
-public interface MoveTemplateService {
-
-  List<String> getExceptionsList();
-
-  List<Long> generateMove(
-      MoveTemplateType moveTemplateType,
-      MoveTemplate moveTemplate,
-      List<HashMap<String, Object>> dataList,
-      LocalDate date,
-      List<HashMap<String, Object>> moveTemplateList)
-      throws AxelorException;
-
-  boolean checkValidity(MoveTemplate moveTemplate);
-
-  Map<String, Object> computeTotals(MoveTemplate moveTemplate);
+public interface PrintingTemplateService {
+  List<PrintingTemplate> getPrintingTemplates(String modelName) throws AxelorException;
 }
