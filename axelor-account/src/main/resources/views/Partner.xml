@@ -64,12 +64,14 @@
   </form>
 
   <form name="incl-customer-balance-partner-form" title="Partner"
-    model="com.axelor.apps.base.db.Partner">
+    model="com.axelor.apps.base.db.Partner"
+    onLoad="action-partner-account-method-accounting-situation-label">
     <panel name="accountingBalancePanel" title="Accounting balance" colSpan="12">
+      <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>
       <field name="accountingSituationList" colSpan="12" widget="MasterDetail"
         title="Customer balance" hideIf="isContact" grid-view="accounting-situation-partner-grid"
         form-view="accounting-situation-partner-form"
-        onSelect="action-account-accounting-situation-method-update-customer-account"/>
+        onChange="action-partner-account-method-accounting-situation-label"/>
     </panel>
   </form>
 
@@ -122,6 +124,11 @@
           showIf="(isCustomer || isSupplier) &amp;&amp; !isFactor"
           if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       </insert>
+    </extend>
+
+    <extend target="//panel[@name='accountingSituationPanel']">
+      <attribute name="onTabSelect"
+        value="action-partner-account-method-accounting-situation-label"/>
     </extend>
   </form>
 
@@ -176,6 +183,11 @@
   <action-method name="action-partner-method-get-default-specific-tax-note">
     <call class="com.axelor.apps.account.web.PartnerController"
       method="getDefaultSpecificTaxNote"/>
+  </action-method>
+
+  <action-method name="action-partner-account-method-accounting-situation-label">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="computeAccountingSituationLabel"/>
   </action-method>
 
   <action-attrs name="action-partner-account-attrs-hide-supplier-account">
