@@ -66,4 +66,6 @@ public interface FixedAssetLineToolService {
   boolean isGreaterThan(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
 
   boolean equals(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
+
+  int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException;
 }

@@ -35,7 +35,6 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -54,6 +53,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -94,7 +94,7 @@ public class PaymentVoucherConfirmService {
   protected InvoiceTermRepository invoiceTermRepository;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -116,7 +116,7 @@ public class PaymentVoucherConfirmService {
       InvoiceTermRepository invoiceTermRepository,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -136,7 +136,7 @@ public class PaymentVoucherConfirmService {
     this.invoiceTermRepository = invoiceTermRepository;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -816,7 +816,7 @@ public class PaymentVoucherConfirmService {
         currencyService.computeScaledExchangeRate(
             invoiceTerm.getCompanyAmount(), invoiceTerm.getAmount());
     BigDecimal companyAmountToPay =
-        currencyScaleServiceAccount.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             payVoucherElementToPay.getPaymentVoucher(),
             payVoucherElementToPay.getAmountToPayCurrency().multiply(ratio));
 

@@ -172,6 +172,7 @@
   <selection name="base.price.list.line.anomaly.select">
     <option value="1">Product unavailable for sale</option>
     <option value="2">Product not renewed</option>
+    <option value="3">Product unavailable for purchase</option>
   </selection>
 
   <selection name="day.month.select">
@@ -757,6 +758,11 @@
   <selection name="tax.type.type.select">
     <option value="1">VAT</option>
     <option value="2">Other</option>
+  </selection>
+
+  <selection name="base.site.type.select">
+    <option value="1">Internal</option>
+    <option value="2">External</option>
   </selection>
 
 </object-views>
