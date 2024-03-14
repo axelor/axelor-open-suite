@@ -39,7 +39,6 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -54,6 +53,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -108,7 +108,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
   protected CompanyConfigService companyConfigService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
@@ -132,7 +132,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
       CompanyConfigService companyConfigService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -153,7 +153,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
     this.companyConfigService = companyConfigService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
@@ -912,7 +912,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         .multiply(moveLine.getTaxLine().getValue())
         .divide(
             BigDecimal.valueOf(100),
-            currencyScaleServiceAccount.getCompanyScale(moveLine),
+            currencyScaleService.getCompanyScale(moveLine),
             RoundingMode.HALF_UP);
   }
 
