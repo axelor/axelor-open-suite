@@ -1,0 +1,3 @@
+---
+title: "Sale order/Purchase order: fixed number of decimals display in price and totals."
+module: "axelor-base"
