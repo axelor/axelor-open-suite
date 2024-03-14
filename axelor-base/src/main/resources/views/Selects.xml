@@ -410,6 +410,11 @@
     <option value="time">Time</option>
   </selection>
 
+  <selection name="base.printing.template.type.select">
+    <option value="1">File</option>
+    <option value="2">Birt</option>
+  </selection>
+
   <selection name="base.blocking.select">
     <option value="1">Reminder blocking</option>
     <option value="2">Invoicing blocking</option>
