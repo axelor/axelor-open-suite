@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
@@ -37,18 +36,15 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoicePaymentFinancialDiscountServiceImpl
     implements InvoicePaymentFinancialDiscountService {
   protected InvoiceTermService invoiceTermService;
-  protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
       InvoiceTermService invoiceTermService,
-      InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       CurrencyScaleService currencyScaleService) {
     this.invoiceTermService = invoiceTermService;
-    this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
   }
@@ -161,36 +157,5 @@ public class InvoicePaymentFinancialDiscountServiceImpl
         .map(InvoiceTerm::getFinancialDiscountDeadlineDate)
         .min(LocalDate::compareTo)
         .orElse(null);
-  }
-
-  @Override
-  public List<Long> computeDataForFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
-      throws AxelorException {
-    List<Long> invoiceTermIdList = null;
-
-    if (invoiceId > 0) {
-      List<InvoiceTerm> invoiceTerms =
-          invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
-
-      invoiceTermIdList =
-          invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
-
-      if (!invoicePayment.getApplyFinancialDiscount()) {
-        invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
-      }
-      invoicePayment.clearInvoiceTermPaymentList();
-      invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-          invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
-
-      this.computeFinancialDiscount(invoicePayment);
-
-      if (invoicePayment.getApplyFinancialDiscount()) {
-        invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
-
-        invoicePayment.setAmount(
-            invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
-      }
-    }
-    return invoiceTermIdList;
   }
 }

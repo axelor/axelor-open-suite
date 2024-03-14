@@ -308,6 +308,8 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.PaymentServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
@@ -780,5 +782,7 @@ public class AccountModule extends AxelorModule {
         .to(FixedAssetDerogatoryLineManagementRepository.class);
 
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
+
+    bind(InvoicePaymentComputeService.class).to(InvoicePaymentComputeServiceImpl.class);
   }
 }
