@@ -21,14 +21,17 @@ package com.axelor.apps.base.service;
 import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.RegistrationNumberTemplate;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -36,6 +39,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -199,6 +203,12 @@ public class PartnerServiceImpl implements PartnerService {
 
     this.setPartnerFullName(partner);
     this.setCompanyStr(partner);
+
+    if (!isRegistrationCodeValid(partner)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    }
   }
 
   /**
@@ -785,35 +795,51 @@ public class PartnerServiceImpl implements PartnerService {
       return true;
     }
 
-    return computeRegistrationCodeValidity(registrationCode);
+    registrationCode = registrationCode.replace(" ", "");
+    return validateRegistrationCode(registrationCode, partner);
   }
 
-  protected boolean computeRegistrationCodeValidity(String registrationCode) {
-    int sum = 0;
-    boolean isOddNumber = true;
-    registrationCode = registrationCode.replace(" ", "");
-    if (registrationCode.length() != 14) {
+  protected boolean validateRegistrationCode(String registrationCode, Partner partner) {
+    try {
+      Class<? extends RegistrationNumberValidator> klass =
+          Beans.get(PartnerRegistrationCodeService.class)
+              .getRegistrationNumberValidatorClass(partner);
+      if (klass == null) {
+        return true;
+      }
+      RegistrationNumberTemplate registrationNumberTemplate =
+          Optional.ofNullable(partner)
+              .map(Partner::getMainAddress)
+              .map(Address::getCountry)
+              .map(Country::getRegistrationNumberTemplate)
+              .orElse(null);
+      if (registrationNumberTemplate == null) {
+        return true;
+      }
+      if (registrationNumberTemplate.getIsRequiredForCompanies()
+          && StringUtils.isBlank(registrationCode)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
+      }
+
+      if (registrationCode.length() != registrationNumberTemplate.getRequiredSize()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      }
+      boolean isValidRegistrationCode =
+          Beans.get(klass).computeRegistrationCodeValidity(registrationCode);
+      if (!isValidRegistrationCode) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));
       return false;
     }
-    int i = registrationCode.length() - 1;
-    while (i > -1) {
-      int number = Character.getNumericValue(registrationCode.charAt(i));
-      if (number < 0) {
-        i--;
-        continue;
-      }
-      if (!isOddNumber) {
-        number *= 2;
-      }
-      if (number < 10) {
-        sum += number;
-      } else {
-        number -= 10;
-        sum += number + 1;
-      }
-      i--;
-      isOddNumber = !isOddNumber;
-    }
-    return sum % 10 == 0;
+
+    return true;
   }
 }

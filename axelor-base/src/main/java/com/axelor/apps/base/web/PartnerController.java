@@ -33,8 +33,10 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.PartnerRegistrationCodeService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
+import com.axelor.apps.base.service.RegistrationNumberValidator;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
@@ -53,6 +55,7 @@ import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
@@ -389,16 +392,46 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       PartnerService partnerService = Beans.get(PartnerService.class);
-      if (partnerService.isRegistrationCodeValid(partner)) {
-        String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
-        String nic = partnerService.getNicFromRegistrationCode(partner);
-        String siren = partnerService.getSirenFromRegistrationCode(partner);
-
-        response.setValue("taxNbr", taxNbr);
-        response.setValue("nic", nic);
-        response.setValue("siren", siren);
+      PartnerRegistrationCodeService partnerRegistrationCodeService =
+          Beans.get(PartnerRegistrationCodeService.class);
+      if (!partnerService.isRegistrationCodeValid(partner)) {
+        response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+        return;
       }
+      Class<? extends RegistrationNumberValidator> klass =
+          partnerRegistrationCodeService.getRegistrationNumberValidatorClass(partner);
+      if (klass == null) {
+        return;
+      }
+      RegistrationNumberValidator registrationNumberValidator = Beans.get(klass);
+      registrationNumberValidator.setRegistrationCodeValidationValues(partner);
+      response.setValues(partner);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
 
+  public void getHideFieldOnPartnerTypeSelect(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      PartnerRegistrationCodeService partnerRegistrationCodeService =
+          Beans.get(PartnerRegistrationCodeService.class);
+      String registrationCodeTitle =
+          partnerRegistrationCodeService.getRegistrationCodeTitleFromTemplate(partner);
+      boolean isNicHidden = partnerRegistrationCodeService.isNicHidden(partner);
+      boolean isSirenHidden = partnerRegistrationCodeService.isSirenHidden(partner);
+      boolean isTaxNbrHidden = partnerRegistrationCodeService.isTaxNbrHidden(partner);
+      response.setAttr(
+          "registrationCode",
+          "title",
+          !Strings.isNullOrEmpty(registrationCodeTitle)
+              ? registrationCodeTitle
+              : I18n.get("Registration number"));
+      response.setAttr("siren", "hidden", isSirenHidden);
+      response.setAttr("nic", "hidden", isNicHidden);
+      response.setAttr("taxNbr", "hidden", isTaxNbrHidden);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

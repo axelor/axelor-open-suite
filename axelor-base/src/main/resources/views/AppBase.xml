@@ -49,7 +49,6 @@
             requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
         </panel>
         <field name="generatePartnerSequence" widget="boolean-switch"/>
-        <field name="checkRegistrationCode" widget="boolean-switch"/>
         <field name="manageProductVariants" widget="boolean-switch"/>
         <field name="activatePartnerRelations" widget="boolean-switch"
           if="['supplychain','account'].any{module -> __config__.app.isApp(module)}"/>
