@@ -12,4 +12,6 @@ public interface ForeignExchangeGapService {
       throws AxelorException;
 
   boolean checkForeignExchangeAccounts(Company company) throws AxelorException;
+
+  void unreconcileForeignExchangeMove(Reconcile reconcile) throws AxelorException;
 }

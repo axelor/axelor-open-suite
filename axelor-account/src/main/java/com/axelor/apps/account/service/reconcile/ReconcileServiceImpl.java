@@ -877,9 +877,6 @@ public class ReconcileServiceImpl implements ReconcileService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException {
-
-    // TODO Add process for Foreign Exchage gains/losses
-
     log.debug("unreconcile : reconcile : {}", reconcile);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
@@ -903,6 +900,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
+    this.reverseForeignExchangeMove(reconcile);
     if (invoice != null
         && invoice.getSubrogationRelease() != null
         && invoice.getSubrogationRelease().getStatusSelect()
@@ -1344,6 +1342,7 @@ public class ReconcileServiceImpl implements ReconcileService {
                 foreignExchangeGapMove.getMoveLineList().get(0),
                 foreignExchangeGapMove.getMoveLineList().get(1));
         if (newReconcile != null) {
+          newReconcile.setForeignExchangeMove(foreignExchangeGapMove);
           this.confirmReconcileWithoutForeignExchange(
               newReconcile, updateInvoicePayments, updateInvoiceTerms);
         }
@@ -1366,5 +1365,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     return newReconcile;
+  }
+
+  protected void reverseForeignExchangeMove(Reconcile reconcile) throws AxelorException {
+    foreignExchangeGapService.unreconcileForeignExchangeMove(reconcile);
   }
 }

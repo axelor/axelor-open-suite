@@ -9,11 +9,13 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
@@ -23,17 +25,23 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
   protected MoveLineCreateService moveLineCreateService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
+  protected MoveReverseService moveReverseService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ForeignExchangeGapServiceImpl(
       AccountConfigService accountConfigService,
       MoveLineCreateService moveLineCreateService,
       MoveCreateService moveCreateService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveReverseService moveReverseService,
+      AppBaseService appBaseService) {
     this.accountConfigService = accountConfigService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
+    this.moveReverseService = moveReverseService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -169,5 +177,16 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     accountConfigService.getForeignExchangeAccount(accountConfig, true);
     accountConfigService.getForeignExchangeAccount(accountConfig, false);
     return true;
+  }
+
+  public void unreconcileForeignExchangeMove(Reconcile reconcile) throws AxelorException {
+    if (reconcile.getForeignExchangeMove() != null) {
+      moveReverseService.generateReverse(
+          reconcile.getForeignExchangeMove(),
+          true,
+          true,
+          true,
+          appBaseService.getTodayDate(reconcile.getCompany()));
+    }
   }
 }

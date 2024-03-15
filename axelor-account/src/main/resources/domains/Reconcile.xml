@@ -31,6 +31,9 @@
 
     <many-to-one name="reconcileGroup" ref="com.axelor.apps.account.db.ReconcileGroup"/>
 
+    <!-- Will be set when we create a misc move for foreign exchange gap -->
+    <many-to-one name="foreignExchangeMove" ref="com.axelor.apps.account.db.Move"/>
+
     <one-to-many ref="PaymentMoveLineDistribution"
       name="paymentMoveLineDistributionList" title="Payment move lines distribution"/>
     <unique-constraint columns="reconcileSeq,company"/>
