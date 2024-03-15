@@ -236,6 +236,12 @@ import com.axelor.apps.base.service.print.PrintTemplateLineService;
 import com.axelor.apps.base.service.print.PrintTemplateLineServiceImpl;
 import com.axelor.apps.base.service.print.PrintTemplateService;
 import com.axelor.apps.base.service.print.PrintTemplateServiceImpl;
+import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProvider;
+import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProviderImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServiceImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
 import com.axelor.apps.base.service.research.ResearchRequestServiceImpl;
 import com.axelor.apps.base.service.signature.SignatureService;
@@ -266,6 +272,8 @@ import com.axelor.message.service.MailAccountServiceImpl;
 import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.TemplateMessageServiceImpl;
+import com.axelor.meta.service.MetaBaseService;
+import com.axelor.meta.service.MetaServiceBaseImpl;
 import com.axelor.report.ReportGenerator;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -445,5 +453,9 @@ public class BaseModule extends AxelorModule {
     bind(PermissionService.class).to(PermissionServiceImpl.class);
     bind(PartnerRegistrationCodeService.class).to(PartnerRegistrationCodeServiceImpl.class);
     bind(RegistrationNumberTemplateService.class).to(RegistrationNumberTemplateServiceImpl.class);
+    bind(MetaBaseService.class).to(MetaServiceBaseImpl.class);
+    bind(PrintingTemplateService.class).to(PrintingTemplateServiceImpl.class);
+    bind(PrintingTemplatePrintService.class).to(PrintingTemplatePrintServiceImpl.class);
+    bind(PrintingGeneratorFactoryProvider.class).to(PrintingGeneratorFactoryProviderImpl.class);
   }
 }

@@ -114,7 +114,7 @@ public class PartnerController {
     if (ObjectUtils.isEmpty(contactPhoneBookBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Phone Book");
@@ -143,7 +143,7 @@ public class PartnerController {
     if (ObjectUtils.isEmpty(companyPhoneBookBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Company PhoneBook");
@@ -173,7 +173,7 @@ public class PartnerController {
     if (ObjectUtils.isEmpty(clientSituationBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Customer Situation");

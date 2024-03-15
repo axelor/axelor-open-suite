@@ -29,7 +29,7 @@
     <option value="project">Project</option>
     <option value="projectTask">Project task</option>
     <option value="manufOrder">Manuf order</option>
-    <option value="operationOrder">Operation order</option>
+    <option value="operationOrder">Manufacturing operation</option>
     <option value="product">Activity</option>
   </selection>
 

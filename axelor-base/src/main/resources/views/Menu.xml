@@ -301,6 +301,15 @@
       partnerPriceList.isExclusive IS TRUE )</domain>
   </action-view>
 
+  <menuitem title="Sites" name="referential-sites" parent="referential-root"
+    action="referential.sites" order="310"/>
+
+  <action-view name="referential.sites" title="Sites"
+    model="com.axelor.apps.base.db.Site">
+    <view type="grid" name="site-grid"/>
+    <view type="form" name="site-form"/>
+  </action-view>
+
   <menuitem title="Address templates" name="referential-conf-address-template"
     parent="referential-conf" action="referential.conf.address.templates" order="650"/>
 
@@ -937,13 +946,31 @@
   <menuitem name="print-conf" parent="admin-root" if="__config__.app.isApp('base')"
     title="Printing" order="900"/>
 
-  <menuitem name="print-conf-print-templates" parent="print-conf" title="Print templates"
-    action="action.print.template.view.all" order="100"/>
+  <menuitem name="print-conf-advanced-print-templates" parent="print-conf"
+    title="Advanced print templates" action="action.advanced.print.template.view.all" order="100"/>
 
-  <action-view name="action.print.template.view.all" title="Print templates"
-    model="com.axelor.apps.base.db.PrintTemplate">
+  <action-view name="action.advanced.print.template.view.all"
+    title="Advanced print templates" model="com.axelor.apps.base.db.PrintTemplate">
     <view type="grid" name="print-template-grid"/>
     <view type="form" name="print-template-form"/>
+  </action-view>
+
+  <menuitem name="print-conf-printing-templates" parent="print-conf"
+    title="Printing templates" action="print.conf.printing.templates" order="200"/>
+
+  <action-view name="print.conf.printing.templates" title="Printing templates"
+    model="com.axelor.apps.base.db.PrintingTemplate">
+    <view type="grid" name="printing-template-grid"/>
+    <view type="form" name="printing-template-form"/>
+  </action-view>
+
+  <menuitem name="print-conf-printing-template-wizard" parent="print-conf"
+    title="Printing wizard" action="print.conf.printing.template.wizard" order="300"/>
+
+  <action-view name="print.conf.printing.template.wizard" title="Birt printing wizard"
+    model="com.axelor.apps.base.db.PrintingTemplateWizard">
+    <view type="grid" name="printing-template-wizard-grid"/>
+    <view type="form" name="printing-template-wizard-form"/>
   </action-view>
 
   <!-- File source connector -->
@@ -1087,6 +1114,42 @@
     model="com.axelor.apps.base.db.BirtTemplate">
     <view type="grid" name="birt-template-grid"/>
     <view type="form" name="birt-template-form"/>
+  </action-view>
+
+  <!-- Pricing menus -->
+
+  <menuitem title="Pricings" name="root-base-pricing" parent="admin-root" order="1500"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <menuitem title="Pricings" name="base-pricing" parent="root-base-pricing" order="10"
+    action="root.base.pricing"/>
+
+  <action-view name="root.base.pricing" title="Pricings"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+  </action-view>
+
+  <menuitem title="Pricing classification rules" name="base-pricing-classification-rule"
+    parent="root-base-pricing" order="20" action="action-base-pricing-classification-rule"/>
+
+  <action-view name="action-base-pricing-classification-rule"
+    title="Pricing classification rules" model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
+  </action-view>
+
+  <menuitem title="Pricing result rules" name="base-pricing-result-rule"
+    parent="root-base-pricing" order="30" action="action-base-pricing-result-rule"/>
+
+  <action-view name="action-base-pricing-result-rule" title="Pricing result rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
 </object-views>
