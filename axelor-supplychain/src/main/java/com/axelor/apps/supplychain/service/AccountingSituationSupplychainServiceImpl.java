@@ -28,7 +28,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
@@ -55,11 +54,10 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       AccountConfigService accountConfigService,
       PaymentModeService paymentModeService,
       AccountingSituationRepository accountingSituationRepo,
-      CompanyRepository companyRepo,
       AppAccountService appAccountService,
       SaleOrderRepository saleOrderRepository,
       InvoicePaymentRepository invoicePaymentRepository) {
-    super(accountConfigService, paymentModeService, accountingSituationRepo, companyRepo);
+    super(accountConfigService, paymentModeService, accountingSituationRepo);
     this.appAccountService = appAccountService;
     this.saleOrderRepository = saleOrderRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;

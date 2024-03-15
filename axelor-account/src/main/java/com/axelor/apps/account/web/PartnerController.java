@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PartnerAccountService;
-import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -176,7 +176,7 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       List<Company> duplicatedCompanyList =
-          Beans.get(AccountingSituationService.class).getDuplicatedCompanies(partner);
+          Beans.get(AccountingSituationCheckService.class).getDuplicatedCompanies(partner);
       boolean areCompaniesDuplicated = !ObjectUtils.isEmpty(duplicatedCompanyList);
 
       response.setAttr("errorOnCompaniesLabel", "hidden", !areCompaniesDuplicated);
