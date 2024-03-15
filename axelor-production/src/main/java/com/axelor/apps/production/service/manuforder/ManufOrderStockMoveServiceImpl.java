@@ -21,13 +21,11 @@ package com.axelor.apps.production.service.manuforder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -63,8 +61,6 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
   public static final int PART_FINISH_IN = 1;
   public static final int PART_FINISH_OUT = 2;
-  public static final int STOCK_LOCATION_IN = 1;
-  public static final int STOCK_LOCATION_OUT = 2;
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
@@ -80,6 +76,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
 
+  protected ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService;
+
   @Inject
   public ManufOrderStockMoveServiceImpl(
       StockMoveService stockMoveService,
@@ -93,7 +91,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       StockMoveLineRepository stockMoveLineRepository,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService) {
     this.supplyChainConfigService = supplyChainConfigService;
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -106,73 +105,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
-  }
-
-  @Override
-  public StockLocation getDefaultInStockLocation(ManufOrder manufOrder, Company company)
-      throws AxelorException {
-
-    if (manufOrder.getOutsourcing()) {
-      return _getDefaultInOutsourcingStockLocation(manufOrder, company);
-    } else {
-      return _getDefaultInStockLocation(manufOrder, company);
-    }
-  }
-
-  protected StockLocation _getDefaultInStockLocation(ManufOrder manufOrder, Company company)
-      throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    StockLocation stockLocation =
-        getDefaultStockLocation(manufOrder.getProdProcess(), STOCK_LOCATION_IN);
-    if (stockLocation == null) {
-      return stockConfigProductionService.getComponentDefaultStockLocation(
-          manufOrder.getWorkshopStockLocation(), stockConfig);
-    }
-    return stockLocation;
-  }
-
-  protected StockLocation _getDefaultInOutsourcingStockLocation(
-      ManufOrder manufOrder, Company company) throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    // Because it will be send to outsource.
-    return stockConfigProductionService.getPickupDefaultStockLocation(stockConfig);
-  }
-
-  @Override
-  public StockLocation getDefaultOutStockLocation(ManufOrder manufOrder, Company company)
-      throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    StockLocation stockLocation =
-        getDefaultStockLocation(manufOrder.getProdProcess(), STOCK_LOCATION_OUT);
-    if (stockLocation == null) {
-      return stockConfigProductionService.getFinishedProductsDefaultStockLocation(
-          manufOrder.getWorkshopStockLocation(), stockConfig);
-    }
-    return stockLocation;
-  }
-
-  /**
-   * Given a prodprocess and whether we want to create a in or out stock move, determine the stock
-   * location and return it.
-   *
-   * @param prodProcess a production process.
-   * @param inOrOut can be {@link ManufOrderStockMoveServiceImpl#STOCK_LOCATION_IN} or {@link
-   *     ManufOrderStockMoveServiceImpl#STOCK_LOCATION_OUT}.
-   * @return the found stock location, or null if the prod process is null.
-   */
-  protected StockLocation getDefaultStockLocation(ProdProcess prodProcess, int inOrOut) {
-    if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
-      throw new IllegalArgumentException(
-          I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
-    }
-    if (prodProcess == null) {
-      return null;
-    }
-    if (inOrOut == STOCK_LOCATION_IN) {
-      return prodProcess.getStockLocation();
-    } else {
-      return prodProcess.getProducedProductStockLocation();
-    }
+    this.manufOrderStockMoveStockLocationService = manufOrderStockMoveStockLocationService;
   }
 
   /**
@@ -279,7 +212,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     if (inOrOut == PART_FINISH_IN) {
       stockMoveList = manufOrder.getInStockMoveList();
-      fromStockLocation = getDefaultInStockLocation(manufOrder, company);
+      fromStockLocation =
+          manufOrderStockMoveStockLocationService.getDefaultInStockLocation(manufOrder, company);
       toStockLocation =
           stockConfigProductionService.getProductionVirtualStockLocation(
               stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
@@ -289,7 +223,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       fromStockLocation =
           stockConfigProductionService.getProductionVirtualStockLocation(
               stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
-      toStockLocation = getDefaultOutStockLocation(manufOrder, company);
+      toStockLocation =
+          manufOrderStockMoveStockLocationService.getDefaultOutStockLocation(manufOrder, company);
     }
 
     // realize current stock move and update the price
@@ -377,101 +312,6 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         .multiply(prodProductQty)
         .setScale(scale, RoundingMode.HALF_UP)
         .divide(manufOrderQty, scale, RoundingMode.HALF_UP);
-  }
-
-  public StockLocation getFromStockLocationForConsumedStockMove(
-      ManufOrder manufOrder, Company company) throws AxelorException {
-    StockLocation fromStockLocation = getDefaultInStockLocation(manufOrder, company);
-
-    if (fromStockLocation == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(
-              ProductionExceptionMessage.MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION));
-    }
-    return fromStockLocation;
-  }
-
-  public StockLocation getVirtualStockLocationForConsumedStockMove(
-      ManufOrder manufOrder, Company company) throws AxelorException {
-
-    if (manufOrder.getOutsourcing()) {
-      return _getVirtualOutsourcingStockLocation(manufOrder, company);
-    } else {
-      return _getVirtualProductionStockLocation(manufOrder, company);
-    }
-  }
-
-  @Override
-  public StockLocation _getVirtualProductionStockLocation(ManufOrder manufOrder, Company company)
-      throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-
-    return stockConfigProductionService.getProductionVirtualStockLocation(stockConfig, false);
-  }
-
-  @Override
-  public StockLocation _getVirtualOutsourcingStockLocation(ManufOrder manufOrder, Company company)
-      throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-
-    return stockConfigProductionService.getVirtualOutsourcingStockLocation(stockConfig);
-  }
-
-  public StockLocation getProducedProductStockLocation(ManufOrder manufOrder, Company company)
-      throws AxelorException {
-
-    if (manufOrder.getOutsourcing()) {
-      return _getReceiptOutsourcingStockLocation(manufOrder, company);
-    } else {
-      return _getProducedProductStockLocation(manufOrder, company);
-    }
-  }
-
-  @Override
-  public StockLocation getResidualProductStockLocation(ManufOrder manufOrder)
-      throws AxelorException {
-    Company company = manufOrder.getCompany();
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-
-    StockLocation residualProductStockLocation =
-        manufOrder.getProdProcess().getResidualProductsDefaultStockLocation();
-    if (residualProductStockLocation == null) {
-      residualProductStockLocation =
-          stockConfigProductionService.getResidualProductsDefaultStockLocation(stockConfig);
-    }
-    return residualProductStockLocation;
-  }
-
-  protected StockLocation _getReceiptOutsourcingStockLocation(
-      ManufOrder manufOrder, Company company) throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    return stockConfigProductionService.getReceiptDefaultStockLocation(stockConfig);
-  }
-
-  protected StockLocation _getProducedProductStockLocation(ManufOrder manufOrder, Company company)
-      throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-
-    StockLocation producedProductStockLocation =
-        manufOrder.getProdProcess().getProducedProductStockLocation();
-    if (producedProductStockLocation == null) {
-      producedProductStockLocation =
-          stockConfigProductionService.getFinishedProductsDefaultStockLocation(
-              manufOrder.getWorkshopStockLocation(), stockConfig);
-    }
-    return producedProductStockLocation;
-  }
-
-  @Override
-  public StockLocation getVirtualStockLocationForProducedStockMove(
-      ManufOrder manufOrder, Company company) throws AxelorException {
-
-    if (manufOrder.getOutsourcing()) {
-      return _getVirtualOutsourcingStockLocation(manufOrder, company);
-    } else {
-      return _getVirtualProductionStockLocation(manufOrder, company);
-    }
   }
 
   @Override

@@ -40,7 +40,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveServ
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -249,10 +248,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     ManufOrder manufOrder = operationOrder.getManufOrder();
     Company company = manufOrder.getCompany();
     List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
-    StockLocation fromStockLocation =
-        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
-    StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
     if (consumedStockMoveLineList == null) {
       return;
     }

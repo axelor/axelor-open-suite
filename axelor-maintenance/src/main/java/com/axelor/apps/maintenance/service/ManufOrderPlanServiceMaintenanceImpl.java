@@ -68,7 +68,6 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
         operationOrderWorkflowService,
         operationOrderPlanningService,
         operationOrderService,
-        manufOrderStockMoveService,
         productionOrderService,
         productionConfigService,
         appBaseService,

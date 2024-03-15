@@ -40,27 +40,27 @@ import java.util.Optional;
 public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceService {
 
   protected ProdProcessOutsourceService prodProcessOutsourceService;
-  protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
 
   protected StockMoveService stockMoveService;
   protected AppBaseService appBaseService;
   protected ManufOrderRepository manufOrderRepository;
+  protected ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService;
 
   @Inject
   public ManufOrderOutsourceServiceImpl(
       ProdProcessOutsourceService prodProcessOutsourceService,
-      ManufOrderStockMoveService manufOrderStockMoveService,
       StockMoveService stockMoveService,
       AppBaseService appBaseService,
       ManufOrderRepository manufOrderRepository,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService) {
     this.prodProcessOutsourceService = prodProcessOutsourceService;
-    this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.stockMoveService = stockMoveService;
     this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.manufOrderStockMoveStockLocationService = manufOrderStockMoveStockLocationService;
   }
 
   @Override
@@ -92,9 +92,11 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
     // Get stock locations dest and source
     // From production to Outsource stock location
     StockLocation fromStockLocation =
-        manufOrderStockMoveService._getVirtualProductionStockLocation(manufOrder, company);
+        manufOrderStockMoveStockLocationService._getVirtualProductionStockLocation(
+            manufOrder, company);
     StockLocation virtualStockLocation =
-        manufOrderStockMoveService._getVirtualOutsourcingStockLocation(manufOrder, company);
+        manufOrderStockMoveStockLocationService._getVirtualOutsourcingStockLocation(
+            manufOrder, company);
 
     if (company != null && prodProductList != null) {
       StockMove stockMove =

@@ -136,6 +136,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineS
 import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveStockLocationService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveStockLocationServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -275,5 +277,7 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderStockMoveService.class).to(OperationOrderStockMoveServiceImpl.class);
     bind(OperationOrderPlanningInfiniteCapacityService.class)
         .to(OperationOrderPlanningInfiniteCapacityServiceImpl.class);
+    bind(ManufOrderStockMoveStockLocationService.class)
+        .to(ManufOrderStockMoveStockLocationServiceImpl.class);
   }
 }

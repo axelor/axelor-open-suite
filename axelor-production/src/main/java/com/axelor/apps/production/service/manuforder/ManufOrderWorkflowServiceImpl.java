@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -44,7 +43,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
@@ -71,12 +69,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ProductCompanyService productCompanyService;
   protected ProductionConfigRepository productionConfigRepo;
   protected AppBaseService appBaseService;
-  protected OperationOrderService operationOrderService;
   protected AppProductionService appProductionService;
   protected ProductionConfigService productionConfigService;
   protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
   protected ManufOrderService manufOrderService;
-  protected SequenceService sequenceService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
   protected ProductService productService;
@@ -89,12 +85,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
       AppBaseService appBaseService,
-      OperationOrderService operationOrderService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderService manufOrderService,
-      SequenceService sequenceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       OperationOrderOutsourceService operationOrderOutsourceService,
       ProductService productService) {
@@ -104,12 +98,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.productCompanyService = productCompanyService;
     this.productionConfigRepo = productionConfigRepo;
     this.appBaseService = appBaseService;
-    this.operationOrderService = operationOrderService;
     this.appProductionService = appProductionService;
     this.productionConfigService = productionConfigService;
     this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
     this.manufOrderService = manufOrderService;
-    this.sequenceService = sequenceService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
     this.productService = productService;

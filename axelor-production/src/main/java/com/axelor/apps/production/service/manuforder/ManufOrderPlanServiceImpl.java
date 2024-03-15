@@ -55,7 +55,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected OperationOrderWorkflowService operationOrderWorkflowService;
   protected OperationOrderPlanningService operationOrderPlanningService;
   protected OperationOrderService operationOrderService;
-  protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ProductionOrderService productionOrderService;
   protected ProductionConfigService productionConfigService;
   protected AppBaseService appBaseService;
@@ -73,7 +72,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       OperationOrderWorkflowService operationOrderWorkflowService,
       OperationOrderPlanningService operationOrderPlanningService,
       OperationOrderService operationOrderService,
-      ManufOrderStockMoveService manufOrderStockMoveService,
       ProductionOrderService productionOrderService,
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
@@ -88,7 +86,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderPlanningService = operationOrderPlanningService;
     this.operationOrderService = operationOrderService;
-    this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.productionOrderService = productionOrderService;
     this.productionConfigService = productionConfigService;
     this.appBaseService = appBaseService;
