@@ -150,7 +150,7 @@ public class PricingComputer extends AbstractObservablePricing {
   protected Optional<Pricing> getPreviousPricing(Pricing pricing, Model model)
       throws AxelorException {
     List<Pricing> childPricings =
-        pricingService.getPricings(this.pricing.getCompany(), this.model, pricing);
+        pricingService.getPricings(this.pricing.getCompany(), this.model, pricing, null);
 
     if (childPricings.isEmpty()) {
       return Optional.empty();

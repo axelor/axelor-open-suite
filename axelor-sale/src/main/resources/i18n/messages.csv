@@ -469,6 +469,7 @@
 "Sale quotation",,,
 "Sale quotations",,,
 "Sale quotations/orders",,,
+"Sale.Pricing",,,
 "SaleOrder.afterDiscount",,,
 "SaleOrder.bank",,,
 "SaleOrder.base",,,

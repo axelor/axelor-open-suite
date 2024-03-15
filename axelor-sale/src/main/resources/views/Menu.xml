@@ -360,6 +360,8 @@
     model="com.axelor.apps.base.db.Pricing">
     <view type="grid" name="pricing-grid"/>
     <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
   </action-view>
 
   <menuitem title="Pricing rules" name="sc-root-sale-conf-pricing-rule"
