@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.accountingsituation;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
@@ -27,14 +27,10 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.meta.CallMethod;
-import java.util.List;
 
 public interface AccountingSituationService {
 
   AccountingSituation getAccountingSituation(Partner partner, Company company);
-
-  String createDomainForBankDetails(
-      AccountingSituation accountingSituation, boolean isInBankDetails);
 
   void updateCustomerCredit(Partner partner) throws AxelorException;
 
@@ -113,6 +109,4 @@ public interface AccountingSituationService {
    * @throws AxelorException
    */
   Account getPartnerAccount(Invoice invoice, boolean isHoldback) throws AxelorException;
-
-  List<Company> getDuplicatedCompanies(Partner partner);
 }
