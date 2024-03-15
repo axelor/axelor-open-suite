@@ -1326,9 +1326,11 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected void manageForeignExchangeGap(
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException {
-    Move foreignExchangeGapMove =
-        foreignExchangeGapService.manageForeignExchangeGap(
-            reconcile, updateInvoicePayments, updateInvoiceTerms);
-    // confirmReconcile(newReconcile, updateInvoicePayments, updateInvoiceTerms);
+    if (foreignExchangeGapService.checkForeignExchangeAccounts(reconcile.getCompany())) {
+      Move foreignExchangeGapMove =
+          foreignExchangeGapService.manageForeignExchangeGap(
+              reconcile, updateInvoicePayments, updateInvoiceTerms);
+      // confirmReconcile(newReconcile, updateInvoicePayments, updateInvoiceTerms);
+    }
   }
 }
