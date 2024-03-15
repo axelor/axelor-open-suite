@@ -799,15 +799,23 @@ public class PartnerServiceImpl implements PartnerService {
     return validateRegistrationCode(registrationCode, partner);
   }
 
-  private boolean validateRegistrationCode(String registrationCode, Partner partner) {
+  protected boolean validateRegistrationCode(String registrationCode, Partner partner) {
     try {
-      Class<? extends RegistrationNumberValidation> klass =
-          getRegistrationNumberValidationClass(partner);
+      Class<? extends RegistrationNumberValidator> klass =
+          Beans.get(PartnerRegistrationCodeService.class)
+              .getRegistrationNumberValidatorClass(partner);
       if (klass == null) {
         return true;
       }
       RegistrationNumberTemplate registrationNumberTemplate =
-          partner.getMainAddress().getCountry().getRegistrationNumberTemplate();
+          Optional.ofNullable(partner)
+              .map(Partner::getMainAddress)
+              .map(Address::getCountry)
+              .map(Country::getRegistrationNumberTemplate)
+              .orElse(null);
+      if (registrationNumberTemplate == null) {
+        return true;
+      }
       if (registrationNumberTemplate.getIsRequiredForCompanies()
           && StringUtils.isBlank(registrationCode)) {
         throw new AxelorException(
@@ -833,93 +841,5 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return true;
-  }
-
-  @Override
-  public Class<? extends RegistrationNumberValidation> getRegistrationNumberValidationClass(
-      Partner partner) {
-    Address mainAddress = partner.getMainAddress();
-    if (mainAddress == null || mainAddress.getCountry() == null) {
-      return null;
-    }
-    Country businessCountry = partner.getMainAddress().getCountry();
-    RegistrationNumberTemplate registrationNumberTemplate =
-        businessCountry.getRegistrationNumberTemplate();
-
-    if (registrationNumberTemplate != null) {
-      Class<? extends RegistrationNumberValidation> klass = null;
-      try {
-        String origin = registrationNumberTemplate.getValidationMethodSelect();
-        if (!Strings.isNullOrEmpty(origin)) {
-          klass = (Class<? extends RegistrationNumberValidation>) Class.forName(origin);
-        }
-      } catch (ClassNotFoundException e) {
-        TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));
-      } finally {
-        if (klass == null) {
-          return RegistrationNumberValidationDefault.class;
-        }
-        return klass;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public String getRegistrationCodeTitleFromTemplate(Partner partner) {
-    if (partner.getMainAddress() != null && partner.getMainAddress().getCountry() != null) {
-      Country businessCountry = partner.getMainAddress().getCountry();
-      RegistrationNumberTemplate registrationNumberTemplate =
-          businessCountry.getRegistrationNumberTemplate();
-      if (registrationNumberTemplate != null
-          && !StringUtils.isBlank(registrationNumberTemplate.getTitleToDisplay())) {
-        return registrationNumberTemplate.getTitleToDisplay();
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getPartnerTypeSelectAttrs(Partner partner) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-    attrsMap.put("siren", new HashMap<>());
-    attrsMap.put("nic", new HashMap<>());
-    attrsMap.put("registrationCode", new HashMap<>());
-    attrsMap.put("taxNbr", new HashMap<>());
-    partner = Beans.get(PartnerRepository.class).find(partner.getId());
-    boolean isIndividual =
-        partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
-    boolean hideNic = false, hideSiren = false;
-    boolean isCustomer = partner.getIsCustomer();
-    boolean hideTaxNbr = !isCustomer;
-    Address address;
-    if (partner.getMainAddress() != null) {
-      address = partner.getMainAddress();
-    } else {
-      address = partner.getPartnerAddressList().get(0).getAddress();
-    }
-    if (address != null && address.getCountry() != null) {
-      RegistrationNumberTemplate registrationNumberTemplate =
-          address.getCountry().getRegistrationNumberTemplate();
-      if (registrationNumberTemplate == null) {
-        return null;
-      }
-      hideNic = isIndividual || !registrationNumberTemplate.getUseNic();
-      hideSiren = isIndividual || !registrationNumberTemplate.getUseSiren();
-      boolean useTaxNbr = registrationNumberTemplate.getUseTaxNbr();
-      hideTaxNbr = !useTaxNbr || !isCustomer;
-    }
-    attrsMap.get("siren").put("hidden", hideSiren);
-    attrsMap.get("nic").put("hidden", hideNic);
-    attrsMap.get("taxNbr").put("hidden", hideTaxNbr);
-    String registrationCodeTitle = getRegistrationCodeTitleFromTemplate(partner);
-    attrsMap
-        .get("registrationCode")
-        .put(
-            "title",
-            !Strings.isNullOrEmpty(registrationCodeTitle)
-                ? registrationCodeTitle
-                : I18n.get("Registration number"));
-    return attrsMap;
   }
 }

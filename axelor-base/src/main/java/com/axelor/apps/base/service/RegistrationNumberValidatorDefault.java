@@ -2,7 +2,8 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Partner;
 
-public class RegistrationNumberValidationDefault extends RegistrationNumberValidation {
+public class RegistrationNumberValidatorDefault extends RegistrationNumberValidator {
+  @Override
   public boolean computeRegistrationCodeValidity(String registrationCode) {
     return true;
   }

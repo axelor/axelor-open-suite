@@ -158,11 +158,4 @@ public interface PartnerService {
   String getSirenFromRegistrationCode(Partner partner);
 
   boolean isRegistrationCodeValid(Partner partner);
-
-  String getRegistrationCodeTitleFromTemplate(Partner partner);
-
-  Map<String, Map<String, Object>> getPartnerTypeSelectAttrs(Partner partner);
-
-  public Class<? extends RegistrationNumberValidation> getRegistrationNumberValidationClass(
-      Partner partner);
 }

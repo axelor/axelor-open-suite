@@ -2,7 +2,8 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Partner;
 
-public class RegistrationNumberValidationFRA extends RegistrationNumberValidation {
+public class RegistrationNumberValidatorFRA extends RegistrationNumberValidator {
+  @Override
   public boolean computeRegistrationCodeValidity(String registrationCode) {
     int sum = 0;
     boolean isOddNumber = true;

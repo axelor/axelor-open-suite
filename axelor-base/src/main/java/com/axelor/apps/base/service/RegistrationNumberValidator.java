@@ -6,7 +6,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.RegistrationNumberTemplate;
 import com.google.common.base.Strings;
 
-public abstract class RegistrationNumberValidation {
+public abstract class RegistrationNumberValidator {
   public abstract boolean computeRegistrationCodeValidity(String registrationCode);
 
   protected abstract String getTaxNbrFromRegistrationCode(Partner partner);

@@ -120,6 +120,8 @@ import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
+import com.axelor.apps.base.service.PartnerRegistrationCodeService;
+import com.axelor.apps.base.service.PartnerRegistrationCodeServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.PaymentModeService;
@@ -148,6 +150,8 @@ import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.ProductUpdateServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
+import com.axelor.apps.base.service.RegistrationNumberTemplateService;
+import com.axelor.apps.base.service.RegistrationNumberTemplateServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -439,5 +443,7 @@ public class BaseModule extends AxelorModule {
     bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
     bind(PermissionService.class).to(PermissionServiceImpl.class);
+    bind(PartnerRegistrationCodeService.class).to(PartnerRegistrationCodeServiceImpl.class);
+    bind(RegistrationNumberTemplateService.class).to(RegistrationNumberTemplateServiceImpl.class);
   }
 }
