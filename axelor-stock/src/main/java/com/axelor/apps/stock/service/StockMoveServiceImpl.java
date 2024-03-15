@@ -980,6 +980,8 @@ public class StockMoveServiceImpl implements StockMoveService {
         && initialStatus == StockMoveRepository.STATUS_REALIZED) {
       partnerProductQualityRatingService.undoCalculation(stockMove);
     }
+    //TODO send cancellation mail if automatic is (activated TYPE_INCOMING,isreversion false)
+
   }
 
   /**
