@@ -239,6 +239,13 @@ public class ReconcileServiceImpl implements ReconcileService {
       throws AxelorException {
 
     this.manageForeignExchangeGap(reconcile, updateInvoicePayments, updateInvoiceTerms);
+    return this.confirmReconcileWithoutForeignExchange(
+        reconcile, updateInvoicePayments, updateInvoiceTerms);
+  }
+
+  protected Reconcile confirmReconcileWithoutForeignExchange(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
+      throws AxelorException {
     checkDifferentAccounts(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
     reconcile = initReconcileConfirmation(reconcile, updateInvoicePayments, updateInvoiceTerms);
@@ -1330,7 +1337,34 @@ public class ReconcileServiceImpl implements ReconcileService {
       Move foreignExchangeGapMove =
           foreignExchangeGapService.manageForeignExchangeGap(
               reconcile, updateInvoicePayments, updateInvoiceTerms);
-      // confirmReconcile(newReconcile, updateInvoicePayments, updateInvoiceTerms);
+      if (foreignExchangeGapMove != null) {
+        Reconcile newReconcile =
+            this.createForeignExchangeReconcile(
+                reconcile,
+                foreignExchangeGapMove.getMoveLineList().get(0),
+                foreignExchangeGapMove.getMoveLineList().get(1));
+        if (newReconcile != null) {
+          this.confirmReconcileWithoutForeignExchange(
+              newReconcile, updateInvoicePayments, updateInvoiceTerms);
+        }
+      }
     }
+  }
+
+  protected Reconcile createForeignExchangeReconcile(
+      Reconcile reconcile, MoveLine newCreditMoveLine, MoveLine newDebitMoveLine)
+      throws AxelorException {
+    Reconcile newReconcile;
+    MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+    BigDecimal reconciledAmount = newCreditMoveLine.getDebit().max(newCreditMoveLine.getCredit());
+
+    if (creditMoveLine.getCredit().compareTo(creditMoveLine.getDebit()) < 0) {
+      newReconcile = this.createReconcile(newDebitMoveLine, creditMoveLine, reconciledAmount, true);
+    } else {
+      newReconcile = this.createReconcile(debitMoveLine, newCreditMoveLine, reconciledAmount, true);
+    }
+
+    return newReconcile;
   }
 }
