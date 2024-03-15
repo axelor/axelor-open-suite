@@ -8,8 +8,12 @@
   <entity name="TrackingNumber">
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <boolean name="hasWarranty" title="Warranty"/>
     <date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
+    <boolean name="isPerishable" title="Perishable"/>
     <date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
+    <boolean name="checkExpirationDateAtStockMoveRealization"
+      title="Check expiration date at stock move realization"/>
     <string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr." required="true"/>
     <decimal name="counter" title="Counter" precision="20" scale="10"/>
     <string name="origin" title="Origin"/>

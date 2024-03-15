@@ -19,6 +19,7 @@
 package com.axelor.apps.mobilesettings.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
 import com.axelor.apps.mobilesettings.db.MobileDashboardLine;
@@ -26,12 +27,10 @@ import com.axelor.apps.mobilesettings.rest.dto.MobileChartResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileDashboardLineResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileDashboardResponse;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.Role;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class MobileDashboardResponseComputeServiceImpl
     implements MobileDashboardResponseComputeService {
@@ -46,7 +45,8 @@ public class MobileDashboardResponseComputeServiceImpl
   @Override
   public Optional<MobileDashboardResponse> computeMobileDashboardResponse(
       MobileDashboard mobileDashboard) throws AxelorException {
-    if (!checkAuthorizationToDashboard(mobileDashboard.getAuthorizedRoleSet())) {
+    if (!UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
+        AuthUtils.getUser(), mobileDashboard.getAuthorizedRoleSet())) {
       return Optional.empty();
     }
     List<MobileDashboardLineResponse> mobileDashboardLineResponseList = new ArrayList<>();
@@ -60,13 +60,6 @@ public class MobileDashboardResponseComputeServiceImpl
     }
     return Optional.of(
         new MobileDashboardResponse(mobileDashboard, mobileDashboardLineResponseList));
-  }
-
-  protected boolean checkAuthorizationToDashboard(Set<Role> authorizedRoleSet) {
-    if (authorizedRoleSet == null || authorizedRoleSet.isEmpty()) {
-      return true;
-    }
-    return authorizedRoleSet.stream().anyMatch(AuthUtils.getUser().getRoles()::contains);
   }
 
   protected void addMobileChartResponses(

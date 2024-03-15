@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.ImportService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -54,6 +55,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialImporter billOfMaterialImporter;
   protected final MetaFiles metaFiles;
+  protected final DMSService dmsService;
 
   @Inject
   public BillOfMaterialImportServiceImpl(
@@ -64,7 +66,8 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
       BillOfMaterialImportRepository billOfMaterialImportRepository,
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialImporter billOfMaterialImporter,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      DMSService dmsService) {
     this.appBaseService = appBaseService;
     this.importService = importService;
     this.billOfMaterialLineService = billOfMaterialLineService;
@@ -73,6 +76,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialImporter = billOfMaterialImporter;
     this.metaFiles = metaFiles;
+    this.dmsService = dmsService;
   }
 
   @Override
@@ -132,14 +136,20 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     attachMetaFile(billOfMaterialImport);
   }
 
-  protected void attachMetaFile(BillOfMaterialImport billOfMaterialImport) {
+  protected void attachMetaFile(BillOfMaterialImport billOfMaterialImport) throws AxelorException {
     MetaFile metaFile = billOfMaterialImport.getDocumentMetaFile();
 
     if (metaFile != null) {
-      metaFiles.attach(
-          billOfMaterialImport.getDocumentMetaFile(),
-          billOfMaterialImport.getDocumentMetaFile().getFileName(),
-          billOfMaterialImport.getMainBillOfMaterialGenerated());
+      if (metaFile.getFileType().equals("application/zip")
+          || metaFile.getFileType().equals("application/x-zip-compressed")) {
+        String zipFilePath = MetaFiles.getPath(metaFile).toFile().getAbsolutePath();
+        dmsService.unzip(zipFilePath, billOfMaterialImport.getMainBillOfMaterialGenerated());
+      } else {
+        metaFiles.attach(
+            billOfMaterialImport.getDocumentMetaFile(),
+            billOfMaterialImport.getDocumentMetaFile().getFileName(),
+            billOfMaterialImport.getMainBillOfMaterialGenerated());
+      }
     }
   }
 

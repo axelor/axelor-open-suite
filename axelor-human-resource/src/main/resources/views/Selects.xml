@@ -250,4 +250,8 @@
     <option value="3">Never</option>
   </selection>
 
+  <selection name="hr.expense.type.select">
+    <option value="1">Expense</option>
+    <option value="2">Expense declaration</option>
+  </selection>
 </object-views>

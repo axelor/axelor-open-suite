@@ -41,7 +41,7 @@ import javax.ws.rs.core.Response;
 public class OperationOrderRestController {
 
   @Operation(
-      summary = "Update operation order status",
+      summary = "Update manufacturing operation status",
       tags = {"Operation order"})
   @Path("/{operationOrderId}")
   @PUT

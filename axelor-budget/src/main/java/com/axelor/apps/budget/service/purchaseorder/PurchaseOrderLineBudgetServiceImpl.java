@@ -127,7 +127,8 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   }
 
   @Override
-  public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+  public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
+      throws AxelorException {
     Company company = null;
     LocalDate date = null;
     Set<GlobalBudget> globalBudgetSet = new HashSet<>();
@@ -153,7 +154,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
             .orElse(AccountTypeRepository.TYPE_CHARGE);
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, technicalTypeSelect, globalBudgetSet);
+        company, date, technicalTypeSelect, purchaseOrderLine.getAccount(), globalBudgetSet);
   }
 
   @Override

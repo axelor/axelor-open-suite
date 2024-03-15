@@ -64,7 +64,7 @@
           </field>
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
-            onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+            onChange="action-budget-purchase-orderline-group-account-onchange"/>
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
             showIf="product != null"
             onSelect="action-budget-purchase-order-line-method-budget-domain"
@@ -85,6 +85,7 @@
     <action name="supplychain-action-purchase-purchase-order-line-group-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-reset-budget-method"/>
   </action-group>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onnew">
@@ -95,6 +96,11 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-distribution-attrs-currency-symbol"
       if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-budget-purchase-orderline-group-account-onchange">
+    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+    <action name="action-reset-budget-method"/>
   </action-group>
 
   <action-attrs

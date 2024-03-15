@@ -1,0 +1,5 @@
+---
+title: "Payment Voucher : Fix paid amount selecting overdue move line"
+module: axelor-account
+developer: |
+  In ```action-record-fill-paidAmount-fromMoveLine``` Set paidAmount with absolute moveLine.amountRemaining value and fill remainingAmount with paidAmount.

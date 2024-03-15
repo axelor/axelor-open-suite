@@ -30,6 +30,18 @@
         <field name="mrpLineType.typeSelect"/>
       </insert>
     </extend>
+    <extend target="//field[@name='qty']">
+      <attribute name="readonlyIf"
+        value="[5,8,12].indexOf(mrpLineType.elementSelect) == -1
+    				  &amp;&amp; (mrpLineType.elementSelect != 12 || (mrpLineType.elementSelect == 12 &amp;&amp; mrp.mrpTypeSelect == 2))
+    				  	&amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
+    </extend>
+    <extend target="//field[@name='maturityDate']">
+      <attribute name="readonlyIf"
+        value="[5,8,12].indexOf(mrpLineType.elementSelect) == -1
+    				  &amp;&amp; (mrpLineType.elementSelect != 12 || (mrpLineType.elementSelect == 12 &amp;&amp; mrp.mrpTypeSelect == 2))
+    				  	&amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
+    </extend>
   </form>
 
 </object-views>

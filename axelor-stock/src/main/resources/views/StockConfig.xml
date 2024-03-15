@@ -46,11 +46,11 @@
         <field name="qualityControlDefaultStockLocation"
           domain="self.company = :company and self.typeSelect != 3" colSpan="4"
           form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="wasteStockLocation"
+        <field name="componentDefaultStockLocation"
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
-        <field name="componentDefaultStockLocation"
+        <field name="residualProductsDefaultStockLocation"
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
@@ -66,6 +66,10 @@
           domain="self.isOutsourcingLocation = true AND self.typeSelect != 3 AND self.company = :company"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
+        <field name="wasteStockLocation"
+          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
+          colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
+          if-module="axelor-production" if="__config__.app.isApp('production')"/>
         <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
         <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
       </panel>

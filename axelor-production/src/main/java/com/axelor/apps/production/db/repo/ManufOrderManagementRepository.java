@@ -55,6 +55,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
       entity.clearDiffConsumeProdProductList();
       entity.clearToProduceProdProductList();
       entity.clearProducedStockMoveLineList();
+      entity.clearResidualStockMoveLineList();
       entity.clearWasteProdProductList();
       entity.clearOperationOrderList();
       entity.clearCostSheetList();

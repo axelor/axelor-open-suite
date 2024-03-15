@@ -44,6 +44,25 @@
     <context name="user_id" expr="eval:__user__.id"/>
     <context name="_payCompany"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+    <context name="_isExpenseDeclaration" expr="eval: false"/>
+  </action-view>
+
+  <menuitem name="my-hr-root-expense-declaration" parent="my-hr-root"
+    title="Expenses declaration" action="my.hr.root.expense.declaration" order="310"
+    if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.enableExpenseDeclaration"
+    icon="fa-credit-card" icon-background="#84429f"/>
+
+  <action-view name="my.hr.root.expense.declaration"
+    model="com.axelor.apps.hr.db.Expense" title="Expenses declaration">
+    <view name="expense-grid" type="grid"/>
+    <view name="expense-form" type="form"/>
+    <view-param name="search-filters" value="expense-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
+    <context name="_payCompany"
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+    <context name="_isExpenseDeclaration" expr="eval: true"/>
   </action-view>
 
   <menuitem name="line-expense" parent="my-hr-root" title="OrphanExpenseLine.title"

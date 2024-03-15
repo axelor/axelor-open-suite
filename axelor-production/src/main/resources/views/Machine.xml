@@ -80,7 +80,7 @@
   </action-record>
 
   <action-view name="action-machine-view-open-finished-operation-orders"
-    title="Operation order" model="com.axelor.apps.production.db.OperationOrder">
+    title="Manufacturing operation" model="com.axelor.apps.production.db.OperationOrder">
     <view type="grid" name="operation-order-group-grid"/>
     <view type="form" name="operation-order-form"/>
     <view-param name="popup" value="true"/>

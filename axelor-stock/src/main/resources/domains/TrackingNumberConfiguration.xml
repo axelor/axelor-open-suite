@@ -7,6 +7,13 @@
 
   <entity name="TrackingNumberConfiguration">
 
+    <boolean name="hasWarranty" title="Warranty"/>
+    <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
+    <boolean name="isPerishable" title="Perishable"/>
+    <integer name="perishableNbrOfDays" title="Time before expiry (in days)"/>
+    <boolean name="checkExpirationDateAtStockMoveRealization"
+      title="Check expiration date at stock move realization"/>
+
     <boolean name="isPurchaseTrackingManaged" title="Manage purchase tracking Nbr."/>
     <boolean name="isProductionTrackingManaged" title="Manage production tracking Nbr."/>
     <boolean name="isSaleTrackingManaged" title="Manage sale tracking Nbr."/>

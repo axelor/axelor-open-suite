@@ -1,3 +1,0 @@
----
-title: "StockMove: Fixed a bug that prevented to totally invoice a stock move when partial invoicing for out stock move was activated"
-module: "axelor-supplychain"

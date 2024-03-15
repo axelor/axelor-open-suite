@@ -263,7 +263,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getIsHoldBack());
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm, invoice);
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm);
     }
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
@@ -379,8 +379,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
                     .max(originalInvoiceTerm.getMoveLine().getDebit())));
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermFinancialDiscountService.computeFinancialDiscount(
-          originalInvoiceTerm, originalInvoiceTerm.getInvoice());
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(originalInvoiceTerm);
     }
 
     invoiceTermRepo.save(originalInvoiceTerm);

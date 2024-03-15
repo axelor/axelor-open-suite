@@ -5,7 +5,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -47,7 +46,7 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
 
   protected boolean shouldProcessSaleOrderLine(SaleOrderLine saleOrderLine) {
     return saleOrderLine.getInvoicingModeSelect()
-            == SaleOrderLineSaleRepository.INVOICING_MODE_ON_DELIVERY
+            == SaleOrderLineRepository.INVOICING_MODE_ON_DELIVERY
         && saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED;
   }
 

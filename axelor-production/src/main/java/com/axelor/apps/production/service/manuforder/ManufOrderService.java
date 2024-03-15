@@ -39,10 +39,6 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 
-  void setProducedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
-
-  void setConsumedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
-
   /**
    * This method check if operation orders regardless of manufOrder. If manufOrder is outsourced,
    * the method will return false as they are outsourced because of manufOrder.
@@ -170,68 +166,6 @@ public interface ManufOrderService {
    */
   List<ProdProduct> createDiffProdProductList(
       List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList)
-      throws AxelorException;
-
-  /**
-   * On changing {@link ManufOrder#consumedStockMoveLineList}, we also update the stock move.
-   *
-   * @param manufOrder
-   */
-  void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  /**
-   * On changing {@link ManufOrder#producedStockMoveLineList}, we also update the stock move.
-   *
-   * @param manufOrder
-   * @throws AxelorException
-   */
-  void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  /**
-   * Check the realized consumed stock move lines in manuf order has not changed.
-   *
-   * @param manufOrder a manuf order from context.
-   * @param oldManufOrder a manuf order from database.
-   * @throws AxelorException if the check fails.
-   */
-  void checkConsumedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
-      throws AxelorException;
-
-  /**
-   * Check the realized produced stock move lines in manuf order has not changed.
-   *
-   * @param manufOrder a manuf order from context.
-   * @param oldManufOrder a manuf order from database.
-   * @throws AxelorException if the check fails.
-   */
-  void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
-      throws AxelorException;
-
-  /**
-   * Check between a new and an old stock move line list whether a realized stock move line has been
-   * deleted.
-   *
-   * @param stockMoveLineList a stock move line list from view context.
-   * @param oldStockMoveLineList a stock move line list from database.
-   * @throws AxelorException if the check fails.
-   */
-  void checkRealizedStockMoveLineList(
-      List<StockMoveLine> stockMoveLineList, List<StockMoveLine> oldStockMoveLineList)
-      throws AxelorException;
-
-  /**
-   * Compute {@link ManufOrder#diffConsumeProdProductList}, then add and remove lines to the stock
-   * move to match the stock move line list. The list can be from manuf order or operation order.
-   *
-   * @param stockMoveLineList
-   * @param stockMove
-   * @throws AxelorException
-   */
-  void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove)
       throws AxelorException;
 
   /**

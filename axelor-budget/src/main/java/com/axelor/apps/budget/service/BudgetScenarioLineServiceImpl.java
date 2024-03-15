@@ -114,7 +114,7 @@ public class BudgetScenarioLineServiceImpl implements BudgetScenarioLineService 
         BudgetScenarioLine optLine = budgetScenarioLineRepository.copy(budgetScenarioLine, false);
 
         Map<String, Object> optLineContext = Mapper.toMap(optLine);
-        optLineContext.put("budgetLevel", section.getCode());
+        optLineContext.put("budgetLevel", section != null ? section.getCode() : "");
         budgetScenarioLineList.add(optLineContext);
       }
     }

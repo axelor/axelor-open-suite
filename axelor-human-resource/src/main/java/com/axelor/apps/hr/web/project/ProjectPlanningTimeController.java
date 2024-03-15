@@ -27,7 +27,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class ProjectPlanningTimeController {
@@ -44,12 +43,11 @@ public class ProjectPlanningTimeController {
   @SuppressWarnings("unchecked")
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
-    List<Map<String, Object>> projectPlanningTimeLines =
-        (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSet");
+    List<Integer> projectPlanningTimeLineIds = (List<Integer>) request.getContext().get("_ids");
 
-    if (projectPlanningTimeLines != null) {
+    if (projectPlanningTimeLineIds != null) {
       Beans.get(ProjectPlanningTimeService.class)
-          .removeProjectPlanningLines(projectPlanningTimeLines);
+          .removeProjectPlanningLines(projectPlanningTimeLineIds);
     }
 
     response.setReload(true);

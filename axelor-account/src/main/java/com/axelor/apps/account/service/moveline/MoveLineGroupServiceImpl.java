@@ -150,13 +150,21 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
-  public Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move) {
+  public Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
 
     moveLineToolService.setDecimals(moveLine, move);
 
     valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
     valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
+
+    if (move != null) {
+      valuesMap.put(
+          "$validatePeriod",
+          moveToolService.isTemporarilyClosurePeriodManage(
+              move.getPeriod(), move.getJournal(), AuthUtils.getUser()));
+    }
 
     return valuesMap;
   }

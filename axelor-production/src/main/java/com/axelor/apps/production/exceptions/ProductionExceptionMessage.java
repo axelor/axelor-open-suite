@@ -88,6 +88,9 @@ public final class ProductionExceptionMessage {
   public static final String UNRECOGNIZED_CAPACITY_FOR_COMPANY_PRODUCTION_CONFIG = /*$$(*/
       "Unrecognized capacity for company %s production configuration" /*)*/;
 
+  public static final String PRODUCTION_RESIDUAL_STOCK_LOCATION_MISSING = /*$$(*/
+      "You must configure a residual products default stock location for company %s." /*)*/;
+
   /** Manuf Order Controller */
   public static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
       "Please select more than one manufacturing order." /*)*/;
@@ -305,11 +308,11 @@ public final class ProductionExceptionMessage {
 
   public static final String OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES =
       /*$$(*/
-      "No period has been found in the weekly planning for the operation order %s" /*)*/;
+      "No period has been found in the weekly planning for the manufacturing operation %s" /*)*/;
 
   public static final String OPERATION_ORDER_ALREADY_FINISHED =
       /*$$(*/
-      "The operation order is already finished and cannot be moved." /*)*/;
+      "The manufacturing operation is already finished and cannot be moved." /*)*/;
 
   public static final String GENERATE_MANUF_ORDER_BOM_MISSING_UNIT =
       /*$$(*/ "The unit of the bill of material %s is missing. Please correct it." /*)*/;
@@ -339,7 +342,7 @@ public final class ProductionExceptionMessage {
 
   public static final String
       LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
-          "The last operation order planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
+          "The last manufacturing operation planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
 
   public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
       "There is no applicable bill of materials for %s" /*)*/;

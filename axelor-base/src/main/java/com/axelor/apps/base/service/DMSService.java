@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.interfaces.PdfViewer;
 import com.axelor.db.Model;
 import com.axelor.dms.db.DMSFile;
@@ -31,7 +32,14 @@ public interface DMSService {
 
   void addLinkedDMSFiles(List<? extends Model> entityList, Model entityMerged);
 
+  void unzip(String zipFilePath, Model model) throws AxelorException;
+
   DMSFile getDMSRoot(Model related);
 
   DMSFile getDMSHome(Model related, DMSFile dmsRoot);
+
+  DMSFile getDMSFolder(Model model, String fileName, DMSFile dmsRoot);
+
+  DMSFile addDMSFileToParentFolder(
+      Model model, String fileName, DMSFile dmsFolder, MetaFile metaFile);
 }

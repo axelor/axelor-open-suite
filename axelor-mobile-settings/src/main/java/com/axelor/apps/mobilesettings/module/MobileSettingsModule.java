@@ -19,16 +19,12 @@
 package com.axelor.apps.mobilesettings.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.mobilesettings.db.repo.MobileDashboardRepository;
-import com.axelor.apps.mobilesettings.repo.MobileDashboardManagementRepository;
 import com.axelor.apps.mobilesettings.service.AppMobileSettingsService;
 import com.axelor.apps.mobilesettings.service.AppMobileSettingsServiceImpl;
 import com.axelor.apps.mobilesettings.service.MobileChartResponseComputeService;
 import com.axelor.apps.mobilesettings.service.MobileChartResponseComputeServiceImpl;
 import com.axelor.apps.mobilesettings.service.MobileChartService;
 import com.axelor.apps.mobilesettings.service.MobileChartServiceImpl;
-import com.axelor.apps.mobilesettings.service.MobileDashboardLineRemoveService;
-import com.axelor.apps.mobilesettings.service.MobileDashboardLineRemoveServiceImpl;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeService;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeServiceImpl;
 import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeService;
@@ -45,7 +41,5 @@ public class MobileSettingsModule extends AxelorModule {
         .to(MobileDashboardResponseComputeServiceImpl.class);
     bind(MobileSettingsResponseComputeService.class)
         .to(MobileSettingsResponseComputeServiceImpl.class);
-    bind(MobileDashboardLineRemoveService.class).to(MobileDashboardLineRemoveServiceImpl.class);
-    bind(MobileDashboardRepository.class).to(MobileDashboardManagementRepository.class);
   }
 }

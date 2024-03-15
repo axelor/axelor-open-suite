@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -586,16 +587,9 @@ public class MoveToolServiceImpl implements MoveToolService {
         if (period.getYear().getCompany() != null && user.getGroup() != null) {
           AccountConfig accountConfig =
               accountConfigService.getAccountConfig(period.getYear().getCompany());
+
           Set<Role> roleSet = accountConfig.getClosureAuthorizedRoleList();
-          if (CollectionUtils.isEmpty(roleSet)) {
-            return false;
-          }
-          for (Role role : roleSet) {
-            if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
-              return false;
-            }
-          }
-          return true;
+          return !UserRoleToolService.checkUserRolesPermissionIncludingEmpty(user, roleSet);
         }
       }
     }

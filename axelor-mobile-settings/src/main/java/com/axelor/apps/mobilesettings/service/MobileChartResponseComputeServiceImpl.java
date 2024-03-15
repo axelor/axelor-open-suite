@@ -21,6 +21,7 @@ package com.axelor.apps.mobilesettings.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.rest.dto.MobileChartResponse;
+import com.axelor.meta.db.MetaAction;
 import com.google.inject.Inject;
 
 public class MobileChartResponseComputeServiceImpl implements MobileChartResponseComputeService {
@@ -34,7 +35,13 @@ public class MobileChartResponseComputeServiceImpl implements MobileChartRespons
   @Override
   public MobileChartResponse computeMobileChartResponse(MobileChart mobileChart)
       throws AxelorException {
-    return new MobileChartResponse(
-        mobileChart, mobileChart.getName(), mobileChartService.getValueList(mobileChart));
+    if (mobileChart.getIsCustomChart()) {
+      return new MobileChartResponse(
+          mobileChart, mobileChart.getName(), mobileChartService.getValueList(mobileChart));
+    } else {
+      MetaAction metaAction = mobileChart.getChartMetaAction();
+      String metaActionName = metaAction != null ? metaAction.getName() : null;
+      return new MobileChartResponse(mobileChart, mobileChart.getName(), metaActionName);
+    }
   }
 }

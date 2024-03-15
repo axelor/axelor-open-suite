@@ -92,6 +92,21 @@ public class StockConfigProductionService extends StockConfigService {
     return finishedProductsDefaultStockLocation;
   }
 
+  public StockLocation getResidualProductsDefaultStockLocation(StockConfig stockConfig)
+      throws AxelorException {
+
+    StockLocation residualProductDefaultStockLocation =
+        stockConfig.getResidualProductsDefaultStockLocation();
+    if (residualProductDefaultStockLocation == null) {
+      throw new AxelorException(
+          stockConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.PRODUCTION_RESIDUAL_STOCK_LOCATION_MISSING),
+          stockConfig.getCompany().getName());
+    }
+    return residualProductDefaultStockLocation;
+  }
+
   public StockLocation getComponentDefaultStockLocation(
       StockLocation workshop, StockConfig stockConfig) throws AxelorException {
     StockLocation componentDefaultStockLocation = null;
