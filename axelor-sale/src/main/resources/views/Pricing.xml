@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-form"
+    id="sale-pricing-form" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-sale-pricing-group-onload"/>
+    </extend>
+
+    <extend target="//field[@name='concernedModel']">
+      <attribute name="onChange"
+        value="action-sale-pricing-group-concerned-model-onchange"/>
+      <insert position="after">
+        <field name="typeSelect"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-sale-pricing-group-onload">
+    <action name="action-pricing-group-attrs-pricing-line-list"/>
+    <action name="action-pricing-attrs-set-type-select-selection"
+      if="__config__.app.isApp('sale')"/>
+  </action-group>
+
+  <action-group name="action-sale-pricing-group-concerned-model-onchange">
+    <action name="action-pricing-group-concerned-model-onchange"/>
+    <action name="action-pricing-attrs-set-type-select-selection"
+      if="__config__.app.isApp('sale')"/>
+  </action-group>
+
+  <action-attrs name="action-pricing-attrs-set-type-select-selection">
+    <attribute for="typeSelect" name="selection-in" expr="[0]" if="concernedModel"/>
+    <attribute for="typeSelect" name="selection-in" expr="[0,1]"
+      if="concernedModel?.packageName &amp;&amp; concernedModel?.packageName == 'com.axelor.apps.sale.db'"/>
+    <attribute for="typeSelect" name="readonly"
+      expr="eval: concernedModel?.packageName &amp;&amp; concernedModel?.packageName != 'com.axelor.apps.sale.db'"/>
+  </action-attrs>
+
+</object-views>

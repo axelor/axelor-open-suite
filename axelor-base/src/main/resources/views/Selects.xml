@@ -770,4 +770,8 @@
     <option value="2">External</option>
   </selection>
 
+  <selection name="base.pricing.type.select">
+    <option value="0">Default</option>
+  </selection>
+
 </object-views>
