@@ -19,19 +19,22 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOperationOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderProdProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
-import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -52,14 +55,17 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
       OperationOrderWorkflowService operationOrderWorkflowService,
       OperationOrderPlanningService operationOrderPlanningService,
       OperationOrderService operationOrderService,
-      ManufOrderStockMoveService manufOrderStockMoveService,
       ProductionOrderService productionOrderService,
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
       ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderResidualProductService manufOrderResidualProductService) {
+      ManufOrderResidualProductService manufOrderResidualProductService,
+      ManufOrderOperationOrderService manufOrderOperationOrderService,
+      ManufOrderProdProductService manufOrderProdProductService,
+      PartnerRepository partnerRepository,
+      BillOfMaterialService billOfMaterialService) {
     super(
         manufOrderRepo,
         manufOrderService,
@@ -74,7 +80,11 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
         appProductionService,
         manufOrderCreatePurchaseOrderService,
         manufOrderPlanStockMoveService,
-        manufOrderResidualProductService);
+        manufOrderResidualProductService,
+        manufOrderOperationOrderService,
+        manufOrderProdProductService,
+        partnerRepository,
+        billOfMaterialService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -92,15 +102,15 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
     }
 
     if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
-      manufOrderService.preFillOperations(manufOrder);
+      manufOrderOperationOrderService.preFillOperations(manufOrder);
     }
     if (!manufOrder.getIsConsProOnOperation()
         && CollectionUtils.isEmpty(manufOrder.getToConsumeProdProductList())) {
-      manufOrderService.createToConsumeProdProductList(manufOrder);
+      manufOrderProdProductService.createToConsumeProdProductList(manufOrder);
     }
 
     if (CollectionUtils.isEmpty(manufOrder.getToProduceProdProductList())) {
-      manufOrderService.createToProduceProdProductList(manufOrder);
+      manufOrderProdProductService.createToProduceProdProductList(manufOrder);
     }
 
     if (manufOrder.getPlannedStartDateT() == null) {

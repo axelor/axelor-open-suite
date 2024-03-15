@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.ProdProcessOutsourceService;
@@ -157,5 +158,23 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
     }
 
     return stockMove;
+  }
+
+  @Override
+  public boolean areLinesOutsourced(ManufOrder manufOrder) {
+
+    if (manufOrder.getOutsourcing()) {
+      return false;
+    }
+    return manufOrder.getOperationOrderList().stream().anyMatch(OperationOrder::getOutsourcing);
+  }
+
+  @Override
+  public void setOperationOrdersOutsourcing(ManufOrder manufOrder) {
+    if (manufOrder != null && manufOrder.getOperationOrderList() != null) {
+      manufOrder
+          .getOperationOrderList()
+          .forEach(oo -> oo.setOutsourcing(manufOrder.getOutsourcing()));
+    }
   }
 }
