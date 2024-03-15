@@ -913,12 +913,6 @@
     <field name="controlOnReceipt" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="avgPrice" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="economicManufOrderQty" hidden="true" if="!__config__.app.isApp('production')"/>
-    <field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="isPerishable" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="perishableNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="checkExpirationDateAtStockMoveRealization" hidden="true"
-      if="!__config__.app.isApp('stock')"/>
     <field name="trackingNumberConfiguration" hidden="true"
       if="!__config__.app.isApp('stock')"/>
     <field name="usedInDEB" hidden="true" if="!__config__.app.isApp('stock')"/>
