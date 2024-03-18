@@ -43,10 +43,8 @@ import com.axelor.db.mapper.Property;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
-import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.axelor.utils.service.TranslationService;
@@ -62,6 +60,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,8 +127,6 @@ public class DataImportServiceImpl implements DataImportService {
 
   @Inject private AdvancedImportService advancedImportService;
 
-  @Inject private MetaSelectRepository metaSelectRepo;
-
   @Override
   public ImportHistory importData(AdvancedImport advancedImport)
       throws IOException, AxelorException, ClassNotFoundException {
@@ -181,7 +178,7 @@ public class DataImportServiceImpl implements DataImportService {
       File tempFile = new File(dataDir, fileName);
       CSVFile csvFormat =
           CSVFile.DEFAULT.withDelimiter(CSV_SEPRATOR).withQuoteAll().withFirstRecordAsHeader();
-      CSVPrinter printer = csvFormat.write(tempFile);
+      CSVPrinter printer = csvFormat.write(tempFile, StandardCharsets.UTF_8);
 
       int totalLines = reader.getTotalLines(fileTab.getName());
       if (totalLines == 0) {
@@ -357,6 +354,7 @@ public class DataImportServiceImpl implements DataImportService {
             parentProp.getSelection(), dataCell, fileField.getForSelectUse(), dataList);
 
       } else {
+        dataCell = dataCell.replaceAll("\u0000", "");
         dataList.add(dataCell);
       }
     } else {
@@ -416,15 +414,10 @@ public class DataImportServiceImpl implements DataImportService {
         title = value;
       }
 
-      MetaSelect metaSelect = metaSelectRepo.findByName(selection);
-      if (metaSelect == null) {
-        return null;
-      }
-
       MetaSelectItem metaSelectItem =
           metaSelectItemRepo
               .all()
-              .filter("self.title = ?1 AND self.select.id = ?2", title, metaSelect.getId())
+              .filter("self.title = ?1 AND self.select.name = ?2", title, selection)
               .fetchOne();
 
       if (metaSelectItem != null) {
@@ -516,10 +509,11 @@ public class DataImportServiceImpl implements DataImportService {
           subFields, 0, column, prop, fileField, parentBind, dummyBind, isSameParentExist);
     }
 
-    if (!Strings.isNullOrEmpty(fileField.getNoImportIf())) {
+    String noImportIf = fileField.getNoImportIf();
+    if (!Strings.isNullOrEmpty(noImportIf)) {
+      noImportIf = noImportIf.replace(fileField.getColumnTitle(), column);
       String importIf =
-          this.convertExpression(
-              fileField.getNoImportIf().trim(), fileField.getTargetType(), column);
+          this.convertExpression(noImportIf.trim(), fileField.getTargetType(), column);
       ifList.add(importIf);
     }
     return allBindings;
