@@ -70,7 +70,7 @@ const TASK_FIELDS = [
   'status.isCompleted',
   'status.isDefaultCompleted',
   'priority.technicalTypeSelect',
-  'progressSelect',
+  'progress',
   'attrs',
   'statusBeforeComplete',
   'sequence',
