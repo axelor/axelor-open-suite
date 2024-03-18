@@ -49,6 +49,8 @@
       ref="com.axelor.apps.project.db.TaskStatus"/>
     <string name="excludeTaskInvoicing" title="Exclude tasks for invoicing"
       help="Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria"/>
+    <many-to-many name="defaultSitesSet" title="Default sites"
+      ref="com.axelor.apps.base.db.Site"/>
 
     <boolean name="enableEventCreation" title="Enable event creation"
       help="This will attach an event to a project planning time"/>
