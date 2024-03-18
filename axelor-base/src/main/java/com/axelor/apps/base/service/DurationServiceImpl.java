@@ -49,19 +49,41 @@ public class DurationServiceImpl implements DurationService {
 
   @Override
   public BigDecimal computeRatio(
-      LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd) {
+      LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd, Duration duration) {
     Preconditions.checkNotNull(
         start, I18n.get("You can't compute a" + " duration ratio without start date."));
     Preconditions.checkNotNull(
         end, I18n.get("You can't compute a" + " duration ratio without end date."));
     totalEnd = totalEnd.plus(1, ChronoUnit.DAYS);
 
-    long totalDays = ChronoUnit.DAYS.between(totalStart, totalEnd);
     long totalComputedDays = ChronoUnit.DAYS.between(start, end) + 1;
+    long totalDays = getTotalDays(totalStart, totalEnd, duration);
+
     return BigDecimal.valueOf(totalComputedDays)
         .divide(
             BigDecimal.valueOf(totalDays),
             AppBaseService.COMPUTATION_SCALING,
             RoundingMode.HALF_UP);
+  }
+
+  protected long getTotalDays(LocalDate totalStart, LocalDate totalEnd, Duration duration) {
+    long totalDays = ChronoUnit.DAYS.between(totalStart, totalEnd);
+    if (duration == null) {
+      return totalDays;
+    }
+    long durationValue = duration.getValue();
+    if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
+      long months = ChronoUnit.MONTHS.between(totalStart, totalEnd);
+      if (months < durationValue) {
+        LocalDate theoryStart = totalStart.minusMonths(duration.getValue() - months);
+        totalDays = ChronoUnit.DAYS.between(theoryStart, totalEnd);
+      }
+    } else {
+      if (totalDays < durationValue) {
+        LocalDate theoryStart = totalStart.minusDays(duration.getValue() - totalDays);
+        totalDays = ChronoUnit.DAYS.between(theoryStart, totalEnd);
+      }
+    }
+    return totalDays;
   }
 }

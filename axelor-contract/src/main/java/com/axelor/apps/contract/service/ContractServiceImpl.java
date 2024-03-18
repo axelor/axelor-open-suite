@@ -442,7 +442,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 : version.getEndDateTime().toLocalDate();
         ratio =
             durationService.computeRatio(
-                start, end, contract.getStartDate(), contract.getInvoicePeriodEndDate());
+                start,
+                end,
+                contract.getStartDate(),
+                contract.getInvoicePeriodEndDate(),
+                contract.getCurrentContractVersion().getInvoicingDuration());
       }
       List<ContractLine> lines =
           version.getContractLineList().stream()
