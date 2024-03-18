@@ -1,0 +1,3 @@
+---
+title: "Advanced Import : Skip the required field validation if import type is Ignore empty"
+module: axelor-base

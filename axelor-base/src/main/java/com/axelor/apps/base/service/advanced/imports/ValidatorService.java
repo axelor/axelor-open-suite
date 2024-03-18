@@ -258,6 +258,9 @@ public class ValidatorService {
     List<String> fieldList = new ArrayList<String>();
 
     for (FileField fileField : fileTab.getFileFieldList()) {
+      if (fileField.getImportType().equals(FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY)) {
+        continue;
+      }
       if (fileField.getImportField() != null) {
         fieldList.add(fileField.getImportField().getName());
 
