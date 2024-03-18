@@ -3,11 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
-  <module name="project" package="com.axelor.apps.project.db"/>
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="ProjectPlanningTime" cacheable="true">
-    <many-to-one name="icalendarEvent" title="Event"
-      ref="com.axelor.apps.base.db.ICalendarEvent"/>
+  <entity name="ExpenseLine" cacheable="true">
+
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
   </entity>
