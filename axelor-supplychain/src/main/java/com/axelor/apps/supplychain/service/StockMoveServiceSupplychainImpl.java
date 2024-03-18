@@ -62,6 +62,8 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;

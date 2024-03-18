@@ -56,12 +56,15 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -93,6 +96,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
 
+
+
   @Inject
   public StockMoveServiceImpl(
       StockMoveLineService stockMoveLineService,
@@ -117,7 +122,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
-  }
+      }
 
   /**
    * Generic method to create any stock move
@@ -562,6 +567,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
   }
 
+  public void sendSupplierCancellationMail(StockMove stockMove, Template template) throws AxelorException {
+    sendMailForStockMove(stockMove, template);
+  }
   /**
    * Generate and send mail. Throws exception if the template is not found or if there is an error
    * while generating the message.
@@ -935,7 +943,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
+  public void cancel(Optional<Boolean> cancellationAutomaticMail, Optional<Integer> cancellationMessageTemplateID, StockMove stockMove, CancelReason cancelReason) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(StockMoveRepository.STATUS_PLANNED);
     authorizedStatus.add(StockMoveRepository.STATUS_REALIZED);
@@ -947,6 +955,21 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     applyCancelReason(stockMove, cancelReason);
     cancel(stockMove);
+    if(cancellationAutomaticMail == null || cancellationMessageTemplateID==null) {
+      return;
+    }
+    if(isSupplierAutomaticCancellationMail(stockMove,cancellationAutomaticMail)){
+      sendMailForStockMove(stockMove, Beans.get(TemplateRepository.class).find(cancellationMessageTemplateID.get().longValue()));
+    }
+  }
+
+
+  private boolean isSupplierAutomaticCancellationMail(StockMove stockMove, Optional<Boolean> cancellationAutomaticMail){
+    boolean automaticSending = false;
+    if(cancellationAutomaticMail.isPresent()){
+      automaticSending = cancellationAutomaticMail.get();
+    }
+    return stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING && stockMove.getIsReversion() && automaticSending;
   }
 
   @Override
@@ -980,9 +1003,10 @@ public class StockMoveServiceImpl implements StockMoveService {
         && initialStatus == StockMoveRepository.STATUS_REALIZED) {
       partnerProductQualityRatingService.undoCalculation(stockMove);
     }
-    //TODO send cancellation mail if automatic is (activated TYPE_INCOMING,isreversion false)
 
   }
+
+
 
   /**
    * Change status select to cancel, then save.
