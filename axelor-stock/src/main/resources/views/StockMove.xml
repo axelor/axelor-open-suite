@@ -262,6 +262,10 @@
         <item name="refreshProductNetMassItem" showIf="typeSelect == 2 &amp;&amp; !isReversion"
           title="Refresh the products net mass" action="action-stock-move-method-refresh-net-mass"/>
       </menu>
+      <menu title="Send notification">
+        <item name="sendNotifMailBtn" title="Send notification" showIf="statusSelect == 4"
+                action="action-stock-move-view-open-notification-wizard"/>
+      </menu>
     </menubar>
 
     <panel name="mainPanel">
@@ -900,6 +904,7 @@
   </action-group>
 
   <action-group name="action-group-stock-stockmove-onload">
+    <action name="action-stock-move-group-supplier-arrival-cancellation-mailing"/>
     <action name="action-stock-move-attrs-typeselect-change"/>
     <action name="action-stock-move-attrs-display-generate-invoice-btn"/>
     <action name="action-stock-move-generate-invoice-button"/>
@@ -928,6 +933,7 @@
     <action name="action-stock-move-method-plan"/>
     <action name="save"/>
   </action-group>
+
 
   <action-group name="action-group-stock-stockmove-realize-click">
     <action name="save"/>
@@ -1607,7 +1613,6 @@
     />
   </action-attrs>
 
-
   <action-attrs name="action-stock-move-attrs-set-supplierArrivalCancellationAutomaticMail">
     <attribute for="$supplierArrivalCancellationAutomaticMail" name="value"
         expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"
@@ -1616,10 +1621,25 @@
       />
   </action-attrs>
 
-
   <action-group name="action-stock-move-group-supplier-arrival-cancellation-mailing">
     <action name="action-stock-move-attrs-set-supplierArrivalCancellationAutomaticMail"/>
     <action name="action-stock-move-attrs-set-supplierArrivalCancellationMessageTemplate"/>
   </action-group>
+
+  <action-method name="action-stock-move-method-send-notification">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="sendSupplierArrivalCancellationMessage"/>
+  </action-method>
+
+  <form title="Choose a template" name="stock-move-send-notification-wizard-form" model="com.axelor.utils.db.Wizard">
+    <panel name="mainPanel">
+      <field name="$supplierArrivalCancellationMessageTemplate" type="many-to-one" x-target="com.axelor.message.db.Template"
+             title="Message template" required="true" colSpan="6"/>
+      <button name="sendNotifBtn" onClick="action-stock-move-method-send-notification"/>
+    </panel>
+  </form>
+  <action-view name="action-stock-move-view-open-notification-wizard" title="Choose a template" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="stock-move-send-notification-wizard-form"/>
+    <view-param name="popup" value="true"/>
+  </action-view>
 
 </object-views>
