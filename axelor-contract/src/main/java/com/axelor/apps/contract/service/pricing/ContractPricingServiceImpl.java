@@ -3,7 +3,6 @@ package com.axelor.apps.contract.service.pricing;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +16,7 @@ public class ContractPricingServiceImpl implements ContractPricingService {
   }
 
   @Override
-  public boolean isReadonly(Context context) {
-    Context parent = context.getParent();
-    Pricing pricing = context.asType(Pricing.class);
+  public boolean isReadonly(Pricing pricing, ContractLine contractLine) {
     List<ContractLine> contractLineList = new ArrayList<>();
 
     if (pricing != null && pricing.getId() != null) {
@@ -37,10 +34,7 @@ public class ContractPricingServiceImpl implements ContractPricingService {
     }
 
     // Pricing used and opened by one contract line
-    if (parent != null
-        && contractLineList.size() == 1
-        && parent.getContextClass().equals(ContractLine.class)
-        && contractLineList.get(0).getId() == parent.get("id")) {
+    if (contractLineList.size() == 1 && contractLineList.get(0).equals(contractLine)) {
       return false;
     }
 
@@ -50,7 +44,7 @@ public class ContractPricingServiceImpl implements ContractPricingService {
     }
 
     // Pricing opened by a new contract line (non-saved)
-    if (contractLineList.size() == 1 && parent != null && parent.get("id") == null) {
+    if (contractLineList.size() == 1 && contractLine != null && contractLine.getId() == null) {
       return true;
     }
 
