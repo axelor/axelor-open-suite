@@ -458,32 +458,6 @@
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
-      <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
-        if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
-        <panel-include view="incl-invoice-payment-partner-form"/>
-        <panel-include if-module="axelor-account"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
-          view="incl-sepa-direct-debit-partner-form"/>
-        <panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
-          <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-        <panel name="descriptionToDisplayOnProformaPanel"
-          title="Comment to display on proforma" colSpan="12">
-          <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-      </panel>
-      <panel name="accountingSituationPanel" if-module="axelor-account"
-        if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact"
-        onSelect="action-account-accounting-situation-method-update-customer-account">
-        <field name="isCompensation" colSpan="12" widget="boolean-switch"
-          showIf="isCustomer &amp;&amp; isSupplier"/>
-        <panel-related name="accountingSituationListPanel"
-          field="accountingSituationList" title="Accounting situation" hideIf="isContact"
-          colSpan="12" grid-view="accounting-situation-partner-grid"
-          form-view="accounting-situation-partner-form"/>
-      </panel>
-      <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
-        if="__config__.app.isApp('account')"/>
       <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"

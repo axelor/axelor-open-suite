@@ -75,6 +75,18 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.*;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationRecordService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationRecordServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
 import com.axelor.apps.account.service.analytic.AccountConfigAnalyticServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
@@ -242,8 +254,6 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveSimulateServiceImpl;
-import com.axelor.apps.account.service.move.MoveTemplateService;
-import com.axelor.apps.account.service.move.MoveTemplateServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveToolServiceImpl;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -274,6 +284,10 @@ import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateServiceImpl;
+import com.axelor.apps.account.service.move.template.MoveTemplateGroupService;
+import com.axelor.apps.account.service.move.template.MoveTemplateGroupServiceImpl;
+import com.axelor.apps.account.service.move.template.MoveTemplateService;
+import com.axelor.apps.account.service.move.template.MoveTemplateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
@@ -433,6 +447,14 @@ public class AccountModule extends AxelorModule {
     bind(AppAccountService.class).to(AppAccountServiceImpl.class);
 
     bind(AccountingSituationService.class).to(AccountingSituationServiceImpl.class);
+
+    bind(AccountingSituationGroupService.class).to(AccountingSituationGroupServiceImpl.class);
+
+    bind(AccountingSituationRecordService.class).to(AccountingSituationRecordServiceImpl.class);
+
+    bind(AccountingSituationAttrsService.class).to(AccountingSituationAttrsServiceImpl.class);
+
+    bind(AccountingSituationCheckService.class).to(AccountingSituationCheckServiceImpl.class);
 
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 
@@ -776,11 +798,11 @@ public class AccountModule extends AxelorModule {
 
     bind(MoveTemplateService.class).to(MoveTemplateServiceImpl.class);
 
+    bind(MoveTemplateGroupService.class).to(MoveTemplateGroupServiceImpl.class);
+
     bind(InvoiceTermReplaceService.class).to(InvoiceTermReplaceServiceImpl.class);
 
     bind(InvoiceLineRepository.class).to(InvoiceLineManagementRepository.class);
-
-    bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
 
     bind(InvoiceLineAttrsService.class).to(InvoiceLineAttrsServiceImpl.class);
 

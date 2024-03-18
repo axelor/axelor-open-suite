@@ -2,11 +2,11 @@ package com.axelor.apps.account.service.invoiceterm;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
   protected InvoiceTermAttrsService invoiceTermAttrsService;
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermRecordService invoiceTermRecordService;
 
   @Inject
@@ -27,13 +27,13 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
       InvoiceTermAttrsService invoiceTermAttrsService,
       InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       InvoiceTermRecordService invoiceTermRecordService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermAttrsService = invoiceTermAttrsService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.invoiceTermRecordService = invoiceTermRecordService;
   }
 
@@ -67,8 +67,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     valuesMap.put(
         "$isPaymentConditionFree", invoiceTermService.isPaymentConditionFree(invoiceTerm));
     valuesMap.put("$isMultiCurrency", invoiceTermService.isMultiCurrency(invoiceTerm));
-    valuesMap.put(
-        "$companyCurrencyScale", currencyScaleServiceAccount.getCompanyScale(invoiceTerm));
+    valuesMap.put("$companyCurrencyScale", currencyScaleService.getCompanyScale(invoiceTerm));
 
     return valuesMap;
   }
@@ -79,8 +78,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     Map<String, Object> valuesMap = this.checkPfpValidatorUser(invoiceTerm);
 
     valuesMap.put("$isMultiCurrency", invoiceTermService.isMultiCurrency(invoiceTerm));
-    valuesMap.put(
-        "$companyCurrencyScale", currencyScaleServiceAccount.getCompanyScale(invoiceTerm));
+    valuesMap.put("$companyCurrencyScale", currencyScaleService.getCompanyScale(invoiceTerm));
 
     valuesMap.put(
         "$showFinancialDiscount", invoiceTermService.setShowFinancialDiscount(invoiceTerm));
