@@ -1,0 +1,5 @@
+---
+title: "Advanced Import : Enhance model saving process for data import"
+module: axelor-base
+developer: |
+  Refactor code to use FullContextHelper instead of directly invoking the JPA save method
