@@ -212,6 +212,7 @@
 "Enable editable grid on quotation / sales order lines",,,
 "Enable product description copy",,,
 "Enable sub lines functionality",,,
+"Enable unit price calculation",,,
 "End date",,,
 "End of current contract period",,,
 "End of validity",,,

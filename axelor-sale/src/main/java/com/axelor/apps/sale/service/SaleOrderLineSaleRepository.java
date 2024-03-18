@@ -23,6 +23,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -30,6 +31,9 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put(
+            "$isUnitPriceCalculationEnabled",
+            Beans.get(AppSaleService.class).getAppSale().getIsUnitPriceCalculationEnabled());
     json.put(
         "$nbDecimalDigitForUnitPrice",
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());

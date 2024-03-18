@@ -31,6 +31,7 @@
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
         showIf="isEditableGridEnabled"/>
       <field name="isSubLinesEnabled" widget="boolean-switch"/>
+      <field name="isUnitPriceCalculationEnabled" widget="boolean-switch"/>
       <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
         hidden="true"/>
       <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>

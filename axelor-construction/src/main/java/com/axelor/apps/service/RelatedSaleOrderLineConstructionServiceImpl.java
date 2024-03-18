@@ -42,19 +42,20 @@ public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrde
     if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineDisplayList())) {
       return;
     }
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
-      if (saleOrderLine.getCostPrice().compareTo(BigDecimal.ZERO) == 0) {
-
-        saleOrderLine.setGrossMarging(BigDecimal.ZERO);
-      } else {
-        saleOrderLine.setGrossMarging(
-            saleOrderLine
-                .getPrice()
-                .divide(
-                    saleOrderLine.getCostPrice(),
-                    AppSaleService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_UP)
-                .subtract(saleOrderLine.getGeneralExpenses().add(BigDecimal.ONE)));
+    if (appSaleService.getAppSale().getIsUnitPriceCalculationEnabled()) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineDisplayList()) {
+        if (saleOrderLine.getCostPrice().compareTo(BigDecimal.ZERO) == 0) {
+          saleOrderLine.setGrossMarging(BigDecimal.ZERO);
+        } else {
+          saleOrderLine.setGrossMarging(
+              saleOrderLine
+                  .getPrice()
+                  .divide(
+                      saleOrderLine.getCostPrice(),
+                      AppSaleService.DEFAULT_NB_DECIMAL_DIGITS,
+                      RoundingMode.HALF_UP)
+                  .subtract(saleOrderLine.getGeneralExpenses().add(BigDecimal.ONE)));
+        }
       }
     }
   }
@@ -62,33 +63,37 @@ public class RelatedSaleOrderLineConstructionServiceImpl extends RelatedSaleOrde
   @Override
   protected void calculateAllParentsTotalsAndPrices(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    if (saleOrderLine.getSaleOrderLineList() == null
-        || saleOrderLine.getSaleOrderLineList().isEmpty()) {
+    if (appSaleService.getAppSale().getIsUnitPriceCalculationEnabled()) {
+      if (saleOrderLine.getSaleOrderLineList() == null
+          || saleOrderLine.getSaleOrderLineList().isEmpty()) {
+        saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
+        saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
+        setDefaultSaleOrderLineProperties(saleOrderLine, saleOrder);
+        return;
+      }
+
+      BigDecimal[] totals = computeTotals(saleOrderLine, saleOrder);
+      BigDecimal total = totals[0];
+      BigDecimal costPriceTotal = totals[1];
+      saleOrderLine.setPrice(
+          total.divide(
+              saleOrderLine.getQty(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              RoundingMode.HALF_UP));
+
+      saleOrderLine.setCostPrice(
+          costPriceTotal.divide(
+              saleOrderLine.getQty(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              RoundingMode.HALF_UP));
+
+      computeAllValues(saleOrderLine, saleOrder);
       saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
       saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
       setDefaultSaleOrderLineProperties(saleOrderLine, saleOrder);
-      return;
+    } else {
+      super.calculateAllParentsTotalsAndPrices(saleOrderLine, saleOrder);
     }
-
-    BigDecimal[] totals = computeTotals(saleOrderLine, saleOrder);
-    BigDecimal total = totals[0];
-    BigDecimal costPriceTotal = totals[1];
-    saleOrderLine.setPrice(
-        total.divide(
-            saleOrderLine.getQty(),
-            appBaseService.getNbDecimalDigitForUnitPrice(),
-            RoundingMode.HALF_UP));
-
-    saleOrderLine.setCostPrice(
-        costPriceTotal.divide(
-            saleOrderLine.getQty(),
-            appBaseService.getNbDecimalDigitForUnitPrice(),
-            RoundingMode.HALF_UP));
-
-    computeAllValues(saleOrderLine, saleOrder);
-    saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
-    saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
-    setDefaultSaleOrderLineProperties(saleOrderLine, saleOrder);
   }
 
   protected BigDecimal[] computeTotals(SaleOrderLine saleOrderLine, SaleOrder saleOrder)

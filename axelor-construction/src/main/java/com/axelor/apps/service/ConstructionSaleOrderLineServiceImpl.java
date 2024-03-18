@@ -78,7 +78,10 @@ public class ConstructionSaleOrderLineServiceImpl
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-
+    if (!appSaleService.getAppSale().getIsUnitPriceCalculationEnabled()){
+      super.computeProductInformation(saleOrderLine, saleOrder);
+      return;
+    }
     saleOrderLine.setGrossMarging(saleOrder.getCompany().getSaleConfig().getDefaultGrossMarging());
     saleOrderLine.setGeneralExpenses(
         saleOrderLine
@@ -96,6 +99,9 @@ public class ConstructionSaleOrderLineServiceImpl
       Set<TaxLine> taxLineSet,
       boolean resultInAti)
       throws AxelorException {
+    if (!appSaleService.getAppSale().getIsUnitPriceCalculationEnabled()){
+      return super.getUnitPrice(saleOrder,saleOrderLine,taxLineSet,resultInAti);
+    }
     Product product = saleOrderLine.getProduct();
 
     Boolean productInAti =
@@ -109,20 +115,9 @@ public class ConstructionSaleOrderLineServiceImpl
                     .getGrossMarging()
                     .add(saleOrderLine.getGeneralExpenses().add(BigDecimal.ONE)));
 
-    BigDecimal price =
-        (productInAti == resultInAti)
+    return (productInAti == resultInAti)
             ? productSalePrice
             : taxService.convertUnitPrice(
                 productInAti, taxLineSet, productSalePrice, AppBaseService.COMPUTATION_SCALING);
-
-    /*return currencyService
-    .getAmountCurrencyConvertedAtDate(
-        (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
-        saleOrder.getCurrency(),
-        price,
-        saleOrder.getCreationDate())
-    .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);*/
-
-    return price;
   }
 }

@@ -45,6 +45,7 @@
     <boolean name="isDiscountEnabledOnEditableGrid"
       title="Enable discount on editable lines" default="false" nullable="false"/>
     <boolean name="isSubLinesEnabled" title="Enable sub lines functionality"/>
+    <boolean name="isUnitPriceCalculationEnabled" title="Enable unit price calculation"/>
 
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>

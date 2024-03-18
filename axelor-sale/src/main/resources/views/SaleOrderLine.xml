@@ -688,7 +688,15 @@
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
     <action name="action-sale-order-line-attrs-disable-recalculation"
       if="__config__.app.isApp('construction')"/>
+    <action name="action-sale-order-line-attrs-set-unit-price-read-only"
+      if="__config__.app.isApp('construction')"/>
   </action-group>
+
+  <action-attrs name="action-sale-order-line-attrs-set-unit-price-read-only">
+    <attribute for="price" name="readonlyIf" expr="eval: true"
+      if="__config__.app.getApp('sale')?.getIsUnitPriceCalculationEnabled()"/>
+  </action-attrs>
+
   <action-record name="action-sale-order-line-record-disable-recalculation"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="$isEnabledForCalculation" expr="false"/>
