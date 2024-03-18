@@ -21,8 +21,8 @@ package com.axelor.apps.base.service.printing.template;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PrintingTemplateLine;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
-import com.axelor.db.Model;
 import com.axelor.meta.MetaFiles;
 import com.google.common.io.Files;
 import java.io.File;
@@ -32,7 +32,8 @@ import org.apache.commons.io.FilenameUtils;
 public class PrintingGeneratorFactoryFile implements PrintingGeneratorFactory {
 
   @Override
-  public TemplatePrint generate(PrintingTemplateLine printTemplateLine, Model model)
+  public TemplatePrint generate(
+      PrintingTemplateLine printTemplateLine, PrintingGenFactoryContext context)
       throws AxelorException {
     TemplatePrint print = new TemplatePrint();
     try {

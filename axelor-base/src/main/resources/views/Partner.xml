@@ -166,7 +166,7 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
+        <item name="envelopeItem" title="Envelope" action="save,action-method-print-template"
           readonlyIf="!id"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="!id"
@@ -617,7 +617,7 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
+        <item name="envelopeItem" title="Envelope" action="save,action-method-print-template"
           readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
@@ -917,7 +917,7 @@
     onSave="save,action-partner-method-set-user-partner">
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
+        <item name="envelopeItem" title="Envelope" action="save,action-method-print-template"
           readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
