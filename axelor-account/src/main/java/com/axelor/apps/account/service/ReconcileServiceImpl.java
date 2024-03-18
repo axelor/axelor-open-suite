@@ -558,29 +558,6 @@ public class ReconcileServiceImpl implements ReconcileService {
         }
       }
 
-      if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)
-          && Objects.equals(move.getCurrency(), otherMove.getCurrency())) {
-        amount = this.getTotal(moveLine, otherMoveLine, amount, invoicePayment != null);
-      } else if (this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
-        if (currencyService.isSameCurrencyRate(
-            invoice.getInvoiceDate(),
-            otherMove.getDate(),
-            otherMove.getCurrency(),
-            invoice.getCurrency())) {
-          BigDecimal currencyRate =
-              invoice
-                  .getCompanyInTaxTotal()
-                  .divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP);
-          amount =
-              amount.divide(
-                  currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        } else {
-          amount =
-              currencyService.getAmountCurrencyConvertedAtDate(
-                  otherMove.getCurrency(), invoice.getCurrency(), amount, otherMove.getDate());
-        }
-      }
-
       if (invoicePayment == null
           && moveLine.getAccount().getUseForPartnerBalance()
           && otherMoveLine.getAccount().getUseForPartnerBalance()) {

@@ -397,7 +397,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                 it -> it.setApplyFinancialDiscount(invoicePayment.getApplyFinancialDiscount()));
       }
 
-      BigDecimal payableAmount =
+      BigDecimal payableCurrencyAmount =
           this.getPayableAmount(
               invoiceTerms,
               invoicePayment.getPaymentDate(),
@@ -405,8 +405,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               invoicePayment.getCurrency());
 
       if (!invoicePayment.getManualChange()
-          || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
-        invoicePayment.setAmount(payableAmount);
+          || invoicePayment.getAmount().compareTo(payableCurrencyAmount) > 0) {
+        invoicePayment.setAmount(payableCurrencyAmount);
         amountError = !invoicePayment.getApplyFinancialDiscount();
       }
 
@@ -414,11 +414,12 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
       if (!CollectionUtils.isEmpty(invoiceTerms)) {
 
-        BigDecimal amount = invoicePayment.getAmount();
+        BigDecimal companyAmount =
+            this.computeCompanyAmount(invoicePayment.getAmount(), invoicePayment);
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-            invoicePayment, invoiceTerms, amount, amount);
+            invoicePayment, invoiceTerms, companyAmount, companyAmount);
 
         if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
           BigDecimal financialDiscountAmount =
@@ -427,7 +428,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                   .map(InvoiceTerm::getFinancialDiscountAmount)
                   .reduce(BigDecimal::add)
                   .orElse(BigDecimal.ZERO);
-          BigDecimal amountWithFinancialDiscount = amount.add(financialDiscountAmount);
+          BigDecimal amountWithFinancialDiscount = companyAmount.add(financialDiscountAmount);
 
           invoicePayment.clearInvoiceTermPaymentList();
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
@@ -438,7 +439,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         } else if (this.isPartialPayment(invoicePayment)) {
           invoicePayment.clearInvoiceTermPaymentList();
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTerms, amount, amount);
+              invoicePayment, invoiceTerms, companyAmount, companyAmount);
         }
 
         if (this.isPartialPayment(invoicePayment)) {
@@ -465,14 +466,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       }
 
       invoicePayment =
-          invoiceTermPaymentService.initInvoiceTermPayments(
+          invoiceTermPaymentService.initInvoiceTermPayments( // OK invoicePayment NOT NULL
               invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
 
       if (this.isPartialPayment(invoicePayment)) {
         invoicePayment.setApplyFinancialDiscount(false);
 
         invoicePayment.clearInvoiceTermPaymentList();
-        invoiceTermPaymentService.initInvoiceTermPayments(
+        invoiceTermPaymentService.initInvoiceTermPayments( // OK invoicePayment NOT NULL
             invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
       }
 
@@ -505,5 +506,18 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                         .add(it.getFinancialDiscountAmount())
                         .compareTo(it.getInvoiceTerm().getAmount())
                     != 0);
+  }
+
+  protected BigDecimal computeCompanyAmount(
+      BigDecimal amountInCurrency, InvoicePayment invoicePayment) throws AxelorException {
+    if (!invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())) {
+      return currencyService.getAmountCurrencyConvertedAtDate(
+          invoicePayment.getCurrency(),
+          invoicePayment.getCompanyCurrency(),
+          amountInCurrency,
+          invoicePayment.getPaymentDate());
+    }
+
+    return amountInCurrency;
   }
 }

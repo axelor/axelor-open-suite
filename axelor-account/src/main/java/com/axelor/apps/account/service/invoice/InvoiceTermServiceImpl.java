@@ -680,7 +680,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
       BigDecimal paidAmount =
-          invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
+          (invoiceTermPayment.getInvoicePayment() != null
+                      && invoiceTermPayment
+                          .getInvoicePayment()
+                          .getCurrency()
+                          .equals(invoiceTerm.getCurrency())
+                  ? invoiceTermPayment.getPaidAmount()
+                  : invoiceTermPayment.getCompanyPaidAmount())
+              .add(invoiceTermPayment.getFinancialDiscountAmount());
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       BigDecimal companyAmountRemaining;

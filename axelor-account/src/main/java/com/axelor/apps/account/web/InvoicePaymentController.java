@@ -228,9 +228,7 @@ public class InvoicePaymentController {
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
       Pair<List<Long>, Boolean> result =
           Beans.get(InvoicePaymentToolService.class).changeAmount(invoicePayment, invoiceId);
-      if (result == null) {
-        return;
-      }
+
       response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, result.getLeft()));
       response.setAttr("amountErrorPanel", "hidden", result.getRight());
     } catch (Exception e) {
