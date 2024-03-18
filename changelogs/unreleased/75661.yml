@@ -1,0 +1,3 @@
+---
+title: "Purchase order line: fixed wrong budget distribution when invoicing multiple purchase order lines."
+module: axelor-budget
