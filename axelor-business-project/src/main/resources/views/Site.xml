@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid title="Site" name="site-grid" id="business-project-site-grid"
+    model="com.axelor.apps.base.db.Site" extension="true">
+    <extend target="//field[@name='address']">
+      <insert position="after">
+        <field name="invoicingType"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form title="Site" name="site-form" id="business-project-site-form"
+    model="com.axelor.apps.base.db.Site" extension="true">
+    <extend target="//panel[name='siteTypePanel']">
+      <insert position="after">
+        <panel name="invoicingPanel" title="Invoicing" sidebar="true">
+          <field name="invoicingType"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+
+</object-views>
