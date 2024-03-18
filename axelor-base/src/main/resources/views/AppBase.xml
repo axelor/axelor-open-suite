@@ -157,10 +157,10 @@
             colspan="6"/>
         </panel>
         <panel name="printingTemplatesPanel" colSpan="12">
-          <field name="clientSituationBirtTemplate"/>
-          <field name="companyPhoneBookBirtTemplate"/>
-          <field name="contactPhoneBookBirtTemplate"/>
-          <field name="productCatalogPGQLBirtTemplate"/>
+          <field name="clientSituationPrintTemplate"/>
+          <field name="companyPhoneBookPrintTemplate"/>
+          <field name="contactPhoneBookPrintTemplate"/>
+          <field name="productCatalogPGQLPrintTemplate"/>
         </panel>
         <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
           field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"

@@ -23,23 +23,33 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.PrintingTemplateLine;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 public class PrintingGeneratorFactoryBirt implements PrintingGeneratorFactory {
 
   @Override
-  public TemplatePrint generate(PrintingTemplateLine printTemplateLine, Model model)
+  public TemplatePrint generate(
+      PrintingTemplateLine printTemplateLine, PrintingGenFactoryContext context)
       throws AxelorException {
 
     TemplatePrint print = new TemplatePrint();
     BirtTemplate birtTemplate = printTemplateLine.getBirtTemplate();
     try {
+      Model model = null;
+      Map<String, Object> extraContext = null;
+      if (context != null) {
+        model = context.getModel();
+        extraContext = context.getContext();
+      }
       File file =
-          Beans.get(PrintFromBirtTemplateService.class).generateBirtTemplate(birtTemplate, model);
+          Beans.get(PrintFromBirtTemplateService.class)
+              .generateBirtTemplate(birtTemplate, model, extraContext);
       print.setOutputFormat(birtTemplate.getFormat());
       print.setPrint(renameFile(file, printTemplateLine));
     } catch (IOException e) {
