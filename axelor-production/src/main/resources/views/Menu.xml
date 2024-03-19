@@ -117,12 +117,26 @@
     <view type="grid" name="operation-order-grid"/>
     <view type="form" name="operation-order-form"/>
     <view-param name="search-filters" value="operation-order-filters"/>
-    <domain>self.manufOrder.statusSelect IN (3,4,5,6)</domain>
+    <domain>self.manufOrder.statusSelect IN (3,4,5,6) AND self.outsourcing = false</domain>
+  </action-view>
+
+  <menuitem name="manufacturing-root-operation-order-planned-outsourced-calendar"
+    parent="manufacturing-root-calendars" title="Planned outsourced operations"
+    action="manufacturing.root.operation.order.planned.outsourced.calendar" order="200"
+    if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
+
+  <action-view name="manufacturing.root.operation.order.planned.outsourced.calendar"
+    title="Planned outsourced operations" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="calendar" name="operation-order-planned-calendar"/>
+    <view type="grid" name="operation-order-grid"/>
+    <view type="form" name="operation-order-form"/>
+    <view-param name="search-filters" value="operation-order-filters"/>
+    <domain>self.manufOrder.statusSelect IN (3,4,5,6) AND self.outsourcing = true</domain>
   </action-view>
 
   <menuitem name="manufacturing-root-operation-order-real-calendar"
     parent="manufacturing-root-calendars" title="Real operations"
-    action="manufacturing.root.operation.order.real.calendar" order="200"/>
+    action="manufacturing.root.operation.order.real.calendar" order="300"/>
 
   <action-view name="manufacturing.root.operation.order.real.calendar"
     title="Real operations" model="com.axelor.apps.production.db.OperationOrder">

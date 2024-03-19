@@ -1693,6 +1693,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS = /*$$(*/
       "The accounting configurations have been imported successfully for the company %s." /*)*/;
 
+  public static final String MOVE_USER_NOT_AUTHORIZED_ON_JOURNAL_ROLE_SET = /*$$(*/
+      "You are not authorized to save the move %s (check the %s journal's role config)." /*)*/;
+
   public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
       "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
 
@@ -1701,4 +1704,10 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_LOSSES_ACCOUNT = /*$$(*/
       "Please select a foreign exchange loss account config for company %s." /*)*/;
+
+  public static final String PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES = /*$$(*/
+      "Warning, you have more than one configuration for company %s, so make sure you only have one." /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
+      "No partner involved, please look for your blocking configuration if necessary." /*)*/;
 }

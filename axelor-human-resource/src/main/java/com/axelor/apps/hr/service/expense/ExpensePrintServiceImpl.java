@@ -102,7 +102,7 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
 
   protected File getReportFile(Expense expense) throws AxelorException, IOException {
     BirtTemplate birtTemplate = getBirtTemplate(expense);
-    return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense);
+    return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense, null);
   }
 
   protected BirtTemplate getBirtTemplate(Expense expense) throws AxelorException {

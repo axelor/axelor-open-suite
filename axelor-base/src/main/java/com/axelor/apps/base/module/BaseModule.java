@@ -232,6 +232,12 @@ import com.axelor.apps.base.service.print.PrintTemplateLineService;
 import com.axelor.apps.base.service.print.PrintTemplateLineServiceImpl;
 import com.axelor.apps.base.service.print.PrintTemplateService;
 import com.axelor.apps.base.service.print.PrintTemplateServiceImpl;
+import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProvider;
+import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProviderImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServiceImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
 import com.axelor.apps.base.service.research.ResearchRequestServiceImpl;
 import com.axelor.apps.base.service.signature.SignatureService;
@@ -442,5 +448,8 @@ public class BaseModule extends AxelorModule {
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
     bind(PermissionService.class).to(PermissionServiceImpl.class);
     bind(MetaBaseService.class).to(MetaServiceBaseImpl.class);
+    bind(PrintingTemplateService.class).to(PrintingTemplateServiceImpl.class);
+    bind(PrintingTemplatePrintService.class).to(PrintingTemplatePrintServiceImpl.class);
+    bind(PrintingGeneratorFactoryProvider.class).to(PrintingGeneratorFactoryProviderImpl.class);
   }
 }

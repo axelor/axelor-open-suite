@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.accountingsituation;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -33,30 +33,24 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class AccountingSituationServiceImpl implements AccountingSituationService {
 
   protected AccountConfigService accountConfigService;
   protected PaymentModeService paymentModeService;
   protected AccountingSituationRepository accountingSituationRepo;
-  protected CompanyRepository companyRepo;
 
   @Inject
   public AccountingSituationServiceImpl(
       AccountConfigService accountConfigService,
       PaymentModeService paymentModeService,
-      AccountingSituationRepository accountingSituationRepo,
-      CompanyRepository companyRepo) {
+      AccountingSituationRepository accountingSituationRepo) {
     this.accountConfigService = accountConfigService;
     this.paymentModeService = paymentModeService;
     this.accountingSituationRepo = accountingSituationRepo;
-    this.companyRepo = companyRepo;
   }
 
   @Override
@@ -73,41 +67,6 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
     }
 
     return null;
-  }
-
-  /**
-   * Creates the domain for the bank details in Accounting Situation
-   *
-   * @param accountingSituation
-   * @param isInBankDetails true if the field is companyInBankDetails false if the field is
-   *     companyOutBankDetails
-   * @return the domain of the bank details field
-   */
-  @Override
-  public String createDomainForBankDetails(
-      AccountingSituation accountingSituation, boolean isInBankDetails) {
-    String domain = "";
-    List<BankDetails> authorizedBankDetails;
-    if (accountingSituation.getPartner() != null) {
-
-      if (isInBankDetails) {
-        authorizedBankDetails =
-            paymentModeService.getCompatibleBankDetailsList(
-                accountingSituation.getPartner().getInPaymentMode(),
-                accountingSituation.getCompany());
-      } else {
-        authorizedBankDetails =
-            paymentModeService.getCompatibleBankDetailsList(
-                accountingSituation.getPartner().getOutPaymentMode(),
-                accountingSituation.getCompany());
-      }
-      String idList = StringHelper.getIdListString(authorizedBankDetails);
-      if (idList.equals("")) {
-        return domain;
-      }
-      domain = "self.id IN (" + idList + ") AND self.active = true";
-    }
-    return domain;
   }
 
   @Override
