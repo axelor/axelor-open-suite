@@ -468,7 +468,7 @@
           <viewer><![CDATA[<>{toAddressStr}</>]]></viewer>
         </field>
 
-               
+
       </panel>
 
       <panel name="outgoingMovePanel" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
@@ -582,9 +582,11 @@
             </viewer>
           </field>
         </panel>
-        <field name="$supplierArrivalCancellationAutomaticMail" title="Automatic notification on cancellation" type="boolean" hidden="false" readonly="true"   />
-        <field name="$supplierArrivalCancellationMessageTemplate" type="many-to-one" x-target="com.axelor.message.db.Template"
-               title="Message template" hidden="true"/>
+        <field name="$supplierArrivalCancellationAutomaticMail"
+          title="Automatic notification on cancellation" type="boolean" hidden="false"
+          readonly="true"/>
+        <field name="$supplierArrivalCancellationMessageTemplate" type="many-to-one"
+          x-target="com.axelor.message.db.Template" title="Message template" hidden="true"/>
 
       </panel>
     </panel>
@@ -1418,8 +1420,10 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
     <context name="_xApplicationType" expr="eval: _model"/>
-    <context name="_supplierArrivalCancellationAutomaticMail" expr="eval: supplierArrivalCancellationAutomaticMail"/>
-    <context name="_supplierArrivalCancellationMessageTemplate" expr="eval: supplierArrivalCancellationMessageTemplate"/>
+    <context name="_supplierArrivalCancellationAutomaticMail"
+      expr="eval: supplierArrivalCancellationAutomaticMail"/>
+    <context name="_supplierArrivalCancellationMessageTemplate"
+      expr="eval: supplierArrivalCancellationMessageTemplate"/>
   </action-view>
 
   <form name="stock-move-cancel-wizard-form" model="com.axelor.apps.stock.db.StockMove"
@@ -1605,19 +1609,20 @@
     <call class="com.axelor.apps.stock.web.StockMoveMergingController" method="mergeStockMoves"/>
   </action-method>
 
-  <action-attrs name="action-stock-move-attrs-set-supplierArrivalCancellationMessageTemplate">
-    <attribute for="$supplierArrivalCancellationMessageTemplate" name="value" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationMessageTemplate"
-    if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_INCOMING || typeSelect == __repo__(StockMove).TYPE_INCOMING)
-    &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"
-    />
+  <action-attrs
+    name="action-stock-move-attrs-set-supplierArrivalCancellationMessageTemplate">
+    <attribute for="$supplierArrivalCancellationMessageTemplate" name="value"
+      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationMessageTemplate"
+      if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_INCOMING || typeSelect == __repo__(StockMove).TYPE_INCOMING)
+    &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"/>
   </action-attrs>
 
-  <action-attrs name="action-stock-move-attrs-set-supplierArrivalCancellationAutomaticMail">
+  <action-attrs
+    name="action-stock-move-attrs-set-supplierArrivalCancellationAutomaticMail">
     <attribute for="$supplierArrivalCancellationAutomaticMail" name="value"
-        expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"
-        if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_INCOMING || typeSelect == __repo__(StockMove).TYPE_INCOMING)
-        &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"
-      />
+      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"
+      if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_INCOMING || typeSelect == __repo__(StockMove).TYPE_INCOMING)
+        &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"/>
   </action-attrs>
 
   <action-group name="action-stock-move-group-supplier-arrival-cancellation-mailing">
@@ -1627,15 +1632,19 @@
 
 
 
-  <form title="Choose a template" name="stock-move-send-notification-wizard-form" model="com.axelor.utils.db.Wizard" canSave="false" canNew="false">
+  <form title="Choose a template" name="stock-move-send-notification-wizard-form"
+    model="com.axelor.utils.db.Wizard" canSave="false" canNew="false">
     <panel name="mainPanel">
-      <field name="$supplierArrivalCancellationMessageTemplate" type="many-to-one" target="com.axelor.message.db.Template"
-             title="Message template" required="true" colSpan="6" widget="SuggestBox" domain="self.metaModel.name = 'StockMove'"/>
-      <button name="sendNotifBtn" title="Send notification" onClick="action-stock-move-method-send-notification" colSpan="6"/>
+      <field name="$supplierArrivalCancellationMessageTemplate" type="many-to-one"
+        target="com.axelor.message.db.Template" title="Message template" required="true" colSpan="6"
+        widget="SuggestBox" domain="self.metaModel.name = 'StockMove'"/>
+      <button name="sendNotifBtn" title="Send notification"
+        onClick="action-stock-move-method-send-notification" colSpan="6"/>
     </panel>
   </form>
 
-  <action-view name="action-stock-move-view-open-notification-wizard" title="Choose a template" model="com.axelor.utils.db.Wizard">
+  <action-view name="action-stock-move-view-open-notification-wizard"
+    title="Choose a template" model="com.axelor.utils.db.Wizard">
     <view type="form" name="stock-move-send-notification-wizard-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
@@ -1643,7 +1652,8 @@
   </action-view>
 
   <action-method name="action-stock-move-method-send-notification">
-    <call class="com.axelor.apps.stock.web.StockMoveController" method="sendSupplierArrivalCancellationMessage"/>
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="sendSupplierArrivalCancellationMessage"/>
   </action-method>
 
 </object-views>
