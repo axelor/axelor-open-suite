@@ -902,6 +902,7 @@
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
+    <action name="action-stock-move-group-supplier-arrival-cancellation-mailing"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmove-onload">
