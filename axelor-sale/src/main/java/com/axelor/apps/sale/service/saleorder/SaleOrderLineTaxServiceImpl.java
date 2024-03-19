@@ -19,7 +19,6 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -100,12 +99,7 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
         getOrCreateLine(saleOrder, saleOrderLine, map, taxLine);
       }
     }
-    if (!customerSpecificNote) {
-      TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
-      if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
-        specificNotes.add(taxEquiv.getSpecificNote());
-      }
-    }
+    orderLineTaxService.addTaxEquivSpecificNote(saleOrderLine, customerSpecificNote, specificNotes);
   }
 
   protected void getOrCreateLine(

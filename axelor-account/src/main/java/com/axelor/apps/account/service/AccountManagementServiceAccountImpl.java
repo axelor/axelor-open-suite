@@ -56,16 +56,19 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 
   protected AccountConfigService accountConfigService;
   protected AccountRepository accountRepository;
+  protected FiscalPositionAccountService fiscalPositionAccountService;
 
   @Inject
   public AccountManagementServiceAccountImpl(
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AccountConfigService accountConfigService,
-      AccountRepository accountRepository) {
+      AccountRepository accountRepository,
+      FiscalPositionAccountService fiscalPositionAccountService) {
     super(fiscalPositionService, taxService);
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
+    this.fiscalPositionAccountService = fiscalPositionAccountService;
   }
 
   /**
@@ -101,8 +104,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     Account generalAccount =
         this.getProductAccount(product, company, isPurchase, fixedAsset, CONFIG_OBJECT_PRODUCT);
 
-    Account account =
-        new FiscalPositionAccountServiceImpl().getAccount(fiscalPosition, generalAccount);
+    Account account = fiscalPositionAccountService.getAccount(fiscalPosition, generalAccount);
 
     if (account != null) {
       return account;

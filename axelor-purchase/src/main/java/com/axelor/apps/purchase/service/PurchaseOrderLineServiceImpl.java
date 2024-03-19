@@ -258,10 +258,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
           I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 
-    Set<TaxEquiv> taxEquivSet =
-        accountManagementService.getProductTaxEquivSet(
+    TaxEquiv taxEquiv =
+        accountManagementService.getProductTaxEquiv(
             product, purchaseOrder.getCompany(), purchaseOrder.getFiscalPosition(), true);
-    line.setTaxEquivSet(taxEquivSet);
+    line.setTaxEquiv(taxEquiv);
 
     Map<String, Object> discounts =
         getDiscountsFromPriceLists(
@@ -646,11 +646,11 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       Set<TaxLine> taxLineSet = this.getTaxLineSet(purchaseOrder, purchaseOrderLine);
       purchaseOrderLine.setTaxLineSet(taxLineSet);
 
-      Set<TaxEquiv> taxEquivSet =
-          accountManagementService.getProductTaxEquivSet(
+      TaxEquiv taxEquiv =
+          accountManagementService.getProductTaxEquiv(
               purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
 
-      purchaseOrderLine.setTaxEquivSet(taxEquivSet);
+      purchaseOrderLine.setTaxEquiv(taxEquiv);
 
       BigDecimal exTaxTotal = purchaseOrderLine.getExTaxTotal();
 

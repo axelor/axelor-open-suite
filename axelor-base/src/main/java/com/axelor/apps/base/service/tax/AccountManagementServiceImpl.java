@@ -35,7 +35,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,15 +140,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
       Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
       throws AxelorException {
     Set<Tax> taxSet = getProductTax(product, company, isPurchase);
-    return fiscalPositionService.getTaxEquiv(fiscalPosition, taxSet.iterator().next());
-  }
-
-  @Override
-  public Set<TaxEquiv> getProductTaxEquivSet(
-      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
-      throws AxelorException {
-    Set<Tax> taxSet = getProductTax(product, company, isPurchase);
-    return fiscalPositionService.getTaxEquivSet(fiscalPosition, taxSet);
+    return fiscalPositionService.getTaxEquiv(fiscalPosition, taxSet);
   }
 
   /**
@@ -166,10 +157,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
       Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
       throws AxelorException {
     Set<Tax> generalTaxSet = this.getProductTax(product, company, isPurchase);
-    Set<Tax> taxSet =
-        generalTaxSet.stream()
-            .map(generalTax -> fiscalPositionService.getTax(fiscalPosition, generalTax))
-            .collect(Collectors.toSet());
+    Set<Tax> taxSet = fiscalPositionService.getTaxSet(fiscalPosition, generalTaxSet);
 
     if (CollectionUtils.isNotEmpty(taxSet)) {
       return taxSet;

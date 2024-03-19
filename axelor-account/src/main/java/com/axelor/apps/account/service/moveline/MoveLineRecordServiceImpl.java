@@ -118,28 +118,25 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
     if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
       moveLine.setTaxLineSet(Sets.newHashSet());
+      moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
       return;
     }
 
     Set<TaxLine> taxLineSet =
         moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount);
-    TaxEquiv taxEquiv = null;
     Set<TaxLine> taxLineBeforeReverseSet = moveLine.getTaxLineBeforeReverseSet();
-    moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
 
-    if (CollectionUtils.isNotEmpty(taxLineSet)) {
-      if (move.getFiscalPosition() != null) {
-        taxEquiv =
-            fiscalPositionService.getTaxEquiv(
-                move.getFiscalPosition(), taxLineSet.iterator().next().getTax());
-      }
-
-      moveLine.setTaxLineSet(taxLineSet);
-      moveLine.setTaxLineBeforeReverseSet(taxLineBeforeReverseSet);
+    TaxEquiv taxEquiv = null;
+    if (CollectionUtils.isNotEmpty(taxLineSet) && move.getFiscalPosition() != null) {
+      taxEquiv =
+          fiscalPositionService.getTaxEquivFromTaxLines(
+              move.getFiscalPosition(), taxLineBeforeReverseSet);
       if (taxEquiv != null) {
-        moveLine.setTaxEquiv(taxEquiv);
+        moveLine.setTaxLineBeforeReverseSet(taxLineBeforeReverseSet);
       }
     }
+    moveLine.setTaxLineSet(taxLineSet);
+    moveLine.setTaxEquiv(taxEquiv);
 
     if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
       moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());

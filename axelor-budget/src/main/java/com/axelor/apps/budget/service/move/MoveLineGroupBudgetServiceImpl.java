@@ -38,6 +38,8 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServ
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
@@ -70,7 +72,9 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -87,7 +91,9 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         moveCutOffService,
         moveLineFinancialDiscountService,
         moveLineCheckBankPaymentService,
-        moveLineRecordBankPaymentService);
+        moveLineRecordBankPaymentService,
+        fiscalPositionService,
+        taxService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }

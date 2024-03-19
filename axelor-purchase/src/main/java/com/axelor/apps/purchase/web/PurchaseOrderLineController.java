@@ -113,7 +113,7 @@ public class PurchaseOrderLineController {
     PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
     PurchaseOrder purchaseOrder = getPurchaseOrder(context);
 
-    response.setValue("taxEquivSet", null);
+    response.setValue("taxEquiv", null);
 
     Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
     if (purchaseOrder == null
@@ -121,12 +121,12 @@ public class PurchaseOrderLineController {
         || purchaseOrder.getSupplierPartner() == null
         || CollectionUtils.isEmpty(taxLineSet)) return;
 
+    FiscalPositionService fiscalPositionService = Beans.get(FiscalPositionService.class);
+    TaxService taxService = Beans.get(TaxService.class);
     response.setValue(
-        "taxEquivSet",
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquivSet(
-                purchaseOrder.getFiscalPosition(),
-                taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet())));
+        "taxEquiv",
+        fiscalPositionService.getTaxEquiv(
+            purchaseOrder.getFiscalPosition(), taxService.getTaxSet(taxLineSet)));
   }
 
   public void updateProductInformation(ActionRequest request, ActionResponse response) {

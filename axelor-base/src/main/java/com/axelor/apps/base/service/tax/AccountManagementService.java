@@ -62,8 +62,4 @@ public interface AccountManagementService {
       FiscalPosition fiscalPosition,
       boolean isPurchase)
       throws AxelorException;
-
-  public Set<TaxEquiv> getProductTaxEquivSet(
-      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
-      throws AxelorException;
 }

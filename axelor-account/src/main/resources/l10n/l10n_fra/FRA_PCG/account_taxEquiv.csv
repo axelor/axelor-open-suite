@@ -1,4 +1,4 @@
-"importId";"fiscalPosition.importId";"fromTax.code";"toTax.code";"reverseCharge";"reverseChargeTax.code"
+"importId";"fiscalPosition.importId";"fromTaxSet";"toTaxSet";"reverseCharge";"reverseChargeTaxSet"
 "FRA_PCG1";"FRA_PCG1";"N_C";"UE_X_C";"false";
 "FRA_PCG2";"FRA_PCG1";"R1_C";"UE_X_C";"false";
 "FRA_PCG3";"FRA_PCG1";"R2_C";"UE_X_C";"false";
