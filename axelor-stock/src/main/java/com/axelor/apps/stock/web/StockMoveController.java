@@ -34,7 +34,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveCheckWapService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
@@ -44,7 +43,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
@@ -176,14 +174,19 @@ public class StockMoveController {
     try {
       Context context = request.getContext();
       StockMove stockMove = context.asType(StockMove.class);
-      Optional<Boolean> supplierArrivalCancellationAutomaticMail = Optional.of(context)
+      Optional<Boolean> supplierArrivalCancellationAutomaticMail =
+          Optional.of(context)
               .map(ctx -> ctx.get("_supplierArrivalCancellationAutomaticMail"))
               .map(Boolean.class::cast);
-      Optional<Integer> supplierArrivalCancellationMessageTemplateID = Optional.of(context).map(ctx -> ctx.get("_supplierArrivalCancellationMessageTemplate"))
-              .map(hash -> ((LinkedHashMap)hash).get("id")).map(Integer.class::cast);
+      Optional<Integer> supplierArrivalCancellationMessageTemplateID =
+          Optional.of(context)
+              .map(ctx -> ctx.get("_supplierArrivalCancellationMessageTemplate"))
+              .map(hash -> ((LinkedHashMap) hash).get("id"))
+              .map(Integer.class::cast);
       Beans.get(StockMoveService.class)
-          .cancel(supplierArrivalCancellationAutomaticMail,
-                  supplierArrivalCancellationMessageTemplateID,
+          .cancel(
+              supplierArrivalCancellationAutomaticMail,
+              supplierArrivalCancellationMessageTemplateID,
               Beans.get(StockMoveRepository.class).find(stockMove.getId()),
               stockMove.getCancelReason());
 
@@ -193,25 +196,31 @@ public class StockMoveController {
     }
   }
 
-
-  public void sendSupplierArrivalCancellationMessage(ActionRequest request, ActionResponse response){
+  public void sendSupplierArrivalCancellationMessage(
+      ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      Optional<Integer> stockMoveID = Optional.of(context).map(ctx -> ctx.get("_stockMove")).map(hashMap ->((LinkedHashMap)hashMap).get("id")).map(Integer.class::cast);
-      Optional<Integer> supplierArrivalCancellationMessageTemplateID = Optional.of(context).map(ctx -> ctx.get("supplierArrivalCancellationMessageTemplate"))
-              .map(hash -> ((LinkedHashMap<?, ?>)hash).get("id")).map(Integer.class::cast);
-    if(!supplierArrivalCancellationMessageTemplateID.isPresent() || !stockMoveID.isPresent()){
-      return;
-    }
-      Beans.get(StockMoveService.class).
-          sendSupplierCancellationMail(
-                  Beans.get(StockMoveRepository.class).find(stockMoveID.get().longValue()),
-                  Beans.get(TemplateRepository.class).find(supplierArrivalCancellationMessageTemplateID.get().longValue())
-          );
-    }catch (Exception e){
+      Optional<Integer> stockMoveID =
+          Optional.of(context)
+              .map(ctx -> ctx.get("_stockMove"))
+              .map(hashMap -> ((LinkedHashMap) hashMap).get("id"))
+              .map(Integer.class::cast);
+      Optional<Integer> supplierArrivalCancellationMessageTemplateID =
+          Optional.of(context)
+              .map(ctx -> ctx.get("supplierArrivalCancellationMessageTemplate"))
+              .map(hash -> ((LinkedHashMap<?, ?>) hash).get("id"))
+              .map(Integer.class::cast);
+      if (!supplierArrivalCancellationMessageTemplateID.isPresent() || !stockMoveID.isPresent()) {
+        return;
+      }
+      Beans.get(StockMoveService.class)
+          .sendSupplierCancellationMail(
+              Beans.get(StockMoveRepository.class).find(stockMoveID.get().longValue()),
+              Beans.get(TemplateRepository.class)
+                  .find(supplierArrivalCancellationMessageTemplateID.get().longValue()));
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-
   }
 
   /**

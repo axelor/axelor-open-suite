@@ -30,7 +30,6 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.message.db.Template;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -139,9 +138,15 @@ public interface StockMoveService {
 
   void cancel(StockMove stockMove) throws AxelorException;
 
-  void cancel(Optional<Boolean> supplierCancellationAutomaticMail, Optional<Integer> supplierCancellationMessageTemplateID, StockMove stockMove, CancelReason cancelReason) throws AxelorException;
+  void cancel(
+      Optional<Boolean> supplierCancellationAutomaticMail,
+      Optional<Integer> supplierCancellationMessageTemplateID,
+      StockMove stockMove,
+      CancelReason cancelReason)
+      throws AxelorException;
 
   void sendSupplierCancellationMail(StockMove stockMove, Template template) throws AxelorException;
+
   public boolean splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
       throws AxelorException;
