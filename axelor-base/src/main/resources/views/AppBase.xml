@@ -176,6 +176,10 @@
           widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
           showIf="enablePricingScale"/>
       </panel>
+      <panel name="siteManagementPanel" title="Site management" colSpan="12"
+        if="__config__.app.isApp('stock') || __config__.app.isApp('project')">
+        <!-- This panel will be extended in other modules, add module to if condition -->
+      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
