@@ -957,7 +957,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     applyCancelReason(stockMove, cancelReason);
     cancel(stockMove);
-    if (cancellationAutomaticMail == null || cancellationMessageTemplateID == null) {
+    if (cancellationAutomaticMail .isEmpty()|| cancellationMessageTemplateID.isEmpty()) {
       return;
     }
     if (isSupplierAutomaticCancellationMail(stockMove, cancellationAutomaticMail)) {
