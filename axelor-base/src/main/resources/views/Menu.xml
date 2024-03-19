@@ -301,6 +301,15 @@
       partnerPriceList.isExclusive IS TRUE )</domain>
   </action-view>
 
+  <menuitem title="Sites" name="referential-sites" parent="referential-root"
+    action="referential.sites" order="310"/>
+
+  <action-view name="referential.sites" title="Sites"
+    model="com.axelor.apps.base.db.Site">
+    <view type="grid" name="site-grid"/>
+    <view type="form" name="site-form"/>
+  </action-view>
+
   <menuitem title="Address templates" name="referential-conf-address-template"
     parent="referential-conf" action="referential.conf.address.templates" order="650"/>
 
@@ -927,13 +936,31 @@
   <menuitem name="print-conf" parent="admin-root" if="__config__.app.isApp('base')"
     title="Printing" order="900"/>
 
-  <menuitem name="print-conf-print-templates" parent="print-conf" title="Print templates"
-    action="action.print.template.view.all" order="100"/>
+  <menuitem name="print-conf-advanced-print-templates" parent="print-conf"
+    title="Advanced print templates" action="action.advanced.print.template.view.all" order="100"/>
 
-  <action-view name="action.print.template.view.all" title="Print templates"
-    model="com.axelor.apps.base.db.PrintTemplate">
+  <action-view name="action.advanced.print.template.view.all"
+    title="Advanced print templates" model="com.axelor.apps.base.db.PrintTemplate">
     <view type="grid" name="print-template-grid"/>
     <view type="form" name="print-template-form"/>
+  </action-view>
+
+  <menuitem name="print-conf-printing-templates" parent="print-conf"
+    title="Printing templates" action="print.conf.printing.templates" order="200"/>
+
+  <action-view name="print.conf.printing.templates" title="Printing templates"
+    model="com.axelor.apps.base.db.PrintingTemplate">
+    <view type="grid" name="printing-template-grid"/>
+    <view type="form" name="printing-template-form"/>
+  </action-view>
+
+  <menuitem name="print-conf-printing-template-wizard" parent="print-conf"
+    title="Printing wizard" action="print.conf.printing.template.wizard" order="300"/>
+
+  <action-view name="print.conf.printing.template.wizard" title="Birt printing wizard"
+    model="com.axelor.apps.base.db.PrintingTemplateWizard">
+    <view type="grid" name="printing-template-wizard-grid"/>
+    <view type="form" name="printing-template-wizard-form"/>
   </action-view>
 
   <!-- File source connector -->

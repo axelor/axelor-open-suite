@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticMoveLine">
+  <entity name="AnalyticMoveLine" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-one name="analyticDistributionTemplate"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"
@@ -40,6 +40,13 @@
       selection="account.analytic.move.line.sub.type.select" required="true" default="1"/>
     <many-to-one name="originAnalyticMoveLine"
       ref="com.axelor.apps.account.db.AnalyticMoveLine"/>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return currency;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
 

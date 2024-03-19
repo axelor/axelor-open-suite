@@ -71,7 +71,7 @@ public class ProductController {
 
       Product newProduct = request.getContext().asType(Product.class);
 
-      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed())
+      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed() || !newProduct.getPurchasable())
           && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
         response.setAlert(I18n.get("Warning, this product is present in at least one price list"));
       }
@@ -113,7 +113,7 @@ public class ProductController {
     if (ObjectUtils.isEmpty(productCatalogPGQLBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Product Catalog");

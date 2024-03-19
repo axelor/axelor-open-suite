@@ -38,11 +38,10 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -52,6 +51,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -97,7 +97,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected UserRepository userRepo;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected PfpService pfpService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected DMSFileRepository DMSFileRepo;
 
   @Inject
@@ -113,7 +113,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       UserRepository userRepo,
       PfpService pfpService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       DMSFileRepository DMSFileRepo) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
@@ -126,7 +126,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.journalService = journalService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.pfpService = pfpService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.DMSFileRepo = DMSFileRepo;
   }
 
@@ -163,8 +163,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
 
-    return currencyScaleServiceAccount.getScaledValue(
-        invoice, sum.multiply(BigDecimal.valueOf(100)));
+    return currencyScaleService.getScaledValue(invoice, sum.multiply(BigDecimal.valueOf(100)));
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -251,7 +250,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(paymentConditionLine.getPaymentPercentage())
             .divide(
                 BigDecimal.valueOf(100),
-                currencyScaleServiceAccount.getScale(invoice),
+                currencyScaleService.getScale(invoice),
                 RoundingMode.HALF_UP);
 
     User pfpUser = null;
@@ -319,9 +318,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
 
       companyAmountRemaining =
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoiceTerm, companyAmount.multiply(ratioPaid));
-      companyAmount = currencyScaleServiceAccount.getCompanyScaledValue(invoiceTerm, companyAmount);
+      companyAmount = currencyScaleService.getCompanyScaledValue(invoiceTerm, companyAmount);
     }
 
     invoiceTerm.setCompanyAmount(companyAmount);
@@ -413,7 +412,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTermPercentage)
             .divide(
                 BigDecimal.valueOf(100),
-                currencyScaleServiceAccount.getScale(invoice),
+                currencyScaleService.getScale(invoice),
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
@@ -460,7 +459,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTermPercentage)
             .divide(
                 BigDecimal.valueOf(100),
-                currencyScaleServiceAccount.getScale(moveLine),
+                currencyScaleService.getScale(moveLine),
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
@@ -941,15 +940,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
 
-      return currencyScaleServiceAccount.getScaledValue(
-          invoiceTerm, total.subtract(totalWithoutCurrent));
+      return currencyScaleService.getScaledValue(invoiceTerm, total.subtract(totalWithoutCurrent));
     } else {
       return invoiceTerm
           .getPercentage()
           .multiply(total)
           .divide(
               new BigDecimal(100),
-              currencyScaleServiceAccount.getScale(invoiceTerm),
+              currencyScaleService.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     }
   }
@@ -1706,7 +1704,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountToPay,
       BigDecimal currencyRate,
       Company company) {
-    int companyScale = currencyScaleServiceAccount.getCompanyScale(company);
+    int companyScale = currencyScaleService.getCompanyCurrencyScale(company);
     BigDecimal moveLineAmountRemaining =
         companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
 
