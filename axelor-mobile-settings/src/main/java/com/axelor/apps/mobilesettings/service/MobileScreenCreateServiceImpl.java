@@ -3,6 +3,7 @@ package com.axelor.apps.mobilesettings.service;
 import com.axelor.apps.mobilesettings.db.MobileScreen;
 import com.axelor.apps.mobilesettings.db.repo.MobileScreenRepository;
 import com.axelor.apps.mobilesettings.rest.dto.MobileScreenPostRequest;
+import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -27,13 +28,31 @@ public class MobileScreenCreateServiceImpl implements MobileScreenCreateService 
     }
     List<MobileScreen> mobileScreenList = new ArrayList<>();
     for (MobileScreenPostRequest mobileScreenPostRequest : mobileScreenPostRequestList) {
-      mobileScreenList.add(
-          createMobileScreen(
-              mobileScreenPostRequest.getScreenKey(),
-              mobileScreenPostRequest.getScreenTitle(),
-              mobileScreenPostRequest.getIsUsableOnShortcut()));
+      createOrUpdateScreen(mobileScreenPostRequest, mobileScreenList);
     }
     return mobileScreenList;
+  }
+
+  protected void createOrUpdateScreen(
+      MobileScreenPostRequest mobileScreenPostRequest, List<MobileScreen> mobileScreenList) {
+    String screenKey = mobileScreenPostRequest.getScreenKey();
+    String screenTitle = mobileScreenPostRequest.getScreenTitle();
+    boolean isUsableOnShortcut = mobileScreenPostRequest.getIsUsableOnShortcut();
+    MobileScreen mobileScreen = mobileScreenRepository.findByTechnicalName(screenKey);
+    if (mobileScreen == null) {
+      mobileScreenList.add(createMobileScreen(screenKey, screenTitle, isUsableOnShortcut));
+    } else {
+      updateMobileScreen(screenTitle, mobileScreen, isUsableOnShortcut);
+    }
+  }
+
+  @Transactional
+  protected void updateMobileScreen(
+      String screenTitle, MobileScreen mobileScreen, boolean isUsableOnShortcut) {
+    if (StringUtils.notEmpty(screenTitle)) {
+      mobileScreen.setName(screenTitle);
+    }
+    mobileScreen.setIsUsableOnShortcut(isUsableOnShortcut);
   }
 
   @Transactional

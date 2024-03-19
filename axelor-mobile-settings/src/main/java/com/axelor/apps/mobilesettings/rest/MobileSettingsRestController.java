@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.mobilesettings.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileMenu;
 import com.axelor.apps.mobilesettings.db.MobileScreen;
 import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsCreationPostRequest;
@@ -66,10 +67,11 @@ public class MobileSettingsRestController {
   @Operation(
       summary = "Create mobile menu and screen",
       tags = {"Mobile Settings"})
-  @Path("/menu")
+  @Path("/navigation")
   @POST
   @HttpExceptionHandler
-  public Response createMobileMenuScreen(MobileSettingsCreationPostRequest requestBody) {
+  public Response createMobileMenuScreen(MobileSettingsCreationPostRequest requestBody)
+      throws AxelorException {
     new SecurityCheck().createAccess(MobileMenu.class).createAccess(MobileScreen.class).check();
     RequestValidator.validateBody(requestBody);
 
