@@ -197,15 +197,15 @@ public class StockMoveController {
   public void sendSupplierArrivalCancellationMessage(ActionRequest request, ActionResponse response){
     try {
       Context context = request.getContext();
-      StockMove stockMove = context.asType(StockMove.class);
-      Optional<Integer> supplierArrivalCancellationMessageTemplateID = Optional.of(context).map(ctx -> ctx.get("_supplierArrivalCancellationMessageTemplate"))
+      Optional<Integer> stockMoveID = Optional.of(context).map(ctx -> ctx.get("_stockMove")).map(hashMap ->((LinkedHashMap)hashMap).get("id")).map(Integer.class::cast);
+      Optional<Integer> supplierArrivalCancellationMessageTemplateID = Optional.of(context).map(ctx -> ctx.get("supplierArrivalCancellationMessageTemplate"))
               .map(hash -> ((LinkedHashMap<?, ?>)hash).get("id")).map(Integer.class::cast);
-    if(!supplierArrivalCancellationMessageTemplateID.isPresent()){
+    if(!supplierArrivalCancellationMessageTemplateID.isPresent() || !stockMoveID.isPresent()){
       return;
     }
       Beans.get(StockMoveService.class).
           sendSupplierCancellationMail(
-                  Beans.get(StockMoveRepository.class).find(stockMove.getId()),
+                  Beans.get(StockMoveRepository.class).find(stockMoveID.get().longValue()),
                   Beans.get(TemplateRepository.class).find(supplierArrivalCancellationMessageTemplateID.get().longValue())
           );
     }catch (Exception e){

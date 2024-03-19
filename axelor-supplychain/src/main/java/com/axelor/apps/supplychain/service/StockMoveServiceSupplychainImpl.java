@@ -267,6 +267,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
     super.cancel(stockMove);
+    int k =0;
     if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_CANCELED);
     }
