@@ -25,10 +25,38 @@
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 
+    <decimal name="dimension0" title="Dimension 0" default="0" min="0" precision="20"
+      scale="3"/>
+    <decimal name="dimension1" title="Dimension 1" default="0" min="0" precision="20"
+      scale="3"/>
+    <decimal name="dimension2" title="Dimension 2" default="0" min="0" precision="20"
+      scale="3"/>
+    <decimal name="dimension3" title="Dimension 3" default="0" min="0" precision="20"
+      scale="3"/>
+
+    <decimal name="mass" title="Mass in kg" default="0" min="0" precision="20" scale="10"/>
+    <decimal name="volume" title="Volume in m³" min="0" precision="20" scale="10"
+      nullable="true"/>
+    <decimal name="unitMass" title="Unit weight in kg" default="0" min="0" precision="20"
+      scale="10"/>
+    <decimal name="metricMass" title="Metric weight in kg/m" default="0" min="0"
+      precision="20" scale="10"/>
+
     <unique-constraint columns="product,trackingNumberSeq"/>
 
     <finder-method name="findBySeq" using="trackingNumberSeq"/>
 
+
+    <track on="UPDATE">
+      <field name="dimension0"/>
+      <field name="dimension1"/>
+      <field name="dimension2"/>
+      <field name="dimension3"/>
+    </track>
+
+
   </entity>
+
+
 
 </domain-models>

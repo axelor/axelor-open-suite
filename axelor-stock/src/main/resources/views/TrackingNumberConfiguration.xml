@@ -32,6 +32,7 @@
     width="large">
     <panel name="namePanel">
       <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
+      <field name="trackingNumberConfigurationProfile"/>
     </panel>
     <panel name="warrantyAndPerishabilityPanel" title="Warranty and perishability">
       <field name="hasWarranty"/>
