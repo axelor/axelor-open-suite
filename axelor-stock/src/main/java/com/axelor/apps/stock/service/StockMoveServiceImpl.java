@@ -955,7 +955,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     applyCancelReason(stockMove, cancelReason);
     cancel(stockMove);
-    int j =0;
     if(cancellationAutomaticMail == null || cancellationMessageTemplateID==null) {
       return;
     }
@@ -970,7 +969,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if(cancellationAutomaticMail.isPresent()){
       automaticSending = cancellationAutomaticMail.get();
     }
-    return stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING && stockMove.getIsReversion() && automaticSending;
+    return stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING && !stockMove.getIsReversion() && automaticSending;
   }
 
   @Override
