@@ -279,7 +279,9 @@ public class UserServiceImpl implements UserService {
     if (user != null && !Strings.isNullOrEmpty(user.getLanguage())) {
       return user.getLanguage();
     }
-    return DEFAULT_LOCALE;
+    return Strings.isNullOrEmpty(AppSettings.get().get("application.locale"))
+        ? DEFAULT_LOCALE
+        : AppSettings.get().get("application.locale");
   }
 
   @Override
