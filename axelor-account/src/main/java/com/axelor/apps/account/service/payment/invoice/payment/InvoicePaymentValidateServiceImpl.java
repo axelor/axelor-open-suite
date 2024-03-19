@@ -364,6 +364,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
 
+    companyPaymentAmount =
+        companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
     BigDecimal currencyRate =
         this.computeCurrencyRate(
             companyPaymentAmount,

@@ -466,14 +466,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       }
 
       invoicePayment =
-          invoiceTermPaymentService.initInvoiceTermPayments( // OK invoicePayment NOT NULL
+          invoiceTermPaymentService.initInvoiceTermPayments(
               invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
 
       if (this.isPartialPayment(invoicePayment)) {
         invoicePayment.setApplyFinancialDiscount(false);
 
         invoicePayment.clearInvoiceTermPaymentList();
-        invoiceTermPaymentService.initInvoiceTermPayments( // OK invoicePayment NOT NULL
+        invoiceTermPaymentService.initInvoiceTermPayments(
             invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
       }
 

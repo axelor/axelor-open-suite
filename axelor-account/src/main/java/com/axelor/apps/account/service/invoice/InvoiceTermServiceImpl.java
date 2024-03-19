@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -93,6 +94,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected PfpService pfpService;
   protected CurrencyScaleService currencyScaleService;
+  protected CurrencyService currencyService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -107,7 +109,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       UserRepository userRepo,
       PfpService pfpService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      CurrencyService currencyService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -120,6 +123,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.pfpService = pfpService;
     this.currencyScaleService = currencyScaleService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -679,15 +683,25 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       throws AxelorException {
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
-      BigDecimal paidAmount =
-          (invoiceTermPayment.getInvoicePayment() != null
-                      && invoiceTermPayment
-                          .getInvoicePayment()
-                          .getCurrency()
-                          .equals(invoiceTerm.getCurrency())
-                  ? invoiceTermPayment.getPaidAmount()
-                  : invoiceTermPayment.getCompanyPaidAmount())
-              .add(invoiceTermPayment.getFinancialDiscountAmount());
+      InvoicePayment invoicePayment = invoiceTermPayment.getInvoicePayment();
+
+      BigDecimal paidAmount;
+      if (invoicePayment != null
+          && invoicePayment.getCurrency().equals(invoiceTerm.getCurrency())) {
+        paidAmount = invoiceTermPayment.getPaidAmount();
+      } else {
+        paidAmount = invoiceTermPayment.getCompanyPaidAmount();
+        if (invoicePayment != null
+            && invoicePayment.getCurrency().equals(invoiceTerm.getCompanyCurrency())) {
+          paidAmount =
+              currencyService.getAmountCurrencyConvertedAtDate(
+                  invoicePayment.getCurrency(),
+                  invoiceTerm.getCurrency(),
+                  invoiceTermPayment.getCompanyPaidAmount(),
+                  invoicePayment.getPaymentDate());
+        }
+      }
+      paidAmount = paidAmount.add(invoiceTermPayment.getFinancialDiscountAmount());
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       BigDecimal companyAmountRemaining;
