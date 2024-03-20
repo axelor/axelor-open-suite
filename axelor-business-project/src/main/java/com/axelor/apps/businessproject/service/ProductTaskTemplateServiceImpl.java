@@ -84,7 +84,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
                 I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_TEMPLATE_QUANTITY_ERROR),
                 template.getName()));
       }
-      taskQty = qty.multiply(templateQty).setScale(2, RoundingMode.CEILING);
+      taskQty = qty.multiply(templateQty).setScale(2, RoundingMode.HALF_UP);
 
       BigDecimal numberOfTasks =
           template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : taskQty;
