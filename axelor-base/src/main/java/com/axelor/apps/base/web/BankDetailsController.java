@@ -48,7 +48,8 @@ public class BankDetailsController {
 
     if (bankDetails.getIban() != null
         && bank != null
-        && bank.getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+        && bank.getCountry().getBankDetailsTemplate().getBankDetailsTypeSelect()
+            == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
       try {
         Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
       } catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
