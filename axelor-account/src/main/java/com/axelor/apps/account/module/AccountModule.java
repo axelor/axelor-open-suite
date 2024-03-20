@@ -352,6 +352,10 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueEleme
 import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueElementServiceImpl;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelServiceImpl;
+import com.axelor.apps.account.service.period.PeriodControlService;
+import com.axelor.apps.account.service.period.PeriodControlServiceImpl;
+import com.axelor.apps.account.service.period.PeriodServiceAccount;
+import com.axelor.apps.account.service.period.PeriodServiceAccountImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
