@@ -175,8 +175,9 @@
     <panel-dashlet name="productQtyInOtherStockLocationPanel"
       action="action-stock-location-line-view-product-qty"
       title="Product quantity in other stock locations"/>
-    <panel-dashlet name="wapHistoryPanel"
-      action="action-stock-location-line-view-stock-location-line-history" title="WAP history"/>
+    <panel-dashlet name="stockLocationLineHistoryPanel"
+      action="action-stock-location-line-view-stock-location-line-history"
+      title="Stock location line history"/>
   </form>
 
   <grid name="stock-location-line-product-group-by-variant-grid"
@@ -353,6 +354,6 @@
 
   <action-method name="action-stock-location-line-method-add-wap-history-line">
     <call class="com.axelor.apps.stock.web.StockLocationLineController"
-      method="addWapHistoryLine"/>
+      method="addStockLocationLineHistory"/>
   </action-method>
 </object-views>

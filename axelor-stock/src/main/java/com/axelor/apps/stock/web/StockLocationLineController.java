@@ -35,7 +35,7 @@ import java.util.Optional;
 
 public class StockLocationLineController {
 
-  public void addWapHistoryLine(ActionRequest request, ActionResponse response) {
+  public void addStockLocationLineHistory(ActionRequest request, ActionResponse response) {
     try {
       StockLocationLine stockLocationLine = request.getContext().asType(StockLocationLine.class);
       stockLocationLine =
