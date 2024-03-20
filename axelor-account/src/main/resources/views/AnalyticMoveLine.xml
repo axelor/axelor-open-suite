@@ -80,7 +80,7 @@
       <field name="analyticAccount" onSelect="action-group-domain-onselect-analytic-account"
         readonlyIf="!analyticAxis"/>
       <field name="percentage" min="0" max="100"
-        onChange="action-method-calculate-amount-with-percentage-analytic-move-line"/>
+        onChange="action-analytic-move-line-method-compute-amount"/>
       <field name="typeSelect"/>
     </panel>
   </form>
@@ -143,7 +143,7 @@
         form-view="analytic-account-form" onSelect="action-group-domain-onselect-analytic-account"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
       <field name="percentage" colSpan="4" min="0" max="100"
-        onChange="action-analytic-move-line-method-compute-amount,action-method-calculate-amount-with-percentage-analytic-move-line"/>
+        onChange="action-analytic-move-line-method-compute-amount"/>
       <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
       <field name="amount" colSpan="4" readonly="true" x-scale="currency.numberOfDecimals"/>
       <field name="date" colSpan="4"/>
@@ -303,12 +303,6 @@
   <action-method name="action-method-analytic-move-line-move-line-onnew">
     <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
       method="manageNewAnalyticDistributionLine"/>
-  </action-method>
-
-  <action-method
-    name="action-method-calculate-amount-with-percentage-analytic-move-line">
-    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
-      method="calculateAmountWithPercentage"/>
   </action-method>
 
   <grid model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic Move Lines"

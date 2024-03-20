@@ -43,6 +43,8 @@ public interface AnalyticMoveLineService {
 
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine);
 
+  BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine, BigDecimal analyticLineAmount);
+
   public List<AnalyticMoveLine> generateLines(
       AnalyticDistributionTemplate analyticDistributionTemplate,
       BigDecimal total,

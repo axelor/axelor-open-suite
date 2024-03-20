@@ -39,6 +39,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 
 @Singleton
 public class AnalyticDistributionLineController {
@@ -46,8 +47,16 @@ public class AnalyticDistributionLineController {
   public void computeAmount(ActionRequest request, ActionResponse response) {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      response.setValue(
-          "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class).getParentWithContext(request, analyticMoveLine);
+
+      AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
+
+      BigDecimal amount =
+          parent != null
+              ? analyticMoveLineService.computeAmount(analyticMoveLine, parent.getLineAmount())
+              : analyticMoveLineService.computeAmount(analyticMoveLine);
+      response.setValue("amount", amount);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -74,8 +83,7 @@ public class AnalyticDistributionLineController {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
 
       AnalyticLine parent =
-          Beans.get(AnalyticControllerUtils.class)
-              .getParentWithContext(request, response, analyticMoveLine);
+          Beans.get(AnalyticControllerUtils.class).getParentWithContext(request, analyticMoveLine);
 
       if (parent != null) {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
@@ -84,23 +92,6 @@ public class AnalyticDistributionLineController {
         response.setValue("currency", analyticMoveLineService.getCompanyCurrency(parent));
       }
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-
-      AnalyticLine parent =
-          Beans.get(AnalyticControllerUtils.class)
-              .getParentWithContext(request, response, analyticMoveLine);
-      response.setValue(
-          "amount",
-          Beans.get(AnalyticLineService.class)
-              .getAnalyticAmountFromParent(parent, analyticMoveLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
