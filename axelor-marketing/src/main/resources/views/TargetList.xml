@@ -9,7 +9,8 @@
   </grid>
 
   <form name="target-list-form" title="Target list"
-    model="com.axelor.apps.marketing.db.TargetList" width="large">
+    model="com.axelor.apps.marketing.db.TargetList" width="large"
+    onNew="action-target-list-group-on-new">
     <panel name="mainPanel">
       <field name="name" showTitle="false" colSpan="12">
         <viewer depends="name"><![CDATA[
@@ -158,6 +159,11 @@
     <attribute for="partnerSet" name="domain" expr="eval:null" if="partnerTypeSelect == 2"/>
   </action-attrs>
 
+  <action-attrs name="action-target-list-attrs-default-query-type-select">
+    <attribute for="partnerQueryTypeSelect" name="value" expr="eval: null"/>
+    <attribute for="leadQueryTypeSelect" name="value" expr="eval: null"/>
+  </action-attrs>
+
   <action-method name="action-target-list-method-open-filtered-leads">
     <call class="com.axelor.apps.marketing.web.TargetListController" method="openFilteredLeads"/>
   </action-method>
@@ -166,5 +172,9 @@
     <call class="com.axelor.apps.marketing.web.TargetListController"
       method="openFilteredPartners"/>
   </action-method>
+
+  <action-group name="action-target-list-group-on-new">
+    <action name="action-target-list-attrs-default-query-type-select"/>
+  </action-group>
 
 </object-views>
