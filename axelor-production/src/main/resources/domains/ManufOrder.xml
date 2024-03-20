@@ -117,6 +117,10 @@
     <string name="manualMOSeq" transient="true"/>
     <integer name="operationOrderMaxPriority" title="Operation orders maximum priority"/>
 
+    <one-to-many name="productReservationList"
+      ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservation"
+      mappedBy="originManufOrder"/>
+
     <unique-constraint columns="manufOrderSeq,company"/>
 
     <extra-code><![CDATA[
