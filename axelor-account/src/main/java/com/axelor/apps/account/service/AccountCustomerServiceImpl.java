@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -134,11 +135,13 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "JOIN public.account_move_line AS ml ON term.move_line = ml.id "
                     + "LEFT OUTER JOIN public.account_account AS account ON ml.account = account.id "
                     + "LEFT OUTER JOIN public.account_move AS move ON ml.move = move.id "
+                    + "LEFT OUTER JOIN public.account_invoice AS invoice ON term.invoice = invoice.id "
                     + "WHERE term.due_date IS NOT NULL AND term.due_date <= :todayDate "
                     + "AND ml.partner = :partner AND move.company = :company "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
-                    + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ml.amount_remaining > 0 ")
+                    + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ABS(ml.amount_remaining) > 0 "
+                    + "AND invoice.operation_type_select IN (:statusSupplierPurchase, :statusCustomerSale)")
             .setParameter(
                 "todayDate",
                 Date.from(
@@ -151,7 +154,10 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
             .setParameter("partner", partner)
             .setParameter("company", company)
             .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
-            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK)
+            .setParameter(
+                "statusSupplierPurchase", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+            .setParameter("statusCustomerSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
 
     if (tradingName != null) {
       query = query.setParameter("tradingName", tradingName);
