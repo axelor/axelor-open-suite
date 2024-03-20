@@ -331,6 +331,7 @@
 "Purchase order",,,
 "Purchase order lines",,,
 "Purchase order lines Priority",,,
+"Quantity must be greater than 0 for task template %s.",,,
 "Quotation",,,
 "Real",,,
 "Real Costs Total",,,

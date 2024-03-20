@@ -331,6 +331,7 @@
 "Purchase order","Commande d'Achat",,
 "Purchase order lines","Lignes de commandes d'achat",,
 "Purchase order lines Priority","Lignes de comm. fournisseur : priorité",,
+"Quantity must be greater than 0 for task template %s.","La quantité doit être supérieure à 0 pour le modèle de tâche %s.",,
 "Quotation","Devis",,
 "Real","Réel",,
 "Real Costs Total","Total Coûts réels",,
