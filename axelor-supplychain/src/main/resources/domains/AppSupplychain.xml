@@ -101,6 +101,7 @@
       <field name="validStepForInvOutSM" on="UPDATE"/>
 
       <field name="terminateSaleOrderOnDelivery" on="UPDATE"/>
+      <field name="completeSaleOrderOnInvoicing" on="UPDATE"/>
       <field name="terminatePurchaseOrderOnReceipt" on="UPDATE"/>
 
       <field name="allowCompleteManuallySaleOrder" on="UPDATE"/>
@@ -125,6 +126,8 @@
       <field name="intercoPurchaseOrderCreateRequested" on="UPDATE"/>
       <field name="intercoInvoiceCreateValidated" on="UPDATE"/>
       <field name="blockDeallocationOnAvailabilityRequest" on="UPDATE"/>
+      <field name="sOFilterOnStockDetailStatusSelect" on="UPDATE"/>
+      <field name="pOFilterOnStockDetailStatusSelect" on="UPDATE"/>
       <field name="isVerifyProductStock" on="UPDATE"/>
       <field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
       <field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
