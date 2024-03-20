@@ -285,8 +285,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   /**
    * {@inheritDoc}
    *
+   * @param fixedAsset
+   * @param splitType
+   * @param amount
+   * @param splittingDate
+   * @param comments
    * @return the new fixed asset created when splitting.
-   * @throws NullPointerException if fixedAsset or disposalQty or splittingDate are null
+   * @throws AxelorException
    */
   protected FixedAsset splitFixedAsset(
       FixedAsset fixedAsset,

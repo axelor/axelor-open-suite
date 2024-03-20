@@ -59,7 +59,6 @@ public interface BudgetService {
    * Set from date and to date of selected budget and save it
    *
    * @param budget, fromDate, toDate
-   * @throws AxelorException
    */
   public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate);
 
@@ -241,6 +240,7 @@ public interface BudgetService {
    * receivable, tax, charge or income type.
    *
    * @param companyId
+   * @param budgetType
    * @return String
    * @throws AxelorException
    */
@@ -282,10 +282,13 @@ public interface BudgetService {
   void checkDatesOnBudget(Budget budget) throws AxelorException;
 
   /**
-   * Reset budget amounts and status when the budget is a copy
+   * Reset budget amounts and status when the budget is a copy.
    *
-   * @param entity
+   * @param budget
+   * @param fromDate
+   * @param toDate
    * @return Budget
+   * @throws AxelorException
    */
   void getUpdatedBudgetLineList(Budget budget, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;

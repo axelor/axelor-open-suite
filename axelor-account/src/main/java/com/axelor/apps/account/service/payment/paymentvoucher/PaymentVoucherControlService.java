@@ -62,6 +62,7 @@ public class PaymentVoucherControlService {
    * @param paymentVoucher Une saisie paiement
    * @param company Une société
    * @param paymentModeAccount Le compte de trésoreie du mode de règlement
+   * @param journal
    * @throws AxelorException
    */
   public void checkPaymentVoucherField(
@@ -105,7 +106,8 @@ public class PaymentVoucherControlService {
    *
    * @param payVoucherElementToPayList La liste des lignes à payer
    * @param moveLine Le trop-perçu à utiliser
-   * @return
+   * @return true if all payVoucherElementToPay moveline have same account as of moveline, else
+   *     false
    */
   public boolean checkIfSameAccount(
       List<PayVoucherElementToPay> payVoucherElementToPayList, MoveLine moveLine) {

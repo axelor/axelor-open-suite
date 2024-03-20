@@ -90,6 +90,7 @@ public class PricingComputer extends AbstractObservablePricing {
    *
    * @param pricing : non-null
    * @param model: non-null
+   * @return created pricing computer
    * @throws AxelorException
    */
   public static <T extends Model> PricingComputer of(Pricing pricing, T model)
@@ -285,6 +286,7 @@ public class PricingComputer extends AbstractObservablePricing {
    * This method will return every pricing lines that classify the model in the pricing.
    *
    * @param pricing: non-null
+   * @return matching pricing lines
    */
   protected List<PricingLine> getMatchedPricingLines(Pricing pricing) {
     if (context == null || model == null) {

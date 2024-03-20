@@ -50,7 +50,6 @@ public interface MoveValidateService {
    *
    * @param move
    * @throws AxelorException
-   * @throws NullPointerException if move is null or if a line does not have an account
    */
   void generateFixedAssetMoveLine(Move move) throws AxelorException;
 

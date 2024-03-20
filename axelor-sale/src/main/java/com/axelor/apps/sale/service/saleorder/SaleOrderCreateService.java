@@ -51,6 +51,8 @@ public interface SaleOrderCreateService {
    * @param clientPartner Customer bound to the order, should not be <code>null</code>
    * @param team Team managing the order, if <code>null</code>, will default to salesperson active
    *     team.
+   * @param taxNumber
+   * @param fiscalPosition
    * @return The created order
    * @throws AxelorException
    */
@@ -101,6 +103,8 @@ public interface SaleOrderCreateService {
    * @param clientPartner Customer bound to the order, should not be <code>null</code>
    * @param team Team managing the order, if <code>null</code>, will default to salesperson active
    *     team.
+   * @param taxNumber
+   * @param fiscalPosition
    * @param tradingName
    * @return The created order
    * @throws AxelorException

@@ -33,6 +33,7 @@ public interface BudgetInvoiceLineService {
    * @param invoice
    * @param invoiceLine
    * @return String
+   * @throws AxelorException
    */
   public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException;

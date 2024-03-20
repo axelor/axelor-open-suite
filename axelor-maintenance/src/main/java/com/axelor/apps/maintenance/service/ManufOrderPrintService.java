@@ -29,7 +29,8 @@ public interface ManufOrderPrintService {
   /**
    * Print a list of manuf orders
    *
-   * @return ReportSettings
+   * @param ids
+   * @return a path to printed file
    * @throws IOException
    * @throws AxelorException
    */

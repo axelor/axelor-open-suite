@@ -57,6 +57,8 @@ public interface FixedAssetLineMoveService {
    *
    * @param fixedAsset
    * @param depreciationDate
+   * @param isBatch
+   * @param generateMove
    * @throws AxelorException
    */
   void realizeOthersLines(
@@ -78,7 +80,8 @@ public interface FixedAssetLineMoveService {
   /**
    * Method that only create a move all move lines of fixed asset that matches depreciationDate.
    *
-   * @param fixedAssetLine
+   * @param fixedAsset
+   * @param depreciationDate
    * @throws AxelorException
    */
   void simulateOthersLine(FixedAsset fixedAsset, LocalDate depreciationDate) throws AxelorException;

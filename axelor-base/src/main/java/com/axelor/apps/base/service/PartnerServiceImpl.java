@@ -240,6 +240,7 @@ public class PartnerServiceImpl implements PartnerService {
    * delivery address. If the partner address list is valid, returns the default invoicing address.
    *
    * @param partner
+   * @return default invoicing address
    * @throws AxelorException
    */
   protected Address checkDefaultAddress(Partner partner) throws AxelorException {
@@ -600,7 +601,7 @@ public class PartnerServiceImpl implements PartnerService {
    * Get the partner Localization.code. If null, return the default partner locale.
    *
    * @param partner
-   * @return
+   * @return partner locale
    */
   @Override
   public String getPartnerLocale(Partner partner) {
@@ -621,7 +622,7 @@ public class PartnerServiceImpl implements PartnerService {
    * Normalize phone number.
    *
    * @param phoneNumber
-   * @return
+   * @return normalized phone number
    */
   @Override
   public String normalizePhoneNumber(String phoneNumber) {
@@ -632,7 +633,7 @@ public class PartnerServiceImpl implements PartnerService {
    * Check phone number.
    *
    * @param phoneNumber
-   * @return
+   * @return true if phone number is valid, else false
    */
   @Override
   public boolean checkPhoneNumber(String phoneNumber) {
@@ -645,7 +646,7 @@ public class PartnerServiceImpl implements PartnerService {
    * Get phone number field name.
    *
    * @param actionName
-   * @return
+   * @return phone number field name
    */
   @Override
   public String getPhoneNumberFieldName(String actionName) {

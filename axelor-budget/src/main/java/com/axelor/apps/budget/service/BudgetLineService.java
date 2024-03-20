@@ -29,7 +29,7 @@ public interface BudgetLineService {
    * Filter budget line list with date to find the budget line associed to this date and return it
    *
    * @param budgetLineList, date
-   * @return BudgetLine
+   * @return optional BudgetLine
    */
   Optional<BudgetLine> findBudgetLineAtDate(List<BudgetLine> budgetLineList, LocalDate date);
 }

@@ -118,7 +118,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
    *
    * @param accountingBatch
    * @param reimbursementList
-   * @return
+   * @return created bank order
    * @throws AxelorException
    * @throws DatatypeConfigurationException
    * @throws IOException

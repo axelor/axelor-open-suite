@@ -33,7 +33,6 @@ public interface FixedAssetLineComputationService {
    * Compute the first fixed asset line from an empty fixed asset.
    *
    * @param fixedAsset a fixed asset with no lines
-   * @param typeSelect typeSelect of the fixedAssetLine
    * @return the created fixed asset line
    * @throws AxelorException
    */
@@ -45,7 +44,6 @@ public interface FixedAssetLineComputationService {
    *
    * @param fixedAsset a fixed asset with existing lines
    * @param previousFixedAssetLine the previous line
-   * @param typeSelect typeSelect of the fixedAssetLine
    * @return the created fixed asset line
    * @throws AxelorException
    */
@@ -57,14 +55,16 @@ public interface FixedAssetLineComputationService {
    *
    * @param line
    * @param prorata
+   * @throws AxelorException
    */
   void multiplyLineBy(FixedAssetLine line, BigDecimal prorata) throws AxelorException;
 
   /**
    * Multiply economic and fiscal lines by prorata
    *
-   * @param line
+   * @param fixedAssetLineList
    * @param prorata
+   * @throws AxelorException
    */
   void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata)
       throws AxelorException;

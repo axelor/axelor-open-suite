@@ -33,7 +33,6 @@ public class MrpTool {
    *
    * @param mrp a MRP
    * @return the computed full name
-   * @throws NullPointerException if the given MRP is null
    */
   public static String computeFullName(Mrp mrp) {
     if (mrp.getMrpSeq() == null || "".equals(mrp.getMrpSeq())) {

@@ -34,7 +34,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * Compute undelivered quantity.
    *
    * @param saleOrderLine
-   * @return
+   * @return undelivered quantity
    */
   BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine);
 
@@ -42,7 +42,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * Get a list of supplier partner ids available for the product in the sale order line.
    *
    * @param saleOrderLine
-   * @return the list of ids
+   * @return List of supplier partner ids
    */
   List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine);
 
@@ -67,7 +67,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param productId
    * @param companyId
    * @param stockLocationId
-   * @return the query.
+   * @return sale order line query
    */
   String getSaleOrderLineListForAProduct(Long productId, Long companyId, Long stockLocationId);
 
@@ -75,6 +75,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * check qty when modifying saleOrderLine which is invoiced or delivered
    *
    * @param saleOrderLine
+   * @return invoiced or delivered qty
    */
   BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine);
 
@@ -84,6 +85,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * date.
    *
    * @param saleOrderLine a sale order line managed by hibernate
+   * @throws AxelorException
    */
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 }

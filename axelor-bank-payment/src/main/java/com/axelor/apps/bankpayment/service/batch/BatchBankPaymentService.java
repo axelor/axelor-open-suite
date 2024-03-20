@@ -31,7 +31,7 @@ public interface BatchBankPaymentService {
    * Check whether successfully processed payment schedule lines exists in batch.
    *
    * @param batch
-   * @return
+   * @return true if successfully processed payment schedule lines exists, else false
    */
   boolean paymentScheduleLineDoneListExists(Batch batch);
 
@@ -39,7 +39,7 @@ public interface BatchBankPaymentService {
    * Create bank order.
    *
    * @param batch
-   * @return
+   * @return created bank order
    * @throws AxelorException
    * @throws JAXBException
    * @throws IOException
@@ -52,7 +52,7 @@ public interface BatchBankPaymentService {
    * Create bank order from processed payment schedule lines.
    *
    * @param batch
-   * @return
+   * @return created bank order
    * @throws AxelorException
    * @throws JAXBException
    * @throws IOException
@@ -65,7 +65,7 @@ public interface BatchBankPaymentService {
    * Create bank order from processed monthly payment schedule lines.
    *
    * @param batch
-   * @return
+   * @return created bank order
    * @throws AxelorException
    * @throws JAXBException
    * @throws IOException

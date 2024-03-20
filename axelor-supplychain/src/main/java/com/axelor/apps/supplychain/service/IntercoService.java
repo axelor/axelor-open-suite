@@ -32,6 +32,7 @@ public interface IntercoService {
    *
    * @param purchaseOrder
    * @return the generated sale order
+   * @throws AxelorException
    */
   SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder) throws AxelorException;
 
@@ -40,6 +41,7 @@ public interface IntercoService {
    *
    * @param saleOrder
    * @return the generated purchase order
+   * @throws AxelorException
    */
   PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder) throws AxelorException;
 
@@ -56,6 +58,7 @@ public interface IntercoService {
    * Find the interco company from the partner
    *
    * @param partner
+   * @return Company
    */
   Company findIntercoCompany(Partner partner);
 }

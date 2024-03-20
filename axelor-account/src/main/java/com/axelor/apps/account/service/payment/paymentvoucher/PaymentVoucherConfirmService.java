@@ -151,6 +151,7 @@ public class PaymentVoucherConfirmService {
    * -> 1- switch money to the good account 2- reconcile then
    *
    * @param paymentVoucher
+   * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
   public void confirmPaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException {
@@ -394,6 +395,9 @@ public class PaymentVoucherConfirmService {
    * Confirm payment voucher and create move.
    *
    * @param paymentVoucher
+   * @param journal
+   * @param paymentModeAccount
+   * @param valueForCollection
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
@@ -751,6 +755,7 @@ public class PaymentVoucherConfirmService {
   /**
    * Récupérer les éléments à payer dans le bon ordre
    *
+   * @param paymentVoucher
    * @return
    */
   public List<? extends PayVoucherElementToPay> getPayVoucherElementToPayList(
@@ -770,6 +775,7 @@ public class PaymentVoucherConfirmService {
    * @param payVoucherElementToPayList Liste des paiement a réaliser
    * @param creditMoveLine Le trop-perçu
    * @param scheduleToBePaid
+   * @param paymentDate
    * @return Une échéance doit-elle être payée?
    * @throws AxelorException
    */
@@ -799,7 +805,9 @@ public class PaymentVoucherConfirmService {
    * @param moveLineToPay
    * @param amountToPay
    * @param payVoucherElementToPay
-   * @return
+   * @param isDebitToPay
+   * @param paymentDate
+   * @return MoveLine
    * @throws AxelorException
    */
   public MoveLine payMoveLine(

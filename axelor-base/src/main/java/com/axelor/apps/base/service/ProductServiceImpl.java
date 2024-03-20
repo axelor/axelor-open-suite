@@ -307,7 +307,7 @@ public class ProductServiceImpl implements ProductService {
   /**
    * @param productVariant
    * @param applicationPriceSelect - 1 : Sale price - 2 : Cost price - 3 : Purchase price
-   * @return
+   * @return extra price
    */
   @Override
   public BigDecimal getProductExtraPrice(

@@ -239,7 +239,7 @@ public class KilometricService {
    *
    * @param fromCity
    * @param toCity
-   * @return
+   * @return distance between two cities
    * @throws AxelorException
    */
   public BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
@@ -316,7 +316,7 @@ public class KilometricService {
    * @param origins
    * @param destinations
    * @param language
-   * @return
+   * @return JSONObject
    * @throws URISyntaxException
    * @throws IOException
    * @throws JSONException
@@ -341,7 +341,7 @@ public class KilometricService {
    *
    * @param origins
    * @param destinations
-   * @return
+   * @return JSONObject
    * @throws AxelorException
    * @throws JSONException
    * @throws URISyntaxException

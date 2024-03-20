@@ -161,7 +161,6 @@ public class HumanResourceMobileController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    *     <p>POST
    *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
    *     Content-Type: application/json
@@ -473,6 +472,7 @@ public class HumanResourceMobileController {
    * It was in LeaveServiceImpl
    * @param request
    * @param response
+   * @throws AxelorException
    *
    * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
    * Content-Type: application/json

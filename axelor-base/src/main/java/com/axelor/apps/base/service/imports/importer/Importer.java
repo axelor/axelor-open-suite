@@ -210,7 +210,7 @@ public abstract class Importer {
    * Adds a new log in the history table for data configuration.
    *
    * @param listener
-   * @return
+   * @return generated ImportHistory
    * @throws IOException
    */
   protected ImportHistory addHistory(ImporterListener listener) throws IOException {

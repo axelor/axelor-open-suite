@@ -121,7 +121,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
    *
    * @param partner
    * @param company
-   * @return
+   * @return genarated reimbursement
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})

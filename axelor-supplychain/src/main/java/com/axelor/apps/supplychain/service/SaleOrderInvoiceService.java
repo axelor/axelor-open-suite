@@ -90,6 +90,7 @@ public interface SaleOrderInvoiceService {
    * @param amount
    * @param isPercent
    * @param qtyToInvoiceMap
+   * @param timetableIdList
    * @return the generated invoice
    * @throws AxelorException
    */
@@ -117,6 +118,7 @@ public interface SaleOrderInvoiceService {
    * Create invoice from a sale order.
    *
    * @param saleOrder
+   * @param saleOrderLineList
    * @return the generated invoice
    * @throws AxelorException
    */
@@ -159,7 +161,8 @@ public interface SaleOrderInvoiceService {
    * @param taxLineList
    * @param invoicingProduct
    * @param percentToInvoice
-   * @return
+   * @return List of invoice lines
+   * @throws AxelorException
    */
   List<InvoiceLine> createInvoiceLinesFromTax(
       Invoice invoice,

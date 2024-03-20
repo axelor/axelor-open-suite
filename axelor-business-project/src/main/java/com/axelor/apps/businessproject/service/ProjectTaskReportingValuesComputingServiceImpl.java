@@ -139,7 +139,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * get specific task timeSpent (without children)
    *
    * @param projectTask
-   * @return
+   * @return task time spent
    */
   protected BigDecimal getTaskSpentTime(ProjectTask projectTask) {
     List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
@@ -362,8 +362,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * compute unit cost depending on Project spentTimeCostComputationMethod
    *
    * @param projectTask
-   * @return
-   * @throws AxelorException
+   * @param project
+   * @return unit cost
    */
   protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project) {
     BigDecimal unitCost = BigDecimal.ZERO;
@@ -409,8 +409,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    *
    * @param timesheetLine
    * @param timeUnit
-   * @return
-   * @throws AxelorException
+   * @return converted duration
    */
   protected BigDecimal convertTimesheetLineDurationToTimeUnit(
       TimesheetLine timesheetLine, Unit timeUnit) {
@@ -453,8 +452,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * get hour cost average of task timesheetLine
    *
    * @param projectTask
-   * @return
-   * @throws AxelorException
+   * @return hour cost average
    */
   protected BigDecimal getAverageHourCostFromTimesheetLines(ProjectTask projectTask) {
     BigDecimal totalCost = BigDecimal.ZERO;
@@ -485,7 +483,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    *
    * @param product
    * @param projectTaskUnit
-   * @return
+   * @return converted product price
    */
   protected BigDecimal getProductConvertedPrice(Product product, Unit projectTaskUnit) {
     BigDecimal convertedProductPrice = product.getCostPrice();

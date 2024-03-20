@@ -64,8 +64,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    *     product family
    *     <li>1 : product
    *     <li>2 : product family
-   * @return
-   * @throws AxelorException
+   * @return AccountManagement
    */
   protected AccountManagement getAccountManagement(
       Product product, Company company, int configObject) {
@@ -89,10 +88,9 @@ public class AccountManagementServiceImpl implements AccountManagementService {
   /**
    * Get the right Account management line according to the product and company
    *
-   * @param productFamily
+   * @param product
    * @param company
-   * @return
-   * @throws AxelorException
+   * @return AccountManagement
    */
   protected AccountManagement getAccountManagement(Product product, Company company) {
 
@@ -208,8 +206,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @param configObject Specify if we want get the tax from the product or its product family
    *     <li>1 : product
    *     <li>2 : product family
-   * @return
-   * @throws AxelorException
+   * @return product tax
    */
   protected Tax getProductTax(
       Product product, Company company, boolean isPurchase, int configObject) {
@@ -236,9 +233,12 @@ public class AccountManagementServiceImpl implements AccountManagementService {
   /**
    * Obtenir la version de taxe d'un produit.
    *
+   * @param date
    * @param product
-   * @param amendment
-   * @return
+   * @param company
+   * @param fiscalPosition
+   * @param isPurchase
+   * @return tax line
    * @throws AxelorException
    */
   @Override

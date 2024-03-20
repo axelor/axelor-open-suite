@@ -31,7 +31,7 @@ public interface AnonymizeService {
    *
    * @param object
    * @param property
-   * @return
+   * @return Object
    * @throws AxelorException if an error occurs when generating a fake value.
    */
   Object anonymizeValue(Object object, Property property) throws AxelorException;
@@ -42,7 +42,8 @@ public interface AnonymizeService {
    *
    * @param object
    * @param property
-   * @return
+   * @param fakerApiField
+   * @return Object
    * @throws AxelorException if an error occurs when generating a fake value.
    */
   Object anonymizeValue(Object object, Property property, FakerApiField fakerApiField)
@@ -53,7 +54,7 @@ public interface AnonymizeService {
    *
    * @param object
    * @param fakerMap
-   * @return
+   * @return JSONObject
    * @throws AxelorException
    */
   JSONObject createAnonymizedJson(Object object, HashMap<MetaJsonField, FakerApiField> fakerMap)
@@ -63,7 +64,7 @@ public interface AnonymizeService {
    * Return a hash of the value given.
    *
    * @param data
-   * @return
+   * @return hash value
    */
   String hashValue(String data);
 
@@ -72,14 +73,10 @@ public interface AnonymizeService {
    *
    * @param data
    * @param salt
-   * @return
+   * @return hash value
    */
   String hashValue(String data, byte[] salt);
 
-  /**
-   * Generate a random salt.
-   *
-   * @return
-   */
+  /** Generate a random salt. */
   byte[] getSalt();
 }

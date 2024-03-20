@@ -36,6 +36,8 @@ public interface MoveLineTaxService {
    * Same as method 'autoTaxLineGenerate' but this method will not save the move.
    *
    * @param move
+   * @param account
+   * @param percentMoveTemplate
    * @throws AxelorException
    */
   void autoTaxLineGenerateNoSave(Move move, Account account, boolean percentMoveTemplate)

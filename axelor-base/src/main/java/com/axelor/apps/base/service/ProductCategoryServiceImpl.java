@@ -162,6 +162,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
    *
    * @param productCategory a product category
    * @return filtered parents of the category
+   * @throws AxelorException
    */
   protected List<ProductCategory> fetchParentCategoryListWithMaxDiscount(
       ProductCategory productCategory) throws AxelorException {
@@ -176,6 +177,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
    *
    * @param productCategory a product category
    * @return filtered children of the category
+   * @throws AxelorException
    */
   protected List<ProductCategory> fetchChildrenCategoryListWithMaxDiscount(
       ProductCategory productCategory) throws AxelorException {

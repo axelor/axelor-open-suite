@@ -40,6 +40,7 @@ public interface ContractLineService {
    * @param contractLine to fill.
    * @param product to get information.
    * @return ContractLine filled with Product information.
+   * @throws AxelorException
    */
   ContractLine fill(ContractLine contractLine, Product product) throws AxelorException;
 
@@ -75,7 +76,9 @@ public interface ContractLineService {
    * Compute ex and in tax total for ContractLine.
    *
    * @param contractLine to compute ex/in tax total.
+   * @param contract
    * @return ContractLine with ex/in tax total computed.
+   * @throws AxelorException
    */
   ContractLine computeTotal(ContractLine contractLine, Contract contract) throws AxelorException;
 

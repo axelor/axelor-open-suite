@@ -53,8 +53,12 @@ public class TraceBackService {
    * Créer un log des exceptions en tant qu'anomalie.
    *
    * @param e L'exception générée.
+   * @param origin
+   * @param typeSelect
    * @param categorySelect <code>0 = Champ manquant</code> <code>1 = Clef non unique</code> <code>
    *     2 = Aucune valeur retournée</code> <code>3 = Problème de configuration</code>
+   * @param batchId
+   * @return created TraceBack
    */
   private static TraceBack _create(
       Throwable e, String origin, int typeSelect, int categorySelect, long batchId) {
@@ -111,6 +115,7 @@ public class TraceBackService {
    *
    * @param response
    * @param e L'exception cible.
+   * @param responseMessageType
    */
   protected static void _response(
       ActionResponse response, Throwable e, ResponseMessageType responseMessageType) {
@@ -146,6 +151,7 @@ public class TraceBackService {
    * Tracer une exception dans Traceback correspondant à un bug.
    *
    * @param e L'exception cible.
+   * @param origin
    */
   public static void trace(final Throwable e, final String origin) {
 
@@ -166,6 +172,8 @@ public class TraceBackService {
    * Tracer une exception dans Traceback correspondant à un bug.
    *
    * @param e L'exception cible.
+   * @param origin
+   * @param batchId
    */
   public static void trace(final AxelorException e, final String origin, final long batchId) {
 
@@ -176,6 +184,8 @@ public class TraceBackService {
    * Tracer une exception dans Traceback correspondant à un bug.
    *
    * @param e L'exception cible.
+   * @param origin
+   * @param batchId
    */
   public static void trace(final Throwable e, final String origin, final long batchId) {
 
@@ -196,8 +206,6 @@ public class TraceBackService {
    * Tracer une exception dans Traceback correspondant à une anomalie.
    *
    * @param e L'exception cible.
-   * @param categorySelect <code>0 = Champ manquant</code> <code>1 = Clef non unique</code> <code>
-   *     2 = Aucune valeur retournée</code> <code>3 = Problème de configuration</code>
    */
   public static void trace(AxelorException e) {
 
@@ -210,6 +218,7 @@ public class TraceBackService {
    *
    * @param response
    * @param e L'exception cible.
+   * @param origin
    */
   public static void trace(ActionResponse response, Throwable e, String origin) {
 

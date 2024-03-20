@@ -72,6 +72,8 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
    *
    * @param move
    * @param invoiceMoveLineList
+   * @param invoice
+   * @param partnerAccount
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})

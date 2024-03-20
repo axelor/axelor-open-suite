@@ -26,7 +26,7 @@ public interface FakerService {
    * Generate fake values depending on the class and method name given with the Faker API .
    *
    * @param fakerApiField
-   * @return
+   * @return fake data
    * @throws AxelorException if the class or method given doesn't exist.
    */
   Object generateFakeData(FakerApiField fakerApiField) throws AxelorException;

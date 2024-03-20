@@ -38,7 +38,9 @@ public interface ProductTaskTemplateService {
    * @param parent Parent task
    * @param startDate The start date for tasks.
    * @param qty The number copy of the task.
+   * @param saleOrderLine
    * @return List of project task convert.
+   * @throws AxelorException
    */
   List<ProjectTask> convert(
       List<? extends TaskTemplate> templates,

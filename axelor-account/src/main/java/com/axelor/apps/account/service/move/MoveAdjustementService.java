@@ -75,7 +75,9 @@ public class MoveAdjustementService {
   /**
    * Creating move of passage in gap regulation
    *
-   * @param moveLine, isDebit
+   * @param moveLine
+   * @param cashPositionVariationAccount
+   * @param isDebit
    * @return moveLine
    * @throws AxelorException
    */

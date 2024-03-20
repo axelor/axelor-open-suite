@@ -43,7 +43,8 @@ public interface MoveToolService {
    * @param invoice
    *     <p>OperationTypeSelect 1 : Supplier invoice 2 : Supplier refund 3 : Customer invoice 4 :
    *     Customer refund
-   * @return
+   * @param reverseDirectionForNegativeAmount
+   * @return true if customer is debit customer, else false
    * @throws AxelorException
    */
   boolean isDebitCustomer(Invoice invoice, boolean reverseDirectionForNegativeAmount)
@@ -55,7 +56,7 @@ public interface MoveToolService {
    * managées par JPA ou si le nombre de lignes d'écriture n'est pas important (< 100).
    *
    * @param invoice Une facture
-   * @return
+   * @return moveline
    * @throws AxelorException
    */
   MoveLine getInvoiceCustomerMoveLineByLoop(Invoice invoice) throws AxelorException;
@@ -64,7 +65,7 @@ public interface MoveToolService {
    * Method that returns all move lines of an invoice payment that are not completely lettered
    *
    * @param invoicePayment Invoice payment
-   * @return
+   * @return list of movelines
    */
   List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment);
 
@@ -72,7 +73,7 @@ public interface MoveToolService {
    * Method that returns all the move lines of an invoice that are not completely lettered
    *
    * @param invoice Invoice
-   * @return
+   * @return list of movelines
    * @throws AxelorException
    */
   List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException;
@@ -83,7 +84,7 @@ public interface MoveToolService {
    * pas managées par JPA ou si le nombre d'écriture est très important (> 100)
    *
    * @param invoice Une facture
-   * @return
+   * @return list of movelines
    * @throws AxelorException
    */
   MoveLine getInvoiceCustomerMoveLineByQuery(Invoice invoice) throws AxelorException;
@@ -95,8 +96,7 @@ public interface MoveToolService {
    * important (< 100).
    *
    * @param invoice Une facture
-   * @param isInvoiceReject La facture est-elle rejetée?
-   * @return
+   * @return moveline
    * @throws AxelorException
    */
   MoveLine getCustomerMoveLineByLoop(Invoice invoice) throws AxelorException;
@@ -108,8 +108,7 @@ public interface MoveToolService {
    * important (> 100)
    *
    * @param invoice Une facture
-   * @param isInvoiceReject La facture est-elle rejetée?
-   * @return
+   * @return moveline
    * @throws AxelorException
    */
   MoveLine getCustomerMoveLineByQuery(Invoice invoice) throws AxelorException;
@@ -123,7 +122,7 @@ public interface MoveToolService {
    *
    * @param moveLineList Une liste de lignes d'écritures
    * @param account Le compte que l'on souhaite tester
-   * @return
+   * @return true if movelines have same account,false otherwise
    */
   boolean isSameAccount(List<MoveLine> moveLineList, Account account);
 
@@ -131,7 +130,7 @@ public interface MoveToolService {
    * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
    *
    * @param creditMoveLineList Une liste de ligne d'écriture au credit
-   * @return
+   * @return total credit amount
    */
   BigDecimal getTotalCreditAmount(List<MoveLine> creditMoveLineList);
 
@@ -139,7 +138,7 @@ public interface MoveToolService {
    * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
    *
    * @param creditMoveLineList Une liste de ligne d'écriture au credit
-   * @return
+   * @return total debit amount
    */
   BigDecimal getTotalDebitAmount(List<MoveLine> debitMoveLineList);
 
@@ -149,7 +148,7 @@ public interface MoveToolService {
    * Compute the balance amount : total debit - total credit
    *
    * @param moveLineList
-   * @return
+   * @return total balance
    */
   BigDecimal getBalanceAmount(List<MoveLine> moveLineList);
 
@@ -157,7 +156,7 @@ public interface MoveToolService {
    * Compute the balance amount in currency origin : total debit - total credit
    *
    * @param moveLineList
-   * @return
+   * @return balance in currency
    */
   BigDecimal getBalanceCurrencyAmount(List<MoveLine> moveLineList);
 
@@ -169,7 +168,7 @@ public interface MoveToolService {
    * Methode permettant de récupérer la contrepartie d'une ligne d'écriture
    *
    * @param moveLine Une ligne d'écriture
-   * @return
+   * @return moveline
    */
   MoveLine getOppositeMoveLine(MoveLine moveLine);
 

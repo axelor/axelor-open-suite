@@ -44,7 +44,6 @@ public interface MoveRecordSetService {
    * Set the journal of the move by using the move company
    *
    * @param move
-   * @return a map of modified fields
    */
   void setJournal(Move move);
 

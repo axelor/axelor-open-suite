@@ -44,7 +44,6 @@ public interface PurchaseOrderService {
    * passées en paramètres.
    *
    * @param purchaseOrder
-   * @throws AxelorException
    */
   void _populatePurchaseOrder(PurchaseOrder purchaseOrder);
 

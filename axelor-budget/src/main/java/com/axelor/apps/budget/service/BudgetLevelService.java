@@ -39,7 +39,6 @@ public interface BudgetLevelService {
    * Archive the global budget and archive all related budget levels and budgets
    *
    * @param budgetLevel
-   * @return BudgetLevel
    */
   public void archiveChildren(BudgetLevel budgetLevel);
 
@@ -62,7 +61,6 @@ public interface BudgetLevelService {
    * Set the status to draft for the budget level and his children, then related budgets
    *
    * @param budgetLevel
-   * @throws AxelorException
    */
   public void draftChildren(BudgetLevel budgetLevel);
 

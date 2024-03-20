@@ -141,7 +141,7 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
    * generate csv file for related objects
    *
    * @param gdprRequest
-   * @return
+   * @return generated files list
    * @throws ClassNotFoundException
    * @throws AxelorException
    */
@@ -181,7 +181,10 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
    * generate csv file for chosen model (lead/partner)
    *
    * @param gdprRequest
-   * @return
+   * @param modelSelectKlass
+   * @param metaModel
+   * @param selectedModel
+   * @return generated files list
    * @throws AxelorException
    * @throws ClassNotFoundException
    * @throws IOException
@@ -219,7 +222,7 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
    * add linked dmsFiles
    *
    * @param gdprRequest
-   * @return
+   * @return list of files
    */
   protected List<File> searchDMSFile(GDPRRequest gdprRequest) {
 
@@ -383,7 +386,7 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
    * @param advancedExport
    * @param inflector
    * @param field
-   * @return
+   * @return advanced export line
    * @throws ClassNotFoundException
    */
   protected AdvancedExportLine getAdvancedExportLineFromField(

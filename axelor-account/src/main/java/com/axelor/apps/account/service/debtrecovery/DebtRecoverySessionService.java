@@ -63,7 +63,8 @@ public class DebtRecoverySessionService {
    * d'une société
    *
    * @param debtRecovery Une relance
-   * @return
+   * @return debtRecoveryMethod
+   * @throws AxelorException
    */
   public DebtRecoveryMethod getDebtRecoveryMethod(DebtRecovery debtRecovery)
       throws AxelorException {
@@ -103,6 +104,7 @@ public class DebtRecoverySessionService {
    * Session de relance
    *
    * @param debtRecovery Une relance
+   * @return Updated debtRecovery
    * @throws AxelorException
    */
   public DebtRecovery debtRecoverySession(DebtRecovery debtRecovery) throws AxelorException {
@@ -202,7 +204,6 @@ public class DebtRecoverySessionService {
   /**
    * Fonction réinitialisant la relance
    *
-   * @throws AxelorException
    * @param debtRecovery
    */
   @Transactional
@@ -267,6 +268,7 @@ public class DebtRecoverySessionService {
   /**
    * Reset to the min level the debtRecovery.
    *
+   * @param debtRecovery
    * @throws AxelorException
    */
   public void reset(DebtRecovery debtRecovery) throws AxelorException {

@@ -100,7 +100,7 @@ public class InvoiceToolService {
    *
    * @param paymentConditionLine
    * @param invoiceDate
-   * @return
+   * @return due date
    */
   public static LocalDate getDueDate(
       PaymentConditionLine paymentConditionLine, LocalDate invoiceDate) {
@@ -121,7 +121,7 @@ public class InvoiceToolService {
    * @param periodTypeSelect
    * @param daySelect
    * @param invoiceDate
-   * @return
+   * @return due date
    */
   public static LocalDate getDueDate(
       Integer typeSelect,
@@ -164,7 +164,7 @@ public class InvoiceToolService {
    * @param invoice
    *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
    *     Avoir client
-   * @return
+   * @return true if purchase invoice, else false
    * @throws AxelorException
    */
   public static boolean isPurchase(Invoice invoice) throws AxelorException {
@@ -190,7 +190,7 @@ public class InvoiceToolService {
    * @param invoice
    *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
    *     Avoir client
-   * @return
+   * @return true if refund invoice, else false
    * @throws AxelorException
    */
   public static boolean isRefund(Invoice invoice) throws AxelorException {
@@ -224,7 +224,7 @@ public class InvoiceToolService {
 
   /**
    * @param invoice
-   * @return
+   * @return true if out payment invoice, else false
    * @throws AxelorException
    */
   public static boolean isOutPayment(Invoice invoice) throws AxelorException {
@@ -289,6 +289,7 @@ public class InvoiceToolService {
    * InvoiceRepository#save(Invoice)} instead.</b>
    *
    * @param copy a copy of an invoice
+   * @throws AxelorException
    */
   public static void resetInvoiceStatusOnCopy(Invoice copy) throws AxelorException {
     copy.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
@@ -355,7 +356,7 @@ public class InvoiceToolService {
    * Returns the functional origin of the invoice
    *
    * @param invoice
-   * @return
+   * @return functional origin
    * @throws AxelorException
    */
   public static int getFunctionalOrigin(Invoice invoice) throws AxelorException {

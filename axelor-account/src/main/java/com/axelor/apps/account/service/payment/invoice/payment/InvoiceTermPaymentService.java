@@ -32,7 +32,7 @@ public interface InvoiceTermPaymentService {
    *
    * @param invoicePayment
    * @param invoiceTermsToPay
-   * @return
+   * @return InvoicePayment
    */
   public InvoicePayment initInvoiceTermPayments(
       InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay);
@@ -43,7 +43,8 @@ public interface InvoiceTermPaymentService {
    * @param invoicePayment
    * @param invoiceTermsToPay
    * @param availableAmount
-   * @return
+   * @param reconcileAmount
+   * @return list of InvoiceTermPayment
    */
   public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
@@ -55,7 +56,8 @@ public interface InvoiceTermPaymentService {
    * Method to create invoiceTermPayments for an invoicePayment
    *
    * @param invoicePayment
-   * @return
+   * @param invoiceTermToPayList
+   * @throws AxelorException
    */
   public void createInvoicePaymentTerms(
       InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermToPayList) throws AxelorException;
@@ -66,7 +68,7 @@ public interface InvoiceTermPaymentService {
    * @param invoicePayment
    * @param invoiceTermToPay
    * @param paidAmount
-   * @return
+   * @return InvoiceTermPayment
    */
   public InvoiceTermPayment createInvoiceTermPayment(
       InvoicePayment invoicePayment, InvoiceTerm invoiceTermToPay, BigDecimal paidAmount);
@@ -76,7 +78,8 @@ public interface InvoiceTermPaymentService {
    *
    * @param invoicePayment
    * @param invoiceTermPayments
-   * @return
+   * @return total paid amount of invoiceTermPayments
+   * @throws AxelorException
    */
   public BigDecimal computeInvoicePaymentAmount(
       InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments)
@@ -86,7 +89,8 @@ public interface InvoiceTermPaymentService {
    * Method to update invoice Payment Amount based on its invoiceTermPayments
    *
    * @param invoicePayment
-   * @return
+   * @return InvoicePayment
+   * @throws AxelorException
    */
   public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment)
       throws AxelorException;

@@ -27,6 +27,7 @@ public interface FrequencyService {
   /**
    * Computes summary of given {@link Frequency}.
    *
+   * @param frequency
    * @return Summary of given {@link Frequency}
    */
   String computeSummary(Frequency frequency);

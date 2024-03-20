@@ -57,7 +57,7 @@ public interface BankDetailsService {
    * @param ownerName
    * @param partner
    * @param sortCode
-   * @return
+   * @return created bank details
    */
   BankDetails createBankDetails(
       String accountNbr,
@@ -71,9 +71,11 @@ public interface BankDetailsService {
   /**
    * Create domain for the field companyBankDetails.
    *
+   * @param partner
    * @param company
    * @param paymentMode
-   * @return
+   * @param operationTypeSelect
+   * @return query of company bank details
    * @throws AxelorException
    */
   String createCompanyBankDetailsDomain(
@@ -84,6 +86,7 @@ public interface BankDetailsService {
    * @param company
    * @param paymentMode
    * @param partner
+   * @param operationTypeSelect
    * @return default value for the field companyBankDetails
    * @throws AxelorException
    */

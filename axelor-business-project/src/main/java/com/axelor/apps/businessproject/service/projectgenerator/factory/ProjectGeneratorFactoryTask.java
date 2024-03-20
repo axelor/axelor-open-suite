@@ -145,7 +145,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
    * @param saleOrder
    * @param startDate
    * @param saleOrderLine
-   * @return
+   * @return project task
    * @throws AxelorException
    */
   @Transactional
@@ -182,7 +182,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
    * Check if saleOrder contains a valid product
    *
    * @param saleOrder
-   * @return
+   * @return filtered sale order lines
    * @throws AxelorException
    */
   protected List<SaleOrderLine> filterSaleOrderLinesForTasks(SaleOrder saleOrder)

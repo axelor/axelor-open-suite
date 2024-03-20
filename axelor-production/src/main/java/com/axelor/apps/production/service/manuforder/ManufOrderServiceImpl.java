@@ -832,7 +832,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    * @param prodProduct
    * @param stockMoveLineList
    * @param product
-   * @return
+   * @return difference in qty between prodProduct and qty in list of stock move lines
    * @throws AxelorException
    */
   protected BigDecimal computeDiffQty(
@@ -950,9 +950,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    * Called by generateMultiLevelManufOrder controller to generate all manuf order for a given bill
    * of material list from a given manuf order.
    *
+   * @param productList
    * @param manufOrder
    * @throws AxelorException
-   * @return
+   * @return List of manuf orders
    */
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException {

@@ -53,6 +53,7 @@ public interface OperationOrderService {
    * Generate {@link OperationOrder#toConsumeProdProductList} from the prod process line in param.
    *
    * @param operationOrder
+   * @throws AxelorException
    */
   void createToConsumeProdProductList(OperationOrder operationOrder) throws AxelorException;
 
@@ -71,7 +72,7 @@ public interface OperationOrderService {
    * @param operationOrder
    * @param prodProductList
    * @param stockMoveLineList
-   * @return
+   * @return List of ProdProduct
    * @throws AxelorException
    */
   List<ProdProduct> createDiffProdProductList(
@@ -94,6 +95,7 @@ public interface OperationOrderService {
    * OperationOrder#diffConsumeProdProductList}, and also the stock move.
    *
    * @param operationOrder
+   * @throws AxelorException
    */
   void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException;

@@ -41,7 +41,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
    *
    * @param company
    * @param paymentMode
-   * @return
+   * @return query of company bank details
    * @throws AxelorException
    */
   @Override

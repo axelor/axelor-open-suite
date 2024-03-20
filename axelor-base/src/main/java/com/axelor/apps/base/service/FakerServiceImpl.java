@@ -135,7 +135,7 @@ public class FakerServiceImpl implements FakerService {
    * reflection
    *
    * @param fakerApiFieldParameters
-   * @return
+   * @return Array of FakerApiFieldParameters
    * @throws ClassNotFoundException
    */
   protected Class[] convertParametersToParamsArray(
@@ -154,7 +154,9 @@ public class FakerServiceImpl implements FakerService {
    * reflection
    *
    * @param fakerApiFieldParameters
-   * @return
+   * @return Array of FakerApiFieldParameters
+   * @throws ParseException
+   * @throws IllegalArgumentException
    */
   protected Object[] convertParametersToValueArray(
       List<FakerApiFieldParameters> fakerApiFieldParameters)
@@ -172,7 +174,9 @@ public class FakerServiceImpl implements FakerService {
    * cast String params into their real type (only primitive and String supported)
    *
    * @param fieldParameters
-   * @return
+   * @return Object
+   * @throws ParseException
+   * @throws IllegalArgumentException
    */
   protected Object convertValueToType(FakerApiFieldParameters fieldParameters)
       throws ParseException, IllegalArgumentException {
@@ -203,7 +207,7 @@ public class FakerServiceImpl implements FakerService {
    *
    * @param faker
    * @param fakerApiField
-   * @return
+   * @return Object
    */
   protected Object getClassMethod(Faker faker, FakerApiField fakerApiField) {
     try {
@@ -220,6 +224,7 @@ public class FakerServiceImpl implements FakerService {
    * @param classMethod
    * @param fakerApiField
    * @return an example output
+   * @throws AxelorException
    */
   public String checkParams(Object classMethod, FakerApiField fakerApiField)
       throws AxelorException {

@@ -124,6 +124,7 @@ public interface ManufOrderService {
    * planned qty.
    *
    * @param manufOrder
+   * @throws AxelorException
    */
   void updatePlannedQty(ManufOrder manufOrder) throws AxelorException;
 
@@ -133,6 +134,7 @@ public interface ManufOrderService {
    *
    * @param manufOrder
    * @param qtyToUpdate
+   * @throws AxelorException
    */
   void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException;
 
@@ -176,6 +178,7 @@ public interface ManufOrderService {
    * On changing {@link ManufOrder#consumedStockMoveLineList}, we also update the stock move.
    *
    * @param manufOrder
+   * @throws AxelorException
    */
   void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
@@ -239,7 +242,7 @@ public interface ManufOrderService {
    * specific/all stock location in a Manuf Order
    *
    * @param productId, companyId and stockLocationId
-   * @return the query.
+   * @return stock move line query
    */
   public String getConsumeAndMissingQtyForAProduct(
       Long productId, Long companyId, Long stockLocationId);
@@ -249,7 +252,7 @@ public interface ManufOrderService {
    * stock location in a Manuf Order
    *
    * @param productId, companyId and stockLocationId
-   * @return the query.
+   * @return stock move line query
    */
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
 
@@ -280,8 +283,6 @@ public interface ManufOrderService {
   /**
    * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
    * {@link ManufOrder} on the header of every page.
-   *
-   * @return
    */
   public void createBarcode(ManufOrder manufOrder);
 

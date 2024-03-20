@@ -49,16 +49,10 @@ public interface AccountingReportService {
 
   public void setStatus(AccountingReport accountingReport);
 
-  /**
-   * @param queryFilter
-   * @return
-   */
+  /** @return debit balance */
   public BigDecimal getDebitBalance();
 
-  /**
-   * @param queryFilter
-   * @return
-   */
+  /** @return credit balance */
   public BigDecimal getCreditBalance();
 
   public BigDecimal getDebitBalanceType4();

@@ -31,6 +31,7 @@ public interface ConfiguratorFormulaService {
    *
    * @param formula
    * @param creator
+   * @throws AxelorException
    */
   void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
       throws AxelorException;

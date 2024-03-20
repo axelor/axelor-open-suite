@@ -47,7 +47,7 @@ public interface OperationOrderPlanningService {
    * @param operationOrder
    * @param plannedStartDateT
    * @param plannedEndDateT
-   * @return
+   * @return Updated operation order
    * @throws AxelorException
    */
   OperationOrder setPlannedDates(
@@ -60,7 +60,7 @@ public interface OperationOrderPlanningService {
    * @param operationOrder
    * @param realStartDateT
    * @param realEndDateT
-   * @return
+   * @return Updated operation order
    * @throws AxelorException
    */
   OperationOrder setRealDates(

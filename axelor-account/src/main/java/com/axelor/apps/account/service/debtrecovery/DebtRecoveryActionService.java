@@ -139,12 +139,8 @@ public class DebtRecoveryActionService {
    * Fonction permettant de créer un courrier à destination des tiers pour un contrat standard
    *
    * @param debtRecovery
-   * @return
-   * @throws AxelorException
+   * @return generated messages
    * @throws ClassNotFoundException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws IOException
    */
   public Set<Message> runStandardMessage(DebtRecovery debtRecovery) throws ClassNotFoundException {
     Set<Message> messages = new HashSet<>();
@@ -188,6 +184,11 @@ public class DebtRecoveryActionService {
    *
    * @param debtRecovery Une relance
    * @throws AxelorException
+   * @throws ClassNotFoundException
+   * @throws IOException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws JSONException
    */
   @Transactional(rollbackOn = {Exception.class})
   public void runManualAction(DebtRecovery debtRecovery)
@@ -257,6 +258,7 @@ public class DebtRecoveryActionService {
    * @throws IOException
    * @throws InstantiationException
    * @throws IllegalAccessException
+   * @throws JSONException
    */
   @Transactional(rollbackOn = {Exception.class})
   public void runMessage(DebtRecovery debtRecovery)
@@ -294,7 +296,6 @@ public class DebtRecoveryActionService {
    *
    * @param debtRecovery Une relance
    * @param debtRecoveryMethodLine La ligne de relance que l'on souhaite déplacer
-   * @throws AxelorException
    */
   @Transactional
   public void moveDebtRecoveryMethodLine(

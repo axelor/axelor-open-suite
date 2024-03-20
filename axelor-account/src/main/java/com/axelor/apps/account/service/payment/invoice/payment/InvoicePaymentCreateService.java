@@ -53,6 +53,7 @@ public interface InvoicePaymentCreateService {
    * @param invoice
    * @param companyBankDetails
    * @return the created payment
+   * @throws AxelorException
    */
   InvoicePayment createAndAddInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException;
@@ -80,7 +81,11 @@ public interface InvoicePaymentCreateService {
    * @param invoiceList
    * @param paymentMode
    * @param companyBankDetails
-   * @return
+   * @param paymentDate
+   * @param bankDepositDate
+   * @param chequeNumber
+   * @return list of invoice payments
+   * @throws AxelorException
    */
   public List<InvoicePayment> createMassInvoicePayment(
       List<Long> invoiceList,

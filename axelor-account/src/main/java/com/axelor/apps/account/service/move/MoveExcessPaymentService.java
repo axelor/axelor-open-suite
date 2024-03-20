@@ -57,7 +57,7 @@ public class MoveExcessPaymentService {
    * Méthode permettant de récupérer les trop-perçus et une facture
    *
    * @param invoice Une facture
-   * @return
+   * @return List of move lines
    * @throws AxelorException
    */
   public List<MoveLine> getExcessPayment(Invoice invoice) throws AxelorException {

@@ -44,7 +44,7 @@ public interface PaymentScheduleLineService {
    * @param paymentScheduleLine
    * @param companyBankDetails
    * @param paymentMode
-   * @return
+   * @return payment move
    * @throws AxelorException
    */
   Move createPaymentMove(

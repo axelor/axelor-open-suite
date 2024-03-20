@@ -23,6 +23,12 @@ import com.axelor.apps.base.db.Partner;
 
 public interface JournalCheckPartnerTypeService {
 
-  /** True if the partner is authorized on this journal. */
+  /**
+   * True if the partner is authorized on this journal.
+   *
+   * @param journal
+   * @param partner
+   * @return true if the partner is authorized on this journal, false otherwise
+   */
   boolean isPartnerCompatible(Journal journal, Partner partner);
 }

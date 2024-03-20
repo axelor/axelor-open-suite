@@ -71,7 +71,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    * @param ownerName
    * @param partner
    * @param sortCode
-   * @return
+   * @return created bank details
    */
   @Override
   public BankDetails createBankDetails(
@@ -101,7 +101,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    *
    * @param company
    * @param paymentMode
-   * @return
+   * @return query of company bank details
    * @throws AxelorException
    */
   @Override

@@ -79,7 +79,8 @@ public interface ReconcileService {
    * soldé' Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte
    * transitoire si le seuil est respecté
    *
-   * @param reconcile Une reconciliation
+   * @param debitMoveLine
+   * @param creditMoveLine
    * @throws AxelorException
    */
   public void canBeZeroBalance(MoveLine debitMoveLine, MoveLine creditMoveLine)
@@ -93,6 +94,7 @@ public interface ReconcileService {
    * Add a reconcile to an existing or created reconcile group.
    *
    * @param reconcile a confirmed reconcile.
+   * @throws AxelorException
    */
   void addToReconcileGroup(Reconcile reconcile) throws AxelorException;
 

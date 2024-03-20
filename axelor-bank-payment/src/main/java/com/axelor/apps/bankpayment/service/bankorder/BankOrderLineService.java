@@ -72,11 +72,15 @@ public class BankOrderLineService {
   /**
    * Method to create a specific BankOrderLine for SEPA and international transfer and direct debit
    *
+   * @param bankOrderFileFormat
    * @param partner
    * @param amount
+   * @param currency
+   * @param bankOrderDate
    * @param receiverReference
    * @param receiverLabel
-   * @return
+   * @param origin
+   * @return created bank order line
    * @throws AxelorException
    */
   public BankOrderLine createBankOrderLine(
@@ -108,11 +112,15 @@ public class BankOrderLineService {
   /**
    * Method to create a specific BankOrderLine for treasury transfer
    *
+   * @param bankOrderFileFormat
    * @param receiverCompany
    * @param amount
+   * @param currency
+   * @param bankOrderDate
    * @param receiverReference
    * @param receiverLabel
-   * @return
+   * @param origin
+   * @return created bank order line
    * @throws AxelorException
    */
   public BankOrderLine createBankOrderLine(
@@ -142,13 +150,17 @@ public class BankOrderLineService {
   /**
    * Generic method to create a BankOrderLine
    *
+   * @param bankOrderFileFormat
    * @param receiverCompany
    * @param partner
    * @param bankDetails
    * @param amount
+   * @param currency
+   * @param bankOrderDate
    * @param receiverReference
    * @param receiverLabel
-   * @return
+   * @param origin
+   * @return created bank order line
    * @throws AxelorException
    */
   public BankOrderLine createBankOrderLine(

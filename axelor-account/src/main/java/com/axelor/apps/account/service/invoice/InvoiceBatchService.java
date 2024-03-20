@@ -49,6 +49,7 @@ public class InvoiceBatchService {
    * Lancer un batch à partir de son code.
    *
    * @param batchCode Le code du batch souhaité.
+   * @return Batch
    * @throws AxelorException
    */
   public Batch run(String batchCode) throws AxelorException {

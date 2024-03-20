@@ -240,7 +240,9 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   /**
    * {@inheritDoc}
    *
-   * @throws NullPointerException if moveLine is null
+   * @param move
+   * @param moveLine
+   * @throws AxelorException
    */
   @Override
   public FixedAsset generateFixedAsset(Move move, MoveLine moveLine) throws AxelorException {

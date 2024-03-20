@@ -128,6 +128,7 @@ public class DebtRecoveryService {
    * Fonction qui récupère la plus ancienne date d'échéance d'une liste d'échéances
    *
    * @param invoiceTermList Une liste d'échéances
+   * @param company
    * @return la plus ancienne date d'échéance
    */
   public LocalDate getOldDateInvoiceTerm(List<InvoiceTerm> invoiceTermList, Company company) {
@@ -193,6 +194,7 @@ public class DebtRecoveryService {
    * Fonction qui détermine la date de référence
    *
    * @param debtRecovery Une relance
+   * @param invoiceTermList
    * @return La date de référence
    */
   public LocalDate getReferenceDate(DebtRecovery debtRecovery, List<InvoiceTerm> invoiceTermList) {
@@ -303,7 +305,6 @@ public class DebtRecoveryService {
    * @param company A company to be concerned by the move lines
    * @param tradingName (Optional) A trading name to be concerned by the move lines
    * @return all corresponding move lines as a List
-   * @throws AxelorException
    */
   public List<InvoiceTerm> getInvoiceTerms(
       Partner partner, Company company, TradingName tradingName) {
@@ -420,11 +421,13 @@ public class DebtRecoveryService {
    * @param partner The partner that has debts to be recovered
    * @param company The company for which to recover the debts
    * @param tradingName (optional) A trading name of the company for which to recover the debts
+   * @return true if debt recovery generated, false otherwise
    * @throws AxelorException
-   * @throws IllegalAccessException
-   * @throws InstantiationException
    * @throws ClassNotFoundException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
    * @throws IOException
+   * @throws JSONException
    */
   @Transactional(rollbackOn = {Exception.class})
   public boolean debtRecoveryGenerate(Partner partner, Company company, TradingName tradingName)

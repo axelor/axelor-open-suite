@@ -28,9 +28,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +42,7 @@ public class MessageController extends com.axelor.message.web.MessageController 
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws Exception
    */
   public void printMessage(ActionRequest request, ActionResponse response) throws Exception {
 

@@ -32,7 +32,7 @@ public interface WeeklyPlanningService {
    * Gets the first day of the week, according to the weekly planning of the active company of the
    * user. If no day can be found, default value is MONDAY.
    *
-   * @return
+   * @return day of the week
    */
   DayOfWeek getFirstDayOfWeek();
 
@@ -46,7 +46,7 @@ public interface WeeklyPlanningService {
    *
    * @param planning
    * @param date
-   * @return
+   * @return working days value in days
    */
   public double getWorkingDayValueInDays(WeeklyPlanning planning, LocalDate date);
 
@@ -58,7 +58,7 @@ public interface WeeklyPlanningService {
    * @param date
    * @param morning
    * @param afternoon
-   * @return
+   * @return working days value in days
    */
   public double getWorkingDayValueInDaysWithSelect(
       WeeklyPlanning planning, LocalDate date, boolean morning, boolean afternoon);
@@ -74,7 +74,7 @@ public interface WeeklyPlanningService {
    * @param date
    * @param from
    * @param to
-   * @return
+   * @return working days value in hours
    */
   public BigDecimal getWorkingDayValueInHours(
       WeeklyPlanning weeklyPlanning, LocalDate date, LocalTime from, LocalTime to);

@@ -86,6 +86,7 @@ public interface StockMoveInvoiceService {
    *
    * @param stockMoveLine a stock move line
    * @return the invoiced quantity
+   * @throws AxelorException
    */
   BigDecimal computeNonCanceledInvoiceQty(StockMoveLine stockMoveLine) throws AxelorException;
 

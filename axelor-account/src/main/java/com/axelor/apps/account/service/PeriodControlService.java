@@ -28,14 +28,15 @@ public interface PeriodControlService {
    * changement occured while the period is linked to a move.
    *
    * @param period
+   * @throws AxelorException
    */
   void controlDates(Period period) throws AxelorException;
 
   /**
    * Checks if a Move is linked to period
    *
-   * @param entity
-   * @return
+   * @param period
+   * @return true if a Move is linked to period, else false
    */
   boolean isLinkedToMove(Period period);
 

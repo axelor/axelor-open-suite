@@ -55,6 +55,7 @@ public final class PdfHelper {
    *
    * @param fileList a list of path of PDF files to merge.
    * @return The link to access the generated PDF.
+   * @throws IOException
    */
   public static File mergePdf(List<File> fileList) throws IOException {
     PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
@@ -92,7 +93,6 @@ public final class PdfHelper {
    * @param file the PDF to copy
    * @param copyNumber the number of copies
    * @return a new file with the number of asked copies.
-   * @throws IllegalArgumentException if copy number is inferior or equal to 0.
    * @throws IOException if mergePdf fails to write the new file.
    */
   public static File printCopiesToFile(File file, int copyNumber) throws IOException {

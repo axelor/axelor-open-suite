@@ -396,6 +396,7 @@ public class DoubtfulCustomerService {
    * @param move La nouvelle écriture de débit sur le compte 416
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
+   * @return updated invoice
    * @throws AxelorException
    */
   public Invoice invoiceProcess(Move move, Account doubtfulCustomerAccount, String debtPassReason)
@@ -429,6 +430,7 @@ public class DoubtfulCustomerService {
    * @param moveLine La nouvelle ligne d'écriture de débit sur le compte 416
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
+   * @return updated invoice
    */
   public Invoice invoiceRejectProcess(
       MoveLine moveLine, Account doubtfulCustomerAccount, String debtPassReason) {

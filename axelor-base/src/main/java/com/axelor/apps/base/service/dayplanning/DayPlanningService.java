@@ -67,6 +67,7 @@ public interface DayPlanningService {
    * This method will compute the "void" (time where not there are no period) between startDateT and
    * endDateT
    *
+   * @param dayPlanning
    * @param startDateT
    * @param endDateT
    * @return the void duration in seconds

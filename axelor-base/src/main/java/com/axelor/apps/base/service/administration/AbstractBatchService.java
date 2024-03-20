@@ -43,7 +43,7 @@ public abstract class AbstractBatchService implements Callable<Batch> {
   /**
    * Get batch model class.
    *
-   * @return
+   * @return batch model class
    */
   protected abstract Class<? extends Model> getModelClass();
 
@@ -51,7 +51,7 @@ public abstract class AbstractBatchService implements Callable<Batch> {
    * Run a batch with the given batch model.
    *
    * @param model
-   * @return
+   * @return batch
    * @throws AxelorException
    */
   public abstract Batch run(Model model) throws AxelorException;
@@ -60,7 +60,7 @@ public abstract class AbstractBatchService implements Callable<Batch> {
    * Run a batch from its code.
    *
    * @param code
-   * @return
+   * @return batch
    * @throws AxelorException
    */
   public Batch run(String code) throws AxelorException {
@@ -80,7 +80,7 @@ public abstract class AbstractBatchService implements Callable<Batch> {
    * Find batch model by its code.
    *
    * @param code
-   * @return
+   * @return batch model
    */
   public Model findModelByCode(String code) {
     return Query.of(getModelClass()).filter("self.code = :code").bind("code", code).fetchOne();

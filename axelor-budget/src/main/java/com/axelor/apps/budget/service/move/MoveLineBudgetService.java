@@ -33,6 +33,7 @@ public interface MoveLineBudgetService {
    * @param move
    * @param moveLine
    * @return String
+   * @throws AxelorException
    */
   public String computeBudgetDistribution(Move move, MoveLine moveLine) throws AxelorException;
 

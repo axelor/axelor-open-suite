@@ -223,6 +223,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    * from a payment for an advance payment invoice.
    *
    * @param move
+   * @param operationTypeSelect
    * @return the found advance invoice if the move is from a payment that comes from this invoice.
    *     null in other cases
    */

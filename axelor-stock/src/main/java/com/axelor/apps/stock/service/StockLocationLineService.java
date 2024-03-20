@@ -147,7 +147,7 @@ public interface StockLocationLineService {
    * Allow to get the location lines of a given product.
    *
    * @param product
-   * @return
+   * @return List Stock location lines
    */
   public List<StockLocationLine> getStockLocationLines(Product product);
 
@@ -189,7 +189,7 @@ public interface StockLocationLineService {
    *
    * @param stockLocation
    * @param product
-   * @return
+   * @return available qty of product
    */
   public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
 
@@ -198,7 +198,7 @@ public interface StockLocationLineService {
    *
    * @param stockLocation
    * @param trackingNumber
-   * @return
+   * @return available qty of product
    */
   public BigDecimal getTrackingNumberAvailableQty(
       StockLocation stockLocation, TrackingNumber trackingNumber);
@@ -209,6 +209,7 @@ public interface StockLocationLineService {
    *
    * @param stockLocationLine a stock location line with a product and a stock location.
    * @return the future quantity of the stock location line.
+   * @throws AxelorException
    */
   BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException;
 
@@ -217,7 +218,7 @@ public interface StockLocationLineService {
    * specific/all stock location
    *
    * @param productId, companyId and stockLocationId
-   * @return the query.
+   * @return stock location line query
    */
   public String getStockLocationLineListForAProduct(
       Long productId, Long companyId, Long stockLocationId);
@@ -227,7 +228,7 @@ public interface StockLocationLineService {
    * stock location
    *
    * @param productId, companyId and stockLocationId
-   * @return the query.
+   * @return stock location line query
    */
   public String getAvailableStockForAProduct(Long productId, Long companyId, Long stockLocationId);
 
@@ -236,7 +237,7 @@ public interface StockLocationLineService {
    * specific/all stock location
    *
    * @param productId, companyId and stockLocationId
-   * @return the query.
+   * @return stock location line query
    */
   public String getRequestedReservedQtyForAProduct(
       Long productId, Long companyId, Long stockLocationId);
@@ -270,6 +271,7 @@ public interface StockLocationLineService {
    * @param wap
    * @param stockMoveLine
    * @param date
+   * @param origin
    * @deprecated Please use updateHistory this method will not create a proper history
    */
   @Deprecated

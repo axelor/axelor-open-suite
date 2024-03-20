@@ -33,6 +33,7 @@ public interface PurchaseOrderLineBudgetService {
    * @param purchaseOrder
    * @param purchaseOrderLine
    * @return String
+   * @throws AxelorException
    */
   public String computeBudgetDistribution(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;

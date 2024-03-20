@@ -428,6 +428,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   /**
    * Compute the excluded tax total amount of a sale order line.
    *
+   * @param saleOrderLine
    * @return The excluded tax total amount.
    */
   @Override

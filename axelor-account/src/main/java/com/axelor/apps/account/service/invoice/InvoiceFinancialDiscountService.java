@@ -42,7 +42,7 @@ public interface InvoiceFinancialDiscountService {
    * Update invoice terms financial discount if not paid with invoice financial discount
    *
    * @param invoice
-   * @return
+   * @return updated invoice terms list
    */
   List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 }

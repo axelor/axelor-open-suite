@@ -135,7 +135,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * Creates binding or configuration file according to typeSelect
    *
    * @param typeSelect
-   * @return
+   * @return config file
    */
   protected File getConfigXmlFile(String typeSelect) {
 
@@ -165,7 +165,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * Creates geonames-city.csv data file from geonames.txt data file
    *
    * @param dataFile
-   * @return
+   * @return data file
    */
   protected File getDataCsvFile(MetaFile dataFile) {
 
@@ -188,7 +188,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    *
    * @param configXmlFile
    * @param dataCsvFile
-   * @return
+   * @return import city data
    */
   protected ImportHistory importCityData(File configXmlFile, File dataCsvFile) {
 
@@ -233,8 +233,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * Extracts file from the zip
    *
    * @param downloadFileName : zip fileName to download from internet
-   * @return
-   * @return
+   * @return meta file
    * @throws AxelorException if hostname is not valid or if file does not exist
    */
   @Override
@@ -519,7 +518,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    *
    * @param downloadFileName
    * @param typeSelect
-   * @return
+   * @return map containing import history and error file
    */
   public Map<String, Object> importFromGeonamesAutoConfig(
       String downloadFileName, String typeSelect) {
@@ -552,7 +551,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    *
    * @param map
    * @param typeSelect
-   * @return
+   * @return map containing import history and error file
    */
   public Map<String, Object> importFromGeonamesManualConfig(
       Map<String, Object> map, String typeSelect) {

@@ -33,6 +33,7 @@ public interface ProductCompanyService {
    * @param company the company to search for a company-specific version of the product
    * @return the value of the field, either the value specified for the company, or the default
    *     value
+   * @throws AxelorException
    */
   public Object get(Product originalProduct, String fieldName, Company company)
       throws AxelorException;
@@ -45,6 +46,7 @@ public interface ProductCompanyService {
    * @param fieldName the field of the product we want to set
    * @param fieldValue the value to set
    * @param company the company to search for a company-specific version of the product
+   * @throws AxelorException
    */
   public void set(Product originalProduct, String fieldName, Object fieldValue, Company company)
       throws AxelorException;

@@ -43,9 +43,8 @@ public interface ProductionOrderService {
    *     material product (Product variant)
    * @param billOfMaterial
    * @param qtyRequested
-   * @param businessProject
    * @param startDate
-   * @return
+   * @return ProductionOrder
    * @throws AxelorException
    */
   public ProductionOrder generateProductionOrder(
@@ -65,7 +64,7 @@ public interface ProductionOrderService {
    * @param saleOrder
    * @param saleOrderLine
    * @param manufOrderOriginType
-   * @return
+   * @return ProductionOrder
    * @throws AxelorException
    */
   public ProductionOrder addManufOrder(

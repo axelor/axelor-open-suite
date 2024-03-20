@@ -49,7 +49,7 @@ public interface MapRestService {
    *
    * @param address
    * @param objectNode
-   * @return
+   * @return address string
    * @throws AxelorException
    * @throws JSONException
    */

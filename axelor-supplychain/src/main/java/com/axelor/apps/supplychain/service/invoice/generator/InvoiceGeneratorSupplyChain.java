@@ -97,10 +97,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
   /**
    * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupérés du tiers
    *
-   * @param operationType
-   * @param company
-   * @param partner
-   * @param contactPartner
+   * @param stockMove
+   * @param invoiceOperationType
    * @throws AxelorException
    */
   protected InvoiceGeneratorSupplyChain(StockMove stockMove, int invoiceOperationType)

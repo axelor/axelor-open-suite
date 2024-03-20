@@ -320,7 +320,6 @@ public class LeaveController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
   public void validate(ActionRequest request, ActionResponse response) {
 
@@ -355,7 +354,6 @@ public class LeaveController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
   public void refuse(ActionRequest request, ActionResponse response) {
 

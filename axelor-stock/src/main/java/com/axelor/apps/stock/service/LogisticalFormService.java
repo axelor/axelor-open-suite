@@ -71,7 +71,7 @@ public interface LogisticalFormService {
    * Get list of full spread stock move lines.
    *
    * @param logisticalForm
-   * @return
+   * @return list of stock move lines
    */
   List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm);
 
@@ -79,7 +79,7 @@ public interface LogisticalFormService {
    * Get map of spreadable quantity for each stock move line.
    *
    * @param logisticalForm
-   * @return
+   * @return Map of stock move line and spreadable quantity
    */
   Map<StockMoveLine, BigDecimal> getSpreadableQtyMap(LogisticalForm logisticalForm);
 
@@ -87,7 +87,7 @@ public interface LogisticalFormService {
    * Get map of spread quantity for each stock move line.
    *
    * @param logisticalForm
-   * @return
+   * @return Map of stock move line and spread quantity
    */
   Map<StockMoveLine, BigDecimal> getSpreadQtyMap(LogisticalForm logisticalForm);
 
@@ -95,7 +95,7 @@ public interface LogisticalFormService {
    * Get domain for stock move.
    *
    * @param logisticalForm
-   * @return
+   * @return stock move domain
    * @throws AxelorException
    */
   String getStockMoveDomain(LogisticalForm logisticalForm) throws AxelorException;
@@ -105,7 +105,7 @@ public interface LogisticalFormService {
    *
    * @param logisticalForm
    * @param typeSelect
-   * @return
+   * @return next parcel/pallet number
    */
   int getNextParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect);
 
@@ -113,7 +113,7 @@ public interface LogisticalFormService {
    * Get next line sequence.
    *
    * @param logisticalForm
-   * @return
+   * @return next line sequence
    */
   int getNextLineSequence(LogisticalForm logisticalForm);
 
@@ -128,7 +128,7 @@ public interface LogisticalFormService {
    * Get the list of logistical form IDs for the given stock move.
    *
    * @param stockMove
-   * @return
+   * @return List of logistical form id
    * @throws AxelorException
    */
   @CallMethod
@@ -146,7 +146,7 @@ public interface LogisticalFormService {
    * Get customer account number to carrier.
    *
    * @param logisticalForm
-   * @return
+   * @return optional customer account numbers
    * @throws AxelorException
    */
   Optional<String> getCustomerAccountNumberToCarrier(LogisticalForm logisticalForm)

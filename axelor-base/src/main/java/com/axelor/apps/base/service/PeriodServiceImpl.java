@@ -61,7 +61,7 @@ public class PeriodServiceImpl implements PeriodService {
    * @param date
    * @param company
    * @param typeSelect
-   * @return
+   * @return active period
    * @throws AxelorException
    */
   public Period getActivePeriod(LocalDate date, Company company, int typeSelect)
@@ -180,6 +180,7 @@ public class PeriodServiceImpl implements PeriodService {
    * @param company
    * @param fromDate
    * @param toDate
+   * @throws AxelorException
    */
   public void checkPeriod(Company company, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {

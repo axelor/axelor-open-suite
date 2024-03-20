@@ -64,7 +64,7 @@ public abstract class CurrencyConversionService {
    *
    * @param currencyFrom
    * @param currencyTo
-   * @return
+   * @return converted currency
    * @throws MalformedURLException
    * @throws JSONException
    * @throws AxelorException
@@ -79,7 +79,7 @@ public abstract class CurrencyConversionService {
    * @param currencyFrom
    * @param currencyTo
    * @param date
-   * @return
+   * @return rate
    * @throws AxelorException
    */
   public abstract Float validateAndGetRate(
@@ -92,7 +92,7 @@ public abstract class CurrencyConversionService {
    * @param currencyFrom
    * @param currencyTo
    * @param response
-   * @return
+   * @return rate from the JSON body
    * @throws AxelorException
    */
   public abstract Float getRateFromJson(
@@ -104,7 +104,7 @@ public abstract class CurrencyConversionService {
    * @param date
    * @param currencyFromCode
    * @param currencyToCode
-   * @return
+   * @return url
    */
   public abstract String getUrlString(
       LocalDate date, String currencyFromCode, String currencyToCode);
@@ -114,7 +114,7 @@ public abstract class CurrencyConversionService {
    *
    * @param currentRate
    * @param previousRate
-   * @return
+   * @return variation between new rate and previous rate
    */
   public String getVariations(BigDecimal currentRate, BigDecimal previousRate) {
     String variations = "0";
@@ -177,6 +177,9 @@ public abstract class CurrencyConversionService {
    * @param currencyFrom
    * @param currencyTo
    * @return Pair of rate with the respective date.
+   * @throws MalformedURLException
+   * @throws JSONException
+   * @throws AxelorException
    */
   public abstract Pair<LocalDate, BigDecimal> getRateWithDate(
       Currency currencyFrom, Currency currencyTo)
@@ -190,6 +193,7 @@ public abstract class CurrencyConversionService {
    * @param currencyTo
    * @param date
    * @return Pair of rate with the respective date.
+   * @throws AxelorException
    */
   public abstract Pair<LocalDate, Float> validateAndGetRateWithDate(
       int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)

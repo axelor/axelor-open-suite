@@ -49,10 +49,19 @@ public interface StockMoveLineService {
    * suivi en fonction du type d'opération.
    *
    * @param product le produit
+   * @param productName
+   * @param description
    * @param quantity la quantité
-   * @param parent le StockMove parent
+   * @param unitPrice
+   * @param companyUnitPriceUntaxed
+   * @param unit
+   * @param stockMove
    * @param type 1 : Sales 2 : Purchases 3 : Productions
-   * @return l'objet StockMoveLine
+   * @param taxed
+   * @param taxRate
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @return created StockMoveLine
    * @throws AxelorException
    */
   public StockMoveLine createStockMoveLine(
@@ -87,9 +96,13 @@ public interface StockMoveLineService {
    * @param quantity the line quantity
    * @param unitPriceUntaxed price untaxed of the line
    * @param unitPriceTaxed price taxed of the line
+   * @param companyUnitPriceUntaxed
+   * @param companyPurchasePrice
    * @param unit Unit of the line
    * @param stockMove parent stock move
    * @param trackingNumber tracking number used in the line
+   * @param fromStockLocation
+   * @param toStockLocation
    * @return the created stock move line
    * @throws AxelorException
    */
@@ -182,12 +195,13 @@ public interface StockMoveLineService {
    * Check for warranty dates and expiration dates.
    *
    * @param stockMove
-   * @throws AxelorException
    */
   public void checkExpirationDates(StockMove stockMove);
 
   /**
    * Return unit found in stock move line, or if the unit is empty, take the unit from the product.
+   *
+   * @param stockMoveLine
    */
   Unit getStockUnit(StockMoveLine stockMoveLine);
 
@@ -206,7 +220,7 @@ public interface StockMoveLineService {
    * Check whether a stock move line is fully spread over logistical form lines.
    *
    * @param stockMoveLine
-   * @return
+   * @return true if stock move line is fully spread over logistical form lines, else false
    */
   boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine);
 
@@ -214,7 +228,7 @@ public interface StockMoveLineService {
    * Get the quantity spreadable over logistical form lines.
    *
    * @param stockMoveLine
-   * @return
+   * @return quantity spreadable over logistical form lines
    */
   BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine);
 
@@ -224,7 +238,7 @@ public interface StockMoveLineService {
    *
    * @param stockMoveLine
    * @param logisticalForm
-   * @return
+   * @return quantity spreadable over logistical form lines
    */
   BigDecimal computeSpreadableQtyOverLogisticalFormLines(
       StockMoveLine stockMoveLine, LogisticalForm logisticalForm);
@@ -244,7 +258,8 @@ public interface StockMoveLineService {
    * Check whether mass information is required.
    *
    * @param stockMove
-   * @return
+   * @param stockMoveLine
+   * @return true if mass information is required, else false
    */
   boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
 
@@ -256,7 +271,8 @@ public interface StockMoveLineService {
    * set the available quantity of product in a given location.
    *
    * @param stockMoveLine
-   * @return
+   * @param stockLocation
+   * @throws AxelorException
    */
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation)
       throws AxelorException;
@@ -304,14 +320,14 @@ public interface StockMoveLineService {
    * boolean)} But instead of creating wap history at with today date,they will be created at date
    * specified and the origin specified. If origin is null, the behavior will be the same.
    *
-   * @param fromStockLocation
-   * @param toStockLocation
    * @param fromStatus
    * @param toStatus
    * @param stockMoveLineList
    * @param lastFutureStockMoveDate
    * @param realQty
    * @param date
+   * @param origin
+   * @param generateOrder
    * @throws AxelorException
    */
   void updateLocations(
@@ -357,8 +373,6 @@ public interface StockMoveLineService {
    * equal the remaining unfulfilled qty ( original qty - original realQty)
    *
    * @param stockMoveLine
-   * @return
-   * @throws AxelorException
    */
   void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine);
 }

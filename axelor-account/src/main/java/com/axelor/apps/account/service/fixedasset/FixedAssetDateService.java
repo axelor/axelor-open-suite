@@ -24,16 +24,32 @@ import java.time.LocalDate;
 
 public interface FixedAssetDateService {
 
-  /** Compute first depreciation date of economic, fiscal and ifrs plan */
+  /**
+   * Compute first depreciation date of economic, fiscal and ifrs plan.
+   *
+   * @param fixedAsset
+   */
   void computeFirstDepreciationDate(FixedAsset fixedAsset);
 
-  /** Compute first depreciation date of fiscal */
+  /**
+   * Compute first depreciation date of fiscal.
+   *
+   * @param fixedAsset
+   */
   void computeFiscalFirstDepreciationDate(FixedAsset fixedAsset);
 
-  /** Compute first depreciation date of economic */
+  /**
+   * Compute first depreciation date of economic.
+   *
+   * @param fixedAsset
+   */
   void computeEconomicFirstDepreciationDate(FixedAsset fixedAsset);
 
-  /** Compute first depreciation date of ifrs plan */
+  /**
+   * Compute first depreciation date of ifrs plan.
+   *
+   * @param fixedAsset
+   */
   void computeIfrsFirstDepreciationDate(FixedAsset fixedAsset);
 
   LocalDate computeLastDayOfFiscalPeriod(
@@ -45,8 +61,9 @@ public interface FixedAssetDateService {
   /**
    * Compute and return the last day of the month/year depending on the periodicity type.
    *
-   * @param fixedAsset
+   * @param periodicityType
    * @param date
+   * @return last day of the month/year depending on the periodicity type
    */
   LocalDate computeLastDayOfPeriodicity(Integer periodicityType, LocalDate date);
 }

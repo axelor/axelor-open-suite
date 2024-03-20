@@ -56,7 +56,7 @@ public interface InvoicePaymentToolService {
    *
    * @param payments
    * @param getCreditLine
-   * @return
+   * @return list of move lines
    */
   List<MoveLine> getMoveLinesFromPayments(List<InvoicePayment> payments, boolean getCreditLine);
 

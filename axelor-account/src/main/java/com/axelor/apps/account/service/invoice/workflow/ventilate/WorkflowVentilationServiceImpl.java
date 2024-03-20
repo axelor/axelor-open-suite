@@ -89,6 +89,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
    * Copy payments from selected advance payment invoices to this invoice.
    *
    * @param invoice
+   * @throws AxelorException
    */
   protected void copyAdvancePaymentToInvoice(Invoice invoice) throws AxelorException {
     Set<Invoice> advancePaymentInvoiceSet = invoice.getAdvancePaymentInvoiceSet();

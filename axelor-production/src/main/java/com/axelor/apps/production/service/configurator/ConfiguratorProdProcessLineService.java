@@ -32,7 +32,7 @@ public interface ConfiguratorProdProcessLineService {
    * @param confProdProcessLine
    * @param isConsProOnOperation
    * @param attributes
-   * @return
+   * @return generated prod process line
    */
   ProdProcessLine generateProdProcessLine(
       ConfiguratorProdProcessLine confProdProcessLine,

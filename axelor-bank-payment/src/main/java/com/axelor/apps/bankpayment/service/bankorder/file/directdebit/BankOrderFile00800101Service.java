@@ -236,6 +236,7 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
    *     PaymentInstructionInformation2} objects into
    * @param creditor the creditor of the SEPA Direct Debit file
    * @throws DatatypeConfigurationException
+   * @throws AxelorException
    */
   protected void createPmtInf(
       List<PaymentInstructionInformation2> paymentInstructionInformationList,

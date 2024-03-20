@@ -27,7 +27,6 @@ public interface MoveDefaultService {
    * Set default values of move.
    *
    * @param move
-   * @return Map of modified fields.
    */
   void setDefaultValues(Move move);
 
@@ -35,7 +34,6 @@ public interface MoveDefaultService {
    * Set default currency value for move. Note: this method is called in setDefaultMoveValues method
    *
    * @param move
-   * @return Map of modified fields.
    */
   void setDefaultCurrency(Move move);
 

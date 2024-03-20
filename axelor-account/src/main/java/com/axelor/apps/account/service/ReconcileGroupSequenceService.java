@@ -26,6 +26,9 @@ public interface ReconcileGroupSequenceService {
   /**
    * Set sequence for reconcile group, based on the status of the reconcile group, the sequence can
    * be draft or final.
+   *
+   * @param reconcileGroup
+   * @throws AxelorException
    */
   void fillCodeFromSequence(ReconcileGroup reconcileGroup) throws AxelorException;
 }

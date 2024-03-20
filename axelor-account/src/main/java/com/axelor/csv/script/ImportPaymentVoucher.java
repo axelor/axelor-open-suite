@@ -60,6 +60,7 @@ public class ImportPaymentVoucher {
    * Fonction permettant de récupérer la ligne d'écriture à payer
    *
    * @param paymentVoucher Une saisie paiement
+   * @param invoice
    * @return Une écriture à payer
    * @throws AxelorException
    */

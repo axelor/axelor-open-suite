@@ -652,6 +652,7 @@ public class InventoryService {
    * Generate a stock move from an inventory.
    *
    * @param inventory a realized inventory.
+   * @param inventoryLineList
    * @param isEnteringStock whether we want to create incoming or upcoming stock move of this
    *     inventory.
    * @return the generated stock move.
@@ -717,6 +718,8 @@ public class InventoryService {
    * @param inventoryLine an inventory line
    * @param stockMove a stock move being created
    * @param isEnteringStock whether we are creating an incoming or outgoing stock move.
+   * @param fromStockLocation
+   * @param toStockLocation
    * @throws AxelorException
    */
   protected void generateStockMoveLines(

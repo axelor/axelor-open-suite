@@ -111,6 +111,7 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
    * Return the name for the printed certificate of conformity.
    *
    * @param plural if there is one or multiple certificates.
+   * @param format
    */
   public String getConformityCertificateFilesName(boolean plural, String format) {
 

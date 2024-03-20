@@ -282,6 +282,9 @@ public class OperationOrderStockMoveService {
    *
    * @param operationOrder
    * @param stockMove
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @throws AxelorException
    */
   public void createNewStockMoveLines(
       OperationOrder operationOrder,
@@ -322,6 +325,7 @@ public class OperationOrderStockMoveService {
    *
    * @param operationOrder
    * @param qtyToUpdate
+   * @throws AxelorException
    */
   public void createNewConsumedStockMoveLineList(
       OperationOrder operationOrder, BigDecimal qtyToUpdate) throws AxelorException {

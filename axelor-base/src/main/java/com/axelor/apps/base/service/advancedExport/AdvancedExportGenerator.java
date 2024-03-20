@@ -21,7 +21,6 @@ package com.axelor.apps.base.service.advancedExport;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +37,6 @@ public abstract class AdvancedExportGenerator {
   /**
    * This method generate the header of export file.
    *
-   * @throws IOException
-   * @throws DocumentException
    * @throws AxelorException
    */
   public abstract void generateHeader() throws AxelorException;
@@ -57,41 +54,36 @@ public abstract class AdvancedExportGenerator {
    * This method close the object.
    *
    * @throws AxelorException
-   * @throws IOException
-   * @throws DocumentException
    */
   public abstract void close() throws AxelorException;
 
   /**
    * This method return the object of <i>AdvancedExport</i>.
    *
-   * @return
+   * @return AdvancedExport
    */
   public abstract AdvancedExport getAdvancedExport();
 
   /**
    * Get the export file.
    *
-   * @return
+   * @return export file
    */
   public abstract File getExportFile();
 
   /**
    * Get the name of export file.
    *
-   * @return
+   * @return name of export file
    */
   public abstract String getFileName();
 
   /**
    * This method is used to generate the export file.
    *
-   * @param advancedExport
    * @param query
-   * @return
+   * @return generated export file
    * @throws AxelorException
-   * @throws IOException
-   * @throws DocumentException
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
   public File generateFile(Query query) throws AxelorException {
@@ -141,7 +133,7 @@ public abstract class AdvancedExportGenerator {
    * Explicitly convert decimal value with it's scale.
    *
    * @param value
-   * @return
+   * @return converted decimal value
    */
   public String convertDecimalValue(Object value) {
     BigDecimal decimalVal = (BigDecimal) value;

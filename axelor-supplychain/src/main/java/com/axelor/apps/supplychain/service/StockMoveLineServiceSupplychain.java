@@ -46,6 +46,7 @@ public interface StockMoveLineServiceSupplychain {
    * @param quantity
    * @param requestedReservedQty
    * @param unitPrice
+   * @param companyUnitPriceUntaxed
    * @param purchasePrice
    * @param unit
    * @param stockMove
@@ -54,6 +55,8 @@ public interface StockMoveLineServiceSupplychain {
    * @param taxRate
    * @param saleOrderLine
    * @param purchaseOrderLine
+   * @param fromStockLocation
+   * @param toStockLocation
    * @return the created stock move line.
    * @throws AxelorException
    */
@@ -81,7 +84,7 @@ public interface StockMoveLineServiceSupplychain {
    * Get a merged stock move line.
    *
    * @param stockMoveLineList
-   * @return
+   * @return merged stock move line
    * @throws AxelorException
    */
   StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)

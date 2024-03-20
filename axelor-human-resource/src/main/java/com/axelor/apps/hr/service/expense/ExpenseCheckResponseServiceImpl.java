@@ -81,7 +81,7 @@ public class ExpenseCheckResponseServiceImpl implements ExpenseCheckResponseServ
    * action-expense-method-check-total-amount
    *
    * @param expense
-   * @return
+   * @return created check response line
    */
   protected CheckResponseLine checkLineTotalAmount(Expense expense) {
     if (expenseLineService.isThereOverAmountLimit(expense)) {

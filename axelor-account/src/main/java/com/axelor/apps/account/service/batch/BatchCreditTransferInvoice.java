@@ -67,7 +67,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
    * Process invoices of the specified document type.
    *
    * @param operationTypeSelect
-   * @return
+   * @return generated invoice payments
    */
   protected List<InvoicePayment> processInvoices(int operationTypeSelect) {
     List<InvoicePayment> doneList = new ArrayList<>();

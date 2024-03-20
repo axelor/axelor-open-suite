@@ -98,6 +98,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    * @throws DatatypeConfigurationException
    * @throws JAXBException
    * @throws IOException
+   * @return file
    */
   @Override
   public File generateFile()
@@ -142,7 +143,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a sender record for international transfer AFB320
    *
-   * @return
+   * @return sender record
    * @throws AxelorException
    */
   protected String createSenderRecord() throws AxelorException {
@@ -426,7 +427,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    * également être précédé de quatre blancs.
    *
    * @param bankDetails
-   * @return
+   * @return iban
    * @throws AxelorException
    */
   public String getIban(BankDetails bankDetails) throws AxelorException {
@@ -471,7 +472,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    *
    * @param isMultiDates
    * @param isMultiCurrencies
-   * @return
+   * @return order index type
    */
   protected int getOrderIndexType(boolean isMultiDates, boolean isMultiCurrencies) {
 
@@ -491,7 +492,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    * Method to create a recipient record for international transfer AFB320
    *
    * @param bankOrderLine
-   * @return
+   * @return recipient record
    * @throws AxelorException
    */
   protected String createDetailRecord(BankOrderLine bankOrderLine) throws AxelorException {
@@ -832,7 +833,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    * Method to create a dependent receiver bank record for international transfer AFB320
    *
    * @param bankOrderLine
-   * @return
+   * @return dependent receiver bank record
    * @throws AxelorException
    */
   protected String createDependentReceiverBankRecord(BankOrderLine bankOrderLine)
@@ -951,7 +952,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    * Method to create an optional further information record for international transfer AFB320
    *
    * @param bankOrderLine
-   * @return
+   * @return optional further information record
    * @throws AxelorException
    */
   protected String createOptionnalFurtherInformationRecord(BankOrderLine bankOrderLine)
@@ -1106,7 +1107,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    * <p>Exemple 2 : /INV/20040423 1234567 36 BOITES DE GATEAUX//RFB/AKC2847312
    *
    * @param bankOrderLine
-   * @return
+   * @return computed payment reason
    */
   protected String computePaymentReason(BankOrderLine bankOrderLine) {
 
@@ -1127,7 +1128,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a total record for internationnal transfer AFB320
    *
-   * @return
+   * @return total record
    * @throws AxelorException
    */
   protected String createTotalRecord() throws AxelorException {

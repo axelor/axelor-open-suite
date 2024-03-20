@@ -59,7 +59,8 @@ public interface AccountManagementAccountService extends AccountManagementServic
    *
    * @param product
    * @param company
-   * @return
+   * @param isPurchase
+   * @return AnalyticDistributionTemplate if found else null
    * @throws AxelorException
    */
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
@@ -70,7 +71,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
    *
    * @param product
    * @param company
-   * @return
+   * @return ProductFixedAssetCategory if found else null
    * @throws AxelorException
    */
   public FixedAssetCategory getProductFixedAssetCategory(Product product, Company company);

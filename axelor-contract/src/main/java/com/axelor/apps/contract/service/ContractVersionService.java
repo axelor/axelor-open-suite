@@ -31,6 +31,7 @@ public interface ContractVersionService {
    * Waiting version at the today date.
    *
    * @param version of the contract will be waiting.
+   * @throws AxelorException
    */
   void waiting(ContractVersion version) throws AxelorException;
 
@@ -39,6 +40,7 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be waiting.
    * @param date of waiting.
+   * @throws AxelorException
    */
   void waiting(ContractVersion version, LocalDate date) throws AxelorException;
 
@@ -46,6 +48,7 @@ public interface ContractVersionService {
    * Ongoing version at the today date.
    *
    * @param version of te contract will be ongoing.
+   * @throws AxelorException
    */
   void ongoing(ContractVersion version) throws AxelorException;
 
@@ -54,6 +57,7 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be ongoing.
    * @param date of activation.
+   * @throws AxelorException
    */
   void ongoing(ContractVersion version, LocalDateTime dateTime) throws AxelorException;
 
@@ -61,6 +65,7 @@ public interface ContractVersionService {
    * Terminate version at the today date.
    *
    * @param version of the contract will be terminate.
+   * @throws AxelorException
    */
   void terminate(ContractVersion version) throws AxelorException;
 
@@ -69,6 +74,7 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be terminate.
    * @param date of terminate.
+   * @throws AxelorException
    */
   void terminate(ContractVersion version, LocalDateTime dateTime) throws AxelorException;
 

@@ -29,7 +29,8 @@ public interface SaleOrderOnLineChangeService {
    * Handle the creation / updating of complementary products. Called onChange of saleOrderLineList.
    *
    * @param saleOrder
-   * @return
+   * @return {@link SaleOrder}
+   * @throws AxelorException
    */
   public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
       throws AxelorException;

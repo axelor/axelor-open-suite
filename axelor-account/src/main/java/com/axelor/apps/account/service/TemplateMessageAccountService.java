@@ -29,7 +29,7 @@ public interface TemplateMessageAccountService {
    *
    * @param debtRecoveryHistory
    * @param template
-   * @return
+   * @return generated message
    * @throws ClassNotFoundException
    */
   Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template)

@@ -78,7 +78,7 @@ public interface BillOfMaterialService {
    * Returns all the products from boms
    *
    * @param companySet
-   * @return
+   * @return List of product ids
    * @throws AxelorException
    */
   List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException;

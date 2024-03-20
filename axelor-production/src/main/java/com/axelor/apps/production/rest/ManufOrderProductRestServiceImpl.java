@@ -234,7 +234,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
    *
    * @param stockMoveLine
    * @param qty
-   * @return
+   * @return updated stock move line
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
@@ -274,7 +274,8 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
    * @param trackingNumber
    * @param manufOrder
    * @param productType
-   * @return
+   * @return created stock move line
+   * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
   @Override

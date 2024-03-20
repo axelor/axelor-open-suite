@@ -36,6 +36,7 @@ public interface AnalyticJournalControlService {
    * This method checks if analyticJournal is already use in a {@link AnalyticMoveLine}
    *
    * @param analyticJournal
+   * @return true if analyticJournal is already use in AnalyticMoveLine, else false
    */
   boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal);
 

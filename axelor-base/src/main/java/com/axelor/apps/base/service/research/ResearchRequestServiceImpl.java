@@ -192,7 +192,7 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
   /**
    * @param searchConfig
    * @param reference
-   * @return
+   * @return map
    */
   protected Map<String, Object> convertResultToDisplayMap(
       ResearchParameterConfig searchConfig, AuditableModel reference) {
@@ -241,7 +241,7 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
    * @param mapper
    * @param reference
    * @param fieldName
-   * @return
+   * @return string value of field name
    * @throws AxelorException
    * @throws ClassNotFoundException
    */

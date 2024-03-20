@@ -449,7 +449,6 @@ public class TimesheetController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
   public void valid(ActionRequest request, ActionResponse response) {
 

@@ -199,7 +199,7 @@ public class RejectImportService {
    * Méthode permettant de construire une date de rejet depuis le texte récupéré du fichier CFONB
    *
    * @param dateReject
-   * @return
+   * @return created date
    */
   public LocalDate createRejectDate(String dateReject) {
     return LocalDate.of(

@@ -180,7 +180,6 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * Procédure permettant de rectifier un exercice comptable
    *
    * @param year Un exercice comptable
-   * @throws AxelorException
    */
   @Transactional
   public void adjust(Year year) {

@@ -57,7 +57,7 @@ public interface BudgetDistributionService {
    * For all lines in invoice or move, compute paid amount field in all related budgets and save
    * them
    *
-   * @param invoice, move, ratio
+   * @param invoice, move, ratio, isCancel
    */
   void computePaidAmount(Invoice invoice, Move move, BigDecimal ratio, boolean isCancel);
 

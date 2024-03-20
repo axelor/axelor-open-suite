@@ -56,6 +56,7 @@ public interface TimerService {
    *
    * @param model The model link to timer.
    * @return The timer related to model.
+   * @throws AxelorException
    */
   Timer find(Model model) throws AxelorException;
 

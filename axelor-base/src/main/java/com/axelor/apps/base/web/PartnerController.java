@@ -56,7 +56,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.Date;
 import java.util.HashMap;
@@ -65,7 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
-import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
 import org.iban4j.UnsupportedCountryException;
@@ -99,9 +97,7 @@ public class PartnerController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
   public void printContactPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -128,9 +124,7 @@ public class PartnerController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
   public void printCompanyPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -156,7 +150,7 @@ public class PartnerController {
    *
    * @param request
    * @param response
-   * @return
+   * @throws AxelorException
    */
   public void printClientSituation(ActionRequest request, ActionResponse response)
       throws AxelorException {
