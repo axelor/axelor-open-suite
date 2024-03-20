@@ -377,4 +377,12 @@ public final class SupplychainExceptionMessage {
   public static final String
       COULD_NOT_FIND_RECIPIENTS_FOR_MESSAGE_GENERATED_FROM_STOCK_RULES = /*$$(*/
           "Could not find recipients for message generated from stock rules: %s" /*)*/;
+  public static final String ALLOCATION_QTY_BY_TRACKING_NUMBER_IS_NOT_AVAILABLE =
+      /*$$(*/ "Allocation quantity is not available for this tracking number at this location." /*)*/;
+
+  public static final String ALLOCATION_QTY_BY_PRODUCT_IS_NOT_AVAILABLE =
+      /*$$(*/ "Allocation quantity is not available for this product at this location." /*)*/;
+
+  public static final String PRODUCT_RESERVATION_INVALID =
+      /*$$(*/ "Product reservation invalid" /*)*/;
 }

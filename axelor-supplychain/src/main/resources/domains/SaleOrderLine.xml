@@ -56,6 +56,11 @@
 
 
 
+
+    <one-to-many name="productReservationList"
+      ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservations"
+      mappedBy="originSaleOrderLine"/>
+
     <extra-code>
   		<![CDATA[
             // SALE SUPPLY SELECT
