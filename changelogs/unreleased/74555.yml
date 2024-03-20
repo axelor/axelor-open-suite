@@ -1,0 +1,5 @@
+---
+title: Add missing display condition of the Revaluation fields
+module: axelor-contract
+developer: |
+  In contract-form, added display condition to isToRevaluate in commercialConditionPanel
