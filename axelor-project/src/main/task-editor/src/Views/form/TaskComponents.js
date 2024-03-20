@@ -80,15 +80,9 @@ export function TaskProgress({ ...props }) {
       }}
       {...props}
       value={value}
-      onChange={event => {
-        const newValue = event.target.value;
-        if (Math.abs(value - newValue) === 1) {
-          formatProgressValue(event);
-        } else {
-          setValue(event.target.value);
-        }
-      }}
+      onChange={event => setValue(event.target.value)}
       onBlur={formatProgressValue}
+      onClick={formatProgressValue}
     />
   );
 }
