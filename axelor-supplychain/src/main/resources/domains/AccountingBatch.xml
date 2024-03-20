@@ -12,6 +12,11 @@
     <many-to-one name="forecastedInvSuppAccount"
       title="Forecasted invoice supplier account" ref="com.axelor.apps.account.db.Account"/>
 
+    <decimal name="lowerAmountLimit" title="Move trigger lower limit" precision="20"
+      scale="2"/>
+    <decimal name="upperAmountLimit" title="Move trigger upper limit" precision="20"
+      scale="2"/>
+
     <extra-code><![CDATA[
 
 		// ACCOUNTING CUT OFF
