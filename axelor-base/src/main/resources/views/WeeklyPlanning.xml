@@ -10,8 +10,8 @@
 
   <form name="weekly-planning-form" title="Weekly Planning"
     model="com.axelor.apps.base.db.WeeklyPlanning"
-    onNew="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:initPlanning, action-base-attrs-weekly-planning-type-select"
-    onLoad="action-base-attrs-weekly-planning-type-select"
+    onNew="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:initPlanning, action-base-method-weekly-planning-type-select"
+    onLoad="action-base-method-weekly-planning-type-select"
     onSave="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
     <panel name="mainPanel">
       <field name="name"/>
@@ -26,12 +26,9 @@
       grid-view="day-planning-grid" form-view="day-planning-form"/>
   </form>
 
-  <action-attrs name="action-base-attrs-weekly-planning-type-select">
-    <attribute
-      if=" __config__.app.isApp('employee') &amp;&amp;  !__config__.app.isApp('production')"
-      name="selection-in" expr="eval: [1]" for="typeSelect"/>
-    <attribute
-      if=" __config__.app.isApp('production')  &amp;&amp;  !__config__.app.isApp('employee')"
-      name="selection-in" expr="eval: [2]" for="typeSelect"/>
-  </action-attrs>
+  <action-method name="action-base-method-weekly-planning-type-select">
+    <call class="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController"
+      method="insertTypeSelect"/>
+  </action-method>
+
 </object-views>

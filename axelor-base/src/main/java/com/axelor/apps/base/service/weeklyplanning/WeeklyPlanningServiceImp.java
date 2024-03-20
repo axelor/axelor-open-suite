@@ -28,6 +28,8 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.app.service.AppService;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -39,6 +41,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
+  protected AppService appService;
+
+  @Inject
+  public WeeklyPlanningServiceImp(AppService appService) {
+
+    this.appService = appService;
+  }
 
   public static final int DEFAULT_SCALE = 2;
 
@@ -259,6 +268,17 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
       }
     }
     return null;
+  }
+
+  @Override
+  public List<Integer> insertTypeSelect() {
+    int humanResource = 1;
+    int machine = 2;
+    if (appService.isApp("business-project")
+        || (appService.isApp("production") && appService.isApp("employee")))
+      return List.of(humanResource, machine);
+
+    return appService.isApp("production") ? List.of(machine) : List.of(humanResource);
   }
 
   public String messageInCheckPlanning(String message, DayPlanning dayPlanning) {

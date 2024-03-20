@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.List;
 
 public class WeeklyPlanningController {
 
@@ -44,5 +45,10 @@ public class WeeklyPlanningController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void insertTypeSelect(ActionRequest request, ActionResponse response) {
+    List<Integer> selects = Beans.get(WeeklyPlanningService.class).insertTypeSelect();
+    response.setAttr("typeSelect", "selection-in", selects);
   }
 }
