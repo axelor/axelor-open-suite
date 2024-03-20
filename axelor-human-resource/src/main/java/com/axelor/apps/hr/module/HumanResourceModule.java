@@ -186,6 +186,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
@@ -337,5 +339,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetLineCheckService.class).to(TimesheetLineCheckServiceImpl.class);
     bind(ExpenseLineToolService.class).to(ExpenseLineToolServiceImpl.class);
     bind(ExpenseLineUpdateService.class).to(ExpenseLineUpdateServiceImpl.class);
+    bind(TimesheetLeaveService.class).to(TimesheetLeaveServiceImpl.class);
   }
 }
