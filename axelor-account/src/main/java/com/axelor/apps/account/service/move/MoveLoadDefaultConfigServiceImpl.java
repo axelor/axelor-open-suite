@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 
 public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigService {
@@ -87,26 +86,26 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
   }
 
   @Override
-  public TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount)
-      throws AxelorException {
-    Tax tax;
-    TaxLine taxLine;
-    Partner partner = move.getPartner();
-    if (accountingAccount == null || accountingAccount.getDefaultTax() == null) {
+  public TaxLine getTaxLine(Move move, MoveLine moveLine, Account account) throws AxelorException {
+    if (account == null || account.getDefaultTax() == null) {
       return null;
     }
 
-    tax = accountingAccount.getDefaultTax();
-    taxLine = taxService.getTaxLine(tax, moveLine.getDate());
+    Partner partner = move.getPartner();
+    Tax tax = account.getDefaultTax();
+    TaxLine taxLine = taxService.getTaxLine(tax, moveLine.getDate());
+    TaxEquiv taxEquiv = null;
 
-    if (!ObjectUtils.isEmpty(partner) && !ObjectUtils.isEmpty(partner.getFiscalPosition())) {
-      TaxEquiv taxEquiv =
-          fiscalPositionAccountService.getTaxEquiv(partner.getFiscalPosition(), tax);
-      if (taxEquiv != null) {
-        moveLine.setTaxLineBeforeReverse(taxLine);
-        moveLine.setTaxEquiv(taxEquiv);
-        taxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
-      }
+    if (move.getFiscalPosition() != null) {
+      taxEquiv = fiscalPositionAccountService.getTaxEquiv(move.getFiscalPosition(), tax);
+    } else if (partner != null && partner.getFiscalPosition() != null) {
+      taxEquiv = fiscalPositionAccountService.getTaxEquiv(partner.getFiscalPosition(), tax);
+    }
+
+    if (taxEquiv != null) {
+      moveLine.setTaxLineBeforeReverse(taxLine);
+      moveLine.setTaxEquiv(taxEquiv);
+      taxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
     }
 
     return taxLine;
