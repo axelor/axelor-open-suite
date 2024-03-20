@@ -34,6 +34,8 @@ public interface ProjectPlanningTimeService {
 
   public void addMultipleProjectPlanningTime(Map<String, Object> dataMap) throws AxelorException;
 
+  void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
+
   public void removeProjectPlanningLines(List<Integer> projectPlanningLineIds);
 
   public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime);

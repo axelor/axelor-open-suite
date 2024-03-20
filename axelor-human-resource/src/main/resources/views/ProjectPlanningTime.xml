@@ -55,6 +55,9 @@
       <field name="endDateTime"/>
       <field name="project" hidden="true"/>
       <field name="description" colSpan="12" widget="html"/>
+      <field name="icalendarEvent"/>
+      <button name="createBtn" title="Create"
+        onClick="save,action-project-planning-time-method-create-line" showIf="_timePlannedPopup"/>
     </panel>
   </form>
 
@@ -120,6 +123,7 @@
     <view type="form" name="project-planning-time-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
     <context name="_project" expr="eval:__parent__"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
@@ -207,5 +211,10 @@
     <attribute for="timeUnit" name="value" expr="" if="!projectTask"/>
     <attribute for="timeUnit" name="readonly" expr="eval: false" if="!projectTask"/>
   </action-attrs>
+
+  <action-method name="action-project-planning-time-method-create-line">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="addSingleProjectPlanningTime"/>
+  </action-method>
 
 </object-views>

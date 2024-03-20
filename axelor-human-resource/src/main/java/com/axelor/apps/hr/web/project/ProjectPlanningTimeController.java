@@ -21,6 +21,7 @@ package com.axelor.apps.hr.web.project;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -36,6 +37,18 @@ public class ProjectPlanningTimeController {
 
     Context context = request.getContext();
     Beans.get(ProjectPlanningTimeService.class).addMultipleProjectPlanningTime(context);
+
+    response.setCanClose(true);
+  }
+
+  public void addSingleProjectPlanningTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+    Beans.get(ProjectPlanningTimeService.class)
+        .addSingleProjectPlanningTime(
+            JPA.find(ProjectPlanningTime.class, projectPlanningTime.getId()));
 
     response.setCanClose(true);
   }
