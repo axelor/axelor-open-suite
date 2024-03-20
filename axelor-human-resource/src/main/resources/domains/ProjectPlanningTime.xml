@@ -25,9 +25,6 @@
     <many-to-one name="timeUnit" title="Time unit" ref="com.axelor.apps.base.db.Unit"
       required="true"/>
 
-    <many-to-one name="icalendarEvent" title="Event"
-      ref="com.axelor.apps.base.db.ICalendarEvent"/>
-
     <string name="fullName" namecolumn="true">
 		 <![CDATA[
       		return Beans.get(ProjectPlanningTimeComputeNameService.class).computeProjectPlanningTimeFullname(this.getEmployee(),this.getProject(),this.getStartDateTime());
