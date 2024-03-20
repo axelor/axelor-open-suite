@@ -19,6 +19,8 @@
 package com.axelor.apps.fleet.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.fleet.db.repo.VehicleFleetRepository;
+import com.axelor.apps.fleet.db.repo.VehicleRepository;
 import com.axelor.apps.fleet.service.VehicleFuelLogService;
 import com.axelor.apps.fleet.service.VehicleFuelLogServiceImpl;
 import com.axelor.apps.fleet.service.VehicleService;
@@ -30,5 +32,6 @@ public class FleetModule extends AxelorModule {
   protected void configure() {
     bind(VehicleService.class).to(VehicleServiceImpl.class);
     bind(VehicleFuelLogService.class).to(VehicleFuelLogServiceImpl.class);
+    bind(VehicleRepository.class).to(VehicleFleetRepository.class);
   }
 }
