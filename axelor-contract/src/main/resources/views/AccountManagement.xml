@@ -11,14 +11,14 @@
       <attribute name="onNew" value="action-contract-account-management-group-on-new"/>
       <attribute name="onLoad" value="action-contract-account-management-group-on-load"/>
     </extend>
-    <extend target="//panel[@name='purchaseConfig1Panel']/field[@name='purchaseTax']">
+    <extend target="//panel[@name='purchaseConfig1Panel']/field[@name='purchaseTaxSet']">
       <insert position="after">
         <field name="yearEndBonusPurchaseAccount" if-module="axelor-contract"
           form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('contract')"
           canEdit="false" colSpan="6" hidden="true"/>
       </insert>
     </extend>
-    <extend target="//panel[@name='saleConfig1Panel']/field[@name='saleTax']">
+    <extend target="//panel[@name='saleConfig1Panel']/field[@name='saleTaxSet']">
       <insert position="after">
         <field name="yearEndBonusSaleAccount" if-module="axelor-contract"
           form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('contract')"
@@ -28,7 +28,7 @@
   </form>
 
   <action-group name="action-contract-account-management-group-on-new">
-    <action name="action-account-management-group-onNew,"/>
+    <action name="action-account-management-group-onNew"/>
     <action name="action-account-management-attrs-global-accounting-cash-account-title"/>
     <action name="action-account-management-attrs-hide-yer-account"/>
   </action-group>
