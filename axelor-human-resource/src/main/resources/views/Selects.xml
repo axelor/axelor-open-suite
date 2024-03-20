@@ -250,8 +250,9 @@
     <option value="3">Never</option>
   </selection>
 
-  <selection name="hr.expense.type.select">
-    <option value="1">Expense</option>
-    <option value="2">Expense declaration</option>
+
+  <selection name="base.weekly.planning.type.select" id="hr.weekly.planning.type.select">
+    <option value="1">Human resources</option>
   </selection>
+
 </object-views>

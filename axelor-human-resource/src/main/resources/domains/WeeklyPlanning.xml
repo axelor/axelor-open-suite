@@ -6,12 +6,15 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="WeeklyPlanning" cacheable="true">
-    <string name="name" required="true" namecolumn="true"/>
-    <one-to-many name="weekDays" ref="com.axelor.apps.base.db.DayPlanning"
-      mappedBy="weeklyPlanning"/>
-    <decimal name="bonusCoef" title="Coefficient for bonus"/>
-    <decimal name="leaveCoef" title="Coefficient for leave" default="1"/>
-    <integer name="typeSelect" title="Type" selection="base.weekly.planning.type.select"/>
+
+
+    <extra-code>
+  	<![CDATA[
+  		public static final int WEEKLY_PLANNING_HUMAN_RESOURCES = 1;
+
+  	]]>
+    </extra-code>
+
   </entity>
 
 </domain-models>

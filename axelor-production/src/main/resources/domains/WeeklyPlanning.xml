@@ -7,12 +7,9 @@
 
   <entity name="WeeklyPlanning" cacheable="true">
 
-    <integer name="typeSelect" title="Type"
-      selection="production.weekly.planning.type.select" default="1"/>
 
     <extra-code>
   	<![CDATA[
-  		public static final int WEEKLY_PLANNING_HUMAN_RESOURCES = 1;
   		public static final int WEEKLY_PLANNING_MACHINE = 2;
   	]]>
     </extra-code>
