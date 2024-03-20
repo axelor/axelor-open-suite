@@ -486,13 +486,11 @@
             grid-view="template-grid"/>
         </panel>
       </panel>
-      <panel name="accClearancePanel" title="Acc. Clearance">
+      <panel name="accClearancePanel" title="Acc. Clearance" itemSpan="4">
         <field name="profitAccount" domain="self.statusSelect = 1 AND self.company = :company"
           grid-view="account-grid" form-view="account-form"/>
         <field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
-        <panel-related field="clearanceAccountSet"
-          domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12"
-          grid-view="account-grid" form-view="account-form"/>
+        <field name="vatSystemSelect"/>
       </panel>
       <panel name="analyticPanel"
         if="__config__.app.getApp('account')?.getManageAnalyticAccounting()" title="Analytic">

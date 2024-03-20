@@ -7,18 +7,26 @@
 
   <entity name="AccountClearance">
 
+    <integer name="statusSelect" title="Status" readonly="true"
+      selection="iaccount.account.clearance.status.select" default="1"/>
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.vat.system.select" default="0"/>
+    <decimal name="amountThreshold" title="Clearance maximum amount" required="true"/>
     <string name="name" title="Reference" readonly="true"/>
+    <date name="dateThreshold" title="Overpayment before" required="true"/>
     <datetime name="dateTime" title="Account clearance date" tz="true" readonly="true"/>
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"
       readonly="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
-    <integer name="statusSelect" title="Status" readonly="true"
-      selection="iaccount.account.clearance.status.select" default="1"/>
-    <decimal name="amountThreshold" title="Clearance maximum amount" required="true"/>
-    <date name="dateThreshold" title="Overpayment before" required="true"/>
+    <many-to-one name="profitAccount" ref="com.axelor.apps.account.db.Account"
+      title="Profit accounts"/>
+    <many-to-one name="standardRateTax" ref="com.axelor.apps.account.db.Tax"
+      title="Tax standard rate for clearance"/>
     <many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine"
       title="Overpayments collected"/>
+    <many-to-many name="clearanceAccountSet" ref="com.axelor.apps.account.db.Account"
+      title="Clearance Accounts"/>
 
     <unique-constraint columns="name,company"/>
 
