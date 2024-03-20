@@ -58,6 +58,8 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
               : null);
       json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
     }
+    json.put("filterOnAvailableProducts", stockMove.getFilterOnAvailableProducts());
+
     return super.populate(json, context);
   }
 }

@@ -832,6 +832,11 @@
       expr="eval: statusSelect &gt; 1 || (fromStockLocation != null &amp;&amp; fromStockLocation.typeSelect == 3)"/>
   </action-attrs>
 
+  <action-record name="action-stock-move-record-set-filter-on-available-products"
+    model="com.axelor.apps.stock.db.StockMove">
+    <field name="filterOnAvailableProducts" expr="eval: true"/>
+  </action-record>
+
   <action-group name="action-group-stock-stockmove-onnew">
     <action name="action-stock-move-record-new"/>
     <action name="action-stock-move-method-get-from-stock-location"/>
@@ -845,6 +850,7 @@
     <action name="action-attrs-supply-chain-stock-move-onnew"
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
     <action name="action-stock-move-attrs-filter-on-available-products"/>
+    <action name="action-stock-move-record-set-filter-on-available-products"/>
     <action name="action-stock-move-record-set-group-product-on-printing"/>
     <action name="action-stock-move-record-set-pfp-status"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
