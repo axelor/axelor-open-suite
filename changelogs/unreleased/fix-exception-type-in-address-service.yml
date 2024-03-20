@@ -1,0 +1,3 @@
+---
+title: "Address: Throw new AxelorException instead of RuntimeException"
+module: "axelor-base"
