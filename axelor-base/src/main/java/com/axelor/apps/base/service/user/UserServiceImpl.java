@@ -274,14 +274,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public String getLanguage() {
-
+    String appLanguage = AppSettings.get().get("application.locale");
     User user = getUser();
     if (user != null && !Strings.isNullOrEmpty(user.getLanguage())) {
       return user.getLanguage();
     }
-    return Strings.isNullOrEmpty(AppSettings.get().get("application.locale"))
-        ? DEFAULT_LOCALE
-        : AppSettings.get().get("application.locale");
+    return Strings.isNullOrEmpty(appLanguage) ? DEFAULT_LOCALE : appLanguage;
   }
 
   @Override
