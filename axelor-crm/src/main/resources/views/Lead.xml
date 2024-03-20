@@ -237,6 +237,10 @@
         </panel>
       </panel>
 
+      <panel-related name="otherContacts" title="Other contacts" field="contactSet"
+        form-view="partner-contact-form" grid-view="partner-contact-grid"
+        domain="self.isContact = true"/>
+
       <panel name="eventPanel" title="Events">
         <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
           onClick="save,action-lead-view-meeting-event" colSpan="3"/>
@@ -256,10 +260,8 @@
       <panel name="emailPanel" title="Emails">
         <button name="emailBtn" title="Create an email" link="" icon="fa-envelope-o"
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
-        <panel-dashlet name="leadSentEmailsPanel" title="Sent emails"
-          action="action-lead-view-sent-emails" colSpan="12" height="550"/>
-        <panel-dashlet name="leadReceivedEmailsPanel" title="Received emails"
-          action="action-lead-view-received-emails" colSpan="12" height="550"/>
+        <panel-dashlet name="leadEmailsPanel" title="Emails"
+          action="action-lead-view-emails" colSpan="12" height="550" canSearch="true"/>
       </panel>
       <panel-dashlet name="leadMarketingCampaignPanel" title="Marketing campaign"
         if="__config__.app.isApp('marketing')" if-module="axelor-marketing"
@@ -552,28 +554,25 @@
 
   <!-- PORTLET -->
 
-  <action-view name="action-lead-view-sent-emails" title="Sent emails"
-    model="com.axelor.message.db.Message">
-    <view type="cards" name="message-cards"/>
-    <view type="grid" name="message-grid"/>
-    <view type="form" name="message-form"/>
-    <domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related
-      WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND
-      related.relatedToSelectId =
-      :id) OR (:email IN (SELECT em.address FROM EmailAddress em WHERE em member of
-      self.toEmailAddressSet)))</domain>
-    <context name="email" expr="eval: emailAddress?.address"/>
-  </action-view>
-
-  <action-view name="action-lead-view-received-emails" title="Received emails"
+  <action-view name="action-lead-view-emails" title="Emails"
     model="com.axelor.message.db.Message">
     <view type="cards" name="message-cards"/>
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
     <domain>self.mediaTypeSelect = 2 AND ((self.multiRelatedList.relatedToSelect =
-      'com.axelor.apps.crm.db.Lead' AND self.multiRelatedList.relatedToSelectId = :id)
-      OR
-      (self.fromEmailAddress.address = :email))</domain>
+      'com.axelor.apps.crm.db.Lead' AND self.multiRelatedList.relatedToSelectId = :id) OR EXISTS
+      (SELECT em.address from EmailAddress em WHERE em MEMBER OF
+      self.toEmailAddressSet AND
+      (em.address = :email OR em.address in (SELECT
+      contact.emailAddress.address from Lead lead LEFT
+      JOIN lead.contactSet contact where lead.id =
+      :id))) OR
+      self.fromEmailAddress.address = :email OR
+      self.fromEmailAddress.address in (SELECT
+      contact.emailAddress.address FROM Lead lead LEFT JOIN
+      lead.contactSet contact WHERE lead.id =
+      :id))</domain>
+    <context name="id" expr="eval: id"/>
     <context name="email" expr="eval: emailAddress?.address"/>
   </action-view>
 
@@ -583,7 +582,11 @@
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
     <view-param name="forceEdit" value="true"/>
-    <domain>self.eventLead.id = :_leadId </domain>
+    <domain>self.eventLead.id = :_leadId OR self.attendees.email
+      IN (SELECT
+      contact.emailAddress.address FROM Lead lead LEFT JOIN lead.contactSet contact WHERE
+      lead.id =
+      :_leadId)</domain>
     <context name="_leadId" expr="eval: __id__"/>
   </action-view>
 
@@ -591,7 +594,11 @@
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.eventLead.id = :_leadId </domain>
+    <domain>self.eventLead.id = :_leadId OR self.attendees.email
+      IN (SELECT
+      contact.emailAddress.address FROM Lead lead LEFT JOIN lead.contactSet contact WHERE
+      lead.id =
+      :_leadId)</domain>
     <context name="_leadId" expr="eval: __id__"/>
   </action-view>
 
