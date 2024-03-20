@@ -49,7 +49,6 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
-    <context name="_showRecord" expr="eval: _id"/>
   </action-view>
 
   <action-method name="action-sale-order-method-add-pack">
