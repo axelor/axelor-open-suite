@@ -951,4 +951,41 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             .count()
         > 0;
   }
+
+  @Override
+  public boolean checkConsumptionLineQuantity(
+      Contract contractCtx, ConsumptionLine consumptionLineCtx, BigDecimal initQt) {
+
+    BigDecimal max = BigDecimal.ZERO;
+    if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
+      ContractLine contractLine =
+          contractCtx.getCurrentContractVersion().getContractLineList().get(0);
+      if (!contractLine.getIsConsumptionLine()) {
+        return false;
+      }
+      max = contractLine.getConsumptionMaxQuantity();
+    }
+    BigDecimal sum =
+        contractCtx.getConsumptionLineList().stream()
+            .filter(
+                consumptionLine ->
+                    dateInPeriod(
+                            consumptionLine.getLineDate(),
+                            contractCtx.getInvoicePeriodStartDate(),
+                            contractCtx.getInvoicePeriodEndDate())
+                        && consumptionLine
+                            .getProduct()
+                            .getId()
+                            .equals(consumptionLineCtx.getProduct().getId()))
+            .map(ConsumptionLine::getQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    sum = sum.subtract(initQt);
+    sum = sum.add(consumptionLineCtx.getQty());
+    return sum.compareTo(max) > 0;
+  }
+
+  private boolean dateInPeriod(LocalDate date, LocalDate startDate, LocalDate endDate) {
+    return date.compareTo(startDate) >= 0 && date.compareTo(endDate) <= 0;
+  }
 }

@@ -104,6 +104,8 @@
 	    ]]>
     </many-to-one>
 
+    <decimal name="consumptionMaxQuantity" title="Consumption max quantity" min="0"/>
+
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
 					   isConsumptionLine"/>

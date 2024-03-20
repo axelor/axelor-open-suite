@@ -27,6 +27,7 @@ import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.crm.db.Opportunity;
 import com.google.common.collect.Multimap;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -169,6 +170,9 @@ public interface ContractService {
   Contract getNextContract(Contract contract) throws AxelorException;
 
   void setInitialPriceOnContractLines(Contract contract);
+
+  boolean checkConsumptionLineQuantity(
+      Contract contract, ConsumptionLine consumptionLine, BigDecimal initQt);
 
   Contract generateContractFromOpportunity(
       Opportunity opportunity, ContractTemplate contractTemplate);
