@@ -24,7 +24,7 @@ public class InvoiceLinePricingServiceImpl implements InvoiceLinePricingService 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       ContractLine contractLine = invoiceLine.getContractLine();
       applyPricing(invoice, invoiceLine, contractLine);
-      computeCompanyTotal(invoice, invoiceLine);
+      invoiceLineService.compute(invoice, invoiceLine);
     }
   }
 
