@@ -957,7 +957,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     applyCancelReason(stockMove, cancelReason);
     cancel(stockMove);
-    if (cancellationAutomaticMail .isEmpty()|| cancellationMessageTemplateID.isEmpty()) {
+    if (cancellationAutomaticMail.isEmpty() || cancellationMessageTemplateID.isEmpty()) {
       return;
     }
     if (isSupplierAutomaticCancellationMail(stockMove, cancellationAutomaticMail)) {
@@ -970,10 +970,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   private boolean isSupplierAutomaticCancellationMail(
       StockMove stockMove, Optional<Boolean> cancellationAutomaticMail) {
-    boolean automaticSending = false;
-    if (cancellationAutomaticMail.isPresent()) {
-      automaticSending = cancellationAutomaticMail.get();
-    }
+    boolean automaticSending = cancellationAutomaticMail.orElse(false);
     return stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
         && !stockMove.getIsReversion()
         && automaticSending;
