@@ -37,7 +37,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
-import com.axelor.apps.account.service.period.PeriodServiceAccount;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -70,7 +70,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
       AppAccountService appAccountService,
       FixedAssetGenerationService fixedAssetGenerationService,
       MoveLineTaxService moveLineTaxService,
-      PeriodServiceAccount periodServiceAccount,
+      PeriodCheckService periodCheckService,
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
@@ -94,7 +94,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
         appAccountService,
         fixedAssetGenerationService,
         moveLineTaxService,
-        periodServiceAccount,
+        periodCheckService,
         moveControlService,
         moveCutOffService,
         moveLineCheckService,

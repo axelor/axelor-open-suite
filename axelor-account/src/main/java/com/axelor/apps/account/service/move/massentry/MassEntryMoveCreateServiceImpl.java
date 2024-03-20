@@ -34,7 +34,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
-import com.axelor.apps.account.service.period.PeriodServiceAccount;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -56,7 +56,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
-  protected PeriodServiceAccount periodServiceAccount;
+  protected PeriodCheckService periodCheckService;
   protected MoveValidateService moveValidateService;
   protected PeriodService periodService;
   protected MoveLineMassEntryRepository moveLineMassEntryRepository;
@@ -72,7 +72,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      PeriodServiceAccount periodServiceAccount,
+      PeriodCheckService periodCheckService,
       MoveValidateService moveValidateService,
       PeriodService periodService,
       MoveLineMassEntryRepository moveLineMassEntryRepository,
@@ -85,7 +85,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
-    this.periodServiceAccount = periodServiceAccount;
+    this.periodCheckService = periodCheckService;
     this.moveValidateService = moveValidateService;
     this.periodService = periodService;
     this.moveLineMassEntryRepository = moveLineMassEntryRepository;
@@ -167,7 +167,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         counter++;
       }
 
-      if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(newMove, user)) {
+      if (!periodCheckService.isAuthorizedToAccountOnPeriod(newMove, user)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(

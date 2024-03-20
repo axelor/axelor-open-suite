@@ -33,7 +33,7 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
-import com.axelor.apps.account.service.period.PeriodServiceAccount;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -66,7 +66,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveValidateService moveValidateService;
   protected MoveControlService moveControlService;
   protected AppAccountService appAccountService;
-  protected PeriodServiceAccount periodServiceAccount;
+  protected PeriodCheckService periodCheckService;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
@@ -77,7 +77,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveValidateService moveValidateService,
       MoveControlService moveControlService,
       AppAccountService appAccountService,
-      PeriodServiceAccount periodServiceAccount,
+      PeriodCheckService periodCheckService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
@@ -85,7 +85,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     this.moveValidateService = moveValidateService;
     this.moveControlService = moveControlService;
     this.appAccountService = appAccountService;
-    this.periodServiceAccount = periodServiceAccount;
+    this.periodCheckService = periodCheckService;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
@@ -245,7 +245,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
           true,
           temporaryMoveNumber);
       return true;
-    } else if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
+    } else if (!periodCheckService.isAuthorizedToAccountOnPeriod(
         move.getPeriod(), AuthUtils.getUser())) {
       this.setMassEntryErrorMessage(
           move, I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED), true, temporaryMoveNumber);
