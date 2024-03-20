@@ -19,10 +19,13 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -37,16 +40,24 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
-public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanningTimeServiceImpl {
+public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanningTimeServiceImpl
+    implements ProjectPlanningTimeBusinessProjectService {
 
   protected AppBusinessProjectService appBusinessProjectService;
+  protected ICalendarService iCalendarService;
+  protected ICalendarEventRepository iCalendarEventRepository;
 
   @Inject
   public ProjectPlanningTimeBusinessProjectServiceImpl(
@@ -58,7 +69,9 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      ICalendarService iCalendarService,
+      ICalendarEventRepository iCalendarEventRepository) {
     super(
         planningTimeRepo,
         projectRepo,
@@ -69,6 +82,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         employeeRepo,
         timesheetLineRepository);
     this.appBusinessProjectService = appBusinessProjectService;
+    this.iCalendarService = iCalendarService;
+    this.iCalendarEventRepository = iCalendarEventRepository;
   }
 
   @Override
@@ -92,6 +107,11 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
             activity,
             dailyWorkHrs,
             taskEndDateTime);
+
+    if (!appBusinessProjectService.isApp("business-project")) {
+      return planningTime;
+    }
+
     if (projectTask != null) {
       Unit timeUnit = projectTask.getTimeUnit();
       if (Objects.isNull(timeUnit)) {
@@ -115,6 +135,112 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       planningTime.setPlannedTime(
           planningTime.getPlannedTime().divide(numberHoursADay, 2, RoundingMode.HALF_UP));
     }
+    if (appBusinessProjectService.getAppBusinessProject().getEnableEventCreation()) {
+      createICalendarEvent(planningTime);
+    }
+
     return planningTime;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    if (appBusinessProjectService.getAppBusinessProject().getEnableEventCreation()) {
+      createICalendarEvent(projectPlanningTime);
+    }
+    planningTimeRepo.save(projectPlanningTime);
+  }
+
+  @Override
+  @Transactional
+  public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime) {
+    if (!JPA.em().contains(projectPlanningTime)) {
+      projectPlanningTime = planningTimeRepo.find(projectPlanningTime.getId());
+    }
+
+    if (projectPlanningTime.getIcalendarEvent() != null) {
+      ICalendarEvent event = projectPlanningTime.getIcalendarEvent();
+      projectPlanningTime.setIcalendarEvent(null);
+      iCalendarEventRepository.remove(iCalendarEventRepository.find(event.getId()));
+    }
+
+    planningTimeRepo.remove(projectPlanningTime);
+  }
+
+  protected void createICalendarEvent(ProjectPlanningTime planningTime) {
+    ProjectTask projectTask = planningTime.getProjectTask();
+    String subject =
+        Optional.ofNullable(projectTask)
+            .map(ProjectTask::getProject)
+            .map(project -> project.getFullName() + " - ")
+            .orElse("");
+    subject += Optional.ofNullable(projectTask).map(ProjectTask::getFullName).orElse("");
+    ICalendarEvent event =
+        iCalendarService.createEvent(
+            planningTime.getStartDateTime(),
+            planningTime.getEndDateTime(),
+            planningTime.getEmployee().getUser(),
+            planningTime.getDescription(),
+            0,
+            subject);
+    iCalendarEventRepository.save(event);
+    planningTime.setIcalendarEvent(event);
+  }
+
+  @Override
+  @Transactional
+  public void updateProjectPlanningTime(
+      ProjectPlanningTime projectPlanningTime,
+      LocalDateTime startDateTime,
+      LocalDateTime endDateTime,
+      String description) {
+    if (startDateTime != null) {
+      projectPlanningTime.setStartDateTime(startDateTime);
+    }
+    if (endDateTime != null) {
+      projectPlanningTime.setEndDateTime(endDateTime);
+    }
+    if (description != null) {
+      projectPlanningTime.setDescription(description);
+    }
+    planningTimeRepo.save(projectPlanningTime);
+  }
+
+  @Override
+  @Transactional
+  public void updateLinkedEvent(ProjectPlanningTime projectPlanningTime) {
+    ICalendarEvent icalendarEvent = projectPlanningTime.getIcalendarEvent();
+    if (appBusinessProjectService.getAppBusinessProject().getEnableEventCreation()
+        && icalendarEvent != null) {
+
+      icalendarEvent.setStartDateTime(projectPlanningTime.getStartDateTime());
+      icalendarEvent.setEndDateTime(projectPlanningTime.getEndDateTime());
+      icalendarEvent.setDescription(projectPlanningTime.getDescription());
+      User user = projectPlanningTime.getEmployee().getUser();
+      icalendarEvent.setUser(user);
+      icalendarEvent.setCalendar(user.getiCalendar());
+
+      iCalendarEventRepository.save(icalendarEvent);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void deleteLinkedProjectPlanningTime(List<Long> ids) {
+    List<ProjectPlanningTime> projectPlanningTimeList =
+        planningTimeRepo
+            .all()
+            .filter("self.icalendarEvent.id IN :icalendarEvent")
+            .bind("icalendarEvent", ids)
+            .fetch();
+
+    if (projectPlanningTimeList.isEmpty()) {
+      return;
+    }
+    for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
+      projectPlanningTime.setIcalendarEvent(null);
+      planningTimeRepo.remove(projectPlanningTime);
+    }
   }
 }

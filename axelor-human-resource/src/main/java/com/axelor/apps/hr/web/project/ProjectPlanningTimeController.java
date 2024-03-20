@@ -72,7 +72,9 @@ public class ProjectPlanningTimeController {
         request.getContext().asType(ProjectPlanningTime.class);
 
     if (projectPlanningTime != null) {
-      Beans.get(ProjectPlanningTimeService.class).removeProjectPlanningLine(projectPlanningTime);
+      Beans.get(ProjectPlanningTimeService.class)
+          .removeProjectPlanningLine(
+              JPA.find(ProjectPlanningTime.class, projectPlanningTime.getId()));
     }
 
     response.setReload(true);

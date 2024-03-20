@@ -55,7 +55,6 @@
       <field name="endDateTime"/>
       <field name="project" hidden="true"/>
       <field name="description" colSpan="12" widget="html"/>
-      <field name="icalendarEvent"/>
       <button name="createBtn" title="Create"
         onClick="save,action-project-planning-time-method-create-line" showIf="_timePlannedPopup"/>
     </panel>
