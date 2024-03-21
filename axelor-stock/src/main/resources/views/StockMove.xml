@@ -224,7 +224,7 @@
     onSave="action-stock-move-group-save-and-update-stocks">
 
     <toolbar>
-      <button name="sendNotifBtn" title="Send notification" showIf="statusSelect == 4"
+      <button name="sendNotifBtn" title="Send notification" hidden="true" showIf="statusSelect == 4"
               onClick="action-stock-move-view-open-notification-wizard"/>
       <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
@@ -911,6 +911,7 @@
       if="partner?.partnerAddressList?.size() > 1"/>
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
+    <action name="action-stock-move-attrs-show-send-notif-button"/>
   </action-group>
 
   <action-group name="action-stock-move-line-change-group">
@@ -1602,9 +1603,10 @@
     <call class="com.axelor.apps.stock.web.StockMoveMergingController" method="mergeStockMoves"/>
   </action-method>
 
-
-
-
+  <action-attrs name="action-stock-move-attrs-show-send-notif-button">
+    <attribute for="sendNotifBtn" name="hidden"
+      expr="eval: !(_typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !_isReversion &amp;&amp; statusSelect == 4)"/>
+  </action-attrs>
 
   <form title="Choose a template" name="stock-move-send-notification-wizard-form"
     model="com.axelor.utils.db.Wizard" canSave="false" canNew="false">

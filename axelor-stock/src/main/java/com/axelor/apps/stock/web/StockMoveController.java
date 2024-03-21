@@ -53,7 +53,14 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,8 +179,7 @@ public class StockMoveController {
 
   public void cancel(ActionRequest request, ActionResponse response) {
     try {
-      Context context = request.getContext();
-      StockMove stockMove = context.asType(StockMove.class);
+      StockMove stockMove = request.getContext().asType(StockMove.class);
       Beans.get(StockMoveService.class)
           .cancel(
               Beans.get(StockMoveRepository.class).find(stockMove.getId()),
@@ -190,12 +196,12 @@ public class StockMoveController {
     try {
       Context context = request.getContext();
       Optional<Integer> stockMoveID =
-          Optional.of(context)
+          Optional.ofNullable(context)
               .map(ctx -> ctx.get("_stockMove"))
               .map(hashMap -> ((LinkedHashMap) hashMap).get("id"))
               .map(Integer.class::cast);
       Optional<Integer> supplierArrivalCancellationMessageTemplateID =
-          Optional.of(context)
+          Optional.ofNullable(context)
               .map(ctx -> ctx.get("supplierArrivalCancellationMessageTemplate"))
               .map(hash -> ((LinkedHashMap<?, ?>) hash).get("id"))
               .map(Integer.class::cast);
