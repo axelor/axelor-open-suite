@@ -1,2 +1,7 @@
 title: "InvoicePayment : fix financial discount process when changing the payment date"
 module: axelor-account
+developer: |
+  New InvoiceTermPaymentToolService added. 
+  
+  In InvoicePaymentToolService :
+  - isPartialPayment() moved to InvoiceTermPaymentToolService
