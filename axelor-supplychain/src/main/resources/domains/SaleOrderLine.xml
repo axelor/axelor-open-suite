@@ -56,6 +56,11 @@
 
 
 
+
+    <one-to-many name="productReservationList"
+      ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservations"
+      mappedBy="originSaleOrderLine"/>
+
     <extra-code>
   		<![CDATA[
             // SALE SUPPLY SELECT
@@ -80,7 +85,6 @@
 			public static final int STATUS_MISSING = 2;
 	  	]]>
     </extra-code>
-
 
     <track on="UPDATE">
       <field name="requestedReservedQty"/>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+
+  <module name="production" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="ProductReservation">
+    <integer name="typeSelect" selection="supplychain.product.reservation.type.select"
+      required="true" title="Type of request"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" required="true"
+      title="Product"/>
+    <decimal name="qty" required="true" title="Quantity"/>
+    <string name="reservationTypeSelect"
+      selection="supplychain.requested.reservation.type.select" title="Type of reservation"/>
+    <datetime name="priorityReservationDateTime" title="Reservation priority date"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock Location"/>
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
+      title="Tracking number"/>
+    <many-to-one name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sale order lines"/>
+    <string name="description" title="Description"/>
+    <integer name="status" selection="supplychain.product.reservation.status.select"
+      title="Status"/>
+    <string name="typeOfUsageTypeSelect"
+      selection="supplychain.product.reservation.usage.type.select" title="Type of usage"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
+    <finder-method name="findBySaleOrderLine" using="originSaleOrderLine" all="true"/>
+
+    <extra-code><![CDATA[
+	   	// RESERVATION TYPE SELECT
+		public static final int TYPE_PRODUCT_RESERVATION_RESERVATION = 1;
+		public static final int TYPE_PRODUCT_RESERVATION_ALLOCATION = 2;
+
+        // REQUESTED RESERVATION TYPE SELECT
+        public static final int TYPE_REQUESTED_RESERVATION_ON_SALE_ORDER_LINE = 1;
+        public static final int TYPE_REQUESTED_RESERVATION_ON_MANUF_ORDER = 2;
+
+        // PRODUCT RESERVATION STATUS
+        public static final int PRODUCT_RESERVATION_STATUS_IN_PROGRESS = 1;
+        public static final int PRODUCT_RESERVATION_STATUS_REALIZED = 2;
+        public static final int PRODUCT_RESERVATION_STATUS_CANCELED = 3;
+
+        // PRODUCT TYPE OF USAGE TYPE SELECT
+        public static final int PRODUCT_TYPE_OF_USAGE_TO_SELL_ON_MOVE_LINE = 1;
+        public static final int PRODUCT_TYPE_OF_USAGE_TO_PRODUCE_ON_MANUF_ORDER = 2;
+        public static final int PRODUCT_TYPE_OF_USAGE_TO_CONSUME_ON_MANUF_ORDER = 3;
+
+	]]></extra-code>
+
+
+  </entity>
+</domain-models>

@@ -48,7 +48,11 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.db.ProductReservation;
+import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
+import com.axelor.apps.supplychain.service.ProductReservationService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -343,6 +347,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       manufOrder.clearDiffConsumeProdProductList();
     }
 
+    cancelProductReservationFromManufOrder(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_CANCELED);
     if (cancelReason != null) {
       manufOrder.setCancelReason(cancelReason);
@@ -445,5 +450,16 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         && !statusSelect.equals(ManufOrderRepository.STATUS_CANCELED)
         && ObjectUtils.notEmpty(prodProcessLine)
         && prodProcessLine.getOptional() == optional;
+  }
+
+  protected void cancelProductReservationFromManufOrder(ManufOrder manufOrder) {
+    ProductReservationService productReservationService =
+        Beans.get(ProductReservationService.class);
+    ProductReservationRepository productReservationRepository =
+        Beans.get(ProductReservationRepository.class);
+    Query<ProductReservation> query = productReservationRepository.findByManufOrder(manufOrder);
+    if (query.count() != 0) {
+      query.fetch().forEach(productReservationService::cancelReservation);
+    }
   }
 }
