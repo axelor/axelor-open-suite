@@ -9,6 +9,8 @@
       <insert position="inside">
         <field name="enableSiteManagementForProject" widget="boolean-switch"
           if="__config__.app.isApp('project')"/>
+        <field name="defaultSitesSet" widget="MultiSelect" hidden="true"
+          showIf="enableSiteManagementForProject" if="__config__.app.isApp('project')"/>
       </insert>
     </extend>
   </form>
