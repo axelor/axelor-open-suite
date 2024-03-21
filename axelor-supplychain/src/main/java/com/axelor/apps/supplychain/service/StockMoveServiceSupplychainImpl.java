@@ -273,7 +273,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         stockConfigService
             .getStockConfig(stockMove.getCompany())
             .getSupplierArrivalCancellationAutomaticMail();
-    if (!supplierArrivalCancellationAutomaticMail || stockMove.getIsReversion()) {
+    if (!supplierArrivalCancellationAutomaticMail
+        || stockMove.getIsReversion()
+        || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
       return;
     }
     Template supplierCancellationMessageTemplate =
