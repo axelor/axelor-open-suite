@@ -110,6 +110,7 @@
 "Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria",,,
 "Hours unit",,,
 "Identically",,,
+"In progress invoice",,,
 "Information",,,
 "Initial",,,
 "Invalid exclude task for invoicing filter",,,
