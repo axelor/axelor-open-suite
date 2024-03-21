@@ -7,7 +7,7 @@
 
   <entity name="SyncContact">
     <string name="name" required="true" title="Name"/>
-    <string name="cid" title="Client ID" required="true"/>
+    <string name="cidd" title="Client ID" required="true"/>
     <string name="googleApiKey" title="Google api key" required="true"/>
     <boolean name="updateContactField" title="Update contact field"/>
     <one-to-many name="syncContactHistoricList"
