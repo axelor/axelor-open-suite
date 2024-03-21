@@ -40,7 +40,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
-  protected InvoicePaymentToolService invoicePaymentToolService;
+  protected InvoiceTermPaymentToolService invoiceTermPaymentToolService;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
@@ -48,12 +48,12 @@ public class InvoicePaymentFinancialDiscountServiceImpl
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoiceTermPaymentToolService invoiceTermPaymentToolService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
-    this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoiceTermPaymentToolService = invoiceTermPaymentToolService;
   }
 
   @Override
@@ -72,7 +72,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
   @Override
   public void computeFinancialDiscountFields(InvoicePayment invoicePayment) {
     if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())
-        || invoicePaymentToolService.isPartialPayment(invoicePayment)) {
+        || invoiceTermPaymentToolService.isPartialPayment(invoicePayment)) {
       if (invoicePayment.getApplyFinancialDiscount()) {
         this.resetFinancialDiscount(invoicePayment);
       }

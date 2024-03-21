@@ -72,6 +72,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected AppAccountService appAccountService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTermPaymentToolService invoiceTermPaymentToolService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -85,7 +86,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       CurrencyService currencyService,
       AppAccountService appAccountService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      InvoiceTermPaymentToolService invoiceTermPaymentToolService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
@@ -96,6 +98,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     this.appAccountService = appAccountService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
+    this.invoiceTermPaymentToolService = invoiceTermPaymentToolService;
   }
 
   @Override
@@ -376,7 +379,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
             invoicePayment, invoiceTerms, amount, amount);
 
-        if (this.isPartialPayment(invoicePayment)) {
+        if (invoiceTermPaymentToolService.isPartialPayment(invoicePayment)) {
           invoicePayment.setAmount(amount);
           invoicePayment.clearInvoiceTermPaymentList();
           invoicePayment.setApplyFinancialDiscount(false);
@@ -424,7 +427,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           invoiceTermPaymentService.initInvoiceTermPayments(
               invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
 
-      if (this.isPartialPayment(invoicePayment)) {
+      if (invoiceTermPaymentToolService.isPartialPayment(invoicePayment)) {
         invoicePayment.setApplyFinancialDiscount(false);
 
         invoicePayment.clearInvoiceTermPaymentList();
@@ -450,16 +453,5 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
     }
     return invoiceTermIdList;
-  }
-
-  @Override
-  public boolean isPartialPayment(InvoicePayment invoicePayment) {
-    return invoicePayment.getInvoiceTermPaymentList().stream()
-        .allMatch(
-            it ->
-                it.getPaidAmount()
-                        .add(it.getFinancialDiscountAmount())
-                        .compareTo(it.getInvoiceTerm().getAmount())
-                    != 0);
   }
 }
