@@ -248,7 +248,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
     GroovyScriptHelper groovyScriptHelper = new GroovyScriptHelper(scriptContext);
 
     String subjectGroovyFormula =
-        appBusinessProjectService.getAppBusinessProject().getSubjectGroovyFormula();
+        appBusinessProjectService.getAppBusinessProject().getEventSubjectGroovyFormula();
     if (StringUtils.isBlank(subjectGroovyFormula)) {
       subjectGroovyFormula = "project.fullName" + "-" + "projectTask.fullName";
     }
