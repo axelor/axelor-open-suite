@@ -1,3 +1,46 @@
+## [6.5.30] (2024-03-21)
+
+### Fixes
+#### Base
+
+* Fixed wrong french translation of 'Application' (was 'Domaine d'applicabilité').
+* Language: fixed an issue where getting default language did not use the configuration 'application.locale'.
+* App Base: fixed wrong currency conversion line in demo data.
+
+#### Account
+
+* Accounting batch: fixed result move functional origin in closure/open batch.
+* Accounting batch: fixed the block customer message when no result.
+* Reconcile: fixed passed for payment check at reconcile confirmation.
+* Reconcile manager: fixed move lines selection.
+* Accounting batch: fixed currency amounts on result moves in opening/closure.
+* FEC Export: fixed technical error when journal is missing.
+
+#### Contract
+
+* Contract: fixed prorata invoicing when invoicing period was smaller than the invoicing frequency.
+
+#### Helpdesk
+
+* SLA: added missing translations inside 'reach in' in readonly.
+
+#### Production
+
+* Prod process line: added missing filter on type for work centers.
+* Manufacturing order: fixed error on change of client partner for manuf orders without related sale orders.
+* MPS: fixed quantity not editable on MPS proposal.
+* Product: fixed an issue where 'economic manuf order qty' field was displayed twice.
+* Product: fixed cost sheet group display on product form on semi-finished products.
+
+#### Stock
+
+* Stock move: set 'Filter on available products' to true in new stock moves.
+* Inventory: fixed type in inventory demo data.
+
+#### Supplier Management
+
+* Supplier request: fixed 'JNPE' error on partner selection in Supplier request form.
+
 ## [6.5.29] (2024-03-07)
 
 ### Fixes
@@ -1175,6 +1218,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.30]: https://github.com/axelor/axelor-open-suite/compare/v6.5.29...v6.5.30
 [6.5.29]: https://github.com/axelor/axelor-open-suite/compare/v6.5.28...v6.5.29
 [6.5.28]: https://github.com/axelor/axelor-open-suite/compare/v6.5.27...v6.5.28
 [6.5.27]: https://github.com/axelor/axelor-open-suite/compare/v6.5.26...v6.5.27
