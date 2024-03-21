@@ -582,11 +582,6 @@
             </viewer>
           </field>
         </panel>
-        <field name="$supplierArrivalCancellationAutomaticMail"
-          title="Automatic notification on cancellation" type="boolean" hidden="false"
-          readonly="true"/>
-        <field name="$supplierArrivalCancellationMessageTemplate" type="many-to-one"
-          x-target="com.axelor.message.db.Template" title="Message template" hidden="true"/>
 
       </panel>
     </panel>
@@ -902,11 +897,9 @@
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
-    <action name="action-stock-move-group-supplier-arrival-cancellation-mailing"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmove-onload">
-    <action name="action-stock-move-group-supplier-arrival-cancellation-mailing"/>
     <action name="action-stock-move-attrs-typeselect-change"/>
     <action name="action-stock-move-attrs-display-generate-invoice-btn"/>
     <action name="action-stock-move-generate-invoice-button"/>
@@ -1492,7 +1485,6 @@
     <action name="action-validate-stock-move-validate-cancel"/>
     <action name="action-supplychain-stock-move-method-check-invoice-status"
       if="__config__.app.isApp('supplychain')"/>
-    <action name="action-stock-move-group-supplier-arrival-cancellation-mailing"/>
     <action name="action.stock.move.view.cancel"/>
   </action-group>
 
@@ -1610,26 +1602,7 @@
     <call class="com.axelor.apps.stock.web.StockMoveMergingController" method="mergeStockMoves"/>
   </action-method>
 
-  <action-attrs
-    name="action-stock-move-attrs-set-supplierArrivalCancellationMessageTemplate">
-    <attribute for="$supplierArrivalCancellationMessageTemplate" name="value"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationMessageTemplate"
-      if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_INCOMING || typeSelect == __repo__(StockMove).TYPE_INCOMING)
-    &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"/>
-  </action-attrs>
 
-  <action-attrs
-    name="action-stock-move-attrs-set-supplierArrivalCancellationAutomaticMail">
-    <attribute for="$supplierArrivalCancellationAutomaticMail" name="value"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"
-      if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_INCOMING || typeSelect == __repo__(StockMove).TYPE_INCOMING)
-        &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierArrivalCancellationAutomaticMail"/>
-  </action-attrs>
-
-  <action-group name="action-stock-move-group-supplier-arrival-cancellation-mailing">
-    <action name="action-stock-move-attrs-set-supplierArrivalCancellationAutomaticMail"/>
-    <action name="action-stock-move-attrs-set-supplierArrivalCancellationMessageTemplate"/>
-  </action-group>
 
 
 

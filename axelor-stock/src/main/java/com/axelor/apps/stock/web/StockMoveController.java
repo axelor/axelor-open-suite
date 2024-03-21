@@ -174,19 +174,8 @@ public class StockMoveController {
     try {
       Context context = request.getContext();
       StockMove stockMove = context.asType(StockMove.class);
-      Optional<Boolean> supplierArrivalCancellationAutomaticMail =
-          Optional.of(context)
-              .map(ctx -> ctx.get("_supplierArrivalCancellationAutomaticMail"))
-              .map(Boolean.class::cast);
-      Optional<Integer> supplierArrivalCancellationMessageTemplateID =
-          Optional.of(context)
-              .map(ctx -> ctx.get("_supplierArrivalCancellationMessageTemplate"))
-              .map(hash -> ((LinkedHashMap) hash).get("id"))
-              .map(Integer.class::cast);
       Beans.get(StockMoveService.class)
           .cancel(
-              supplierArrivalCancellationAutomaticMail,
-              supplierArrivalCancellationMessageTemplateID,
               Beans.get(StockMoveRepository.class).find(stockMove.getId()),
               stockMove.getCancelReason());
 

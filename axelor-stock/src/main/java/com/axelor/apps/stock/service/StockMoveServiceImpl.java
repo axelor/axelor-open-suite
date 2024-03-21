@@ -56,7 +56,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
-import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.MoreObjects;
@@ -940,12 +939,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void cancel(
-      Optional<Boolean> cancellationAutomaticMail,
-      Optional<Integer> cancellationMessageTemplateID,
-      StockMove stockMove,
-      CancelReason cancelReason)
-      throws AxelorException {
+  public void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(StockMoveRepository.STATUS_PLANNED);
     authorizedStatus.add(StockMoveRepository.STATUS_REALIZED);
@@ -957,23 +951,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     applyCancelReason(stockMove, cancelReason);
     cancel(stockMove);
-    if (cancellationAutomaticMail.isEmpty() || cancellationMessageTemplateID.isEmpty()) {
-      return;
-    }
-    if (isSupplierAutomaticCancellationMail(stockMove, cancellationAutomaticMail)) {
-      sendMailForStockMove(
-          stockMove,
-          Beans.get(TemplateRepository.class)
-              .find(cancellationMessageTemplateID.get().longValue()));
-    }
-  }
-
-  private boolean isSupplierAutomaticCancellationMail(
-      StockMove stockMove, Optional<Boolean> cancellationAutomaticMail) {
-    boolean automaticSending = cancellationAutomaticMail.orElse(false);
-    return stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
-        && !stockMove.getIsReversion()
-        && automaticSending;
   }
 
   @Override
