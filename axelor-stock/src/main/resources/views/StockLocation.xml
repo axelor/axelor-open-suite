@@ -88,7 +88,7 @@
 					]]>
         </viewer>
       </field>
-      <field name="site" if="__config__.app.getApp('stock')?.enableSiteManagement"
+      <field name="site" if="__config__.app.getApp('base')?.enableSiteManagementForStock"
         showIf="typeSelect != 3" onSelect="action-stock-location-attrs-set-site-domain"/>
       <panel name="barcodePanel" title="Barcode" colSpan="12"
         if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
