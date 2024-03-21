@@ -467,8 +467,6 @@
           readonlyIf="statusSelect &gt; 2" height="3">
           <viewer><![CDATA[<>{toAddressStr}</>]]></viewer>
         </field>
-
-
       </panel>
 
       <panel name="outgoingMovePanel" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
@@ -582,7 +580,6 @@
             </viewer>
           </field>
         </panel>
-
       </panel>
     </panel>
 
@@ -930,7 +927,6 @@
     <action name="save"/>
   </action-group>
 
-
   <action-group name="action-group-stock-stockmove-realize-click">
     <action name="save"/>
     <action name="action-stock-move-check-stock-move-line-real-qty"/>
@@ -1170,13 +1166,10 @@
       if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"
       name="realStockMoveMessageTemplate"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveMessageTemplate"/>
-
-
     <field if="company == null" name="plannedStockMoveAutomaticMail" expr="eval: false"/>
     <field if="company == null" name="realStockMoveAutomaticMail" expr="eval: false"/>
     <field if="company == null" name="plannedStockMoveMessageTemplate" expr="eval: null"/>
     <field if="company == null" name="realStockMoveMessageTemplate" expr="eval: null"/>
-
   </action-record>
 
   <action-record name="action-stock-move-record-set-address-from-partner"
