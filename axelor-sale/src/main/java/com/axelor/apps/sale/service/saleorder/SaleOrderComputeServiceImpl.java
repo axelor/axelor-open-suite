@@ -40,26 +40,20 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 
   protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderLineTaxService saleOrderLineTaxService;
-  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderComputeServiceImpl(
-      SaleOrderLineService saleOrderLineService,
-      SaleOrderLineTaxService saleOrderLineTaxService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService) {
 
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderLineTaxService = saleOrderLineTaxService;
-    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
   public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
 
     if (saleOrder.getSaleOrderLineList() != null) {
-
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        saleOrderLineComputeService.compute(saleOrderLine);
         saleOrderLine.setCompanyExTaxTotal(
             saleOrderLineService.getAmountInCompanyCurrency(
                 saleOrderLine.getExTaxTotal(), saleOrder));

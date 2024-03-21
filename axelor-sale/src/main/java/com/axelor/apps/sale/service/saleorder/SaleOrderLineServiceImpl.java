@@ -639,15 +639,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 
-    if (parentContext != null) {
-      if (parentContext.getContextClass().equals(SaleOrderLine.class)) {
-        return getSaleOrder(parentContext);
-      } else {
-        if (!parentContext.getContextClass().equals(SaleOrder.class)) {
-          parentContext = parentContext.getParent();
-        }
-        saleOrder = parentContext.asType(SaleOrder.class);
-      }
+    if (parentContext != null && !parentContext.getContextClass().equals(SaleOrder.class)) {
+      parentContext = parentContext.getParent();
+    }
+
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
+      saleOrder = parentContext.asType(SaleOrder.class);
     }
 
     return saleOrder;

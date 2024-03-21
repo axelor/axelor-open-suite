@@ -26,7 +26,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -44,11 +43,9 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
 
   @Inject
   public SaleOrderComputeServiceSupplychainImpl(
-      SaleOrderLineService saleOrderLineService,
-      SaleOrderLineTaxService saleOrderLineTaxService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService) {
 
-    super(saleOrderLineService, saleOrderLineTaxService, saleOrderLineComputeService);
+    super(saleOrderLineService, saleOrderLineTaxService);
   }
 
   @Override
