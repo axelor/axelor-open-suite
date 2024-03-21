@@ -7,7 +7,7 @@
 
   <entity name="ICalendar" table="ICAL_CALENDAR" sequential="true">
     <string name="name" required="true" title="Name"/>
-    <string name="cidd" title="CID"/>
+    <string name="cid" title="CID"/>
     <boolean name="keepRemote" default="false" title="Keep remote"/>
     <!-- <one-to-many name="events" ref="com.axelor.apps.base.db.ICalendarEvent" mappedBy="calendar"
       title="Events"/> -->

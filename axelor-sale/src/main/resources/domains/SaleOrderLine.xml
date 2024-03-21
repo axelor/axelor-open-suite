@@ -123,14 +123,6 @@
 	    ]]>
     </many-to-one>
 
-
-    <!-- AOP TEST FEATURE SOUS LIGNES -->
-
-    <one-to-many name="subSaleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine"
-      mappedBy="parentLine" title="Sub sale order lines"/>
-    <many-to-one name="parentLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
-      title="Parent line"/>
-
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-code>

@@ -136,7 +136,7 @@ public class SyncContactService {
       return null;
     }
     SyncContactResponse response = new SyncContactResponse();
-    response.setClientid(syncContact.getCidd());
+    response.setClientid(syncContact.getCid());
     response.setKey(syncContact.getGoogleApiKey());
     response.setAuthFailed(I18n.get(SYNC_CONTACT_AUTH_FAILED));
     response.setImportSuccessful(I18n.get(SYNC_CONTACT_IMPORT_SUCCESSFUL));
