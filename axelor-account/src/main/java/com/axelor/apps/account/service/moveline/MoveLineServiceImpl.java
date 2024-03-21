@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.batch.BatchDoubtfulCustomer;
@@ -42,6 +41,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
@@ -86,7 +86,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
   protected MoveLineTaxService moveLineTaxService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected AccountingBatchRepository accountingBatchRepo;
 
   @Inject
@@ -100,7 +100,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       MoveLineControlService moveLineControlService,
       AccountingCutOffService cutOffService,
       MoveLineTaxService moveLineTaxService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       AccountingBatchRepository accountingBatchRepo) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
@@ -111,7 +111,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
     this.moveLineTaxService = moveLineTaxService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.accountingBatchRepo = accountingBatchRepo;
   }
 
@@ -371,7 +371,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     }
 
-    return currencyScaleServiceAccount.getScaledValue(
+    return currencyScaleService.getScaledValue(
         moveLine, prorata.multiply(moveLine.getCurrencyAmount()));
   }
 
@@ -418,7 +418,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         }
 
         moveLine.setCutOffProrataAmount(
-            currencyScaleServiceAccount.getScaledValue(
+            currencyScaleService.getScaledValue(
                 moveLine, prorata.multiply(moveLine.getCurrencyAmount())));
         moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
         moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());

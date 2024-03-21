@@ -106,13 +106,10 @@ public class BankOrderController {
 
   public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    String domain = Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder);
-    // if nothing was found for the domain, we set it at a default value.
-    if (domain.equals("")) {
-      response.setAttr("senderBankDetails", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("senderBankDetails", "domain", domain);
-    }
+    response.setAttr(
+        "senderBankDetails",
+        "domain",
+        Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder));
   }
 
   public void fillBankDetails(ActionRequest request, ActionResponse response) {

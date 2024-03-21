@@ -18,26 +18,50 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsourceService {
 
   protected ProdProcessLineOutsourceService prodProcessLineOutsourceService;
+  protected AppBaseService appBaseService;
+  protected PurchaseOrderLineService purchaseOrderLineService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
 
   @Inject
   public OperationOrderOutsourceServiceImpl(
       ProdProcessLineOutsourceService prodProcessLineOutsourceService,
-      ManufOrderOutsourceService manufOrderOutsourceService) {
+      ManufOrderOutsourceService manufOrderOutsourceService,
+      AppBaseService appBaseService,
+      PurchaseOrderLineService purchaseOrderLineService) {
     this.prodProcessLineOutsourceService = prodProcessLineOutsourceService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
+    this.appBaseService = appBaseService;
+    this.purchaseOrderLineService = purchaseOrderLineService;
   }
 
   @Override
@@ -63,18 +87,124 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
   }
 
   @Override
-  public boolean getUseLineInGeneratedPO(OperationOrder operationOrder) {
+  public List<PurchaseOrderLine> createPurchaseOrderLines(
+      OperationOrder operationOrder, PurchaseOrder purchaseOrder) throws AxelorException {
+
     Objects.requireNonNull(operationOrder);
-    Objects.requireNonNull(operationOrder.getProdProcessLine());
+    Objects.requireNonNull(purchaseOrder);
 
-    ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-
-    if (operationOrder.getManufOrder().getOutsourcing()
-        || prodProcessLine.getOutsourcing()
-        || operationOrder.getOutsourcing()
-        || (prodProcessLine.getOutsourcable() && operationOrder.getOutsourcing())) {
-      return prodProcessLine.getUseLineInGeneratedPurchaseOrder();
+    // Get products for purchaseOrder from prodProcessLine
+    if (operationOrder.getProdProcessLine().getGeneratedPurchaseOrderProductSet() != null) {
+      List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<>();
+      for (Product product :
+          operationOrder.getProdProcessLine().getGeneratedPurchaseOrderProductSet()) {
+        PurchaseOrderLine purchaseOrderLine =
+            this.createPurchaseOrderLine(operationOrder, purchaseOrder, product).orElse(null);
+        if (purchaseOrderLine != null) {
+          purchaseOrderLineList.add(purchaseOrderLine);
+          purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
+        }
+      }
+      return purchaseOrderLineList;
     }
-    return false;
+
+    return Collections.emptyList();
+  }
+
+  @Override
+  public Optional<PurchaseOrderLine> createPurchaseOrderLine(
+      OperationOrder operationOrder, PurchaseOrder purchaseOrder, Product product)
+      throws AxelorException {
+
+    Unit productUnit = getProductUnit(product);
+
+    BigDecimal quantity = recomputeQty(operationOrder.getPlannedHumanDuration(), productUnit);
+
+    return Optional.ofNullable(
+        purchaseOrderLineService.createPurchaseOrderLine(
+            purchaseOrder, product, null, null, quantity, productUnit));
+  }
+
+  protected Unit getProductUnit(Product product) throws AxelorException {
+    return Optional.ofNullable(product.getPurchasesUnit())
+        .or(() -> Optional.ofNullable(product.getUnit()))
+        .orElseThrow(
+            () ->
+                new AxelorException(
+                    TraceBackRepository.CATEGORY_NO_VALUE,
+                    I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT)));
+  }
+
+  @Override
+  public Optional<PurchaseOrderLine> createPurchaseOrderLine(
+      ManufOrder manufOrder, PurchaseOrder purchaseOrder, Product product) throws AxelorException {
+
+    Unit productUnit = getProductUnit(product);
+
+    BigDecimal quantity =
+        recomputeQty(
+            manufOrder.getOperationOrderList().stream()
+                .map(OperationOrder::getPlannedHumanDuration)
+                .reduce(Long::sum)
+                .orElse(0L),
+            productUnit);
+
+    return Optional.ofNullable(
+        purchaseOrderLineService.createPurchaseOrderLine(
+            purchaseOrder, product, null, null, quantity, productUnit));
+  }
+
+  @Override
+  public List<PurchaseOrderLine> createPurchaseOrderLines(
+      ManufOrder manufOrder, Set<Product> productSet, PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    Objects.requireNonNull(manufOrder);
+    Objects.requireNonNull(purchaseOrder);
+
+    List<PurchaseOrderLine> list = new ArrayList<>();
+    for (Product product : manufOrder.getProdProcess().getGeneratedPurchaseOrderProductSet()) {
+      PurchaseOrderLine purchaseOrderLine =
+          this.createPurchaseOrderLine(manufOrder, purchaseOrder, product).orElse(null);
+      if (purchaseOrderLine != null) {
+        list.add(purchaseOrderLine);
+        purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
+      }
+    }
+    return list;
+  }
+
+  protected BigDecimal recomputeQty(Long duration, Unit productUnit) {
+    AppBase appBase = appBaseService.getAppBase();
+
+    if (List.of(appBase.getUnitDays(), appBase.getUnitHours(), appBase.getUnitMinutes())
+        .contains(productUnit)) {
+      long secondsInProductUnit;
+      // Product is in unit day
+      if (productUnit.equals(appBase.getUnitDays())) {
+        secondsInProductUnit = 86400;
+      }
+      // Product is in unit hours
+      else if (productUnit.equals(appBase.getUnitHours())) {
+        secondsInProductUnit = 3600;
+      }
+      // Product is in unit minute
+      else {
+        secondsInProductUnit = 60;
+      }
+      return new BigDecimal(duration)
+          .divide(
+              BigDecimal.valueOf(secondsInProductUnit),
+              appBaseService.getNbDecimalDigitForQty(),
+              RoundingMode.HALF_UP);
+    }
+
+    return BigDecimal.ONE;
+  }
+
+  @Override
+  public long getOutsourcingDuration(OperationOrder operationOrder) {
+    return Optional.ofNullable(operationOrder.getProdProcessLine())
+        .map(ProdProcessLine::getOutsourcingDuration)
+        .orElse(0l);
   }
 }

@@ -19,22 +19,21 @@
 package com.axelor.apps.account.service.invoice.attributes;
 
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InvoiceTermPaymentAttrsServiceImpl implements InvoiceTermPaymentAttrsService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoiceTermPaymentAttrsServiceImpl(
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
-      InvoiceTermService invoiceTermService) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+      CurrencyScaleService currencyScaleService, InvoiceTermService invoiceTermService) {
+    this.currencyScaleService = currencyScaleService;
     this.invoiceTermService = invoiceTermService;
   }
 
@@ -57,24 +56,19 @@ public class InvoiceTermPaymentAttrsServiceImpl implements InvoiceTermPaymentAtt
   @Override
   public void addPaidAmountScale(
       InvoiceTerm invoiceTerm, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr(
-        "paidAmount", "scale", currencyScaleServiceAccount.getScale(invoiceTerm), attrsMap);
+    this.addAttr("paidAmount", "scale", currencyScaleService.getScale(invoiceTerm), attrsMap);
   }
 
   @Override
   public void addCompanyPaidAmountScale(
       InvoiceTerm invoiceTerm, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "companyPaidAmount",
-        "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoiceTerm),
-        attrsMap);
+        "companyPaidAmount", "scale", currencyScaleService.getCompanyScale(invoiceTerm), attrsMap);
   }
 
   @Override
   public void addFinancialDiscountAmountScale(
       InvoiceTerm invoiceTerm, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr(
-        "paidAmount", "scale", currencyScaleServiceAccount.getScale(invoiceTerm), attrsMap);
+    this.addAttr("paidAmount", "scale", currencyScaleService.getScale(invoiceTerm), attrsMap);
   }
 }

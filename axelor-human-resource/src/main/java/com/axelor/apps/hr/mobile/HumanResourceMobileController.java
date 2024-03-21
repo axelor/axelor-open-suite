@@ -53,6 +53,7 @@ import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -409,6 +410,8 @@ public class HumanResourceMobileController {
       TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
       TimesheetCreateService timesheetCreateService = Beans.get(TimesheetCreateService.class);
       TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
+      TimesheetLineCreateService timesheetLineCreateService =
+          Beans.get(TimesheetLineCreateService.class);
 
       if (user != null) {
         Employee employee = user.getEmployee();
@@ -438,7 +441,7 @@ public class HumanResourceMobileController {
                   request.getData().get("comments").toString());
         } else {
           line =
-              timesheetLineService.createTimesheetLine(
+              timesheetLineCreateService.createTimesheetLine(
                   project,
                   product,
                   timesheet.getEmployee(),

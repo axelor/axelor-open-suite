@@ -216,4 +216,18 @@ public class BudgetDistributionController {
       response.setValue("budgetDistributionList", new ArrayList<>());
     }
   }
+
+  @ErrorException
+  public void resetBudget(ActionRequest request, ActionResponse response) throws AxelorException {
+    if (Arrays.asList(
+            InvoiceLine.class, MoveLine.class, PurchaseOrderLine.class, SaleOrderLine.class)
+        .contains(request.getContext().getContextClass())) {
+      response.setValue("budgetDistributionList", new ArrayList<>());
+      response.setValue("budget", null);
+      if (Arrays.asList(PurchaseOrderLine.class, SaleOrderLine.class)
+          .contains(request.getContext().getContextClass())) {
+        response.setValue("budgetStr", "");
+      }
+    }
+  }
 }

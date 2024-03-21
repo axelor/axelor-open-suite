@@ -163,6 +163,8 @@ public class MoveManagementRepository extends MoveRepository {
       MoveValidateService moveValidateService = Beans.get(MoveValidateService.class);
 
       moveValidateService.checkMoveLinesPartner(move);
+      moveValidateService.checkJournalPermissions(move);
+
       if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
           || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {

@@ -105,12 +105,6 @@ public class ImportInventoryLine {
                 inventory.getInventorySeq(),
                 null);
 
-        if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
-          trackingNumber.setCounter(realQtyRemaning);
-        } else {
-          trackingNumber.setCounter(qtyByTracking);
-        }
-
         inventoryLineNew =
             inventoryLineService.createInventoryLine(
                 inventoryLine.getInventory(),

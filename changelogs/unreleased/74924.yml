@@ -1,3 +1,0 @@
----
-title: 'Production : handle isConsProOnOperation to generate toConsumeProdProducts on ManufOrder'
-module: axelor-production

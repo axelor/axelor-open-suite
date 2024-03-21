@@ -26,13 +26,13 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 
@@ -48,7 +48,7 @@ public class AnalyticMoveLineSupplychainServiceImpl extends AnalyticMoveLineServ
       AccountRepository accountRepository,
       AppBaseService appBaseService,
       AccountingSituationService accountingSituationService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     super(
         analyticMoveLineRepository,
         appAccountService,
@@ -58,7 +58,7 @@ public class AnalyticMoveLineSupplychainServiceImpl extends AnalyticMoveLineServ
         accountRepository,
         appBaseService,
         accountingSituationService,
-        currencyScaleServiceAccount);
+        currencyScaleService);
   }
 
   @Override

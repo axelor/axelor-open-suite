@@ -508,7 +508,12 @@
           readonly="true"/>
         <field name="counter" title="Selected quantity"
           readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
+        <field name="hasWarranty"/>
         <field name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
+        <field name="isPerishable"/>
+        <field name="perishableExpirationDate" title="Perishable expiration date"
+          readonly="false"/>
+        <field name="checkExpirationDateAtStockMoveRealization"/>
         <field name="origin" title="Origin" readonly="true"/>
         <field name="note" title="Note" colSpan="12" readonly="true"/>
       </panel-related>

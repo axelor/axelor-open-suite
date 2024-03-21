@@ -34,6 +34,10 @@
       <panel name="valuationBatchPanel" title="Valuation Batch" showIf="actionSelect == 1">
         <field name="valuationDate"/>
       </panel>
+      <panel name="sopRealValuesBatchPanel" title="SOP Real Values Batch"
+        showIf="actionSelect == 2">
+        <field name="sopSet" colSpan="12" form-view="sop-form" grid-view="sop-grid"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -45,6 +49,9 @@
     <panel name="actionsPanel" sidebar="true" title="Actions" itemSpan="12">
       <button name="computeValuationBatchBtn" title="Compute work in progress valuation"
         onClick="save,action-production-batch-method-run-batch" showIf="actionSelect == 1"/>
+      <button name="fillSopRealValuesBtn" title="Fill SOP real values"
+        onClick="save,action-production-batch-method-run-batch" showIf="actionSelect == 2"
+        readonlyIf="!sopSet || sopSet.length == 0"/>
       <button name="printBtn" title="Work in progress valuation"
         showIf="actionSelect == 1 &amp;&amp; batchList &amp;&amp; batchList.length &gt; 0"
         onClick="save,action-method-print-birt"/>

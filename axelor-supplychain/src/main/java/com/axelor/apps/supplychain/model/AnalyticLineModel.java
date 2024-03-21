@@ -242,6 +242,10 @@ public class AnalyticLineModel implements AnalyticLine {
     return this.companyExTaxTotal;
   }
 
+  public void setCompanyExTaxTotal(BigDecimal companyExTaxTotal) {
+    this.companyExTaxTotal = companyExTaxTotal;
+  }
+
   public TradingName getTradingName() {
     if (this.saleOrder != null) {
       this.tradingName = this.saleOrder.getTradingName();

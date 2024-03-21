@@ -26,6 +26,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.helpers.StringHelper;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -158,23 +162,15 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     String domain = "";
 
     if (company != null) {
-
-      String bankDetailsIds = StringHelper.getIdListString(company.getBankDetailsList());
-
-      if (company.getDefaultBankDetails() != null) {
-        bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
-        bankDetailsIds += company.getDefaultBankDetails().getId().toString();
+      List<BankDetails> bankDetailsList = new ArrayList<>(company.getBankDetailsList());
+      BankDetails defaultBankDetails = company.getDefaultBankDetails();
+      if (defaultBankDetails != null) {
+        bankDetailsList.add(defaultBankDetails);
       }
-      if (bankDetailsIds.equals("")) {
-        return "";
-      }
+      Set<BankDetails> bankDetailsSet = new HashSet<>(bankDetailsList);
+      String bankDetailsIds = StringHelper.getIdListString(bankDetailsSet);
       domain = "self.id IN(" + bankDetailsIds + ")";
     }
-
-    if (domain.equals("")) {
-      return domain;
-    }
-
     // filter the result on active bank details
     domain += " AND self.active = true";
 

@@ -598,7 +598,7 @@ public final class BaseExceptionMessage {
   public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
       "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
 
-  public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+  public static final String TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
       "The configuration to print this model has not been found" /*)*/;
 
   public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
@@ -654,4 +654,7 @@ public final class BaseExceptionMessage {
       "The data file should be only an XML or ZIP file." /*)*/;
 
   public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
+
+  public static final String FACTORY_NO_FOUND = /*$$(*/
+      "Factory not found this type of generator" /*)*/;
 }

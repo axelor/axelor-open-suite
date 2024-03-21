@@ -152,7 +152,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
     if (ObjectUtils.isEmpty(declarationOfExchServicesBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return birtTemplateService.generateBirtTemplateLink(
         declarationOfExchServicesBirtTemplate,

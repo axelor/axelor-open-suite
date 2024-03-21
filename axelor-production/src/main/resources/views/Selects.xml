@@ -76,7 +76,7 @@
   <selection name="supplychain.mrp.line.related.to.select"
     id="production.supplychain.mrp.line.related.to.select">
     <option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
-    <option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+    <option value="com.axelor.apps.production.db.OperationOrder">Manufacturing operation</option>
   </selection>
 
   <selection name="production.cost.sheet.line.type.select">
@@ -123,6 +123,7 @@
 
   <selection name="production.batch.action.select">
     <option value="1">Compute work in progress valuation</option>
+    <option value="2">Fill SOP real values</option>
   </selection>
 
   <selection name="production.cost.sheet.calculation.type.select">

@@ -231,11 +231,11 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   @Override
   @Transactional
-  public void removeProjectPlanningLines(List<Map<String, Object>> projectPlanningLines) {
+  public void removeProjectPlanningLines(List<Integer> projectPlanningLineIds) {
 
-    for (Map<String, Object> line : projectPlanningLines) {
+    for (Integer id : projectPlanningLineIds) {
       ProjectPlanningTime projectPlanningTime =
-          planningTimeRepo.find(Long.parseLong(line.get("id").toString()));
+          planningTimeRepo.find(Long.parseLong(String.valueOf(id)));
       planningTimeRepo.remove(projectPlanningTime);
     }
   }

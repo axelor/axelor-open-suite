@@ -20,6 +20,7 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetScenario;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
@@ -45,16 +46,16 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
 
   protected BudgetScenarioVariableRepository budgetScenarioVariableRepository;
   protected BudgetScenarioRepository budgetScenarioRepository;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetScenarioServiceImpl(
       BudgetScenarioVariableRepository budgetScenarioVariableRepository,
       BudgetScenarioRepository budgetScenarioRepository,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
+      CurrencyScaleService currencyScaleService) {
     this.budgetScenarioVariableRepository = budgetScenarioVariableRepository;
     this.budgetScenarioRepository = budgetScenarioRepository;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -65,7 +66,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
         && !ObjectUtils.isEmpty(budgetScenario.getBudgetScenarioLineList())) {
       for (BudgetScenarioLine budgetScenarioLine : budgetScenario.getBudgetScenarioLineList()) {
         BigDecimal yearValue =
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetScenario, getYearValue(budgetScenarioLine, yearNumber));
         if (!variableAmountMap.containsKey(
             budgetScenarioLine.getBudgetScenarioVariable().getCode())) {
@@ -74,7 +75,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
         } else {
           variableAmountMap.replace(
               budgetScenarioLine.getBudgetScenarioVariable().getCode(),
-              currencyScaleServiceBudget.getCompanyScaledValue(
+              currencyScaleService.getCompanyScaledValue(
                   budgetScenario,
                   ((BigDecimal)
                           variableAmountMap.get(
@@ -98,7 +99,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
 
     for (BudgetScenarioLine budgetScenarioLine : budgetScenario.getBudgetScenarioLineList()) {
       BigDecimal yearValue =
-          currencyScaleServiceBudget.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               budgetScenario, getYearValue(budgetScenarioLine, yearNumber));
       if (!variableAmountMap.containsKey(
           budgetScenarioLine.getBudgetScenarioVariable().getCode())) {
@@ -106,7 +107,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
       } else {
         variableAmountMap.replace(
             budgetScenarioLine.getBudgetScenarioVariable().getCode(),
-            currencyScaleServiceBudget.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 budgetScenario,
                 ((BigDecimal)
                         variableAmountMap.get(
@@ -326,7 +327,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
             setYearValue(
                 budgetScenarioLine,
                 yearNumber,
-                currencyScaleServiceBudget.getCompanyScaledValue(
+                currencyScaleService.getCompanyScaledValue(
                     budgetScenario, (BigDecimal) entry.getValue()));
           }
         }

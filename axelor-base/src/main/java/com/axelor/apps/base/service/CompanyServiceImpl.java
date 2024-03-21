@@ -20,18 +20,31 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.studio.db.AppBase;
+import com.google.inject.Inject;
 import java.util.List;
 
 public class CompanyServiceImpl implements CompanyService {
+
+  protected AppBaseService appBaseService;
+  protected CompanyRepository companyRepository;
+  protected UserService userService;
+
+  @Inject
+  public CompanyServiceImpl(
+      AppBaseService appBaseService, CompanyRepository companyRepository, UserService userService) {
+    this.appBaseService = appBaseService;
+    this.companyRepository = companyRepository;
+    this.userService = userService;
+  }
 
   /** {@inheritDoc} */
   @Override
   public void checkMultiBanks(Company company) {
     if (countActiveBankDetails(company) > 1) {
-      AppBaseService appBaseService = Beans.get(AppBaseService.class);
       AppBase appBase = appBaseService.getAppBase();
       if (!appBase.getManageMultiBanks()) {
         appBaseService.setManageMultiBanks(true);
@@ -58,5 +71,26 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     return count;
+  }
+
+  @Override
+  public Company getDefaultCompany(Long companyId) {
+    Company company = null;
+
+    if (companyId != null) {
+      company = companyRepository.find(companyId);
+      if (company != null) {
+        return company;
+      }
+    }
+
+    company = userService.getUserActiveCompany();
+    if (company != null) {
+      return company;
+    } else if (companyRepository.all().count() == 1) {
+      return companyRepository.all().fetchOne();
+    }
+
+    return null;
   }
 }

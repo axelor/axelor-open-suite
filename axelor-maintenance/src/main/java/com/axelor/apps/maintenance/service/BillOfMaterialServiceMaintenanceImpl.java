@@ -78,7 +78,7 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
     if (maintenanceBOMBirtTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return birtTemplateService.generateBirtTemplateLink(
         maintenanceBOMBirtTemplate, billOfMaterial, getFileName(billOfMaterial) + "-${date}");

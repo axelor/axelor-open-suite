@@ -48,7 +48,7 @@ public interface BudgetInvoiceLineService {
 
   public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice);
 
-  String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine);
+  String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
   void negateAmount(InvoiceLine invoiceLine, Invoice invoice);
 }

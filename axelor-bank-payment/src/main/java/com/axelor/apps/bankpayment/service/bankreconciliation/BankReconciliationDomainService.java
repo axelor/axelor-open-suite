@@ -36,6 +36,4 @@ public interface BankReconciliationDomainService {
   String createDomainForMoveLine(BankReconciliation bankReconciliation) throws AxelorException;
 
   String getJournalDomain(BankReconciliation bankReconciliation);
-
-  String createDomainForBankDetails(BankReconciliation bankReconciliation);
 }

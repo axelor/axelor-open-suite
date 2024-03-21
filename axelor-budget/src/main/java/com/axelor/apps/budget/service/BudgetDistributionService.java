@@ -81,7 +81,9 @@ public interface BudgetDistributionService {
       Company company,
       LocalDate date,
       String technicalTypeSelect,
-      Set<GlobalBudget> globalBudgetSet);
+      Account account,
+      Set<GlobalBudget> globalBudgetSet)
+      throws AxelorException;
 
   void autoComputeBudgetDistribution(
       List<AnalyticMoveLine> analyticMoveLineList,

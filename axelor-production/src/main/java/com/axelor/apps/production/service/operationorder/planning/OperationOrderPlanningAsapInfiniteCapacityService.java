@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.model.machine.MachineTimeSlot;
 import com.axelor.apps.production.service.machine.MachineService;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.utils.helpers.date.DurationHelper;
@@ -49,6 +50,7 @@ public class OperationOrderPlanningAsapInfiniteCapacityService
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
       AppBaseService appBaseService,
+      OperationOrderOutsourceService operationOrderOutsourceService,
       OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
       WeeklyPlanningService weeklyPlanningService,
       MachineService machineService) {
@@ -56,7 +58,8 @@ public class OperationOrderPlanningAsapInfiniteCapacityService
         operationOrderService,
         operationOrderStockMoveService,
         operationOrderRepository,
-        appBaseService);
+        appBaseService,
+        operationOrderOutsourceService);
     this.operationOrderPlanningInfiniteCapacityService =
         operationOrderPlanningInfiniteCapacityService;
     this.weeklyPlanningService = weeklyPlanningService;
@@ -65,6 +68,15 @@ public class OperationOrderPlanningAsapInfiniteCapacityService
 
   @Override
   protected void planWithStrategy(OperationOrder operationOrder) throws AxelorException {
+    if (operationOrder.getOutsourcing()) {
+      planWithStrategyAsapOutSourced(operationOrder);
+    } else {
+      planWithStrategyNotOutSourced(operationOrder);
+    }
+  }
+
+  protected void planWithStrategyNotOutSourced(OperationOrder operationOrder)
+      throws AxelorException {
 
     Machine machine = operationOrder.getMachine();
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();

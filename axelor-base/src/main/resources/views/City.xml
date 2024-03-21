@@ -20,7 +20,6 @@
       <field name="artmin" colSpan="2"/>
       <field name="zip" colSpan="4"/>
       <field name="inseeCode"/>
-      <field name="hasZipOnRight"/>
     </panel>
     <panel name="localizationPanel" title="Localization">
       <field name="country" form-view="country-form" grid-view="country-grid"/>

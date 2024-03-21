@@ -77,4 +77,6 @@ public interface MoveValidateService {
   void checkMoveLinesPartner(Move move) throws AxelorException;
 
   void checkTaxAmount(Move move) throws AxelorException;
+
+  void checkJournalPermissions(Move move) throws AxelorException;
 }

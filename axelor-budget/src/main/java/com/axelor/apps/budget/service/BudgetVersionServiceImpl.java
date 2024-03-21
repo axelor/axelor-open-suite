@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
@@ -33,16 +34,16 @@ public class BudgetVersionServiceImpl implements BudgetVersionService {
 
   protected BudgetVersionRepository budgetVersionRepository;
   protected VersionExpectedAmountsLineRepository versionExpectedAmountsLineRepository;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetVersionServiceImpl(
       BudgetVersionRepository budgetVersionRepository,
       VersionExpectedAmountsLineRepository versionExpectedAmountsLineRepository,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
+      CurrencyScaleService currencyScaleService) {
     this.budgetVersionRepository = budgetVersionRepository;
     this.versionExpectedAmountsLineRepository = versionExpectedAmountsLineRepository;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -61,10 +62,9 @@ public class BudgetVersionServiceImpl implements BudgetVersionService {
       VersionExpectedAmountsLine versionExpectedAmountsLine = new VersionExpectedAmountsLine();
       versionExpectedAmountsLine.setBudget(budget);
       versionExpectedAmountsLine.setExpectedAmount(
-          currencyScaleServiceBudget.getCompanyScaledValue(
-              budget, budget.getTotalAmountExpected()));
+          currencyScaleService.getCompanyScaledValue(budget, budget.getTotalAmountExpected()));
       globalExpectedAmount =
-          currencyScaleServiceBudget.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               budget, globalExpectedAmount.add(budget.getTotalAmountExpected()));
       budgetVersion.addVersionExpectedAmountsLineListItem(versionExpectedAmountsLine);
     }

@@ -23,7 +23,8 @@ import static org.mockito.Mockito.mock;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.FindFixedAssetService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.time.LocalDate;
@@ -41,9 +42,10 @@ class TestFixedAssetLineToolService {
 
   @BeforeAll
   static void prepare() {
-    CurrencyScaleServiceAccount currencyScaleServiceAccount =
-        mock(CurrencyScaleServiceAccount.class);
-    fixedAssetLineToolService = new FixedAssetLineToolServiceImpl(currencyScaleServiceAccount);
+    CurrencyScaleService currencyScaleService = mock(CurrencyScaleService.class);
+    FindFixedAssetService findFixedAssetService = mock(FindFixedAssetService.class);
+    fixedAssetLineToolService =
+        new FixedAssetLineToolServiceImpl(currencyScaleService, findFixedAssetService);
   }
 
   @Test

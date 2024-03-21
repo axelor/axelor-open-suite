@@ -109,6 +109,8 @@ public interface MoveGroupService {
 
   Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move);
 
+  Map<String, Map<String, Object>> getJournalOnSelectAttrsMap(Move move);
+
   Map<String, Map<String, Object>> getThirdPartyPayerPartnerOnSelectAttrsMap(Move move);
 
   Map<String, Map<String, Object>> getWizardDefaultAttrsMap(LocalDate moveDate);

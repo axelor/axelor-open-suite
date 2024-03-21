@@ -5,12 +5,14 @@
 
   <grid name="sop-grid" title="Sales and Operations Planning"
     model="com.axelor.apps.production.db.Sop">
+    <field name="name"/>
     <field name="productCategory"/>
   </grid>
 
   <form name="sop-form" title="Sales and Operations Planning"
     model="com.axelor.apps.production.db.Sop" width="large">
     <panel name="mainPanel">
+      <field name="name"/>
       <field name="productCategory" canEdit="false"/>
       <field name="company" canEdit="false"/>
       <panel name="generationPanel" showIf="productCategory &amp;&amp; company"

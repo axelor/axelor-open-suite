@@ -21,7 +21,6 @@ package com.axelor.apps.bankpayment.service;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
@@ -34,6 +33,7 @@ import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.google.inject.Inject;
@@ -57,7 +57,7 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
       PfpService pfpService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       DMSFileRepository DMSFileRepo) {
     super(
         invoiceTermRepo,
@@ -71,7 +71,7 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
         invoiceTermFinancialDiscountService,
         userRepo,
         pfpService,
-        currencyScaleServiceAccount,
+        currencyScaleService,
         DMSFileRepo);
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
   }

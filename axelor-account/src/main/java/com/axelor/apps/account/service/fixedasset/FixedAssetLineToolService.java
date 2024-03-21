@@ -66,6 +66,8 @@ public interface FixedAssetLineToolService {
 
   boolean equals(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
 
+  int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException;
+
   @FunctionalInterface
   interface ArithmeticOperation {
 

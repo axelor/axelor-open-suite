@@ -35,7 +35,6 @@
     <boolean name="isSimulated" title="Is Simulated ?"
       help="If ticked, this means a depreciation move has been generated at the state Simulated."/>
 
-
     <extra-code><![CDATA[
 	   	// STATUS SELECT
 		public static final int STATUS_PLANNED = 1;

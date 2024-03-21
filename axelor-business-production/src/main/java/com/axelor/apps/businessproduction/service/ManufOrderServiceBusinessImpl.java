@@ -37,8 +37,12 @@ import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
@@ -54,8 +58,6 @@ import org.slf4j.LoggerFactory;
 public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
 
   @Inject
   public ManufOrderServiceBusinessImpl(
@@ -76,7 +78,10 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       PartnerRepository partnerRepository,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
-      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ManufOrderGetStockMoveService manufOrderGetStockMoveService,
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     super(
         sequenceService,
         operationOrderService,
@@ -94,8 +99,11 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         metaFiles,
         partnerRepository,
         billOfMaterialService,
-        stockMoveService);
-    this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
+        stockMoveService,
+        manufOrderOutgoingStockMoveService,
+        manufOrderStockMoveService,
+        manufOrderGetStockMoveService,
+        manufOrderCreateStockMoveLineService);
   }
 
   @Transactional

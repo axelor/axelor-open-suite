@@ -30,12 +30,12 @@ import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
@@ -67,7 +67,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public FixedAssetGenerationServiceImpl(
@@ -80,7 +80,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       FixedAssetValidateService fixedAssetValidateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetLineGenerationService = fixedAssetLineGenerationService;
     this.fixedAssetImportService = fixedAssetImportService;
     this.fixedAssetDateService = fixedAssetDateService;
@@ -90,7 +90,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
     this.fixedAssetValidateService = fixedAssetValidateService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -182,8 +182,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
         grossValue = grossValue.negate();
       }
-      fixedAsset.setGrossValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, grossValue));
+      fixedAsset.setGrossValue(currencyScaleService.getCompanyScaledValue(fixedAsset, grossValue));
       fixedAsset.setPartner(invoice.getPartner());
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
       fixedAsset.setInvoiceLine(invoiceLine);

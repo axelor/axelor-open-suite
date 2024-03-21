@@ -21,7 +21,6 @@ package com.axelor.apps.supplychain.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
@@ -30,6 +29,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineGenerationServic
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -56,7 +56,7 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       FixedAssetValidateService fixedAssetValidateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     super(
         fixedAssetLineGenerationService,
         fixedAssetImportService,
@@ -67,7 +67,7 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
         accountConfigService,
         appBaseService,
         fixedAssetValidateService,
-        currencyScaleServiceAccount);
+        currencyScaleService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -53,6 +53,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   protected PublicHolidayService publicHolidayService;
   protected LeaveRequestService leaveRequestService;
   protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
+  protected TimesheetLineCreateService timesheetLineCreateService;
 
   @Inject
   public TimesheetServiceImpl(
@@ -61,13 +62,15 @@ public class TimesheetServiceImpl implements TimesheetService {
       WeeklyPlanningService weeklyPlanningService,
       PublicHolidayService publicHolidayService,
       LeaveRequestService leaveRequestService,
-      LeaveRequestComputeDurationService leaveRequestComputeDurationService) {
+      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
+      TimesheetLineCreateService timesheetLineCreateService) {
     this.timesheetLineService = timesheetLineService;
     this.appHumanResourceService = appHumanResourceService;
     this.weeklyPlanningService = weeklyPlanningService;
     this.publicHolidayService = publicHolidayService;
     this.leaveRequestService = leaveRequestService;
     this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
+    this.timesheetLineCreateService = timesheetLineCreateService;
   }
 
   @Override
@@ -134,7 +137,7 @@ public class TimesheetServiceImpl implements TimesheetService {
 
       if (appTimesheet.getCreateLinesForHolidays()
           && publicHolidayService.checkPublicHolidayDay(date, holidayPlanning)) {
-        timesheetLineService.createTimesheetLine(
+        timesheetLineCreateService.createTimesheetLine(
             employee,
             date,
             timesheet,
@@ -153,7 +156,7 @@ public class TimesheetServiceImpl implements TimesheetService {
             }
             totalLeaveHours = totalLeaveHours.add(leaveHours);
           }
-          timesheetLineService.createTimesheetLine(
+          timesheetLineCreateService.createTimesheetLine(
               employee,
               date,
               timesheet,

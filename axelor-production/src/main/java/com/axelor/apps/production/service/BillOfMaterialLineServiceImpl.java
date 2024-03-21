@@ -68,11 +68,14 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
     BillOfMaterialLine billOfMaterialLine = new BillOfMaterialLine();
 
     billOfMaterialLine.setProduct(product);
-    billOfMaterialLine.setBillOfMaterial(billOfMaterial);
     billOfMaterialLine.setQty(qty);
     billOfMaterialLine.setUnit(unit);
     billOfMaterialLine.setPriority(priority);
-    billOfMaterial.setHasNoManageStock(hasNoManageStock);
+
+    if (billOfMaterial != null) {
+      billOfMaterialLine.setBillOfMaterial(billOfMaterial);
+      billOfMaterial.setHasNoManageStock(hasNoManageStock);
+    }
 
     return billOfMaterialLine;
   }

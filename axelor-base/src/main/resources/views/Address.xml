@@ -193,7 +193,7 @@
   <action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
     <field name="country" expr="eval: __user__?.activeCompany?.address?.country"
       if="__user__?.activeCompany?.address"/>
-    <field name="country" expr="action:default-address-country-record"
+    <field name="country" expr="eval: __user__?.localization?.country"
       if="!__user__?.activeCompany?.address"/>
   </action-record>
 
@@ -203,12 +203,6 @@
     <field name="zip" expr="eval: city?.zip"/>
     <field name="street" expr="eval: null"/>
     <field name="townName" expr="eval: city?.name"/>
-  </action-record>
-
-  <action-record name="default-address-country-record"
-    model="com.axelor.apps.base.db.Country" search="('self.alpha3Code LIKE ?1', 'FRA')">
-    <field name="alpha3Code" expr="FRA"/>
-    <field name="name" expr="FRANCE"/>
   </action-record>
 
   <action-record name="action-base-address-set-address-used"

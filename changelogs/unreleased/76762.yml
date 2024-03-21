@@ -1,0 +1,2 @@
+title: "Language: fixed an issue where getting default language did not use the configuration 'application.locale'."
+module: axelor-base

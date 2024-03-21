@@ -85,6 +85,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected InvoiceRepository invoiceRepository;
   protected InvoiceService invoiceService;
   protected AnalyticLineModelService analyticLineModelService;
+  protected ContractYearEndBonusService contractYearEndBonusService;
 
   @Inject
   public ContractServiceImpl(
@@ -98,7 +99,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractVersionRepository contractVersionRepository,
       InvoiceRepository invoiceRepository,
       InvoiceService invoiceService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      ContractYearEndBonusService contractYearEndBonusService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -110,6 +112,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.invoiceRepository = invoiceRepository;
     this.invoiceService = invoiceService;
     this.analyticLineModelService = analyticLineModelService;
+    this.contractYearEndBonusService = contractYearEndBonusService;
   }
 
   @Override
@@ -403,8 +406,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceRepository.save(invoice);
     computeContractLines(contract, invoice);
     // Increase invoice period date
+    contractYearEndBonusService.invoiceYebContract(contract, invoice);
     increaseInvoiceDates(contract);
     setRevaluationFormulaDescription(contract, invoice);
+
     return computeAndSave(invoice);
   }
 
@@ -487,7 +492,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           tmp.setFromDate(start);
           ratio =
               durationService.computeRatio(
-                  start, end, contract.getStartDate(), contract.getInvoicePeriodEndDate());
+                  start,
+                  end,
+                  contract.getStartDate(),
+                  contract.getInvoicePeriodEndDate(),
+                  contract.getCurrentContractVersion().getInvoicingDuration());
         }
         tmp.setQty(
             tmp.getQty()

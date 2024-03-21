@@ -23,11 +23,11 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.common.ObjectUtils;
@@ -45,7 +45,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected FiscalPositionService fiscalPositionService;
   protected CurrencyService currencyService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public MoveLineRecordServiceImpl(
@@ -53,12 +53,12 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       FiscalPositionService fiscalPositionService,
       CurrencyService currencyService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
     this.currencyService = currencyService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -85,7 +85,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       BigDecimal currencyAmount =
           total.divide(
               moveLine.getCurrencyRate(),
-              currencyScaleServiceAccount.getScale(move),
+              currencyScaleService.getScale(move),
               RoundingMode.HALF_UP);
       if (isCredit) {
         currencyAmount = currencyAmount.negate();

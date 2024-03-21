@@ -5,7 +5,8 @@
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
-  <entity name="Contract" repository="abstract">
+  <entity name="Contract" repository="abstract"
+    implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <integer name="targetTypeSelect" title="Type" selection="contract.target.type.select"
       default="1" required="true"/>
@@ -82,6 +83,13 @@
     <date name="nextRevaluationDate" title="Next revaluation date"/>
     <date name="endOfApplicationDate" title="End of application"/>
 
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+
     <extra-code><![CDATA[
             static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
             static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";
@@ -92,6 +100,8 @@
 
             public static final int CUSTOMER_CONTRACT = 1;
             public static final int SUPPLIER_CONTRACT = 2;
+            public static final int YEB_CUSTOMER_CONTRACT = 3;
+            public static final int YEB_SUPPLIER_CONTRACT = 4;
         ]]></extra-code>
 
   </entity>

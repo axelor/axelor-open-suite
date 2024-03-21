@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
@@ -58,6 +59,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
   protected MoveRepository moveRepo;
+  protected PfpService pfpService;
 
   @Inject
   public InvoiceTermPfpServiceImpl(
@@ -66,13 +68,15 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       AccountConfigService accountConfigService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      PfpService pfpService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.accountConfigService = accountConfigService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.moveRepo = moveRepo;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -259,7 +263,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getIsHoldBack());
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm, invoice);
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm);
     }
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
@@ -375,8 +379,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
                     .max(originalInvoiceTerm.getMoveLine().getDebit())));
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermFinancialDiscountService.computeFinancialDiscount(
-          originalInvoiceTerm, originalInvoiceTerm.getInvoice());
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(originalInvoiceTerm);
     }
 
     invoiceTermRepo.save(originalInvoiceTerm);
@@ -409,14 +412,19 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
   @Override
   public void validatePfpValidatedAmount(
-      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount) throws AxelorException {
+      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, Company reconcileCompany)
+      throws AxelorException {
     if (debitMoveLine == null
         || creditMoveLine == null
-        || isSupplierRefundRelated(debitMoveLine, creditMoveLine)) {
+        || isSupplierRefundRelated(debitMoveLine, creditMoveLine)
+        || !pfpService.isManagePassedForPayment(reconcileCompany)) {
       return;
     }
 
-    if (!ObjectUtils.isEmpty(debitMoveLine.getInvoiceTermList())) {
+    if (!ObjectUtils.isEmpty(debitMoveLine.getInvoiceTermList())
+        && debitMoveLine.getMove() != null
+        && MoveRepository.PFP_STATUS_AWAITING
+            == debitMoveLine.getMove().getPfpValidateStatusSelect()) {
       BigDecimal debitAmount =
           debitMoveLine.getInvoiceTermList().stream()
               .filter(
@@ -439,7 +447,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       }
     }
 
-    if (!ObjectUtils.isEmpty(creditMoveLine.getInvoiceTermList())) {
+    if (!ObjectUtils.isEmpty(creditMoveLine.getInvoiceTermList())
+        && creditMoveLine.getMove() != null
+        && MoveRepository.PFP_STATUS_AWAITING
+            == creditMoveLine.getMove().getPfpValidateStatusSelect()) {
       BigDecimal creditAmount =
           creditMoveLine.getInvoiceTermList().stream()
               .filter(

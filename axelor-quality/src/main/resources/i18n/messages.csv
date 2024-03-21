@@ -350,7 +350,7 @@
 "The company %s doesn't have any configured sequence for Quality improvement",,,
 "The following fields will be reset: customer order, stock move and stock move line , continue ?",,,
 "The following fields will be reset: customer stock move and customer stock move line , continue ?",,,
-"The following fields will be reset: operation order line, manuf Order product to consume, consummed manuf order product , continue ?",,,
+"The following fields will be reset: manufacturing operation line, manuf Order product to consume, consummed manuf order product , continue ?",,,
 "The following fields will be reset: stock move line , continue ?",,,
 "The following fields will be reset: supplier order, stock move and stock move line , continue ?",,,
 "The following fields will be reset: supplier stock move and supplier stock move line , continue ?",,,

@@ -212,7 +212,8 @@ public class MachineServiceImpl implements MachineService {
                     + " AND ((self.plannedStartDateT <= :startDate AND self.plannedEndDateT > :startDateWithTime)"
                     + " OR (self.plannedStartDateT <= :endDate AND self.plannedEndDateT > :endDateWithTime))"
                     + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
-                    + " AND self.id != :operationOrderId")
+                    + " AND self.id != :operationOrderId"
+                    + " AND self.outsourcing = false")
             .bind("startDate", plannedStartDateT)
             .bind("endDate", plannedEndDateT)
             .bind("startDateWithTime", plannedStartDateT.minusSeconds(timeBeforeNextOperation))
@@ -395,7 +396,8 @@ public class MachineServiceImpl implements MachineService {
                     + " OR (self.plannedStartDateT < :endDate AND self.plannedEndDateT > :endDateWithTime)"
                     + " OR (self.plannedStartDateT >= :startDate AND self.plannedEndDateT <= :endDateWithTime))"
                     + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
-                    + " AND self.id != :operationOrderId")
+                    + " AND self.id != :operationOrderId"
+                    + " AND self.outsourcing = false")
             .bind("startDate", plannedStartDateT)
             .bind("endDate", plannedEndDateT)
             .bind("startDateWithTime", plannedStartDateT.minusSeconds(timeBeforeNextOperation))

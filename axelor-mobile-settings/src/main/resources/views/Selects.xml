@@ -29,8 +29,14 @@
     <option value="project">Project</option>
     <option value="projectTask">Project task</option>
     <option value="manufOrder">Manuf order</option>
-    <option value="operationOrder">Operation order</option>
+    <option value="operationOrder">Manufacturing operation</option>
     <option value="product">Activity</option>
+  </selection>
+
+  <selection name="mobilesettings.mobile.menu.type.select">
+    <option value="menu">Menu</option>
+    <option value="separator">Separator</option>
+    <option value="submenu">Submenu</option>
   </selection>
 
 </object-views>

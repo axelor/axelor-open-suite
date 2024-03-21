@@ -117,7 +117,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   }
 
   @Override
-  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
     Company company = null;
     LocalDate date = null;
     Set<GlobalBudget> globalBudgetSet = new HashSet<>();
@@ -135,7 +136,11 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     }
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, AccountTypeRepository.TYPE_INCOME, globalBudgetSet);
+        company,
+        date,
+        AccountTypeRepository.TYPE_INCOME,
+        saleOrderLine.getAccount(),
+        globalBudgetSet);
   }
 
   @Override

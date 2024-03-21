@@ -20,13 +20,13 @@ package com.axelor.apps.base.service.print;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.PrintTemplate;
 import com.axelor.apps.base.db.PrintTemplateLine;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.PrintRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -316,12 +316,13 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
   public Set<MetaFile> getMetaFiles(Map<String, Object> context, PrintTemplate printTemplate)
       throws AxelorException, IOException {
     Set<MetaFile> metaFiles = new HashSet<>();
-    if (printTemplate.getBirtTemplateSet() == null) {
+    if (printTemplate.getPrintingTemplateSet() == null) {
       return metaFiles;
     }
 
-    for (BirtTemplate birtTemplate : printTemplate.getBirtTemplateSet()) {
-      metaFiles.add(templateMessageService.createMetaFileUsingBirtTemplate(birtTemplate, context));
+    for (PrintingTemplate printingTemplate : printTemplate.getPrintingTemplateSet()) {
+      metaFiles.add(
+          templateMessageService.createMetaFileUsingBirtTemplate(printingTemplate, context));
     }
 
     LOG.debug("MetaFile to attach: {}", metaFiles);

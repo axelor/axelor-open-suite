@@ -20,9 +20,12 @@
     <field name="moveLine.account" form-view="account-form" grid-view="account-grid"/>
     <field name="moveLine.move.company" form-view="company-form" grid-view="company-grid"
       width="120" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="moveLine.debit" aggregate="sum" width="100"/>
-    <field name="moveLine.credit" aggregate="sum" width="100"/>
-    <field name="moveLine.amountRemaining" aggregate="sum" width="100"/>
+    <field name="moveLine.debit" aggregate="sum" width="100"
+      x-scale="moveLine.companyCurrencyDecimals"/>
+    <field name="moveLine.credit" aggregate="sum" width="100"
+      x-scale="moveLine.companyCurrencyDecimals"/>
+    <field name="moveLine.amountRemaining" aggregate="sum" width="100"
+      x-scale="moveLine.companyCurrencyDecimals"/>
     <field name="moveLine.taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
       widget="TagSelect"/>
     <field name="moveLine.analyticDistributionTemplate"
@@ -35,6 +38,7 @@
     <field name="moveLine.dueDate"/>
     <field name="moveLineQuery.processSelect" hidden="true"/>
     <field name="isSelected" hidden="true"/>
+    <field name="moveLine.companyCurrencyDecimals" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move line"
@@ -49,9 +53,10 @@
       <field name="moveLine.account" form-view="account-form" grid-view="account-grid"/>
       <field name="moveLine.move.company" form-view="company-form" grid-view="company-grid"
         if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-      <field name="moveLine.debit" aggregate="sum"/>
-      <field name="moveLine.credit" aggregate="sum"/>
-      <field name="moveLine.amountRemaining" aggregate="sum"/>
+      <field name="moveLine.debit" aggregate="sum" x-scale="moveLine.companyCurrencyDecimals"/>
+      <field name="moveLine.credit" aggregate="sum" x-scale="moveLine.companyCurrencyDecimals"/>
+      <field name="moveLine.amountRemaining" aggregate="sum"
+        x-scale="moveLine.companyCurrencyDecimals"/>
       <field name="moveLine.taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
         widget="TagSelect"/>
       <field name="moveLine.analyticDistributionTemplate"
@@ -64,6 +69,7 @@
       <field name="moveLine.description"/>
       <field name="moveLine.dueDate"/>
       <field name="isSelected"/>
+      <field name="moveLine.companyCurrencyDecimals" hidden="true"/>
     </panel>
   </form>
 

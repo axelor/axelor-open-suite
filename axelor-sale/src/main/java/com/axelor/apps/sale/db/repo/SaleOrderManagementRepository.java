@@ -138,9 +138,10 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    SaleOrderMarginService saleOrderMarginService = Beans.get(SaleOrderMarginService.class);
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Beans.get(SaleOrderMarginService.class).computeSubMargin(saleOrder, saleOrderLine);
+        saleOrderMarginService.computeSubMargin(saleOrder, saleOrderLine);
       }
     }
   }

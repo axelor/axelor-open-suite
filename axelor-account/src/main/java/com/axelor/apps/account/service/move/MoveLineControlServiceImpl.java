@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -28,7 +27,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
@@ -37,10 +35,8 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.auth.db.Role;
-import com.axelor.auth.db.User;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.servlet.RequestScoped;
@@ -58,7 +54,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
 
@@ -67,13 +63,13 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       MoveLineToolService moveLineToolService,
       MoveLineService moveLineService,
       InvoiceTermService invoiceTermService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
   }
@@ -169,15 +165,15 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (isCompanyAmount) {
       total =
           invoiceAttached == null
-              ? currencyScaleServiceAccount.getCompanyScaledValue(
+              ? currencyScaleService.getCompanyScaledValue(
                   moveLine, moveLine.getDebit().max(moveLine.getCredit()))
-              : currencyScaleServiceAccount.getCompanyScaledValue(
+              : currencyScaleService.getCompanyScaledValue(
                   invoiceAttached, invoiceAttached.getCompanyInTaxTotal());
     } else {
       total =
           invoiceAttached == null
-              ? currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getCurrencyAmount())
-              : currencyScaleServiceAccount.getScaledValue(
+              ? currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount())
+              : currencyScaleService.getScaledValue(
                   invoiceAttached, invoiceAttached.getInTaxTotal());
     }
 
@@ -212,22 +208,6 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             moveLine.getName());
       }
     }
-  }
-
-  public boolean isInvoiceTermReadonly(MoveLine moveLine, User user) {
-    if (BigDecimal.ZERO.equals(moveLine.getAmountRemaining())
-        || moveLine.getMove().getPeriod().getStatusSelect() > PeriodRepository.STATUS_OPENED) {
-      AccountConfig accountConfig = user.getActiveCompany().getAccountConfig();
-
-      return !this.checkRoles(user.getRoles(), accountConfig)
-          && !this.checkRoles(user.getGroup().getRoles(), accountConfig);
-    }
-
-    return false;
-  }
-
-  protected boolean checkRoles(Set<Role> roles, AccountConfig accountConfig) {
-    return roles.stream().anyMatch(it -> accountConfig.getClosureAuthorizedRoleList().contains(it));
   }
 
   @Override
