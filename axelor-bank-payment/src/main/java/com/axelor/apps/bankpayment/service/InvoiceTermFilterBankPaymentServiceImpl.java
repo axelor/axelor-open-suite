@@ -27,13 +27,13 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.google.inject.Inject;
 
-public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermFilterServiceImpl
-    implements InvoiceTermBankPaymentService {
+public class InvoiceTermFilterBankPaymentServiceImpl extends InvoiceTermFilterServiceImpl
+    implements InvoiceTermFilterBankPaymentService {
 
   protected BankOrderLineOriginRepository bankOrderLineOriginRepository;
 
   @Inject
-  public InvoiceTermBankPaymentServiceImpl(
+  public InvoiceTermFilterBankPaymentServiceImpl(
       InvoiceTermRepository invoiceTermRepository,
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
       PfpService pfpService) {

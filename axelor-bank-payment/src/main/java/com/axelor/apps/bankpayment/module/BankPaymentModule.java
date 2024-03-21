@@ -53,8 +53,8 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentService;
-import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
+import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl;
@@ -202,9 +202,10 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(BankStatementRemoveService.class).to(BankStatementRemoveServiceImpl.class);
 
-    bind(InvoiceTermBankPaymentService.class).to(InvoiceTermBankPaymentServiceImpl.class);
+    bind(InvoiceTermFilterBankPaymentService.class)
+        .to(InvoiceTermFilterBankPaymentServiceImpl.class);
 
-    bind(InvoiceTermFilterServiceImpl.class).to(InvoiceTermBankPaymentServiceImpl.class);
+    bind(InvoiceTermFilterServiceImpl.class).to(InvoiceTermFilterBankPaymentServiceImpl.class);
 
     bind(MoveLineGroupServiceImpl.class).to(MoveLineGroupBankPaymentServiceImpl.class);
     bind(MoveLineGroupBankPaymentService.class).to(MoveLineGroupBankPaymentServiceImpl.class);
