@@ -1,0 +1,5 @@
+---
+title: "Invoice: fixed printing of advance payment invoice in invoice report"
+module: "axelor-account"
+developer: |
+  "Fixed to take into consideration all reconciles from payment move where advance invoice payment is used."
