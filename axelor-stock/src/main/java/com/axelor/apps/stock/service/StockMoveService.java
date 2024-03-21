@@ -138,12 +138,7 @@ public interface StockMoveService {
 
   void cancel(StockMove stockMove) throws AxelorException;
 
-  void cancel(
-      Optional<Boolean> supplierCancellationAutomaticMail,
-      Optional<Integer> supplierCancellationMessageTemplateID,
-      StockMove stockMove,
-      CancelReason cancelReason)
-      throws AxelorException;
+  void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
   void sendSupplierCancellationMail(StockMove stockMove, Template template) throws AxelorException;
 
