@@ -58,10 +58,13 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
       boolean isDebit = this.isDebit(creditMoveLine, debitMoveLine);
       BigDecimal foreignExchangeGapAmount =
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
-      boolean isGain = this.isGain(creditMoveLine, debitMoveLine, isDebit);
 
-      return this.createForeignExchangeGapMove(
-          reconcile, foreignExchangeGapAmount, isGain, isDebit);
+      if (foreignExchangeGapAmount.compareTo(BigDecimal.valueOf(0.01)) > 0) {
+        boolean isGain = this.isGain(creditMoveLine, debitMoveLine, isDebit);
+
+        return this.createForeignExchangeGapMove(
+            reconcile, foreignExchangeGapAmount, isGain, isDebit);
+      }
     }
 
     return null;
