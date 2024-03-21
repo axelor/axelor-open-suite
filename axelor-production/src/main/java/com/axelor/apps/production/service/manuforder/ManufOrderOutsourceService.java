@@ -34,4 +34,15 @@ public interface ManufOrderOutsourceService {
   void validateOutsourceDeclaration(
       ManufOrder manufOrder, Partner outsourcePartner, List<ProdProduct> productList)
       throws AxelorException;
+
+  /**
+   * This method check if operation orders regardless of manufOrder. If manufOrder is outsourced,
+   * the method will return false as they are outsourced because of manufOrder.
+   *
+   * @param manufOrder
+   * @return true if lines are outsourced regardless of manufOrder, else false.
+   */
+  boolean areLinesOutsourced(ManufOrder manufOrder);
+
+  void setOperationOrdersOutsourcing(ManufOrder manufOrder);
 }

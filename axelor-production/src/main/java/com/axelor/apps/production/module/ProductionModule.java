@@ -69,6 +69,7 @@ import com.axelor.apps.production.service.ProdProcessLineServiceImpl;
 import com.axelor.apps.production.service.ProdProcessOutsourceService;
 import com.axelor.apps.production.service.ProdProcessOutsourceServiceImpl;
 import com.axelor.apps.production.service.ProductVariantServiceProductionImpl;
+import com.axelor.apps.production.service.ProductionProductStockLocationService;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderServiceProductionImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
@@ -108,6 +109,8 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.machine.MachineServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderBillOfMaterialService;
+import com.axelor.apps.production.service.manuforder.ManufOrderBillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
@@ -118,6 +121,10 @@ import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveSe
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderMergingService;
+import com.axelor.apps.production.service.manuforder.ManufOrderMergingServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderOperationOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOperationServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
@@ -126,6 +133,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderProdProductService;
+import com.axelor.apps.production.service.manuforder.ManufOrderProdProductServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductService;
@@ -136,6 +145,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineS
 import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveStockLocationService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveStockLocationServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -275,5 +286,13 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderStockMoveService.class).to(OperationOrderStockMoveServiceImpl.class);
     bind(OperationOrderPlanningInfiniteCapacityService.class)
         .to(OperationOrderPlanningInfiniteCapacityServiceImpl.class);
+    bind(ManufOrderStockMoveStockLocationService.class)
+        .to(ManufOrderStockMoveStockLocationServiceImpl.class);
+    bind(ManufOrderMergingService.class).to(ManufOrderMergingServiceImpl.class);
+    bind(ManufOrderOperationOrderService.class).to(ManufOrderOperationServiceImpl.class);
+    bind(ManufOrderProdProductService.class).to(ManufOrderProdProductServiceImpl.class);
+    bind(ManufOrderBillOfMaterialService.class).to(ManufOrderBillOfMaterialServiceImpl.class);
+    bind(ProductionProductStockLocationService.class)
+        .to(ProductionProductStockLocationServiceImpl.class);
   }
 }

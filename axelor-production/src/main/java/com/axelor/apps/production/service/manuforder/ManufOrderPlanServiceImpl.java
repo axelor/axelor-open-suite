@@ -19,16 +19,23 @@
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProductionConfig;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
@@ -37,13 +44,19 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
@@ -55,7 +68,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected OperationOrderWorkflowService operationOrderWorkflowService;
   protected OperationOrderPlanningService operationOrderPlanningService;
   protected OperationOrderService operationOrderService;
-  protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ProductionOrderService productionOrderService;
   protected ProductionConfigService productionConfigService;
   protected AppBaseService appBaseService;
@@ -63,6 +75,12 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService;
   protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
   protected ManufOrderResidualProductService manufOrderResidualProductService;
+  protected ManufOrderOperationOrderService manufOrderOperationOrderService;
+  protected ManufOrderProdProductService manufOrderProdProductService;
+
+  protected PartnerRepository partnerRepository;
+
+  protected BillOfMaterialService billOfMaterialService;
 
   @Inject
   public ManufOrderPlanServiceImpl(
@@ -73,14 +91,17 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       OperationOrderWorkflowService operationOrderWorkflowService,
       OperationOrderPlanningService operationOrderPlanningService,
       OperationOrderService operationOrderService,
-      ManufOrderStockMoveService manufOrderStockMoveService,
       ProductionOrderService productionOrderService,
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
       ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderResidualProductService manufOrderResidualProductService) {
+      ManufOrderResidualProductService manufOrderResidualProductService,
+      ManufOrderOperationOrderService manufOrderOperationOrderService,
+      ManufOrderProdProductService manufOrderProdProductService,
+      PartnerRepository partnerRepository,
+      BillOfMaterialService billOfMaterialService) {
     this.manufOrderRepo = manufOrderRepo;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
@@ -88,7 +109,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderPlanningService = operationOrderPlanningService;
     this.operationOrderService = operationOrderService;
-    this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.productionOrderService = productionOrderService;
     this.productionConfigService = productionConfigService;
     this.appBaseService = appBaseService;
@@ -96,6 +116,10 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.manufOrderCreatePurchaseOrderService = manufOrderCreatePurchaseOrderService;
     this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
     this.manufOrderResidualProductService = manufOrderResidualProductService;
+    this.manufOrderOperationOrderService = manufOrderOperationOrderService;
+    this.manufOrderProdProductService = manufOrderProdProductService;
+    this.partnerRepository = partnerRepository;
+    this.billOfMaterialService = billOfMaterialService;
   }
 
   @Override
@@ -139,9 +163,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
     manufOrderService.createBarcode(manufOrder);
     if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
-      manufOrderService.preFillOperations(manufOrder);
+      manufOrderOperationOrderService.preFillOperations(manufOrder);
     } else {
-      manufOrderService.updateOperationsName(manufOrder);
+      manufOrderOperationOrderService.updateOperationsName(manufOrder);
     }
     planProdProducts(manufOrder);
     planPlannedStartDateT(manufOrder);
@@ -279,11 +303,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected void planProdProducts(ManufOrder manufOrder) {
     if (!manufOrder.getIsConsProOnOperation()
         && CollectionUtils.isEmpty(manufOrder.getToConsumeProdProductList())) {
-      manufOrderService.createToConsumeProdProductList(manufOrder);
+      manufOrderProdProductService.createToConsumeProdProductList(manufOrder);
     }
 
     if (CollectionUtils.isEmpty(manufOrder.getToProduceProdProductList())) {
-      manufOrderService.createToProduceProdProductList(manufOrder);
+      manufOrderProdProductService.createToProduceProdProductList(manufOrder);
     }
   }
 
@@ -360,5 +384,85 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
 
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+  }
+
+  @Override
+  public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
+      throws AxelorException {
+    List<Long> ids = new ArrayList<>();
+    Map<String, String> sequenceParentSeqMap = new HashMap<>();
+    Map<String, ManufOrder> seqMOMap = new HashMap<>();
+    List<ManufOrder> generatedMOList = new ArrayList<>();
+
+    for (Map<String, Object> manufOrderMap : manufOrders) {
+      ManufOrder manufOrder = Mapper.toBean(ManufOrder.class, manufOrderMap);
+      Product product = Beans.get(ProductRepository.class).find(manufOrder.getProduct().getId());
+
+      String backupSeq = manufOrder.getManualMOSeq();
+
+      ManufOrder parentMO = manufOrder.getParentMO();
+      Long parentMOId = parentMO.getId();
+      if (parentMOId != null) {
+        if (!seqMOMap.containsKey(parentMOId.toString())) {
+          seqMOMap.put(parentMOId.toString(), parentMO);
+        }
+        sequenceParentSeqMap.put(backupSeq, parentMOId.toString());
+      } else {
+        sequenceParentSeqMap.put(backupSeq, parentMO.getManualMOSeq());
+      }
+
+      if ((boolean) manufOrderMap.get("selected")) {
+        BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+        billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+        Partner clientPartner = manufOrder.getClientPartner();
+        if (ObjectUtils.notEmpty(clientPartner)) {
+          clientPartner = partnerRepository.find(clientPartner.getId());
+        }
+        manufOrder =
+            manufOrderService.generateManufOrder(
+                product,
+                manufOrder.getQty().multiply(billOfMaterial.getQty()),
+                billOfMaterialService.getPriority(billOfMaterial),
+                false,
+                billOfMaterial,
+                manufOrder.getPlannedStartDateT(),
+                manufOrder.getPlannedEndDateT(),
+                ManufOrderService.ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+
+        manufOrder.setClientPartner(clientPartner);
+        manufOrder.setManualMOSeq(backupSeq);
+        seqMOMap.put(backupSeq, manufOrder);
+        ids.add(manufOrder.getId());
+        generatedMOList.add(manufOrder);
+      }
+    }
+    this.setParentMos(sequenceParentSeqMap, seqMOMap, generatedMOList);
+    return ids;
+  }
+
+  @Transactional
+  protected void setParentMos(
+      Map<String, String> sequenceParentSeqMap,
+      Map<String, ManufOrder> seqMOMap,
+      List<ManufOrder> generatedMOList) {
+    for (ManufOrder mo : generatedMOList) {
+      String seq = mo.getManualMOSeq();
+      ManufOrder parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, seq);
+      mo.setParentMO(parentMO);
+    }
+  }
+
+  protected ManufOrder getParentMO(
+      Map<String, String> sequenceParentSeqMap, Map<String, ManufOrder> seqMOMap, String seq) {
+    ManufOrder parentMO = null;
+    String parentSeq = sequenceParentSeqMap.get(seq);
+
+    if (seqMOMap.containsKey(parentSeq)) {
+      parentMO = seqMOMap.get(parentSeq);
+      parentMO = manufOrderRepo.find(parentMO.getId());
+    } else {
+      parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, parentSeq);
+    }
+    return parentMO;
   }
 }

@@ -22,10 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -33,14 +31,15 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderBillOfMaterialService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
+import com.axelor.apps.production.service.manuforder.ManufOrderProdProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
@@ -65,45 +64,43 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       OperationOrderService operationOrderService,
       ManufOrderPlanService manufOrderPlanService,
       ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
-      ProductVariantService productVariantService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
       ManufOrderRepository manufOrderRepo,
-      ProdProductRepository prodProductRepo,
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
       MetaFiles metaFiles,
-      PartnerRepository partnerRepository,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      ManufOrderProdProductService manufOrderProdProductService,
+      ManufOrderBillOfMaterialService manufOrderBillOfMaterialService) {
     super(
         sequenceService,
         operationOrderService,
         manufOrderPlanService,
         manufOrderCreatePurchaseOrderService,
-        productVariantService,
         appBaseService,
         appProductionService,
         manufOrderRepo,
-        prodProductRepo,
         productCompanyService,
         barcodeGeneratorService,
         productStockLocationService,
         unitConversionService,
         metaFiles,
-        partnerRepository,
         billOfMaterialService,
         stockMoveService,
         manufOrderOutgoingStockMoveService,
         manufOrderStockMoveService,
         manufOrderGetStockMoveService,
-        manufOrderCreateStockMoveLineService);
+        manufOrderCreateStockMoveLineService,
+        manufOrderProdProductService,
+        manufOrderBillOfMaterialService);
   }
 
   @Transactional

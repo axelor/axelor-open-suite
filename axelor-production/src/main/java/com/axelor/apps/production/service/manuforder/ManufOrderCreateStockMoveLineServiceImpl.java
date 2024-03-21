@@ -10,7 +10,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
   protected ProductCompanyService productCompanyService;
   protected StockMoveLineService stockMoveLineService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected ManufOrderProdProductService manufOrderProdProductService;
 
   @Inject
   public ManufOrderCreateStockMoveLineServiceImpl(
@@ -35,13 +35,15 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       StockMoveService stockMoveService,
       ProductCompanyService productCompanyService,
       StockMoveLineService stockMoveLineService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ManufOrderProdProductService manufOrderProdProductService) {
     this.manufOrderResidualProductService = manufOrderResidualProductService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.stockMoveService = stockMoveService;
     this.productCompanyService = productCompanyService;
     this.stockMoveLineService = stockMoveLineService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.manufOrderProdProductService = manufOrderProdProductService;
   }
 
   @Override
@@ -282,8 +284,8 @@ public class ManufOrderCreateStockMoveLineServiceImpl
         return;
       }
       diffProdProductList =
-          Beans.get(ManufOrderService.class)
-              .createDiffProdProductList(manufOrder, outProdProductList, stockMoveLineList);
+          manufOrderProdProductService.createDiffProdProductList(
+              manufOrder, outProdProductList, stockMoveLineList);
     }
     createNewStockMoveLines(
         diffProdProductList, stockMove, stockMoveLineType, fromStockLocation, toStockLocation);

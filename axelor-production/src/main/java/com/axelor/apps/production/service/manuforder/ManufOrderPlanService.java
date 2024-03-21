@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface ManufOrderPlanService {
 
@@ -34,5 +35,8 @@ public interface ManufOrderPlanService {
   LocalDateTime computePlannedEndDateT(ManufOrder manufOrder);
 
   void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT)
+      throws AxelorException;
+
+  List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException;
 }

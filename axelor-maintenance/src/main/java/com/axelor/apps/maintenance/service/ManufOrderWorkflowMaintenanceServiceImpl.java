@@ -70,12 +70,10 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         productCompanyService,
         productionConfigRepo,
         appBaseService,
-        operationOrderService,
         appProductionService,
         productionConfigService,
         manufOrderOutgoingStockMoveService,
         manufOrderService,
-        sequenceService,
         manufOrderOutsourceService,
         operationOrderOutsourceService,
         productService);

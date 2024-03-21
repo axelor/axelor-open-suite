@@ -24,31 +24,16 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.tuple.Pair;
 
 public interface ManufOrderService {
 
   public static int DEFAULT_PRIORITY = 2;
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
-
-  /**
-   * This method check if operation orders regardless of manufOrder. If manufOrder is outsourced,
-   * the method will return false as they are outsourced because of manufOrder.
-   *
-   * @param manufOrder
-   * @return true if lines are outsourced regardless of manufOrder, else false.
-   */
-  boolean areLinesOutsourced(ManufOrder manufOrder);
-
-  void setOperationOrdersOutsourcing(ManufOrder manufOrder);
 
   public interface ManufOrderOriginType {}
 
@@ -69,23 +54,6 @@ public interface ManufOrderService {
       ManufOrderOriginType manufOrderOriginType)
       throws AxelorException;
 
-  public void createToConsumeProdProductList(ManufOrder manufOrder);
-
-  /**
-   * Compute the quantity on generated prod product line. If the quantity of the bill of materials
-   * is equal to the quantity of manuf order then the prod product line will have the same quantity
-   * as configured line.
-   *
-   * @param bomQty quantity of the bill of materials.
-   * @param manufOrderQty quantity configured of the manuf order.
-   * @param lineQty quantity of the line.
-   * @return the quantity for the prod product line.
-   */
-  BigDecimal computeToConsumeProdProductLineQuantity(
-      BigDecimal bomQty, BigDecimal manufOrderQty, BigDecimal lineQty);
-
-  public void createToProduceProdProductList(ManufOrder manufOrder);
-
   public ManufOrder createManufOrder(
       Product product,
       BigDecimal qty,
@@ -98,13 +66,7 @@ public interface ManufOrderService {
       LocalDateTime plannedEndDateT)
       throws AxelorException;
 
-  public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
-
-  public void updateOperationsName(ManufOrder manufOrder);
-
   public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException;
-
-  public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
 
   /**
    * Generate waste stock move.
@@ -132,84 +94,8 @@ public interface ManufOrderService {
    */
   void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException;
 
-  /**
-   * Updates the diff prod product list.
-   *
-   * @param manufOrder
-   * @return the updated manufOrder
-   * @throws AxelorException
-   */
-  ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException;
-
-  /**
-   * Compute the difference between the two lists for the given manuf order.
-   *
-   * @param manufOrder
-   * @param prodProductList
-   * @param stockMoveLineList
-   * @return a list of ProdProduct
-   * @throws AxelorException
-   */
-  List<ProdProduct> createDiffProdProductList(
-      ManufOrder manufOrder,
-      List<ProdProduct> prodProductList,
-      List<StockMoveLine> stockMoveLineList)
-      throws AxelorException;
-
-  /**
-   * Compute the difference between the two lists.
-   *
-   * @param prodProductList
-   * @param stockMoveLineList
-   * @return a list of ProdProduct
-   * @throws AxelorException
-   */
-  List<ProdProduct> createDiffProdProductList(
-      List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList)
-      throws AxelorException;
-
-  /**
-   * Create a query to find product's consume and missing qty of a specific/all company and a
-   * specific/all stock location in a Manuf Order
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getConsumeAndMissingQtyForAProduct(
-      Long productId, Long companyId, Long stockLocationId);
-
-  /**
-   * Create a query to find product's building qty of a specific/all company and a specific/all
-   * stock location in a Manuf Order
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
-
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException;
-
-  public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
-      throws AxelorException;
-
-  public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
-      BillOfMaterial bom, ManufOrder mo, List<Product> productList) throws AxelorException;
-
-  /**
-   * Merge different manufacturing orders into a single one.
-   *
-   * @param ids List of ids of manufacturing orders to merge
-   * @throws AxelorException
-   */
-  public void merge(List<Long> ids) throws AxelorException;
-
-  /**
-   * Check if the manufacturing orders can be merged.
-   *
-   * @param ids List of ids of manufacturing orders to merge
-   */
-  public boolean canMerge(List<Long> ids);
 
   /**
    * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of

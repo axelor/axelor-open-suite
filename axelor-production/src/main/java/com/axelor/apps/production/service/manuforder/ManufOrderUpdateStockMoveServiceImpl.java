@@ -13,22 +13,25 @@ public class ManufOrderUpdateStockMoveServiceImpl implements ManufOrderUpdateSto
 
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderService manufOrderService;
+  protected ManufOrderProdProductService manufOrderProdProductService;
   protected StockMoveService stockMoveService;
 
   @Inject
   public ManufOrderUpdateStockMoveServiceImpl(
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderService manufOrderService,
-      StockMoveService stockMoveService) {
+      StockMoveService stockMoveService,
+      ManufOrderProdProductService manufOrderProdProductService) {
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderService = manufOrderService;
     this.stockMoveService = stockMoveService;
+    this.manufOrderProdProductService = manufOrderProdProductService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
-    manufOrderService.updateDiffProdProductList(manufOrder);
+    manufOrderProdProductService.updateDiffProdProductList(manufOrder);
     List<StockMoveLine> consumedStockMoveLineList = manufOrder.getConsumedStockMoveLineList();
     if (consumedStockMoveLineList == null) {
       return;

@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
@@ -578,5 +579,25 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     return new ArrayList<>();
+  }
+
+  @Override
+  public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial) {
+
+    if (billOfMaterial != null
+        && billOfMaterial.getProdProcess() != null
+        && billOfMaterial.getProdProcess().getProdProcessLineList() != null) {
+      for (ProdProcessLine prodProcessLine :
+          billOfMaterial.getProdProcess().getProdProcessLineList()) {
+
+        if ((prodProcessLine.getToConsumeProdProductList() != null
+            && !prodProcessLine.getToConsumeProdProductList().isEmpty())) {
+
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }

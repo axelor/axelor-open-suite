@@ -15,14 +15,14 @@ import java.util.stream.Collectors;
 public class ManufOrderGetStockMoveServiceImpl implements ManufOrderGetStockMoveService {
 
   protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
-  protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService;
 
   @Inject
   public ManufOrderGetStockMoveServiceImpl(
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService) {
     this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
-    this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.manufOrderStockMoveStockLocationService = manufOrderStockMoveStockLocationService;
   }
 
   @Override
@@ -97,7 +97,7 @@ public class ManufOrderGetStockMoveServiceImpl implements ManufOrderGetStockMove
       throws AxelorException {
     Objects.requireNonNull(manufOrder);
     StockLocation residualProductStockLocation =
-        manufOrderStockMoveService.getResidualProductStockLocation(manufOrder);
+        manufOrderStockMoveStockLocationService.getResidualProductStockLocation(manufOrder);
 
     if (manufOrder.getOutStockMoveList() == null || residualProductStockLocation == null) {
       return manufOrder.getOutStockMoveList();
@@ -113,7 +113,7 @@ public class ManufOrderGetStockMoveServiceImpl implements ManufOrderGetStockMove
       throws AxelorException {
     Objects.requireNonNull(manufOrder);
     StockLocation residualProductStockLocation =
-        manufOrderStockMoveService.getResidualProductStockLocation(manufOrder);
+        manufOrderStockMoveStockLocationService.getResidualProductStockLocation(manufOrder);
 
     if (manufOrder.getOutStockMoveList() == null || residualProductStockLocation == null) {
       return manufOrder.getOutStockMoveList();

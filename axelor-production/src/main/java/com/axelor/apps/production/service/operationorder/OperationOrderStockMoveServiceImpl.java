@@ -12,6 +12,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLi
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveStockLocationService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -39,6 +40,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
+  protected ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService;
 
   @Inject
   public OperationOrderStockMoveServiceImpl(
@@ -49,7 +51,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationRepo = stockLocationRepo;
@@ -58,6 +61,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.manufOrderStockMoveStockLocationService = manufOrderStockMoveStockLocationService;
   }
 
   @Override
@@ -225,7 +229,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     List<StockMove> stockMoveList;
 
     stockMoveList = operationOrder.getInStockMoveList();
-    fromStockLocation = manufOrderStockMoveService.getDefaultInStockLocation(manufOrder, company);
+    fromStockLocation =
+        manufOrderStockMoveStockLocationService.getDefaultInStockLocation(manufOrder, company);
     toStockLocation =
         stockConfigService.getProductionVirtualStockLocation(
             stockConfig, manufOrderOutsourceService.isOutsource(operationOrder.getManufOrder()));

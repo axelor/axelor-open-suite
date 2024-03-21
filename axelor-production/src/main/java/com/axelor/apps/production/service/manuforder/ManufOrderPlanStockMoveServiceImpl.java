@@ -16,26 +16,26 @@ import java.util.Optional;
 public class ManufOrderPlanStockMoveServiceImpl implements ManufOrderPlanStockMoveService {
 
   protected StockMoveService stockMoveService;
-  protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected SupplyChainConfigService supplyChainConfigService;
   protected ReservedQtyService reservedQtyService;
   protected ManufOrderCreateStockMoveService manufOrderCreateStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
+  protected ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService;
 
   @Inject
   public ManufOrderPlanStockMoveServiceImpl(
       StockMoveService stockMoveService,
-      ManufOrderStockMoveService manufOrderStockMoveService,
       SupplyChainConfigService supplyChainConfigService,
       ReservedQtyService reservedQtyService,
       ManufOrderCreateStockMoveService manufOrderCreateStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      ManufOrderStockMoveStockLocationService manufOrderStockMoveStockLocationService) {
     this.stockMoveService = stockMoveService;
-    this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.supplyChainConfigService = supplyChainConfigService;
     this.reservedQtyService = reservedQtyService;
     this.manufOrderCreateStockMoveService = manufOrderCreateStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.manufOrderStockMoveStockLocationService = manufOrderStockMoveStockLocationService;
   }
 
   @Override
@@ -44,9 +44,11 @@ public class ManufOrderPlanStockMoveServiceImpl implements ManufOrderPlanStockMo
 
     Company company = manufOrder.getCompany();
     StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForProducedStockMove(manufOrder, company);
+        manufOrderStockMoveStockLocationService.getVirtualStockLocationForProducedStockMove(
+            manufOrder, company);
     StockLocation producedProductStockLocation =
-        manufOrderStockMoveService.getProducedProductStockLocation(manufOrder, company);
+        manufOrderStockMoveStockLocationService.getProducedProductStockLocation(
+            manufOrder, company);
 
     if (manufOrder.getToProduceProdProductList() != null && company != null) {
 
@@ -69,9 +71,10 @@ public class ManufOrderPlanStockMoveServiceImpl implements ManufOrderPlanStockMo
 
     Company company = manufOrder.getCompany();
     StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForProducedStockMove(manufOrder, company);
+        manufOrderStockMoveStockLocationService.getVirtualStockLocationForProducedStockMove(
+            manufOrder, company);
     StockLocation residualProductStockLocation =
-        manufOrderStockMoveService.getResidualProductStockLocation(manufOrder);
+        manufOrderStockMoveStockLocationService.getResidualProductStockLocation(manufOrder);
 
     if (manufOrder.getToProduceProdProductList() != null && company != null) {
 
@@ -95,9 +98,11 @@ public class ManufOrderPlanStockMoveServiceImpl implements ManufOrderPlanStockMo
 
     // Get stock locations dest and source
     StockLocation fromStockLocation =
-        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
+        manufOrderStockMoveStockLocationService.getFromStockLocationForConsumedStockMove(
+            manufOrder, company);
     StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
+        manufOrderStockMoveStockLocationService.getVirtualStockLocationForConsumedStockMove(
+            manufOrder, company);
 
     if (manufOrder.getToConsumeProdProductList() != null && company != null) {
 
@@ -128,9 +133,11 @@ public class ManufOrderPlanStockMoveServiceImpl implements ManufOrderPlanStockMo
 
     // Get stock locations dest and source
     StockLocation fromStockLocation =
-        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
+        manufOrderStockMoveStockLocationService.getFromStockLocationForConsumedStockMove(
+            manufOrder, company);
     StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
+        manufOrderStockMoveStockLocationService.getVirtualStockLocationForConsumedStockMove(
+            manufOrder, company);
 
     if (manufOrder.getToConsumeProdProductList() != null && company != null) {
 

@@ -31,6 +31,7 @@ import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderProdProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
@@ -54,7 +55,8 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       OperationOrderOutsourceService operationOrderOutsourceService,
       ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService,
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService,
+      ManufOrderProdProductService manufOrderProdProductService) {
     super(
         barcodeGeneratorService,
         appProductionService,
@@ -64,7 +66,8 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
         operationOrderOutsourceService,
         manufOrderCheckStockMoveLineService,
         manufOrderPlanStockMoveService,
-        manufOrderUpdateStockMoveService);
+        manufOrderUpdateStockMoveService,
+        manufOrderProdProductService);
   }
 
   @Override

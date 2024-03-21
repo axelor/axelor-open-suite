@@ -24,11 +24,9 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -51,8 +49,6 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
   protected ManufOrderRepository manufOrderRepository;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
-  protected AppBaseService appBaseService;
-  protected AppProductionService appProductionService;
 
   @Inject
   public ManufOrderCreatePurchaseOrderServiceImpl(
@@ -60,16 +56,12 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
       StockConfigProductionService stockConfigProductionService,
       ManufOrderRepository manufOrderRepository,
       OperationOrderOutsourceService operationOrderOutsourceService,
-      ManufOrderOutsourceService manufOrderOutsourceService,
-      AppBaseService appBaseService,
-      AppProductionService appProductionService) {
+      ManufOrderOutsourceService manufOrderOutsourceService) {
     this.purchaseOrderService = purchaseOrderService;
     this.stockConfigProductionService = stockConfigProductionService;
     this.manufOrderRepository = manufOrderRepository;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
-    this.appBaseService = appBaseService;
-    this.appProductionService = appProductionService;
   }
 
   @Override
