@@ -52,7 +52,8 @@
 
     <boolean name="enableEventCreation" title="Enable event creation"
       help="This will attach an event to a project planning time"/>
-    <string name="subjectGroovyFormula" title="Subject groovy formula"/>
+    <string name="eventSubjectGroovyFormula" title="Event subject groovy formula"
+      help="This will customize the event subject. If empty, it will be 'project.fullName + ' - ' + projectTask.fullName'."/>
 
     <!-- planification fields -->
     <many-to-one name="daysUnit" ref="com.axelor.apps.base.db.Unit" title="Days unit"/>

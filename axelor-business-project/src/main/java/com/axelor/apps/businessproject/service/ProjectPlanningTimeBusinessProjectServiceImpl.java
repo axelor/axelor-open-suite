@@ -41,8 +41,12 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -50,7 +54,6 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanningTimeServiceImpl
     implements ProjectPlanningTimeBusinessProjectService {
@@ -169,13 +172,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
   }
 
   protected void createICalendarEvent(ProjectPlanningTime planningTime) {
-    ProjectTask projectTask = planningTime.getProjectTask();
-    String subject =
-        Optional.ofNullable(projectTask)
-            .map(ProjectTask::getProject)
-            .map(project -> project.getFullName() + " - ")
-            .orElse("");
-    subject += Optional.ofNullable(projectTask).map(ProjectTask::getFullName).orElse("");
+    String subject = computeSubjectFromGroovy(planningTime).toString();
     ICalendarEvent event =
         iCalendarService.createEvent(
             planningTime.getStartDateTime(),
@@ -242,5 +239,19 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       projectPlanningTime.setIcalendarEvent(null);
       planningTimeRepo.remove(projectPlanningTime);
     }
+  }
+
+  protected Object computeSubjectFromGroovy(ProjectPlanningTime projectPlanningTime) {
+
+    Context scriptContext =
+        new Context(Mapper.toMap(projectPlanningTime), projectPlanningTime.getClass());
+    GroovyScriptHelper groovyScriptHelper = new GroovyScriptHelper(scriptContext);
+
+    String subjectGroovyFormula =
+        appBusinessProjectService.getAppBusinessProject().getSubjectGroovyFormula();
+    if (StringUtils.isBlank(subjectGroovyFormula)) {
+      subjectGroovyFormula = "project.fullName" + "-" + "projectTask.fullName";
+    }
+    return groovyScriptHelper.eval(subjectGroovyFormula);
   }
 }
