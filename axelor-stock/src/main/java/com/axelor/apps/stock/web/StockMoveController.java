@@ -180,11 +180,11 @@ public class StockMoveController {
   public void cancel(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
+
       Beans.get(StockMoveService.class)
           .cancel(
               Beans.get(StockMoveRepository.class).find(stockMove.getId()),
               stockMove.getCancelReason());
-
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
