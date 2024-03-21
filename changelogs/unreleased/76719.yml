@@ -1,0 +1,27 @@
+---
+title: "Account: fixed circular injection inside "
+module: axelor-account
+developer: |
+  Followings services have been added :
+  - InvoiceTermFilterService
+  - InvoiceTermToolService
+  - InvoicePaymentComputeService
+  InvoiceTermBankPaymentService renamed into InvoiceTermFilterBankPaymentService. 
+  
+  In InvoiceVisibilityService :
+  - getPfpCondition() moved to PfpService
+  - getOperationTypePurchaseCondition() moved to PfpService
+  
+  In InvoiceTermService :
+  - getUnpaidInvoiceTerms() moved to InvoiceTermFilterService
+  - getUnpaidInvoiceTermsWithoutPfpCheck() moved to InvoiceTermFilterService
+  - filterInvoiceTermsByHoldBack() moved to InvoiceTermFilterService
+  - getUnpaidInvoiceTermsFiltered() moved to InvoiceTermFilterService
+  - getUnpaidInvoiceTermsFilteredWithoutPfpCheck() moved to InvoiceTermFilterService
+  - filterNotAwaitingPayment() moved to InvoiceTermFilterService
+  - isNotAwaitingPayment() moved to InvoiceTermFilterService
+  - buildUnpaidInvoiceTermsQuery() moved to InvoiceTermFilterService
+  - isPartiallyPaid() moved to InvoiceTermToolService
+  
+  In InvoicePaymentFinancialDiscountService
+  - computeDataForFinancialDiscount() moved to InvoicePaymentComputeService
