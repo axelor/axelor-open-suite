@@ -42,7 +42,6 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
-            + " AND self.move.currency = :bankReconciliationCurrency"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
             + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount)"
             + " AND (:includeOtherBankStatements IS TRUE OR (self.date BETWEEN :fromDate AND :toDate OR self.dueDate BETWEEN :fromDate AND :toDate))"
@@ -62,7 +61,6 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
     params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
     params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
     params.put("company", bankReconciliation.getCompany());
-    params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
 
     params.put("includeOtherBankStatements", bankReconciliation.getIncludeOtherBankStatements());
