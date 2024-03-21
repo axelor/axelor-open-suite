@@ -67,12 +67,8 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -958,12 +954,18 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     BigDecimal max = BigDecimal.ZERO;
     if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
-      ContractLine contractLine =
-          contractCtx.getCurrentContractVersion().getContractLineList().get(0);
-      if (!contractLine.getIsConsumptionLine()) {
+      List<ContractLine> contractLines =
+          contractCtx.getCurrentContractVersion().getContractLineList().stream()
+              .filter(
+                  cl ->
+                      cl.getIsConsumptionLine()
+                          && Objects.equals(
+                              cl.getProduct().getId(), consumptionLineCtx.getProduct().getId()))
+              .collect(Collectors.toList());
+      if (contractLines.isEmpty()) {
         return false;
       }
-      max = contractLine.getConsumptionMaxQuantity();
+      max = contractLines.get(0).getConsumptionMaxQuantity();
     }
     BigDecimal sum =
         contractCtx.getConsumptionLineList().stream()
