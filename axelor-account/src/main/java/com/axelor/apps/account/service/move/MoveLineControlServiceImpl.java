@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
@@ -61,6 +62,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public MoveLineControlServiceImpl(
@@ -69,13 +71,15 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       InvoiceTermService invoiceTermService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
-      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      InvoiceTermFilterService invoiceTermFilterService) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   @Override
@@ -318,7 +322,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0
         && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
             || moveLine.getInvoiceTermList().stream()
-                .allMatch(invoiceTermService::isNotAwaitingPayment));
+                .allMatch(invoiceTermFilterService::isNotAwaitingPayment));
   }
 
   @Override

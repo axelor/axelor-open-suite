@@ -2,25 +2,26 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeService {
-  protected InvoiceTermService invoiceTermService;
+
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public InvoicePaymentComputeServiceImpl(
-      InvoiceTermService invoiceTermService,
       InvoiceTermPaymentService invoiceTermPaymentService,
-      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService) {
-    this.invoiceTermService = invoiceTermService;
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
+      InvoiceTermFilterService invoiceTermFilterService) {
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   @Override
@@ -30,7 +31,7 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
 
     if (invoiceId > 0) {
       List<InvoiceTerm> invoiceTerms =
-          invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+          invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
 
       invoiceTermIdList =
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());

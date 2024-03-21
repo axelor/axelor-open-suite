@@ -19,57 +19,25 @@
 package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.service.InvoiceVisibilityService;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
-import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.auth.db.repo.UserRepository;
 import com.google.inject.Inject;
 
-public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
+public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermFilterServiceImpl
     implements InvoiceTermBankPaymentService {
 
   protected BankOrderLineOriginRepository bankOrderLineOriginRepository;
 
   @Inject
   public InvoiceTermBankPaymentServiceImpl(
-      InvoiceTermRepository invoiceTermRepo,
-      InvoiceRepository invoiceRepo,
-      AppAccountService appAccountService,
-      InvoiceVisibilityService invoiceVisibilityService,
-      AccountConfigService accountConfigService,
-      ReconcileService reconcileService,
-      InvoicePaymentCreateService invoicePaymentCreateService,
-      UserRepository userRepo,
-      JournalService journalService,
-      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      InvoiceTermRepository invoiceTermRepository,
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
-      PfpService pfpService,
-      CurrencyScaleService currencyScaleService) {
-    super(
-        invoiceTermRepo,
-        invoiceRepo,
-        appAccountService,
-        invoiceVisibilityService,
-        accountConfigService,
-        reconcileService,
-        invoicePaymentCreateService,
-        journalService,
-        invoiceTermFinancialDiscountService,
-        userRepo,
-        pfpService,
-        currencyScaleService);
+      PfpService pfpService) {
+    super(invoiceTermRepository, pfpService);
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
   }
 

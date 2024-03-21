@@ -41,6 +41,7 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
@@ -115,6 +116,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveValidateService moveValidateService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermPfpService invoiceTermPfpService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -141,7 +143,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
       CurrencyScaleService currencyScaleService,
-      InvoiceTermPfpService invoiceTermPfpService) {
+      InvoiceTermPfpService invoiceTermPfpService,
+      InvoiceTermFilterService invoiceTermFilterService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -167,6 +170,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveValidateService = moveValidateService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermPfpService = invoiceTermPfpService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   /**
@@ -725,7 +729,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       List<InvoiceTerm> invoiceTermsToPay = null;
       if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
         invoiceTermsToPay =
-            invoiceTermService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
+            invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
       } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
         invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
