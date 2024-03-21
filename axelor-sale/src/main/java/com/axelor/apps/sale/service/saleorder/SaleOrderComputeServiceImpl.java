@@ -59,7 +59,6 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     if (saleOrder.getSaleOrderLineList() != null) {
 
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        saleOrderLineComputeService.compute(saleOrderLine);
         saleOrderLine.setCompanyExTaxTotal(
             saleOrderLineService.getAmountInCompanyCurrency(
                 saleOrderLine.getExTaxTotal(), saleOrder));
