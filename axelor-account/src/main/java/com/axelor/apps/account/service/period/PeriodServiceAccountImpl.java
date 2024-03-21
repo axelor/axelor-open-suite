@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.period;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
@@ -47,6 +47,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   protected MoveRepository moveRepository;
   protected AccountConfigService accountConfigService;
   protected MoveRemoveService moveRemoveService;
+  protected PeriodCheckService periodCheckService;
 
   @Inject
   public PeriodServiceAccountImpl(
@@ -55,12 +56,14 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
       AccountConfigService accountConfigService,
-      MoveRemoveService moveRemoveService) {
+      MoveRemoveService moveRemoveService,
+      PeriodCheckService periodCheckService) {
     super(periodRepo, adjustHistoryService);
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
     this.moveRemoveService = moveRemoveService;
+    this.periodCheckService = periodCheckService;
   }
 
   @Override
@@ -131,37 +134,10 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   @Override
-  public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException {
-    if (period != null && period.getYear().getCompany() != null && user != null) {
-      if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
-        return false;
-      }
-      if (period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
-        AccountConfig accountConfig =
-            accountConfigService.getAccountConfig(period.getYear().getCompany());
-        return UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
-            user, accountConfig.getMoveOnTempClosureAuthorizedRoleList());
-      }
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public boolean isAuthorizedToAccountOnPeriod(Move move, User user) throws AxelorException {
-    if (move.getCompany() == null
-        || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
-        || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE) {
-      return true;
-    }
-
-    return isAuthorizedToAccountOnPeriod(move.getPeriod(), user);
-  }
-
-  @Override
   public boolean isClosedPeriod(Period period) throws AxelorException {
     User user = AuthUtils.getUser();
 
-    return super.isClosedPeriod(period) && !this.isAuthorizedToAccountOnPeriod(period, user);
+    return super.isClosedPeriod(period)
+        && !periodCheckService.isAuthorizedToAccountOnPeriod(period, user);
   }
 }

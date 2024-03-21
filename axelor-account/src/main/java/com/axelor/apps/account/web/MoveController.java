@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
@@ -35,6 +34,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
@@ -191,11 +191,11 @@ public class MoveController {
                 .fetch();
 
         if (!moveList.isEmpty()) {
-          PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
+          PeriodCheckService periodCheckService = Beans.get(PeriodCheckService.class);
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
+            if (!periodCheckService.isAuthorizedToAccountOnPeriod(move, user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(

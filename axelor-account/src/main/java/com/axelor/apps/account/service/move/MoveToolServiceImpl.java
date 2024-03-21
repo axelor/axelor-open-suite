@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -77,7 +76,6 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
   protected AccountConfigService accountConfigService;
-  protected PeriodServiceAccount periodServiceAccount;
   protected MoveRepository moveRepository;
   protected ListHelper listHelper;
 
@@ -86,13 +84,11 @@ public class MoveToolServiceImpl implements MoveToolService {
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
       AccountConfigService accountConfigService,
-      PeriodServiceAccount periodServiceAccount,
       MoveRepository moveRepository,
       ListHelper listHelper) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
-    this.periodServiceAccount = periodServiceAccount;
     this.moveRepository = moveRepository;
     this.listHelper = listHelper;
   }
