@@ -1,2 +1,0 @@
-title: "Contract: fix prorata invoicing when invoicing period was smaller than the invoicing frequency"
-module: axelor-contract

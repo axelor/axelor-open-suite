@@ -80,13 +80,13 @@
 
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
-      return contractVersion != null ? contractVersion.getContract().getCurrency() : null;
+      return contractVersion != null && contractVersion.getContract() != null ? contractVersion.getContract().getCurrency() : null;
 	    ]]>
     </many-to-one>
     <many-to-one name="companyCurrency" transient="true"
       ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
-      return contractVersion != null ? contractVersion.getContract().getCompanyCurrency() : null;
+      return contractVersion != null && contractVersion.getContract() != null ? contractVersion.getContract().getCompanyCurrency() : null;
 	    ]]>
     </many-to-one>
 
