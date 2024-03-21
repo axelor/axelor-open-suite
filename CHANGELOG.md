@@ -1,3 +1,53 @@
+## [7.2.10] (2024-03-21)
+
+### Fixes
+#### Base
+
+* Customer: fixed error when loading customer map.
+* Fixed wrong french translation of 'Application' (was 'Domaine d'applicabilité').
+* Language: fixed an issue where getting default language did not use the configuration 'application.locale'.
+* App Base: fixed wrong currency conversion line in demo data.
+
+#### Account
+
+* Accounting batch: fixed result move functional origin in closure/open batch.
+* Move: fixed mass entry technical origin missing in Move printing.
+* Payment voucher: fixed paid amount selecting overdue move line.
+* Accounting batch: fixed the block customer message when no result.
+* Partner/AccountingSituation: added error label when multiple accounting situation for a company and a partner.
+* Reconcile manager: fixed move lines selection.
+* Accounting batch: fixed currency amounts on result moves in opening/closure.
+* FEC Export: fixed technical error when journal is missing.
+
+#### Budget
+
+* Purchase order line: fixed wrong budget distribution when invoicing multiple purchase order lines.
+
+#### Contract
+
+* Contract line: fixed analytic lines creation using amount in company currency.
+* Contract: fixed prorata invoicing when invoicing period was smaller than the invoicing frequency.
+
+#### Helpdesk
+
+* SLA: added missing translations inside 'reach in' in readonly.
+
+#### Production
+
+* Prod process line: added missing filter on type for work centers.
+* Manufacturing order: fixed error on change of client partner for manuf orders without related sale orders.
+* MPS: fixed quantity not editable on MPS proposal.
+* Product: fixed an issue where 'economic manuf order qty' field was displayed twice.
+* Product: fixed cost sheet group display on product form on semi-finished products.
+
+#### Stock
+
+* Inventory: fixed type in inventory demo data.
+
+#### Supplier Management
+
+* Supplier request: fixed 'JNPE' error on partner selection in Supplier request form.
+
 ## [7.2.9] (2024-03-07)
 
 ### Fixes
@@ -644,6 +694,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.10]: https://github.com/axelor/axelor-open-suite/compare/v7.2.9...v7.2.10
 [7.2.9]: https://github.com/axelor/axelor-open-suite/compare/v7.2.8...v7.2.9
 [7.2.8]: https://github.com/axelor/axelor-open-suite/compare/v7.2.7...v7.2.8
 [7.2.7]: https://github.com/axelor/axelor-open-suite/compare/v7.2.6...v7.2.7
