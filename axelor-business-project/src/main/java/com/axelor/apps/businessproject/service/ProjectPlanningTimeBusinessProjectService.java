@@ -1,5 +1,6 @@
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,4 +15,6 @@ public interface ProjectPlanningTimeBusinessProjectService {
   void updateLinkedEvent(ProjectPlanningTime projectPlanningTime);
 
   void deleteLinkedProjectPlanningTime(List<Long> ids);
+
+  ProjectPlanningTime loadLinkedPlanningTime(ICalendarEvent event);
 }

@@ -40,6 +40,7 @@
       <field name="hoursUnit" domain="self.unitTypeSelect = 3"/>
       <field name="defaultHoursADay"
         help="The days to hours conversion can be set for each project. This will determine the default value."/>
+      <spacer/>
       <field name="enableEventCreation" widget="boolean-switch"/>
       <field name="eventSubjectGroovyFormula" showIf="enableEventCreation"/>
     </panel>
