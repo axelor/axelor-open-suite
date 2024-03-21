@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed error on change of client partner for manuf orders without related sale orders."
+module: axelor-production
