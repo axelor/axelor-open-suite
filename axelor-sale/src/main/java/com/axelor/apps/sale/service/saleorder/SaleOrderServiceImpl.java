@@ -34,6 +34,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
@@ -384,14 +385,20 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrder.getExpendableSaleOrderLineList() != null) {
 
       // Copy childrens
-      for (var expendableSaleOrderLineList : saleOrder.getExpendableSaleOrderLineList()) {
-        synchronizeSaleOrderLineList(
-            expendableSaleOrderLineList.getSubSaleOrderLineList(), saleOrder);
+      if (saleOrder.getCompany().getSaleConfig().getCountTypeSelect() == SaleConfigRepository.COUNT_ONLY_CHILDREN){
+        for (var expendableSaleOrderLineList : saleOrder.getExpendableSaleOrderLineList()) {
+          synchronizeSaleOrderLineList(
+                  expendableSaleOrderLineList.getSubSaleOrderLineList(), saleOrder);
+        }
       }
+
       // Copy parents
-      for (SaleOrderLine saleOrderLine : saleOrder.getExpendableSaleOrderLineList()) {
-        copyToSaleOrderLineList(saleOrder, saleOrderLine);
+      if (saleOrder.getCompany().getSaleConfig().getCountTypeSelect() == SaleConfigRepository.COUNT_ONLY_PARENTS){
+        for (SaleOrderLine saleOrderLine : saleOrder.getExpendableSaleOrderLineList()) {
+          copyToSaleOrderLineList(saleOrder, saleOrderLine);
+        }
       }
+
     }
   }
 
