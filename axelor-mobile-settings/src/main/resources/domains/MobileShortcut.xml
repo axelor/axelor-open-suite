@@ -6,8 +6,8 @@
   <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
 
   <entity name="MobileShortcut">
-    <string name="name" title="Key" translatable="true" required="true"/>
-    <string name="iconName" title="Icon name" unique="true"/>
+    <string name="name" title="Title" translatable="true" required="true"/>
+    <string name="iconName" title="Icon name" required="true"/>
     <many-to-one name="mobileScreen" title="Screen"
       ref="com.axelor.apps.mobilesettings.db.MobileScreen"/>
     <many-to-many name="authorizedRoleSet" title="Authorized roles"

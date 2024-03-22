@@ -112,7 +112,8 @@ public class MobileSettingsResponseComputeServiceImpl
         .filter(
             dashboard ->
                 UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
-                    AuthUtils.getUser(), dashboard.getAuthorizedRoleSet()))
+                        AuthUtils.getUser(), dashboard.getAuthorizedRoleSet())
+                    || CollectionUtils.isEmpty(dashboard.getAuthorizedRoleSet()))
         .map(MobileDashboard::getId)
         .collect(Collectors.toList());
   }
@@ -129,7 +130,8 @@ public class MobileSettingsResponseComputeServiceImpl
             .filter(
                 shortcut ->
                     UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
-                        AuthUtils.getUser(), shortcut.getAuthorizedRoleSet()))
+                            AuthUtils.getUser(), shortcut.getAuthorizedRoleSet())
+                        || CollectionUtils.isEmpty(shortcut.getAuthorizedRoleSet()))
             .collect(Collectors.toList());
     List<MobileShortcutResponse> mobileShortcutResponseList = new ArrayList<>();
     for (MobileShortcut mobileShortcut : authorizedMobileShortcutList) {
