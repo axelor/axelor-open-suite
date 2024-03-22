@@ -215,8 +215,10 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       icalendarEvent.setEndDateTime(projectPlanningTime.getEndDateTime());
       icalendarEvent.setDescription(projectPlanningTime.getDescription());
       User user = projectPlanningTime.getEmployee().getUser();
-      icalendarEvent.setUser(user);
-      icalendarEvent.setCalendar(user.getiCalendar());
+      if (user != null) {
+        icalendarEvent.setUser(user);
+        icalendarEvent.setCalendar(user.getiCalendar());
+      }
 
       iCalendarEventRepository.save(icalendarEvent);
     }
