@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.interfaces.ArithmeticOperation;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -267,8 +266,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   @Override
   public BigDecimal computeScaledExchangeRate(BigDecimal amount1, BigDecimal amount2) {
-    return (amount1 == null || amount2 == null || amount2.equals(BigDecimal.ZERO))
+    return (amount1 == null || amount2 == null || amount2.signum() == 0)
         ? BigDecimal.ZERO
-        : ArithmeticOperation.operateDivide(amount1, amount2);
+        : amount1.divide(amount2, AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
   }
 }
