@@ -86,7 +86,7 @@ public class BankReconciliationReconciliationServiceImpl
     List<MoveLine> moveLines =
         moveLineRepository
             .all()
-            .filter(bankReconciliationQueryService.getRequestMoveLines())
+            .filter(bankReconciliationQueryService.getRequestMoveLines(bankReconciliation))
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
             .fetch();
 
@@ -222,7 +222,7 @@ public class BankReconciliationReconciliationServiceImpl
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
-    String filter = bankReconciliationQueryService.getRequestMoveLines();
+    String filter = bankReconciliationQueryService.getRequestMoveLines(bankReconciliation);
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
     List<MoveLine> moveLines =
         moveLineRepository
