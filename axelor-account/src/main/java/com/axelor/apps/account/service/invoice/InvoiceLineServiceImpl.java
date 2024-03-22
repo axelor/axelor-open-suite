@@ -330,7 +330,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   public Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException {
     Map<String, Object> productInformation = new HashMap<>();
     productInformation.put("taxLineSet", Sets.newHashSet());
-    productInformation.put("taxEquivSet", Sets.newHashSet());
+    productInformation.put("taxEquiv", null);
     productInformation.put("taxCode", null);
     productInformation.put("taxRate", null);
     productInformation.put("productName", null);
@@ -460,10 +460,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("taxRate", taxService.getTotalTaxRateInPercentage(taxLineSet));
       productInformation.put("taxCode", taxService.computeTaxCode(taxLineSet));
 
-      Set<TaxEquiv> taxEquivSet =
-          accountManagementAccountService.getProductTaxEquivSet(
+      TaxEquiv taxEquiv =
+          accountManagementAccountService.getProductTaxEquiv(
               product, company, fiscalPosition, isPurchase);
-      productInformation.put("taxEquivSet", taxEquivSet);
+      productInformation.put("taxEquiv", taxEquiv);
 
       Account account =
           accountManagementAccountService.getProductAccount(
@@ -639,10 +639,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
       invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
 
-      Set<TaxEquiv> taxEquivSet =
-          accountManagementAccountService.getProductTaxEquivSet(
+      TaxEquiv taxEquiv =
+          accountManagementAccountService.getProductTaxEquiv(
               invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
-      invoiceLine.setTaxEquivSet(taxEquivSet);
+      invoiceLine.setTaxEquiv(taxEquiv);
 
       Account account =
           accountManagementAccountService.getProductAccount(

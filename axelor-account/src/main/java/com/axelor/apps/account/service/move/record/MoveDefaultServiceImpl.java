@@ -21,7 +21,6 @@ package com.axelor.apps.account.service.move.record;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -117,24 +116,18 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
           CollectionUtils.isNotEmpty(moveLine.getTaxLineBeforeReverseSet())
               ? moveLine.getTaxLineBeforeReverseSet()
               : moveLine.getTaxLineSet();
-      Set<TaxLine> newTaxLineSet = Sets.newHashSet(taxLineSet);
       TaxEquiv taxEquiv = null;
       moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
+
       if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
-        for (TaxLine taxLine : taxLineSet) {
+        taxEquiv = fiscalPositionService.getTaxEquivFromTaxLines(fiscalPosition, taxLineSet);
 
-          Tax tax = taxLine.getTax();
-          taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, tax);
-          moveLine.addTaxLineBeforeReverseSetItem(taxLine);
-
-          if (taxEquiv != null) {
-            TaxLine newTaxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
-            newTaxLineSet.add(newTaxLine);
-            newTaxLineSet.remove(taxLine);
-          }
+        if (taxEquiv != null) {
+          moveLine.setTaxLineBeforeReverseSet(taxLineSet);
+          taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), move.getDate());
         }
       }
-      moveLine.setTaxLineSet(newTaxLineSet);
+      moveLine.setTaxLineSet(taxLineSet);
       moveLine.setTaxEquiv(taxEquiv);
     }
   }

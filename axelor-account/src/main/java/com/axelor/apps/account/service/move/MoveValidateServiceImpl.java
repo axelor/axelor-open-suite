@@ -951,9 +951,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected boolean isReverseCharge(Move move) {
     if (move.getInvoice() != null) {
       return move.getInvoice().getInvoiceLineList().stream()
-          .map(InvoiceLine::getTaxEquivSet)
+          .map(InvoiceLine::getTaxEquiv)
           .filter(Objects::nonNull)
-          .flatMap(Collection::stream)
           .anyMatch(TaxEquiv::getReverseCharge);
     } else {
       return move.getMoveLineList().stream()

@@ -136,7 +136,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
    * @throws AxelorException
    */
   @Override
-  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) {
+  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
     if (purchaseOrderLineList == null) {
       return;

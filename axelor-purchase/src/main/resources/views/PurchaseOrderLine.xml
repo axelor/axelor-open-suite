@@ -200,7 +200,7 @@
           hidden="true"/>
         <field name="$currency.numberOfDecimals" hidden="true"/>
         <field name="fixedAssets" widget="boolean-switch"/>
-        <field name="taxEquivSet" hidden="true" grid-view="tax-equiv-grid"
+        <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
