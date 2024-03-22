@@ -265,15 +265,10 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
   }
 
+  @Override
   public BigDecimal computeScaledExchangeRate(BigDecimal amount1, BigDecimal amount2) {
-    ArithmeticOperation arithmeticOperation =
-        (BigDecimal x, BigDecimal y) ->
-            x.divide(y, AppBaseService.DEFAULT_EXCHANGE_RATE_REVERSION_SCALE, RoundingMode.HALF_UP);
-
     return (amount1 == null || amount2 == null || amount2.equals(BigDecimal.ZERO))
         ? BigDecimal.ZERO
-        : arithmeticOperation
-            .operate(amount1, amount2)
-            .setScale(AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
+        : ArithmeticOperation.operateDivide(amount1, amount2);
   }
 }
