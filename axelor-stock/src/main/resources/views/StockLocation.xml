@@ -71,7 +71,7 @@
       <panel name="centralPanel" colSpan="8">
         <field name="name"
           onChange="action-stock-location-attrs-set-default-serial-number-with-name" colSpan="12"/>
-        <field name="site" if="__config__.app.getApp('stock')?.enableSiteManagement"
+        <field name="site" if="__config__.app.getApp('base')?.enableSiteManagementForStock"
           showIf="typeSelect != 3" onSelect="action-stock-location-attrs-set-site-domain"
           colSpan="4"/>
         <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
