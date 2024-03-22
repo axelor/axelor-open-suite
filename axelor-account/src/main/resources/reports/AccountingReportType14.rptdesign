@@ -24,7 +24,6 @@
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
-    <property name="locale">fr_FR</property>
     <parameters>
         <scalar-parameter name="AccountingReportId" id="884">
             <property name="hidden">true</property>

@@ -54,6 +54,15 @@ public interface BirtTemplateService {
       String format)
       throws AxelorException;
 
+  File generateBirtTemplateFile(
+      BirtTemplate template,
+      Model model,
+      Map<String, Object> context,
+      String outputName,
+      Boolean toAttach,
+      String format)
+      throws AxelorException;
+
   ReportSettings generate(
       BirtTemplate template,
       Model model,

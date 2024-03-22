@@ -53,6 +53,8 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.InvoiceBankPaymentService;
+import com.axelor.apps.bankpayment.service.InvoiceBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
@@ -224,6 +226,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementValidateService.class).to(BankStatementValidateServiceImpl.class);
     bind(BankStatementLineDeleteService.class).to(BankStatementLineDeleteServiceImpl.class);
     bind(BankStatementLineFilterService.class).to(BankStatementLineFilterServiceImpl.class);
+    bind(InvoiceBankPaymentService.class).to(InvoiceBankPaymentServiceImpl.class);
     bind(BankStatementLineMapperAFB120Service.class)
         .to(BankStatementLineMapperAFB120ServiceImpl.class);
     bind(BankStatementLineFetchAFB120Service.class)

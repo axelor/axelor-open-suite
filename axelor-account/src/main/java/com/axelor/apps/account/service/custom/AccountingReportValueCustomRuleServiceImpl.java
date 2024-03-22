@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.rpc.Context;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AccountingReportValueCustomRuleServiceImpl extends AccountingReportValueAbstractService
@@ -61,6 +63,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
@@ -80,6 +83,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
             groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
+            companySet,
             configAnalyticAccount,
             startDate,
             endDate,
@@ -95,6 +99,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
+          companySet,
           configAnalyticAccount,
           startDate,
           endDate,
@@ -111,6 +116,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -124,6 +130,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
         groupColumn,
         valuesMapByColumn,
         valuesMapByLine,
+        companySet,
         configAnalyticAccount,
         startDate,
         endDate,
@@ -139,6 +146,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -202,6 +210,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
         result,
         valuesMapByColumn,
         valuesMapByLine,
+        companySet,
         configAnalyticAccount,
         lineCode,
         analyticCounter);

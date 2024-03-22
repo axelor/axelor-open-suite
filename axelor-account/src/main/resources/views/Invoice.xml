@@ -632,7 +632,7 @@
           readonlyIf="!invoiceTermList.length"/>
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
           onChange="action-group-account-invoice-invoice-term-list-onchange" colSpan="12"
-          form-view="invoice-term-invoice-form" grid-view="invoice-term-move-line-invoice-grid"/>
+          form-view="invoice-term-related-form" grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()">
@@ -1542,6 +1542,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-operationsubtype-selection"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-invoice-attrs-display-line-coefficient"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1567,6 +1568,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-operationsubtype-selection"/>
     <action name="action-invoice-attrs-set-subrogation-partner-readonly"/>
     <action name="action-invoice-method-set-invoice-line-list-scale"/>
+    <action name="action-invoice-attrs-display-line-coefficient"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1804,6 +1806,12 @@ InvoiceSet.length > 0))"
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"
       if="company != null"/>
     <attribute name="hidden" for="inAti" expr="eval: true" if="company == null"/>
+
+  </action-attrs>
+
+  <action-attrs name="action-invoice-attrs-display-line-coefficient">
+    <attribute name="hidden" for="invoiceLineList.coefficient"
+      expr="eval: !__repo__(AccountConfig).findByCompany(company)?.isInvoiceCoefficientEnabled"/>
 
   </action-attrs>
 
@@ -2789,7 +2797,7 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-view-show-related-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
-    <view type="form" name="invoice-term-invoice-form"/>
+    <view type="form" name="invoice-term-related-form"/>
     <domain>self.invoice.id = :_invoiceId</domain>
     <context name="_invoiceId" expr="eval: id"/>
   </action-view>
@@ -2797,7 +2805,7 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-view-show-related-invoice-terms-by-reason"
     title="Invoice term in dispute" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
-    <view type="form" name="invoice-term-invoice-form"/>
+    <view type="form" name="invoice-term-related-form"/>
     <domain>self.reasonOfRefusalToPayStr = :_reasonOfRefusalToPayName AND (:_company is null OR
       self.company = :_company)</domain>
     <context name="_reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>

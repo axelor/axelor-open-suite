@@ -47,10 +47,15 @@ public class InvoiceTermFinancialDiscountServiceImpl
 
   @Override
   public void computeFinancialDiscount(InvoiceTerm invoiceTerm) {
-    if (invoiceTerm.getInvoice() != null) {
-      this.computeFinancialDiscount(invoiceTerm, invoiceTerm.getInvoice());
-    } else if (invoiceTerm.getMoveLine() != null) {
-      this.computeFinancialDiscount(invoiceTerm, invoiceTerm.getMoveLine());
+    if (invoiceTerm == null) {
+      return;
+    }
+    if (invoiceTerm.getMoveLine() != null
+        && invoiceTerm.getMoveLine().getFinancialDiscount() != null) {
+      computeFinancialDiscount(invoiceTerm, invoiceTerm.getMoveLine());
+    } else if (invoiceTerm.getInvoice() != null
+        && invoiceTerm.getInvoice().getFinancialDiscount() != null) {
+      computeFinancialDiscount(invoiceTerm, invoiceTerm.getInvoice());
     }
   }
 

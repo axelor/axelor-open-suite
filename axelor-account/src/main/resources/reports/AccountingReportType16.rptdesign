@@ -77,21 +77,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -159,7 +144,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -433,7 +418,7 @@ LEFT JOIN public.account_fixed_asset_type AS Type ON Category.fixed_asset_type =
 LEFT JOIN public.account_account AS Account ON Asset.purchase_account = Account.id 
 LEFT JOIN public.base_company AS Company ON (Company.id = Asset.company)
 LEFT JOIN public.base_currency AS Currency ON (Currency.id = Company.currency)
-WHERE Asset.status_select in (2,3) 
+WHERE Asset.status_select in (2,3)
 AND (AccountingReport.date_from IS NULL OR Asset.acquisition_date >= AccountingReport.date_from) 
 AND (AccountingReport.date_to IS NULL OR Asset.acquisition_date <= AccountingReport.date_to)
 AND Asset.company = AccountingReport.company)
@@ -457,7 +442,7 @@ LEFT JOIN public.account_fixed_asset_category AS Category ON InvoiceLine.fixed_a
 LEFT JOIN public.account_fixed_asset_type AS Type ON Category.fixed_asset_type = Type.id
 LEFT JOIN account_fixed_asset AS Asset ON Asset.invoice_line = InvoiceLine.id 
 LEFT JOIN public.base_currency AS Currency ON Currency.id = Invoice.currency
-WHERE InvoiceLine.fixed_assets = true AND Asset.invoice_line IS NULL AND Invoice.company = AccountingReport.company 
+WHERE InvoiceLine.fixed_assets = true AND Asset.invoice_line IS NULL AND Invoice.company = AccountingReport.company
 AND (AccountingReport.date_from IS NULL OR Invoice.invoice_date >= AccountingReport.date_from) 
 AND (AccountingReport.date_to IS NULL OR Invoice.invoice_date <= AccountingReport.date_to))
 ORDER BY type]]></xml-property>

@@ -19,11 +19,9 @@
 package com.axelor.apps.base.service.tax;
 
 import com.axelor.apps.account.db.FiscalPosition;
-import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
-import com.axelor.apps.base.interfaces.PricedOrderLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.common.base.Joiner;
@@ -49,17 +47,6 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
       customerSpecificNote = fiscalPosition.getCustomerSpecificNote();
     }
     return customerSpecificNote;
-  }
-
-  @Override
-  public void addTaxEquivSpecificNote(
-      PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes) {
-    if (!customerSpecificNote) {
-      TaxEquiv taxEquiv = pricedOrderLine.getTaxEquiv();
-      if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
-        specificNotes.add(taxEquiv.getSpecificNote());
-      }
-    }
   }
 
   @Override

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.mobilesettings.service;
 
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.mobilesettings.db.MobileConfig;
 import com.axelor.apps.mobilesettings.db.MobileMenu;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
@@ -25,6 +26,7 @@ import com.axelor.apps.mobilesettings.rest.dto.MobileConfigResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsResponse;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppMobileSettings;
 import com.axelor.studio.db.repo.AppMobileSettingsRepository;
 import com.google.inject.Inject;
@@ -97,17 +99,8 @@ public class MobileSettingsResponseComputeServiceImpl
     if (!config) {
       return false;
     }
-    if (authorizedRoles == null || authorizedRoles.isEmpty()) {
-      return true;
-    }
-    return authorizedRoles.stream().anyMatch(AuthUtils.getUser().getRoles()::contains);
-  }
-
-  protected Boolean checkRestrictedMenuWithRoles(Set<Role> authorizedRoles) {
-    if (authorizedRoles == null || authorizedRoles.isEmpty()) {
-      return true;
-    }
-    return authorizedRoles.stream().noneMatch(AuthUtils.getUser().getRoles()::contains);
+    User user = AuthUtils.getUser();
+    return UserRoleToolService.checkUserRolesPermissionIncludingEmpty(user, authorizedRoles);
   }
 
   protected MobileConfig getMobileConfigFromAppSequence(String appSequence) {
@@ -164,7 +157,10 @@ public class MobileSettingsResponseComputeServiceImpl
     MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
     if (mobileConfig.getIsCustomizeMenuEnabled()) {
       return mobileConfig.getMenus().stream()
-          .filter(mobileMenu -> checkRestrictedMenuWithRoles(mobileMenu.getAuthorizedRoles()))
+          .filter(
+              mobileMenu ->
+                  !UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+                      AuthUtils.getUser(), mobileMenu.getAuthorizedRoles()))
           .map(MobileMenu::getTechnicalName)
           .collect(Collectors.toList());
     }

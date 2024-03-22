@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -118,22 +118,22 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     List<InvoiceTerm> invoiceTermToRemove = new ArrayList<>();
 
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      BigDecimal newAmount = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
-      if (newAmount.signum() > 0) {
+      BigDecimal totalAmount =
+          invoiceTerm.getInvoice() != null
+              ? invoiceTerm.getInvoice().getCompanyInTaxTotal()
+              : invoiceTerm.getMoveLine().getCurrencyAmount().abs();
+      BigDecimal paidAmount = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
+      if (!invoiceTerm.getIsPaid() && paidAmount.signum() > 0 && totalAmount.signum() > 0) {
         BigDecimal amountRemaining = invoiceTerm.getAmountRemaining();
         BigDecimal newPercentage =
-            amountRemaining
-                .multiply(invoiceTerm.getPercentage())
-                .divide(
-                    invoiceTerm.getAmount(),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_UP);
+            paidAmount.divide(
+                totalAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
-        invoiceTerm.setAmount(newAmount);
-        invoiceTerm.setCompanyAmount(newAmount);
+        invoiceTerm.setAmount(paidAmount);
+        invoiceTerm.setCompanyAmount(paidAmount);
         invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
         invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
-        invoiceTerm.setPercentage(new BigDecimal(100).subtract(newPercentage));
+        invoiceTerm.setPercentage(invoiceTerm.getPercentage().subtract(newPercentage));
         invoiceTerm.setIsPaid(true);
         newInvoiceTerm.setAmount(amountRemaining);
         newInvoiceTerm.setCompanyAmount(amountRemaining);
@@ -180,8 +180,9 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     }
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
-  protected void replaceInvoiceTerms(
+  public void replaceInvoiceTerms(
       Invoice invoice,
       List<InvoiceTerm> newInvoiceTermList,
       List<InvoiceTerm> invoiceTermListToRemove) {

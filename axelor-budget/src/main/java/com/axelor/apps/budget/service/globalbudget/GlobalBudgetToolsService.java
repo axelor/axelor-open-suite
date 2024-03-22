@@ -31,6 +31,14 @@ public interface GlobalBudgetToolsService {
 
   List<Long> getAllBudgetIds(GlobalBudget globalBudget);
 
+  List<Long> getAllBudgetLineIds(GlobalBudget globalBudget);
+
+  List<BudgetLevel> getAllBudgetLevels(GlobalBudget globalBudget);
+
+  List<BudgetLevel> getAllBudgetLevels(BudgetLevel budgetLevel, List<BudgetLevel> budgetLevelList);
+
+  List<Long> getAllBudgetLevelIds(GlobalBudget globalBudget);
+
   void fillGlobalBudgetOnBudget(GlobalBudget globalBudget);
 
   Map<String, Map<String, Object>> manageHiddenAmounts(boolean hidden);

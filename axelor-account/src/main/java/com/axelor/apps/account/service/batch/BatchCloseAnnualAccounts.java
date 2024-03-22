@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -76,7 +77,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveSimulateService moveSimulateService;
-
+  protected MoveRepository moveRepo;
   protected boolean end = false;
   protected AccountingBatch accountingBatch;
 
@@ -90,7 +91,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       AccountConfigService accountConfigService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveSimulateService moveSimulateService) {
+      MoveSimulateService moveSimulateService,
+      MoveRepository moveRepo) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
@@ -100,6 +102,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveSimulateService = moveSimulateService;
+    this.moveRepo = moveRepo;
   }
 
   @Override
@@ -195,6 +198,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
 
   protected void process() {
     if (!end) {
+
+      removeSimulatedMoves(accountingBatch);
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
 
       Year year = accountingBatch.getYear();
       boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
@@ -385,6 +391,33 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         JPA.clear();
       }
     }
+  }
+
+  protected void removeSimulatedMoves(AccountingBatch accountingBatch) {
+    AccountConfig accountConfig = accountingBatch.getCompany().getAccountConfig();
+    if (accountConfig != null
+        && (!accountConfig.getIsActivateSimulatedMove()
+            || !accountingBatch.getIsDeleteSimulatedMove())) {
+      return;
+    }
+    com.axelor.db.Query<Move> moveQuery =
+        moveRepo
+            .all()
+            .filter(
+                "self.company = :company AND self.statusSelect = :statusSelect AND self.period.year = :year")
+            .bind("company", accountingBatch.getCompany())
+            .bind("statusSelect", MoveRepository.STATUS_SIMULATED)
+            .bind("year", accountingBatch.getYear())
+            .order("id");
+    JPA.runInTransaction(
+        () -> {
+          List<Move> moveList;
+          while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT)).isEmpty()) {
+            for (Move move : moveList) {
+              moveRepo.remove(move);
+            }
+          }
+        });
   }
 
   @Override

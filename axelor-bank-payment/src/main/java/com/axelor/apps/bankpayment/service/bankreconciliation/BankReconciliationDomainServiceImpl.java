@@ -205,11 +205,4 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
 
     return journalIds;
   }
-
-  @Override
-  public String createDomainForBankDetails(BankReconciliation bankReconciliation) {
-
-    return bankDetailsService.getActiveCompanyBankDetails(
-        bankReconciliation.getCompany(), bankReconciliation.getCurrency());
-  }
 }

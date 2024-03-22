@@ -85,12 +85,14 @@ public interface SaleOrderLineService {
   public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale);
 
   public BigDecimal getExTaxUnitPrice(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
+      throws AxelorException;
 
   public BigDecimal getInTaxUnitPrice(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
+      throws AxelorException;
 
-  public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+  public Set<TaxLine> getTaxLineSet(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
   public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
@@ -268,7 +270,8 @@ public interface SaleOrderLineService {
    * @throws AxelorException
    */
   public BigDecimal getExTaxUnitPriceFromPackLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
+      throws AxelorException;
 
   /**
    * A function used to get the in tax unit price of a sale order line from pack line
@@ -280,7 +283,8 @@ public interface SaleOrderLineService {
    * @throws AxelorException
    */
   public BigDecimal getInTaxUnitPriceFromPackLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
+      throws AxelorException;
 
   /**
    * Compute product domain from configurations and sale order.

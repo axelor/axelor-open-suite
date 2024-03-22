@@ -90,21 +90,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -403,7 +388,7 @@ left outer join public.account_accounting_report_partner_set as PartnerSet on (P
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
 left outer join public.base_currency as Currency on (Currency.id = Company.currency)
-left outer join public.base_period as Period on (Move.period = Period.id) 
+left outer join public.base_period as Period on (Move.period = Period.id)
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 
 where 
@@ -770,7 +755,7 @@ where AccountingReport.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
