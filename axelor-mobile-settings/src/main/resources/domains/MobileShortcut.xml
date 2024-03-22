@@ -7,7 +7,8 @@
 
   <entity name="MobileShortcut">
     <string name="name" title="Title" translatable="true" required="true"/>
-    <string name="iconName" title="Icon name" required="true" help="Bootstrap icon name, see https://icons.getbootstrap.com/"/>
+    <string name="iconName" title="Icon name" required="true"
+      help="Bootstrap icon name, see https://icons.getbootstrap.com/"/>
     <many-to-one name="mobileScreen" title="Screen"
       ref="com.axelor.apps.mobilesettings.db.MobileScreen"/>
     <many-to-many name="authorizedRoleSet" title="Authorized roles"
