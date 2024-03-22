@@ -69,35 +69,37 @@
     </toolbar>
     <panel name="mainPanel">
       <panel name="centralPanel" colSpan="8">
-         <field name="name"
-             onChange="action-stock-location-attrs-set-default-serial-number-with-name" colSpan="12"/>
-         <field name="site" if="__config__.app.getApp('stock')?.enableSiteManagement"
-             showIf="typeSelect != 3" onSelect="action-stock-location-attrs-set-site-domain" colSpan="4"/>
+        <field name="name"
+          onChange="action-stock-location-attrs-set-default-serial-number-with-name" colSpan="12"/>
+        <field name="site" if="__config__.app.getApp('stock')?.enableSiteManagement"
+          showIf="typeSelect != 3" onSelect="action-stock-location-attrs-set-site-domain"
+          colSpan="4"/>
         <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
-               grid-view="stock-location-grid" colSpan="4"/>
+          grid-view="stock-location-grid" colSpan="4"/>
         <field name="partner" canEdit="false" showIf="typeSelect == 2"
-               domain="self.isContact = false AND :company member of self.companySet"
-               form-view="partner-form" grid-view="partner-grid" colSpan="4"/>
-        <field name="address" canEdit="false" form-view="address-form" grid-view="address-grid" colSpan="12"/>
+          domain="self.isContact = false AND :company member of self.companySet"
+          form-view="partner-form" grid-view="partner-grid" colSpan="4"/>
+        <field name="address" canEdit="false" form-view="address-form"
+          grid-view="address-grid" colSpan="12"/>
       </panel>
       <panel name="sidePanel" colSpan="4">
         <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-             grid-view="company-grid"/>
-        <field name="typeSelect" colSpan="3"
-             onChange="action-stock-location-attrs-set-isOutsourcingLocation,action-stock-set-partner-domain-attrs,action-stock-location-attrs-set-is-valued"/>
+          grid-view="company-grid"/>
+        <field name="typeSelect"
+          onChange="action-stock-location-attrs-set-isOutsourcingLocation,action-stock-set-partner-domain-attrs,action-stock-location-attrs-set-is-valued"/>
         <field name="stockLocationValue" readonly="true" showIf=" id &amp;&amp; isValued">
-        <viewer>
+          <viewer>
           <![CDATA[
                     <> {$fmt('stockLocationValue')} </>
                   ]]>
-        </viewer>
+          </viewer>
         </field>
         <panel name="barcodePanel" colSpan="12"
-               if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
+          if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
           <panel name="barcodeInfoPanel" colSpan="8" stacked="true">
             <field name="serialNumber" readonlyIf="barCode != null" colSpan="6"/>
             <field name="barcodeTypeConfig" readonlyIf="barCode != null"
-                   if="__config__.app.getApp('stock')?.getEditStockLocationBarcodeType()" colSpan="6"/>
+              if="__config__.app.getApp('stock')?.getEditStockLocationBarcodeType()" colSpan="6"/>
           </panel>
           <panel name="barcodeImagePanel" colSpan="4">
             <field name="barCode" showTitle="false" widget="Image" colSpan="12"/>
@@ -116,7 +118,8 @@
         <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
         <panel-dashlet name="detailsStockLocationLinesPanel"
           title="Stock location details" field="detailsStockLocationLineList"
-          action="action-location-details-view-location-content" canSearch="true" height="600" colSpan="12"/>
+          action="action-location-details-view-location-content" canSearch="true" height="600"
+          colSpan="12"/>
       </panel>
       <panel name="configPanel" title="Configuration" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
