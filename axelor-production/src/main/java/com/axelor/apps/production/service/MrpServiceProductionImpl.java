@@ -74,6 +74,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -92,6 +94,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected AppProductionService appProductionService;
 
   protected ProdProcessLineService prodProcessLineService;
+  protected final BillOfMaterialMrpLineService billOfMaterialMrpLineService;
 
   @Inject
   public MrpServiceProductionImpl(
@@ -120,7 +123,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       ProductCompanyService productCompanyService,
       BillOfMaterialService billOfMaterialService,
       AppProductionService appProductionService,
-      ProdProcessLineService prodProcessLineService) {
+      ProdProcessLineService prodProcessLineService,
+      BillOfMaterialMrpLineService billOfMaterialMrpLineService) {
     super(
         mrpRepository,
         stockLocationRepository,
@@ -148,6 +152,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     this.billOfMaterialService = billOfMaterialService;
     this.appProductionService = appProductionService;
     this.prodProcessLineService = prodProcessLineService;
+    this.billOfMaterialMrpLineService = billOfMaterialMrpLineService;
   }
 
   @Override
@@ -161,8 +166,21 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
   }
 
-  // Manufacturing order AND manufacturing order need
+  @Override
+  protected void fillMrpLinesForProductMap(Map<Long, Integer> productMap) throws AxelorException {
+    super.fillMrpLinesForProductMap(productMap);
+    if (appProductionService.isApp("production")) {
+      this.createManufOrderMrpLines(productMap);
+      this.createMPSLines(productMap);
+    }
+  }
+
   protected void createManufOrderMrpLines() throws AxelorException {
+    this.createManufOrderMrpLines(this.productMap);
+  }
+
+  // Manufacturing order AND manufacturing order need
+  protected void createManufOrderMrpLines(Map<Long, Integer> productMap) throws AxelorException {
 
     MrpLineType manufOrderMrpLineType =
         mrpLineTypeService.getMrpLineType(
@@ -190,7 +208,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                 "self.product.id in (?1) AND (self.prodProcess.stockLocation in (?2) OR "
                     + "self.prodProcess.producedProductStockLocation in (?2)) "
                     + "AND self.statusSelect IN (?3)",
-                this.productMap.keySet(),
+                productMap.keySet(),
                 this.stockLocationList,
                 statusList)
             .fetch();
@@ -371,6 +389,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   }
 
   protected void createMPSLines() throws AxelorException {
+    this.createMPSLines(this.productMap);
+  }
+
+  protected void createMPSLines(Map<Long, Integer> productMap) throws AxelorException {
 
     MrpLineType mpsNeedMrpLineType =
         mrpLineTypeService.getMrpLineType(
@@ -386,7 +408,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .filter(
                 "self.product.id in (?1) AND self.stockLocation in (?2) AND self.mrp.mrpTypeSelect = ?3 "
                     + "AND self.mrp.statusSelect = ?4 AND self.mrpLineType.elementSelect = ?5 AND self.maturityDate >= ?6 AND (?7 is true OR self.maturityDate <= ?8) AND self.mrp.validateScenario is true",
-                this.productMap.keySet(),
+                productMap.keySet(),
                 this.stockLocationList,
                 MrpRepository.MRP_TYPE_MPS,
                 MrpRepository.STATUS_CALCULATION_ENDED,
@@ -431,7 +453,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  protected void createProposalMrpLine(
+  protected MrpLine createProposalMrpLine(
       Mrp mrp,
       Product product,
       MrpLineType mrpLineType,
@@ -443,60 +465,76 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       throws AxelorException {
 
     Company company = mrp.getStockLocation().getCompany();
-    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+
+    Optional<MrpLine> originalMrpLineOpt =
+        mrpLineOriginList.stream().findAny().map(MrpLineOrigin::getMrpLine);
+
+    BillOfMaterial billOfMaterial = null;
+    if (originalMrpLineOpt.map(MrpLine::getBillOfMaterial).isPresent()) {
+      billOfMaterial =
+          billOfMaterialMrpLineService
+              .getEligibleBillOfMaterialOfProductInMrpLine(originalMrpLineOpt.orElse(null), product)
+              .orElse(null);
+    }
+    if (billOfMaterial == null) {
+      billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    }
 
     if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
-        && defaultBillOfMaterial != null) {
+        && billOfMaterial != null) {
       maturityDate =
-          updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty)
+          updateMaturityDate(maturityDate, billOfMaterial, reorderQty)
               .minusDays(mrpLineType.getSecurityDelay());
     }
 
-    super.createProposalMrpLine(
-        mrp,
-        product,
-        mrpLineType,
-        reorderQty,
-        stockLocation,
-        maturityDate,
-        mrpLineOriginList,
-        relatedToSelectName);
+    MrpLine mrpLine =
+        super.createProposalMrpLine(
+            mrp,
+            product,
+            mrpLineType,
+            reorderQty,
+            stockLocation,
+            maturityDate,
+            mrpLineOriginList,
+            relatedToSelectName);
+    mrpLine.setBillOfMaterial(billOfMaterial);
 
     if (!appProductionService.isApp("production")) {
-      return;
+      return mrpLine;
     }
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
-        && defaultBillOfMaterial != null) {
+        && billOfMaterial != null) {
 
       MrpLineType manufProposalNeedMrpLineType =
           mrpLineTypeService.getMrpLineType(
               MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED, mrp.getMrpTypeSelect());
 
       if (manufProposalNeedMrpLineType == null) {
-        return;
+        return mrpLine;
       }
 
-      for (BillOfMaterialLine billOfMaterial : defaultBillOfMaterial.getBillOfMaterialLineList()) {
-
-        Product subProduct = billOfMaterial.getProduct();
-
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
+        Product subProduct = billOfMaterialLine.getProduct();
         if (this.isMrpProduct(subProduct)) {
-          super.createProposalMrpLine(
-              mrp,
-              subProduct,
-              manufProposalNeedMrpLineType,
-              reorderQty
-                  .multiply(billOfMaterial.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
-              stockLocation,
-              maturityDate,
-              mrpLineOriginList,
-              relatedToSelectName);
+          MrpLine subProductMrpLine =
+              super.createProposalMrpLine(
+                  mrp,
+                  subProduct,
+                  manufProposalNeedMrpLineType,
+                  reorderQty
+                      .multiply(billOfMaterialLine.getQty())
+                      .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+                  stockLocation,
+                  maturityDate,
+                  mrpLineOriginList,
+                  relatedToSelectName);
+          subProductMrpLine.setBillOfMaterial(billOfMaterialLine.getBillOfMaterial());
         }
       }
     }
+    return mrpLine;
   }
 
   /**
@@ -541,12 +579,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       return super.getMrpLineTypeForProposal(stockRules, product, company);
     }
 
+    // the bellow condition is never true since the sent stockRules is always of type MRP
     if (mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MPS) {
       return mrpLineTypeService.getMrpLineType(
           MrpLineTypeRepository.ELEMENT_MASTER_PRODUCTION_SCHEDULING, mrp.getMrpTypeSelect());
     } else {
       if (stockRules != null) {
         if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
+          // this is what interests us for now.
           return mrpLineTypeService.getMrpLineType(
               MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL, mrp.getMrpTypeSelect());
         } else {
@@ -556,7 +596,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       }
 
       if (ProductRepository.PROCUREMENT_METHOD_BUY.equals(
-          ((String) productCompanyService.get(product, "procurementMethodSelect", company)))) {
+          (productCompanyService.get(product, "procurementMethodSelect", company)))) {
         return mrpLineTypeService.getMrpLineType(
             MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL, mrp.getMrpTypeSelect());
       } else {
