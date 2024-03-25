@@ -23,11 +23,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
-import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportManagementRepository extends AccountingReportRepository {
 

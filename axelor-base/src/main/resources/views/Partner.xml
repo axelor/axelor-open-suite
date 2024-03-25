@@ -26,7 +26,8 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companySet" widget="TagSelect" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -58,7 +59,8 @@
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
     <field name="user"/>
-    <field name="companySet" widget="TagSelect" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -92,7 +94,8 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companySet" widget="TagSelect" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
