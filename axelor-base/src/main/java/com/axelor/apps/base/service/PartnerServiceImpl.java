@@ -23,7 +23,6 @@ import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVI
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -651,7 +650,6 @@ public class PartnerServiceImpl implements PartnerService {
     Preconditions.checkNotNull(actionName, I18n.get("Action name cannot be null."));
     return actionName.substring(actionName.lastIndexOf('-') + 1);
   }
-
 
   @Override
   public String getTaxNbrFromRegistrationCode(Partner partner) {
