@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,8 @@ import wslite.json.JSONException;
 
 public interface ExpenseRefusalService {
   public void refuse(Expense expense) throws AxelorException;
+
+  void refuseWithReason(Expense expense, String groundForRefusal) throws AxelorException;
 
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;

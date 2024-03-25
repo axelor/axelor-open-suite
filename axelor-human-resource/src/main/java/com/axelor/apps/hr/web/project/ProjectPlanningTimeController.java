@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,13 +21,13 @@ package com.axelor.apps.hr.web.project;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class ProjectPlanningTimeController {
@@ -41,15 +41,26 @@ public class ProjectPlanningTimeController {
     response.setCanClose(true);
   }
 
+  public void addSingleProjectPlanningTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+    Beans.get(ProjectPlanningTimeService.class)
+        .addSingleProjectPlanningTime(
+            JPA.find(ProjectPlanningTime.class, projectPlanningTime.getId()));
+
+    response.setCanClose(true);
+  }
+
   @SuppressWarnings("unchecked")
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
-    List<Map<String, Object>> projectPlanningTimeLines =
-        (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSet");
+    List<Integer> projectPlanningTimeLineIds = (List<Integer>) request.getContext().get("_ids");
 
-    if (projectPlanningTimeLines != null) {
+    if (projectPlanningTimeLineIds != null) {
       Beans.get(ProjectPlanningTimeService.class)
-          .removeProjectPlanningLines(projectPlanningTimeLines);
+          .removeProjectPlanningLines(projectPlanningTimeLineIds);
     }
 
     response.setReload(true);
@@ -61,7 +72,9 @@ public class ProjectPlanningTimeController {
         request.getContext().asType(ProjectPlanningTime.class);
 
     if (projectPlanningTime != null) {
-      Beans.get(ProjectPlanningTimeService.class).removeProjectPlanningLine(projectPlanningTime);
+      Beans.get(ProjectPlanningTimeService.class)
+          .removeProjectPlanningLine(
+              JPA.find(ProjectPlanningTime.class, projectPlanningTime.getId()));
     }
 
     response.setReload(true);

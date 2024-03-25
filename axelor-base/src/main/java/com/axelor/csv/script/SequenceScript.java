@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,14 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
 public class SequenceScript {
-  public Object computeFullname(Object bean, Map<String, Object> values) {
+  public Object computeFullname(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof Sequence;
     Sequence sequence = ((Sequence) bean);
 

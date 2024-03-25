@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -201,6 +201,13 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
   }
 
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    planningTimeRepo.save(projectPlanningTime);
+  }
+
   protected ProjectPlanningTime createProjectPlanningTime(
       LocalDateTime fromDate,
       ProjectTask projectTask,
@@ -231,21 +238,19 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   @Override
   @Transactional
-  public void removeProjectPlanningLines(List<Map<String, Object>> projectPlanningLines) {
-
-    for (Map<String, Object> line : projectPlanningLines) {
-      ProjectPlanningTime projectPlanningTime =
-          planningTimeRepo.find(Long.parseLong(line.get("id").toString()));
-      planningTimeRepo.remove(projectPlanningTime);
+  public void removeProjectPlanningLines(List<Integer> projectPlanningLineIds) {
+    for (Integer id : projectPlanningLineIds) {
+      removeProjectPlanningLine(planningTimeRepo.find(Long.valueOf(id)));
     }
   }
 
   @Override
   @Transactional
   public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime) {
-
-    ProjectPlanningTime planningTime = planningTimeRepo.find(projectPlanningTime.getId());
-    planningTimeRepo.remove(planningTime);
+    if (!JPA.em().contains(projectPlanningTime)) {
+      projectPlanningTime = planningTimeRepo.find(projectPlanningTime.getId());
+    }
+    planningTimeRepo.remove(projectPlanningTime);
   }
 
   @Override

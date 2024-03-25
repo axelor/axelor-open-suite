@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -163,6 +163,8 @@ public class MoveManagementRepository extends MoveRepository {
       MoveValidateService moveValidateService = Beans.get(MoveValidateService.class);
 
       moveValidateService.checkMoveLinesPartner(move);
+      moveValidateService.checkJournalPermissions(move);
+
       if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
           || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {

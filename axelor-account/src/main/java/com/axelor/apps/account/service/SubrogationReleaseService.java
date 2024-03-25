@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,16 +42,6 @@ public interface SubrogationReleaseService {
    * @throws AxelorException
    */
   void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException;
-
-  /**
-   * Generate a PDF export.
-   *
-   * @param subrogationRelease
-   * @param name
-   * @return
-   * @throws AxelorException
-   */
-  String printToPDF(SubrogationRelease subrogationRelease, String name) throws AxelorException;
 
   /**
    * Generate a CSV export.

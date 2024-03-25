@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
@@ -29,6 +30,7 @@ import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -57,6 +59,8 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
       AnalyticLineService analyticLineService,
       MoveAttrsService moveAttrsService,
       AnalyticAttrsService analyticAttrsService,
+      MoveCutOffService moveCutOffService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService) {
     super(
@@ -71,7 +75,9 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
         moveToolService,
         analyticLineService,
         moveAttrsService,
-        analyticAttrsService);
+        analyticAttrsService,
+        moveCutOffService,
+        moveLineFinancialDiscountService);
     this.moveLineCheckBankPaymentService = moveLineCheckBankPaymentService;
     this.moveLineRecordBankPaymentService = moveLineRecordBankPaymentService;
   }

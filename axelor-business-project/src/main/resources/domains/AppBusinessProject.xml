@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -50,10 +50,18 @@
     <string name="excludeTaskInvoicing" title="Exclude tasks for invoicing"
       help="Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria"/>
 
+    <boolean name="enableEventCreation" title="Enable event creation"
+      help="This will attach an event to a project planning time"/>
+    <string name="eventSubjectGroovyFormula" title="Event subject groovy formula"
+      help="This will customize the event subject."/>
+
     <!-- planification fields -->
     <many-to-one name="daysUnit" ref="com.axelor.apps.base.db.Unit" title="Days unit"/>
     <many-to-one name="hoursUnit" ref="com.axelor.apps.base.db.Unit" title="Hours unit"/>
     <decimal name="defaultHoursADay" title="Default hours in a day" min="0"/>
+
+    <many-to-one name="invoicingProjectAnnexBirtTemplate"
+      title="Invoicing project annex template" ref="com.axelor.apps.base.db.BirtTemplate"/>
 
     <track>
       <field name="productInvoicingProject" on="UPDATE"/>
@@ -75,6 +83,7 @@
       <field name="enableTaskTemplatesByProduct" on="UPDATE"/>
       <field name="automaticInvoicing" on="UPDATE"/>
       <field name="excludeTaskInvoicing" on="UPDATE"/>
+      <field name="invoicingProjectAnnexBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

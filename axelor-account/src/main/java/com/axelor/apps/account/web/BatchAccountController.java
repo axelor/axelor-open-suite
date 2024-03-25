@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,8 @@ import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.ReconcileGroupService;
 import com.axelor.apps.account.service.batch.BatchControlMovesConsistency;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupProposalService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
@@ -68,7 +68,8 @@ public class BatchAccountController {
     try {
       MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
       ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
-      ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+      ReconcileGroupProposalService reconcileGroupProposalService =
+          Beans.get(ReconcileGroupProposalService.class);
       Map batchMap = (Map<String, Object>) request.getContext().get("batch");
       List<MoveLine> moveLineList =
           moveLineRepository
@@ -83,7 +84,7 @@ public class BatchAccountController {
         ReconcileGroup reconcileGroup =
             reconcileGroupRepo.find(moveLine.getReconcileGroup().getId());
         try {
-          reconcileGroupService.validateProposal(reconcileGroup);
+          reconcileGroupProposalService.validateProposal(reconcileGroup);
         } catch (AxelorException e) {
           TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
@@ -98,7 +99,8 @@ public class BatchAccountController {
     try {
       MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
       ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
-      ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+      ReconcileGroupProposalService reconcileGroupProposalService =
+          Beans.get(ReconcileGroupProposalService.class);
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       if (CollectionUtils.isEmpty(idList)) {
         return;
@@ -108,7 +110,7 @@ public class BatchAccountController {
             reconcileGroupRepo.find(
                 moveLineRepository.find(id.longValue()).getReconcileGroup().getId());
         try {
-          reconcileGroupService.validateProposal(reconcileGroup);
+          reconcileGroupProposalService.validateProposal(reconcileGroup);
         } catch (AxelorException e) {
           TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
@@ -122,14 +124,15 @@ public class BatchAccountController {
   public void cancelSelectedReconcileGroups(ActionRequest request, ActionResponse response) {
     try {
       MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
-      ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+      ReconcileGroupProposalService reconcileGroupProposalService =
+          Beans.get(ReconcileGroupProposalService.class);
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       if (CollectionUtils.isEmpty(idList)) {
         return;
       }
       for (Integer id : idList) {
         MoveLine moveLine = moveLineRepository.find(id.longValue());
-        reconcileGroupService.cancelProposal(moveLine.getReconcileGroup());
+        reconcileGroupProposalService.cancelProposal(moveLine.getReconcileGroup());
       }
       response.setReload(true);
     } catch (Exception e) {
@@ -140,7 +143,8 @@ public class BatchAccountController {
   public void partialReconcileSelectedMoveLines(ActionRequest request, ActionResponse response) {
     try {
       MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
-      ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+      ReconcileGroupProposalService reconcileGroupProposalService =
+          Beans.get(ReconcileGroupProposalService.class);
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       if (CollectionUtils.isEmpty(idList)) {
         return;
@@ -159,7 +163,7 @@ public class BatchAccountController {
                       && moveLine.getReconcileGroup().getIsProposal())) {
         response.setError(I18n.get(AccountExceptionMessage.ALREADY_HAVE_PROPOSAL_RECONCILE));
       }
-      reconcileGroupService.createProposal(moveLineList);
+      reconcileGroupProposalService.createProposal(moveLineList);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

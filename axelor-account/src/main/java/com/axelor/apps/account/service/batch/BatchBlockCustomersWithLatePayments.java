@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,12 +22,14 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -62,6 +64,9 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
   protected void process() {
     try {
       String result = blockCustomersWithLatePayments();
+      if (StringUtils.isEmpty(result)) {
+        result = I18n.get(AccountExceptionMessage.BATCH_BLOCK_CUSTOMER_RESULT_EMPTY);
+      }
       addComment(result);
     } catch (Exception e) {
       TraceBackService.trace(e, ExceptionOriginRepository.IMPORT, batch.getId());

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -151,7 +151,11 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     if (sequence != null) {
       expense.setExpenseSeq(
           sequenceService.getSequenceNumber(
-              sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
+              sequence,
+              expense.getSentDateTime().toLocalDate(),
+              Expense.class,
+              "expenseSeq",
+              expense));
       if (expense.getExpenseSeq() != null) {
         return;
       }
@@ -251,7 +255,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
         BigDecimal amountConvertedInCompanyCurrency =
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                entry.getValue(), currencyRate);
+                entry.getValue(), currencyRate, companyCurrency);
 
         moveLines.add(
             moveLineCreateService.createMoveLine(
@@ -294,8 +298,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     move.getMoveLineList().addAll(moveLines);
 
     moveValidateService.accounting(move);
-
-    expense.setMove(move);
+    move.setExpense(expense);
     return move;
   }
 
@@ -344,7 +347,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
     BigDecimal amountConvertedInCompanyCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            expenseLine.getUntaxedAmount(), currencyRate);
+            expenseLine.getUntaxedAmount(), currencyRate, companyCurrency);
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(

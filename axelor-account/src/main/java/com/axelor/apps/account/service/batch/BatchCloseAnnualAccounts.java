@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -43,6 +42,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -50,11 +50,12 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -76,7 +77,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveSimulateService moveSimulateService;
-
+  protected MoveRepository moveRepo;
   protected boolean end = false;
   protected AccountingBatch accountingBatch;
 
@@ -89,7 +90,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       AccountingCloseAnnualService accountingCloseAnnualService,
       AccountConfigService accountConfigService,
       MoveCreateService moveCreateService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveSimulateService moveSimulateService,
+      MoveRepository moveRepo) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
@@ -98,6 +101,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     this.accountConfigService = accountConfigService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
+    this.moveSimulateService = moveSimulateService;
+    this.moveRepo = moveRepo;
   }
 
   @Override
@@ -115,7 +120,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
 
       this.testCloseAnnualBatchFields(resultMoveAmount);
       if (accountingBatch.getGenerateResultMove()) {
-        this.generateResultMove(resultMoveAmount);
+        accountingCloseAnnualService.generateResultMove(
+            accountingBatch.getCompany(),
+            accountingBatch.getYear().getReportedBalanceDate(),
+            accountingBatch.getResultMoveDescription(),
+            accountingBatch.getBankDetails(),
+            accountingBatch.getSimulateGeneratedMoves(),
+            resultMoveAmount);
       }
     } catch (AxelorException | PersistenceException e) {
       TraceBackService.trace(e, ExceptionOriginRepository.REPORTED_BALANCE, batch.getId());
@@ -188,6 +199,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected void process() {
     if (!end) {
 
+      removeSimulatedMoves(accountingBatch);
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
+
       Year year = accountingBatch.getYear();
       boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
 
@@ -206,7 +220,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       List<Pair<Long, Long>> openingAccountAndPartnerPairList =
           accountingCloseAnnualService.assignPartner(
               openingAccountIdList, year, allocatePerPartner);
-      Map<AccountByPartner, Map<Boolean, Boolean>> map = new HashMap<>();
+      LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map = new LinkedHashMap<>();
       map =
           openAndCloseProcess(
               closureAccountAndPartnerPairList, accountingBatch.getCloseYear(), false, map);
@@ -218,18 +232,15 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
-  protected Map<AccountByPartner, Map<Boolean, Boolean>> openAndCloseProcess(
+  protected LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> openAndCloseProcess(
       List<Pair<Long, Long>> accountAndPartnerPairList,
       boolean close,
       boolean open,
-      Map<AccountByPartner, Map<Boolean, Boolean>> map) {
-    for (Pair<Long, Long> accountAndPartnerPair : accountAndPartnerPairList) {
-      Account account = null;
-      Partner partner = null;
-      account = accountRepository.find(accountAndPartnerPair.getLeft());
-      if (accountAndPartnerPair.getRight() != null) {
-        partner = partnerRepository.find(accountAndPartnerPair.getRight());
-      }
+      LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map) {
+    List<Long> idsDone = new ArrayList<>();
+    for (Account account : getSortedAccountList(accountAndPartnerPairList)) {
+      Partner partner = getPartner(accountAndPartnerPairList, account, idsDone);
+
       Map<Boolean, Boolean> value = new HashMap<>();
       if (close) {
         value.put(close, false);
@@ -247,6 +258,34 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
     }
     return map;
+  }
+
+  protected List<Account> getSortedAccountList(List<Pair<Long, Long>> accountAndPartnerPairList) {
+    List<Account> sortedAccountList = new ArrayList<>();
+    for (Pair<Long, Long> accountAndPartnerPair : accountAndPartnerPairList) {
+      sortedAccountList.add(accountRepository.find(accountAndPartnerPair.getLeft()));
+    }
+    sortedAccountList.sort(Comparator.comparing(Account::getCode));
+    return sortedAccountList;
+  }
+
+  protected Partner getPartner(
+      List<Pair<Long, Long>> accountAndPartnerPairList, Account account, List<Long> idsDone) {
+    Partner partner =
+        accountAndPartnerPairList.stream()
+            .filter(
+                pair ->
+                    pair.getLeft().equals(account.getId()) && !idsDone.contains(pair.getRight()))
+            .findFirst()
+            .map(Pair::getRight)
+            .map(id -> partnerRepository.find(id))
+            .orElse(null);
+
+    if (partner != null) {
+      idsDone.add(partner.getId());
+    }
+
+    return partner;
   }
 
   protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
@@ -354,6 +393,33 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
+  protected void removeSimulatedMoves(AccountingBatch accountingBatch) {
+    AccountConfig accountConfig = accountingBatch.getCompany().getAccountConfig();
+    if (accountConfig != null
+        && (!accountConfig.getIsActivateSimulatedMove()
+            || !accountingBatch.getIsDeleteSimulatedMove())) {
+      return;
+    }
+    com.axelor.db.Query<Move> moveQuery =
+        moveRepo
+            .all()
+            .filter(
+                "self.company = :company AND self.statusSelect = :statusSelect AND self.period.year = :year")
+            .bind("company", accountingBatch.getCompany())
+            .bind("statusSelect", MoveRepository.STATUS_SIMULATED)
+            .bind("year", accountingBatch.getYear())
+            .order("id");
+    JPA.runInTransaction(
+        () -> {
+          List<Move> moveList;
+          while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT)).isEmpty()) {
+            for (Move move : moveList) {
+              moveRepo.remove(move);
+            }
+          }
+        });
+  }
+
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
@@ -421,86 +487,6 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
     }
     return BigDecimal.ZERO;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void generateResultMove(BigDecimal amount) throws AxelorException {
-    Company company = accountingBatch.getCompany();
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    LocalDate date = accountingBatch.getYear().getReportedBalanceDate();
-    String description = accountingBatch.getResultMoveDescription();
-    Journal journal = accountConfigService.getReportedBalanceJournal(accountConfig);
-    Move move =
-        moveCreateService.createMove(
-            journal,
-            company,
-            company.getCurrency(),
-            null,
-            date,
-            date,
-            null,
-            null,
-            null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE,
-            false,
-            false,
-            false,
-            null,
-            description,
-            accountingBatch.getBankDetails());
-
-    Account accountCredit = null;
-    Account accountDebit = null;
-    if (amount.compareTo(BigDecimal.ZERO) < 0) {
-      accountCredit = accountConfig.getYearOpeningAccount();
-      accountDebit = accountConfig.getResultLossAccount();
-    } else {
-      accountCredit = accountConfig.getResultProfitAccount();
-      accountDebit = accountConfig.getYearOpeningAccount();
-    }
-    MoveLine credit =
-        new MoveLine(
-            move,
-            null,
-            accountCredit,
-            date,
-            date,
-            1,
-            BigDecimal.ZERO,
-            amount.abs(),
-            description,
-            null,
-            BigDecimal.ONE,
-            amount.abs(),
-            date);
-    MoveLine debit =
-        new MoveLine(
-            move,
-            null,
-            accountDebit,
-            date,
-            date,
-            2,
-            amount.abs(),
-            BigDecimal.ZERO,
-            description,
-            null,
-            BigDecimal.ONE,
-            amount.abs(),
-            date);
-    move.addMoveLineListItem(credit);
-    move.addMoveLineListItem(debit);
-
-    moveRepo.save(move);
-
-    if (accountConfig.getIsActivateSimulatedMove()
-        && accountingBatch.getSimulateGeneratedMoves()
-        && journal.getAuthorizeSimulatedMove()) {
-      moveSimulateService.simulate(move);
-    } else {
-      moveValidateService.accounting(move);
-    }
   }
 
   class AccountByPartner {

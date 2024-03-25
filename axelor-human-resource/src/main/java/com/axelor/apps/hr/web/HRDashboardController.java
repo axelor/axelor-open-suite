@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -196,5 +196,22 @@ public class HRDashboardController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void getEmployeeMedicalVisitData(ActionRequest request, ActionResponse response) {
+    Employee employee = null;
+
+    LinkedHashMap<String, Object> employeeMap =
+        ((LinkedHashMap<String, Object>) request.getData().get("employee"));
+
+    if (employeeMap != null) {
+      employee =
+          Beans.get(EmployeeRepository.class)
+              .find(Long.parseLong(employeeMap.get("id").toString()));
+    }
+    List<Map<String, Object>> extraHrsData =
+        Beans.get(HRDashboardService.class).getEmployeeMedicalVisitData(employee);
+    response.setData(extraHrsData);
   }
 }

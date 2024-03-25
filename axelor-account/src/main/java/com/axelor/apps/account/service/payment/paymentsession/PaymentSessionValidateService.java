@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
@@ -67,6 +68,7 @@ public interface PaymentSessionValidateService {
       Move move,
       InvoiceTerm invoiceTerm,
       Pair<InvoiceTerm, BigDecimal> pair,
+      AccountConfig accountConfig,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException;
@@ -88,7 +90,8 @@ public interface PaymentSessionValidateService {
       InvoiceTerm invoiceTerm,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap,
-      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList,
+      AccountConfig accountConfig)
       throws AxelorException;
 
   Move getMove(
@@ -103,6 +106,7 @@ public interface PaymentSessionValidateService {
   Move createMove(
       PaymentSession paymentSession,
       Partner partner,
+      Partner thirdPartyPayerPartner,
       LocalDate accountingDate,
       BankDetails partnerBankDetails)
       throws AxelorException;

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
-  <entity name="ContractLine">
+  <entity name="ContractLine" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <integer name="sequence"/>
 
@@ -27,9 +27,10 @@
     <string name="productName" title="Displayed Product name" required="true"/>
     <decimal name="price" title="Unit price" precision="20" scale="10"/>
 
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-    <decimal name="exTaxTotal" title="Total W.T."/>
-    <decimal name="inTaxTotal" title="Total A.T.I."/>
+    <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Taxes"/>
+    <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." precision="20" scale="3"/>
     <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
       title="Fiscal position"/>
 
@@ -49,19 +50,45 @@
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis2AnalyticAccount" title="Cpte Ana. AXIS2"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis3AnalyticAccount" title="Cpte Ana. AXIS3"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis4AnalyticAccount" title="Cpte Ana. AXIS4"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
     <date name="fromDate"/>
 
 
-    <decimal name="discountAmount" title="Discount amount"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
-    <decimal name="priceDiscounted" title="Unit price discounted"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
 
-    <decimal name="initialUnitPrice" title="Initial unit price" nullable="true"/>
+    <decimal name="initialUnitPrice" title="Initial unit price" nullable="true"
+      precision="20" scale="10"/>
     <boolean name="isToRevaluate" title="To revaluate"/>
-    <decimal name="initialPricePerYear" title="Initial price per year"/>
-    <decimal name="yearlyPriceRevalued" title="Price revalued yearly"/>
+    <decimal name="initialPricePerYear" title="Initial price per year" precision="20"
+      scale="3"/>
+    <decimal name="yearlyPriceRevalued" title="Price revalued yearly" precision="20"
+      scale="3"/>
+    <many-to-one name="pricing" ref="com.axelor.apps.base.db.Pricing" title="Pricing"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return contractVersion != null && contractVersion.getContract() != null ? contractVersion.getContract().getCurrency() : null;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return contractVersion != null && contractVersion.getContract() != null ? contractVersion.getContract().getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,

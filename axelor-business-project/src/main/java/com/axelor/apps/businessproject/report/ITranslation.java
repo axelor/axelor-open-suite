@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -73,11 +73,11 @@ public interface ITranslation {
   public static final String INVOICE_PURCHASE_INVOICE_NO_ANNEX = /*$$(*/
       "Invoice.purchaseInvoiceNoAnnex"; /*)*/
   public static final String INVOICE_PURCHASE_REFUND_NO_ANNEX = /*$$(*/
-      "Invoice.purchaseRefundNoAnnex"; /*)*/
+      "Invoice.purchaseCreditNoteNoAnnex"; /*)*/
   public static final String INVOICE_INVOICE_NO_ANNEX = /*$$(*/ "Invoice.invoiceNoAnnex"; /*)*/
   public static final String INVOICE_DRAFT_INVOICE_NO_ANNEX = /*$$(*/
       "Invoice.draftInvoiceNoAnnex"; /*)*/
-  public static final String INVOICE_REFUND_NO_ANNEX = /*$$(*/ "Invoice.refundNoAnnex"; /*)*/
+  public static final String INVOICE_REFUND_NO_ANNEX = /*$$(*/ "Invoice.creditNoteNoAnnex"; /*)*/
 
   public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
   public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/

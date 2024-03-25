@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -109,7 +109,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
   @Override
   public List<MoveLine> consolidateMoveLines(List<MoveLine> moveLines) {
 
-    Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
+    Map<List<Object>, MoveLine> map = new HashMap<>();
     MoveLine consolidateMoveLine = null;
     boolean haveHoldBack =
         moveLines.stream()
@@ -121,11 +121,10 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
     for (MoveLine moveLine : moveLines) {
 
-      List<Object> keys = new ArrayList<Object>();
+      List<Object> keys = new ArrayList<>();
 
-      keys.add(moveLine.getCounter());
       keys.add(moveLine.getAccount());
-      keys.add(moveLine.getTaxLine());
+      keys.add(moveLine.getTaxLineSet());
       keys.add(moveLine.getAnalyticDistributionTemplate());
       keys.add(moveLine.getCutOffStartDate());
       keys.add(moveLine.getCutOffEndDate());
@@ -136,68 +135,14 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
       if (consolidateMoveLine != null) {
 
-        BigDecimal consolidateCurrencyAmount = BigDecimal.ZERO;
+        consolidateMoveLine = consolidateMoveLine(moveLine, consolidateMoveLine);
 
-        log.debug(
-            "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
-            moveLine.getDebit(),
-            moveLine.getCredit(),
-            moveLine.getCurrencyAmount().abs());
-        log.debug(
-            "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
-            consolidateMoveLine.getDebit(),
-            consolidateMoveLine.getCredit(),
-            consolidateMoveLine.getCurrencyAmount().abs());
-
-        if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
-            != consolidateMoveLine
-                .getDebit()
-                .subtract(consolidateMoveLine.getCredit())
-                .compareTo(BigDecimal.ZERO)) {
-          consolidateCurrencyAmount =
-              consolidateMoveLine
-                  .getCurrencyAmount()
-                  .abs()
-                  .subtract(moveLine.getCurrencyAmount().abs());
-        } else {
-          consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().abs().add(moveLine.getCurrencyAmount().abs());
-        }
-
-        consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
-        consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
-
-        boolean isDebit =
-            consolidateMoveLine.getDebit().compareTo(consolidateMoveLine.getCredit()) > 0;
-
-        consolidateCurrencyAmount =
-            moveToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
-
-        consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount);
-
-        if (consolidateMoveLine.getAnalyticMoveLineList() != null
-            && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
-          for (AnalyticMoveLine analyticDistributionLine :
-              consolidateMoveLine.getAnalyticMoveLineList()) {
-            for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
-              if (checkAnalyticDistributionLine(
-                  analyticDistributionLine, analyticDistributionLineIt)) {
-                analyticDistributionLine.setAmount(
-                    analyticDistributionLine
-                        .getAmount()
-                        .add(analyticDistributionLineIt.getAmount()));
-                break;
-              }
-            }
-          }
-        }
       } else {
         map.put(keys, moveLine);
       }
     }
 
-    BigDecimal credit = null;
-    BigDecimal debit = null;
+    BigDecimal credit, debit;
 
     int moveLineId = 1;
     moveLines.clear();
@@ -232,6 +177,65 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
     }
 
     return moveLines;
+  }
+
+  @Override
+  public MoveLine consolidateMoveLine(MoveLine moveLine, MoveLine consolidateMoveLine) {
+    if (moveLine == null || consolidateMoveLine == null) {
+      return null;
+    }
+    BigDecimal consolidateCurrencyAmount;
+
+    log.debug(
+        "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
+        moveLine.getDebit(),
+        moveLine.getCredit(),
+        moveLine.getCurrencyAmount().abs());
+    log.debug(
+        "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
+        consolidateMoveLine.getDebit(),
+        consolidateMoveLine.getCredit(),
+        consolidateMoveLine.getCurrencyAmount().abs());
+
+    if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
+        != consolidateMoveLine
+            .getDebit()
+            .subtract(consolidateMoveLine.getCredit())
+            .compareTo(BigDecimal.ZERO)) {
+      consolidateCurrencyAmount =
+          consolidateMoveLine
+              .getCurrencyAmount()
+              .abs()
+              .subtract(moveLine.getCurrencyAmount().abs());
+    } else {
+      consolidateCurrencyAmount =
+          consolidateMoveLine.getCurrencyAmount().abs().add(moveLine.getCurrencyAmount().abs());
+    }
+
+    consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
+    consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
+
+    boolean isDebit = consolidateMoveLine.getDebit().compareTo(consolidateMoveLine.getCredit()) > 0;
+
+    consolidateCurrencyAmount =
+        moveToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
+
+    consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount);
+
+    if (consolidateMoveLine.getAnalyticMoveLineList() != null
+        && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
+      for (AnalyticMoveLine analyticDistributionLine :
+          consolidateMoveLine.getAnalyticMoveLineList()) {
+        for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
+          if (checkAnalyticDistributionLine(analyticDistributionLine, analyticDistributionLineIt)) {
+            analyticDistributionLine.setAmount(
+                analyticDistributionLine.getAmount().add(analyticDistributionLineIt.getAmount()));
+            break;
+          }
+        }
+      }
+    }
+    return consolidateMoveLine;
   }
 
   protected boolean checkAnalyticDistributionLine(

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -74,23 +74,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="3676">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -159,6 +142,12 @@
                     <text-property name="displayName">receipt_no</text-property>
                     <text-property name="heading">receipt_no</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -203,6 +192,11 @@
                         <property name="position">6</property>
                         <property name="name">receipt_no</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -250,11 +244,19 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as "CompanyName", PaymentVoucher.payment_date, PaymentVoucher.paid_amount, PaymentVoucher.remaining_amount,
-PaymentMode.name as "PaymentModeName", PaymentVoucher.receipt_no
+PaymentMode.name as "PaymentModeName", PaymentVoucher.receipt_no, Currency.number_of_decimals
 from public.account_payment_voucher as PaymentVoucher
 left outer join public.base_company as Company on (PaymentVoucher.company = Company.id)
+left outer join public.base_currency as Currency on (PaymentVoucher.currency = Currency.id)
 left outer join public.base_partner as Partner on (PaymentVoucher.partner = Partner.id)
 left outer join public.account_payment_mode as PaymentMode on (PaymentVoucher.payment_mode = PaymentMode.id)
 where PaymentVoucher.id = ?]]></xml-property>
@@ -308,6 +310,12 @@ where PaymentVoucher.id = ?]]></xml-property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PartnerName</text-property>
                     <text-property name="heading">PartnerName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -364,6 +372,11 @@ where PaymentVoucher.id = ?]]></xml-property>
                         <property name="position">8</property>
                         <property name="name">PartnerName</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -425,11 +438,19 @@ where PaymentVoucher.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLineGenerated.date_val as "LineDate", MoveLineGenerated.amount_paid, Account.code as "AccountCode",
 Invoice.invoice_id, MoveLineGenerated.name as "Reference",
 PaymentScheduleLine.name as "PaymentScheduleName", PaymentScheduleLine.id as "PaymentScheID",
-Partner.name as "PartnerName"
+Partner.name as "PartnerName",
+Currency.number_of_decimals
 from public.account_payment_voucher as PaymentVoucher
 left outer join public.account_pay_voucher_element_to_pay as InvoiceToPay on (InvoiceToPay.payment_voucher = PaymentVoucher.id)
 left outer join public.account_move_line as MoveLineGenerated on (InvoiceToPay.move_line_generated = MoveLineGenerated.id)
@@ -439,6 +460,7 @@ left outer join public.account_move_line as MoveLine on (InvoiceToPay.move_line 
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_payment_schedule_line as PaymentScheduleLine on (MoveLine.payment_schedule_line = PaymentScheduleLine.id)
 left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
+left outer join public.base_currency as Currency on (Currency.id = PaymentVoucher.currency)
 where PaymentVoucher.id = ? and MoveLineGenerated.amount_paid > 0.00]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
@@ -469,7 +491,7 @@ where PaymentVoucher.id = ? and MoveLineGenerated.amount_paid > 0.00]]></xml-pro
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -511,7 +533,7 @@ where PaymentVoucher.id = ? and MoveLineGenerated.amount_paid > 0.00]]></xml-pro
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -634,6 +656,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">date</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">number_of_decimals</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="2569">
                 <property name="width">2.75in</property>
@@ -705,7 +734,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="rowSpan">1</property>
                     <text id="2625">
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">row["paid_amount"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["paid_amount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -787,6 +816,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <text-property name="displayName">PartnerName</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["PartnerName"]</expression>
                                 <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <column id="2664">
@@ -1074,7 +1110,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">row["amount_paid"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount_paid"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="2650">
@@ -1118,7 +1154,7 @@ row["invoice_id"]
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">row["amount_paid"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount_paid"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -1200,7 +1236,7 @@ REGLEMENT]]></text-property>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">Total.sum(row["amount_paid"])</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount_paid"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="2661">
@@ -1237,7 +1273,7 @@ REGLEMENT]]></text-property>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">Total.sum(row["amount_paid"])</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount_paid"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

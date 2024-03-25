@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.marketing.service;
 
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.Template;
@@ -44,8 +44,8 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
   public TemplateMessageServiceMarketingImpl(
       MessageService messageService,
       TemplateContextService templateContextService,
-      BirtTemplateService birtTemplateService) {
-    super(messageService, templateContextService, birtTemplateService);
+      PrintingTemplatePrintService printTemplatePrintService) {
+    super(messageService, templateContextService, printTemplatePrintService);
   }
 
   @Override

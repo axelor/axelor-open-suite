@@ -1,6 +1,0 @@
----
-title: "Expense : Digital signature for justification file"
-type: feature
-description: |
-  If the justification file is an image, it is converted to a pdf file.
-  Then the pdf file is digitally signed.

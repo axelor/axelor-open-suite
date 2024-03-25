@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
@@ -92,11 +92,13 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
    *
    * @param stockMoveType Type de mouvement de stock
    * @param company la société
+   * @param stockMove
    * @return la chaine contenant la séquence du StockMove
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
   @Override
-  public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException {
+  public String getSequenceStockMove(int stockMoveType, Company company, StockMove stockMove)
+      throws AxelorException {
 
     String ref = "";
 
@@ -104,7 +106,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       case StockMoveRepository.TYPE_INTERNAL:
         ref =
             sequenceService.getSequenceNumber(
-                SequenceRepository.INTERNAL, company, StockMove.class, "stockMoveSeq");
+                SequenceRepository.INTERNAL, company, StockMove.class, "stockMoveSeq", stockMove);
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -116,7 +118,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       case StockMoveRepository.TYPE_INCOMING:
         ref =
             sequenceService.getSequenceNumber(
-                SequenceRepository.INCOMING, company, StockMove.class, "stockMoveSeq");
+                SequenceRepository.INCOMING, company, StockMove.class, "stockMoveSeq", stockMove);
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -128,7 +130,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       case StockMoveRepository.TYPE_OUTGOING:
         ref =
             sequenceService.getSequenceNumber(
-                SequenceRepository.OUTGOING, company, StockMove.class, "stockMoveSeq");
+                SequenceRepository.OUTGOING, company, StockMove.class, "stockMoveSeq", stockMove);
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -157,8 +159,8 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       return true;
     } else {
       return toAddress != null
-          && toAddress.getAddressL7Country() != null
-          && toAddress.getAddressL7Country().getIsIspmRequired();
+          && toAddress.getCountry() != null
+          && toAddress.getCountry().getIsIspmRequired();
     }
   }
 
@@ -233,7 +235,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
           I18n.get("Bad stock move type"));
     }
 
-    if (address.getAddressL7Country() == null) {
+    if (address.getCountry() == null) {
       throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
     }
 
@@ -256,7 +258,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
           I18n.get("Bad stock move type"));
     }
 
-    if (address.getAddressL7Country() == null) {
+    if (address.getCountry() == null) {
       throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
     }
 

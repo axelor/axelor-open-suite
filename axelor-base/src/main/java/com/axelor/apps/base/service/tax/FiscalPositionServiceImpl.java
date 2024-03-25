@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,9 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.google.inject.Singleton;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Singleton
 public class FiscalPositionServiceImpl implements FiscalPositionService {
@@ -46,5 +49,13 @@ public class FiscalPositionServiceImpl implements FiscalPositionService {
     }
 
     return null;
+  }
+
+  @Override
+  public Set<TaxEquiv> getTaxEquivSet(FiscalPosition fiscalPosition, Set<Tax> taxSet) {
+    return taxSet.stream()
+        .map(tax -> getTaxEquiv(fiscalPosition, tax))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,16 +32,12 @@ public class AccountingReportController {
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     try {
       AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-      String domain =
+      response.setAttr(
+          "bankDetailsSet",
+          "domain",
           Beans.get(BankDetailsService.class)
               .getActiveCompanyBankDetails(
-                  accountingReport.getCompany(), accountingReport.getCurrency());
-      // if nothing was found for the domain, we set it at a default value.
-      if (domain.equals("")) {
-        response.setAttr("bankDetailsSet", "domain", "self.id IN (0)");
-      } else {
-        response.setAttr("bankDetailsSet", "domain", domain);
-      }
+                  accountingReport.getCompany(), accountingReport.getCurrency()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

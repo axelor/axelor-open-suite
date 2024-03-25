@@ -7,15 +7,15 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionLcrValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
@@ -26,12 +26,12 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -47,7 +47,7 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
       PaymentSessionValidateService paymentSessionValidateService,
       InvoiceTermRepository invoiceTermRepo,
       MoveValidateService moveValidateService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       PaymentSessionRepository paymentSessionRepo,
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
@@ -65,7 +65,7 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
         paymentSessionValidateService,
         invoiceTermRepo,
         moveValidateService,
-        moveComputeService,
+        moveCutOffService,
         paymentSessionRepo,
         moveRepo,
         partnerRepo,
@@ -112,7 +112,7 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
           bankOrderService.confirm(bankOrder);
-        } catch (JAXBException | IOException | DatatypeConfigurationException e) {
+        } catch (IOException | DatatypeConfigurationException | JAXBException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
         }

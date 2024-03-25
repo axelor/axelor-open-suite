@@ -1,3 +1,0 @@
----
-title: "Payment voucher : Fix remaining amount not being recomputed on reset"
-type: fix

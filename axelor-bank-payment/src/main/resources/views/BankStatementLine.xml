@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="bank-statement-line-grid" title="Bank Statement lines"
     model="com.axelor.apps.bankpayment.db.BankStatementLine" orderBy="-operationDate,-sequence">
@@ -12,8 +12,8 @@
     <field name="sequence"/>
     <field name="operationDate"/>
     <field name="valueDate"/>
-    <field name="debit"/>
-    <field name="credit"/>
+    <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+    <field name="credit" x-scale="$currencyNumberOfDecimals"/>
     <field name="currency" grid-view="currency-grid" form-view="currency-form"/>
     <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
     <field name="bankDetails.code"/>
@@ -25,6 +25,7 @@
     <field name="reference"/>
     <field name="description" colSpan="12"/>
     <field name="bankStatement"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="bank-statement-line-bank-statement-grid" title="Bank Statement lines"
@@ -32,8 +33,8 @@
     <field name="sequence"/>
     <field name="operationDate"/>
     <field name="valueDate"/>
-    <field name="debit"/>
-    <field name="credit"/>
+    <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+    <field name="credit" x-scale="$currencyNumberOfDecimals"/>
     <field name="currency" grid-view="currency-grid" form-view="currency-form"/>
     <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
     <field name="bankDetails.code"/>
@@ -44,6 +45,7 @@
     <field name="origin" width="120"/>
     <field name="reference"/>
     <field name="description" colSpan="12"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="bank-statement-line-form" title="Bank Statement line"
@@ -52,8 +54,8 @@
       <field name="sequence"/>
       <field name="operationDate"/>
       <field name="valueDate"/>
-      <field name="debit"/>
-      <field name="credit"/>
+      <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+      <field name="credit" x-scale="$currencyNumberOfDecimals"/>
       <field name="currency" grid-view="currency-grid" form-view="currency-form"/>
       <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
       <field name="operationInterbankCodeLine" grid-view="interbank-code-line-grid"
@@ -64,6 +66,7 @@
       <field name="reference"/>
       <field name="description" colSpan="12"/>
       <field name="bankStatement"/>
+      <field name="$currencyNumberOfDecimals" hidden="true"/>
     </panel>
   </form>
 

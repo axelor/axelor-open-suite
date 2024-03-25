@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 public interface FixedAssetLineMoveService {
 
@@ -64,7 +65,10 @@ public interface FixedAssetLineMoveService {
       throws AxelorException;
 
   void generateSaleMove(
-      FixedAsset fixedAsset, TaxLine taxLine, BigDecimal disposalAmount, LocalDate disposalDate)
+      FixedAsset fixedAsset,
+      Set<TaxLine> saleTaxLineSet,
+      BigDecimal disposalAmount,
+      LocalDate disposalDate)
       throws AxelorException;
 
   /**

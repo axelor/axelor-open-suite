@@ -7,7 +7,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -18,9 +17,12 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -43,10 +45,10 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderRepository bankOrderRepo;
   protected CurrencyService currencyService;
-  protected AppAccountService appAccountService;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected DateService dateService;
   protected BankOrderLineRepository bankOrderLineRepo;
+  protected PartnerService partnerService;
 
   @Inject
   public PaymentSessionBankOrderServiceImpl(
@@ -56,20 +58,20 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
-      AppAccountService appAccountService,
       InvoicePaymentRepository invoicePaymentRepo,
       DateService dateService,
-      BankOrderLineRepository bankOrderLineRepo) {
+      BankOrderLineRepository bankOrderLineRepo,
+      PartnerService partnerService) {
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderRepo = bankOrderRepo;
     this.currencyService = currencyService;
-    this.appAccountService = appAccountService;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.dateService = dateService;
     this.bankOrderLineRepo = bankOrderLineRepo;
+    this.partnerService = partnerService;
   }
 
   @Override
@@ -132,10 +134,10 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
                               || it.getBankOrderDate().equals(invoiceTerm.getDueDate()))
                           && it.getPartner().equals(invoiceTerm.getMoveLine().getPartner())
                           && ((it.getReceiverBankDetails() == null
-                                  && invoiceTerm.getBankDetails() == null)
+                                  && this.getBankDetails(invoiceTerm) == null)
                               || (it.getReceiverBankDetails() != null
                                   && it.getReceiverBankDetails()
-                                      .equals(invoiceTerm.getBankDetails()))))
+                                      .equals(this.getBankDetails(invoiceTerm)))))
               .findFirst()
               .orElse(null);
     }
@@ -187,7 +189,7 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
             bankOrder.getBankOrderFileFormat(),
             null,
             invoiceTerm.getMoveLine().getPartner(),
-            invoiceTerm.getBankDetails(),
+            this.getBankDetails(invoiceTerm),
             invoiceTerm.getAmountPaid().subtract(reconciledAmount),
             paymentSession.getCurrency(),
             bankOrderDate,
@@ -263,7 +265,7 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
       BankOrderLine bankOrderLine,
       BigDecimal reconciledAmount)
       throws AxelorException {
-    return bankOrderLine.getBankOrder().getIsMultiCurrency()
+    return BankOrderToolService.isMultiCurrency(bankOrderLine.getBankOrder())
         ? currencyService
             .getAmountCurrencyConvertedAtDate(
                 paymentSession.getCurrency(),
@@ -336,5 +338,12 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
                         .anyMatch(itp -> invoiceTerm.equals(itp.getInvoiceTerm())))
         .findFirst()
         .orElse(null);
+  }
+
+  protected BankDetails getBankDetails(InvoiceTerm invoiceTerm) {
+    return Optional.of(invoiceTerm)
+        .map(InvoiceTerm::getThirdPartyPayerPartner)
+        .map(partnerService::getDefaultBankDetails)
+        .orElse(invoiceTerm.getBankDetails());
   }
 }

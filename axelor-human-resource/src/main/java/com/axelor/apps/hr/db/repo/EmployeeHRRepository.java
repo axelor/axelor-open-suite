@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.apps.hr.service.EmployeeComputeStatusService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -41,22 +42,9 @@ public class EmployeeHRRepository extends EmployeeRepository {
       Long id = (Long) json.get("id");
       if (id != null) {
         Employee employee = super.find(id);
-        AppBaseService appBaseService = Beans.get(AppBaseService.class);
-        LocalDate today =
-            appBaseService.getTodayDate(
-                employee.getUser() != null
-                    ? employee.getUser().getActiveCompany()
-                    : AuthUtils.getUser().getActiveCompany());
-        if (employee.getLeavingDate() == null
-            && employee.getHireDate() != null
-            && employee.getHireDate().compareTo(today.minusDays(30)) > 0) {
-          json.put("$employeeStatus", "new");
-        } else if (employee.getLeavingDate() != null
-            && employee.getLeavingDate().compareTo(today) < 0) {
-          json.put("$employeeStatus", "former");
-        } else {
-          json.put("$employeeStatus", "active");
-        }
+        json.put(
+            "$employeeStatus",
+            Beans.get(EmployeeComputeStatusService.class).getEmployeeStatus(employee));
       }
     }
     return super.populate(json, context);
@@ -130,6 +118,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
       Partner partner = partnerRepo.find(employee.getContactPartner().getId());
       if (partner != null) {
         partner.setEmployee(null);
+        employee.setContactPartner(partner);
         partnerRepo.save(partner);
       }
     }

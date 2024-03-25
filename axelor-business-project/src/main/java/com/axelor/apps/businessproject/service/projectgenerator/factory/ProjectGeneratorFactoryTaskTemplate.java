@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -107,6 +107,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       Product product = orderLine.getProduct();
       String rootName =
           saleOrder.getSaleOrderSeq() + " - " + orderLine.getSequence() + " - " + product.getName();
+      orderLine.setProject(project);
       ProjectTask root =
           projectTaskRepository
               .all()
@@ -195,10 +196,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
     Company company =
         orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
-    childTask.setUnitPrice(
-        product != null
-            ? (BigDecimal) productCompanyService.get(product, "salePrice", company)
-            : null);
+    childTask.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     Unit orderLineUnit = orderLine.getUnit();
     if (projectTaskBusinessProjectService.isTimeUnitValid(orderLineUnit)) {
       childTask.setTimeUnit(orderLineUnit);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -35,31 +35,32 @@ public class GenerateMessageController {
 
     String model = (String) context.get("_templateContextModel");
 
-    Object languageObj = context.get("language");
-    Language language;
-    if (languageObj == null) {
-      language = null;
-    } else if (languageObj instanceof Map) {
-      Map<String, Object> languageMap = (Map<String, Object>) languageObj;
-      language =
-          Beans.get(LanguageRepository.class)
-              .find(Long.parseLong(languageMap.get("id").toString()));
-    } else if (languageObj instanceof Language) {
-      language = (Language) languageObj;
+    Object localizationObj = context.get("localization");
+    Localization localization;
+    if (localizationObj == null) {
+      localization = null;
+    } else if (localizationObj instanceof Map) {
+      Map<String, Object> localizationMap = (Map<String, Object>) localizationObj;
+      localization =
+          Beans.get(LocalizationRepository.class)
+              .find(Long.parseLong(localizationMap.get("id").toString()));
+    } else if (localizationObj instanceof Localization) {
+      localization = (Localization) localizationObj;
     } else {
       throw new IllegalArgumentException("erreur...");
     }
 
     String domain;
 
-    if (language == null) {
+    if (localization == null) {
       domain = "self.metaModel.fullName = '" + model + "' and self.isSystem != true";
     } else {
       domain =
           "self.metaModel.fullName = '"
               + model
-              + "' and self.isSystem != true and self.language.id = "
-              + language.getId();
+              + "' and self.isSystem != true and "
+              + localization.getId()
+              + " MEMBER OF self.localizationSet ";
     }
 
     response.setAttr("_xTemplate", "domain", domain);

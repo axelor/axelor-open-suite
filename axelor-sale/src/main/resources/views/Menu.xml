@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <menuitem name="sc-root-sale" title="Sales" order="-1900"
@@ -21,7 +21,6 @@
     <context name="_isCustomer" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
-    <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
   <menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="200" title="Contacts"
@@ -60,7 +59,6 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false
       AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_fromSale" expr="eval:true"/>
   </action-view>
 
@@ -108,7 +106,7 @@
 
   <search-filters name="sc.root.sale.templates.filter"
     model="com.axelor.apps.sale.db.SaleOrder" title="My Templates">
-    <filter title="My templates">
+    <filter name="sc.root.sale.templates.filter-my-templates" title="My templates">
       <domain>self.template = true AND self.templateUser = :_user</domain>
       <context name="_user" value="__user__"/>
     </filter>
@@ -356,22 +354,24 @@
   <!-- Pricing menus -->
 
   <menuitem title="Pricing" name="sc-root-sale-pricing" parent="sc-root-sale" order="1200"
-    action="sc.root.sale.pricing" if="__config__.app.getApp('sale')?.enablePricingScale"/>
+    action="sc.root.sale.pricing" if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <action-view name="sc.root.sale.pricing" title="Pricing"
     model="com.axelor.apps.base.db.Pricing">
     <view type="grid" name="pricing-grid"/>
     <view type="form" name="pricing-form"/>
+    <domain>self.concernedModel.name IS NOT 'InvoiceLine'</domain>
   </action-view>
 
   <menuitem title="Pricing rules" name="sc-root-sale-conf-pricing-rule"
     parent="sc-root-sale-conf" order="1000" action="sc.root.sale.conf.pricing.rule"
-    if="__config__.app.getApp('sale')?.enablePricingScale"/>
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <action-view name="sc.root.sale.conf.pricing.rule" title="Pricing rules"
     model="com.axelor.apps.base.db.PricingRule">
     <view type="grid" name="pricing-rule-grid"/>
     <view type="form" name="pricing-rule-form"/>
+    <domain>self.concernedModel.name IS NOT 'InvoiceLine'</domain>
   </action-view>
 
 </object-views>

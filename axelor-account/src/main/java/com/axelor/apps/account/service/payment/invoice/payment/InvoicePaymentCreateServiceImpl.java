@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -49,7 +49,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,32 +61,35 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
   protected CurrencyService currencyService;
   protected AppBaseService appBaseService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceService invoiceService;
-  protected InvoiceVisibilityService invoiceVisibilityService;
+  protected PfpService pfpService;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyService currencyService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      InvoiceVisibilityService invoiceVisibilityService) {
+      PfpService pfpService) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceService = invoiceService;
-    this.invoiceVisibilityService = invoiceVisibilityService;
+    this.pfpService = pfpService;
   }
 
   /**
@@ -212,23 +214,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         InvoicePayment advancePayment = advanceInvoice.getInvoicePaymentList().get(0);
         advancePayment.setImputedBy(invoicePayment);
         invoicePaymentRepository.save(advancePayment);
-
-        // set the imputed payment currency
-        invoicePayment.setCurrency(advancePayment.getCurrency());
-
-        BigDecimal currentImputedAmount = invoicePayment.getAmount();
-
-        // we force the payment amount to be equal to the advance
-        // invoice amount, so we get the right amount in the
-        // right currency.
-        BigDecimal totalAmountInAdvanceInvoice = advancePayment.getInvoice().getCompanyInTaxTotal();
-
-        BigDecimal convertedImputedAmount =
-            currentImputedAmount
-                .multiply(advancePayment.getAmount())
-                .divide(totalAmountInAdvanceInvoice, 2, RoundingMode.HALF_UP);
-
-        invoicePayment.setAmount(convertedImputedAmount);
       }
     }
   }
@@ -339,10 +324,16 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
+    invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-    return invoicePaymentRepository.save(invoicePayment);
+    invoicePayment = invoicePaymentRepository.save(invoicePayment);
+
+    if (invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_PENDING) {
+      invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+    }
+
+    return invoicePayment;
   }
 
   @Transactional
@@ -383,7 +374,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoice.addInvoicePaymentListItem(invoicePayment);
 
     invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTermList);
-    invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
+    invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
     invoicePayment.setAmount(
         invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
@@ -550,7 +541,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
       }
 
-      if (invoiceVisibilityService.getPfpCondition(invoice)
+      if (pfpService.getPfpCondition(invoice)
           && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,

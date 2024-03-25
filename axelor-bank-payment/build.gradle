@@ -23,8 +23,6 @@ dependencies {
 
     jaxb libs.jaxb_xjc
 
-	api files("src/main/lib/ebics-1.0.2.jar")
-
 	implementation libs.bcprov_jdk15on
 	implementation libs.bcpkix_jdk15on
 
@@ -34,6 +32,8 @@ dependencies {
 	implementation libs.xmlsec
 	implementation libs.xalan
 	implementation libs.jdom
+
+	implementation libs.jaxb_bind_api
 }
 
 license {

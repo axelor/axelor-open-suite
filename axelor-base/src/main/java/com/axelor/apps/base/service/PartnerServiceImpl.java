@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,7 +45,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.MessageRepository;
-import com.axelor.utils.ComputeNameTool;
+import com.axelor.utils.helpers.ComputeNameHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -157,7 +157,7 @@ public class PartnerServiceImpl implements PartnerService {
         && appBaseService.getAppBase().getGeneratePartnerSequence()) {
       String seq =
           Beans.get(SequenceService.class)
-              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -279,7 +279,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeFullName(Partner partner) {
-    return ComputeNameTool.computeFullName(
+    return ComputeNameHelper.computeFullName(
         partner.getFirstName(),
         partner.getName(),
         partner.getPartnerSeq(),
@@ -288,7 +288,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeSimpleFullName(Partner partner) {
-    return ComputeNameTool.computeSimpleFullName(
+    return ComputeNameHelper.computeSimpleFullName(
         partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
   }
 
@@ -597,24 +597,24 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   /**
-   * Get the partner language code. If null, return the default partner language.
+   * Get the partner Localization.code. If null, return the default partner locale.
    *
    * @param partner
    * @return
    */
   @Override
-  public String getPartnerLanguageCode(Partner partner) {
+  public String getPartnerLocale(Partner partner) {
 
     String locale = null;
 
-    if (partner != null && partner.getLanguage() != null) {
-      locale = partner.getLanguage().getCode();
+    if (partner != null && partner.getLocalization() != null) {
+      locale = partner.getLocalization().getCode();
     }
     if (!Strings.isNullOrEmpty(locale)) {
       return locale;
     }
 
-    return appBaseService.getDefaultPartnerLanguageCode();
+    return appBaseService.getDefaultPartnerLocale();
   }
 
   /**
@@ -661,7 +661,7 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeCompanyStr(Partner partner) {
     String companyStr = "";
-    if (partner.getCompanySet() != null && partner.getCompanySet().size() > 0) {
+    if (partner.getCompanySet() != null && !partner.getCompanySet().isEmpty()) {
       for (Company company : partner.getCompanySet()) {
         companyStr += company.getCode() + ",";
       }
@@ -674,9 +674,8 @@ public class PartnerServiceImpl implements PartnerService {
   public String getTaxNbrFromRegistrationCode(Partner partner) {
     String taxNbr = "";
 
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
+    if (partner.getMainAddress() != null && partner.getMainAddress().getCountry() != null) {
+      String countryCode = partner.getMainAddress().getCountry().getAlpha2Code();
       String regCode = partner.getRegistrationCode();
 
       if (regCode != null) {
@@ -775,15 +774,14 @@ public class PartnerServiceImpl implements PartnerService {
         || Strings.isNullOrEmpty(registrationCode)
         || CollectionUtils.isEmpty(addresses)
         || addresses.stream()
-                .filter(
-                    address ->
-                        address.getAddress() != null
-                            && address.getAddress().getAddressL7Country() != null
-                            && "FR"
-                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
-                .collect(Collectors.toList())
-                .size()
-            == 0) {
+            .filter(
+                address ->
+                    address.getAddress() != null
+                        && address.getAddress().getCountry() != null
+                        && "FR".equals(address.getAddress().getCountry().getAlpha2Code()))
+            .collect(Collectors.toList())
+            .isEmpty()) {
+
       return true;
     }
 

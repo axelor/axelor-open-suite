@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
@@ -27,61 +28,52 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.TypedQuery;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateBankPaymentServiceImpl
     extends PaymentSessionValidateServiceImpl {
   protected BankOrderService bankOrderService;
-  protected BankOrderCreateService bankOrderCreateService;
-  protected BankOrderLineService bankOrderLineService;
-  protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderRepository bankOrderRepo;
-  protected CurrencyService currencyService;
-  protected AppAccountService appAccountService;
-  protected DateService dateService;
-  protected BankOrderLineRepository bankOrderLineRepo;
   protected PaymentSessionBankOrderService paymentSessionBankOrderService;
 
   @Inject
@@ -89,7 +81,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -103,23 +95,21 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       AccountConfigService accountConfigService,
       PartnerService partnerService,
       PaymentModeService paymentModeService,
-      MoveInvoiceTermService moveInvoiceTermService,
-      BankOrderService bankOrderService,
-      BankOrderCreateService bankOrderCreateService,
-      BankOrderLineService bankOrderLineService,
-      BankOrderLineOriginService bankOrderLineOriginService,
-      BankOrderRepository bankOrderRepo,
-      CurrencyService currencyService,
-      AppAccountService appAccountService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      FinancialDiscountService financialDiscountService,
+      InvoiceTermFilterService invoiceTermFilterService,
       InvoicePaymentRepository invoicePaymentRepo,
-      DateService dateService,
-      BankOrderLineRepository bankOrderLineRepo,
+      CurrencyScaleService currencyScaleService,
+      BankOrderService bankOrderService,
+      BankOrderRepository bankOrderRepo,
       PaymentSessionBankOrderService paymentSessionBankOrderService) {
     super(
         appBaseService,
         moveCreateService,
         moveValidateService,
-        moveComputeService,
+        moveCutOffService,
         moveLineCreateService,
         reconcileService,
         invoiceTermService,
@@ -134,16 +124,14 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         accountConfigService,
         partnerService,
         paymentModeService,
-        moveInvoiceTermService);
+        moveLineInvoiceTermService,
+        invoiceTermFinancialDiscountService,
+        moveLineFinancialDiscountService,
+        financialDiscountService,
+        invoiceTermFilterService,
+        currencyScaleService);
     this.bankOrderService = bankOrderService;
-    this.bankOrderCreateService = bankOrderCreateService;
-    this.bankOrderLineService = bankOrderLineService;
-    this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderRepo = bankOrderRepo;
-    this.currencyService = currencyService;
-    this.appAccountService = appAccountService;
-    this.dateService = dateService;
-    this.bankOrderLineRepo = bankOrderLineRepo;
     this.paymentSessionBankOrderService = paymentSessionBankOrderService;
   }
 
@@ -279,16 +267,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void createAndReconcileMoveLineFromPair(
       PaymentSession paymentSession,
       Move move,
       InvoiceTerm invoiceTerm,
       Pair<InvoiceTerm, BigDecimal> pair,
+      AccountConfig accountConfig,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
     super.createAndReconcileMoveLineFromPair(
-        paymentSession, move, invoiceTerm, pair, out, paymentAmountMap);
+        paymentSession, move, invoiceTerm, pair, accountConfig, out, paymentAmountMap);
 
     paymentSessionBankOrderService.manageInvoicePayment(
         paymentSession, invoiceTerm, pair.getRight());

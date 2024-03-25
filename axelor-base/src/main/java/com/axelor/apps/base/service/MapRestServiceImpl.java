@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.StringUtils;
@@ -103,8 +104,8 @@ public class MapRestServiceImpl implements MapRestService {
       addressString.append(address.getAddressL6());
     }
 
-    if (address.getAddressL7Country() != null) {
-      addressString = addressString.append("<br/>" + address.getAddressL7Country().getName());
+    if (address.getCountry() != null) {
+      addressString.append("<br/>" + address.getCountry().getName());
     }
 
     return addressString.toString();

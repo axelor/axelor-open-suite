@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -30,6 +31,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /** Interface of service to create {@link MoveLine} */
 public interface MoveLineCreateService {
@@ -39,7 +41,7 @@ public interface MoveLineCreateService {
       Partner partner,
       Account account,
       BigDecimal currencyAmount,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       BigDecimal amount,
       BigDecimal currencyRate,
       boolean isDebit,
@@ -100,7 +102,7 @@ public interface MoveLineCreateService {
       Account account,
       BigDecimal amount,
       boolean isDebit,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       LocalDate date,
       int ref,
       String origin,
@@ -116,6 +118,9 @@ public interface MoveLineCreateService {
       boolean consolidate,
       boolean isPurchase,
       boolean isDebitCustomer)
+      throws AxelorException;
+
+  MoveLine fillMoveLineWithInvoiceLine(MoveLine moveLine, InvoiceLine invoiceLine, Company company)
       throws AxelorException;
 
   MoveLine createMoveLineForAutoTax(

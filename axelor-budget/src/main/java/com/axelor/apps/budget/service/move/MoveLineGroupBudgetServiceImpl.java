@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
@@ -29,6 +30,7 @@ import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -36,14 +38,18 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServ
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServiceImpl {
 
   protected BudgetToolsService budgetToolsService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public MoveLineGroupBudgetServiceImpl(
@@ -59,9 +65,12 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       AnalyticLineService analyticLineService,
       MoveAttrsService moveAttrsService,
       AnalyticAttrsService analyticAttrsService,
+      MoveCutOffService moveCutOffService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      AppBudgetService appBudgetService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -75,18 +84,21 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         analyticLineService,
         moveAttrsService,
         analyticAttrsService,
+        moveCutOffService,
+        moveLineFinancialDiscountService,
         moveLineCheckBankPaymentService,
         moveLineRecordBankPaymentService);
     this.budgetToolsService = budgetToolsService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
   public Map<String, Map<String, Object>> getOnLoadMoveAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadMoveAttrsMap(moveLine, move);
-    if (move != null) {
+    if (move != null && appBudgetService.isApp("budget")) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
@@ -96,9 +108,9 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
   public Map<String, Map<String, Object>> getOnLoadAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadAttrsMap(moveLine, move);
-    if (move != null) {
+    if (move != null && appBudgetService.isApp("budget")) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
@@ -110,12 +122,29 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
 
     Map<String, Map<String, Object>> attrsMap = super.getOnNewAttrsMap(moveLine, move);
 
-    if (move != null) {
+    if (move != null && appBudgetService.isApp("budget")) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getAccountOnChangeValuesMap(
+      MoveLine moveLine,
+      Move move,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate,
+      LocalDate dueDate)
+      throws AxelorException {
+
+    Map<String, Object> valuesMap =
+        super.getAccountOnChangeValuesMap(moveLine, move, cutOffStartDate, cutOffEndDate, dueDate);
+    valuesMap.put("budget", null);
+    valuesMap.put("budgetDistributionList", new ArrayList<>());
+
+    return valuesMap;
   }
 
   protected void addAttr(

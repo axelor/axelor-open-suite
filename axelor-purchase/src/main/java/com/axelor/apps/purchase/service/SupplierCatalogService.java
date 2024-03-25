@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Set;
 
 public interface SupplierCatalogService {
 
@@ -71,14 +72,23 @@ public interface SupplierCatalogService {
       Company company,
       Currency currency,
       LocalDate localDate,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       boolean resultInAti)
       throws AxelorException;
 
   BigDecimal getMinQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException;
 
-  void checkMinQty(
+  boolean checkMinQty(
+      Product product,
+      Partner supplierPartner,
+      Company company,
+      BigDecimal qty,
+      ActionRequest request,
+      ActionResponse response)
+      throws AxelorException;
+
+  boolean checkMaxQty(
       Product product,
       Partner supplierPartner,
       Company company,

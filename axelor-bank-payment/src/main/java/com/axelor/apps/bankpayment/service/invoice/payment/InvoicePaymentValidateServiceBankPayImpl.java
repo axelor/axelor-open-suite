@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,22 +27,23 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -57,11 +58,11 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 @RequestScoped
@@ -69,9 +70,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderService bankOrderService;
-  protected InvoiceTermService invoiceTermService;
+  protected AccountingSituationService accountingSituationService;
   protected PaymentSessionRepository paymentSessionRepo;
-  protected InvoiceTermRepository invoiceTermRepo;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
@@ -87,12 +87,13 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
+      DateService dateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
-      DateService dateService,
       AccountingSituationService accountingSituationService,
-      PaymentSessionRepository paymentSessionRepo,
-      InvoiceTermRepository invoiceTermRepo) {
+      PaymentSessionRepository paymentSessionRepo) {
     super(
         paymentModeService,
         moveCreateService,
@@ -106,12 +107,13 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         accountManagementAccountService,
         invoicePaymentToolService,
         dateService,
-        accountingSituationService);
+        moveLineInvoiceTermService,
+        invoiceTermService,
+        moveLineFinancialDiscountService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
-    this.invoiceTermService = invoiceTermService;
+    this.accountingSituationService = accountingSituationService;
     this.paymentSessionRepo = paymentSessionRepo;
-    this.invoiceTermRepo = invoiceTermRepo;
   }
 
   @Override
@@ -173,6 +175,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
       throws AxelorException {
 
+    // Payment date has been initialized at creation. But BankOrder may be validate on a later date
+    // So updating paymentDate
+    invoicePayment.setPaymentDate(invoicePayment.getBankOrder().getBankOrderDate());
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     Company company = invoicePayment.getInvoice().getCompany();

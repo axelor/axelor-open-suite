@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,7 +47,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -221,7 +222,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.SALES_INTERFACE, company, Move.class, "exportNumber");
+            SequenceRepository.SALES_INTERFACE, company, Move.class, "exportNumber", null);
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -237,7 +238,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getRefundExportNumber(Company company) throws AxelorException {
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.REFUND_INTERFACE, company, Move.class, "exportNumber");
+            SequenceRepository.REFUND_INTERFACE, company, Move.class, "exportNumber", null);
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -254,7 +255,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "exportNumber");
+            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "exportNumber", null);
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -271,7 +272,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.PURCHASE_INTERFACE, company, Move.class, "exportNumber");
+            SequenceRepository.PURCHASE_INTERFACE, company, Move.class, "exportNumber", null);
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -346,53 +347,60 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     LocalDate interfaceDate = accountingReport.getDate();
 
-    String moveLineQueryStr =
-        String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_ACCOUNTED);
-    if (!administration) {
-      moveLineQueryStr +=
-          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_DAYBOOK);
-    }
-    moveLineQueryStr += ")";
+    List<String> moveLineQueryList = new ArrayList<>();
 
-    moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
+    moveLineQueryList.add(
+        String.format(
+            "self.move.statusSelect IN (%d, %d)",
+            MoveRepository.STATUS_ACCOUNTED,
+            administration ? MoveRepository.STATUS_ACCOUNTED : MoveRepository.STATUS_DAYBOOK));
+
+    moveLineQueryList.add(String.format("self.move.company = %s", company.getId()));
     if (accountingReport.getYear() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.move.period.year = %s", accountingReport.getYear().getId());
+      moveLineQueryList.add(
+          String.format("self.move.period.year = %s", accountingReport.getYear().getId()));
     }
 
     if (accountingReport.getPeriod() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.move.period = %s", accountingReport.getPeriod().getId());
+      moveLineQueryList.add(
+          String.format("self.move.period = %s", accountingReport.getPeriod().getId()));
     } else {
       if (accountingReport.getDateFrom() != null) {
-        moveLineQueryStr +=
-            String.format(" AND self.date >= '%s'", accountingReport.getDateFrom().toString());
+        moveLineQueryList.add(
+            String.format("self.date >= '%s'", accountingReport.getDateFrom().toString()));
       }
       if (accountingReport.getDateTo() != null) {
-        moveLineQueryStr +=
-            String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
+        moveLineQueryList.add(
+            String.format("self.date <= '%s'", accountingReport.getDateTo().toString()));
       }
     }
 
     if (accountingReport.getDate() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
+      moveLineQueryList.add(
+          String.format("self.date <= '%s'", accountingReport.getDate().toString()));
     }
 
-    moveLineQueryStr += " AND self.move.ignoreInAccountingOk = false";
+    moveLineQueryList.add("self.move.ignoreInAccountingOk = false");
 
     if (!administration) {
-      moveLineQueryStr += " AND self.move.journal.notExportOk = false";
+      moveLineQueryList.add("self.move.journal.notExportOk = false");
+
+      if (accountingReport.getJournal() != null) {
+        moveLineQueryList.add(
+            String.format("self.move.journal.id = %s", accountingReport.getJournal().getId()));
+      }
 
       if (replay) {
-        moveLineQueryStr +=
+        moveLineQueryList.add(
             String.format(
-                " AND self.move.accountingOk = true AND self.move.accountingReport.id = %s",
-                accountingReport.getId());
+                "self.move.accountingOk = true AND self.move.accountingReport.id = %s",
+                accountingReport.getId()));
       } else {
-        moveLineQueryStr += " AND self.move.accountingOk = false";
+        moveLineQueryList.add("self.move.accountingOk = false");
       }
     }
+
+    String moveLineQueryStr = StringUtils.join(moveLineQueryList, " AND ");
 
     com.axelor.db.Query<MoveLine> moveLineQuery =
         moveLineRepo
@@ -515,7 +523,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     new File(filePath).mkdirs();
 
     log.debug("Full path to export : {}{}", filePath, fileName);
-    CsvTool.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
+    CsvHelper.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
     Path path = Paths.get(filePath, fileName);
     try (InputStream is = new FileInputStream(path.toFile())) {
       return Beans.get(MetaFiles.class).attach(is, fileName, accountingReport).getMetaFile();

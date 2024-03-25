@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,22 +18,34 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ExpenseLineServiceImpl implements ExpenseLineService {
 
   protected ExpenseLineRepository expenseLineRepository;
+  protected HRConfigService hrConfigService;
 
   @Inject
-  public ExpenseLineServiceImpl(ExpenseLineRepository expenseLineRepository) {
+  public ExpenseLineServiceImpl(
+      ExpenseLineRepository expenseLineRepository, HRConfigService hrConfigService) {
     this.expenseLineRepository = expenseLineRepository;
+    this.hrConfigService = hrConfigService;
   }
 
   @Override
@@ -61,8 +73,10 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
 
     // removing expense from one O2M also remove the link
     for (ExpenseLine expenseLine : expenseLineList) {
-      if (!kilometricExpenseLineList.contains(expenseLine)
-          && !generalExpenseLineList.contains(expenseLine)) {
+      if ((CollectionUtils.isEmpty(kilometricExpenseLineList)
+              || !kilometricExpenseLineList.contains(expenseLine))
+          && (CollectionUtils.isEmpty(generalExpenseLineList)
+              || !generalExpenseLineList.contains(expenseLine))) {
         expenseLine.setExpense(null);
         expenseLineRepository.remove(expenseLine);
       }
@@ -83,5 +97,53 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
         }
       }
     }
+  }
+
+  @Override
+  public boolean isThereOverAmountLimit(Expense expense) {
+    return expense.getGeneralExpenseLineList().stream()
+        .anyMatch(
+            line -> {
+              BigDecimal amountLimit = line.getExpenseProduct().getAmountLimit();
+              return amountLimit.compareTo(BigDecimal.ZERO) != 0
+                  && amountLimit.compareTo(line.getTotalAmount()) < 0;
+            });
+  }
+
+  @Override
+  public boolean isFilePdfOrImage(ExpenseLine expenseLine) {
+    MetaFile metaFile = expenseLine.getJustificationMetaFile();
+    if (metaFile == null) {
+      return false;
+    }
+    String fileType = metaFile.getFileType();
+    return isFilePdf(expenseLine) || fileType.startsWith("image");
+  }
+
+  @Override
+  public boolean isFilePdf(ExpenseLine expenseLine) {
+    MetaFile metaFile = expenseLine.getJustificationMetaFile();
+    if (metaFile == null) {
+      return false;
+    }
+    String fileType = metaFile.getFileType();
+    return "application/pdf".equals(fileType);
+  }
+
+  @Override
+  public Product getExpenseProduct(ExpenseLine expenseLine) throws AxelorException {
+    boolean isKilometricLine = expenseLine.getIsKilometricLine();
+    if (!isKilometricLine) {
+      return null;
+    }
+
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      Company activeCompany = user.getActiveCompany();
+      if (activeCompany != null) {
+        return hrConfigService.getHRConfig(activeCompany).getKilometricExpenseProduct();
+      }
+    }
+    return null;
   }
 }

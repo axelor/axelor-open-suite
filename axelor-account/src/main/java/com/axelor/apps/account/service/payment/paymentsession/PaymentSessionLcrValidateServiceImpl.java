@@ -12,13 +12,13 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -48,7 +48,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected MoveValidateService moveValidateService;
-  protected MoveComputeService moveComputeService;
+  protected MoveCutOffService moveCutOffService;
   protected PaymentSessionRepository paymentSessionRepo;
   protected MoveRepository moveRepo;
   protected PartnerRepository partnerRepo;
@@ -67,7 +67,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
       PaymentSessionValidateService paymentSessionValidateService,
       InvoiceTermRepository invoiceTermRepo,
       MoveValidateService moveValidateService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       PaymentSessionRepository paymentSessionRepo,
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
@@ -81,7 +81,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveValidateService = moveValidateService;
-    this.moveComputeService = moveComputeService;
+    this.moveCutOffService = moveCutOffService;
     this.paymentSessionRepo = paymentSessionRepo;
     this.moveRepo = moveRepo;
     this.partnerRepo = partnerRepo;
@@ -277,7 +277,8 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
             invoiceTerm,
             out,
             paymentAmountMap,
-            invoiceTermLinkWithRefundList);
+            invoiceTermLinkWithRefundList,
+            accountConfig);
 
     fillPlacementMove(move, invoiceTerm, paymentSession, reconciledAmount, out, accountConfig);
   }
@@ -322,7 +323,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     move.setDescription(
         this.getMoveDescription(paymentSession, moveLine.getCurrencyAmount(), false));
 
-    moveComputeService.autoApplyCutOffDates(move);
+    moveCutOffService.autoApplyCutOffDates(move);
 
     reconcileService.reconcile(invoiceTermMoveLine, moveLine, null, false, false);
 
@@ -361,9 +362,11 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
         paymentAmountMap.size() == 1 ? paymentAmountMap.keySet().stream().findFirst().get() : null;
 
     if (move == null) {
+
       move =
           paymentSessionValidateService.createMove(
               paymentSession,
+              null,
               null,
               paymentSessionValidateService.getAccountingDate(paymentSession, invoiceTerm),
               invoiceTerm.getBankDetails());
@@ -432,7 +435,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     move.setDescription(
         this.getMoveDescription(paymentSession, cashPartMoveLine.getCurrencyAmount(), true));
 
-    moveComputeService.autoApplyCutOffDates(move);
+    moveCutOffService.autoApplyCutOffDates(move);
 
     Reconcile reconcile =
         reconcileService.reconcile(moveLine, placementMoveLine, null, false, false);
@@ -443,6 +446,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     reconcileService.updatePayment(
         reconcile,
         invoiceTerm.getMoveLine(),
+        moveLine,
         invoiceTerm.getInvoice(),
         invoiceTerm.getMoveLine().getMove(),
         move,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
@@ -84,10 +84,18 @@
         <field name="$viewerProjectTags" showTitle="false" colSpan="4" readonly="true">
           <viewer depends="isBusinessProject,$toInvoiceCounter,id">
 							<![CDATA[
-								<h4 style="text-align: right;">
-									<span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject &amp;&amp; record.id">{{$fmt('$toInvoiceCounter')}}</span>
-									<span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
-								</h4>
+								<>
+									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+										<Box>
+											{isBusinessProject &&
+												<Badge style={{ backgroundColor: "#FD6217" }}>
+													{_t('To Invoice')} {id && <Badge style={{ backgroundColor: "#FFAA00", fontSize: "12px" }}>{$fmt('$toInvoiceCounter')}</Badge>}
+												</Badge>
+											}
+										</Box>
+										{isBusinessProject && <Badge style={{ backgroundColor: "#2185D0" }}>{_t('Business')}</Badge>}
+									</Box>
+								</>
 							]]>
           </viewer>
         </field>
@@ -134,6 +142,9 @@
           domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
       </panel>
       <field name="description" colSpan="12" widget="html"/>
+      <field name="siteSet" widget="tag-select"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"
+        domain="self.typeSelect = 2 AND self.partner = :clientPartner"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -167,27 +178,14 @@
       </panel>
       <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
         if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
-        <button name="addMultipleLinesBtn" title="Add multiple lines"
-          css="btn-custom text-left"
-          onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="4"
-          hideIf="$popup()"/>
-        <button name="addProjectPlanningTimeLineBtn" title="New line"
-          css="btn-custom text-left" colSpan="4"
-          onClick="save,action-project-view-project-planning-time-add-new,save"/>
-        <button name="removeProjectPlanningTimeLineBtn" title="Remove lines"
-          css="btn-custom text-left" colSpan="4"
-          onClick="save,action-project-attrs-project-planning-time-remove,save"/>
-        <field name="$projectPlanningTimeSet" hidden="true" type="many-to-many"
-          widget="TagSelect" title="Planned Time Planning" colSpan="12"
-          target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
-          grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
-        <button name="removeSelectedPlanningTimeBtn" colSpan="4" hidden="true"
-          title="Remove selected lines"
-          onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
-        <button name="cancelRemovePlanningTimeBtn" colSpan="4" hidden="true" title="Cancel"
-          onClick="action-project-attrs-project-planning-time-cancel-remove"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-          action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
+          x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
+          canSearch="true"/>
+      </panel>
+      <panel title="HoldBacks" name="projectHoldBacksPanel">
+        <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
+          title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
+          grid-view="project-hold-back-line-grid" editable="true"/>
       </panel>
       <panel title="Log Times" name="logTimesPanel" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource" showIf="isShowTimeSpent">
@@ -597,10 +595,10 @@
     <field name="sequence"/>
     <template>
 		<![CDATA[
-		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		 <div ng-bind-html="description"></div>
-	    </div>
+	    <>
+	    	<h4>{fullName}</h4>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
 		]]>
     </template>
   </kanban>
@@ -613,10 +611,10 @@
     <field name="sequence"/>
     <template>
 		<![CDATA[
-		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		 <div ng-bind-html="description"></div>
-	    </div>
+	    <>
+	    	<h4>{fullName}</h4>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
 		]]>
     </template>
   </kanban>
@@ -672,9 +670,6 @@
 
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
-    <column name="initial" type="decimal"/>
-    <column name="real" type="decimal"/>
-    <column name="forecast" type="decimal"/>
     <column name="assignedTo" type="reference"/>
     <column name="openTaskBtn" type="button"/>
     <column name="createSubtaskBtn" type="button"/>
@@ -684,11 +679,8 @@
       onClick="action-project-task-view-task" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
-      <field name="initialMarkup" as="initial"/>
-      <field name="realMarkup" as="real"/>
-      <field name="forecastMarkup" as="forecast"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="deleteTaskBtn" icon="fa-times"
@@ -702,7 +694,7 @@
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="deleteTaskBtn" icon="fa-times"
@@ -731,7 +723,7 @@
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
     </node>
   </tree>
@@ -756,7 +748,6 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-method-count-to-invoice"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-project-attrs-project-planning-time-cancel-remove"/>
   </action-group>
 
   <action-attrs name="action-task-attrs-assigned-to-domain">
@@ -891,7 +882,7 @@
 
   <action-view name="action-open-user-gantt" title="User Gantt"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="gantt" name="user-project-task-gantt"/>
+    <view type="gantt" name="user-task-gantt"/>
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain>self.assignedTo.id IN (:_userIds) </domain>
@@ -1026,7 +1017,7 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.contract.project.id = :_id</domain>
+    <domain>:_id IN self.contractSet.project.id</domain>
   </action-view>
 
   <action-attrs name="action-project-gantt-user-wizard-user-domain">
@@ -1055,10 +1046,10 @@
 
   <search-filters name="project-topic-filters"
     model="com.axelor.apps.project.db.Topic" title="Topics">
-    <filter title="My topics">
+    <filter name="project-topic-filters-my-topics" title="My topics">
       <domain>self.createdBy.id = :userId</domain>
     </filter>
-    <filter title="New topics">
+    <filter name="project-topic-filters-new-topics" title="New topics">
       <domain>self.createdOn &gt; date(now())</domain>
     </filter>
   </search-filters>

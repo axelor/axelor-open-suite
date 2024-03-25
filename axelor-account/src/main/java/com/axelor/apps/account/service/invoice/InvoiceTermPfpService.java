@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
@@ -49,8 +50,6 @@ public interface InvoiceTermPfpService {
 
   int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm);
 
-  boolean getManagePfpCondition(Company company) throws AxelorException;
-
   boolean getUserCondition(User pfpValidatorUser, User user);
 
   boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);
@@ -60,4 +59,10 @@ public interface InvoiceTermPfpService {
 
   boolean generateInvoiceTermsAfterPfpPartial(List<InvoiceTerm> invoiceTermList)
       throws AxelorException;
+
+  void validatePfpValidatedAmount(
+      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, Company company)
+      throws AxelorException;
+
+  boolean isPfpValidatorUser(InvoiceTerm invoiceTerm, User user);
 }

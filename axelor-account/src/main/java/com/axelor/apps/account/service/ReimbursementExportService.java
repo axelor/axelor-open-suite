@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -158,7 +159,7 @@ public class ReimbursementExportService {
   public BigDecimal getTotalAmountRemaining(List<MoveLine> moveLineList) {
     BigDecimal total = BigDecimal.ZERO;
     for (MoveLine moveLine : moveLineList) {
-      total = total.add(moveLine.getAmountRemaining());
+      total = total.add(moveLine.getAmountRemaining().abs());
     }
 
     log.debug("Total Amount Remaining : {}", total);
@@ -185,7 +186,7 @@ public class ReimbursementExportService {
     if (reimbursement.getMoveLineSet() != null && !reimbursement.getMoveLineSet().isEmpty()) {
       int seq = 1;
       for (MoveLine moveLine : reimbursement.getMoveLineSet()) {
-        BigDecimal amountRemaining = moveLine.getAmountRemaining();
+        BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
         if (amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
           partner = moveLine.getPartner();
 
@@ -309,7 +310,7 @@ public class ReimbursementExportService {
 
     reimbursement.setRef(
         sequenceService.getSequenceNumber(
-            SequenceRepository.REIMBOURSEMENT, company, Reimbursement.class, "ref"));
+            SequenceRepository.REIMBOURSEMENT, company, Reimbursement.class, "ref", reimbursement));
 
     return reimbursement;
   }
@@ -561,7 +562,7 @@ public class ReimbursementExportService {
             .all()
             .filter(
                 "self.account.useForPartnerBalance = 'true' "
-                    + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
+                    + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining != 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
                 MoveRepository.STATUS_ACCOUNTED,
                 MoveRepository.STATUS_DAYBOOK,
                 partner,

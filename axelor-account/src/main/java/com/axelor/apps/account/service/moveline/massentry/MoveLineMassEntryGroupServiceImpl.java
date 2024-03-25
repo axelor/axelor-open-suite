@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,9 +27,11 @@ import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -50,6 +52,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineRecordService moveLineRecordService;
   protected AnalyticAttrsService analyticAttrsService;
+  protected MoveLineToolService moveLineToolService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineMassEntryGroupServiceImpl(
@@ -63,7 +67,9 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineCheckService moveLineCheckService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveLineRecordService moveLineRecordService,
-      AnalyticAttrsService analyticAttrsService) {
+      AnalyticAttrsService analyticAttrsService,
+      MoveLineToolService moveLineToolService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.massEntryService = massEntryService;
     this.moveLineGroupService = moveLineGroupService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -75,6 +81,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineRecordService = moveLineRecordService;
     this.analyticAttrsService = analyticAttrsService;
+    this.moveLineToolService = moveLineToolService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   public MoveLineMassEntry initializeValues(MoveLineMassEntry moveLine, Move move)
@@ -101,7 +109,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineToolService.setDecimals(moveLine, move);
 
     valuesMap.put("inputAction", moveLine.getInputAction());
     valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
@@ -123,7 +132,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
     valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
     valuesMap.put("account", moveLine.getAccount());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("debit", moveLine.getDebit());
     valuesMap.put("credit", moveLine.getCredit());
     valuesMap.put("currencyRate", moveLine.getCurrencyRate());
@@ -136,6 +145,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("deliveryDate", moveLine.getDeliveryDate());
     valuesMap.put("isEdited", moveLine.getIsEdited());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
 
     return valuesMap;
   }
@@ -167,7 +178,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -235,7 +246,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("isCutOffGenerated", moveLine.getCutOffEndDate());
     valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
@@ -251,13 +262,13 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         new HashMap<>(
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
-    analyticAttrsService.addAnalyticAxisAttrs(move, attrsMap);
-
+    analyticAttrsService.addAnalyticAxisAttrs(
+        move.getCompany(), move.getMassEntryStatusSelect(), attrsMap);
     moveLineMassEntryAttrsService.addDebitCreditFocus(
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(
-        moveLine.getAccount(), move.getJournal(), attrsMap);
+        moveLine.getAccount(), move.getJournal(), move.getCompany(), attrsMap);
     moveLineMassEntryAttrsService.addCutOffReadonly(moveLine.getAccount(), attrsMap);
 
     return attrsMap;
@@ -316,7 +327,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
     valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
     valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("currencyCode", moveLine.getCurrencyCode());
     valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
@@ -398,7 +409,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
     valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
     valuesMap.put("account", moveLine.getAccount());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("description", moveLine.getDescription());
     valuesMap.put("debit", moveLine.getDebit());
     valuesMap.put("credit", moveLine.getCredit());
@@ -409,6 +420,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
     valuesMap.put("isEdited", moveLine.getIsEdited());
     valuesMap.put("fieldsErrorList", moveLine.getFieldsErrorList());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());

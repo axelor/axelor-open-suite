@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,14 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.RawMaterialRequirement;
 
 public interface RawMaterialRequirementService {
-
-  /**
-   * Print the raw material requirement report.
-   *
-   * @param rawMaterialRequirement the user defined parameter of the report.
-   * @return URL to the printed report.
-   */
-  String print(RawMaterialRequirement rawMaterialRequirement) throws AxelorException;
 
   /**
    * Fetch next value for the sequence linked to the given raw material requirement.

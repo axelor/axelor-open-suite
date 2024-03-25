@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
+import java.util.Collections;
 
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
 
@@ -27,7 +28,7 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
   public ProjectTask copy(ProjectTask entity, boolean deep) {
     ProjectTask task = super.copy(entity, deep);
     task.setSaleOrderLine(null);
-    task.setInvoiceLine(null);
+    task.setInvoiceLineSet(Collections.emptySet());
     return task;
   }
 }

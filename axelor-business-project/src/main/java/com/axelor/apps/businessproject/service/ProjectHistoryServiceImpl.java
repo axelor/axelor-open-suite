@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.repo.ProjectHistoryLineRepository;
@@ -68,6 +69,10 @@ public class ProjectHistoryServiceImpl implements ProjectHistoryService {
     data.put("landingCosts", projectHistoryLine.getLandingCosts());
     data.put("landingMargin", projectHistoryLine.getLandingMargin());
     data.put("landingMarkup", projectHistoryLine.getLandingMarkup());
+    Optional.ofNullable(projectHistoryLine.getProject())
+        .map(Project::getCompany)
+        .map(Company::getCurrency)
+        .ifPresent(currency -> data.put("currencySymbol", currency.getSymbol()));
 
     return data;
   }

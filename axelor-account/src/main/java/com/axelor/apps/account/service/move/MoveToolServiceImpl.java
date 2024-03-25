@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -42,16 +41,21 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.ListHelper;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,6 +63,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -71,21 +76,21 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
   protected AccountConfigService accountConfigService;
-  protected PeriodServiceAccount periodServiceAccount;
   protected MoveRepository moveRepository;
+  protected ListHelper listHelper;
 
   @Inject
   public MoveToolServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
       AccountConfigService accountConfigService,
-      PeriodServiceAccount periodServiceAccount,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      ListHelper listHelper) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
-    this.periodServiceAccount = periodServiceAccount;
     this.moveRepository = moveRepository;
+    this.listHelper = listHelper;
   }
 
   @Override
@@ -219,7 +224,7 @@ public class MoveToolServiceImpl implements MoveToolService {
       return moveLineRepository
           .all()
           .filter(
-              "self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0",
+              "self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining != 0",
               invoice.getMove(),
               invoice.getPartnerAccount())
           .fetchOne();
@@ -240,7 +245,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public MoveLine getCustomerMoveLineByLoop(Invoice invoice) throws AxelorException {
     if (invoice.getRejectMoveLine() != null
-        && invoice.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        && invoice.getRejectMoveLine().getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
       return invoice.getRejectMoveLine();
     } else {
       return this.getInvoiceCustomerMoveLineByLoop(invoice);
@@ -261,7 +266,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public MoveLine getCustomerMoveLineByQuery(Invoice invoice) throws AxelorException {
     if (invoice.getRejectMoveLine() != null
-        && invoice.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        && invoice.getRejectMoveLine().getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
       return invoice.getRejectMoveLine();
     } else {
       return this.getInvoiceCustomerMoveLineByQuery(invoice);
@@ -296,33 +301,57 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
+   * Function that calculates the total amount remaining for a list of credit move lines
    *
-   * @param creditMoveLineList Une liste de ligne d'écriture au credit
+   * @param creditMoveLineList
    * @return
    */
   @Override
   public BigDecimal getTotalCreditAmount(List<MoveLine> creditMoveLineList) {
     BigDecimal totalCredit = BigDecimal.ZERO;
     for (MoveLine moveLine : creditMoveLineList) {
-      totalCredit = totalCredit.add(moveLine.getAmountRemaining());
+      totalCredit = totalCredit.add(moveLine.getAmountRemaining().abs());
     }
     return totalCredit;
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
+   * Function that calculates the total amount remaining for a list of debit move lines
    *
-   * @param creditMoveLineList Une liste de ligne d'écriture au credit
+   * @param debitMoveLineList
    * @return
    */
   @Override
   public BigDecimal getTotalDebitAmount(List<MoveLine> debitMoveLineList) {
     BigDecimal totalDebit = BigDecimal.ZERO;
     for (MoveLine moveLine : debitMoveLineList) {
-      totalDebit = totalDebit.add(moveLine.getAmountRemaining());
+      totalDebit = totalDebit.add(moveLine.getAmountRemaining().abs());
     }
     return totalDebit;
+  }
+
+  /**
+   * Function that calculates the total amount remaining for a list of move lines in the move
+   * currency
+   *
+   * @param moveLineList
+   * @return
+   */
+  @Override
+  public BigDecimal getTotalCurrencyAmount(List<MoveLine> moveLineList) {
+    BigDecimal totalCurrency = BigDecimal.ZERO;
+    for (MoveLine moveLine : moveLineList) {
+      totalCurrency =
+          totalCurrency.add(
+              moveLine
+                  .getAmountRemaining()
+                  .abs()
+                  .divide(
+                      moveLine.getCurrencyRate(),
+                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                      RoundingMode.HALF_UP));
+    }
+    return totalCurrency;
   }
 
   /**
@@ -379,7 +408,7 @@ public class MoveToolServiceImpl implements MoveToolService {
       for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()
             && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+            && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
           return moveLine;
         }
       }
@@ -406,7 +435,7 @@ public class MoveToolServiceImpl implements MoveToolService {
 
       if (!CollectionUtils.isEmpty(moveLines)) {
         for (MoveLine moveLine : moveLines) {
-          inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
+          inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining().abs());
         }
 
         if (isMinus) {
@@ -476,7 +505,7 @@ public class MoveToolServiceImpl implements MoveToolService {
         || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAccount().getUseForPartnerBalance()) {
           moveLineList.add(moveLine);
         }
@@ -503,19 +532,23 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   @Override
   public void setOriginOnMoveLineList(Move move) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
-        moveLine.setOrigin(move.getOrigin());
-      }
+      moveLine.setOrigin(move.getOrigin());
     }
   }
 
   @Override
   public void setDescriptionOnMoveLineList(Move move) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
-        moveLine.setDescription(move.getDescription());
-      }
+      moveLine.setDescription(move.getDescription());
     }
   }
 
@@ -550,16 +583,9 @@ public class MoveToolServiceImpl implements MoveToolService {
         if (period.getYear().getCompany() != null && user.getGroup() != null) {
           AccountConfig accountConfig =
               accountConfigService.getAccountConfig(period.getYear().getCompany());
+
           Set<Role> roleSet = accountConfig.getClosureAuthorizedRoleList();
-          if (CollectionUtils.isEmpty(roleSet)) {
-            return false;
-          }
-          for (Role role : roleSet) {
-            if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
-              return false;
-            }
-          }
-          return true;
+          return !UserRoleToolService.checkUserRolesPermissionIncludingEmpty(user, roleSet);
         }
       }
     }
@@ -646,26 +672,69 @@ public class MoveToolServiceImpl implements MoveToolService {
   public List<Move> getMovesWithDuplicatedOrigin(Move move) {
     List<Move> moveList = null;
     StringBuilder query =
-        new StringBuilder("self.origin = :origin AND self.period.year = :periodYear");
+        new StringBuilder(
+            "self.origin = :origin AND self.period.year = :periodYear AND self.journal = :journal ");
     Map<String, Object> params = new HashMap<>();
 
-    if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
+    if (!Strings.isNullOrEmpty(move.getOrigin()) && move.getPeriod() != null) {
       params.put("origin", move.getOrigin());
       params.put("periodYear", move.getPeriod().getYear());
+      params.put("journal", move.getJournal());
 
       if (move.getId() != null) {
-        query.append(" AND self.id != :moveId");
+        query.append("AND self.id != :moveId ");
         params.put("moveId", move.getId());
       }
 
-      if (ObjectUtils.notEmpty(move.getPartner())) {
-        query.append(" AND self.partner = :partner");
+      if (move.getPartner() != null) {
+        query.append("AND self.partner = :partner ");
         params.put("partner", move.getPartner());
       }
 
       moveList = moveRepository.all().filter(query.toString()).bind(params).fetch();
     }
     return moveList;
+  }
+
+  @Override
+  public boolean isMultiCurrency(Move move) {
+    return move != null
+        && move.getCurrency() != null
+        && move.getCompany() != null
+        && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency());
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Set<Company> companySet) {
+    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, companySet);
+    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
+    return statusList;
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet) {
+    List<Integer> statusList = null;
+
+    for (Company company : companySet) {
+      List<Integer> companyStatusList = this.getMoveStatusSelect(moveStatusSelect, company);
+
+      if (statusList == null) {
+        statusList = companyStatusList;
+      } else {
+        statusList = listHelper.intersection(statusList, companyStatusList);
+      }
+    }
+
+    return statusList;
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Company company) {
+    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, company);
+    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
+    return statusList;
   }
 
   @Override
@@ -691,5 +760,30 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
 
     return statusList;
+  }
+
+  @Override
+  public Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus) {
+    if (journal == null) {
+      return null;
+    }
+    String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
+
+    if (ObjectUtils.isEmpty(authorizedFunctionalOriginSelect)) {
+      return null;
+    }
+
+    if (massEntryStatus == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      // standard behavior: fill an origin if there is only one authorized
+      return authorizedFunctionalOriginSelect.split(",").length == 1
+          ? Integer.valueOf(authorizedFunctionalOriginSelect)
+          : null;
+    } else {
+      // behavior for mass entry: take the first authorized functional origin select
+      return Arrays.stream(authorizedFunctionalOriginSelect.split(","))
+          .findFirst()
+          .map(Integer::valueOf)
+          .orElse(null);
+    }
   }
 }

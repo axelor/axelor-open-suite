@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
@@ -51,7 +52,8 @@ public class BankReconciliationValidateService {
   protected MoveLineCreateService moveLineCreateService;
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
-  protected BankReconciliationService bankReconciliationService;
+  protected BankReconciliationComputeService bankReconciliationComputeService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -62,7 +64,8 @@ public class BankReconciliationValidateService {
       MoveLineCreateService moveLineCreateService,
       BankReconciliationRepository bankReconciliationRepository,
       BankReconciliationLineService bankReconciliationLineService,
-      BankReconciliationService bankReconciliationService) {
+      BankReconciliationComputeService bankReconciliationComputeService,
+      CurrencyScaleService currencyScaleService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -71,7 +74,8 @@ public class BankReconciliationValidateService {
     this.moveLineCreateService = moveLineCreateService;
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
-    this.bankReconciliationService = bankReconciliationService;
+    this.bankReconciliationComputeService = bankReconciliationComputeService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -102,7 +106,7 @@ public class BankReconciliationValidateService {
         Beans.get(AppBaseService.class)
             .getTodayDateTime(bankReconciliation.getCompany())
             .toLocalDateTime());
-    bankReconciliation = bankReconciliationService.computeEndingBalance(bankReconciliation);
+    bankReconciliation = bankReconciliationComputeService.computeEndingBalance(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
   }
 
@@ -128,7 +132,8 @@ public class BankReconciliationValidateService {
       description = description.substring(0, 255);
     }
 
-    BigDecimal amount = debit.add(credit);
+    BigDecimal amount =
+        currencyScaleService.getScaledValue(bankReconciliationLine, debit.add(credit));
 
     String origin = bankReconciliation.getName() + reference != null ? " - " + reference : "";
 
@@ -223,23 +228,19 @@ public class BankReconciliationValidateService {
         BigDecimal credit;
 
         if (isDebit) {
-          BigDecimal amountMoveLine =
-              BankReconciliationToolService.isForeignCurrency(bankReconciliation)
-                  ? moveLine.getCurrencyAmount().abs()
-                  : moveLine.getCredit();
           debit =
-              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
-                  .min(bankStatementAmountRemaining);
+              currencyScaleService.getScaledValue(
+                  bankReconciliation,
+                  (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
+                      .min(bankStatementAmountRemaining));
           credit = BigDecimal.ZERO;
         } else {
-          BigDecimal amountMoveLine =
-              BankReconciliationToolService.isForeignCurrency(bankReconciliation)
-                  ? moveLine.getCurrencyAmount().abs()
-                  : moveLine.getDebit();
           debit = BigDecimal.ZERO;
           credit =
-              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
-                  .min(bankStatementAmountRemaining);
+              currencyScaleService.getScaledValue(
+                  bankReconciliation,
+                  (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
+                      .min(bankStatementAmountRemaining));
         }
 
         if (firstLine) {
@@ -262,18 +263,22 @@ public class BankReconciliationValidateService {
           bankReconciliationLineService.checkAmount(bankReconciliationLine);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
-        bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));
+        bankStatementAmountRemaining =
+            currencyScaleService.getScaledValue(
+                bankReconciliation, bankStatementAmountRemaining.subtract(debit.add(credit)));
       }
 
       if (bankStatementAmountRemaining.compareTo(BigDecimal.ZERO) == 1) {
         BigDecimal debit;
         BigDecimal credit;
         if (isDebit) {
-          debit = bankStatementAmountRemaining;
+          debit =
+              currencyScaleService.getScaledValue(bankReconciliation, bankStatementAmountRemaining);
           credit = BigDecimal.ZERO;
         } else {
           debit = BigDecimal.ZERO;
-          credit = bankStatementAmountRemaining;
+          credit =
+              currencyScaleService.getScaledValue(bankReconciliation, bankStatementAmountRemaining);
         }
 
         bankReconciliationLine =

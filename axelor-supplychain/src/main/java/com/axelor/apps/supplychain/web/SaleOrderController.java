@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,23 +24,26 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -451,9 +454,9 @@ public class SaleOrderController {
         stockMoveRepo
             .all()
             .filter(
-                "self.saleOrder.id = ?2 AND self.statusSelect = ?3",
-                saleOrder.getId(),
-                StockMoveRepository.STATUS_PLANNED)
+                ":saleOrderId MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
     if (stockMove != null) {
       response.setNotify(
@@ -606,8 +609,7 @@ public class SaleOrderController {
   public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      String message =
-          Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
+      String message = Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder);
       if (message != null) {
         response.setInfo(message);
       }
@@ -618,7 +620,7 @@ public class SaleOrderController {
   }
   /**
    * Called from sale order form view, on invoiced partner select. Call {@link
-   * PartnerSupplychainLinkService#computePartnerFilter}
+   * PartnerLinkService#computePartnerFilter}
    *
    * @param request
    * @param response
@@ -627,10 +629,9 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       String strFilter =
-          Beans.get(PartnerSupplychainLinkService.class)
+          Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(),
-                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -640,7 +641,7 @@ public class SaleOrderController {
 
   /**
    * Called from sale order form view, on delivered partner select. Call {@link
-   * PartnerSupplychainLinkService#computePartnerFilter}
+   * PartnerLinkService#computePartnerFilter}
    *
    * @param request
    * @param response
@@ -649,10 +650,9 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       String strFilter =
-          Beans.get(PartnerSupplychainLinkService.class)
+          Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(),
-                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
 
       response.setAttr("deliveredPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -702,6 +702,36 @@ public class SaleOrderController {
           Beans.get(SaleOrderSupplychainService.class)
               .getToStockLocation(saleOrder.getClientPartner(), company);
       response.setValue("toStockLocation", toStockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAdvancePayment(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(SaleOrderSupplychainService.class).setAdvancePayment(saleOrder);
+    response.setValues(saleOrder);
+  }
+
+  public void updateTimetableAmounts(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(SaleOrderSupplychainService.class).updateTimetableAmounts(saleOrder);
+    response.setValues(saleOrder);
+  }
+
+  public void setAmountToInvoiceScale(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      boolean isPercent = (Boolean) request.getContext().getOrDefault("isPercent", false);
+
+      if (saleOrder != null && saleOrder.getCurrency() != null) {
+        response.setAttr(
+            "$amountToInvoice",
+            "scale",
+            isPercent
+                ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
+                : Beans.get(CurrencyScaleService.class).getScale(saleOrder));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

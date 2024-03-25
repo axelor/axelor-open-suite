@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -49,6 +49,7 @@
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
           showIf="project.isShowStatus" x-order="sequence"/>
+        <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
         <field name="$viewerTags" showTitle="false" readonly="true"
@@ -57,13 +58,15 @@
           hidden="true">
           <viewer>
               <![CDATA[
-                   <h4 class="text-right">
-                     <span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
-                     <span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
-                     <span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
-                     <span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
-                     <span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
-                   </h4>
+                   <>
+                       <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+                           {assignment == 1 && <Badge bg="danger">{_t('Task assigned to the client')}</Badge>}
+                           {assignment == 2 && !$provider && <Badge bg="success">{_t('Task assigned to the provider')}</Badge>}
+                           {assignment == 2 && $provider && <Badge bg="success">{_t('Task assigned to')} {$provider}</Badge>}
+                           {((!isOrderAccepted && invoicingType == 2 && exTaxTotal != 0) || (!isOrderAccepted && invoicingType == 1)) && <Badge bg="danger">{_t('Order Proposed')}</Badge>}
+                           {isOrderAccepted && <Badge bg="success">{_t('Order Accepted')}</Badge>}
+                       </Box>
+                   </>
 	        ]]>
           </viewer>
         </field>
@@ -78,9 +81,11 @@
           <field name="fullName" showTitle="false" colSpan="12">
             <viewer depends="name">
 						<![CDATA[
-							<h3>
-								<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-							</h3>
+							<>
+								<h3>
+									<span>{name}</span>
+								</h3>
+							</>
 						]]>
             </viewer>
             <editor>
@@ -152,13 +157,17 @@
           required="true"/>
         <field name="taskEndDate" colSpan="4"
           onChange="action-project-task-attrs-set-task-duration"/>
-        <field name="taskDeadline" title="Task deadline" colSpan="4"
-          if="!__config__.app.isApp('business-support')"/>
+        <field name="taskDeadline" title="Task deadline" colSpan="4"/>
         <field name="projectTaskTagSet" widget="TagSelect" x-color-field="colorSelect"
           form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
-        <field name="progressSelect" widget="SelectProgress"
-          onChange="action-project-task-update-planned-progress" showIf="project.isShowProgress"
-          colSpan="4"/>
+        <field name="progress" onChange="action-project-task-group-progress-onchange"
+          showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
+        <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
+        <field name="progress" showIf="project.isShowProgress &amp;&amp; $readonly()"
+          colSpan="4" widget="SelectProgress"/>
+        <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; $readonly()"/>
+        <field name="invoicingProgress" readonly="true" colSpan="6"
+          showIf="invoicingType == 4"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="project.isShowProgress" hidden="true"/>
         <field name="project.isShowSection" hidden="true"/>
@@ -166,8 +175,6 @@
         <field name="project.isShowPriority" hidden="true"/>
         <field name="project.isShowTaskCategory" hidden="true"/>
       </panel>
-
-      <field name="typeSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="internalDescriptionPanel" title="Internal Description"
@@ -179,30 +186,13 @@
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
         <field name="budgetedTime" colSpan="4">
           <viewer><![CDATA[
-                   	<span>{{$fmt('budgetedTime')}} </span><span x-translate>hours</span>
+                   	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
        			]]></viewer>
         </field>
         <spacer name="budgetedTimeSpacer" colSpan="4"/>
-        <button name="addMultipleLinesBtn" title="Add multiple lines"
-          css="btn-custom text-left"
-          onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3"
-          hideIf="$popup()"/>
-        <button name="projectPlanningTimeLineBtn" title="New line" colSpan="3"
-          css="btn-custom text-left" onClick="save,action-project-task-view-time-planned,save"/>
-        <button name="removeProjectPlanningTimeLineBtn" title="Remove lines"
-          css="btn-custom text-left" colSpan="3"
-          onClick="save,action-project-task-attrs-project-planning-time-remove,save"/>
-        <field name="$projectPlanningTimeSet" hidden="true" type="many-to-many"
-          widget="TagSelect" title="Planned Time Planning" colSpan="12"
-          target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
-          grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
-        <button name="removeSelectedPlanningTimeBtn" colSpan="3" hidden="true"
-          title="Remove selected lines"
-          onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
-        <button name="cancelRemovePlanningTimeBtn" colSpan="3" hidden="true" title="Cancel"
-          onClick="action-project-attrs-project-planning-time-cancel-remove"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-          action="action-project-task-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
+          x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
+          colSpan="12" canSearch="true"/>
         <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
         <field name="project.isShowPlanning" hidden="true"/>
       </panel>
@@ -310,14 +300,14 @@
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
     </node>
 
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
     </node>
 
   </tree>
@@ -331,34 +321,40 @@
     <field name="taskDeadline"/>
     <field name="priority.name"/>
     <field name="priority.technicalTypeSelect"/>
-    <field name="progressSelect"/>
+    <field name="progress"/>
     <field name="project.isShowProgress"/>
     <template>
 		<![CDATA[
-			<h4>{{name}}</h4>
-			<h4><span style="font-weight:normal;">{{project.fullName}}</span></h4>
-			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
-			<div class="card-body">
-				<div>
-					<i class="fa fa-calendar" aria-hidden="true"></i>
-					<span ng-if="!taskDeadline"> <span x-translate>Not specified</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day')"> <span x-translate>Deadline Yesterday</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment(), 'day')"> <span x-translate>Deadline Today</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day')"> <span x-translate>Deadline Tomorrow</span> </span>
-					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
-					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
-
-					<span class="label pull-right" ng-class="{1:'label-success',2:'label-info',3:'label-warning',4:'label-important'}[priority.technicalTypeSelect]">{{priority.name}}</span>
-
-				</div>
-				<div ng-if="project.isShowProgress" class="progress kanban-progress">
-					<span ng-if="progressSelect == 0">{{ progressSelect }}%</span>
-				  <div class="bar" style="width: {{ progressSelect }}%;">{{ progressSelect }}%</div>
-				</div>
-			</div>
-			<div class="card-footer">
-				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{$fmt('taskDate')}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
-			</div>
+			<>
+				<h4>{name}</h4>
+				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
+				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<Box d="flex" justifyContent="space-between">
+					<Box>
+						<Icon icon="calendar" fontSize="15px"/>
+						{!taskDeadline && <span> {_t('Not specified')} </span>}
+						{$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day') && <span> {_t('Deadline Yesterday')} </span>}
+						{$moment(taskDeadline).isSame($moment(), 'day') && <span> {_t('Deadline Today')} </span>}
+						{$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day') && <span> {_t('Deadline Tomorrow')} </span>}
+						{$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days') && <span> {_t('Deadline')} {$moment().to($moment(taskDeadline), false)} </span>}
+						{$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days') && <span> {_t('Deadline')} {$moment(taskDeadline).from($moment(), false)} </span>}
+					</Box>
+					<Box>
+						{priority.technicalTypeSelect == 1 && <Badge bg="success">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 2 && <Badge bg="info">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 3 && <Badge bg="warning">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 4 && <Badge bg="danger">{priority.name}</Badge>}
+					</Box>
+				</Box>
+				{project.isShowProgress &&
+					<Box mt={1}>
+						{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
+					</Box>
+				}
+         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
+         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+         		</Box>
+			</>
 		]]>
     </template>
   </kanban>
@@ -372,33 +368,37 @@
     <field name="taskDeadline"/>
     <field name="priority.name"/>
     <field name="priority.technicalTypeSelect"/>
-    <field name="progressSelect"/>
+    <field name="progress"/>
     <template>
 		<![CDATA[
-			<h4>{{name}}</h4>
-			<h4><span style="font-weight:normal;">{{project.fullName}}</span></h4>
-			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
-			<div class="card-body">
-				<div>
-					<i class="fa fa-calendar" aria-hidden="true"></i>
-					<span ng-if="!taskDeadline"> <span x-translate>Not specified</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day')"> <span x-translate>Deadline Yesterday</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment(), 'day')"> <span x-translate>Deadline Today</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day')"> <span x-translate>Deadline Tomorrow</span> </span>
-					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
-					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
-
-					<span class="label pull-right" ng-class="{1:'label-success',2:'label-info',3:'label-warning',4:'label-important'}[priority.technicalTypeSelect]">{{priority.name}}</span>
-
-				</div>
-				<div class="progress kanban-progress">
-					<span ng-if="progressSelect == 0">{{ progressSelect }}%</span>
-				  <div class="bar" style="width: {{ progressSelect }}%;">{{ progressSelect }}%</div>
-				</div>
-			</div>
-			<div class="card-footer">
-				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{taskDate | date:'dd/MM/yyyy'}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
-			</div>
+			<>
+				<h4>{name}</h4>
+				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
+				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<Box d="flex" justifyContent="space-between">
+					<Box>
+						<Icon icon="calendar" fontSize="15px"/>
+						{!taskDeadline && <span> {_t('Not specified')} </span>}
+						{$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day') && <span> {_t('Deadline Yesterday')} </span>}
+						{$moment(taskDeadline).isSame($moment(), 'day') && <span> {_t('Deadline Today')} </span>}
+						{$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day') && <span> {_t('Deadline Tomorrow')} </span>}
+						{$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days') && <span> {_t('Deadline')} {$moment().to($moment(taskDeadline), false)} </span>}
+						{$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days') && <span> {_t('Deadline')} {$moment(taskDeadline).from($moment(), false)} </span>}
+					</Box>
+					<Box>
+						{priority.technicalTypeSelect == 1 && <Badge bg="success">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 2 && <Badge bg="info">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 3 && <Badge bg="warning">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 4 && <Badge bg="danger">{priority.name}</Badge>}
+					</Box>
+				</Box>
+				<Box mt={1}>
+					{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
+				</Box>
+         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
+         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+         		</Box>
+			</>
 		]]>
     </template>
   </kanban>
@@ -498,15 +498,15 @@
     <view-param name="forceEdit" value="true"/>
     <view-param name="forceTitle" value="true"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
-    <context name="_projectTask" expr="eval:__self__"
+    <context name="_projectTask" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_timeUnit" expr="eval:__self__.timeUnit"
+    <context name="_timeUnit" expr="eval:__parent__.timeUnit"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_employee" expr="eval:assignedTo.employee"
+    <context name="_employee" expr="eval:__parent__.assignedTo.employee"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__self__.project"
+    <context name="_project" expr="eval:__parent__.project"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__self__"
+    <context name="_project" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.Project'"/>
   </action-view>
 
@@ -561,10 +561,19 @@
       if="__config__.app.getApp('business-support').providerCompany"/>
   </action-record>
 
+  <action-group name="action-project-task-group-progress-onchange">
+    <action name="action-project-task-update-planned-progress"/>
+    <action name="action-project-task-method-update-progress-select"/>
+  </action-group>
+
   <action-record name="action-project-task-update-planned-progress"
     model="com.axelor.apps.project.db.ProjectTask">
-    <field name="plannedProgress" expr="eval: progressSelect"/>
+    <field name="plannedProgress" expr="eval: progress"/>
   </action-record>
+
+  <action-method name="action-project-task-method-update-progress-select">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillProgressSelect"/>
+  </action-method>
 
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -694,15 +703,12 @@
 
   <action-group name="action-project-task-group-timer-process">
     <action name="action-project-task-attrs-project-filter-status" if="project?.isShowStatus"/>
-    <action name="action-project-task-method-manage-timer-buttons"
-      if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
-    <action name="action-project-task-method-compute-total-timer-duration"
-      if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
+    <action name="action-project-task-method-manage-timer-buttons"/>
+    <action name="action-project-task-method-compute-total-timer-duration"/>
     <action name="action-project-task-attrs-scale-and-precision"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-business-support-provider"
       if="__config__.app.isApp('business-support')"/>
-    <action name="action-project-attrs-project-planning-time-cancel-remove"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
   </action-group>
 
@@ -758,18 +764,6 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
   </action-view>
-
-  <action-attrs name="action-project-task-attrs-project-planning-time-remove">
-    <attribute name="readonly" for="removeProjectPlanningTimeLineBtn" expr="eval:true"/>
-    <attribute name="hidden" for="cancelRemovePlanningTimeBtn" expr="eval:false"/>
-    <attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:false"/>
-    <attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
-    <attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
-    <attribute name="title" for="$projectPlanningTimeSet"
-      expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
-    <attribute name="domain" for="$projectPlanningTimeSet"
-      expr="eval:&quot;self.projectTask.id = :id&quot;"/>
-  </action-attrs>
 
   <action-record name="action-project-task-record-change-status"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -838,7 +832,6 @@
     <field name="isOrderAccepted" hidden="true" if="!__config__.app.isApp('business-support')"/>
     <field name="isOrderProposed" hidden="true" if="!__config__.app.isApp('business-support')"/>
     <field name="assignment" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="taskDeadline" hidden="true" if="__config__.app.isApp('business-support')"/>
     <field name="internalDescription" hidden="true"
       if="!__config__.app.isApp('business-support')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
@@ -852,7 +845,6 @@
     <field name="project.invoicingSequenceSelect" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
     <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="invoiceLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="invoicingUnit" hidden="true" if="!__config__.app.isApp('business-project')"/>

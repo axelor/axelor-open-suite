@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.Lines.x</property>
@@ -91,23 +91,6 @@
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="3676">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">true</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -239,6 +222,12 @@
                     <text-property name="displayName">partner</text-property>
                     <text-property name="heading">partner</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="filter">
                 <structure>
@@ -273,7 +262,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_5</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -306,7 +295,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_6</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -339,7 +328,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_9</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -385,6 +374,11 @@
                         <property name="position">7</property>
                         <property name="name">partner</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -439,6 +433,13 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT  Invoice.invoice_date as date,
 		SUM((CASE WHEN Invoice.operation_type_select = 3 THEN InvoiceLine.company_ex_tax_total ELSE -InvoiceLine.company_ex_tax_total END)) as sum,
@@ -446,27 +447,29 @@
 		LangTranslate.message_value as "translation",
 		Product.full_name as product,
 		ProductCategory.name as productCategory,
-		Partner.name as partner
+		Partner.name as partner,
+		Currency.number_of_decimals
 FROM account_invoice_line as InvoiceLine 
 LEFT OUTER JOIN base_product as Product on (InvoiceLine.product = Product.id)
 LEFT OUTER JOIN base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 LEFT OUTER JOIN account_invoice as Invoice  on (InvoiceLine.invoice = Invoice.id)
 LEFT OUTER JOIN base_partner as Partner on (Invoice.partner = Partner.id)
 LEFT OUTER JOIN base_company as Company on (Invoice.company = Company.id)
+LEFT OUTER JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT OUTER JOIN account_assistant_report_invoice as Assistant on (Assistant.id = ?)
 LEFT OUTER JOIN account_assistant_report_invoice_product_set as AssistantProducts on (AssistantProducts.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartners on (AssistantPartners.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate on (LangTranslate.message_key = 'SaleInvoicesDetails.invoiced')
 WHERE Invoice.status_select = 3 AND Company.id = ?
-		AND (LangTranslate.language = ? OR LangTranslate.language is null )
+		AND (LangTranslate.language = substring(?, '^[a-zA-Z]+') OR LangTranslate.language is null )
 		AND Invoice.operation_type_select IN (3,4)
 		AND Invoice.invoice_date BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id = AssistantPartners.partner_set)
 		AND (AssistantProducts.product_set is null or Product.id = AssistantProducts.product_set)
 		AND (Assistant.turnover_type_select = 2 OR Assistant.turnover_type_select = 3)
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
-Group by Invoice.invoice_date, Product.full_name, ProductCategory.name, Partner.name, LangTranslate.message_value
+Group by Invoice.invoice_date, Product.full_name, ProductCategory.name, Partner.name, LangTranslate.message_value, Currency.number_of_decimals
 
 UNION
 
@@ -476,27 +479,29 @@ SELECT  SaleOrder.expected_realisation_date as date,
 		LangTranslate1.message_value as "translation",
 		Product.full_name as product,
 		ProductCategory.name as productCategory,
-		Partner.name as partner
+		Partner.name as partner,
+		Currency.number_of_decimals
 FROM sale_sale_order_line as SaleOrderLine
 LEFT OUTER JOIN base_product as Product on (SaleOrderLine.product = Product.id)
 LEFT OUTER JOIN base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 LEFT OUTER JOIN sale_sale_order as SaleOrder on (SaleOrderLine.sale_order = SaleOrder.id)
 LEFT OUTER JOIN base_partner as Partner on (SaleOrder.client_partner = Partner.id)
 LEFT OUTER JOIN base_company as Company on (SaleOrder.company = Company.id)
+LEFT OUTER JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT OUTER JOIN account_assistant_report_invoice as Assistant on (Assistant.id = ?)
 LEFT OUTER JOIN account_assistant_report_invoice_product_set as AssistantProducts on (AssistantProducts.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartners on (AssistantPartners.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate1 on (LangTranslate1.message_key = 'SaleInvoicesDetails.ordered')
 WHERE Company.id = ?
-		AND ( LangTranslate1.language = ? OR LangTranslate1.language is null )
+		AND ( LangTranslate1.language = substring(?, '^[a-zA-Z]+') OR LangTranslate1.language is null )
 		AND SaleOrder.expected_realisation_date BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set))
 		AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
 		AND SaleOrder.status_select = 3
 		AND (Assistant.turnover_type_select = 1 OR Assistant.turnover_type_select = 3)
-Group by SaleOrder.expected_realisation_date,Product.full_name, ProductCategory.name, Partner.name, LangTranslate1.message_value
+Group by SaleOrder.expected_realisation_date,Product.full_name, ProductCategory.name, Partner.name, LangTranslate1.message_value, Currency.number_of_decimals
 
 UNION
 
@@ -506,8 +511,8 @@ SUM(Timetable.amount - (CASE WHEN TimetableInvoice.status_select = 3 THEN Timeta
 		LangTranslate1.message_value as "translation",
 		Product.full_name as product,
 		ProductCategory.name as productCategory,
-		Partner.name as partner
-
+		Partner.name as partner,
+		Currency.number_of_decimals
 FROM sale_sale_order_line as SaleOrderLine
 LEFT OUTER JOIN base_product as Product on (SaleOrderLine.product = Product.id)
 LEFT OUTER JOIN base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
@@ -516,13 +521,14 @@ LEFT OUTER JOIN supplychain_timetable as Timetable on (Timetable.sale_order = Sa
 LEFT OUTER JOIN account_invoice as TimetableInvoice on (Timetable.invoice = TimetableInvoice.id)
 LEFT OUTER JOIN base_partner as Partner on (SaleOrder.client_partner = Partner.id)
 LEFT OUTER JOIN base_company as Company on (SaleOrder.company = Company.id)
+LEFT OUTER JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT OUTER JOIN account_assistant_report_invoice as Assistant on (Assistant.id = ?)
 LEFT OUTER JOIN account_assistant_report_invoice_product_set as AssistantProducts on (AssistantProducts.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartners on (AssistantPartners.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate1 on (LangTranslate1.message_key = 'SaleInvoicesDetails.ordered')
 WHERE Company.id = ? 
-		AND ( LangTranslate1.language = ? OR LangTranslate1.language is null )
+		AND ( LangTranslate1.language = substring(?, '^[a-zA-Z]+') OR LangTranslate1.language is null )
 		AND SaleOrder.expected_realisation_date IS NULL
 		AND Timetable.estimated_date BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set)) 
@@ -530,7 +536,7 @@ WHERE Company.id = ?
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
 		AND SaleOrder.status_select = 3
 		AND (Assistant.turnover_type_select = 1 OR Assistant.turnover_type_select = 3)
-Group by Timetable.estimated_date,Product.full_name, ProductCategory.name, Partner.name, LangTranslate1.message_value
+Group by Timetable.estimated_date,Product.full_name, ProductCategory.name, Partner.name, LangTranslate1.message_value, Currency.number_of_decimals
 		]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Infos" id="4057">
@@ -702,7 +708,7 @@ GROUP BY Assistant.from_date, Assistant.to_date, Currency.symbol,
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -744,7 +750,7 @@ GROUP BY Assistant.from_date, Assistant.to_date, Currency.symbol,
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="GraphDS" id="4782">
             <list-property name="columnHints">
@@ -772,6 +778,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">translation</text-property>
                     <text-property name="heading">translation</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -798,7 +810,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -831,7 +843,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">param_6</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -862,6 +874,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="position">4</property>
                         <property name="name">translation</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -895,56 +912,67 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT  date_trunc('month',Invoice.invoice_date)::date as "date",
 		SUM((CASE WHEN Invoice.operation_type_select = 3 THEN InvoiceLine.company_ex_tax_total ELSE -InvoiceLine.company_ex_tax_total END)) as sum,
 		'Invoiced' as type,
-		LangTranslate.message_value as "translation"
+		LangTranslate.message_value as "translation",
+		Currency.number_of_decimals
 FROM account_invoice_line as InvoiceLine
 LEFT OUTER JOIN base_product as Product on (InvoiceLine.product = Product.id)
 LEFT OUTER JOIN base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 LEFT OUTER JOIN account_invoice as Invoice  on (InvoiceLine.invoice = Invoice.id)
 LEFT OUTER JOIN base_partner as Partner on (Invoice.partner = Partner.id)
 LEFT OUTER JOIN base_company as Company on (Invoice.company = Company.id)
+LEFT OUTER JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT OUTER JOIN account_assistant_report_invoice as Assistant on (Assistant.id = ?)
 LEFT OUTER JOIN account_assistant_report_invoice_product_set as AssistantProducts on (AssistantProducts.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartners on (AssistantPartners.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate on (LangTranslate.message_key = 'SaleInvoicesDetails.invoiced')
 WHERE Invoice.status_select = 3 AND Company.id = ?
-		AND (LangTranslate.language = ? OR LangTranslate.language is null )
+		AND (LangTranslate.language = substring(?, '^[a-zA-Z]+') OR LangTranslate.language is null )
 		AND (Invoice.operation_type_select = 3 OR Invoice.operation_type_select = 4)
 		AND Invoice.invoice_date BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id = AssistantPartners.partner_set)
 		AND (AssistantProducts.product_set is null or Product.id = AssistantProducts.product_set)
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
-Group by date_trunc('month',Invoice.invoice_date)::date,LangTranslate.message_value
+Group by date_trunc('month',Invoice.invoice_date)::date,LangTranslate.message_value, Currency.number_of_decimals
 
 UNION
 
 SELECT  date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date_time))::date as "date",
 		SUM(SaleOrderLine.company_ex_tax_total) as sum,
 		'Ordered' as type,
-		LangTranslate1.message_value as "translation"
+		LangTranslate1.message_value as "translation",
+		Currency.number_of_decimals
 FROM sale_sale_order_line as SaleOrderLine
 LEFT OUTER JOIN base_product as Product on (SaleOrderLine.product = Product.id)
 LEFT OUTER JOIN base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 LEFT OUTER JOIN sale_sale_order as SaleOrder on (SaleOrderLine.sale_order = SaleOrder.id)
 LEFT OUTER JOIN base_partner as Partner on (SaleOrder.client_partner = Partner.id)
 LEFT OUTER JOIN base_company as Company on (SaleOrder.company = Company.id)
+LEFT OUTER JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT OUTER JOIN account_assistant_report_invoice as Assistant on (Assistant.id = ?)
 LEFT OUTER JOIN account_assistant_report_invoice_product_set as AssistantProducts on (AssistantProducts.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartners on (AssistantPartners.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate1 on (LangTranslate1.message_key = 'SaleInvoicesDetails.ordered')
 WHERE Company.id = ?
-		AND ( LangTranslate1.language = ? OR LangTranslate1.language is null )
+		AND ( LangTranslate1.language = substring(?, '^[a-zA-Z]+') OR LangTranslate1.language is null )
 		AND COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date_time) BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set))
 		AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
 		AND SaleOrder.status_select IN (3,4)
-Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date_time))::date,LangTranslate1.message_value]]></xml-property>
+Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date_time))::date,LangTranslate1.message_value, Currency.number_of_decimals]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Graph2DS" id="4796">
             <property name="nullsOrdering">nulls lowest</property>
@@ -966,6 +994,12 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">type</text-property>
                     <text-property name="heading">type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -991,7 +1025,7 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -1021,7 +1055,7 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                 </structure>
                 <structure>
                     <property name="name">param_6</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -1053,7 +1087,7 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                 </structure>
                 <structure>
                     <property name="name">param_9</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -1080,6 +1114,11 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                         <property name="name">type</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1105,67 +1144,80 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT  date,
         SUM(sum) as sum,
-        (CASE WHEN string_agg(type,'') LIKE '%Ordered%' THEN 'Prediction' ELSE 'Invoiced' END) as "type"
+        (CASE WHEN string_agg(type,'') LIKE '%Ordered%' THEN 'Prediction' ELSE 'Invoiced' END) as "type",
+        number_of_decimals
 FROM
 (SELECT  date_trunc('month',Invoice.invoice_date)::date as "date",
 		SUM( (CASE WHEN Invoice.operation_type_select = 3 THEN InvoiceLine.company_ex_tax_total ELSE -InvoiceLine.company_ex_tax_total END)) as sum,
 		'Invoiced' as type,
-		LangTranslate.message_value as "translation"
+		LangTranslate.message_value as "translation",
+		Currency.number_of_decimals
 FROM account_invoice_line as InvoiceLine
 LEFT OUTER JOIN base_product as Product on (InvoiceLine.product = Product.id)
 LEFT OUTER JOIN base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 LEFT OUTER JOIN account_invoice as Invoice  on (InvoiceLine.invoice = Invoice.id)
 LEFT OUTER JOIN base_partner as Partner on (Invoice.partner = Partner.id)
 LEFT OUTER JOIN base_company as Company on (Invoice.company = Company.id)
+LEFT OUTER JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT OUTER JOIN account_assistant_report_invoice as Assistant on (Assistant.id = ?)
 LEFT OUTER JOIN account_assistant_report_invoice_product_set as AssistantProducts on (AssistantProducts.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartners on (AssistantPartners.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate on (LangTranslate.message_key = 'SaleInvoicesDetails.invoiced')
 WHERE Invoice.status_select = 3 AND Company.id = ?
-		AND (LangTranslate.language = ? OR LangTranslate.language is null )
+		AND (LangTranslate.language = substring(?, '^[a-zA-Z]+') OR LangTranslate.language is null )
 		AND (Invoice.operation_type_select IN (3,4))
 		AND Invoice.invoice_date BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id = AssistantPartners.partner_set)
 		AND (AssistantProducts.product_set is null or Product.id = AssistantProducts.product_set)
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
-Group by date_trunc('month',Invoice.invoice_date)::date,LangTranslate.message_value
+Group by date_trunc('month',Invoice.invoice_date)::date,LangTranslate.message_value, Currency.number_of_decimals
 
 UNION
 
 SELECT  date_trunc('month',SaleOrder.expected_realisation_date)::date as "date",
 SUM(SaleOrderLine.company_ex_tax_total - (SaleOrderLine.company_ex_tax_total * SaleOrderLine.amount_invoiced/SaleOrderLine.ex_tax_total)) as sum,
 		'Ordered' as type,
-		LangTranslate1.message_value as "translation"
+		LangTranslate1.message_value as "translation",
+		Currency.number_of_decimals
 FROM sale_sale_order_line as SaleOrderLine
 LEFT OUTER JOIN base_product as Product on (SaleOrderLine.product = Product.id)
 LEFT OUTER JOIN base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 LEFT OUTER JOIN sale_sale_order as SaleOrder on (SaleOrderLine.sale_order = SaleOrder.id)
 LEFT OUTER JOIN base_partner as Partner on (SaleOrder.client_partner = Partner.id)
 LEFT OUTER JOIN base_company as Company on (SaleOrder.company = Company.id)
+LEFT OUTER JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT OUTER JOIN account_assistant_report_invoice as Assistant on (Assistant.id = ?)
 LEFT OUTER JOIN account_assistant_report_invoice_product_set as AssistantProducts on (AssistantProducts.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartners on (AssistantPartners.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate1 on (LangTranslate1.message_key = 'SaleInvoicesDetails.ordered')
 WHERE Company.id = ?
-		AND ( LangTranslate1.language = ? OR LangTranslate1.language is null )
+		AND ( LangTranslate1.language = substring(?, '^[a-zA-Z]+') OR LangTranslate1.language is null )
 		AND SaleOrder.expected_realisation_date BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set))
 		AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
 		AND SaleOrder.status_select = 3
-Group by date_trunc('month',SaleOrder.expected_realisation_date)::date,LangTranslate1.message_value
+Group by date_trunc('month',SaleOrder.expected_realisation_date)::date,LangTranslate1.message_value, Currency.number_of_decimals
 
 UNION
 
 SELECT  date_trunc('month',Timetable.estimated_date)::date as "date",
 SUM(Timetable.amount - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
 		'Ordered' as type,
-		LangTranslate1.message_value as "translation"
+		LangTranslate1.message_value as "translation",
+		Currency.number_of_decimals
 FROM sale_sale_order_line as SaleOrderLine
 LEFT OUTER JOIN base_product as Product on (SaleOrderLine.product = Product.id)
 LEFT OUTER JOIN base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
@@ -1174,23 +1226,24 @@ LEFT OUTER JOIN supplychain_timetable as Timetable on (Timetable.sale_order = Sa
 LEFT OUTER JOIN account_invoice as TimetableInvoice on (Timetable.invoice = TimetableInvoice.id)
 LEFT OUTER JOIN base_partner as Partner on (SaleOrder.client_partner = Partner.id)
 LEFT OUTER JOIN base_company as Company on (SaleOrder.company = Company.id)
+LEFT OUTER JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT OUTER JOIN account_assistant_report_invoice as Assistant on (Assistant.id = ?)
 LEFT OUTER JOIN account_assistant_report_invoice_product_set as AssistantProducts on (AssistantProducts.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartners on (AssistantPartners.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate1 on (LangTranslate1.message_key = 'SaleInvoicesDetails.ordered')
 WHERE Company.id = ?
-		AND ( LangTranslate1.language = ? OR LangTranslate1.language is null )
+		AND ( LangTranslate1.language = substring(?, '^[a-zA-Z]+') OR LangTranslate1.language is null )
 		AND SaleOrder.expected_realisation_date IS NULL
 		AND Timetable.estimated_date BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set))
 		AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
 		AND SaleOrder.status_select = 3
-Group by date_trunc('month',Timetable.estimated_date)::date,LangTranslate1.message_value) as q
+Group by date_trunc('month',Timetable.estimated_date)::date,LangTranslate1.message_value, Currency.number_of_decimals) as q
 
 
-GROUP BY date
+GROUP BY date, number_of_decimals
 ]]></xml-property>
         </oda-data-set>
     </data-sets>
@@ -1811,6 +1864,13 @@ GROUP BY date
                                 <expression name="filterExpr" type="javascript">dataSetRow["type"]=='Invoiced'</expression>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="4077"/>
                         <row id="4078">
@@ -1842,7 +1902,7 @@ GROUP BY date
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/YYYY">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF format="####.00">row._outer["InvoicedTotal"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/YYYY">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>Formatter.format(row._outer["InvoicedTotal"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -1873,6 +1933,13 @@ GROUP BY date
                                     </structure>
                                 </list-property>
                                 <expression name="filterExpr" type="javascript">dataSetRow["type"]=='Ordered'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
@@ -1906,7 +1973,7 @@ GROUP BY date
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/YYYY">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF format="####.00">row._outer["OrderedTotal"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/YYYY">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>Formatter.format(row._outer["OrderedTotal"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -3149,6 +3216,13 @@ GROUP BY date
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="4868"/>
                         <row id="4869">
@@ -3210,7 +3284,7 @@ GROUP BY date
                                     <property name="textAlign">left</property>
                                     <property name="display">inline</property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF format="####.00">row._outer["TotalTurnover"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>Formatter.format(row._outer["TotalTurnover"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>

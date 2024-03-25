@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -31,23 +31,21 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -61,6 +59,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +84,7 @@ public class PartnerController {
     if (partner.getPartnerSeq() == null) {
       String seq =
           Beans.get(SequenceService.class)
-              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
       if (seq == null)
         throw new AxelorException(
             partner,
@@ -104,46 +103,20 @@ public class PartnerController {
    * @throws BirtException
    * @throws IOException
    */
-  public void showEnvelope(ActionRequest request, ActionResponse response) throws AxelorException {
-    Partner partner = request.getContext().asType(Partner.class);
-
-    String name = I18n.get("Partner") + " " + partner.getPartnerSeq();
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PARTNER, name + "-${date}")
-            .addParam("Locale", ReportSettings.getPrintingLocale(partner))
-            .addParam("Timezone", getTimezone(partner.getUser()))
-            .addParam("PartnerId", partner.getId())
-            .generate()
-            .getFileLink();
-
-    LOG.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
-
-  /**
-   * Fonction appeler par le bouton imprimer
-   *
-   * @param request
-   * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
-   */
   public void printContactPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    User user = AuthUtils.getUser();
+
+    PrintingTemplate contactPhoneBookTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getContactPhoneBookPrintTemplate();
+    if (ObjectUtils.isEmpty(contactPhoneBookTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
 
     String name = I18n.get("Phone Book");
-
     String fileLink =
-        ReportFactory.createReport(IReport.PHONE_BOOK, name + "-${date}")
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam("Timezone", getTimezone(user))
-            .addParam("UserId", user.getId())
-            .generate()
-            .getFileLink();
+        Beans.get(PrintingTemplatePrintService.class).getPrintLink(contactPhoneBookTemplate, null);
 
     LOG.debug("Printing " + name);
 
@@ -161,17 +134,18 @@ public class PartnerController {
    */
   public void printCompanyPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    User user = AuthUtils.getUser();
+
+    PrintingTemplate companyPhoneBookTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getCompanyPhoneBookPrintTemplate();
+    if (ObjectUtils.isEmpty(companyPhoneBookTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
 
     String name = I18n.get("Company PhoneBook");
-
     String fileLink =
-        ReportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name + "-${date}")
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam("Timezone", getTimezone(user))
-            .addParam("UserId", user.getId())
-            .generate()
-            .getFileLink();
+        Beans.get(PrintingTemplatePrintService.class).getPrintLink(companyPhoneBookTemplate, null);
 
     LOG.debug("Printing " + name);
 
@@ -189,57 +163,53 @@ public class PartnerController {
 
     Context context = request.getContext();
     Partner partner = context.asType(Partner.class);
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
 
-    User user = AuthUtils.getUser();
-
-    LinkedHashMap<String, Object> companyMap =
-        (LinkedHashMap<String, Object>) context.get("company");
-    Object companyId = companyMap != null ? companyMap.get("id") : null;
+    PrintingTemplate clientSituationPrintTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getClientSituationPrintTemplate();
+    if (ObjectUtils.isEmpty(clientSituationPrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
 
     String name = I18n.get("Customer Situation");
+
+    PrintingGenFactoryContext factoryContext = new PrintingGenFactoryContext(partner);
+    factoryContext.setContext(getParamsMap(context));
+
     String fileLink =
-        ReportFactory.createReport(IReport.CLIENT_SITUATION, name + "-${date}")
-            .addParam("Locale", ReportSettings.getPrintingLocale(partner))
-            .addParam("Timezone", getTimezone(user))
-            .addParam("UserId", user.getId())
-            .addParam("PartnerId", partner.getId())
-            .addParam(
-                "PartnerPic",
-                partner.getPicture() != null
-                    ? MetaFiles.getPath(partner.getPicture()).toString()
-                    : "")
-            .addParam("CompanyId", companyId)
-            .addParam(
-                "TradingNameId",
-                context.get("tradingName") != null
-                    ? ((TradingName) context.get("tradingName")).getId()
-                    : null)
-            .addParam(
-                "FromDate",
-                context.get("fromDate") != null
-                    ? Date.valueOf(context.get("fromDate").toString())
-                    : null)
-            .addParam(
-                "ToDate",
-                context.get("toDate") != null
-                    ? Date.valueOf(context.get("toDate").toString())
-                    : null)
-            .addParam("InvoiceStatus", context.get("invoiceStatus"))
-            .addParam("SaleOrderStatus", context.get("saleOrderStatus"))
-            .addParam("StockMoveStatus", context.get("stockMoveStatus"))
-            .generate()
-            .getFileLink();
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintLink(clientSituationPrintTemplate, factoryContext, name + "-${date}");
 
     LOG.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  protected String getTimezone(User user) {
-    if (user == null || user.getActiveCompany() == null) {
-      return null;
-    }
-    return user.getActiveCompany().getTimezone();
+  @SuppressWarnings("unchecked")
+  protected Map<String, Object> getParamsMap(Context context) {
+    Map<String, Object> params = new HashMap<>();
+    LinkedHashMap<String, Object> companyMap =
+        (LinkedHashMap<String, Object>) context.get("company");
+    Object companyId = companyMap != null ? companyMap.get("id") : null;
+    params.put("CompanyId", companyId);
+    params.put(
+        "TradingNameId",
+        (Object)
+            (context.get("tradingName") != null
+                ? ((TradingName) context.get("tradingName")).getId()
+                : null));
+    params.put(
+        "FromDate",
+        context.get("fromDate") != null ? Date.valueOf(context.get("fromDate").toString()) : null);
+    params.put(
+        "ToDate",
+        context.get("toDate") != null ? Date.valueOf(context.get("toDate").toString()) : null);
+    params.put("InvoiceStatus", context.get("invoiceStatus"));
+    params.put("SaleOrderStatus", context.get("saleOrderStatus"));
+    params.put("StockMoveStatus", context.get("stockMoveStatus"));
+    return params;
   }
 
   @CallMethod

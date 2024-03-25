@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ModelTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
@@ -71,7 +71,7 @@ public class UserController {
     try {
       Context context = request.getContext();
       User user = request.getContext().asType(User.class);
-      Map<String, String> errors = ModelTool.getUniqueErrors(user, UNIQUE_MESSAGES);
+      Map<String, String> errors = ModelHelper.getUniqueErrors(user, UNIQUE_MESSAGES);
 
       if (!errors.isEmpty()) {
         response.setErrors(errors);

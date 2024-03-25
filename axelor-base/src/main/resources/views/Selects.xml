@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -69,6 +69,7 @@
     <option value="1">From stock</option>
     <option value="2">Purchase</option>
     <option value="3">Produce</option>
+    <option value="4">Stock and produce</option>
   </selection>
 
   <selection name='iimport.type.select'>
@@ -122,6 +123,7 @@
   <selection name='ibase.batch.action.select'>
     <option value='2'>Calendar synchronization</option>
     <option value='3'>Password change</option>
+    <option value='4'>Recompute all addresses</option>
   </selection>
 
   <selection name="base.routing.rule.type.select">
@@ -170,6 +172,7 @@
   <selection name="base.price.list.line.anomaly.select">
     <option value="1">Product unavailable for sale</option>
     <option value="2">Product not renewed</option>
+    <option value="3">Product unavailable for purchase</option>
   </selection>
 
   <selection name="day.month.select">
@@ -369,9 +372,9 @@
 
   <selection name="printing.setting.logo.position">
     <option value="0">None</option>
-    <option value="1">Left</option>
+    <option value="1">Position.Left</option>
     <option value="2">Center</option>
-    <option value="3">Right</option>
+    <option value="3">Position.Right</option>
   </selection>
 
   <selection name="icrm.calendar.type.select">
@@ -405,6 +408,11 @@
     <option value="integer">Integer</option>
     <option value="date">Date</option>
     <option value="time">Time</option>
+  </selection>
+
+  <selection name="base.printing.template.type.select">
+    <option value="1">File</option>
+    <option value="2">Birt</option>
   </selection>
 
   <selection name="base.blocking.select">
@@ -534,6 +542,7 @@
   <selection name='trace.back.origin.select'>
     <option value="default">Default</option>
     <option value="import">Importing</option>
+    <option value="addressRecompute">Recompute addresses batch</option>
   </selection>
 
   <selection name="base.print.template.format.select">
@@ -566,8 +575,8 @@
   </selection>
 
   <selection name="base.print.settings.footer.text.alignment.select">
-    <option value="left">Left</option>
-    <option value="right">Right</option>
+    <option value="left">Position.Left</option>
+    <option value="right">Position.Right</option>
     <option value="center">Center</option>
   </selection>
 
@@ -636,8 +645,8 @@
   </selection>
 
   <selection name="printing.setting.address.position">
-    <option value="0">Right</option>
-    <option value="1">Left</option>
+    <option value="0">Position.Right</option>
+    <option value="1">Position.Left</option>
   </selection>
 
   <selection name="batch.action.launch.origin.select">
@@ -745,6 +754,20 @@
     <option value="LocalDateTime">LocalDateTime</option>
     <option value="String">String</option>
     <option value="Boolean">Boolean</option>
+  </selection>
+
+  <selection name="base.partner.link.type.type.select">
+    <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
+  </selection>
+
+  <selection name="tax.type.type.select">
+    <option value="1">VAT</option>
+    <option value="2">Other</option>
+  </selection>
+
+  <selection name="base.site.type.select">
+    <option value="1">Internal</option>
+    <option value="2">External</option>
   </selection>
 
 </object-views>

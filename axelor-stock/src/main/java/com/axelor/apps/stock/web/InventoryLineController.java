@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -83,7 +83,7 @@ public class InventoryLineController {
         response.setAttr(
             "stockLocation",
             "domain",
-            "self.id IN(" + StringTool.getIdListString(stockLocationSet) + ")");
+            "self.id IN(" + StringHelper.getIdListString(stockLocationSet) + ")");
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -100,5 +100,13 @@ public class InventoryLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void checkPresenceInStockLocation(ActionRequest request, ActionResponse response) {
+    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+
+    response.setValue(
+        "isPresentInStockLocation",
+        Beans.get(InventoryLineService.class).isPresentInStockLocation(inventoryLine));
   }
 }

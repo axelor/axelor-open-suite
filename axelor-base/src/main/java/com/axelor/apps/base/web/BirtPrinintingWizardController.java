@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.BirtPrintingWizard;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -35,8 +34,7 @@ public class BirtPrinintingWizardController {
   @SuppressWarnings("unchecked")
   public void onChangeMetaModel(ActionRequest request, ActionResponse response) {
     try {
-      BirtPrintingWizard birtPrintingWizard = request.getContext().asType(BirtPrintingWizard.class);
-      MetaModel metaModel = birtPrintingWizard.getMetaModel();
+      MetaModel metaModel = (MetaModel) request.getContext().get("metaModel");
       String metaModelTargetName = null;
       if (metaModel != null) {
         Class<? extends Model> klass =

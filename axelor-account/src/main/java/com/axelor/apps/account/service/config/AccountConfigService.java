@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -735,26 +735,6 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return account;
-  }
-
-  public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
-    if (accountConfig.getPurchFinancialDiscountTax() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_TAX),
-          accountConfig.getCompany().getName());
-    }
-    return accountConfig.getPurchFinancialDiscountTax();
-  }
-
-  public Tax getSaleFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
-    if (accountConfig.getSaleFinancialDiscountTax() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX),
-          accountConfig.getCompany().getName());
-    }
-    return accountConfig.getSaleFinancialDiscountTax();
   }
 
   public Account getBillOfExchReceivAccount(AccountConfig accountConfig) throws AxelorException {

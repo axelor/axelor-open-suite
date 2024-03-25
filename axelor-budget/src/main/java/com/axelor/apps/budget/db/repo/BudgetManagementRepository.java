@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,32 +19,18 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.inject.Beans;
-import java.math.BigDecimal;
 
 public class BudgetManagementRepository extends BudgetRepository {
 
   @Override
   public Budget save(Budget entity) {
-    entity.setAvailableAmount(
-        (entity
-                        .getTotalAmountExpected()
-                        .subtract(entity.getRealizedWithPo())
-                        .subtract(entity.getRealizedWithNoPo()))
-                    .compareTo(BigDecimal.ZERO)
-                > 0
-            ? entity
-                .getTotalAmountExpected()
-                .subtract(entity.getRealizedWithPo())
-                .subtract(entity.getRealizedWithNoPo())
-            : BigDecimal.ZERO);
 
-    BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
+    GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
+    globalBudgetService.computeBudgetLevelTotals(entity);
 
     entity = super.save(entity);
-
-    budgetLevelService.computeBudgetLevelTotals(entity);
 
     return entity;
   }

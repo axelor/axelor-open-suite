@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,9 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -81,11 +81,11 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
 
   @Transactional(rollbackOn = {Exception.class})
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException {
-
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
 
-    invoicePaymentRepository.save(invoicePayment);
-
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+    invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
+
+    invoicePaymentRepository.save(invoicePayment);
   }
 }

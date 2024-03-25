@@ -71,23 +71,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="3740">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">true</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="DBName" id="3828">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -265,7 +248,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_locale</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -457,7 +440,7 @@ case DeclarationOfExchanges.stock_move_type_select
 when 2 then 'Expedition'
 when 3 then 'Introduction'
 end
-and StockMoveTypeTranslation.language = ?
+and StockMoveTypeTranslation.language = substring(?, '^[a-zA-Z]+')
 where DeclarationOfExchanges.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -854,7 +837,7 @@ where DeclarationOfExchanges.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -898,7 +881,7 @@ where DeclarationOfExchanges.id = ?]]></xml-property>
   LangTranslate.message_key,
   coalesce(nullif(LangTranslate.message_value, ''), LangTranslate.message_key) as "translation"
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1228,7 +1211,7 @@ on DeclarationOfExchanges.period = Period.id
 left join base_address FromAddress
 on StockMove.from_address = FromAddress.id
 left join base_country FromCountry
-on FromAddress.addressl7country = FromCountry.id
+on FromAddress.country = FromCountry.id
 left join base_city FromCity
 on FromAddress.city = FromCity.id
 left join base_department FromDepartment
@@ -1238,7 +1221,7 @@ on StockMove.from_stock_location = FromStockLocation.id
 left join base_address FromStockLocationAddress
 on FromStockLocation.address = FromStockLocationAddress.id
 left join base_country FromStockLocationCountry
-on FromStockLocationAddress.addressl7country = FromStockLocationCountry.id
+on FromStockLocationAddress.country = FromStockLocationCountry.id
 left join base_city FromStockLocationCity
 on FromStockLocationAddress.city = FromStockLocationCity.id
 left join base_department FromStockLocationDepartment
@@ -1246,7 +1229,7 @@ on FromStockLocationCity.department = FromStockLocationDepartment.id
 left join base_address ToAddress
 on StockMove.to_address = ToAddress.id
 left join base_country ToCountry
-on ToAddress.addressl7country = ToCountry.id
+on ToAddress.country = ToCountry.id
 left join base_city ToCity
 on ToAddress.city = ToCity.id
 left join base_department ToDepartment
@@ -1256,7 +1239,7 @@ on StockMove.to_stock_location = ToStockLocation.id
 left join base_address ToStockLocationAddress
 on ToStockLocation.address = ToStockLocationAddress.id
 left join base_country ToStockLocationCountry
-on ToStockLocationAddress.addressl7country = ToStockLocationCountry.id
+on ToStockLocationAddress.country = ToStockLocationCountry.id
 left join base_city ToStockLocationCity
 on ToStockLocationAddress.city = ToStockLocationCity.id
 left join base_department ToStockLocationDepartment

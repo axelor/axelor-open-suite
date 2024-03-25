@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,9 +58,6 @@ public final class CrmExceptionMessage {
 
   public static final String EVENT_SAVED = /*$$(*/
       "Please save the event before setting the recurrence" /*)*/;
-
-  /** Lead controller */
-  public static final String LEAD_1 = /*$$(*/ "Please select the Lead(s) to print." /*)*/;
 
   public static final String LEAD_START_WRONG_STATUS = /*$$(*/
       "Can only start new or assigned lead." /*)*/;
@@ -151,6 +148,10 @@ public final class CrmExceptionMessage {
   public static final String CRM_DEFAULT_OPPORTUNITY_STATUS_MISSING = /*$$(*/
       "Please fill default opportunity status in App CRM configuration." /*)*/;
 
-  public static final String CRM_DEFAULT_PARTNER_STATUS_MISSING = /*$$(*/
-      "Please fill default partner status in App CRM configuration." /*)*/;
+  public static final String CRM_LEAD_NOT_FOUND = /*$$(*/ "Lead not found." /*)*/;
+
+  public static final String CRM_PROSPECT_NOT_FOUND = /*$$(*/ "Prospect not found." /*)*/;
+
+  public static final String CRM_EMAIL_DOMAIN_ALREADY_EXISTS = /*$$(*/
+      "We found the following similar leads/contacts/partners in the system, do you still want to create this lead ?" /*)*/;
 }

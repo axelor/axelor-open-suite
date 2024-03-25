@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,11 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -53,10 +57,10 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 
     if (bankDetails.getIban() != null) {
 
-      bankDetails.setBankCode(StringTool.extractStringFromRight(bankDetails.getIban(), 23, 5));
-      bankDetails.setSortCode(StringTool.extractStringFromRight(bankDetails.getIban(), 18, 5));
-      bankDetails.setAccountNbr(StringTool.extractStringFromRight(bankDetails.getIban(), 13, 11));
-      bankDetails.setBbanKey(StringTool.extractStringFromRight(bankDetails.getIban(), 2, 2));
+      bankDetails.setBankCode(StringHelper.extractStringFromRight(bankDetails.getIban(), 23, 5));
+      bankDetails.setSortCode(StringHelper.extractStringFromRight(bankDetails.getIban(), 18, 5));
+      bankDetails.setAccountNbr(StringHelper.extractStringFromRight(bankDetails.getIban(), 13, 11));
+      bankDetails.setBbanKey(StringHelper.extractStringFromRight(bankDetails.getIban(), 2, 2));
     }
     return bankDetails;
   }
@@ -113,7 +117,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
 
     return "self.id IN ("
-        + StringTool.getIdListString(company.getBankDetailsList())
+        + StringHelper.getIdListString(company.getBankDetailsList())
         + ") AND self.active = true";
   }
 
@@ -158,23 +162,15 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     String domain = "";
 
     if (company != null) {
-
-      String bankDetailsIds = StringTool.getIdListString(company.getBankDetailsList());
-
-      if (company.getDefaultBankDetails() != null) {
-        bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
-        bankDetailsIds += company.getDefaultBankDetails().getId().toString();
+      List<BankDetails> bankDetailsList = new ArrayList<>(company.getBankDetailsList());
+      BankDetails defaultBankDetails = company.getDefaultBankDetails();
+      if (defaultBankDetails != null) {
+        bankDetailsList.add(defaultBankDetails);
       }
-      if (bankDetailsIds.equals("")) {
-        return "";
-      }
+      Set<BankDetails> bankDetailsSet = new HashSet<>(bankDetailsList);
+      String bankDetailsIds = StringHelper.getIdListString(bankDetailsSet);
       domain = "self.id IN(" + bankDetailsIds + ")";
     }
-
-    if (domain.equals("")) {
-      return domain;
-    }
-
     // filter the result on active bank details
     domain += " AND self.active = true";
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -157,13 +157,7 @@ public class VentilateState extends WorkflowInvoice {
       invoice.setPartnerAccount(account);
     }
 
-    Account partnerAccount = invoice.getPartnerAccount();
-
-    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
-    }
+    InvoiceToolService.checkUseForPartnerBalanceAndReconcileOk(invoice);
   }
 
   protected void setJournal() throws AxelorException {
@@ -325,7 +319,7 @@ public class VentilateState extends WorkflowInvoice {
 
     invoice.setInvoiceId(
         sequenceService.getSequenceNumber(
-            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId"));
+            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId", invoice));
 
     if (invoice.getInvoiceId() != null) {
       return;

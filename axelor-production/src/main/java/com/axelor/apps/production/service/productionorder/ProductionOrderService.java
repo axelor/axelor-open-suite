@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -33,7 +31,7 @@ public interface ProductionOrderService {
 
   public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
-  public String getProductionOrderSeq() throws AxelorException;
+  public String getProductionOrderSeq(ProductionOrder productionOrder) throws AxelorException;
 
   /**
    * Generate a Production Order
@@ -42,7 +40,6 @@ public interface ProductionOrderService {
    *     material product (Product variant)
    * @param billOfMaterial
    * @param qtyRequested
-   * @param businessProject
    * @param startDate
    * @return
    * @throws AxelorException
@@ -52,31 +49,6 @@ public interface ProductionOrderService {
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       LocalDateTime startDate)
-      throws AxelorException;
-
-  /**
-   * @param productionOrder
-   * @param product
-   * @param billOfMaterial
-   * @param qtyRequested
-   * @param startDate
-   * @param endDate
-   * @param saleOrder
-   * @param saleOrderLine
-   * @param manufOrderOriginType
-   * @return
-   * @throws AxelorException
-   */
-  public ProductionOrder addManufOrder(
-      ProductionOrder productionOrder,
-      Product product,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      LocalDateTime endDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      ManufOrderOriginType manufOrderOriginType)
       throws AxelorException;
 
   public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet);

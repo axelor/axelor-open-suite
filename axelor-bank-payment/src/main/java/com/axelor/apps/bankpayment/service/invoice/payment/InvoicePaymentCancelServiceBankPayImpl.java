@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,11 +21,11 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
@@ -107,8 +107,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
     BankOrder paymentBankOrder = invoicePayment.getBankOrder();
 
     if (paymentBankOrder != null
-        && (paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
-            || paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED)) {
+        && (paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT)) {
       throw new AxelorException(
           invoicePayment,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
