@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
-import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -80,7 +79,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
           return;
         }
       }
-      JPA.clear();
+      offset = offset + FETCH_LIMIT;
     }
     partner.setHasBlockedAccount(false);
     partnerRepo.save(partner);
