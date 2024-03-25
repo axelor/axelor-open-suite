@@ -26,7 +26,7 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -58,7 +58,7 @@
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
     <field name="user"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -92,7 +92,7 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
@@ -1565,7 +1565,7 @@
 
   <search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner"
     title="Partner filters">
-    <field name="companyStr" hidden="true"
+    <field name="companySet" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isFactor" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
@@ -1640,7 +1640,7 @@
 
   <search-filters name="contact-filters" model="com.axelor.apps.base.db.Partner"
     title="Contact filters">
-    <field name="companyStr" hidden="true"
+    <field name="companySet" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isFactor" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
