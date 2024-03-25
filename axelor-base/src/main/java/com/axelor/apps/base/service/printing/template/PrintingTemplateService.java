@@ -16,34 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.base.service.printing.template;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.PrintingTemplate;
+import java.util.List;
 
-public interface PeriodControlService {
-
-  /**
-   * Method that control dates (fromDate and toDate) of period. It will throw an exception if a
-   * changement occured while the period is linked to a move.
-   *
-   * @param period
-   */
-  void controlDates(Period period) throws AxelorException;
-
-  /**
-   * Checks if a Move is linked to period
-   *
-   * @param entity
-   * @return
-   */
-  boolean isLinkedToMove(Period period);
-
-  /**
-   * Method that checks is statusSelect and year.statusSelect are greater or equal to 1 (OPENED) .
-   *
-   * @param period
-   * @return true if status select is greater or equal to 1, else false;
-   */
-  boolean isStatusValid(Period period);
+public interface PrintingTemplateService {
+  List<PrintingTemplate> getPrintingTemplates(String modelName) throws AxelorException;
 }

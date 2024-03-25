@@ -125,19 +125,6 @@
             <![CDATA[
 						<>
 							<Box d="flex" justifyContent="flex-end">
-								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
-							</Box>
-						</>
-					]]>
-          </viewer>
-        </field>
-        <field name="$areLinesOutsourced" hidden="true" type="boolean"/>
-        <field name="$viewerAreLinesOutsourced" showTitle="false" readonly="true"
-          showIf="$readonly()" colSpan="2" depends="$areLinesOutsourced">
-          <viewer>
-            <![CDATA[
-						<>
-							<Box d="flex" justifyContent="flex-end">
 								{$areLinesOutsourced && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Subcontracting service')}</Badge>}
 							</Box>
 						</>
@@ -685,7 +672,8 @@
   <action-attrs name="action-manuf-order-attrs-sale-order-onchange-client-partner">
     <attribute name="value"
       expr="eval: __repo__(SaleOrder).all().filter('self.clientPartner.id = ?1 AND self.id IN (?2)',clientPartner.id, saleOrderSet?.collect{it?.id}).fetch()"
-      for="saleOrderSet" if="clientPartner"/>
+      for="saleOrderSet"
+      if="clientPartner &amp;&amp; saleOrderSet != null &amp;&amp; !saleOrderSet.isEmpty()"/>
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-scale-and-precision">

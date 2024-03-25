@@ -72,6 +72,8 @@
                 pp.id
     ]]>
     </long>
+    <many-to-many name="generatedPurchaseOrderProductSet"
+      ref="com.axelor.apps.base.db.Product" title="Products for generated purchase order"/>
     <boolean name="isPersonalized" title="Personalized"/>
 
     <extra-code><![CDATA[

@@ -8,7 +8,7 @@
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel-tabs name="mainPanelTab" showIf="id"
-          if="__config__.app.getApp('stock')?.enableSiteManagement">
+          if="__config__.app.getApp('base')?.enableSiteManagementForStock">
           <panel-dashlet action="action-site-view-show-stock-location"
             name="stockPanel" title="Stock"/>
         </panel-tabs>

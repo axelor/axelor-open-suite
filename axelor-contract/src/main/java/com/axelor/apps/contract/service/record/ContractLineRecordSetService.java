@@ -16,28 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.contract.service.record;
 
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Period;
-import com.axelor.auth.db.User;
-import com.axelor.db.Query;
-import com.axelor.meta.CallMethod;
+import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
 
-public interface PeriodServiceAccount {
+public interface ContractLineRecordSetService {
 
-  public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status);
-
-  @CallMethod
-  public boolean isManageClosedPeriod(Period period, User user) throws AxelorException;
-
-  @CallMethod
-  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
-
-  @CallMethod
-  public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException;
-
-  @CallMethod
-  public boolean isAuthorizedToAccountOnPeriod(Move move, User user) throws AxelorException;
+  void setCompanyExTaxTotal(
+      AnalyticLineContractModel analyticLineContractModel, ContractLine contractLine)
+      throws AxelorException;
 }

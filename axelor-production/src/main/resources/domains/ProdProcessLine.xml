@@ -48,9 +48,8 @@
     <many-to-one name="workCenterGroup"
       ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"/>
     <integer name="sequence" title="Sequence"/>
-    <boolean name="useLineInGeneratedPurchaseOrder"
-      title="Use this line in the generated purchase order"
-      help="Products associated with the work center will be used"/>
+    <many-to-many name="generatedPurchaseOrderProductSet"
+      ref="com.axelor.apps.base.db.Product" title="Products for generated purchase order"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <integer name="costTypeSelect" title="Cost type"
       selection="iproduction.work.center.cost.type.select"/>
@@ -59,6 +58,7 @@
     <integer name="hrCostTypeSelect" title="Cost type"
       selection="iproduction.work.center.cost.type.select"/>
     <decimal name="hrCostAmount" title="Cost (W.T.)"/>
+    <long name="outsourcingDuration" title="Outsourcing duration" nullable="true"/>
 
     <track>
       <field name="prodProcess"/>

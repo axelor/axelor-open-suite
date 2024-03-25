@@ -28,7 +28,8 @@
       <button name="historizePricingBtn" title="Historize"
         onClick="save,action-pricing-method-historize-pricing"/>
     </toolbar>
-    <panel name="mainPanel" readonlyIf="$popup()">
+
+    <panel name="mainPanel" colSpan="12">
       <panel name="overviewPanel" colSpan="12">
         <field name="name"/>
         <field name="startDate" required="true" onChange="action-pricing-method-check-dates"/>
