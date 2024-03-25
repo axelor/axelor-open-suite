@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class MoveAttrsServiceImpl implements MoveAttrsService {
 
@@ -403,7 +403,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   public void addThirdPartyPayerPartnerReadonly(
       Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean isReadonly =
-        move.getMoveLineList().stream()
+        CollectionUtils.emptyIfNull(move.getMoveLineList()).stream()
             .map(MoveLine::getInvoiceTermList)
             .filter(CollectionUtils::isNotEmpty)
             .flatMap(Collection::stream)
