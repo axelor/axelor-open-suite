@@ -16,6 +16,11 @@
         <field name="mrpLineType.typeSelect" hidden="true"/>
       </insert>
     </extend>
+    <extend target="//field[@name='supplierPartner']">
+      <insert position="after">
+        <field name="billOfMaterial"/>
+      </insert>
+    </extend>
   </grid>
 
   <form name="mrp-line-form" id="mrp-line-production-form"
@@ -28,6 +33,11 @@
     <extend target="//field[@name='mrpLineType.elementSelect']">
       <insert position="after">
         <field name="mrpLineType.typeSelect"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='mrpLineOriginList']">
+      <insert position="after">
+        <field name="billOfMaterial" showIf="mrpLineType.elementSelect == 8"/>
       </insert>
     </extend>
   </form>
