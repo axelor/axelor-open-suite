@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.interfaces.Currenciable;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,6 +29,29 @@ public class CurrencyScaleServiceImpl implements CurrencyScaleService {
 
   protected static final int DEFAULT_SCALE = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
   protected static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
+
+  // Scaled value getter
+
+  @Override
+  public BigDecimal getScaledValue(Currenciable currenciable, BigDecimal value) {
+    Currency currency = currenciable != null ? currenciable.getCurrency() : null;
+
+    return this.getScaledValue(value, this.getCurrencyScale(currency));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(Currenciable currenciable, BigDecimal value) {
+    Currency currency = currenciable != null ? currenciable.getCompanyCurrency() : null;
+
+    return this.getScaledValue(value, this.getCurrencyScale(currency));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(Company company, BigDecimal value) {
+    Currency currency = company != null ? company.getCurrency() : null;
+
+    return this.getScaledValue(value, this.getCurrencyScale(currency));
+  }
 
   @Override
   public BigDecimal getScaledValue(BigDecimal value) {
@@ -43,8 +69,62 @@ public class CurrencyScaleServiceImpl implements CurrencyScaleService {
     return value == null ? null : value.setScale(scale, DEFAULT_ROUNDING_MODE);
   }
 
+  // Currency scale getter
   @Override
   public int getScale() {
     return DEFAULT_SCALE;
+  }
+
+  @Override
+  public int getScale(Currenciable currenciable) {
+    Currency currency = currenciable != null ? currenciable.getCurrency() : null;
+    return this.getCurrencyScale(currency);
+  }
+
+  @Override
+  public int getCompanyScale(Currenciable currenciable) {
+    Currency currency = currenciable != null ? currenciable.getCompanyCurrency() : null;
+    return this.getCurrencyScale(currency);
+  }
+
+  @Override
+  public int getCurrencyScale(Currency currency) {
+    return currency != null ? currency.getNumberOfDecimals() : this.getScale();
+  }
+
+  @Override
+  public int getCompanyCurrencyScale(Company company) {
+    return company != null ? this.getCurrencyScale(company.getCurrency()) : this.getScale();
+  }
+
+  // Comparison methods with scale depending on Company currency o Currency
+  @Override
+  public boolean isGreaterThan(
+      BigDecimal amount1, BigDecimal amount2, Currenciable currenciable, boolean isCompanyValue) {
+    amount1 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(currenciable, amount1)
+            : this.getScaledValue(currenciable, amount1);
+    amount2 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(currenciable, amount2)
+            : this.getScaledValue(currenciable, amount2);
+
+    return amount1 != null && (amount1.compareTo(amount2) > 0);
+  }
+
+  @Override
+  public boolean equals(
+      BigDecimal amount1, BigDecimal amount2, Currenciable currenciable, boolean isCompanyValue) {
+    amount1 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(currenciable, amount1)
+            : this.getScaledValue(currenciable, amount1);
+    amount2 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(currenciable, amount2)
+            : this.getScaledValue(currenciable, amount2);
+
+    return amount1.compareTo(amount2) == 0;
   }
 }

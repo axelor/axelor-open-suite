@@ -357,7 +357,7 @@
             action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"/>
           <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel"
             colSpan="12"/>
-          <panel-dashlet action="action-stock-view-stock-history-line"
+          <panel-dashlet action="action-stock-view-stock-location-line-history"
             name="stockHistoryLinePanel" colSpan="12" showIf="productTypeSelect == 'storable'"/>
         </panel>
       </panel>
@@ -366,7 +366,8 @@
         showIf="productTypeSelect == 'storable' &amp;&amp; ((procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce') || (productSubTypeSelect == 3 || productSubTypeSelect == 2))"
         onTabSelect="action-product-attrs-readonly-create-production-order"
         if-module="axelor-production" if="__config__.app.isApp('production')">
-        <field name="costSheetGroup" showIf="productSubTypeSelect == 3"
+        <field name="costSheetGroup"
+          showIf="productSubTypeSelect == 3 || productSubTypeSelect == 2"
           if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
         <field name="economicManufOrderQty"
           showIf="productSubTypeSelect == 1 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
