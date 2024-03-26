@@ -168,15 +168,12 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
             .filter(":userId IN self.membersUserSet.id")
             .bind("userId", expenseLine.getEmployee().getUser().getId())
             .fetch();
-    if (!projectList.isEmpty()) {
-      return "self.id IN ("
-          + StringHelper.getIdListString(
-              projectList.stream()
-                  .map(Project::getProjectTaskList)
-                  .flatMap(Collection::stream)
-                  .collect(Collectors.toList()))
-          + ")";
-    }
-    return "self.id IN (0)";
+    return "self.id IN ("
+        + StringHelper.getIdListString(
+            projectList.stream()
+                .map(Project::getProjectTaskList)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()))
+        + ")";
   }
 }
