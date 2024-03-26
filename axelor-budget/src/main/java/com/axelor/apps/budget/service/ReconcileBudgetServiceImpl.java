@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapService;
 import com.axelor.apps.account.service.reconcile.ReconcileSequenceService;
 import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
 import com.axelor.apps.base.AxelorException;
@@ -89,6 +90,7 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
       MoveValidateService moveValidateService,
       CurrencyScaleService currencyScaleService,
       InvoiceTermPfpService invoiceTermPfpService,
+      ForeignExchangeGapService foreignExchangeGapService,
       InvoiceTermFilterService invoiceTermFilterService,
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService) {
@@ -117,6 +119,7 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
         moveValidateService,
         currencyScaleService,
         invoiceTermPfpService,
+        foreignExchangeGapService,
         invoiceTermFilterService);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;

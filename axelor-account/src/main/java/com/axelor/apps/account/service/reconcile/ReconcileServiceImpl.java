@@ -119,6 +119,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveValidateService moveValidateService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermPfpService invoiceTermPfpService;
+  protected ForeignExchangeGapService foreignExchangeGapService;
   protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
@@ -147,6 +148,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveValidateService moveValidateService,
       CurrencyScaleService currencyScaleService,
       InvoiceTermPfpService invoiceTermPfpService,
+      ForeignExchangeGapService foreignExchangeGapService,
       InvoiceTermFilterService invoiceTermFilterService) {
 
     this.moveToolService = moveToolService;
@@ -173,6 +175,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveValidateService = moveValidateService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermPfpService = invoiceTermPfpService;
+    this.foreignExchangeGapService = foreignExchangeGapService;
     this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
@@ -239,6 +242,14 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException {
 
+    this.manageForeignExchangeGap(reconcile, updateInvoicePayments, updateInvoiceTerms);
+    return this.confirmReconcileWithoutForeignExchange(
+        reconcile, updateInvoicePayments, updateInvoiceTerms);
+  }
+
+  protected Reconcile confirmReconcileWithoutForeignExchange(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
+      throws AxelorException {
     checkDifferentAccounts(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
     reconcile = initReconcileConfirmation(reconcile, updateInvoicePayments, updateInvoiceTerms);
@@ -870,7 +881,6 @@ public class ReconcileServiceImpl implements ReconcileService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException {
-
     log.debug("unreconcile : reconcile : {}", reconcile);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
@@ -894,6 +904,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
+    this.reverseForeignExchangeMove(reconcile);
     if (invoice != null
         && invoice.getSubrogationRelease() != null
         && invoice.getSubrogationRelease().getStatusSelect()
@@ -1287,7 +1298,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             debitAccount,
             reconciledAmount,
             false,
-            debitMoveLine.getDate(),
+            move.getDate(),
             1,
             null,
             null);
@@ -1300,7 +1311,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             creditAccount,
             reconciledAmount,
             true,
-            creditMoveLine.getDate(),
+            move.getDate(),
             2,
             null,
             null);
@@ -1319,5 +1330,48 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     return newReconcile;
+  }
+
+  protected void manageForeignExchangeGap(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
+      throws AxelorException {
+    if (foreignExchangeGapService.checkForeignExchangeAccounts(reconcile.getCompany())) {
+      Move foreignExchangeGapMove =
+          foreignExchangeGapService.manageForeignExchangeGap(
+              reconcile, updateInvoicePayments, updateInvoiceTerms);
+      if (foreignExchangeGapMove != null) {
+        Reconcile newReconcile =
+            this.createForeignExchangeReconcile(
+                reconcile,
+                foreignExchangeGapMove.getMoveLineList().get(0),
+                foreignExchangeGapMove.getMoveLineList().get(1));
+        if (newReconcile != null) {
+          newReconcile.setForeignExchangeMove(foreignExchangeGapMove);
+          this.confirmReconcileWithoutForeignExchange(
+              newReconcile, updateInvoicePayments, updateInvoiceTerms);
+        }
+      }
+    }
+  }
+
+  protected Reconcile createForeignExchangeReconcile(
+      Reconcile reconcile, MoveLine newCreditMoveLine, MoveLine newDebitMoveLine)
+      throws AxelorException {
+    Reconcile newReconcile;
+    MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+    BigDecimal reconciledAmount = newCreditMoveLine.getDebit().max(newCreditMoveLine.getCredit());
+
+    if (creditMoveLine.getCredit().compareTo(creditMoveLine.getDebit()) < 0) {
+      newReconcile = this.createReconcile(newDebitMoveLine, creditMoveLine, reconciledAmount, true);
+    } else {
+      newReconcile = this.createReconcile(debitMoveLine, newCreditMoveLine, reconciledAmount, true);
+    }
+
+    return newReconcile;
+  }
+
+  protected void reverseForeignExchangeMove(Reconcile reconcile) throws AxelorException {
+    foreignExchangeGapService.unreconcileForeignExchangeMove(reconcile);
   }
 }

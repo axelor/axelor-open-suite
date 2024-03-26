@@ -364,6 +364,8 @@ import com.axelor.apps.account.service.period.PeriodControlService;
 import com.axelor.apps.account.service.period.PeriodControlServiceImpl;
 import com.axelor.apps.account.service.period.PeriodServiceAccount;
 import com.axelor.apps.account.service.period.PeriodServiceAccountImpl;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapService;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
@@ -854,6 +856,8 @@ public class AccountModule extends AxelorModule {
     bind(AccountingReportTypeRepository.class).to(AccountingReportTypeManagementRepository.class);
 
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
+
+    bind(ForeignExchangeGapService.class).to(ForeignExchangeGapServiceImpl.class);
 
     bind(PeriodCheckService.class).to(PeriodCheckServiceImpl.class);
 
