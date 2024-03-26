@@ -7,6 +7,7 @@
     model="com.axelor.studio.db.AppBase" extension="true">
     <extend target="//panel[@name='siteManagementPanel']">
       <insert position="inside">
+        <separator title="Project" colSpan="12"/>
         <field name="enableSiteManagementForProject" widget="boolean-switch"
           if="__config__.app.isApp('project')"/>
         <field name="defaultSitesSet" widget="MultiSelect" hidden="true"
