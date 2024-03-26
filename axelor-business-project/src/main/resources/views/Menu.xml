@@ -27,6 +27,16 @@
     <view type="form" name="project-folder-form"/>
   </action-view>
 
+  <menuitem name="business-project-sites" parent="project-configurations" title="Sites"
+    action="business.project.sites" order="110" if="__config__.app.isApp('business-project')"/>
+
+  <action-view name="business.project.sites" title="Sites"
+    model="com.axelor.apps.base.db.Site">
+    <view type="grid" name="site-grid"/>
+    <view type="form" name="site-form"/>
+    <context name="_isFromProject" expr="true"/>
+  </action-view>
+
   <menuitem name="business-project-root-invoicing-project" order="400"
     parent="menu-project-root" title="Invoicing project"
     action="business.project.root.invoicing.project" if="__config__.app.isApp('business-project')"/>
