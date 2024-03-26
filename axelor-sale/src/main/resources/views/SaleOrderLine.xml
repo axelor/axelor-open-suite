@@ -501,6 +501,10 @@
         <field name="price"
           onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
           colSpan="4" hidden="true"/>
+        <button name="recalculateBtn" onClick="action-sale-order-line-group-recalculate"
+                title="Recalculate" colSpan="2" readonlyIf="isDisabledFromCalculation"
+                showIf="id &amp;&amp; saleOrderLineListSize"
+                if="__config__.app.getApp('sale')?.isSubLinesEnabled"/>
         <field name="inTaxPrice"
           onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
           colSpan="4" hidden="true"/>

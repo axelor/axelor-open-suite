@@ -78,7 +78,7 @@ public class ConstructionSaleOrderLineServiceImpl
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    if (!appSaleService.getAppSale().getIsUnitPriceCalculationEnabled()){
+    if (!appSaleService.getAppSale().getIsUnitPriceCalculationEnabled()) {
       super.computeProductInformation(saleOrderLine, saleOrder);
       return;
     }
@@ -99,8 +99,8 @@ public class ConstructionSaleOrderLineServiceImpl
       Set<TaxLine> taxLineSet,
       boolean resultInAti)
       throws AxelorException {
-    if (!appSaleService.getAppSale().getIsUnitPriceCalculationEnabled()){
-      return super.getUnitPrice(saleOrder,saleOrderLine,taxLineSet,resultInAti);
+    if (!appSaleService.getAppSale().getIsUnitPriceCalculationEnabled()) {
+      return super.getUnitPrice(saleOrder, saleOrderLine, taxLineSet, resultInAti);
     }
     Product product = saleOrderLine.getProduct();
 
@@ -116,8 +116,8 @@ public class ConstructionSaleOrderLineServiceImpl
                     .add(saleOrderLine.getGeneralExpenses().add(BigDecimal.ONE)));
 
     return (productInAti == resultInAti)
-            ? productSalePrice
-            : taxService.convertUnitPrice(
-                productInAti, taxLineSet, productSalePrice, AppBaseService.COMPUTATION_SCALING);
+        ? productSalePrice
+        : taxService.convertUnitPrice(
+            productInAti, taxLineSet, productSalePrice, AppBaseService.COMPUTATION_SCALING);
   }
 }

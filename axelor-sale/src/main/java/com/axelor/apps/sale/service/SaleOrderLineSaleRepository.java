@@ -32,8 +32,8 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     json.put(
-            "$isUnitPriceCalculationEnabled",
-            Beans.get(AppSaleService.class).getAppSale().getIsUnitPriceCalculationEnabled());
+        "$isUnitPriceCalculationEnabled",
+        Beans.get(AppSaleService.class).getAppSale().getIsUnitPriceCalculationEnabled());
     json.put(
         "$nbDecimalDigitForUnitPrice",
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
