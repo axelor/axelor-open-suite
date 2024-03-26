@@ -8,7 +8,7 @@
     <toolbar>
       <button name="newLineBtn" title="New File" icon="fa-plus"
         onClick="action-contract-file-view-add-file"/>
-      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+      <button name="removeLineBtn" title="Remove files" icon="fa-trash"
         onClick="action-contract-file-validate-confirm-remove, action-contract-file-method-remove"/>
     </toolbar>
     <field name="fileType"/>
