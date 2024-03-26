@@ -27,7 +27,7 @@ import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
@@ -55,8 +55,8 @@ import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.InvoiceBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentService;
-import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
+import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl;
@@ -204,9 +204,10 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(BankStatementRemoveService.class).to(BankStatementRemoveServiceImpl.class);
 
-    bind(InvoiceTermBankPaymentService.class).to(InvoiceTermBankPaymentServiceImpl.class);
+    bind(InvoiceTermFilterBankPaymentService.class)
+        .to(InvoiceTermFilterBankPaymentServiceImpl.class);
 
-    bind(InvoiceTermServiceImpl.class).to(InvoiceTermBankPaymentServiceImpl.class);
+    bind(InvoiceTermFilterServiceImpl.class).to(InvoiceTermFilterBankPaymentServiceImpl.class);
 
     bind(MoveLineGroupServiceImpl.class).to(MoveLineGroupBankPaymentServiceImpl.class);
     bind(MoveLineGroupBankPaymentService.class).to(MoveLineGroupBankPaymentServiceImpl.class);
