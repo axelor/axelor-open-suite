@@ -154,6 +154,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return paymentMode.getAccountManagementList().stream()
         .filter(it -> Objects.equals(company, it.getCompany()))
         .map(AccountManagement::getBankDetails)
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
