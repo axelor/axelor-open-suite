@@ -21,11 +21,9 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
-import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
@@ -49,19 +47,12 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
 
   @Inject
   public InvoicePaymentCancelServiceBankPayImpl(
-      AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
-      ReconcileService reconcileService,
       BankOrderService bankOrderService,
       InvoicePaymentToolService invoicePaymentToolService) {
 
-    super(
-        accountConfigService,
-        invoicePaymentRepository,
-        moveCancelService,
-        reconcileService,
-        invoicePaymentToolService);
+    super(invoicePaymentRepository, moveCancelService, invoicePaymentToolService);
 
     this.bankOrderService = bankOrderService;
   }

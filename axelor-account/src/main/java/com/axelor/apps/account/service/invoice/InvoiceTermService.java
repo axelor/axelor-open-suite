@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -225,8 +224,6 @@ public interface InvoiceTermService {
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 
-  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
-
   void setCustomizedAmounts(InvoiceTerm invoiceTerm);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
@@ -234,7 +231,7 @@ public interface InvoiceTermService {
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException;
 
-  boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
+  InvoiceTerm updateInvoiceTermsAmountsSessionPart(InvoiceTerm invoiceTerm, boolean isRefund);
 
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
@@ -251,10 +248,6 @@ public interface InvoiceTermService {
 
   void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
 
-  boolean isNotReadonly(InvoiceTerm invoiceTerm);
-
-  boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
-
   LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
 
   void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException;
@@ -266,20 +259,15 @@ public interface InvoiceTermService {
   @CallMethod
   boolean isMultiCurrency(InvoiceTerm invoiceTerm);
 
-  InvoiceTerm updateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTerm,
+  List<InvoiceTermPayment> updateInvoiceTerms(
+      List<InvoiceTerm> invoiceTermList,
+      InvoicePayment invoicePayment,
       BigDecimal amount,
-      Reconcile reconcile,
-      Move move,
-      PaymentSession paymentSession,
-      boolean isRefund)
+      Reconcile reconcile)
       throws AxelorException;
 
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
-
-  boolean isThresholdNotOnLastUnpaidInvoiceTerm(
-      MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
 
   InvoiceTerm initInvoiceTermWithParents(InvoiceTerm invoiceTerm) throws AxelorException;
 
