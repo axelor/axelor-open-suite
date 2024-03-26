@@ -5,21 +5,11 @@
 
   <form title="Site" name="site-form" id="business-project-site-form"
     model="com.axelor.apps.base.db.Site" extension="true">
-    <extend target="//panel[@name='basePanel']">
+    <extend target="//field[@name='enterableOnProject']">
       <insert position="after">
-        <panel name="projectPanel" title="Project"
-          if="__config__.app.getApp('base')?.enableSiteManagementForProject">
-          <field name="invoicingType"/>
-          <field name="enterableOnProject" widget="boolean-switch"/>
-        </panel>
+        <field name="invoicingType"/>
       </insert>
     </extend>
   </form>
-
-  <action-attrs name="action-site-attrs-set-default"
-    id="business-project-action-site-attrs-set-default">
-    <attribute for="typeSelect" name="value" expr="1"/>
-    <attribute for="enterableOnProject" name="value" expr="eval:_isFromProject"/>
-  </action-attrs>
 
 </object-views>
