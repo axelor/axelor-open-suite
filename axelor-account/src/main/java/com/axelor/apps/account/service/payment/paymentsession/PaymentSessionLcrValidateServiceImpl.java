@@ -13,6 +13,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -59,6 +60,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected ReconcileService reconcileService;
   protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermReplaceService invoiceTermReplaceService;
 
   protected int counter = 0;
 
@@ -77,7 +79,8 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
       PaymentModeService paymentModeService,
       MoveInvoiceTermService moveInvoiceTermService,
       ReconcileService reconcileService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      InvoiceTermReplaceService invoiceTermReplaceService) {
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveValidateService = moveValidateService;
@@ -92,6 +95,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.reconcileService = reconcileService;
     this.invoiceTermService = invoiceTermService;
+    this.invoiceTermReplaceService = invoiceTermReplaceService;
   }
 
   @Override
@@ -283,6 +287,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     fillPlacementMove(move, invoiceTerm, paymentSession, reconciledAmount, out, accountConfig);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void fillPlacementMove(
       Move move,
       InvoiceTerm invoiceTerm,
@@ -325,9 +330,10 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
 
     moveCutOffService.autoApplyCutOffDates(move);
 
-    reconcileService.reconcile(invoiceTermMoveLine, moveLine, null, false, false);
+    invoiceTermReplaceService.replaceInvoiceTerms(
+        invoiceTerm.getInvoice(), moveLine.getInvoiceTermList(), List.of(invoiceTerm));
 
-    invoiceTermService.payInvoiceTerms(moveLine.getInvoiceTermList());
+    reconcileService.reconcile(invoiceTermMoveLine, moveLine, null, false, true);
     invoiceTermService.payInvoiceTerms(List.of(invoiceTerm));
   }
 
@@ -438,10 +444,11 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     moveCutOffService.autoApplyCutOffDates(move);
 
     Reconcile reconcile =
-        reconcileService.reconcile(moveLine, placementMoveLine, null, false, false);
+        reconcileService.reconcile(moveLine, placementMoveLine, null, false, true);
 
-    invoiceTermService.payInvoiceTerms(placementMoveLine.getInvoiceTermList());
-    invoiceTermService.payInvoiceTerms(moveLine.getInvoiceTermList());
+    List<InvoiceTerm> invoiceTermListToPay = placementMoveLine.getInvoiceTermList();
+    invoiceTermListToPay.addAll(moveLine.getInvoiceTermList());
+    invoiceTermService.payInvoiceTerms(invoiceTermListToPay);
 
     reconcileService.updatePayment(
         reconcile,
@@ -451,7 +458,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
         invoiceTerm.getMoveLine().getMove(),
         move,
         invoiceTerm.getAmountPaid(),
-        false);
+        true);
   }
 
   protected MoveLine updateMoveLineAmounts(MoveLine moveLine, InvoiceTerm invoiceTerm) {

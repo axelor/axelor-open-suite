@@ -1697,10 +1697,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      invoiceTerm.setIsPaid(true);
-      invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
-      invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
-      invoiceTermFinancialDiscountService.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+      if (invoiceTerm != null) {
+        invoiceTerm.setIsPaid(true);
+        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+        invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
+        invoiceTermFinancialDiscountService.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+      }
     }
   }
 

@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -58,6 +59,7 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
       MoveInvoiceTermService moveInvoiceTermService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
+      InvoiceTermReplaceService invoiceTermReplaceService,
       PaymentSessionBankOrderService paymentSessionBankOrderService,
       BankOrderService bankOrderService,
       BankOrderRepository bankOrderRepo) {
@@ -75,7 +77,8 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
         paymentModeService,
         moveInvoiceTermService,
         reconcileService,
-        invoiceTermService);
+        invoiceTermService,
+        invoiceTermReplaceService);
     this.paymentSessionBankOrderService = paymentSessionBankOrderService;
     this.bankOrderService = bankOrderService;
     this.bankOrderRepo = bankOrderRepo;
