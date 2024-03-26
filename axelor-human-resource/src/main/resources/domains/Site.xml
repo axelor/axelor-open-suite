@@ -7,9 +7,8 @@
 
   <entity name="Site">
 
-    <integer name="invoicingType" selection="business.project.task.invoicing.type.select"
-      default="3" title="Invoicing Type" required="true"/>
-    <boolean name="enterableOnProject" title="Enterable on project"/>
+    <boolean name="enterableOnExpense" title="Enterable on expense"/>
+    <boolean name="enterableOnTimesheet" title="Enterable on timesheet"/>
 
   </entity>
 

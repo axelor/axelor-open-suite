@@ -3,23 +3,25 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
-  <form title="Site" name="site-form" id="business-project-site-form"
+  <form title="Site" name="site-form" id="human-resource-site-form"
     model="com.axelor.apps.base.db.Site" extension="true">
     <extend target="//panel[@name='basePanel']">
       <insert position="after">
-        <panel name="projectPanel" title="Project"
+        <panel name="hrPanel" title="HR"
           if="__config__.app.getApp('base')?.enableSiteManagementForProject">
-          <field name="invoicingType"/>
-          <field name="enterableOnProject" widget="boolean-switch"/>
+          <field name="enterableOnExpense" widget="boolean-switch"/>
+          <field name="enterableOnTimesheet" widget="boolean-switch"/>
         </panel>
       </insert>
     </extend>
   </form>
 
   <action-attrs name="action-site-attrs-set-default"
-    id="business-project-action-site-attrs-set-default">
+    id="human-resource-action-site-attrs-set-default">
     <attribute for="typeSelect" name="value" expr="1"/>
     <attribute for="enterableOnProject" name="value" expr="eval:_isFromProject"/>
+    <attribute for="enterableOnExpense" name="value" expr="eval:_isFromProject"/>
+    <attribute for="enterableOnTimesheet" name="value" expr="eval:_isFromProject"/>
   </action-attrs>
 
 </object-views>
