@@ -16,7 +16,7 @@
   </form>
 
   <action-attrs name="action-site-attrs-set-default"
-    id="business-project-action-site-attrs-set-default">
+    id="project-action-site-attrs-set-default">
     <attribute for="typeSelect" name="value" expr="1"/>
     <attribute for="isEnterableOnProject" name="value" expr="eval:_isFromProject"/>
   </action-attrs>
