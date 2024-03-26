@@ -232,8 +232,9 @@
       <field name="quantity" as="quantity"/>
 
     </node>
-    <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" domain="self.toInvoice = true AND self.invoiced = false AND (self.invoicingType = :invoicingTypePackage OR self.invoicingType = :invoicingTypeProgress)"
-          onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
+    <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask"
+      domain="self.toInvoice = true AND self.invoiced = false AND (self.invoicingType = :invoicingTypePackage OR self.invoicingType = :invoicingTypeProgress)"
+      onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="invoicingProgress" as="invoicingProgress"/>
@@ -256,7 +257,7 @@
     <column name="deleteTaskBtn" type="button"/>
     <column name="openTaskBtn" type="button"/>
     <node model="com.axelor.apps.project.db.ProjectTask"
-          onClick="action-project-task-view-task" domain="self.project.id = :_id" orderBy="taskDate">
+      onClick="action-project-task-view-task" domain="self.project.id = :_id" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="initialMarkup" as="initial"/>
@@ -266,29 +267,29 @@
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
-              onClick="save, action-project-view-add-subtask"/>
+        onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
-              onClick="save, action-project-task-method-generate-purchase-order"/>
+        onClick="save, action-project-task-method-generate-purchase-order"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
-              onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
       <button name="openTaskBtn" icon="fa-external-link"
-              onClick="action-project-task-open-task"/>
+        onClick="action-project-task-open-task"/>
 
     </node>
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask"
-          onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
+      onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
-              onClick="save, action-project-view-add-subtask"/>
+        onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
-              onClick="save, action-project-task-method-generate-purchase-order"/>
+        onClick="save, action-project-task-method-generate-purchase-order"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
-              onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
       <button name="openTaskBtn" icon="fa-external-link"
-              onClick="action-project-task-open-task"/>
+        onClick="action-project-task-open-task"/>
     </node>
   </tree>
 
