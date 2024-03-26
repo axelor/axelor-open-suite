@@ -30,7 +30,7 @@
         readonly="true"/>
       <field name="project" domain="self.isBusinessProject = true" form-view="project-form"
         grid-view="project-grid"
-        onChange="action-invoicing-project-record-set-consolidate-phase-when-invoicing,action-invoicing-project-method-fill-in"/>
+        onChange="action-invoicing-project-record-set-consolidate-phase-when-invoicing,action-invoicing-project-method-fill-in,action-invoicing-project-attrs-reload-invoicing-project-task-panel-dashlet"/>
       <field name="deadlineDate" readonlyIf="invoice"
         onChange="action-invoicing-project-method-fill-in"/>
       <field name="attachAnnexToInvoice" widget="boolean-switch" readonlyIf="invoice"/>
@@ -51,6 +51,8 @@
 
     <panel-tabs name="mainPanelTab">
       <panel name="listPanel" title="Elements To Invoice">
+        <panel-dashlet name="invoicingProjectTaskTreeDashletPanel" title="Tasks"
+                       colSpan="12" action="action-project-task-view-show-project-task-tree"/>
         <panel-related title="Sale" field="saleOrderLineSet" colSpan="12"
           canNew="false" canEdit="false" canSelect="false" form-view="sale-order-line-form"
           grid-view="sale-order-line-grid"
@@ -80,7 +82,7 @@
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction()"
           name="manufOrderSetPanel"/>
 
-        <panel-related field="projectTaskSet" colSpan="12" canNew="false"
+        <panel-related field="projectTaskSet" colSpan="12" canNew="false" hidden="true"
           canEdit="false" canSelect="false" form-view="project-task-form"
           grid-view="project-task-invoicing-project-grid"
           showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0" readonlyIf="invoice"
@@ -104,6 +106,21 @@
     </panel-tabs>
 
   </form>
+
+  <action-attrs name="action-invoicing-project-attrs-reload-invoicing-project-task-panel-dashlet">
+    <attribute name="refresh" for="invoicingProjectTaskTreeDashletPanel"
+               expr="eval: true"/>
+  </action-attrs>
+
+  <action-view name="action-project-task-view-show-project-task-tree" title="Project Task Tree"
+               model="com.axelor.apps.project.db.ProjectTask">
+    <view type="tree" name="invoicing-project-project-task-tree"/>
+    <view type="form" name="project-task-form"/>
+    <domain>self.project.id  = :_id AND self.parentTask = null AND self.toInvoice = true AND self.invoiced = false AND (self.invoicingType = :invoicingTypePackage OR self.invoicingType = :invoicingTypeProgress)</domain>
+    <context name="_id" expr="eval: project?.id"/>
+    <context name="invoicingTypePackage" expr="eval: 3"/>
+    <context name="invoicingTypeProgress" expr="eval: 4"/>
+  </action-view>
 
   <action-group name="action-invoicing-project-group-on-new">
     <action name="action-invoicing-project-attrs-title-project"/>
