@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -116,5 +118,18 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
       }
     }
     return false;
+  }
+
+  @Override
+  public void setAnalyticAxisSeq(AccountConfig accountConfig) {
+    List<AnalyticAxisByCompany> analyticAxisByCompanyList =
+        accountConfig.getAnalyticAxisByCompanyList();
+    if (ObjectUtils.isEmpty(analyticAxisByCompanyList)
+        || analyticAxisByCompanyList.stream().anyMatch(axis -> axis.getSequence() == 0)) {
+      return;
+    }
+    for (AnalyticAxisByCompany analyticAxisByCompany : analyticAxisByCompanyList) {
+      analyticAxisByCompany.setSequence(analyticAxisByCompany.getSequence() - 1);
+    }
   }
 }
