@@ -89,6 +89,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
         appMobileSettings.getIsStockLocationManagementEnabled(),
+        appMobileSettings.getMinimalRequiredMobileAppVersion(),
         getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()));
   }
 

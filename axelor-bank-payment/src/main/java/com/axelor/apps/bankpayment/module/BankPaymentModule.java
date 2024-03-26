@@ -53,8 +53,6 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
@@ -249,7 +247,6 @@ public class BankPaymentModule extends AxelorModule {
         .to(BankReconciliationReconciliationServiceImpl.class);
     bind(BankReconciliationSelectedLineComputationService.class)
         .to(BankReconciliationSelectedLineComputationServiceImpl.class);
-    bind(CurrencyScaleServiceBankPayment.class).to(CurrencyScaleServiceBankPaymentImpl.class);
     bind(BankReconciliationLineRepository.class)
         .to(BankReconciliationLineManagementRepository.class);
     bind(BankStatementLineRepository.class).to(BankStatementLineManagementRepository.class);

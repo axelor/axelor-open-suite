@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.AuthUtils;
@@ -56,6 +57,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   protected TimesheetLineService timesheetLineService;
   protected TimesheetRepository timesheetRepository;
   protected TimesheetLineRepository timesheetLineRepository;
+  protected TimesheetLineCreateService timesheetLineCreateService;
 
   @Inject
   public TimesheetTimerServiceImpl(
@@ -64,13 +66,15 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
       TimesheetLineService timesheetLineService,
       TimesheetRepository timesheetRepository,
       TimesheetLineRepository timesheetLineRepository,
-      TSTimerRepository tsTimerRepository) {
+      TSTimerRepository tsTimerRepository,
+      TimesheetLineCreateService timesheetLineCreateService) {
     this.timesheetFetchService = timesheetFetchService;
     this.appBaseService = appBaseService;
     this.timesheetLineService = timesheetLineService;
     this.timesheetRepository = timesheetRepository;
     this.timesheetLineRepository = timesheetLineRepository;
     this.tsTimerRepository = tsTimerRepository;
+    this.timesheetLineCreateService = timesheetLineCreateService;
   }
 
   @Transactional
@@ -146,7 +150,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
             ? appBaseService.getTodayDateTime().toLocalDate()
             : timer.getStartDateTime().toLocalDate();
     TimesheetLine timesheetLine =
-        timesheetLineService.createTimesheetLine(
+        timesheetLineCreateService.createTimesheetLine(
             timer.getProject(),
             timer.getProjectTask(),
             timer.getProduct(),

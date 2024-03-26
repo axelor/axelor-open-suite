@@ -41,6 +41,9 @@
   <input file="base_addressTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
 
+  <input file="base_economicArea.csv" separator=";"
+    type="com.axelor.apps.base.db.EconomicArea" search="self.importId = :importId"/>
+
   <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
     search="self.importId = :importId"/>
 
@@ -89,9 +92,6 @@
   <input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source"
     search="self.code = :code"/>
 
-  <input file="base_economicArea.csv" separator=";"
-    type="com.axelor.apps.base.db.EconomicArea" search="self.importId = :importId"/>
-
   <input file="base_region.csv" separator=";" type="com.axelor.apps.base.db.Region"/>
 
   <input file="base_departement.csv" separator=";" type="com.axelor.apps.base.db.Department"/>
@@ -109,7 +109,8 @@
 
   <input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportAddress:importAddress">
-    <bind to="city" search="concat(self.zip,' ',self.name) = :addressL6" update="true"/>
+    <bind to="city" search="lower(concat(self.zip,' ',self.name)) = lower(:addressL6)"
+      update="true"/>
   </input>
 
   <input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency"
