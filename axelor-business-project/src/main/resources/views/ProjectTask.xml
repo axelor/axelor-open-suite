@@ -58,9 +58,6 @@
       <insert position="after">
         <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
           form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
-        <field name="site" onSelect="action-project-task-attrs-set-site-domain"
-          form-view="site-form" grid-view="site-grid"
-          if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
       </insert>
     </extend>
     <extend target="//field[@name='description']">
@@ -323,10 +320,5 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
   </action-record>
-
-  <action-attrs name="action-project-task-attrs-set-site-domain">
-    <attribute for="site" name="domain"
-      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
-  </action-attrs>
 
 </object-views>
