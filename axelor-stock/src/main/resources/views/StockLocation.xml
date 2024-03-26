@@ -139,9 +139,10 @@
           colSpan="3"/>
         <field name="isValued" showIf="typeSelect == 1 || typeSelect == 2" colSpan="3"/>
       </panel>
-    </panel-tabs>
-  </form>
 
+    </panel-tabs>
+
+  </form>
 
   <form model="com.axelor.utils.db.Wizard" title="Select format to Export"
     name="stock-location-print-wizard-form"
