@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/data-import"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
+
+  <input file="account_invoiceLine.csv" separator=";"
+    type="com.axelor.apps.account.db.InvoiceLine">
+    <bind to="invoice" column="invoice_importId" search="self.importId = :invoice_importId"/>
+    <bind to="product" column="product_importId" search="self.importId = :product_importId"/>
+    <bind to="unit" column="unit_importId" search="self.importId = :unit_importId"/>
+    <bind to="taxLine" column="taxLine_importId" search="self.importId = :taxLine_importId"/>
+  </input>
+
+
+</csv-inputs>

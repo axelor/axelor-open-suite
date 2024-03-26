@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/data-import"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
+
+  <input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice"/>
+
+</csv-inputs>
