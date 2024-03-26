@@ -122,13 +122,14 @@
       <field name="targetTypeSelect" hidden="true" showIf="contractTypeSelect == 2"
              selection-in="[1,2]"/>
     </panel>
-    <panel name="pricesPerYearPanel" title="Prices per year"
+    <panel name="amountsPanel" showTitle="false"
       showIf="currentContractVersion.isPeriodicInvoicing &amp;&amp; targetTypeSelect &lt;= 2"
       sidebar="true">
-      <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false"
-        readonly="true">
-        <viewer
-          depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals">
+      <panel name="pricesPerYearPanel" title="Prices per year">
+        <field name="currentContractVersion" showTitle="false" colSpan="12"
+          x-show-icons="false" readonly="true">
+          <viewer
+            depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals">
           <![CDATA[
           <>
             <Box mt={2} fontWeight="bold">{_t('Initial ex tax total per year')}</Box>
@@ -138,8 +139,26 @@
             <Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(yearlyExTaxTotalRevalued).toFixed(contract.currency.numberOfDecimals)}</Box>
           </>
           ]]>
-        </viewer>
-      </field>
+          </viewer>
+        </field>
+      </panel>
+      <panel name="InvoicingAmountsPanel" title="Invoicing amounts">
+        <field name="currentContractVersion" showTitle="false" colSpan="12"
+          x-show-icons="false" readonly="true">
+          <viewer
+            depends="totalInvoicedAmount,totalPaidAmount,contract.currency.symbol,contract.currency.numberOfDecimals">
+            <![CDATA[
+          <>
+            <Box mt={2} fontWeight="bold">{_t('Total invoiced amount')}</Box>
+            <Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(totalInvoicedAmount).toFixed(contract.currency.numberOfDecimals)}</Box>
+            <Box borderTop borderColor="inherit" m={1}/>
+            <Box mt={2} fontWeight="bold">{_t('Total paid amount')}</Box>
+            <Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(totalPaidAmount).toFixed(contract.currency.numberOfDecimals)}</Box>
+          </>
+          ]]>
+          </viewer>
+        </field>
+      </panel>
     </panel>
     <panel sidebar="true">
       <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
@@ -474,6 +493,11 @@
       <panel-dashlet name="generatedPurchaseOrdersPanel" title="Purchase orders"
         action="action-contract-view-generated-purchase-orders" hidden="true"
         showIf="id &amp;&amp; targetTypeSelect == 2 &amp;&amp; contractTypeSelect == 2"/>
+
+      <panel name="contractFileListPanel" title="Files" colSpan="12">
+        <panel-dashlet action="action-contract-view-contract-files" colSpan="12"
+          x-show-bars="true"/>
+      </panel>
     </panel-tabs>
     <panel-mail name="mailsPanel">
       <mail-messages limit="4"/>
@@ -665,6 +689,14 @@
     <view type="grid" name="invoice-lite-grid"/>
     <view type="form" name="invoice-form"/>
     <domain>:id MEMBER OF self.contractSet</domain>
+  </action-view>
+
+  <action-view name="action-contract-view-contract-files"
+    model="com.axelor.apps.contract.db.ContractFile" title="Files">
+    <view type="grid" name="contract-file-grid"/>
+    <view type="form" name="contract-file-form"/>
+    <domain>self.contractVersion.id = :_contractVersionId</domain>
+    <context name="_contractVersionId" expr="eval: currentContractVersion.id"/>
   </action-view>
 
   <action-attrs name="action-contract-attrs-domains-template">
