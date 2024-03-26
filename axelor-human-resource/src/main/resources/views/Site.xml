@@ -9,8 +9,8 @@
       <insert position="after">
         <panel name="hrPanel" title="HR"
           if="__config__.app.getApp('base')?.enableSiteManagementForProject">
-          <field name="enterableOnExpense" widget="boolean-switch"/>
-          <field name="enterableOnTimesheet" widget="boolean-switch"/>
+          <field name="isEnterableOnExpense" widget="boolean-switch"/>
+          <field name="isEnterableOnTimesheet" widget="boolean-switch"/>
         </panel>
       </insert>
     </extend>
@@ -19,9 +19,9 @@
   <action-attrs name="action-site-attrs-set-default"
     id="human-resource-action-site-attrs-set-default">
     <attribute for="typeSelect" name="value" expr="1"/>
-    <attribute for="enterableOnProject" name="value" expr="eval:_isFromProject"/>
-    <attribute for="enterableOnExpense" name="value" expr="eval:_isFromProject"/>
-    <attribute for="enterableOnTimesheet" name="value" expr="eval:_isFromProject"/>
+    <attribute for="isEnterableOnProject" name="value" expr="eval:_isFromProject"/>
+    <attribute for="isEnterableOnExpense" name="value" expr="eval:_isFromProject"/>
+    <attribute for="isEnterableOnTimesheet" name="value" expr="eval:_isFromProject"/>
   </action-attrs>
 
 </object-views>
