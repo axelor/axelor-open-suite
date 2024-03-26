@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveAttrsServiceImpl implements MoveAttrsService {
 
@@ -403,11 +403,12 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   public void addThirdPartyPayerPartnerReadonly(
       Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean isReadonly =
-        CollectionUtils.emptyIfNull(move.getMoveLineList()).stream()
-            .map(MoveLine::getInvoiceTermList)
-            .filter(CollectionUtils::isNotEmpty)
-            .flatMap(Collection::stream)
-            .allMatch(InvoiceTerm::getIsPaid);
+        CollectionUtils.isNotEmpty(move.getMoveLineList())
+            && move.getMoveLineList().stream()
+                .map(MoveLine::getInvoiceTermList)
+                .filter(CollectionUtils::isNotEmpty)
+                .flatMap(Collection::stream)
+                .allMatch(InvoiceTerm::getIsPaid);
 
     this.addAttr("thirdPartyPayerPartner", "readonly", isReadonly, attrsMap);
   }
