@@ -1,6 +1,3 @@
 ---
-title: "Contract : Fixed issue on change of contract line fields on a new version"
+title: "Contract: fixed issue on change of contract line fields on a new version."
 module: axelor-contract
-developer: |
-  Refactored code in ContractLine domain to retrieve currency from 
-  the appropriate contract object to avoid NPE
