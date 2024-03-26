@@ -1,2 +1,2 @@
-title: "Payment Session : fix error when we select bank details where payment mode have empty accounting setting"
+title: "Payment Session: fixed error when selecting bank details where payment mode have empty accounting setting."
 module: axelor-account
