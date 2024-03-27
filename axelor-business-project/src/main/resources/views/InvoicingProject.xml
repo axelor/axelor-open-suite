@@ -52,7 +52,8 @@
     <panel-tabs name="mainPanelTab">
       <panel name="listPanel" title="Elements To Invoice">
         <panel-dashlet name="invoicingProjectTaskTreeDashletPanel" title="Tasks"
-          colSpan="12" action="action-project-task-view-show-project-task-tree"/>
+          showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0" colSpan="12"
+          action="action-project-task-view-show-project-task-tree"/>
         <panel-related title="Sale" field="saleOrderLineSet" colSpan="12"
           canNew="false" canEdit="false" canSelect="false" form-view="sale-order-line-form"
           grid-view="sale-order-line-grid"
@@ -84,9 +85,7 @@
 
         <panel-related field="projectTaskSet" colSpan="12" canNew="false"
           hidden="true" canEdit="false" canSelect="false" form-view="project-task-form"
-          grid-view="project-task-invoicing-project-grid"
-          showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0" readonlyIf="invoice"
-          name="ProjectTaskSetPanel"/>
+          grid-view="project-task-invoicing-project-grid" name="ProjectTaskSetPanel"/>
 
         <panel-related field="stockMoveLineSet" colSpan="12" canNew="false"
           canEdit="false" canSelect="false" form-view="stock-move-line-form"
