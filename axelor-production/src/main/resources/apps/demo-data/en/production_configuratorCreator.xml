@@ -6,7 +6,7 @@
 
     <configurator-bom>
       <companyCode>AXE</companyCode>
-      <statusSelect>2</statusSelect>
+      <statusSelect>3</statusSelect>
       <name>Ordinateur personnalisé</name>
       <defineSubBillOfMaterial>true</defineSubBillOfMaterial>
       <importId>1</importId>
@@ -17,8 +17,8 @@
       <defProductAsFormula>false</defProductAsFormula>
       <defProductFromConfigurator>true</defProductFromConfigurator>
       <qty>1.00</qty>
-      <qtyFormula></qtyFormula>
-      <defQtyAsFormula>false</defQtyAsFormula>
+      <qtyFormula>nbOrdi_1</qtyFormula>
+      <defQtyAsFormula>true</defQtyAsFormula>
       <unitId>1</unitId>
       <unitFormula></unitFormula>
       <defUnitAsFormula>false</defUnitAsFormula>
@@ -27,7 +27,7 @@
       <defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
       <configuratorProdProcess>
         <importId>1</importId>
-        <statusSelect>2</statusSelect>
+        <statusSelect>3</statusSelect>
         <name>Conception de l&apos;ordinateur</name>
         <code></code>
         <codeFormula>
@@ -273,8 +273,8 @@
       <defProductAsFormula>true</defProductAsFormula>
       <defProductFromConfigurator>false</defProductFromConfigurator>
       <qty>1.00</qty>
-      <qtyFormula></qtyFormula>
-      <defQtyAsFormula>false</defQtyAsFormula>
+      <qtyFormula>quantiteMemoire_1</qtyFormula>
+      <defQtyAsFormula>true</defQtyAsFormula>
       <unitId>1</unitId>
       <unitFormula></unitFormula>
       <defUnitAsFormula>false</defUnitAsFormula>
@@ -1008,7 +1008,7 @@ return cp*nbOrdi_1
         <configuratorProductFormula>
           <metaField>productCategory</metaField>
           <formula>
-            <![CDATA[ __repo__(ProductCategory).all().filter("self.code = 'SER'").fetchOne()]]>
+            <![CDATA[ __repo__(ProductCategory).findByCode("SER")]]>
           </formula>
           <showOnConfigurator>false</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
@@ -1024,11 +1024,80 @@ return cp*nbOrdi_1
         <configuratorProductFormula>
           <metaField>productFamily</metaField>
           <formula>
-            <![CDATA[ __repo__(ProductFamily).all().filter("self.code = 'EQPT'").fetchOne()]]>
+            <![CDATA[__repo__(ProductFamily).findByCode("EQPT")]]>
           </formula>
           <showOnConfigurator>false</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
         </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>purchasesUnit</metaField>
+          <formula>
+		<![CDATA[__repo__(Unit).findByName("Unit")]]>
+          </formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>1</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>unit</metaField>
+          <formula>
+		<![CDATA[__repo__(Unit).findByName("Unit")]]>
+          </formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>1</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>salesUnit</metaField>
+          <formula>
+		<![CDATA[__repo__(Unit).findByName("Unit")]]>
+          </formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>1</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>productSubTypeSelect</metaField>
+          <formula>__repo__(Product).PRODUCT_SUB_TYPE_FINISHED_PRODUCT</formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>1</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>procurementMethodSelect</metaField>
+          <formula>
+		<![CDATA["produce"]]>
+          </formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>1</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>saleSupplySelect</metaField>
+          <formula>__repo__(Product).SALE_SUPPLY_PRODUCE</formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>1</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>saleCurrency</metaField>
+          <formula>
+		<![CDATA[__repo__(Currency).findByCode('EUR')]]>
+          </formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>1</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>purchaseCurrency</metaField>
+          <formula>
+		<![CDATA[__repo__(Currency).findByCode('EUR')]]>
+          </formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>1</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
       </configuratorProductFormulaList>
 
       <configuratorSOLineFormulaList></configuratorSOLineFormulaList>
