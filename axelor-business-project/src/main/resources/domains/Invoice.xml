@@ -11,6 +11,12 @@
     <boolean name="displayTimesheetOnPrinting" title="Display timesheet lines on printing"/>
     <boolean name="displayExpenseOnPrinting" title="Display expense lines on printing"/>
 
+    <extra-code>
+      <![CDATA[
+          public static final int OPERATION_SUB_TYPE_IN_PROGRESS_INVOICE = 8;
+      ]]>
+    </extra-code>
+
   </entity>
 
 </domain-models>
