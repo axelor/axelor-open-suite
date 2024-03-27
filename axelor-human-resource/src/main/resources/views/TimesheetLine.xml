@@ -537,8 +537,7 @@
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-set-default-site">
-    <attribute for="site" name="value" expr="eval: projectTask.site" if="projectTask"/>
-    <attribute for="site" name="value" expr="eval: null" if="!projectTask"/>
+    <attribute for="site" name="value" expr="eval: projectTask?.site"/>
   </action-attrs>
 
 </object-views>
