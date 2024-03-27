@@ -129,15 +129,13 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
-      BigDecimal reconcileAmount)
-      throws AxelorException {
+      BigDecimal reconcileAmount) {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     InvoiceTerm invoiceTermToPay;
     InvoiceTermPayment invoiceTermPayment;
     BigDecimal baseAvailableAmount = availableAmount;
     BigDecimal availableAmountUnchanged = availableAmount;
     int invoiceTermCount = invoiceTermsToPay.size();
-    boolean isCompanyCurrency;
 
     if (invoicePayment != null) {
       invoicePayment.clearInvoiceTermPaymentList();
@@ -341,11 +339,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     if (companyCurrency.equals(invoicePaymentCurrency)) {
       return companyPaidAmount;
     } else if (invoicePayment != null) {
-      return currencyService.getAmountCurrencyConvertedAtDate(
-          companyCurrency,
-          invoicePaymentCurrency,
-          companyPaidAmount,
-          invoicePayment.getPaymentDate());
+      BigDecimal ratio =
+          invoiceTerm
+              .getAmount()
+              .divide(
+                  invoiceTerm.getCompanyAmount(),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+
+      return currencyScaleService.getCompanyScaledValue(
+          invoiceTerm, companyPaidAmount.multiply(ratio));
     }
 
     return BigDecimal.ZERO;
