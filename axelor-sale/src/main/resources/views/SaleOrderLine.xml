@@ -139,6 +139,34 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
   </grid>
 
+  <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
+    model="com.axelor.apps.sale.db.SaleOrderLine" groupBy="saleOrder, project">
+    <field name="saleOrder"/>
+    <field name="saleOrder.company"/>
+    <field name="saleOrder.stockLocation"/>
+    <field name="saleOrder.clientPartner"/>
+    <field name="product.code"/>
+    <field name="productName"/>
+    <field name="qty"/>
+    <field name="unit"/>
+    <field name="saleOrder.currency"/>
+    <field name="deliveredQty"/>
+    <field name="priceDiscounted"/>
+    <field name="exTaxTotal"/>
+    <field name="estimatedShippingDate"/>
+    <field name="estimatedDeliveryDate"/>
+    <field name="deliveryState"/>
+    <field name="amountInvoiced"/>
+    <field name="project"/>
+    <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
+  </grid>
+
+  <action-view name="action-open-sale-order-view" title="Open sale order"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-form"/>
+    <context name="_showRecord" expr="eval: __this__.saleOrder.id"/>
+  </action-view>
+
   <form name="sale-order-line-project-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine"
     onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
