@@ -8,8 +8,6 @@
   <entity name="ProjectPlanningTime" cacheable="true">
     <many-to-one name="icalendarEvent" title="Event"
       ref="com.axelor.apps.base.db.ICalendarEvent"/>
-    <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
-
   </entity>
 
 </domain-models>

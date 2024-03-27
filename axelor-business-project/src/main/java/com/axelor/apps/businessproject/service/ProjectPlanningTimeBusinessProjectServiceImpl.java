@@ -21,6 +21,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -98,7 +99,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       Employee employee,
       Product activity,
       BigDecimal dailyWorkHrs,
-      LocalDateTime taskEndDateTime)
+      LocalDateTime taskEndDateTime,
+      Site site)
       throws AxelorException {
     ProjectPlanningTime planningTime =
         super.createProjectPlanningTime(
@@ -109,7 +111,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
             employee,
             activity,
             dailyWorkHrs,
-            taskEndDateTime);
+            taskEndDateTime,
+            site);
 
     if (!appBusinessProjectService.isApp("business-project")) {
       return planningTime;

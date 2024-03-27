@@ -53,6 +53,8 @@
       <field name="startDateTime"
         onChange="action-project-planning-time-record-start-time-onchange"/>
       <field name="endDateTime"/>
+      <field name="site" onSelect="action-project-planning-time-attrs-set-site-domain"
+        form-view="site-form" grid-view="site-grid"/>
       <field name="project" hidden="true"/>
       <field name="description" colSpan="12" widget="html"/>
       <button name="createBtn" title="Create"
@@ -67,7 +69,8 @@
       <field name="toDate" required="true" type="datetime" title="To"/>
       <field name="projectTask" canEdit="false" type="many-to-one" title="Task"
         target="com.axelor.apps.project.db.ProjectTask" target-name="name"
-        domain="self.project = :project"/>
+        domain="self.project = :project"
+        onChange="action-project-planning-time-method-set-default-site"/>
       <field name="employee" canEdit="false" title="Employee" type="many-to-one"
         target="com.axelor.apps.hr.db.Employee" target-name="name" required="true"
         onSelect="action-project-planning-time-attrs-project-domain"
@@ -78,6 +81,11 @@
         help="The field Activity is filled automatically from the field &quot;Default Activity Product&quot; from the employee form, on the timesheets panel. You can still modify for each task though"/>
       <field name="timepercent" title="Time%" widget="SelectProgress" type="integer"
         selection="project.task.progress.select"/>
+      <field name="site" target="com.axelor.apps.base.db.Site" type="many-to-one"
+        target-name="name" canEdit="false"
+        onSelect="action-project-planning-time-attrs-set-site-domain" form-view="site-form"
+        grid-view="site-grid"/>
+      <spacer/>
       <button name="addMultipleProjectPlanningTimeBtn" title="Add lines"
         onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="3"
         readonlyIf="fromDate == null || toDate == null || employee == null"/>
@@ -209,7 +217,19 @@
     <attribute for="timeUnit" name="readonly" expr="eval: true" if="projectTask"/>
     <attribute for="timeUnit" name="value" expr="" if="!projectTask"/>
     <attribute for="timeUnit" name="readonly" expr="eval: false" if="!projectTask"/>
+    <attribute for="site" name="value" expr="eval: projectTask.site" if="projectTask"/>
+    <attribute for="site" name="value" expr="eval: null" if="!projectTask"/>
   </action-attrs>
+
+  <action-attrs name="action-project-planning-time-attrs-set-site-domain">
+    <attribute for="site" name="domain"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-method name="action-project-planning-time-method-set-default-site">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="setDefaultSiteFromProjectTask"/>
+  </action-method>
 
   <action-method name="action-project-planning-time-method-create-line">
     <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
