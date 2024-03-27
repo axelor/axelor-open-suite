@@ -560,6 +560,7 @@
     <action name="action-account-config-method-deactivate-simulated-moves"/>
     <action name="action-validate-account-config-on-save-analytic"/>
     <action name="action-method-check-account-config-changes-in-analytic" if="id != null"/>
+    <action name="action-account-config-method-set-sequence"/>
   </action-group>
 
   <action-group name="action-account-config-group-onnew">
@@ -652,5 +653,9 @@
     <action
       name="action-account-config-method-install-chart-and-generate-fiscal-year-and-period"/>
   </action-group>
+
+  <action-method name="action-account-config-method-set-sequence">
+    <call class="com.axelor.apps.account.web.AccountConfigController" method="setSequence"/>
+  </action-method>
 
 </object-views>

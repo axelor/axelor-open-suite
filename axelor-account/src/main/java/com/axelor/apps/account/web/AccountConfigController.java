@@ -58,4 +58,15 @@ public class AccountConfigController {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
+
+  public void setSequence(ActionRequest request, ActionResponse response) {
+
+    AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
+    try {
+      Beans.get(AccountConfigAnalyticService.class).setAnalyticAxisSeq(accountConfig);
+      response.setValue("analyticAxisByCompanyList", accountConfig.getAnalyticAxisByCompanyList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

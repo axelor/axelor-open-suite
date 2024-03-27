@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.base.AxelorException;
 import java.util.List;
@@ -27,4 +28,6 @@ public interface AccountConfigAnalyticService {
   void checkChangesInAnalytic(
       List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList)
       throws AxelorException;
+
+  void setAnalyticAxisSeq(AccountConfig accountConfig);
 }
