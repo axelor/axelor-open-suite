@@ -104,6 +104,16 @@
     <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
+  <menuitem name="sc-root-sale-order-lines-to-invoice" title="Sale order lines to invoice"
+    parent="sc-root-sale" order="601" action="sc.root.sale.order.lines.to.invoice"/>
+
+  <action-view name="sc.root.sale.order.lines.to.invoice"
+    title="Sale order lines to invoice" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <view type="grid" name="sale-order-line-to-invoice-grid"/>
+    <view type="form" name="sale-order-line-form"/>
+    <domain>self.invoiced = false</domain>
+  </action-view>
+
   <search-filters name="sc.root.sale.templates.filter"
     model="com.axelor.apps.sale.db.SaleOrder" title="My Templates">
     <filter name="sc.root.sale.templates.filter-my-templates" title="My templates">
