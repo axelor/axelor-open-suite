@@ -23,12 +23,6 @@
   <input file="base_birtTemplateParameter.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
 
-  <input file="base_birtTemplateConfigLine.csv"
-    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
-    search="self.importId = :importId">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
-  </input>
-
   <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
     separator=";" search="self.importId = :importId">
     <bind to="metaModel" search="self.fullName = :modelName"/>

@@ -18,12 +18,9 @@
  */
 package com.axelor.apps.base.service.printing.template;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.PrintingTemplate;
-import java.util.List;
+import com.axelor.rpc.Response;
 
-public interface PrintingTemplateService {
-  List<PrintingTemplate> getActivePrintingTemplates(String modelName) throws AxelorException;
+public interface PrintingTemplateMetaService {
 
-  boolean hasActivePrintingTemplates(String modelName);
+  void addPrintButton(String model, Response response);
 }

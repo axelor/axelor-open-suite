@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service.meta;
 
 import com.axelor.apps.base.service.pricing.PricingMetaService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaService;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.rpc.Response;
 import com.axelor.studio.service.CustomMetaService;
@@ -27,18 +28,23 @@ import com.google.inject.Inject;
 public class BaseMetaService extends CustomMetaService {
 
   protected PricingMetaService pricingMetaService;
+  protected PrintingTemplateMetaService printingTemplateMetaService;
 
   @Inject
-  public BaseMetaService(UserRepository userRepo, PricingMetaService pricingMetaService) {
+  public BaseMetaService(
+      UserRepository userRepo,
+      PricingMetaService pricingMetaService,
+      PrintingTemplateMetaService printingTemplateMetaService) {
     super(userRepo);
     this.pricingMetaService = pricingMetaService;
+    this.printingTemplateMetaService = printingTemplateMetaService;
   }
 
   @Override
   public Response findView(String model, String name, String type) {
     Response response = super.findView(model, name, type);
-
     response = pricingMetaService.managePricing(response, model);
+    printingTemplateMetaService.addPrintButton(model, response);
     return response;
   }
 }
