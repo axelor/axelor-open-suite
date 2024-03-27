@@ -23,7 +23,6 @@ import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVI
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -198,7 +197,6 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     this.setPartnerFullName(partner);
-    this.setCompanyStr(partner);
   }
 
   /**
@@ -651,23 +649,6 @@ public class PartnerServiceImpl implements PartnerService {
   public String getPhoneNumberFieldName(String actionName) {
     Preconditions.checkNotNull(actionName, I18n.get("Action name cannot be null."));
     return actionName.substring(actionName.lastIndexOf('-') + 1);
-  }
-
-  @Override
-  public void setCompanyStr(Partner partner) {
-    partner.setCompanyStr(this.computeCompanyStr(partner));
-  }
-
-  @Override
-  public String computeCompanyStr(Partner partner) {
-    String companyStr = "";
-    if (partner.getCompanySet() != null && !partner.getCompanySet().isEmpty()) {
-      for (Company company : partner.getCompanySet()) {
-        companyStr += company.getCode() + ",";
-      }
-      return companyStr.substring(0, companyStr.length() - 1);
-    }
-    return null;
   }
 
   @Override

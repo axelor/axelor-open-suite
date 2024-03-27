@@ -147,10 +147,6 @@ public interface PartnerService {
    */
   String getPhoneNumberFieldName(String actionName);
 
-  void setCompanyStr(Partner partner);
-
-  String computeCompanyStr(Partner partner);
-
   String getTaxNbrFromRegistrationCode(Partner partner);
 
   String getNicFromRegistrationCode(Partner partner);
