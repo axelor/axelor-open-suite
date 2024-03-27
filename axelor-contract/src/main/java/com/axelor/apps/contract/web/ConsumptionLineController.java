@@ -20,10 +20,15 @@ package com.axelor.apps.contract.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.ConsumptionLine;
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.service.ConsumptionLineService;
+import com.axelor.apps.contract.service.ContractService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.math.BigDecimal;
+import java.util.Optional;
 
 public class ConsumptionLineController {
 
@@ -32,6 +37,35 @@ public class ConsumptionLineController {
     try {
       Beans.get(ConsumptionLineService.class).fill(line, line.getProduct());
       response.setValues(line);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkConsumptionLineQuantity(ActionRequest request, ActionResponse response) {
+    Contract contract = request.getContext().getParent().asType(Contract.class);
+    ConsumptionLine consumptionLine = request.getContext().asType(ConsumptionLine.class);
+    Optional<BigDecimal> initQt =
+        Optional.of(request.getContext())
+            .map(context -> context.get("initQt"))
+            .map(String::valueOf)
+            .map(BigDecimal::new);
+    if (consumptionLine.getProduct() == null
+        || contract.getInvoicePeriodStartDate() == null
+        || contract.getInvoicePeriodEndDate() == null
+        || contract.getCurrentContractVersion().getContractLineList().isEmpty()) {
+      return;
+    }
+    try {
+      boolean isSendAlert =
+          Beans.get(ContractService.class)
+              .checkConsumptionLineQuantity(
+                  contract, consumptionLine, initQt.orElse(BigDecimal.ZERO));
+      if (isSendAlert) {
+        response.setAlert(
+            I18n.get(
+                "Consumption line quantities exceed the max quantity defined in the contract line"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

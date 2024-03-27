@@ -96,6 +96,8 @@
 
         <field name="isConsumptionLine" hidden="true"
           onChange="action-contract-line-group-is-consumption-line-onchange"/>
+        <field name="consumptionMaxQuantity" showIf="isConsumptionLine"
+          requiredIf="isConsumptionLine"/>
         <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="contractVersion" hidden="true"/>

@@ -67,6 +67,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -897,5 +898,48 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
     }
     contractRepository.save(contract);
+  }
+
+  @Override
+  public boolean checkConsumptionLineQuantity(
+      Contract contractCtx, ConsumptionLine consumptionLineCtx, BigDecimal initQt) {
+
+    BigDecimal max = BigDecimal.ZERO;
+    if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
+      List<ContractLine> contractLines =
+          contractCtx.getCurrentContractVersion().getContractLineList().stream()
+              .filter(
+                  cl ->
+                      cl.getIsConsumptionLine()
+                          && Objects.equals(
+                              cl.getProduct().getId(), consumptionLineCtx.getProduct().getId()))
+              .collect(Collectors.toList());
+      if (contractLines.isEmpty()) {
+        return false;
+      }
+      max = contractLines.get(0).getConsumptionMaxQuantity();
+    }
+    BigDecimal sum =
+        contractCtx.getConsumptionLineList().stream()
+            .filter(
+                consumptionLine ->
+                    dateInPeriod(
+                            consumptionLine.getLineDate(),
+                            contractCtx.getInvoicePeriodStartDate(),
+                            contractCtx.getInvoicePeriodEndDate())
+                        && consumptionLine
+                            .getProduct()
+                            .getId()
+                            .equals(consumptionLineCtx.getProduct().getId()))
+            .map(ConsumptionLine::getQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    sum = sum.subtract(initQt);
+    sum = sum.add(consumptionLineCtx.getQty());
+    return sum.compareTo(max) > 0;
+  }
+
+  private boolean dateInPeriod(LocalDate date, LocalDate startDate, LocalDate endDate) {
+    return date.compareTo(startDate) >= 0 && date.compareTo(endDate) <= 0;
   }
 }
