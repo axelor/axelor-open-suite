@@ -18,6 +18,10 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -47,10 +51,17 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
     implements ContractVersionService {
 
   protected AppBaseService appBaseService;
+  protected InvoiceRepository invoiceRepository;
+  protected InvoiceLineRepository invoiceLineRepository;
 
   @Inject
-  public ContractVersionServiceImpl(AppBaseService appBaseService) {
+  public ContractVersionServiceImpl(
+      AppBaseService appBaseService,
+      InvoiceRepository invoiceRepository,
+      InvoiceLineRepository invoiceLineRepository) {
     this.appBaseService = appBaseService;
+    this.invoiceRepository = invoiceRepository;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
@@ -198,6 +209,39 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
       contractVersion.setYearlyExTaxTotalRevalued(
           contractLineList.stream()
               .map(ContractLine::getYearlyPriceRevalued)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+
+      List<InvoiceLine> invoiceLineList =
+          invoiceLineRepository
+              .all()
+              .filter("self.contractLine.contractVersion = :contractVersion")
+              .bind("contractVersion", contractVersion)
+              .fetch();
+      contractVersion.setTotalInvoicedAmount(
+          invoiceLineList.stream()
+              .filter(
+                  invoiceLine -> {
+                    if (invoiceLine != null && invoiceLine.getInvoice() != null) {
+                      return invoiceLine.getInvoice().getStatusSelect()
+                          == InvoiceRepository.STATUS_VENTILATED;
+                    }
+                    return false;
+                  })
+              .map(InvoiceLine::getInTaxTotal)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+      List<Invoice> invoiceList =
+          invoiceRepository
+              .all()
+              .filter(
+                  "self.contractSet.currentContractVersion = :contractVersion AND self.statusSelect = :ventilatedStatus")
+              .bind("contractVersion", contractVersion)
+              .bind("ventilatedStatus", InvoiceRepository.STATUS_VENTILATED)
+              .fetch();
+      contractVersion.setTotalPaidAmount(
+          invoiceList.stream()
+              .map(Invoice::getAmountPaid)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO));
     }
