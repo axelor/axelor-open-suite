@@ -54,7 +54,8 @@
         onChange="action-project-planning-time-record-start-time-onchange"/>
       <field name="endDateTime"/>
       <field name="site" onSelect="action-project-planning-time-attrs-set-site-domain"
-        form-view="site-form" grid-view="site-grid"/>
+        form-view="site-form" grid-view="site-grid"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
       <field name="project" hidden="true"/>
       <field name="description" colSpan="12" widget="html"/>
       <button name="createBtn" title="Create"
@@ -84,7 +85,7 @@
       <field name="site" target="com.axelor.apps.base.db.Site" type="many-to-one"
         target-name="name" canEdit="false"
         onSelect="action-project-planning-time-attrs-set-site-domain" form-view="site-form"
-        grid-view="site-grid"/>
+        grid-view="site-grid" if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
       <spacer/>
       <button name="addMultipleProjectPlanningTimeBtn" title="Add lines"
         onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="3"
@@ -217,7 +218,8 @@
     <attribute for="timeUnit" name="readonly" expr="eval: true" if="projectTask"/>
     <attribute for="timeUnit" name="value" expr="" if="!projectTask"/>
     <attribute for="timeUnit" name="readonly" expr="eval: false" if="!projectTask"/>
-    <attribute for="site" name="value" expr="eval: projectTask?.site"/>
+    <attribute for="site" name="value" expr="eval: projectTask?.site"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>
 
   <action-attrs name="action-project-planning-time-attrs-set-site-domain">

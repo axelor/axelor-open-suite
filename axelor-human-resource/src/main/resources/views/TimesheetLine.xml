@@ -68,7 +68,8 @@
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
       onChange="action-timesheet-line-group-project-task-on-change"/>
     <field name="site" width="200" form-view="site-form" grid-view="site-grid"
-      onSelect="action-timesheet-line-attrs-set-site-domain"/>
+      onSelect="action-timesheet-line-attrs-set-site-domain"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
     <field name="date" width="100"
       onChange="action-timesheet-line-validate-date,action-timesheet-line-method-check-daily-limit"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
@@ -208,7 +209,8 @@
         onSelect="action-timesheet-line-attrs-domain-project-task"
         onChange="action-timesheet-line-group-project-task-on-change"/>
       <field name="site" form-view="site-form" grid-view="site-grid"
-        onSelect="action-timesheet-line-attrs-set-site-domain"/>
+        onSelect="action-timesheet-line-attrs-set-site-domain"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
       <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
@@ -537,7 +539,8 @@
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-set-default-site">
-    <attribute for="site" name="value" expr="eval: projectTask?.site"/>
+    <attribute for="site" name="value" expr="eval: projectTask?.site"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>
 
 </object-views>
