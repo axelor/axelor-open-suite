@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.common.ObjectUtils;
@@ -27,15 +28,14 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolService {
 
-  private final BudgetResetToolService budgetService;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected BudgetResetToolService budgetResetToolService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetLevelResetToolServiceImpl(
-      BudgetResetToolService budgetResetToolService,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
-    this.budgetService = budgetResetToolService;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+      BudgetResetToolService budgetResetToolService, CurrencyScaleService currencyScaleService) {
+    this.budgetResetToolService = budgetResetToolService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -47,10 +47,10 @@ public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolServ
 
     budgetLevel.setTotalAmountCommitted(BigDecimal.ZERO);
     budgetLevel.setTotalAmountAvailable(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             budgetLevel, budgetLevel.getTotalAmountExpected()));
     budgetLevel.setAvailableAmountWithSimulated(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             budgetLevel, budgetLevel.getTotalAmountExpected()));
     budgetLevel.setRealizedWithNoPo(BigDecimal.ZERO);
     budgetLevel.setRealizedWithPo(BigDecimal.ZERO);
@@ -61,7 +61,7 @@ public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolServ
     if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
       budgetLevel.getBudgetLevelList().forEach(child -> resetBudgetLevel(child));
     } else if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
-      budgetLevel.getBudgetList().forEach(budgetService::resetBudget);
+      budgetLevel.getBudgetList().forEach(budgetResetToolService::resetBudget);
     }
   }
 }

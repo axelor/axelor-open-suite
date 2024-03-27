@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="purchase-order-grid" id="budget-purchase-order-grid" title="Purchase orders"
     model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
@@ -88,8 +88,8 @@
   </action-group>
 
   <action-group name="action-budget-group-purchase-order-on-validate-actions">
-    <action name="action-method-purchase-order-validate-budget-distribution-list"
-      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.manageMultiBudget"/>
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
     <action name="action-group-purchase-order-on-validate-actions"/>
   </action-group>
 

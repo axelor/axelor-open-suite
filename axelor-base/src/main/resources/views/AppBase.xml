@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
     width="large" canDelete="false" canNew="false" canCopy="false"
@@ -86,9 +86,6 @@
         </panel>
         <field name="emailLinkList" colSpan="12"
           onChange="action-base-method-model-email-link-onsave"/>
-        <panel name="stylePanel" title="Style" colSpan="12">
-          <field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
-        </panel>
       </panel>
       <panel name="interfacesPanel" title="Interfaces" colSpan="12">
         <panel name="mapPanel" title="Mapping" colSpan="12">
@@ -160,10 +157,10 @@
             colspan="6"/>
         </panel>
         <panel name="printingTemplatesPanel" colSpan="12">
-          <field name="clientSituationBirtTemplate"/>
-          <field name="companyPhoneBookBirtTemplate"/>
-          <field name="contactPhoneBookBirtTemplate"/>
-          <field name="productCatalogPGQLBirtTemplate"/>
+          <field name="clientSituationPrintTemplate"/>
+          <field name="companyPhoneBookPrintTemplate"/>
+          <field name="contactPhoneBookPrintTemplate"/>
+          <field name="productCatalogPGQLPrintTemplate"/>
         </panel>
         <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
           field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"
@@ -178,6 +175,10 @@
         <field name="isPricingComputingOrder" title="Pricing computing order"
           widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
           showIf="enablePricingScale"/>
+      </panel>
+      <panel name="siteManagementPanel" title="Site management" colSpan="12"
+        if="__config__.app.isApp('stock') || __config__.app.isApp('project')">
+        <!-- This panel will be extended in other modules, add module to if condition -->
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

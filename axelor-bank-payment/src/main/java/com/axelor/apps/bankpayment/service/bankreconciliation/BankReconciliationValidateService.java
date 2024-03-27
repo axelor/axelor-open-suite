@@ -32,6 +32,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
@@ -52,6 +53,7 @@ public class BankReconciliationValidateService {
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
   protected BankReconciliationComputeService bankReconciliationComputeService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -62,7 +64,8 @@ public class BankReconciliationValidateService {
       MoveLineCreateService moveLineCreateService,
       BankReconciliationRepository bankReconciliationRepository,
       BankReconciliationLineService bankReconciliationLineService,
-      BankReconciliationComputeService bankReconciliationComputeService) {
+      BankReconciliationComputeService bankReconciliationComputeService,
+      CurrencyScaleService currencyScaleService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -72,6 +75,7 @@ public class BankReconciliationValidateService {
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.bankReconciliationComputeService = bankReconciliationComputeService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -128,7 +132,8 @@ public class BankReconciliationValidateService {
       description = description.substring(0, 255);
     }
 
-    BigDecimal amount = debit.add(credit);
+    BigDecimal amount =
+        currencyScaleService.getScaledValue(bankReconciliationLine, debit.add(credit));
 
     String origin = bankReconciliation.getName() + reference != null ? " - " + reference : "";
 
@@ -224,14 +229,18 @@ public class BankReconciliationValidateService {
 
         if (isDebit) {
           debit =
-              (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
-                  .min(bankStatementAmountRemaining);
+              currencyScaleService.getScaledValue(
+                  bankReconciliation,
+                  (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
+                      .min(bankStatementAmountRemaining));
           credit = BigDecimal.ZERO;
         } else {
           debit = BigDecimal.ZERO;
           credit =
-              (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
-                  .min(bankStatementAmountRemaining);
+              currencyScaleService.getScaledValue(
+                  bankReconciliation,
+                  (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
+                      .min(bankStatementAmountRemaining));
         }
 
         if (firstLine) {
@@ -254,18 +263,22 @@ public class BankReconciliationValidateService {
           bankReconciliationLineService.checkAmount(bankReconciliationLine);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
-        bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));
+        bankStatementAmountRemaining =
+            currencyScaleService.getScaledValue(
+                bankReconciliation, bankStatementAmountRemaining.subtract(debit.add(credit)));
       }
 
       if (bankStatementAmountRemaining.compareTo(BigDecimal.ZERO) == 1) {
         BigDecimal debit;
         BigDecimal credit;
         if (isDebit) {
-          debit = bankStatementAmountRemaining;
+          debit =
+              currencyScaleService.getScaledValue(bankReconciliation, bankStatementAmountRemaining);
           credit = BigDecimal.ZERO;
         } else {
           debit = BigDecimal.ZERO;
-          credit = bankStatementAmountRemaining;
+          credit =
+              currencyScaleService.getScaledValue(bankReconciliation, bankStatementAmountRemaining);
         }
 
         bankReconciliationLine =

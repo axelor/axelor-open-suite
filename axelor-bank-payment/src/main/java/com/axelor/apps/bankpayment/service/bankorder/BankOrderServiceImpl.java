@@ -50,7 +50,6 @@ import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidat
 import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -66,6 +65,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -78,7 +78,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.bind.JAXBException;
+import java.util.Objects;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -207,7 +207,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankOrderLines != null) {
       for (BankOrderLine bankOrderLine : bankOrderLines) {
         bankOrderLine.setCompanyCurrencyAmount(
-            bankOrderLine.getBankOrder().getIsMultiCurrency()
+            BankOrderToolService.isMultiCurrency(bankOrder)
                 ? currencyService
                     .getAmountCurrencyConvertedAtDate(
                         bankOrder.getBankOrderCurrency(),
@@ -233,9 +233,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
     }
 
-    if (!bankOrder.getIsMultiCurrency()) {
-      bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
-    }
+    bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
 
     bankOrder.setCompanyCurrencyTotalAmount(this.computeCompanyCurrencyTotalAmount(bankOrder));
   }
@@ -530,7 +528,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     String domain =
         Beans.get(BankDetailsService.class)
-            .getActiveCompanyBankDetails(bankOrder.getSenderCompany());
+            .getActiveCompanyBankDetails(
+                bankOrder.getSenderCompany(), bankOrder.getBankOrderCurrency());
 
     // filter on the bank details identifier type from the bank order file
     // format
@@ -539,14 +538,6 @@ public class BankOrderServiceImpl implements BankOrderService {
       if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
         domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
       }
-    }
-
-    // filter on the currency if it is set in file format and in the bankdetails
-    Currency currency = bankOrder.getBankOrderCurrency();
-    if (currency != null
-        && !bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()) {
-      String fileFormatCurrencyId = currency.getId().toString();
-      domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
     }
     return domain;
   }
@@ -635,7 +626,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     // filter on the currency if it is set in file format
     if (bankOrder.getBankOrderCurrency() != null) {
       if (bankDetails.getCurrency() != null
-          && bankDetails.getCurrency() != bankOrder.getBankOrderCurrency()) {
+          && !Objects.equals(bankDetails.getCurrency(), bankOrder.getBankOrderCurrency())) {
         return false;
       }
     }

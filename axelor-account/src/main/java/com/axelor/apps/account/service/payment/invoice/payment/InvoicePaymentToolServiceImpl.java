@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -28,8 +29,8 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -38,6 +39,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
@@ -70,7 +72,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected CurrencyService currencyService;
   protected AppAccountService appAccountService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -84,7 +87,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       CurrencyService currencyService,
       AppAccountService appAccountService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService,
+      InvoiceTermFilterService invoiceTermFilterService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
@@ -94,7 +98,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   @Override
@@ -314,7 +319,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       return invoiceList.stream()
           .map(Invoice::getInvoiceTermList)
           .flatMap(Collection::stream)
-          .filter(invoiceTermService::isNotAwaitingPayment)
+          .filter(invoiceTermFilterService::isNotAwaitingPayment)
           .map(it -> invoiceTermService.getAmountRemaining(it, date, false))
           .reduce(BigDecimal::add)
           .orElse(BigDecimal.ZERO);
@@ -343,7 +348,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
     if (invoiceId > 0) {
       List<InvoiceTerm> invoiceTerms =
-          invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+          invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
 
       if (invoicePayment.getManualChange()) {
         invoiceTerms.stream()
@@ -362,7 +367,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (!invoicePayment.getManualChange()
           || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
         invoicePayment.setAmount(payableAmount);
-        amountError = true;
+        amountError = !invoicePayment.getApplyFinancialDiscount();
       }
 
       invoiceTermIdList =
@@ -375,14 +380,30 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
             invoicePayment, invoiceTerms, amount, amount);
 
-        if (this.isPartialPayment(invoicePayment)) {
-          invoicePayment.setApplyFinancialDiscount(false);
+        if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
+          BigDecimal financialDiscountAmount =
+              invoicePayment.getInvoiceTermPaymentList().stream()
+                  .map(InvoiceTermPayment::getInvoiceTerm)
+                  .map(InvoiceTerm::getFinancialDiscountAmount)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO);
+          BigDecimal amountWithFinancialDiscount = amount.add(financialDiscountAmount);
 
+          invoicePayment.clearInvoiceTermPaymentList();
+          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+              invoicePayment,
+              invoiceTerms,
+              amountWithFinancialDiscount,
+              amountWithFinancialDiscount);
+        } else if (this.isPartialPayment(invoicePayment)) {
           invoicePayment.clearInvoiceTermPaymentList();
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
               invoicePayment, invoiceTerms, amount, amount);
         }
 
+        if (this.isPartialPayment(invoicePayment)) {
+          invoicePayment.setApplyFinancialDiscount(false);
+        }
         invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
       }
     }
@@ -397,7 +418,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       invoicePayment.setInvoice(invoice);
 
       List<InvoiceTerm> invoiceTerms =
-          invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+          invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
 
       if (CollectionUtils.isEmpty(invoiceTerms)) {
         return invoiceTermIdList;
@@ -420,10 +441,10 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
       invoicePayment.setTotalAmountWithFinancialDiscount(
-          currencyScaleServiceAccount.getScaledValue(invoicePayment, invoicePayment.getAmount()));
+          currencyScaleService.getScaledValue(invoicePayment, invoicePayment.getAmount()));
 
       invoicePayment.setAmount(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoicePayment,
               invoicePayment
                   .getAmount()

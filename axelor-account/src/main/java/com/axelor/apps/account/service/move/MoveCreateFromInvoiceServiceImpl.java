@@ -29,12 +29,12 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -187,7 +187,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setTradingName(invoice.getTradingName());
         paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
-        move.setSubrogationPartner(invoice.getSubrogationPartner());
+        move.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner());
 
         move.setDueDate(invoice.getDueDate());
 
@@ -354,7 +354,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               moveToolService
                   .getTotalCurrencyAmount(creditMoveLineList)
                   .min(invoiceCustomerMoveLine.getCurrencyAmount());
-          LocalDate date = appAccountService.getTodayDate(company);
+          LocalDate date = invoice.getInvoiceDate();
 
           // credit move line creation
           MoveLine creditMoveLine =
@@ -449,7 +449,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           moveToolService
               .getTotalCurrencyAmount(debitMoveLines)
               .min(invoiceCustomerMoveLine.getCurrencyAmount().abs());
-      LocalDate date = appAccountService.getTodayDate(company);
+      LocalDate date = invoice.getInvoiceDate();
 
       // debit move line creation
       MoveLine debitMoveLine =
@@ -480,7 +480,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           company,
           null,
           account,
-          appAccountService.getTodayDate(company));
+          invoice.getInvoiceDate());
 
       moveValidateService.accounting(oDmove);
 

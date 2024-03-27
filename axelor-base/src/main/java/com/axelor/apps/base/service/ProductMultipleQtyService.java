@@ -34,4 +34,6 @@ public interface ProductMultipleQtyService {
       List<ProductMultipleQty> productMultipleQties,
       boolean allowToForce,
       ActionResponse response);
+
+  String getMultipleQuantityErrorMessage(List<ProductMultipleQty> productMultipleQties);
 }

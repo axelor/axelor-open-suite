@@ -31,9 +31,9 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -57,6 +58,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -71,6 +73,7 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -80,7 +83,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -119,6 +121,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
+      InvoiceTermFilterService invoiceTermFilterService,
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
@@ -150,7 +153,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         moveLineInvoiceTermService,
         invoiceTermFinancialDiscountService,
         moveLineFinancialDiscountService,
-        financialDiscountService);
+        financialDiscountService,
+        invoiceTermFilterService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
@@ -454,7 +458,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderLine bankOrderLine,
       BigDecimal reconciledAmount)
       throws AxelorException {
-    return bankOrderLine.getBankOrder().getIsMultiCurrency()
+    return BankOrderToolService.isMultiCurrency(bankOrderLine.getBankOrder())
         ? currencyService
             .getAmountCurrencyConvertedAtDate(
                 paymentSession.getCurrency(),

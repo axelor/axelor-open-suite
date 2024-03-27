@@ -37,16 +37,20 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.ProdProductProductionRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.stock.db.StockMove;
@@ -237,7 +241,7 @@ public class ManufOrderController {
                 .fetch();
       }
 
-      String message = Beans.get(ManufOrderWorkflowService.class).planManufOrders(manufOrders);
+      String message = Beans.get(ManufOrderPlanService.class).planManufOrders(manufOrders);
 
       response.setReload(true);
       if (!message.isEmpty()) {
@@ -353,7 +357,7 @@ public class ManufOrderController {
       if (ObjectUtils.isEmpty(prodProcessBirtTemplate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+            I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
       }
 
       ProdProcess prodProcess =
@@ -380,7 +384,7 @@ public class ManufOrderController {
 
         if (manufOrderView.getPlannedStartDateT() != null) {
           if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
-            Beans.get(ManufOrderWorkflowService.class)
+            Beans.get(ManufOrderPlanService.class)
                 .updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
             response.setReload(true);
           }
@@ -394,8 +398,7 @@ public class ManufOrderController {
   }
 
   /**
-   * Called from manuf order form, on produced stock move line change. Call {@link
-   * ManufOrderService#checkProducedStockMoveLineList(ManufOrder, ManufOrder)}.
+   * Called from manuf order form, on produced stock move line change.
    *
    * @param request
    * @param response
@@ -404,7 +407,20 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
-      Beans.get(ManufOrderService.class).checkProducedStockMoveLineList(manufOrder, oldManufOrder);
+      Beans.get(ManufOrderCheckStockMoveLineService.class)
+          .checkProducedStockMoveLineList(manufOrder, oldManufOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
+
+  public void checkResidualStockMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderCheckStockMoveLineService.class)
+          .checkResidualStockMoveLineList(manufOrder, oldManufOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
@@ -413,7 +429,7 @@ public class ManufOrderController {
 
   /**
    * Called from manuf order form, on produced stock move line change. Call {@link
-   * ManufOrderService#updateProducedStockMoveFromManufOrder(ManufOrder)}.
+   * ManufOrderUpdateStockMoveService#updateProducedStockMoveFromManufOrder(ManufOrder)}.
    *
    * @param request
    * @param response
@@ -423,7 +439,21 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
-      Beans.get(ManufOrderService.class).updateProducedStockMoveFromManufOrder(manufOrder);
+      Beans.get(ManufOrderUpdateStockMoveService.class)
+          .updateProducedStockMoveFromManufOrder(manufOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateResidualStockMoveFromManufOrder(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderUpdateStockMoveService.class)
+          .updateResidualStockMoveFromManufOrder(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -431,8 +461,7 @@ public class ManufOrderController {
   }
 
   /**
-   * Called from manuf order form, on consumed stock move line change. Call {@link
-   * ManufOrderService#checkConsumedStockMoveLineList(ManufOrder, ManufOrder)}.
+   * Called from manuf order form, on consumed stock move line change.
    *
    * @param request
    * @param response
@@ -441,7 +470,8 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
-      Beans.get(ManufOrderService.class).checkConsumedStockMoveLineList(manufOrder, oldManufOrder);
+      Beans.get(ManufOrderCheckStockMoveLineService.class)
+          .checkConsumedStockMoveLineList(manufOrder, oldManufOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
@@ -450,7 +480,7 @@ public class ManufOrderController {
 
   /**
    * Called from manuf order form, on consumed stock move line change. Call {@link
-   * ManufOrderService#updateConsumedStockMoveFromManufOrder(ManufOrder)}.
+   * ManufOrderUpdateStockMoveService#updateConsumedStockMoveFromManufOrder(ManufOrder)}.
    *
    * @param request
    * @param response
@@ -460,7 +490,8 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
-      Beans.get(ManufOrderService.class).updateConsumedStockMoveFromManufOrder(manufOrder);
+      Beans.get(ManufOrderUpdateStockMoveService.class)
+          .updateConsumedStockMoveFromManufOrder(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -855,6 +886,48 @@ public class ManufOrderController {
 
       Beans.get(ManufOrderOutsourceService.class)
           .validateOutsourceDeclaration(manufOrder, partner, prodProductList);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setProducedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      Beans.get(ManufOrderSetStockMoveLineService.class)
+          .setProducedStockMoveLineStockLocation(manufOrder);
+
+      response.setValue("producedStockMoveLineList", manufOrder.getProducedStockMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setResidualStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      Beans.get(ManufOrderSetStockMoveLineService.class)
+          .setResidualStockMoveLineStockLocation(manufOrder);
+
+      response.setValue("residualStockMoveLineList", manufOrder.getResidualStockMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setConsumedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      Beans.get(ManufOrderSetStockMoveLineService.class)
+          .setConsumedStockMoveLineStockLocation(manufOrder);
+
+      response.setValue("consumedStockMoveLineList", manufOrder.getConsumedStockMoveLineList());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

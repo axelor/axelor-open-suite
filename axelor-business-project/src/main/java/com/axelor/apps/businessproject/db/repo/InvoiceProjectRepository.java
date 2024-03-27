@@ -26,6 +26,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
+import java.util.Collections;
 import java.util.List;
 
 public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
@@ -42,11 +43,11 @@ public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
       List<ProjectTask> projectTaskList =
           Beans.get(ProjectTaskRepository.class)
               .all()
-              .filter("self.invoiceLine.invoice = ?1", entity)
+              .filter("?1 IN self.invoiceLineList.invoice", entity)
               .fetch();
       if (ObjectUtils.notEmpty(projectTaskList)) {
         for (ProjectTask projectTask : projectTaskList) {
-          projectTask.setInvoiceLine(null);
+          projectTask.setInvoiceLineSet(Collections.emptySet());
         }
       }
       for (InvoicingProject invoiceProject : invoiceProjectList) {

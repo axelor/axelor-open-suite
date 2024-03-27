@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -69,6 +69,7 @@
     <option value="1">From stock</option>
     <option value="2">Purchase</option>
     <option value="3">Produce</option>
+    <option value="4">Stock and produce</option>
   </selection>
 
   <selection name='iimport.type.select'>
@@ -171,6 +172,7 @@
   <selection name="base.price.list.line.anomaly.select">
     <option value="1">Product unavailable for sale</option>
     <option value="2">Product not renewed</option>
+    <option value="3">Product unavailable for purchase</option>
   </selection>
 
   <selection name="day.month.select">
@@ -408,6 +410,11 @@
     <option value="time">Time</option>
   </selection>
 
+  <selection name="base.printing.template.type.select">
+    <option value="1">File</option>
+    <option value="2">Birt</option>
+  </selection>
+
   <selection name="base.blocking.select">
     <option value="1">Reminder blocking</option>
     <option value="2">Invoicing blocking</option>
@@ -535,6 +542,7 @@
   <selection name='trace.back.origin.select'>
     <option value="default">Default</option>
     <option value="import">Importing</option>
+    <option value="addressRecompute">Recompute addresses batch</option>
   </selection>
 
   <selection name="base.print.template.format.select">
@@ -750,6 +758,16 @@
 
   <selection name="base.partner.link.type.type.select">
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
+  </selection>
+
+  <selection name="tax.type.type.select">
+    <option value="1">VAT</option>
+    <option value="2">Other</option>
+  </selection>
+
+  <selection name="base.site.type.select">
+    <option value="1">Internal</option>
+    <option value="2">External</option>
   </selection>
 
 </object-views>

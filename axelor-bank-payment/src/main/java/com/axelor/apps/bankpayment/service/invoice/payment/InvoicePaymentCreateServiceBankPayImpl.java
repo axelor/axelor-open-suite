@@ -21,7 +21,7 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
@@ -53,7 +53,7 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      InvoiceVisibilityService invoiceVisibilityService) {
+      PfpService pfpService) {
 
     super(
         invoicePaymentRepository,
@@ -64,7 +64,7 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
         invoiceTermPaymentService,
         invoiceTermService,
         invoiceService,
-        invoiceVisibilityService);
+        pfpService);
   }
 
   @Override

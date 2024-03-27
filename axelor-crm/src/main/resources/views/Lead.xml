@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
     title="Leads" name="lead-kanban" draggable="true" limit="10"
@@ -162,7 +162,7 @@
           <editor x-show-titles="false">
             <field name="enterpriseName" css="label-bold bold large" colSpan="12"
               showIf="partner == null" placeholder="Enterprise name"
-              onChange="action-lead-method-set-social-network-url" required="true"/>
+              onChange="action-lead-method-set-social-network-url"/>
             <field name="industrySector" colSpan="6" form-view="industry-sector-form"
               grid-view="industry-sector-grid" canEdit="false" canNew="true"/>
             <field name="partner" colSpan="12" domain="self.isContact = false"
@@ -399,7 +399,6 @@
 
   <action-group name="action-group-crm-lead-onnew">
     <action name="action-lead-validate-default-status"/>
-    <action name="action-account-record-new"/>
     <action name="action-lead-default-record-new"/>
   </action-group>
 
@@ -453,6 +452,10 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.leadDefaultStatus"/>
     <field name="agency" expr="eval:__user__.activeAgency"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-record name="action-lead-record-init-same-domain-lead"
@@ -559,7 +562,6 @@
       related.relatedToSelectId =
       :id) OR (:email IN (SELECT em.address FROM EmailAddress em WHERE em member of
       self.toEmailAddressSet)))</domain>
-    <context name="id" expr="eval: id"/>
     <context name="email" expr="eval: emailAddress?.address"/>
   </action-view>
 
@@ -572,7 +574,6 @@
       'com.axelor.apps.crm.db.Lead' AND self.multiRelatedList.relatedToSelectId = :id)
       OR
       (self.fromEmailAddress.address = :email))</domain>
-    <context name="id" expr="eval: id"/>
     <context name="email" expr="eval: emailAddress?.address"/>
   </action-view>
 

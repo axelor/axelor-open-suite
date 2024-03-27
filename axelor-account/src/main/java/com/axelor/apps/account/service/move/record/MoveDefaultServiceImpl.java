@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move.record;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -32,7 +33,10 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.ObjectUtils;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveDefaultServiceImpl implements MoveDefaultService {
 
@@ -109,21 +113,28 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
     FiscalPosition fiscalPosition = move.getFiscalPosition();
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      TaxLine taxLine =
-          moveLine.getTaxLineBeforeReverse() != null
-              ? moveLine.getTaxLineBeforeReverse()
-              : moveLine.getTaxLine();
+      Set<TaxLine> taxLineSet =
+          CollectionUtils.isNotEmpty(moveLine.getTaxLineBeforeReverseSet())
+              ? moveLine.getTaxLineBeforeReverseSet()
+              : moveLine.getTaxLineSet();
+      Set<TaxLine> newTaxLineSet = Sets.newHashSet(taxLineSet);
       TaxEquiv taxEquiv = null;
-      moveLine.setTaxLineBeforeReverse(null);
-      if (fiscalPosition != null && taxLine != null) {
-        taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, taxLine.getTax());
+      moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
+      if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
+        for (TaxLine taxLine : taxLineSet) {
 
-        if (taxEquiv != null) {
-          moveLine.setTaxLineBeforeReverse(taxLine);
-          taxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+          Tax tax = taxLine.getTax();
+          taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, tax);
+          moveLine.addTaxLineBeforeReverseSetItem(taxLine);
+
+          if (taxEquiv != null) {
+            TaxLine newTaxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+            newTaxLineSet.add(newTaxLine);
+            newTaxLineSet.remove(taxLine);
+          }
         }
       }
-      moveLine.setTaxLine(taxLine);
+      moveLine.setTaxLineSet(newTaxLineSet);
       moveLine.setTaxEquiv(taxEquiv);
     }
   }

@@ -116,6 +116,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected TaxService taxService;
   protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -133,7 +134,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       AppBaseService appBaseService,
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
-      TemplateMessageService templateMessageService) {
+      TemplateMessageService templateMessageService,
+      InvoiceTermFilterService invoiceTermFilterService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -150,6 +152,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.taxService = taxService;
     this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   // WKF
@@ -1164,7 +1167,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public boolean checkInvoiceTerms(Invoice invoice) throws AxelorException {
-    return CollectionUtils.isNotEmpty(invoiceTermService.getUnpaidInvoiceTerms(invoice));
+    return CollectionUtils.isNotEmpty(invoiceTermFilterService.getUnpaidInvoiceTerms(invoice));
   }
 
   @Override
@@ -1227,11 +1230,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void updateSubrogationPartner(Invoice invoice) {
+  public void updateThirdPartyPayerPartner(Invoice invoice) {
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       invoice.getInvoiceTermList().stream()
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
-          .forEach(it -> it.setSubrogationPartner(invoice.getSubrogationPartner()));
+          .forEach(it -> it.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner()));
     }
   }
 }

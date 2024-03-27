@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /** Interface of service to create {@link MoveLine} */
 public interface MoveLineCreateService {
@@ -40,7 +41,7 @@ public interface MoveLineCreateService {
       Partner partner,
       Account account,
       BigDecimal currencyAmount,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       BigDecimal amount,
       BigDecimal currencyRate,
       boolean isDebit,
@@ -101,7 +102,7 @@ public interface MoveLineCreateService {
       Account account,
       BigDecimal amount,
       boolean isDebit,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       LocalDate date,
       int ref,
       String origin,

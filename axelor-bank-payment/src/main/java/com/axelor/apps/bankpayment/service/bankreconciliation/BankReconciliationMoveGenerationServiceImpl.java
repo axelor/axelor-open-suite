@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.Account;
@@ -12,13 +30,13 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
@@ -32,7 +50,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -40,17 +60,19 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BankReconciliationMoveGenerationServiceImpl
     implements BankReconciliationMoveGenerationService {
 
-  protected static final int RETURNED_SCALE = 2;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected BankStatementRuleRepository bankStatementRuleRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
@@ -65,6 +87,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected TaxService taxService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineService moveLineService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -81,7 +104,8 @@ public class BankReconciliationMoveGenerationServiceImpl
       MoveLineTaxService moveLineTaxService,
       TaxService taxService,
       MoveLineCreateService moveLineCreateService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      CurrencyScaleService currencyScaleService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -96,6 +120,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.taxService = taxService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineService = moveLineService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -286,16 +311,20 @@ public class BankReconciliationMoveGenerationServiceImpl
       vatSystemSelect = counterPartAccount.getVatSystemSelect();
     }
 
-    TaxLine taxLine = counterPartMoveLine.getTaxLine();
-    Account account =
-        taxAccountService.getAccount(
-            taxLine != null ? taxLine.getTax() : null,
-            company,
-            journal,
-            vatSystemSelect,
-            false,
-            move.getFunctionalOriginSelect());
-    moveLineTaxService.autoTaxLineGenerate(move, account, false);
+    Set<TaxLine> taxLineSet = counterPartMoveLine.getTaxLineSet();
+    if (ObjectUtils.notEmpty(taxLineSet)) {
+      for (TaxLine taxLine : taxLineSet) {
+        Account account =
+            taxAccountService.getAccount(
+                taxLine != null ? taxLine.getTax() : null,
+                company,
+                journal,
+                vatSystemSelect,
+                false,
+                move.getFunctionalOriginSelect());
+        moveLineTaxService.autoTaxLineGenerate(move, account, false);
+      }
+    }
 
     fixTaxAmountRounding(move, counterPartMoveLine, moveLine);
   }
@@ -321,9 +350,9 @@ public class BankReconciliationMoveGenerationServiceImpl
             .subtract(counterPartMoveLine.getDebit().max(counterPartMoveLine.getCredit()))
             .abs();
     if (taxMoveLine.getDebit().signum() > 0) {
-      taxMoveLine.setDebit(taxAmount);
+      taxMoveLine.setDebit(currencyScaleService.getScaledValue(move, taxAmount));
     } else {
-      taxMoveLine.setCredit(taxAmount);
+      taxMoveLine.setCredit(currencyScaleService.getScaledValue(move, taxAmount));
     }
   }
 
@@ -340,10 +369,14 @@ public class BankReconciliationMoveGenerationServiceImpl
     Account account;
     String description = move.getDescription();
     String origin = move.getOrigin();
-    TaxLine taxLine = null;
+    Set<TaxLine> taxLineSet = new HashSet<>();
     if (isCounterpartLine) {
-      debit = bankReconciliationLine.getDebit();
-      credit = bankReconciliationLine.getCredit();
+      debit =
+          currencyScaleService.getScaledValue(
+              bankReconciliationLine, bankReconciliationLine.getDebit());
+      credit =
+          currencyScaleService.getScaledValue(
+              bankReconciliationLine, bankReconciliationLine.getCredit());
       account = bankStatementRule.getCounterpartAccount();
       if (account == null) {
         throw new AxelorException(
@@ -353,14 +386,18 @@ public class BankReconciliationMoveGenerationServiceImpl
       }
       if (account.getIsTaxRequiredOnMoveLine()) {
         if (bankStatementRule.getSpecificTax() == null) {
-          taxLine = taxService.getTaxLine(account.getDefaultTax(), date);
+          taxLineSet = taxService.getTaxLineSet(account.getDefaultTaxSet(), date);
         } else {
-          taxLine = taxService.getTaxLine(bankStatementRule.getSpecificTax(), date);
+          Sets.newHashSet(taxService.getTaxLine(bankStatementRule.getSpecificTax(), date));
         }
       }
     } else {
-      debit = bankReconciliationLine.getCredit();
-      credit = bankReconciliationLine.getDebit();
+      debit =
+          currencyScaleService.getScaledValue(
+              bankReconciliationLine, bankReconciliationLine.getCredit());
+      credit =
+          currencyScaleService.getScaledValue(
+              bankReconciliationLine, bankReconciliationLine.getDebit());
       account = bankStatementRule.getAccountManagement().getCashAccount();
       if (account == null) {
         throw new AxelorException(
@@ -372,10 +409,15 @@ public class BankReconciliationMoveGenerationServiceImpl
 
     boolean isDebit = debit.compareTo(credit) > 0;
 
-    BigDecimal amount = debit.add(credit);
-    if (taxLine != null) {
-      BigDecimal taxRate = taxLine.getValue().divide(BigDecimal.valueOf(100));
-      amount = amount.divide(BigDecimal.ONE.add(taxRate), RETURNED_SCALE, RoundingMode.HALF_UP);
+    BigDecimal amount =
+        currencyScaleService.getScaledValue(bankReconciliationLine, debit.add(credit));
+    if (ObjectUtils.notEmpty(taxLineSet)) {
+      BigDecimal taxRate = taxService.getTotalTaxRate(taxLineSet);
+      amount =
+          amount.divide(
+              BigDecimal.ONE.add(taxRate),
+              currencyScaleService.getScale(bankReconciliationLine),
+              RoundingMode.HALF_UP);
     }
 
     moveLine =
@@ -385,7 +427,7 @@ public class BankReconciliationMoveGenerationServiceImpl
             account,
             amount,
             isDebit,
-            taxLine,
+            taxLineSet,
             date,
             move.getMoveLineList().size() + 1,
             origin,

@@ -27,7 +27,7 @@ import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
@@ -41,16 +41,22 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentService;
-import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.InvoiceBankPaymentService;
+import com.axelor.apps.bankpayment.service.InvoiceBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
+import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl;
@@ -198,9 +204,10 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(BankStatementRemoveService.class).to(BankStatementRemoveServiceImpl.class);
 
-    bind(InvoiceTermBankPaymentService.class).to(InvoiceTermBankPaymentServiceImpl.class);
+    bind(InvoiceTermFilterBankPaymentService.class)
+        .to(InvoiceTermFilterBankPaymentServiceImpl.class);
 
-    bind(InvoiceTermServiceImpl.class).to(InvoiceTermBankPaymentServiceImpl.class);
+    bind(InvoiceTermFilterServiceImpl.class).to(InvoiceTermFilterBankPaymentServiceImpl.class);
 
     bind(MoveLineGroupServiceImpl.class).to(MoveLineGroupBankPaymentServiceImpl.class);
     bind(MoveLineGroupBankPaymentService.class).to(MoveLineGroupBankPaymentServiceImpl.class);
@@ -219,6 +226,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementValidateService.class).to(BankStatementValidateServiceImpl.class);
     bind(BankStatementLineDeleteService.class).to(BankStatementLineDeleteServiceImpl.class);
     bind(BankStatementLineFilterService.class).to(BankStatementLineFilterServiceImpl.class);
+    bind(InvoiceBankPaymentService.class).to(InvoiceBankPaymentServiceImpl.class);
     bind(BankStatementLineMapperAFB120Service.class)
         .to(BankStatementLineMapperAFB120ServiceImpl.class);
     bind(BankStatementLineFetchAFB120Service.class)
@@ -243,5 +251,8 @@ public class BankPaymentModule extends AxelorModule {
         .to(BankReconciliationReconciliationServiceImpl.class);
     bind(BankReconciliationSelectedLineComputationService.class)
         .to(BankReconciliationSelectedLineComputationServiceImpl.class);
+    bind(BankReconciliationLineRepository.class)
+        .to(BankReconciliationLineManagementRepository.class);
+    bind(BankStatementLineRepository.class).to(BankStatementLineManagementRepository.class);
   }
 }

@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -62,7 +63,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -79,6 +82,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected SupplyChainConfigService supplyChainConfigService;
   protected ProductCompanyService productCompanyService;
   protected PartnerStockSettingsService partnerStockSettingsService;
+  protected TaxService taxService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -94,7 +98,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       AppSupplychainService appSupplychainService,
       SupplyChainConfigService supplyChainConfigService,
       ProductCompanyService productCompanyService,
-      PartnerStockSettingsService partnerStockSettingsService) {
+      PartnerStockSettingsService partnerStockSettingsService,
+      TaxService taxService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -108,6 +113,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.supplyChainConfigService = supplyChainConfigService;
     this.productCompanyService = productCompanyService;
     this.partnerStockSettingsService = partnerStockSettingsService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -222,7 +228,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     setReservationDateTime(stockMove, saleOrder);
-    stockMoveService.plan(stockMove);
+    stockMoveService.planWithNoSplit(stockMove);
 
     return Optional.of(stockMove);
   }
@@ -450,9 +456,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
 
       BigDecimal taxRate = BigDecimal.ZERO;
-      TaxLine taxLine = saleOrderLine.getTaxLine();
-      if (taxLine != null) {
-        taxRate = taxLine.getValue();
+      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
+      if (CollectionUtils.isNotEmpty(taxLineSet)) {
+        taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
       }
       if (saleOrderLine.getQty().signum() != 0) {
         companyUnitPriceUntaxed =

@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -69,7 +70,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +90,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected ProductCompanyService productCompanyService;
+  protected TaxService taxService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -99,7 +103,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockMoveService stockMoveService,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      TaxService taxService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -111,6 +116,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
+    this.taxService = taxService;
   }
 
   /**
@@ -448,9 +454,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
 
     BigDecimal taxRate = BigDecimal.ZERO;
-    TaxLine taxLine = purchaseOrderLine.getTaxLine();
-    if (taxLine != null) {
-      taxRate = taxLine.getValue();
+    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
     }
     if (purchaseOrderLine.getReceiptState() == 0) {
       purchaseOrderLine.setReceiptState(PurchaseOrderLineRepository.RECEIPT_STATE_NOT_RECEIVED);

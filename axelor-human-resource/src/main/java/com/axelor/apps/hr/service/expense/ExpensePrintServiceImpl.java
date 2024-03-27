@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pdf.PdfService;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
@@ -32,7 +33,6 @@ import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -102,7 +102,7 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
 
   protected File getReportFile(Expense expense) throws AxelorException, IOException {
     BirtTemplate birtTemplate = getBirtTemplate(expense);
-    return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense);
+    return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense, null);
   }
 
   protected BirtTemplate getBirtTemplate(Expense expense) throws AxelorException {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-grid"
     groupBy="concernedModel" orderBy="company,product,productCategory,startDate,name">
@@ -28,7 +28,8 @@
       <button name="historizePricingBtn" title="Historize"
         onClick="save,action-pricing-method-historize-pricing"/>
     </toolbar>
-    <panel name="mainPanel" readonlyIf="$popup()">
+
+    <panel name="mainPanel" colSpan="12">
       <panel name="overviewPanel" colSpan="12">
         <field name="name"/>
         <field name="startDate" required="true" onChange="action-pricing-method-check-dates"/>
@@ -72,20 +73,27 @@
         <field name="productCategory" readonlyIf="product"
           requiredIf="!product &amp;&amp; !formula"
           onChange="action-pricing-method-set-formula-field"/>
+        <panel name="formulaPanel" title="Formula" colSpan="12" canCollapse="true"
+          collapseIf="$readonly()">
+          <field name="formula" showTitle="false" readonlyIf="product || productCategory"
+            height="150" colSpan="12" widget="CodeEditor"
+            onChange="action-pricing-method-clear-fields-related-to-formula"
+            requiredIf="!product &amp;&amp; !productCategory" x-code-syntax="groovy"/>
+        </panel>
         <field name="linkedPricing"
           domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
-        <field name="formula" readonlyIf="product || productCategory"
-          requiredIf="!product &amp;&amp; !productCategory" widget="CodeEditor" colSpan="12"
-          x-code-syntax="groovy" onChange="action-pricing-method-clear-fields-related-to-formula"/>
+        <panel-related field="pricingLineList" name="pricingLineListPanel"
+          colSpan="12" grid-view="pricing-line-grid" form-view="pricing-line-form"
+          showIf="class1PricingRule || result1PricingRule"
+          orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"/>
+        <panel name="historizedPanel" title="History" colSpan="12" canCollapse="true"
+          collapseIf="true" hideIf="$popup()">
+          <panel-dashlet name="historizedPricingPanel" title="Historized pricings"
+            colSpan="12" action="action-pricing-view-historized-pricing"/>
+        </panel>
       </panel>
-      <panel-related field="pricingLineList" name="pricingLineListPanel" colSpan="12"
-        grid-view="pricing-line-grid" form-view="pricing-line-form"
-        showIf="class1PricingRule || result1PricingRule"
-        orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"/>
-      <panel-dashlet name="historizedPricingPanel" colSpan="12"
-        title="Historized pricings" action="action-pricing-view-historized-pricing"
-        hideIf="$popup()"/>
     </panel>
+
   </form>
 
   <form name="pricing-history-form" title="Pricing" model="com.axelor.apps.base.db.Pricing"
@@ -263,7 +271,6 @@
     <view-param name="popup" value="reload"/>
     <view-param name="showArchived" value="true"/>
     <domain>self.currentPricing = :id </domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-method name="action-pricing-method-check-dates">

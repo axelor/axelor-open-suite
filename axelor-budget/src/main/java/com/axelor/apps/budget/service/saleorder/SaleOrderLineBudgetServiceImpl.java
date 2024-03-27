@@ -116,34 +116,9 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     return budgetStr;
   }
 
-  @Transactional
   @Override
-  public List<BudgetDistribution> addBudgetDistribution(SaleOrderLine saleOrderLine) {
-    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
-    if (appBudgetService.getAppBudget() != null
-        && !appBudgetService.getAppBudget().getManageMultiBudget()
-        && saleOrderLine.getBudget() != null) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(saleOrderLine.getBudget());
-      LocalDate date = null;
-      if (saleOrderLine.getSaleOrder() != null) {
-        date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
-      }
-
-      budgetDistribution.setBudgetAmountAvailable(
-          budgetToolsService.getAvailableAmountOnBudget(saleOrderLine.getBudget(), date));
-      budgetDistribution.setAmount(saleOrderLine.getExTaxTotal());
-      budgetDistributionList.add(budgetDistribution);
-      saleOrderLine.setBudgetDistributionList(budgetDistributionList);
-    }
-    return budgetDistributionList;
-  }
-
-  @Override
-  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
     Company company = null;
     LocalDate date = null;
     Set<GlobalBudget> globalBudgetSet = new HashSet<>();
@@ -161,13 +136,18 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     }
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, AccountTypeRepository.TYPE_INCOME, globalBudgetSet);
+        company,
+        date,
+        AccountTypeRepository.TYPE_INCOME,
+        saleOrderLine.getAccount(),
+        globalBudgetSet);
   }
 
   @Override
   public void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getBudgetDistributionList() != null
         && !saleOrderLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
           throw new AxelorException(
@@ -175,7 +155,15 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_PO),
               budgetDistribution.getBudget().getCode(),
               saleOrderLine.getProductName());
+        } else {
+          totalAmount = totalAmount.add(budgetDistribution.getAmount());
         }
+      }
+      if (totalAmount.compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO),
+            saleOrderLine.getProductName());
       }
     }
   }

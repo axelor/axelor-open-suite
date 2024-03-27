@@ -20,18 +20,19 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
-import com.axelor.apps.contract.service.CurrencyScaleServiceContract;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.google.inject.Inject;
@@ -49,7 +50,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       DurationService durationService,
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
-      CurrencyScaleServiceContract currencyScaleServiceContract) {
+      CurrencyScaleService currencyScaleService,
+      TaxService taxService) {
     super(
         appBaseService,
         accountManagementService,
@@ -60,7 +62,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
         durationService,
         analyticLineModelService,
         appAccountService,
-        currencyScaleServiceContract);
+        currencyScaleService,
+        taxService);
   }
 
   @Override

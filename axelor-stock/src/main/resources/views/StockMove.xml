@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -1099,7 +1099,7 @@
   <action-record name="action-stock-move-record-ispm-field"
     model="com.axelor.apps.stock.db.StockMove">
     <field name="isIspmRequired"
-      expr="eval: partner?.isIspmRequired || toAddress?.addressL7Country?.isIspmRequired"/>
+      expr="eval: partner?.isIspmRequired || toAddress?.country?.isIspmRequired"/>
   </action-record>
 
   <action-record name="action-stock-move-set-from-address"
