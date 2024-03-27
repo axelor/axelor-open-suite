@@ -18,6 +18,11 @@
       title="Country of origin" massUpdate="true"/>
     <boolean name="stockManaged" default="true" massUpdate="true"/>
 
+    <decimal name="unitMass" title="Unit weight in kg" default="0" min="0" precision="20"
+      scale="10"/>
+    <decimal name="metricMass" title="Metric weight in kg/m" default="0" min="0"
+      precision="20" scale="10"/>
+
     <track on="UPDATE">
       <field name="trackingNumberConfiguration"/>
     </track>

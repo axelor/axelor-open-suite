@@ -137,6 +137,10 @@
               grid-view="tracking-number-configuration-grid"
               if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})"/>
           </panel>
+          <panel colSpan="12" name="massPanel">
+            <field name="unitMass"/>
+            <field name="metricMass"/>
+          </panel>
         </panel>
       </insert>
     </extend>
