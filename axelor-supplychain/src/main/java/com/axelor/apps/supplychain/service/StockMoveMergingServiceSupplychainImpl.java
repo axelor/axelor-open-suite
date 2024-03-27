@@ -27,11 +27,13 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServiceImpl {
 
@@ -55,8 +57,13 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
   @Override
   protected void checkErrors(List<StockMove> stockMoveList, StringJoiner errors) {
     super.checkErrors(stockMoveList, errors);
-    if (!checkAllSame(stockMoveList, StockMove::getSaleOrderSet)) {
-      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_SALE_ORDER));
+    if (!checkAllSame(
+        stockMoveList,
+        stockMove ->
+            stockMove.getSaleOrderSet().stream()
+                .map(saleOrder -> saleOrder.getFiscalPosition())
+                .collect(Collectors.toSet()))) {
+      errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
     }
     if (!checkAllSame(stockMoveList, StockMove::getPurchaseOrderSet)) {
       errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER));
@@ -75,7 +82,13 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
       List<StockMove> stockMoveList, StockMove stockMove, StockMove mergedStockMove) {
     super.fillStockMoveFields(stockMoveList, stockMove, mergedStockMove);
     mergedStockMove.setDeliveryCondition(stockMove.getDeliveryCondition());
-    mergedStockMove.setSaleOrderSet(stockMove.getSaleOrderSet());
-    mergedStockMove.setPurchaseOrderSet(stockMove.getPurchaseOrderSet());
+    mergedStockMove.setSaleOrderSet(
+        stockMoveList.stream()
+            .flatMap(s -> s.getSaleOrderSet().stream())
+            .collect(Collectors.toSet()));
+    mergedStockMove.setPurchaseOrderSet(
+        stockMoveList.stream()
+            .flatMap(s -> s.getPurchaseOrderSet().stream())
+            .collect(Collectors.toSet()));
   }
 }

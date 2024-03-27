@@ -117,9 +117,52 @@ public interface SaleOrderMergingService {
 
   Checks getChecks(SaleOrderMergingResult result);
 
+  /**
+   * Merge sale orders. This method can update the database, removing existing sale orders and
+   * creating a new one.
+   *
+   * @param saleOrdersToMerge sale orders to merge
+   * @return a SaleOrderMergingResult object.
+   * @throws AxelorException
+   */
   SaleOrderMergingResult mergeSaleOrders(List<SaleOrder> saleOrdersToMerge) throws AxelorException;
 
+  /**
+   * Do the same actions as {@link this#mergeSaleOrders(List)}, but does not update the database.
+   * This can be used to check if multiple sale orders are merge-compatible and extract their common
+   * fields.
+   *
+   * @param saleOrdersToMerge sale orders to merge
+   * @return a SaleOrderMergingResult object.
+   * @throws AxelorException
+   */
+  SaleOrderMergingResult simulateMergeSaleOrders(List<SaleOrder> saleOrdersToMerge)
+      throws AxelorException;
+
+  /**
+   * Merge sale orders.
+   *
+   * @param saleOrdersToMerge sale orders to merge
+   * @param context a context with the parameters the user chose for conflicting fields (example:
+   *     contactPartner)
+   * @return a SaleOrderMergingResult object.
+   * @throws AxelorException
+   */
   SaleOrderMergingResult mergeSaleOrdersWithContext(
+      List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException;
+
+  /**
+   * Do the same actions as {@link this#mergeSaleOrdersWithContext(List, Context)}, but does not
+   * update the database. This can be used to check if multiple sale orders are merge-compatible and
+   * extract their common fields.
+   *
+   * @param saleOrdersToMerge sale orders to merge
+   * @param context a context with the parameters the user chose for conflicting fields (example:
+   *     contactPartner)
+   * @return a SaleOrderMergingResult object.
+   * @throws AxelorException
+   */
+  SaleOrderMergingResult simulateMergeSaleOrdersWithContext(
       List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException;
 
   List<SaleOrder> convertSelectedLinesToMergeLines(List<Integer> idList);

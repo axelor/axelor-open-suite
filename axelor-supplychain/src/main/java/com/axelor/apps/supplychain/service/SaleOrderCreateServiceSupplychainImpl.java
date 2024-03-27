@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -39,18 +40,16 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServiceImpl {
+public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServiceImpl
+    implements SaleOrderCreateSupplychainService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -72,7 +71,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderRepository saleOrderRepository,
       SaleOrderSupplychainService saleOrderSupplychainService,
       DMSService dmsService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      SaleOrderLineRepository saleOrderLineRepository) {
 
     super(
         partnerService,
@@ -80,7 +80,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         appSaleService,
         saleOrderService,
         saleOrderComputeService,
-        dmsService);
+        dmsService,
+        saleOrderLineRepository);
 
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
@@ -178,6 +179,50 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         null);
   }
 
+  @Override
+  public SaleOrder createSaleOrder(
+      User salespersonUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate estimatedShippingDate,
+      String internalReference,
+      String externalReference,
+      StockLocation stockLocation,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team,
+      TaxNumber taxNumber,
+      String internalNote,
+      FiscalPosition fiscalPosition,
+      TradingName tradingName,
+      Incoterm incoterm,
+      Partner invoicedPartner,
+      Partner deliveredPartner)
+      throws AxelorException {
+    SaleOrder saleOrder =
+        this.createSaleOrder(
+            salespersonUser,
+            company,
+            contactPartner,
+            currency,
+            estimatedShippingDate,
+            internalReference,
+            externalReference,
+            stockLocation,
+            priceList,
+            clientPartner,
+            team,
+            taxNumber,
+            fiscalPosition,
+            tradingName,
+            incoterm,
+            invoicedPartner,
+            deliveredPartner);
+    saleOrder.setInternalNote(internalNote);
+    return saleOrder;
+  }
+
   public SaleOrder createSaleOrder(
       User salespersonUser,
       Company company,
@@ -248,80 +293,5 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     saleOrder.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
 
     return saleOrder;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder mergeSaleOrders(
-      List<SaleOrder> saleOrderList,
-      Currency currency,
-      Partner clientPartner,
-      Company company,
-      StockLocation stockLocation,
-      Partner contactPartner,
-      PriceList priceList,
-      Team team,
-      TaxNumber taxNumber,
-      FiscalPosition fiscalPosition,
-      Incoterm incoterm,
-      Partner invoicedPartner,
-      Partner deliveredPartner)
-      throws AxelorException {
-
-    StringBuilder numSeq = new StringBuilder();
-    StringBuilder externalRef = new StringBuilder();
-    StringBuilder internalNote = new StringBuilder();
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (numSeq.length() > 0) {
-        numSeq.append("-");
-      }
-      numSeq.append(saleOrderLocal.getSaleOrderSeq());
-
-      if (externalRef.length() > 0) {
-        externalRef.append("|");
-      }
-      if (saleOrderLocal.getExternalReference() != null) {
-        externalRef.append(saleOrderLocal.getExternalReference());
-      }
-      if (internalNote.length() > 0) {
-        internalNote.append("<br>");
-      }
-      if (saleOrderLocal.getInternalNote() != null) {
-        internalNote.append(saleOrderLocal.getInternalNote());
-      }
-    }
-
-    SaleOrder saleOrderMerged =
-        this.createSaleOrder(
-            AuthUtils.getUser(),
-            company,
-            contactPartner,
-            currency,
-            null,
-            numSeq.toString(),
-            externalRef.toString(),
-            stockLocation,
-            priceList,
-            clientPartner,
-            team,
-            taxNumber,
-            fiscalPosition,
-            null,
-            incoterm,
-            invoicedPartner,
-            deliveredPartner);
-
-    saleOrderMerged.setInternalNote(internalNote.toString());
-
-    super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
-
-    saleOrderComputeService.computeSaleOrder(saleOrderMerged);
-
-    saleOrderRepository.save(saleOrderMerged);
-
-    dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
-
-    super.removeOldSaleOrders(saleOrderList);
-
-    return saleOrderMerged;
   }
 }
