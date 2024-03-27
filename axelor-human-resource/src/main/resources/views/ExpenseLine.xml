@@ -17,6 +17,8 @@
       onSelect="action-expense-line-method-compute-project-task-domain"
       onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
       form-view="project-task-form"/>
+    <field name="site" form-view="site-form" grid-view="site-grid"
+      onSelect="action-expense-line-attrs-set-site-domain"/>
     <field name="expenseProduct" canView="false"
       onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
       form-view="product-expense-form" grid-view="product-expense-grid" width="200"
@@ -50,6 +52,8 @@
       onSelect="action-expense-line-method-compute-project-task-domain"
       onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
       form-view="project-task-form"/>
+    <field name="site" form-view="site-form" grid-view="site-grid"
+      onSelect="action-expense-line-attrs-set-site-domain"/>
     <field name="expenseDate" title="Date" width="95"
       onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
     <field name="kilometricAllowParam" canEdit="false" required="true" width="60"
@@ -115,6 +119,8 @@
         onSelect="action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
         grid-view="project-task-grid"/>
+      <field name="site" form-view="site-form" grid-view="site-grid"
+        onSelect="action-expense-line-attrs-set-site-domain"/>
       <field name="expenseProduct" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
         form-view="product-expense-form" grid-view="product-expense-grid"
@@ -190,6 +196,8 @@
         onSelect="action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
         grid-view="project-task-grid"/>
+      <field name="site" form-view="site-form" grid-view="site-grid"
+        onSelect="action-expense-line-attrs-set-site-domain"/>
       <field name="expenseDate"/>
       <field name="kilometricAllowParam" required="true"
         onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
@@ -308,6 +316,7 @@
 
   <action-attrs name="action-expense-line-attrs-on-project-task-change">
     <attribute for="project" name="value" expr="eval: projectTask?.project"/>
+    <attribute for="site" name="value" expr="eval: projectTask?.site"/>
   </action-attrs>
 
   <action-record name="action-expense-line-default"
@@ -467,6 +476,14 @@
     <attribute for="totalAmount" name="value" expr="eval: 0"/>
     <attribute for="untaxedAmount" name="value" expr="eval: 0"/>
     <attribute for="totalTax" name="value" expr="eval: 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-expense-line-attrs-set-site-domain">
+    <attribute for="site" name="domain"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"
+      if="project"/>
+    <attribute for="site" name="domain" expr="self.isEnterableOnExpense = true"
+      if="!project"/>
   </action-attrs>
 
 </object-views>
