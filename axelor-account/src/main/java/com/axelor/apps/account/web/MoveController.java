@@ -539,7 +539,7 @@ public class MoveController {
       response.setValues(
           Beans.get(MoveGroupService.class).getGenerateCounterpartOnClickValuesMap(move, dueDate));
 
-      Beans.get(MoveAttrsService.class).addThirdPartyPayerPartnerReadonly(move, attrsMap);
+      Beans.get(MoveAttrsService.class).addSubrogationPartnerReadonly(move, attrsMap);
       response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
