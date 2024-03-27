@@ -7,7 +7,7 @@
     model="com.axelor.apps.base.db.Site" extension="true">
     <extend target="//field[@name='isEnterableOnProject']">
       <insert position="after">
-        <field name="invoicingType"/>
+        <field name="invoicingTypeSelect"/>
       </insert>
     </extend>
   </form>

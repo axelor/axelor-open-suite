@@ -6,8 +6,8 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Site">
-    <integer name="invoicingType" selection="business.project.task.invoicing.type.select"
-      default="3" title="Invoicing Type" required="true"/>
+    <integer name="invoicingTypeSelect" required="true" title="Invoicing Type"
+      selection="business.project.task.invoicing.type.select" default="3"/>
   </entity>
 
 </domain-models>

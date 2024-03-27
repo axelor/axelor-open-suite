@@ -34,7 +34,7 @@
     model="com.axelor.apps.base.db.Site">
     <view type="grid" name="site-grid"/>
     <view type="form" name="site-form"/>
-    <context name="_isFromProject" expr="true"/>
+    <context name="_isFromProject" expr="eval: true"/>
   </action-view>
 
   <menuitem name="business-project-root-invoicing-project" order="400"
