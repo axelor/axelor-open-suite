@@ -48,7 +48,7 @@
             onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"/>
           <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
             colSpan="6">
-            <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement"
+            <field if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
               name="isAdditionaBenefitManagement" colSpan="6" widget="boolean-switch"/>
             <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
               name="isConsumptionManagement" colSpan="6" widget="boolean-switch"/>
@@ -173,7 +173,7 @@
     <field name="isInvoicingManagement" hidden="true"
       if="!__config__.app.getApp('contract')?.isInvoicingManagement"/>
     <field name="isAdditionaBenefitManagement" hidden="true"
-      if="!__config__.app.getApp('contract')isAdditionalBenefitManagement"/>
+      if="!__config__.app.getApp('contract')?.isAdditionalBenefitManagement"/>
     <field name="isConsumptionManagement" hidden="true"
       if="!__config__.app.getApp('contract')?.isConsumptionManagement"/>
   </search-filters>
