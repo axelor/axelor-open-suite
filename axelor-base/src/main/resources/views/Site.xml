@@ -12,7 +12,7 @@
   </grid>
 
   <form title="Site" name="site-form" model="com.axelor.apps.base.db.Site"
-    onNew="action-site-record-set-default-company,action-site-attrs-set-default">
+    onNew="action-site-attrs-set-defaults">
     <panel name="mainPanel">
       <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
         <editor x-show-titles="false">
@@ -35,13 +35,10 @@
     </panel>
   </form>
 
-  <action-attrs name="action-site-attrs-set-default">
+  <action-attrs name="action-site-attrs-set-defaults">
+    <attribute for="companySet" name="value" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
     <attribute for="typeSelect" name="value" expr="1"/>
   </action-attrs>
 
-  <action-record name="action-site-record-set-default-company"
-    model="com.axelor.apps.base.db.Site">
-    <field name="companySet" expr="eval:__user__.activeCompany"
-      if="__user__.activeCompany != null"/>
-  </action-record>
 </object-views>
