@@ -41,9 +41,9 @@ import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
@@ -65,6 +65,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
@@ -116,8 +117,9 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermPfpService invoiceTermPfpService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -143,8 +145,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
-      InvoiceTermPfpService invoiceTermPfpService) {
+      CurrencyScaleService currencyScaleService,
+      InvoiceTermPfpService invoiceTermPfpService,
+      InvoiceTermFilterService invoiceTermFilterService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -168,8 +171,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.invoiceTermPfpService = invoiceTermPfpService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   /**
@@ -204,7 +208,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile =
           new Reconcile(
               debitMoveLine.getMove().getCompany(),
-              currencyScaleServiceAccount.getCompanyScaledValue(debitMoveLine, amount),
+              currencyScaleService.getCompanyScaledValue(debitMoveLine, amount),
               debitMoveLine,
               creditMoveLine,
               ReconcileRepository.STATUS_DRAFT,
@@ -361,12 +365,12 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (currencyScaleServiceAccount.isGreaterThan(
+    if (currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
             creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
             creditMoveLine,
             false)
-        || currencyScaleServiceAccount.isGreaterThan(
+        || currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
             debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
             debitMoveLine,
@@ -393,7 +397,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     if (updateInvoiceTerms && updateInvoicePayments) {
       invoiceTermPfpService.validatePfpValidatedAmount(
-          debitMoveLine, creditMoveLine, reconcile.getAmount());
+          debitMoveLine, creditMoveLine, reconcile.getAmount(), reconcileCompany);
     }
   }
 
@@ -607,13 +611,13 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Recompute currency rate to avoid rounding issue
     total = amount.divide(rate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-    if (total.stripTrailingZeros().scale() > currencyScaleServiceAccount.getScale(otherMoveLine)) {
+    if (total.stripTrailingZeros().scale() > currencyScaleService.getScale(otherMoveLine)) {
       total =
           computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
               .multiply(moveLine.getCurrencyAmount().abs());
     }
 
-    total = currencyScaleServiceAccount.getScaledValue(moveLine, total);
+    total = currencyScaleService.getScaledValue(moveLine, total);
 
     if (amount.compareTo(otherMoveLine.getCredit().max(otherMoveLine.getDebit())) == 0
         && total.compareTo(otherMoveLine.getCurrencyAmount()) != 0) {
@@ -719,7 +723,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       List<InvoiceTerm> invoiceTermsToPay = null;
       if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
         invoiceTermsToPay =
-            invoiceTermService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
+            invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
       } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
         invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());

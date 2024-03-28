@@ -26,7 +26,8 @@ import java.time.LocalDate;
 public interface DurationService {
   LocalDate computeDuration(Duration duration, LocalDate date);
 
-  BigDecimal computeRatio(LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd);
+  BigDecimal computeRatio(
+      LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd, Duration duration);
 
   BigDecimal getFactor(int durationType) throws AxelorException;
 }
