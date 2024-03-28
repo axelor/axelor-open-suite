@@ -136,6 +136,7 @@
         <field name="invoice.company.accountConfig.isInvoiceCoefficientEnabled" hidden="true"/>
         <field name="companyExTaxTotal" hidden="true"
           x-currency="invoice.company.currency.symbol"/>
+        <field name="invoiceLineNumber" hidden="true"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>
@@ -395,6 +396,8 @@
     model="com.axelor.apps.account.db.InvoiceLine">
     <field name="qty" expr="eval: 1"/>
     <field name="$isFilterOnSupplier" expr="eval:true"/>
+    <field name="invoiceLineNumber" expr="eval: __parent__.invoiceLineList.size()"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Invoice'"/>
   </action-record>
 
   <action-record name="action-invoice-line-record-operation-type"
