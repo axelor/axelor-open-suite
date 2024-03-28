@@ -1,2 +1,2 @@
-title: "Bill of material import : fix creation of a new product from form view of billOfMaterialImportLineList"
+title: "Bill of materials import: fixed creation of a new product from bill of materials import form view."
 module: axelor-production
