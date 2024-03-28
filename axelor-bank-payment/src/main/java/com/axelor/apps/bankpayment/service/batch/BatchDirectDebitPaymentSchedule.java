@@ -46,6 +46,7 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
@@ -58,6 +59,17 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected BatchBankPaymentService batchBankPaymentService;
+  protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+
+  @Inject
+  public BatchDirectDebitPaymentSchedule(
+      BatchBankPaymentService batchBankPaymentService,
+      PaymentScheduleLineRepository paymentScheduleLineRepo) {
+    this.batchBankPaymentService = batchBankPaymentService;
+    this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+  }
 
   @Override
   protected void process() {
