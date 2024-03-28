@@ -10,12 +10,14 @@
 
   <form name="weekly-planning-form" title="Weekly Planning"
     model="com.axelor.apps.base.db.WeeklyPlanning"
-    onNew="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:initPlanning"
+    onNew="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:initPlanning, action-base-method-weekly-planning-type-select"
+    onLoad="action-base-method-weekly-planning-type-select"
     onSave="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="typeSelect" if-module="axelor-production"
-        if="__config__.app.isApp('production')" required="true"/>
+        if="__config__.app.isApp('production')||__config__.app.isApp('employee') || __config__.app.isApp('business-project')"
+        required="true"/>
       <field name="bonusCoef" if-module="axelor-human-resource"
         if="__config__.app.isApp('employee')" hideIf="typeSelect == 2"/>
       <field name="leaveCoef" if-module="axelor-human-resource" hideIf="typeSelect == 2"/>
@@ -23,5 +25,10 @@
     <panel-related name="weekDaysPanel" field="weekDays" editable="true"
       grid-view="day-planning-grid" form-view="day-planning-form"/>
   </form>
+
+  <action-method name="action-base-method-weekly-planning-type-select">
+    <call class="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController"
+      method="insertTypeSelect"/>
+  </action-method>
 
 </object-views>

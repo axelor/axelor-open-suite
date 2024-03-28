@@ -133,8 +133,8 @@
     <option value="4">Bill of materials</option>
   </selection>
 
-  <selection name="production.weekly.planning.type.select">
-    <option value="1">Human resources</option>
+  <selection name="base.weekly.planning.type.select"
+    id="production.weekly.planning.type.select">
     <option value="2">Machine</option>
   </selection>
 

@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public interface WeeklyPlanningService {
 
@@ -82,4 +83,6 @@ public interface WeeklyPlanningService {
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date);
 
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
+
+  List<Integer> insertTypeSelect();
 }
