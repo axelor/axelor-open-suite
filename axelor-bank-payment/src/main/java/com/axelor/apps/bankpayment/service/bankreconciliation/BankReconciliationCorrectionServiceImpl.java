@@ -60,7 +60,9 @@ public class BankReconciliationCorrectionServiceImpl
     List<MoveLine> authorizedMoveLinesOnClosedPeriod =
         moveLineRepository
             .all()
-            .filter(bankReconciliationQueryService.getRequestMoveLines() + onClosedPeriodClause)
+            .filter(
+                bankReconciliationQueryService.getRequestMoveLines(bankReconciliation)
+                    + onClosedPeriodClause)
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
             .fetch();
     boolean haveMoveLineOnClosedPeriod = !authorizedMoveLinesOnClosedPeriod.isEmpty();

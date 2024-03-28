@@ -426,7 +426,8 @@ public class BankReconciliationController {
       }
 
       actionViewBuilder.add("form", "move-line-form");
-      actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines());
+      actionViewBuilder.domain(
+          bankReconciliationQueryService.getRequestMoveLines(bankReconciliation));
       if (bankReconciliation.getCompany() == null) {
         return;
       }
