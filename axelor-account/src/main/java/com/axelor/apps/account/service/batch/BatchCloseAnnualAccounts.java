@@ -410,22 +410,24 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                       + query
                       + " AND self.account.accountType.technicalTypeSelect = 'income'",
                   BigDecimal.class);
-      if (qIncome.getSingleResult() != null) {
-        Query qCharge =
-            JPA.em()
-                .createQuery(
-                    "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
-                        + query
-                        + " AND self.account.accountType.technicalTypeSelect = 'charge'",
-                    BigDecimal.class);
-        if (qCharge.getSingleResult() != null) {
-          return ((BigDecimal) qIncome.getSingleResult())
-              .subtract((BigDecimal) qCharge.getSingleResult());
-        }
-        return (BigDecimal) qIncome.getSingleResult();
-      }
+      Query qCharge =
+          JPA.em()
+              .createQuery(
+                  "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
+                      + query
+                      + " AND self.account.accountType.technicalTypeSelect = 'charge'",
+                  BigDecimal.class);
+
+      BigDecimal incomes = this.extractAmountFromQuery(qIncome);
+      BigDecimal charges = this.extractAmountFromQuery(qCharge);
+
+      return incomes.subtract(charges);
     }
     return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal extractAmountFromQuery(Query query) {
+    return query.getSingleResult() != null ? (BigDecimal) query.getSingleResult() : BigDecimal.ZERO;
   }
 
   class AccountByPartner {
