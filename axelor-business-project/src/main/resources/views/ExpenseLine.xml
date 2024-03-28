@@ -100,7 +100,7 @@
   </action-group>
 
   <action-attrs name="action-expense-line-attrs-update-to-invoice">
-    <attribute for="toInvoice" name="value" expr="eval:site?.invoicingType == 1"
+    <attribute for="toInvoice" name="value" expr="eval:site?.invoicingTypeSelect == 1"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>
 
