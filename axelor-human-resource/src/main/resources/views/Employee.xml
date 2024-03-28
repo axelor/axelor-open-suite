@@ -518,6 +518,8 @@
             grid-view="employee-advance-employee-grid"
             if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement()"
             readonly="false"/>
+          <panel-related name="bankCardPanel" title="Bank cards" field="bankCardList"
+            colSpan="12" form-view="bank-card-form-from-employee" grid-view="bank-card-grid"/>
         </panel>
 
         <panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')"
