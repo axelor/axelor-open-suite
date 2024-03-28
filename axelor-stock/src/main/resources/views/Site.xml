@@ -5,13 +5,11 @@
 
   <form title="Site" name="site-form" id="stock-site-form" model="com.axelor.apps.base.db.Site"
     extension="true">
-    <extend target="//panel[@name='mainPanel']">
+    <extend target="//panel[@name='basePanel']">
       <insert position="after">
-        <panel-tabs name="mainPanelTab" showIf="id"
-          if="__config__.app.getApp('base')?.enableSiteManagementForStock">
-          <panel-dashlet action="action-site-view-show-stock-location"
-            name="stockPanel" title="Stock"/>
-        </panel-tabs>
+        <panel-dashlet action="action-site-view-show-stock-location" name="stockPanel"
+          title="Stock" showIf="id &amp;&amp; !_isFromProject"
+          if="__config__.app.getApp('base')?.enableSiteManagementForStock"/>
       </insert>
     </extend>
   </form>

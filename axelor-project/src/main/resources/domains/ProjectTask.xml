@@ -57,6 +57,8 @@
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       index="false"/>
 
+    <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
+
     <!-- Gantt view fields -->
 
     <decimal name="plannedProgress" title="Planned progress"/>

@@ -105,6 +105,9 @@
             onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
             form-view="user-form" grid-view="user-grid"
             onChange="action-project-task-attrs-hide-time-spent-button"/>
+          <field name="site" onSelect="action-project-task-attrs-set-site-domain"
+            form-view="site-form" grid-view="site-grid"
+            if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
           <field name="customerReferral"
             onSelect="action-project-task-attrs-customer-referral-domain" hidden="true"
             showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
@@ -820,6 +823,11 @@
   <action-attrs name="action-project-task-attrs-hide-time-spent-button">
     <attribute name="hidden" for="timeSpentBtn"
       expr="!(project?.isShowTimeSpent &amp;&amp; assignedTo?.employee == __user__.employee)"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-set-site-domain">
+    <attribute for="site" name="domain"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
 
   <search-filters name="project-task-filters"

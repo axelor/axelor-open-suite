@@ -21,6 +21,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
@@ -110,6 +111,12 @@ public class ProjectServiceImpl implements ProjectService {
         new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
+    // add default sites on new project
+    if (appProjectService.getAppBase().getEnableSiteManagementForProject()) {
+      for (Site site : appProjectService.getAppBase().getDefaultSitesSet()) {
+        project.addSiteSetItem(site);
+      }
+    }
     return project;
   }
 

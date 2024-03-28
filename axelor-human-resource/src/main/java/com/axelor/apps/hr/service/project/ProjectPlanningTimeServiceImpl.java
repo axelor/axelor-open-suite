@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -35,6 +36,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Adapter;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -42,6 +44,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,6 +170,12 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       activity = productRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
 
+    Site site = null;
+    if (datas.get("site") != null) {
+      objMap = (Map) datas.get("site");
+      site = JPA.find(Site.class, Long.valueOf(objMap.get("id").toString()));
+    }
+
     BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
     while (fromDate.isBefore(toDate)) {
@@ -193,7 +202,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
                 employee,
                 activity,
                 dailyWorkHrs,
-                taskEndDateTime);
+                taskEndDateTime,
+                site);
         planningTimeRepo.save(planningTime);
       }
 
@@ -216,7 +226,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       Employee employee,
       Product activity,
       BigDecimal dailyWorkHrs,
-      LocalDateTime taskEndDateTime)
+      LocalDateTime taskEndDateTime,
+      Site site)
       throws AxelorException {
     ProjectPlanningTime planningTime = new ProjectPlanningTime();
 
@@ -227,6 +238,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     planningTime.setStartDateTime(fromDate);
     planningTime.setEndDateTime(taskEndDateTime);
     planningTime.setProject(project);
+    planningTime.setSite(site);
 
     BigDecimal totalHours = BigDecimal.ZERO;
     if (timePercent > 0) {
@@ -264,5 +276,15 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
             .setParameter("projectTask", projectTask)
             .getSingleResult();
     return durationForCustomer != null ? durationForCustomer : BigDecimal.ZERO;
+  }
+
+  @Override
+  public Optional<Site> getDefaultSiteFromProjectTask(Context context) {
+    Map<String, Object> objMap = (Map) context.get("projectTask");
+    if (objMap == null) {
+      return Optional.empty();
+    }
+    ProjectTask projectTask = projectTaskRepo.find(Long.parseLong(objMap.get("id").toString()));
+    return Optional.ofNullable(projectTask.getSite());
   }
 }

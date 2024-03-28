@@ -48,6 +48,8 @@
     <string name="fromCity" title="Starting city"/>
     <string name="toCity" title="Arriving city"/>
 
+    <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
+
     <string name="fullName" namecolumn="true">
 			<![CDATA[
 	  		String fullName = "";

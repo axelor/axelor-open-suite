@@ -19,6 +19,8 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Site;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.db.JPA;
@@ -28,6 +30,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class ProjectPlanningTimeController {
@@ -78,5 +81,14 @@ public class ProjectPlanningTimeController {
     }
 
     response.setReload(true);
+  }
+
+  public void setDefaultSiteFromProjectTask(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    if (Beans.get(AppBaseService.class).getAppBase().getEnableSiteManagementForProject()) {
+      Optional<Site> projectTaskSite =
+          Beans.get(ProjectPlanningTimeService.class).getDefaultSiteFromProjectTask(context);
+      response.setValue("site", projectTaskSite.orElse(null));
+    }
   }
 }
