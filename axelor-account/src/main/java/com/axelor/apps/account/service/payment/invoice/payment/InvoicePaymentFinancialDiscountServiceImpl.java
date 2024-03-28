@@ -40,22 +40,39 @@ public class InvoicePaymentFinancialDiscountServiceImpl
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTermPaymentToolService invoiceTermPaymentToolService;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
       InvoiceTermService invoiceTermService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      InvoiceTermPaymentToolService invoiceTermPaymentToolService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
+    this.invoiceTermPaymentToolService = invoiceTermPaymentToolService;
   }
 
   @Override
   public void computeFinancialDiscount(InvoicePayment invoicePayment) {
-    if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+
+    computeFinancialDiscountFields(invoicePayment);
+
+    if (invoicePayment.getFinancialDiscountDeadlineDate() == null
+        || invoicePayment
+            .getFinancialDiscountDeadlineDate()
+            .isBefore(invoicePayment.getPaymentDate())) {
+      this.resetFinancialDiscount(invoicePayment);
+    }
+  }
+
+  @Override
+  public void computeFinancialDiscountFields(InvoicePayment invoicePayment) {
+    if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())
+        || invoiceTermPaymentToolService.isPartialPayment(invoicePayment)) {
       if (invoicePayment.getApplyFinancialDiscount()) {
         this.resetFinancialDiscount(invoicePayment);
       }
@@ -73,7 +90,6 @@ public class InvoicePaymentFinancialDiscountServiceImpl
             .collect(Collectors.toList());
 
     if (CollectionUtils.isEmpty(invoiceTermPaymentList)) {
-      invoicePayment.setApplyFinancialDiscount(false);
       this.resetFinancialDiscount(invoicePayment);
 
       return;
@@ -98,16 +114,11 @@ public class InvoicePaymentFinancialDiscountServiceImpl
     LocalDate financialDiscountDeadlineDate =
         this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList);
 
-    if (invoicePayment.getFinancialDiscountDeadlineDate() == null
-        && financialDiscountDeadlineDate.isBefore(invoicePayment.getPaymentDate())) {
-      invoicePayment.setApplyFinancialDiscount(false);
-      this.resetFinancialDiscount(invoicePayment);
-    }
-
     invoicePayment.setFinancialDiscountDeadlineDate(financialDiscountDeadlineDate);
   }
 
   protected void resetFinancialDiscount(InvoicePayment invoicePayment) {
+    invoicePayment.setApplyFinancialDiscount(false);
     invoicePayment.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
     invoicePayment.setFinancialDiscountTaxAmount(BigDecimal.ZERO);
     invoicePayment.setFinancialDiscountAmount(BigDecimal.ZERO);
@@ -169,28 +180,41 @@ public class InvoicePaymentFinancialDiscountServiceImpl
     List<Long> invoiceTermIdList = null;
 
     if (invoiceId > 0) {
-      List<InvoiceTerm> invoiceTerms =
-          invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
-
-      invoiceTermIdList =
-          invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
-
-      if (!invoicePayment.getApplyFinancialDiscount()) {
-        invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
-      }
-      invoicePayment.clearInvoiceTermPaymentList();
-      invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-          invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
+      invoiceTermIdList = initializeInvoiceTermPaymentWithoutDiscount(invoicePayment);
 
       this.computeFinancialDiscount(invoicePayment);
-
-      if (invoicePayment.getApplyFinancialDiscount()) {
-        invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
-
-        invoicePayment.setAmount(
-            invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
-      }
     }
+    return invoiceTermIdList;
+  }
+
+  @Override
+  public List<Long> applyFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException {
+    List<Long> invoiceTermIdList = null;
+
+    if (invoiceId > 0) {
+      invoiceTermIdList = initializeInvoiceTermPaymentWithoutDiscount(invoicePayment);
+
+      this.computeFinancialDiscountFields(invoicePayment);
+    }
+    return invoiceTermIdList;
+  }
+
+  protected List<Long> initializeInvoiceTermPaymentWithoutDiscount(InvoicePayment invoicePayment)
+      throws AxelorException {
+    List<InvoiceTerm> invoiceTerms =
+        invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+
+    List<Long> invoiceTermIdList =
+        invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
+
+    if (!invoicePayment.getApplyFinancialDiscount()) {
+      invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
+    }
+    invoicePayment.clearInvoiceTermPaymentList();
+    invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+        invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
+
     return invoiceTermIdList;
   }
 }

@@ -25,6 +25,11 @@ import java.util.List;
 public interface InvoicePaymentFinancialDiscountService {
   void computeFinancialDiscount(InvoicePayment invoicePayment);
 
+  void computeFinancialDiscountFields(InvoicePayment invoicePayment);
+
   List<Long> computeDataForFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException;
+
+  List<Long> applyFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
       throws AxelorException;
 }

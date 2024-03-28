@@ -175,7 +175,7 @@
   <action-group name="action-invoice-payment-group-apply-financial-discount-on-change">
     <action name="action-invoice-payment-record-manual-change"/>
     <action name="action-invoice-payment-attrs-currency-scale"/>
-    <action name="action-invoice-payment-method-new-discount"/>
+    <action name="action-invoice-payment-method-apply-financial-discount-fields"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-payment-date-onchange">
@@ -244,6 +244,11 @@
   <action-method name="action-invoice-payment-method-new-discount">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="computeDatasForFinancialDiscount"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-apply-financial-discount-fields">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="applyFinancialDiscountFields"/>
   </action-method>
 
   <action-method name="action-invoice-payment-method-apply-financial-discount">

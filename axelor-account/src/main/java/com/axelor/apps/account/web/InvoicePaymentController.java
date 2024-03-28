@@ -219,6 +219,24 @@ public class InvoicePaymentController {
     }
   }
 
+  public void applyFinancialDiscountFields(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+      Long invoiceId =
+          Long.valueOf(
+              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+
+      List<Long> invoiceTermIdList =
+          Beans.get(InvoicePaymentFinancialDiscountService.class)
+              .applyFinancialDiscount(invoicePayment, invoiceId);
+
+      response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void changeAmount(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
