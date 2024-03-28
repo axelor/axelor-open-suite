@@ -25,7 +25,6 @@ import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.common.Inflector;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
-import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -36,6 +35,8 @@ import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 import com.axelor.script.ScriptHelper;
+import com.axelor.utils.helpers.context.FullContext;
+import com.axelor.utils.helpers.context.FullContextHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.io.File;
@@ -78,9 +79,12 @@ public class ImportAdvancedImport {
       }
     }
 
-    if (((Model) bean).getId() == null) {
+    Model model = (Model) bean;
+    FullContext fullContext = new FullContext(model);
+
+    if (model.getId() == null) {
       List<Property> propList = this.getProperties(bean);
-      JPA.save((Model) bean);
+      bean = FullContextHelper.save(fullContext).getTarget();
       this.addJsonObjectRecord(bean, fileTab, fileTab.getMetaModel().getName(), values);
 
       int fieldSeq = 2;
