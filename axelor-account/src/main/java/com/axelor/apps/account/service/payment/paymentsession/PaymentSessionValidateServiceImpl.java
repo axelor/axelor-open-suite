@@ -486,7 +486,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
         || !moveMap.containsKey(partner)
         || (isGlobal && partner != null && !partner.getIsCompensation())) {
-      BankDetails partnerBankDetails = null;
+      BankDetails partnerBankDetails = invoiceTerm.getBankDetails();
       Partner thirdPartyPayerPartner = null;
 
       if (paymentSession.getAccountingMethodSelect()

@@ -14,6 +14,8 @@ import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionLcrValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
@@ -60,6 +62,8 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
       InvoiceTermReplaceService invoiceTermReplaceService,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentSessionBankOrderService paymentSessionBankOrderService,
       BankOrderService bankOrderService,
       BankOrderRepository bankOrderRepo) {
@@ -78,7 +82,9 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
         moveInvoiceTermService,
         reconcileService,
         invoiceTermService,
-        invoiceTermReplaceService);
+        invoiceTermReplaceService,
+        invoicePaymentCreateService,
+        invoicePaymentValidateService);
     this.paymentSessionBankOrderService = paymentSessionBankOrderService;
     this.bankOrderService = bankOrderService;
     this.bankOrderRepo = bankOrderRepo;

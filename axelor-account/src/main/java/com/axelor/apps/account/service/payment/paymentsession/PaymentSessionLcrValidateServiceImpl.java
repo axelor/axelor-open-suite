@@ -2,6 +2,8 @@ package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -19,6 +21,8 @@ import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -61,6 +65,8 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
   protected ReconcileService reconcileService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermReplaceService invoiceTermReplaceService;
+  protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected InvoicePaymentValidateService invoicePaymentValidateService;
 
   protected int counter = 0;
 
@@ -80,7 +86,9 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
       MoveInvoiceTermService moveInvoiceTermService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
-      InvoiceTermReplaceService invoiceTermReplaceService) {
+      InvoiceTermReplaceService invoiceTermReplaceService,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentValidateService invoicePaymentValidateService) {
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveValidateService = moveValidateService;
@@ -96,6 +104,8 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     this.reconcileService = reconcileService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermReplaceService = invoiceTermReplaceService;
+    this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.invoicePaymentValidateService = invoicePaymentValidateService;
   }
 
   @Override
@@ -166,14 +176,12 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || paymentSessionValidateService.shouldBeProcessed(invoiceTerm)) {
 
-          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
-            this.processInvoiceTermLcr(
-                paymentSession,
-                invoiceTerm,
-                moveDateMap,
-                paymentAmountMap,
-                invoiceTermLinkWithRefund);
-          }
+          this.processInvoiceTermLcr(
+              paymentSession,
+              invoiceTerm,
+              moveDateMap,
+              paymentAmountMap,
+              invoiceTermLinkWithRefund);
         } else {
           paymentSessionValidateService.releaseInvoiceTerm(invoiceTerm);
         }
@@ -191,17 +199,32 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException {
     if (paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
-      if (paymentSessionValidateService.generatePaymentsFirst(paymentSession)) {
-        paymentSessionValidateService.generatePendingPaymentFromInvoiceTerm(
-            paymentSession, invoiceTerm);
-      }
       processLcrPlacement(paymentSession, invoiceTerm, moveDateMap, invoiceTermLinkWithRefund);
+      if (paymentSessionValidateService.generatePaymentsFirst(paymentSession)) {
+        generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+      }
     }
 
     if (paymentSession.getAccountingTriggerSelect()
             == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE
         || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       processLcrPayment(paymentSession, invoiceTerm, paymentAmountMap);
+    }
+  }
+
+  protected void generatePendingPaymentFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    MoveLine placementMoveLine = invoiceTerm.getPlacementMoveLine();
+    if (placementMoveLine == null
+        || ObjectUtils.isEmpty(placementMoveLine.getInvoiceTermList())
+        || !paymentSessionValidateService.generatePaymentsFirst(paymentSession)) {
+      return;
+    }
+
+    for (InvoiceTerm placementInvoiceTerm :
+        invoiceTerm.getPlacementMoveLine().getInvoiceTermList()) {
+      paymentSessionValidateService.generatePendingPaymentFromInvoiceTerm(
+          paymentSession, placementInvoiceTerm);
     }
   }
 
@@ -240,7 +263,8 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     }
   }
 
-  protected void processLcrPlacement(
+  @Override
+  public void processLcrPlacement(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
@@ -309,32 +333,33 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
             paymentSessionValidateService.getMoveLineDescription(paymentSession),
             out);
 
-    if (invoiceTerm.getAmountPaid().signum() != 0) {
-      Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
+    Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
 
-      MoveLine counterPartMoveLine =
-          paymentSessionValidateService.generateMoveLine(
-              move,
-              invoiceTermMoveLine.getPartner(),
-              counterPartAccount,
-              invoiceTerm.getAmountPaid(),
-              invoiceTermMoveLine.getOrigin(),
-              paymentSessionValidateService.getMoveLineDescription(paymentSession),
-              !out);
+    MoveLine counterPartMoveLine =
+        paymentSessionValidateService.generateMoveLine(
+            move,
+            invoiceTermMoveLine.getPartner(),
+            counterPartAccount,
+            invoiceTerm.getAmountPaid(),
+            invoiceTermMoveLine.getOrigin(),
+            paymentSessionValidateService.getMoveLineDescription(paymentSession),
+            !out);
 
-      invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
-    }
+    invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
 
     move.setDescription(
         this.getMoveDescription(paymentSession, moveLine.getCurrencyAmount(), false));
 
     moveCutOffService.autoApplyCutOffDates(move);
 
-    invoiceTermReplaceService.replaceInvoiceTerms(
-        invoiceTerm.getInvoice(), moveLine.getInvoiceTermList(), List.of(invoiceTerm));
+    reconcileService.reconcile(invoiceTermMoveLine, moveLine, null, false, false);
 
-    reconcileService.reconcile(invoiceTermMoveLine, moveLine, null, false, true);
     invoiceTermService.payInvoiceTerms(List.of(invoiceTerm));
+    List<InvoiceTerm> invoiceTermListToPay = moveLine.getInvoiceTermList();
+    invoiceTermService.payInvoiceTerms(invoiceTermListToPay);
+
+    invoiceTermReplaceService.replaceInvoiceTerms(
+        invoiceTerm.getInvoice(), counterPartMoveLine.getInvoiceTermList(), List.of(invoiceTerm));
   }
 
   protected String getMoveDescription(
@@ -392,6 +417,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     fillPaymentMove(move, invoiceTerm, paymentSession, out, account, paymentAmountMap);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void fillPaymentMove(
       Move move,
       InvoiceTerm invoiceTerm,
@@ -429,7 +455,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
               null,
               account,
               invoiceTerm.getAmountPaid(),
-              invoiceTerm.getMoveLine().getOrigin(),
+              placementMoveLine.getOrigin(),
               paymentSessionValidateService.getMoveLineDescription(paymentSession),
               !out);
     }
@@ -444,21 +470,77 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     moveCutOffService.autoApplyCutOffDates(move);
 
     Reconcile reconcile =
-        reconcileService.reconcile(moveLine, placementMoveLine, null, false, true);
+        reconcileService.reconcile(moveLine, placementMoveLine, null, false, false);
+
+    if (paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      if (!ObjectUtils.isEmpty(placementMoveLine.getInvoiceTermList())
+          && placementMoveLine.getInvoiceTermList().get(0).getInvoice() != null) {
+        Invoice invoice = placementMoveLine.getInvoiceTermList().get(0).getInvoice();
+        reconcileService.updatePayment(
+            reconcile,
+            moveLine,
+            placementMoveLine,
+            invoice,
+            placementMoveLine.getMove(),
+            move,
+            reconcile.getAmount(),
+            false);
+      }
+
+    } else {
+      Invoice invoice =
+          Optional.of(invoiceTerm)
+              .map(InvoiceTerm::getMoveLine)
+              .map(MoveLine::getMove)
+              .map(Move::getInvoice)
+              .orElse(null);
+
+      List<InvoicePayment> pendingInvoicePaymentList =
+          findInvoicePaymentWithPlacementMoveLine(paymentSession, invoice, placementMoveLine);
+      invoicePaymentValidateService.validateMultipleInvoicePayment(pendingInvoicePaymentList, true);
+    }
 
     List<InvoiceTerm> invoiceTermListToPay = placementMoveLine.getInvoiceTermList();
     invoiceTermListToPay.addAll(moveLine.getInvoiceTermList());
-    invoiceTermService.payInvoiceTerms(invoiceTermListToPay);
+    invoiceTermService.payInvoiceTerms(placementMoveLine.getInvoiceTermList());
+    invoiceTermService.payInvoiceTerms(moveLine.getInvoiceTermList());
 
-    reconcileService.updatePayment(
-        reconcile,
-        invoiceTerm.getMoveLine(),
-        moveLine,
-        invoiceTerm.getInvoice(),
-        invoiceTerm.getMoveLine().getMove(),
-        move,
-        invoiceTerm.getAmountPaid(),
-        true);
+    moveRepo.save(move);
+  }
+
+  protected List<InvoicePayment> findInvoicePaymentWithPlacementMoveLine(
+      PaymentSession paymentSession, Invoice invoice, MoveLine placementMoveLine) {
+    List<InvoicePayment> resultList = new ArrayList<>();
+    if (invoice == null
+        || ObjectUtils.isEmpty(invoice.getInvoicePaymentList())
+        || placementMoveLine == null
+        || ObjectUtils.isEmpty(placementMoveLine.getInvoiceTermList())) {
+      return resultList;
+    }
+
+    List<InvoicePayment> invoicePaymentList =
+        invoice.getInvoicePaymentList().stream()
+            .filter(
+                it ->
+                    it.getPaymentSession() != null && it.getPaymentSession().equals(paymentSession))
+            .collect(Collectors.toList());
+    if (!ObjectUtils.isEmpty(invoicePaymentList)) {
+      for (InvoiceTerm placementInvoiceTerm : placementMoveLine.getInvoiceTermList()) {
+        InvoicePayment invoicePayment =
+            invoicePaymentList.stream()
+                .filter(
+                    it ->
+                        it.getInvoiceTermPaymentList().stream()
+                            .anyMatch(itp -> placementInvoiceTerm.equals(itp.getInvoiceTerm())))
+                .findFirst()
+                .orElse(null);
+        if (invoicePayment != null) {
+          resultList.add(invoicePayment);
+        }
+      }
+    }
+
+    return resultList;
   }
 
   protected MoveLine updateMoveLineAmounts(MoveLine moveLine, InvoiceTerm invoiceTerm) {

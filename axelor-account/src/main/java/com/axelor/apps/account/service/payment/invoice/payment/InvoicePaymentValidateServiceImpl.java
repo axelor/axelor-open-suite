@@ -53,6 +53,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -85,6 +88,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected int jpaLimit = 10;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -156,6 +160,30 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
+  }
+
+  @Override
+  public void validateMultipleInvoicePayment(
+      List<InvoicePayment> invoicePaymentList, boolean force) {
+    if (ObjectUtils.isEmpty(invoicePaymentList)) {
+      return;
+    }
+
+    int i = 0;
+    for (InvoicePayment invoicePayment : invoicePaymentList) {
+      try {
+        if (invoicePayment != null) {
+          invoicePayment = invoicePaymentRepository.find(invoicePayment.getId());
+          validate(invoicePayment, force);
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      } finally {
+        if (++i % jpaLimit == 0) {
+          JPA.clear();
+        }
+      }
+    }
   }
 
   protected void validatePartnerAccount(Invoice invoice) throws AxelorException {
