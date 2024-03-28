@@ -74,6 +74,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected SaleOrderStockService saleOrderStockService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -86,7 +87,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       AppSupplychainService appSupplychainService,
       SaleOrderStockService saleOrderStockService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      AccountingSituationSupplychainService accountingSituationSupplychainService) {
     super(
         saleOrderLineService,
         appBaseService,
@@ -98,6 +100,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.saleOrderStockService = saleOrderStockService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.accountingSituationSupplychainService = accountingSituationSupplychainService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -250,6 +253,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
+    accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 
   @Override
