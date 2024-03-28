@@ -122,8 +122,9 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
     this.appBudgetService = appBudgetService;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
-  protected void updatePayment(
+  public void updatePayment(
       Reconcile reconcile,
       MoveLine moveLine,
       MoveLine otherMoveLine,

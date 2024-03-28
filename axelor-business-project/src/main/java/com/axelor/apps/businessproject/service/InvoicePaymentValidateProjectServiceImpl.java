@@ -21,7 +21,9 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -54,7 +56,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 public class InvoicePaymentValidateProjectServiceImpl
     extends InvoicePaymentValidateServiceBankPayImpl {
 
-  private InvoicingProjectRepository invoicingProjectRepo;
+  protected InvoicingProjectRepository invoicingProjectRepo;
 
   @Inject
   public InvoicePaymentValidateProjectServiceImpl(
@@ -70,12 +72,14 @@ public class InvoicePaymentValidateProjectServiceImpl
       InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
-      BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService,
-      InvoicingProjectRepository invoicingProjectRepo,
       DateService dateService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      BankOrderCreateService bankOrderCreateService,
+      BankOrderService bankOrderService,
+      AccountingSituationService accountingSituationService,
+      PaymentSessionRepository paymentSessionRepo,
+      InvoicingProjectRepository invoicingProjectRepo) {
     super(
         paymentModeService,
         moveCreateService,
@@ -89,11 +93,13 @@ public class InvoicePaymentValidateProjectServiceImpl
         invoiceTermService,
         appAccountService,
         accountManagementAccountService,
-        bankOrderCreateService,
-        bankOrderService,
         dateService,
         moveLineInvoiceTermService,
-        moveLineFinancialDiscountService);
+        moveLineFinancialDiscountService,
+        bankOrderCreateService,
+        bankOrderService,
+        accountingSituationService,
+        paymentSessionRepo);
     this.invoicingProjectRepo = invoicingProjectRepo;
   }
 

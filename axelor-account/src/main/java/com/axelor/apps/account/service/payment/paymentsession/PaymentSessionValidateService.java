@@ -18,12 +18,17 @@
  */
 package com.axelor.apps.account.service.payment.paymentsession;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +42,8 @@ public interface PaymentSessionValidateService {
       PaymentSession paymentSession,
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
       throws AxelorException;
+
+  int getMoveCount(Map<LocalDate, Map<Partner, List<Move>>> moveDateMap, boolean isGlobal);
 
   public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount);
 
@@ -68,6 +75,60 @@ public interface PaymentSessionValidateService {
 
   public boolean containsCompensativeInvoiceTerm(
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession);
+
+  boolean shouldBeProcessed(InvoiceTerm invoiceTerm);
+
+  boolean generatePaymentsFirst(PaymentSession paymentSession);
+
+  @Transactional
+  InvoicePayment generatePendingPaymentFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm);
+
+  BigDecimal getReconciledAmount(
+      PaymentSession paymentSession,
+      Move move,
+      InvoiceTerm invoiceTerm,
+      boolean out,
+      Map<Move, BigDecimal> paymentAmountMap,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList,
+      AccountConfig accountConfig)
+      throws AxelorException;
+
+  Move getMove(
+      PaymentSession paymentSession,
+      Partner partner,
+      InvoiceTerm invoiceTerm,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean isGlobal)
+      throws AxelorException;
+
+  Move createMove(
+      PaymentSession paymentSession,
+      Partner partner,
+      Partner thirdPartyPayerPartner,
+      LocalDate accountingDate,
+      BankDetails partnerBankDetails)
+      throws AxelorException;
+
+  String getMoveLineDescription(PaymentSession paymentSession);
+
+  @Transactional(rollbackOn = {Exception.class})
+  MoveLine generateMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal paymentAmount,
+      String origin,
+      String description,
+      boolean isDebit)
+      throws AxelorException;
+
+  @Transactional
+  InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm);
+
+  @Transactional
+  void updateStatus(PaymentSession paymentSession);
 
   public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);
 }

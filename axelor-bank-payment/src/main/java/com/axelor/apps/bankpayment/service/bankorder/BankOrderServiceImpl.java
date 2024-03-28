@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -378,15 +379,27 @@ public class BankOrderServiceImpl implements BankOrderService {
           paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
       if (paymentSession != null) {
+        boolean isLcr =
+            paymentSession.getPaymentMode() != null
+                && paymentSession.getPaymentMode().getTypeSelect()
+                    == PaymentModeRepository.TYPE_EXCHANGES;
+
         PaymentSessionValidateService paymentSessionValidateService =
             Beans.get(PaymentSessionValidateService.class);
+
         List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund =
             new ArrayList<>();
         paymentSessionValidateService.reconciledInvoiceTermMoves(
             paymentSession, invoiceTermLinkWithRefund);
 
-        paymentSessionValidateService.processPaymentSession(
-            paymentSession, invoiceTermLinkWithRefund);
+        if (isLcr) {
+          Beans.get(PaymentSessionBillOfExchangeValidateService.class)
+              .processPaymentSession(paymentSession, invoiceTermLinkWithRefund);
+        } else {
+          paymentSessionValidateService.processPaymentSession(
+              paymentSession, invoiceTermLinkWithRefund);
+        }
+
         bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
     } else if (bankOrder

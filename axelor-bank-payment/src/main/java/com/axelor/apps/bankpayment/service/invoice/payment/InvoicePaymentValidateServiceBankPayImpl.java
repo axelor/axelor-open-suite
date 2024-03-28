@@ -20,10 +20,15 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -40,6 +45,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
@@ -47,13 +53,16 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 @RequestScoped
@@ -61,6 +70,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderService bankOrderService;
+  protected AccountingSituationService accountingSituationService;
+  protected PaymentSessionRepository paymentSessionRepo;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
@@ -76,11 +87,13 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
-      BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService,
       DateService dateService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      BankOrderCreateService bankOrderCreateService,
+      BankOrderService bankOrderService,
+      AccountingSituationService accountingSituationService,
+      PaymentSessionRepository paymentSessionRepo) {
     super(
         paymentModeService,
         moveCreateService,
@@ -99,6 +112,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         moveLineFinancialDiscountService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
+    this.accountingSituationService = accountingSituationService;
+    this.paymentSessionRepo = paymentSessionRepo;
   }
 
   @Override
@@ -146,8 +161,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
                     == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE))) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
-      Beans.get(AccountingSituationService.class)
-          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      accountingSituationService.updateCustomerCredit(invoicePayment.getInvoice().getPartner());
       invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
     if (paymentMode.getGenerateBankOrder()
@@ -168,17 +182,18 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     Company company = invoicePayment.getInvoice().getCompany();
 
-    if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
-      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
-      if (invoicePayment == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL));
+    if (!processLcrPaymentWithBankOrder(invoicePayment)) {
+      if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
+        invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
+        if (invoicePayment == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL));
+        }
+      } else {
+        accountingSituationService.updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+        invoicePayment = invoicePaymentRepository.save(invoicePayment);
       }
-    } else {
-      Beans.get(AccountingSituationService.class)
-          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
-      invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
@@ -202,5 +217,51 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     if (invoicePayment.getPaymentMode().getAutoConfirmBankOrder()) {
       bankOrderService.confirm(bankOrder);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected boolean processLcrPaymentWithBankOrder(InvoicePayment invoicePayment)
+      throws AxelorException {
+    boolean isAlreadyPaid = false;
+    if (invoicePayment == null
+        || invoicePayment.getBankOrder() == null
+        || invoicePayment.getPaymentMode() == null
+        || invoicePayment.getPaymentMode().getTypeSelect()
+            != PaymentModeRepository.TYPE_EXCHANGES) {
+      return isAlreadyPaid;
+    }
+    PaymentSession paymentSession =
+        paymentSessionRepo.findByBankOrder(invoicePayment.getBankOrder());
+    if (paymentSession == null) {
+      return isAlreadyPaid;
+    }
+    for (BankOrderLine bankOrderLine : invoicePayment.getBankOrder().getBankOrderLineList()) {
+      if (bankOrderLine.getSenderMove() != null
+          && !ObjectUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+        Move move = bankOrderLine.getSenderMove();
+        invoicePayment.setMove(move);
+        Optional<MoveLine> cashMoveLine =
+            move.getMoveLineList().stream().filter(ml -> ml.getCredit().signum() != 0).findFirst();
+        List<InvoiceTerm> invoiceTermList =
+            invoicePayment.getInvoiceTermPaymentList().stream()
+                .map(InvoiceTermPayment::getInvoiceTerm)
+                .filter(it -> it.getPlacementMoveLine() != null)
+                .collect(Collectors.toList());
+        if (!ObjectUtils.isEmpty(invoiceTermList)) {
+          for (InvoiceTerm invoiceTerm : invoiceTermList) {
+            if (invoiceTerm != null && cashMoveLine.isPresent()) {
+              reconcileService.reconcile(
+                  invoiceTerm.getPlacementMoveLine(),
+                  cashMoveLine.get(),
+                  invoicePayment,
+                  false,
+                  false);
+              isAlreadyPaid = true;
+            }
+          }
+        }
+      }
+    }
+    return isAlreadyPaid;
   }
 }

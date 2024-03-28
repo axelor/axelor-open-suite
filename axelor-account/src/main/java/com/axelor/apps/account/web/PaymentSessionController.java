@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
@@ -156,8 +158,22 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      StringBuilder flashMessage =
-          Beans.get(PaymentSessionValidateService.class).processInvoiceTerms(paymentSession);
+      boolean isLcr =
+          paymentSession.getPaymentMode() != null
+              && paymentSession.getPaymentMode().getTypeSelect()
+                  == PaymentModeRepository.TYPE_EXCHANGES;
+
+      StringBuilder flashMessage = null;
+
+      if (isLcr) {
+        flashMessage =
+            Beans.get(PaymentSessionBillOfExchangeValidateService.class)
+                .processInvoiceTerms(paymentSession);
+      } else {
+        flashMessage =
+            Beans.get(PaymentSessionValidateService.class).processInvoiceTerms(paymentSession);
+      }
+
       if (flashMessage.length() > 0) {
         response.setInfo(flashMessage.toString());
       }

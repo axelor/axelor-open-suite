@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.CallMethod;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -286,6 +287,9 @@ public interface InvoiceTermService {
   boolean setShowFinancialDiscount(InvoiceTerm invoiceTerm);
 
   boolean isPaymentConditionFree(InvoiceTerm invoiceTerm);
+
+  @Transactional(rollbackOn = {Exception.class})
+  void payInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 
   List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm);
 
