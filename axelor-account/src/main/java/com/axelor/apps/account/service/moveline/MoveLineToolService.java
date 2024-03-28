@@ -60,6 +60,8 @@ public interface MoveLineToolService {
   boolean isEqualTaxMoveLine(
       Account account, Set<TaxLine> taxLineSet, Integer vatSystem, Long id, MoveLine ml);
 
+  boolean isMoveLineTaxAccount(MoveLine moveLine);
+
   void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 
   void setAmountRemainingReconciliableMoveLines(Context context);

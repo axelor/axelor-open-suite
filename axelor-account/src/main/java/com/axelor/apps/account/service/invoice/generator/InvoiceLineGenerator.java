@@ -190,7 +190,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     Company company = invoice.getCompany();
 
-    invoiceLine.setInvoice(invoice);
+    invoice.addInvoiceLineListItem(invoiceLine);
 
     invoiceLine.setProduct(product);
 
@@ -255,6 +255,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     invoiceLine.setDiscountTypeSelect(discountTypeSelect);
     invoiceLine.setDiscountAmount(discountAmount);
+
+    invoiceLine.setInvoiceLineNumber(invoice.getInvoiceLineList().size() - 1);
 
     return invoiceLine;
   }

@@ -19,6 +19,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -32,6 +33,7 @@ import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -68,6 +70,18 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
       invoiceService.setDraftSequence(invoice);
+
+      for (InvoiceLineTax invoiceLineTax :
+          invoice.getInvoiceLineTaxList().stream()
+              .filter(it -> it.getInvoiceLine() == null)
+              .collect(Collectors.toList())) {
+        invoiceLineTax.setInvoiceLine(
+            invoice.getInvoiceLineList().stream()
+                .filter(
+                    it -> it.getInvoiceLineNumber().equals(invoiceLineTax.getInvoiceLineNumber()))
+                .findFirst()
+                .orElse(null));
+      }
 
       return invoice;
     } catch (Exception e) {
