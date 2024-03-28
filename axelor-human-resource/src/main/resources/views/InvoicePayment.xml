@@ -7,9 +7,11 @@
     model="com.axelor.apps.account.db.InvoicePayment" id="hr-invoice-payment-form" extension="true">
     <extend target="//field[@name='companyBankDetails']">
       <insert position="after">
-        <field name="companyBankCard" showIf="paymentMode.typeSelect == 6"
+        <field name="companyBankCard"
+          showIf="paymentMode.typeSelect == 6 &amp;&amp; invoice.operationTypeSelect &lt;= 2"
           form-view="bank-card-form" onChange="action-invoice-payment-attrs-on-bank-card-change"
           onSelect="action-invoice-payment-method-on-bank-card-select"/>
+        <field name="invoice.operationTypeSelect" hidden="true" colSpan="12"/>
       </insert>
     </extend>
   </form>

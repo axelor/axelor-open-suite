@@ -7,7 +7,8 @@
     model="com.axelor.apps.account.db.PaymentVoucher" id="hr-payment-voucher-form" extension="true">
     <extend target="//field[@name='companyBankDetails']">
       <insert position="after">
-        <field name="companyBankCard" showIf="paymentMode.typeSelect == 6"
+        <field name="companyBankCard"
+          showIf="paymentMode.typeSelect == 6 &amp;&amp; operationTypeSelect &lt;= 2"
           form-view="bank-card-form" onChange="action-payment-voucher-attrs-on-bank-card-change"
           onSelect="action-payment-voucher-method-on-bank-card-select"/>
       </insert>
