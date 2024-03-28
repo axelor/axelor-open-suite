@@ -40,16 +40,8 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {
     billOfMaterial = super.save(billOfMaterial);
-    billOfMaterial.setName(
-        Beans.get(BillOfMaterialComputeNameService.class).computeName(billOfMaterial));
-
-    if (billOfMaterial.getVersionNumber() != null && billOfMaterial.getVersionNumber() > 1) {
-      billOfMaterial.setFullName(
-          billOfMaterial.getName() + " - v" + billOfMaterial.getVersionNumber());
-    } else {
-      billOfMaterial.setFullName(billOfMaterial.getName());
-    }
-
+    billOfMaterial.setFullName(
+        Beans.get(BillOfMaterialComputeNameService.class).computeFullName(billOfMaterial));
     return billOfMaterial;
   }
 
