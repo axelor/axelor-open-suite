@@ -16,7 +16,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionLcrValidateServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -38,15 +38,15 @@ import java.util.Map;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class PaymentSessionLcrValidateBankPaymentServiceImpl
-    extends PaymentSessionLcrValidateServiceImpl {
+public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
+    extends PaymentSessionBillOfExchangeValidateServiceImpl {
 
   protected PaymentSessionBankOrderService paymentSessionBankOrderService;
   protected BankOrderService bankOrderService;
   protected BankOrderRepository bankOrderRepo;
 
   @Inject
-  public PaymentSessionLcrValidateBankPaymentServiceImpl(
+  public PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl(
       PaymentSessionValidateService paymentSessionValidateService,
       InvoiceTermRepository invoiceTermRepo,
       MoveValidateService moveValidateService,
@@ -132,7 +132,7 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
   }
 
   @Override
-  protected void processInvoiceTermLcr(
+  protected void processInvoiceTermBillOfExchange(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
@@ -149,7 +149,7 @@ public class PaymentSessionLcrValidateBankPaymentServiceImpl
     paymentSessionBankOrderService.manageInvoicePayment(
         paymentSession, invoiceTerm, invoiceTerm.getAmountPaid());
 
-    super.processInvoiceTermLcr(
+    super.processInvoiceTermBillOfExchange(
         paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
   }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
-public interface PaymentSessionLcrValidateService {
+public interface PaymentSessionBillOfExchangeValidateService {
   @Transactional(rollbackOn = {AxelorException.class})
   StringBuilder processInvoiceTerms(PaymentSession paymentSession) throws AxelorException;
 
@@ -22,7 +22,7 @@ public interface PaymentSessionLcrValidateService {
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
       throws AxelorException;
 
-  void processLcrPlacement(
+  void processPlacement(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,

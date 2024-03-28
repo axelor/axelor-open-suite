@@ -346,12 +346,12 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailServiceImpl;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionLcrValidateService;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionLcrValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
@@ -673,7 +673,8 @@ public class AccountModule extends AxelorModule {
 
     bind(PaymentSessionValidateService.class).to(PaymentSessionValidateServiceImpl.class);
 
-    bind(PaymentSessionLcrValidateService.class).to(PaymentSessionLcrValidateServiceImpl.class);
+    bind(PaymentSessionBillOfExchangeValidateService.class)
+        .to(PaymentSessionBillOfExchangeValidateServiceImpl.class);
 
     bind(PaymentSessionCancelService.class).to(PaymentSessionCancelServiceImpl.class);
 

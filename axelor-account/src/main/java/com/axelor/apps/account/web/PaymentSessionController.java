@@ -25,9 +25,9 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionLcrValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.base.AxelorException;
@@ -167,7 +167,8 @@ public class PaymentSessionController {
 
       if (isLcr) {
         flashMessage =
-            Beans.get(PaymentSessionLcrValidateService.class).processInvoiceTerms(paymentSession);
+            Beans.get(PaymentSessionBillOfExchangeValidateService.class)
+                .processInvoiceTerms(paymentSession);
       } else {
         flashMessage =
             Beans.get(PaymentSessionValidateService.class).processInvoiceTerms(paymentSession);

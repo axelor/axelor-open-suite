@@ -48,7 +48,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrValidateService {
+public class PaymentSessionBillOfExchangeValidateServiceImpl
+    implements PaymentSessionBillOfExchangeValidateService {
 
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected InvoiceTermRepository invoiceTermRepo;
@@ -71,7 +72,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
   protected int counter = 0;
 
   @Inject
-  public PaymentSessionLcrValidateServiceImpl(
+  public PaymentSessionBillOfExchangeValidateServiceImpl(
       PaymentSessionValidateService paymentSessionValidateService,
       InvoiceTermRepository invoiceTermRepo,
       MoveValidateService moveValidateService,
@@ -146,7 +147,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
       boolean out)
       throws AxelorException {
     paymentSessionValidateService.updateStatus(paymentSession);
-    this.processLcrAccounting(moveDateMap, paymentAmountMap);
+    this.processBillOfExchangeAccounting(moveDateMap, paymentAmountMap);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -176,7 +177,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || paymentSessionValidateService.shouldBeProcessed(invoiceTerm)) {
 
-          this.processInvoiceTermLcr(
+          this.processInvoiceTermBillOfExchange(
               paymentSession,
               invoiceTerm,
               moveDateMap,
@@ -191,7 +192,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     }
   }
 
-  protected void processInvoiceTermLcr(
+  protected void processInvoiceTermBillOfExchange(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
@@ -199,7 +200,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException {
     if (paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
-      processLcrPlacement(paymentSession, invoiceTerm, moveDateMap, invoiceTermLinkWithRefund);
+      processPlacement(paymentSession, invoiceTerm, moveDateMap, invoiceTermLinkWithRefund);
       if (paymentSessionValidateService.generatePaymentsFirst(paymentSession)) {
         generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
       }
@@ -208,7 +209,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     if (paymentSession.getAccountingTriggerSelect()
             == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE
         || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
-      processLcrPayment(paymentSession, invoiceTerm, paymentAmountMap);
+      processPayment(paymentSession, invoiceTerm, paymentAmountMap);
     }
   }
 
@@ -228,7 +229,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     }
   }
 
-  protected void processLcrAccounting(
+  protected void processBillOfExchangeAccounting(
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap, Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
     if (paymentAmountMap.size() == 1) {
@@ -264,7 +265,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
   }
 
   @Override
-  public void processLcrPlacement(
+  public void processPlacement(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
@@ -378,7 +379,7 @@ public class PaymentSessionLcrValidateServiceImpl implements PaymentSessionLcrVa
     return description;
   }
 
-  protected void processLcrPayment(
+  protected void processPayment(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<Move, BigDecimal> paymentAmountMap)
