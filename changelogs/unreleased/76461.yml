@@ -1,0 +1,2 @@
+title: "Contract template: Fix an error that occurs in the server logs due to a mistyped condition."
+module: axelor-contract
