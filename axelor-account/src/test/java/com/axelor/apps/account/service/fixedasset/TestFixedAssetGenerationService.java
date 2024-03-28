@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.interfaces.ArithmeticOperation;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -65,6 +66,7 @@ class TestFixedAssetGenerationService {
     AppBaseService appBaseService = mock(AppBaseService.class);
     FixedAssetLineService fixedAssetLineService = mock(FixedAssetLineService.class);
     FixedAssetLineToolService fixedAssetLineToolService = mock(FixedAssetLineToolService.class);
+
     when(fixedAssetLineToolService.isGreaterThan(any(), any(), any(FixedAsset.class)))
         .then(
             (Answer<Boolean>)
@@ -108,17 +110,13 @@ class TestFixedAssetGenerationService {
     FixedAssetValidateService fixedAssetValidateService = mock(FixedAssetValidateService.class);
     FixedAssetImportService fixedAssetImportService = mock(FixedAssetImportService.class);
     when(fixedAssetLineToolService.getCompanyScaledValue(
-            any(),
-            any(),
-            any(FixedAsset.class),
-            any(FixedAssetLineToolService.ArithmeticOperation.class)))
+            any(), any(), any(FixedAsset.class), any(ArithmeticOperation.class)))
         .then(
             (Answer<BigDecimal>)
                 invocation ->
                     currencyScaleService.getCompanyScaledValue(
                         ((FixedAsset) invocation.getArguments()[2]),
-                        ((FixedAssetLineToolService.ArithmeticOperation)
-                                invocation.getArguments()[3])
+                        ((ArithmeticOperation) invocation.getArguments()[3])
                             .operate(
                                 ((BigDecimal) invocation.getArguments()[0]),
                                 ((BigDecimal) invocation.getArguments()[1]))));
@@ -140,16 +138,12 @@ class TestFixedAssetGenerationService {
                                 ((FixedAsset) invocation.getArguments()[2])),
                             RoundingMode.HALF_UP));
     when(fixedAssetLineToolService.getCompanyScaledValue(
-            any(),
-            any(),
-            any(FixedAssetLine.class),
-            any(FixedAssetLineToolService.ArithmeticOperation.class)))
+            any(), any(), any(FixedAssetLine.class), any(ArithmeticOperation.class)))
         .then(
             (Answer<BigDecimal>)
                 invocation ->
                     fixedAssetLineToolService.getCompanyScaledValue(
-                        ((FixedAssetLineToolService.ArithmeticOperation)
-                                invocation.getArguments()[3])
+                        ((ArithmeticOperation) invocation.getArguments()[3])
                             .operate(
                                 ((BigDecimal) invocation.getArguments()[0]),
                                 ((BigDecimal) invocation.getArguments()[1])),

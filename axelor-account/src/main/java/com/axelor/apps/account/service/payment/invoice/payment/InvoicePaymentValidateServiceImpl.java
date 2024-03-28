@@ -52,6 +52,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -61,7 +62,6 @@ import com.google.inject.servlet.RequestScoped;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -85,6 +85,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected CurrencyService currencyService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -102,7 +103,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       DateService dateService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       InvoiceTermService invoiceTermService,
-      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      CurrencyService currencyService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -119,6 +121,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -362,7 +365,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
 
-    BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+    BigDecimal currencyRate =
+        currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
     companyPaymentAmount =
         companyPaymentAmount.subtract(
             invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));

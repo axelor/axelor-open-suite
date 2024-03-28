@@ -45,4 +45,6 @@ public interface CurrencyService {
   void checkOverLappingPeriod(
       CurrencyConversionLine currentCcl, List<CurrencyConversionLine> currencyConversionLines)
       throws AxelorException;
+
+  BigDecimal computeScaledExchangeRate(BigDecimal amount1, BigDecimal amount2);
 }

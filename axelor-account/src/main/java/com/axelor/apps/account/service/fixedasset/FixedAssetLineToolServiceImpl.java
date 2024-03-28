@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.service.FindFixedAssetService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.interfaces.ArithmeticOperation;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;

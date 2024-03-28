@@ -31,6 +31,12 @@ public interface AppBaseService extends AppService {
 
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
+  // Used to scale exchange rates according to domain definition
+  public static final int DEFAULT_EXCHANGE_RATE_SCALE = 6;
+
+  // Used to scale inverse exchange rate (1 / exchangeRate)
+  public static final int DEFAULT_EXCHANGE_RATE_REVERSION_SCALE = 8;
+
   public static final int DEFAULT_TRACKING_MONTHS_PERSISTENCE = 1;
 
   public static final int COMPUTATION_SCALING = 20;

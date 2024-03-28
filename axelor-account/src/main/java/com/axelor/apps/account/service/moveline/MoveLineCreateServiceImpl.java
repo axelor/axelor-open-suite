@@ -276,7 +276,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         currencyRate = BigDecimal.ONE;
       } else {
         currencyRate =
-            amountInCompanyCurrency.divide(amountInSpecificMoveCurrency, 5, RoundingMode.HALF_UP);
+            currencyService.computeScaledExchangeRate(
+                amountInCompanyCurrency, amountInSpecificMoveCurrency);
       }
     }
 
@@ -305,7 +306,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                         move.getJournal(), origin, description))
                 : move.getDescription(),
             origin,
-            currencyRate.setScale(5, RoundingMode.HALF_UP),
+            currencyRate,
             amountInSpecificMoveCurrency,
             originDate);
 
