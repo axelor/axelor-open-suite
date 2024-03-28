@@ -110,7 +110,7 @@
           <field name="nextContract.isInvoicingManagement" colSpan="6" widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true"
             showIf="nextContract.isInvoicingManagement" colSpan="6">
-            <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement"
+            <field if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
               widget="boolean-switch" name="nextContract.isAdditionaBenefitManagement" colSpan="6"/>
             <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
               widget="boolean-switch" name="nextContract.isConsumptionManagement" colSpan="6"/>
