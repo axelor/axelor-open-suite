@@ -1,0 +1,2 @@
+title: "Accounting Situation : Fix used credit calculation, not take in account completed sale orders"
+module: axelor-account
