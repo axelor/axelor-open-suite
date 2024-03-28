@@ -435,9 +435,6 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
 
-      if (move == null) {
-        return;
-      }
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
       response.setValues(moveLineGroupService.getOnNewValuesMap(moveLine, move));

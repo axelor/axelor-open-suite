@@ -275,7 +275,7 @@
           colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
           grid-view="move-line-move-grid" editable="true"
           onChange="action-account-move-method-move-line-list-onchange" canNew="true"
-          canRemove="true" edit-window="blank"/>
+          canRemove="true"/>
         <panel-related name="moveLineListPanel"
           showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
           colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
