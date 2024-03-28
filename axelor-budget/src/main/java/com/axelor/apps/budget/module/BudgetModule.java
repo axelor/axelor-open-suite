@@ -21,7 +21,8 @@ package com.axelor.apps.budget.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
-import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationServiceImpl;
+import com.axelor.apps.account.service.reconcile.UnReconcileServiceImpl;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
@@ -72,7 +73,10 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.BudgetVersionServiceImpl;
-import com.axelor.apps.budget.service.ReconcileBudgetServiceImpl;
+import com.axelor.apps.budget.service.ReconcileInvoiceTermComputationBudgetServiceImpl;
+import com.axelor.apps.budget.service.ReconcileToolBudgetService;
+import com.axelor.apps.budget.service.ReconcileToolBudgetServiceImpl;
+import com.axelor.apps.budget.service.UnReconcileBudgetServiceImpl;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupServiceImpl;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolService;
@@ -178,12 +182,15 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
     bind(SaleOrderProjectRepository.class).to(SaleOrderBudgetRepository.class);
     bind(ExpenseMoveReverseServiceImpl.class).to(MoveReverseServiceBudgetImpl.class);
-    bind(ReconcileServiceImpl.class).to(ReconcileBudgetServiceImpl.class);
+    bind(ReconcileInvoiceTermComputationServiceImpl.class)
+        .to(ReconcileInvoiceTermComputationBudgetServiceImpl.class);
     bind(MoveLineCreateServiceImpl.class).to(MoveLineCreateBudgetServiceImpl.class);
     bind(MoveLineConsolidateServiceImpl.class).to(MoveLineConsolidateBudgetServiceImpl.class);
     bind(BudgetGroupService.class).to(BudgetGroupServiceImpl.class);
     bind(GlobalBudgetToolsService.class).to(GlobalBudgetToolsServiceImpl.class);
     bind(BudgetComputeHiddenDateService.class).to(BudgetComputeHiddenDateServiceImpl.class);
     bind(Callable.class).to(ExportBudgetCallableService.class);
+    bind(UnReconcileServiceImpl.class).to(UnReconcileBudgetServiceImpl.class);
+    bind(ReconcileToolBudgetService.class).to(ReconcileToolBudgetServiceImpl.class);
   }
 }

@@ -31,7 +31,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
@@ -67,13 +67,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoiceRepository invoiceRepo;
   protected MoveToolService moveToolService;
   protected InvoicePaymentRepository invoicePaymentRepo;
-  protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
   protected AppAccountService appAccountService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoiceTermToolService invoiceTermToolService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -82,24 +82,24 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
       InvoicePaymentRepository invoicePaymentRepo,
-      InvoiceTermService invoiceTermService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       CurrencyService currencyService,
       AppAccountService appAccountService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoiceTermToolService invoiceTermToolService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
     this.invoicePaymentRepo = invoicePaymentRepo;
-    this.invoiceTermService = invoiceTermService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoiceTermToolService = invoiceTermToolService;
   }
 
   @Override
@@ -287,7 +287,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         .map(
             it ->
                 manualChange
-                    ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
+                    ? invoiceTermToolService.getAmountRemaining(it, date, isCompanyCurrency)
                     : isCompanyCurrency ? it.getCompanyAmountRemaining() : it.getAmountRemaining())
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
@@ -320,7 +320,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           .map(Invoice::getInvoiceTermList)
           .flatMap(Collection::stream)
           .filter(invoiceTermFilterService::isNotAwaitingPayment)
-          .map(it -> invoiceTermService.getAmountRemaining(it, date, false))
+          .map(it -> invoiceTermToolService.getAmountRemaining(it, date, false))
           .reduce(BigDecimal::add)
           .orElse(BigDecimal.ZERO);
     } else {

@@ -2,7 +2,7 @@ package com.axelor.apps.account.service.reconcilegroup;
 
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
-import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.UnReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -10,13 +10,14 @@ import java.util.List;
 
 public class ReconcileGroupUnletterServiceImpl implements ReconcileGroupUnletterService {
 
-  ReconcileService reconcileService;
+  UnReconcileService unReconcileService;
   ReconcileGroupFetchService reconcileGroupFetchService;
 
   @Inject
   public ReconcileGroupUnletterServiceImpl(
-      ReconcileService reconcileService, ReconcileGroupFetchService reconcileGroupFetchService) {
-    this.reconcileService = reconcileService;
+      UnReconcileService unReconcileService,
+      ReconcileGroupFetchService reconcileGroupFetchService) {
+    this.unReconcileService = unReconcileService;
     this.reconcileGroupFetchService = reconcileGroupFetchService;
   }
 
@@ -27,7 +28,7 @@ public class ReconcileGroupUnletterServiceImpl implements ReconcileGroupUnletter
         reconcileGroupFetchService.fetchConfirmedReconciles(reconcileGroup);
 
     for (Reconcile reconcile : reconcileList) {
-      reconcileService.unreconcile(reconcile);
+      unReconcileService.unreconcile(reconcile);
     }
   }
 }

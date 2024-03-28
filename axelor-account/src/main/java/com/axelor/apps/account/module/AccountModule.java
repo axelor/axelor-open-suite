@@ -364,10 +364,22 @@ import com.axelor.apps.account.service.period.PeriodControlService;
 import com.axelor.apps.account.service.period.PeriodControlServiceImpl;
 import com.axelor.apps.account.service.period.PeriodServiceAccount;
 import com.axelor.apps.account.service.period.PeriodServiceAccountImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileCheckService;
+import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileToolService;
+import com.axelor.apps.account.service.reconcile.ReconcileToolServiceImpl;
+import com.axelor.apps.account.service.reconcile.UnReconcileService;
+import com.axelor.apps.account.service.reconcile.UnReconcileServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupServiceImpl;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupToolService;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupToolServiceImpl;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.UnReconcileGroupService;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.UnReconcileGroupServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupFetchService;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupFetchServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupLetterService;
@@ -862,5 +874,18 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceTermToolService.class).to(InvoiceTermToolServiceImpl.class);
 
     bind(InvoiceTermFilterService.class).to(InvoiceTermFilterServiceImpl.class);
+
+    bind(ReconcileToolService.class).to(ReconcileToolServiceImpl.class);
+
+    bind(UnReconcileGroupService.class).to(UnReconcileGroupServiceImpl.class);
+
+    bind(UnReconcileService.class).to(UnReconcileServiceImpl.class);
+
+    bind(ReconcileCheckService.class).to(ReconcileCheckServiceImpl.class);
+
+    bind(ReconcileInvoiceTermComputationService.class)
+        .to(ReconcileInvoiceTermComputationServiceImpl.class);
+
+    bind(ReconcileGroupToolService.class).to(ReconcileGroupToolServiceImpl.class);
   }
 }

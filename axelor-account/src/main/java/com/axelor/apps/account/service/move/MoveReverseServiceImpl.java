@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.UnReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -59,6 +60,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected MoveToolService moveToolService;
+  protected UnReconcileService unReconcileService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -70,7 +72,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      UnReconcileService unReconcileService) {
 
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
@@ -81,6 +84,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.moveToolService = moveToolService;
+    this.unReconcileService = unReconcileService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -165,7 +169,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
                     moveLine.getId())
                 .fetch();
         for (Reconcile reconcile : reconcileList) {
-          reconcileService.unreconcile(reconcile);
+          unReconcileService.unreconcile(reconcile);
         }
       } else {
         cancelInvoicePayment(move);

@@ -31,7 +31,6 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymen
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -48,7 +47,6 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
-      CurrencyService currencyService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
@@ -59,7 +57,6 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
         invoicePaymentRepository,
         invoicePaymentToolService,
         invoicePaymentFinancialDiscountService,
-        currencyService,
         appBaseService,
         invoiceTermPaymentService,
         invoiceTermService,
