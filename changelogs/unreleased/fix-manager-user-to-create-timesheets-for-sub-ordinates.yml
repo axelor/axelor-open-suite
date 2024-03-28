@@ -1,0 +1,3 @@
+---
+title: "Timesheet : Fix manager user to create timesheets for subordinates"
+module: axelor-human-resource
