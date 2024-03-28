@@ -1,5 +1,0 @@
----
-title: "ManufOrder: Fixed a bug where missing quantities were not displayed"
-module: axelor-production
-developer: |
-  Moved  com.axelor.apps.production.service.ProdProductProductionRepository to com.axelor.apps.production.db.repo.ProdProductProductionRepository

@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -60,5 +62,18 @@ public class PfpServiceImpl implements PfpService {
   protected boolean isActivatePassedForPayment() {
     return appAccountService.getAppAccount() != null
         && appAccountService.getAppAccount().getActivatePassedForPayment();
+  }
+
+  @Override
+  public boolean getPfpCondition(Invoice invoice) throws AxelorException {
+    return this.isManagePassedForPayment(invoice.getCompany())
+        && this.getOperationTypePurchaseCondition(invoice);
+  }
+
+  @Override
+  public boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException {
+    return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            && this.isManagePFPInRefund(invoice.getCompany()));
   }
 }

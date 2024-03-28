@@ -34,8 +34,6 @@
     canDelete="false">
     <toolbar>
       <button name="cancel" title="" hidden="true" onClick=""/>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel" sidebar="true">
       <field name="date"/>

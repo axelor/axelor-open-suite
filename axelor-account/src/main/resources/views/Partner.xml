@@ -63,14 +63,18 @@
     </panel>
   </form>
 
-  <form name="incl-customer-balance-partner-form" title="Partner"
+  <form name="incl-accounting-situation-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner"
     onLoad="action-partner-account-method-accounting-situation-label">
-    <panel name="accountingBalancePanel" title="Accounting balance" colSpan="12">
+    <panel name="accountingSituationPanel" if-module="axelor-account"
+      onTabSelect="action-partner-account-method-accounting-situation-label"
+      if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact">
+      <field name="isCompensation" colSpan="12" widget="boolean-switch"
+        showIf="isCustomer &amp;&amp; isSupplier"/>
       <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>
-      <field name="accountingSituationList" colSpan="12" widget="MasterDetail"
-        title="Customer balance" hideIf="isContact" grid-view="accounting-situation-partner-grid"
-        form-view="accounting-situation-partner-form"
+      <panel-related name="accountingSituationListPanel"
+        field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12"
+        grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form"
         onChange="action-partner-account-method-accounting-situation-label"/>
     </panel>
   </form>
@@ -126,9 +130,29 @@
       </insert>
     </extend>
 
-    <extend target="//panel[@name='accountingSituationPanel']">
-      <attribute name="onTabSelect"
-        value="action-partner-account-method-accounting-situation-label"/>
+    <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='eventPanel']">
+      <insert position="before">
+        <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
+          if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
+          <panel-include view="incl-invoice-payment-partner-form"/>
+          <panel-include if-module="axelor-account"
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+            view="incl-sepa-direct-debit-partner-form"/>
+          <panel name="invoiceCommentsPanel" title="Comment to display on invoice"
+            colSpan="12">
+            <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
+          </panel>
+          <panel name="descriptionToDisplayOnProformaPanel"
+            title="Comment to display on proforma" colSpan="12">
+            <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
+          </panel>
+        </panel>
+
+        <panel-include if-module="axelor-account"
+          view="incl-accounting-situation-partner-form" if="__config__.app.isApp('account')"/>
+        <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
+          if="__config__.app.isApp('account')"/>
+      </insert>
     </extend>
   </form>
 

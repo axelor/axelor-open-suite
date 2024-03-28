@@ -1840,7 +1840,7 @@
       if="clientPartner != null"/>
     <field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
     <field name="companyBankDetails"
-      expr="call: com.axelor.apps.account.service.AccountingSituationService:getCompanySalesBankDetails(company, clientPartner)"/>
+      expr="call: com.axelor.apps.account.service.accountingsituation.AccountingSituationService:getCompanySalesBankDetails(company, clientPartner)"/>
     <field name="isNeedingConformityCertificate"
       expr="eval: clientPartner?.isNeedingConformityCertificate"/>
     <field name="salespersonUser" expr="eval:__user__"

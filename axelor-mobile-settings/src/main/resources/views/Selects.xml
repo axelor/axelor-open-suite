@@ -33,4 +33,10 @@
     <option value="product">Activity</option>
   </selection>
 
+  <selection name="mobilesettings.mobile.menu.type.select">
+    <option value="menu">Menu</option>
+    <option value="separator">Separator</option>
+    <option value="submenu">Submenu</option>
+  </selection>
+
 </object-views>

@@ -86,8 +86,8 @@
     onNew="action-group-base-product-onnew" onSave="action-group-product-onsave"
     onLoad="action-group-product-onload" width="large">
     <toolbar>
-      <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
+      <button name="printBtn" title="Product sheet" icon="fa-print"
+        onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="action-send-by-email-with-template"/>
     </toolbar>

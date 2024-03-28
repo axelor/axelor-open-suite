@@ -33,9 +33,5 @@ public interface InvoiceVisibilityService {
 
   boolean isSendNotifyVisible(Invoice invoice) throws AxelorException;
 
-  boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException;
-
   boolean getPaymentVouchersStatus(Invoice invoice) throws AxelorException;
-
-  boolean getPfpCondition(Invoice invoice) throws AxelorException;
 }

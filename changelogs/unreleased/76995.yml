@@ -1,0 +1,2 @@
+title: "Payment Session: fixed error when selecting bank details where payment mode have empty accounting setting."
+module: axelor-account

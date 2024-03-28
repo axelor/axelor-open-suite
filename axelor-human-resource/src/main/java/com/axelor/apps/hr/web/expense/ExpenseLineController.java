@@ -76,4 +76,10 @@ public class ExpenseLineController {
     response.setValue(
         "expenseProduct", Beans.get(ExpenseLineService.class).getExpenseProduct(expenseLine));
   }
+
+  public void computeProjectTaskDomain(ActionRequest request, ActionResponse response) {
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    String domain = Beans.get(ExpenseLineService.class).computeProjectTaskDomain(expenseLine);
+    response.setAttr("projectTask", "domain", domain);
+  }
 }

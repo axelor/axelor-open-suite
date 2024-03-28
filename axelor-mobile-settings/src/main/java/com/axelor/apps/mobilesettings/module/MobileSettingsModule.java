@@ -27,6 +27,10 @@ import com.axelor.apps.mobilesettings.service.MobileChartService;
 import com.axelor.apps.mobilesettings.service.MobileChartServiceImpl;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeService;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeServiceImpl;
+import com.axelor.apps.mobilesettings.service.MobileMenuCreateService;
+import com.axelor.apps.mobilesettings.service.MobileMenuCreateServiceImpl;
+import com.axelor.apps.mobilesettings.service.MobileScreenCreateService;
+import com.axelor.apps.mobilesettings.service.MobileScreenCreateServiceImpl;
 import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeService;
 import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeServiceImpl;
 
@@ -41,5 +45,7 @@ public class MobileSettingsModule extends AxelorModule {
         .to(MobileDashboardResponseComputeServiceImpl.class);
     bind(MobileSettingsResponseComputeService.class)
         .to(MobileSettingsResponseComputeServiceImpl.class);
+    bind(MobileMenuCreateService.class).to(MobileMenuCreateServiceImpl.class);
+    bind(MobileScreenCreateService.class).to(MobileScreenCreateServiceImpl.class);
   }
 }

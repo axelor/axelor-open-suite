@@ -23,5 +23,7 @@ import com.axelor.apps.base.db.PrintingTemplate;
 import java.util.List;
 
 public interface PrintingTemplateService {
-  List<PrintingTemplate> getPrintingTemplates(String modelName) throws AxelorException;
+  List<PrintingTemplate> getActivePrintingTemplates(String modelName) throws AxelorException;
+
+  boolean hasActivePrintingTemplates(String modelName);
 }

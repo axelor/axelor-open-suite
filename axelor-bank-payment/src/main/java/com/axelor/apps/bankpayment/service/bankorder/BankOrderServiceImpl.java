@@ -50,7 +50,6 @@ import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidat
 import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -529,7 +528,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     String domain =
         Beans.get(BankDetailsService.class)
-            .getActiveCompanyBankDetails(bankOrder.getSenderCompany());
+            .getActiveCompanyBankDetails(
+                bankOrder.getSenderCompany(), bankOrder.getBankOrderCurrency());
 
     // filter on the bank details identifier type from the bank order file
     // format
@@ -538,14 +538,6 @@ public class BankOrderServiceImpl implements BankOrderService {
       if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
         domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
       }
-    }
-
-    // filter on the currency if it is set in file format and in the bankdetails
-    Currency currency = bankOrder.getBankOrderCurrency();
-    if (currency != null
-        && !bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()) {
-      String fileFormatCurrencyId = currency.getId().toString();
-      domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
     }
     return domain;
   }

@@ -15,8 +15,8 @@
       ref="com.axelor.apps.base.db.PrintTemplateLine" mappedBy="printTemplate" orderBy="sequence"/>
     <many-to-one name="localization" title="Localization"
       ref="com.axelor.apps.base.db.Localization"/>
-    <many-to-many name="birtTemplateSet" title="Birt templates"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-many name="printingTemplateSet" title="Print templates"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <boolean name="hidePrintSettings" title="Hide print settings"/>
     <string name="formatSelect" title="Format" selection="base.print.template.format.select"/>
     <integer name="displayTypeSelect" title="Display type"

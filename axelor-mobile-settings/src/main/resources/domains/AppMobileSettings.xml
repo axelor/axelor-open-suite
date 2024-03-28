@@ -102,6 +102,8 @@
 
     <one-to-many name="mobileDashboardList" title="Mobile dashboard list"
       ref="com.axelor.apps.mobilesettings.db.MobileDashboard" mappedBy="appMobileSettings"/>
+    <one-to-many name="mobileShortcutList" title="Mobile shortcut list"
+      ref="com.axelor.apps.mobilesettings.db.MobileShortcut" mappedBy="appMobileSettings"/>
 
     <extra-code>
       <![CDATA[

@@ -75,9 +75,13 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public Company getDefaultCompany(Long companyId) {
-    Company company = companyRepository.find(companyId);
-    if (company != null) {
-      return company;
+    Company company = null;
+
+    if (companyId != null) {
+      company = companyRepository.find(companyId);
+      if (company != null) {
+        return company;
+      }
     }
 
     company = userService.getUserActiveCompany();

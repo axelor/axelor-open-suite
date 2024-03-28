@@ -1,2 +1,0 @@
-title: "InvoicePayment : fix technical error when setting currency to null"
-module: axelor-account

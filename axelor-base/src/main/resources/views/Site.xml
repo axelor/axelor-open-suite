@@ -11,7 +11,8 @@
     <field name="address"/>
   </grid>
 
-  <form title="Site" name="site-form" model="com.axelor.apps.base.db.Site">
+  <form title="Site" name="site-form" model="com.axelor.apps.base.db.Site"
+    onNew="action-site-record-set-default-company">
     <panel name="mainPanel">
       <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
         <editor x-show-titles="false">
@@ -19,7 +20,8 @@
           <field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
         </editor>
       </field>
-      <field name="address" canNew="true" colSpan="12"/>
+      <field name="address" canNew="true"/>
+      <field name="companySet" widget="tagSelect" canNew="false"/>
     </panel>
     <panel name="siteTypePanel" sidebar="true">
       <field name="typeSelect"/>
@@ -27,4 +29,10 @@
         requiredIf="typeSelect == 2"/>
     </panel>
   </form>
+
+  <action-record name="action-site-record-set-default-company"
+    model="com.axelor.apps.base.db.Site">
+    <field name="companySet" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+  </action-record>
 </object-views>

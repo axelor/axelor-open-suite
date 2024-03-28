@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.service.PeriodControlService;
-import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.period.PeriodControlService;
+import com.axelor.apps.account.service.period.PeriodServiceAccount;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Period;

@@ -27,9 +27,9 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -64,7 +64,7 @@ public class PrintingTemplateController {
     Long recordId = (Long) map.get(CONTEXT_MODEL_ID);
 
     List<PrintingTemplate> printingTemplates =
-        printingTemplateService.getPrintingTemplates(modelName);
+        printingTemplateService.getActivePrintingTemplates(modelName);
     if (printingTemplates.size() > 1) {
       List<Long> templateIdList =
           printingTemplates.stream().map(PrintingTemplate::getId).collect(Collectors.toList());
@@ -102,7 +102,7 @@ public class PrintingTemplateController {
         (Class<? extends Model>) request.getContext().getContextClass();
 
     List<PrintingTemplate> printingTemplates =
-        printingTemplateService.getPrintingTemplates(modelName);
+        printingTemplateService.getActivePrintingTemplates(modelName);
     if (printingTemplates.size() > 1) {
       List<Long> templateIdList =
           printingTemplates.stream().map(PrintingTemplate::getId).collect(Collectors.toList());
@@ -169,7 +169,7 @@ public class PrintingTemplateController {
 
     String outputLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(printingTemplate, EntityHelper.getEntity(model));
+            .getPrintLink(printingTemplate, new PrintingGenFactoryContext(model));
     print(response, printingTemplate, outputLink);
   }
 

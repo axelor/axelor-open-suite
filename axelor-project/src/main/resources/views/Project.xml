@@ -142,6 +142,9 @@
           domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
       </panel>
       <field name="description" colSpan="12" widget="html"/>
+      <field name="siteSet" widget="tag-select"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"
+        domain="self.typeSelect = 2 AND self.partner = :clientPartner"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">

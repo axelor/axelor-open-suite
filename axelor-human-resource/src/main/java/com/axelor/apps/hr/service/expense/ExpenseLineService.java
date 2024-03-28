@@ -43,4 +43,6 @@ public interface ExpenseLineService {
   boolean isFilePdf(ExpenseLine expenseLine);
 
   Product getExpenseProduct(ExpenseLine expenseLine) throws AxelorException;
+
+  String computeProjectTaskDomain(ExpenseLine expenseLine);
 }

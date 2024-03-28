@@ -9,6 +9,8 @@
 
     <many-to-one name="billOfMaterial"
       ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
+    <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess"
+      title="Production process"/>
 
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder"
       mappedBy="saleOrderLine" copy="false"/>

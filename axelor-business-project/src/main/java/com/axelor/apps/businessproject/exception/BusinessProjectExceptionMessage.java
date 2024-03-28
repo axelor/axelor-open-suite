@@ -108,4 +108,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_TASK_REPORT_NO_ID_FOUND = /*$$(*/
       "Could not find the project task id." /*)*/;
+
+  public static final String PROJECT_TASK_TEMPLATE_QUANTITY_ERROR = /*$$(*/
+      "Quantity must be greater than 0 for task template %s." /*)*/;
 }

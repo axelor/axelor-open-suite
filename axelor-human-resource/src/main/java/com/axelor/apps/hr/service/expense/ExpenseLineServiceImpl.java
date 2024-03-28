@@ -25,14 +25,19 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -40,12 +45,16 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
 
   protected ExpenseLineRepository expenseLineRepository;
   protected HRConfigService hrConfigService;
+  protected ProjectRepository projectRepository;
 
   @Inject
   public ExpenseLineServiceImpl(
-      ExpenseLineRepository expenseLineRepository, HRConfigService hrConfigService) {
+      ExpenseLineRepository expenseLineRepository,
+      HRConfigService hrConfigService,
+      ProjectRepository projectRepository) {
     this.expenseLineRepository = expenseLineRepository;
     this.hrConfigService = hrConfigService;
+    this.projectRepository = projectRepository;
   }
 
   @Override
@@ -145,5 +154,26 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
       }
     }
     return null;
+  }
+
+  @Override
+  public String computeProjectTaskDomain(ExpenseLine expenseLine) {
+    Project project = expenseLine.getProject();
+    if (project != null) {
+      return "self.id IN (" + StringHelper.getIdListString(project.getProjectTaskList()) + ")";
+    }
+    List<Project> projectList =
+        projectRepository
+            .all()
+            .filter(":userId IN self.membersUserSet.id")
+            .bind("userId", expenseLine.getEmployee().getUser().getId())
+            .fetch();
+    return "self.id IN ("
+        + StringHelper.getIdListString(
+            projectList.stream()
+                .map(Project::getProjectTaskList)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()))
+        + ")";
   }
 }

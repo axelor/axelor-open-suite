@@ -30,7 +30,7 @@
       <bind node="attach" to="attach"/>
       <bind node="isEditable" to="isEditable"/>
       <bind node="hidePrintSettings" to="hidePrintSettings"/>
-      <bind node="birtTemplateSet/birtTemplate" to="birtTemplateSet">
+      <bind node="printingTemplateSet/printingTemplate" to="printingTemplateSet">
         <bind node="name" to="name"/>
         <bind node="format" to="format"/>
         <bind node="templateLink" to="templateLink"/>

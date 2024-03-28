@@ -201,6 +201,13 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
   }
 
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    planningTimeRepo.save(projectPlanningTime);
+  }
+
   protected ProjectPlanningTime createProjectPlanningTime(
       LocalDateTime fromDate,
       ProjectTask projectTask,
@@ -232,20 +239,18 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Override
   @Transactional
   public void removeProjectPlanningLines(List<Integer> projectPlanningLineIds) {
-
     for (Integer id : projectPlanningLineIds) {
-      ProjectPlanningTime projectPlanningTime =
-          planningTimeRepo.find(Long.parseLong(String.valueOf(id)));
-      planningTimeRepo.remove(projectPlanningTime);
+      removeProjectPlanningLine(planningTimeRepo.find(Long.valueOf(id)));
     }
   }
 
   @Override
   @Transactional
   public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime) {
-
-    ProjectPlanningTime planningTime = planningTimeRepo.find(projectPlanningTime.getId());
-    planningTimeRepo.remove(planningTime);
+    if (!JPA.em().contains(projectPlanningTime)) {
+      projectPlanningTime = planningTimeRepo.find(projectPlanningTime.getId());
+    }
+    planningTimeRepo.remove(projectPlanningTime);
   }
 
   @Override

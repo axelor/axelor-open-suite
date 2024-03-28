@@ -283,9 +283,6 @@ public class InventoryService {
     InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
     inventoryLineResult.setRealQty(realQty);
     inventoryLineResult.setDescription(description);
-    if (inventoryLineResult.getTrackingNumber() != null) {
-      inventoryLineResult.getTrackingNumber().setCounter(realQty);
-    }
     inventoryLineService.compute(inventoryLineResult, inventoryLineResult.getInventory());
     return inventoryLineResult;
   }
@@ -426,7 +423,6 @@ public class InventoryService {
         trackingNumber = new TrackingNumber();
         trackingNumber.setTrackingNumberSeq(sequence);
         trackingNumber.setProduct(product);
-        trackingNumber.setCounter(realQty);
       }
     }
 

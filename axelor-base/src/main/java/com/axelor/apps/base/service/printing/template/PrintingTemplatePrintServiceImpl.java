@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -67,14 +68,23 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   }
 
   @Override
-  public String getPrintLink(PrintingTemplate template, Model model) throws AxelorException {
-    List<TemplatePrint> prints = getPrintList(template, model);
-    return getPrintFileLink(prints, getOutputFileName(template), isPdfFormat(prints));
+  public String getPrintLink(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException {
+    return getPrintLink(template, context, getOutputFileName(template));
   }
 
   @Override
-  public File getPrintFile(PrintingTemplate template, Model model) throws AxelorException {
-    List<TemplatePrint> prints = getPrintList(template, model);
+  public String getPrintLink(
+      PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
+      throws AxelorException {
+    List<TemplatePrint> prints = getPrintList(template, context);
+    return getPrintFileLink(prints, outputFileName, isPdfFormat(prints));
+  }
+
+  @Override
+  public File getPrintFile(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException {
+    List<TemplatePrint> prints = getPrintList(template, context);
     return getPrintFile(prints, getOutputFileName(template), isPdfFormat(prints));
   }
 
@@ -92,7 +102,7 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
               @Override
               public void accept(T item) throws Exception {
                 try {
-                  File printFile = getPrintFile(template, item);
+                  File printFile = getPrintFile(template, new PrintingGenFactoryContext(item));
                   if (!ReportSettings.FORMAT_PDF.equals(
                       FilenameUtils.getExtension(printFile.getName()))) {
                     isPDf.set(false);
@@ -113,12 +123,12 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
     return mergeToFileLink(printedRecords, isPDf.get(), fileName);
   }
 
-  protected List<TemplatePrint> getPrintList(PrintingTemplate printingTemplate, Model model)
-      throws AxelorException {
+  protected List<TemplatePrint> getPrintList(
+      PrintingTemplate printingTemplate, PrintingGenFactoryContext context) throws AxelorException {
     List<TemplatePrint> prints = new ArrayList<>();
     for (PrintingTemplateLine templateLine : printingTemplate.getPrintingTemplateLineList()) {
       PrintingGeneratorFactory factory = PrintingGeneratorFactory.getFactory(templateLine);
-      TemplatePrint print = factory.generate(templateLine, model);
+      TemplatePrint print = factory.generate(templateLine, context);
       prints.add(print);
     }
     return prints;

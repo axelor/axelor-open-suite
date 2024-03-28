@@ -25,13 +25,6 @@
       <attribute name="onNew" value="action-business-project-project-group-on-new"/>
       <attribute name="onLoad" value="action-business-project-project-group-on-load"/>
     </extend>
-    <extend target="//field[@name='description']">
-      <insert position="before">
-        <field name="siteSet" widget="tag-select"
-          if="__config__.app.getApp('business-project')?.enableSiteManagement"
-          showIf="isBusinessProject" domain="self.typeSelect = 2 AND self.partner = :clientPartner"/>
-      </insert>
-    </extend>
     <extend target="//field[@name='projectFolderSet']">
       <insert position="after">
         <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>

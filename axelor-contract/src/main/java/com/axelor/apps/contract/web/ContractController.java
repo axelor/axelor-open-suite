@@ -58,7 +58,10 @@ public class ContractController {
       return request.getContext().asType(Contract.class);
     }
     if (ContractVersion.class.equals(contextClass)) {
-      return request.getContext().asType(ContractVersion.class).getContract();
+      ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
+      return contractVersion.getContract() != null
+          ? contractVersion.getContract()
+          : contractVersion.getNextContract();
     }
     return null;
   }

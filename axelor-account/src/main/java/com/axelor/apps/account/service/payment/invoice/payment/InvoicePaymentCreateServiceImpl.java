@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -67,7 +67,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceService invoiceService;
-  protected InvoiceVisibilityService invoiceVisibilityService;
+  protected PfpService pfpService;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
@@ -79,7 +79,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      InvoiceVisibilityService invoiceVisibilityService) {
+      PfpService pfpService) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
@@ -89,7 +89,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceService = invoiceService;
-    this.invoiceVisibilityService = invoiceVisibilityService;
+    this.pfpService = pfpService;
   }
 
   /**
@@ -541,7 +541,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
       }
 
-      if (invoiceVisibilityService.getPfpCondition(invoice)
+      if (pfpService.getPfpCondition(invoice)
           && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,

@@ -40,6 +40,7 @@ import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ContractLineController {
@@ -47,8 +48,15 @@ public class ContractLineController {
   protected Contract getContractFromContext(ActionRequest request) {
     Contract contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 2);
 
-    if (ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1) == null) {
+    ContractVersion contractVersion =
+        ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1);
+    if (contractVersion == null) {
       contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 1);
+    } else if (contract == null) {
+      contract =
+          Optional.of(contractVersion)
+              .map(ContractVersion::getContract)
+              .orElse(contractVersion.getNextContract());
     }
 
     return contract;
