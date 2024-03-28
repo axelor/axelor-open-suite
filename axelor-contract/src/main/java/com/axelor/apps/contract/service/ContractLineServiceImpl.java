@@ -202,7 +202,6 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     if (contractLine.getContractVersion() != null) {
       contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
-      contract = contractLine.getContractVersion().getContract();
     }
 
     BigDecimal price =

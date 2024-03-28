@@ -47,6 +47,8 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isStockLocationManagementEnabled;
   protected final String minimalRequiredMobileAppVersion;
   protected final List<String> fieldsToShowOnTimesheet;
+  protected final List<Long> dashboardIdList;
+  protected final List<MobileShortcutResponse> mobileShortcutList;
 
   public MobileSettingsResponse(
       Integer version,
@@ -72,7 +74,9 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isTimesheetProjectInvoicingEnabled,
       Boolean isStockLocationManagementEnabled,
       String minimalRequiredMobileAppVersion,
-      List<String> fieldsToShowOnTimesheet) {
+      List<String> fieldsToShowOnTimesheet,
+      List<Long> dashboardIdList,
+      List<MobileShortcutResponse> mobileShortcutList) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
@@ -97,6 +101,8 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isStockLocationManagementEnabled = isStockLocationManagementEnabled;
     this.minimalRequiredMobileAppVersion = minimalRequiredMobileAppVersion;
     this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
+    this.dashboardIdList = dashboardIdList;
+    this.mobileShortcutList = mobileShortcutList;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -211,5 +217,13 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "fieldsToShowOnTimesheet")
   public List<String> getFieldsToShowOnTimesheet() {
     return fieldsToShowOnTimesheet;
+  }
+
+  public List<Long> getDashboardIdList() {
+    return dashboardIdList;
+  }
+
+  public List<MobileShortcutResponse> getMobileShortcutList() {
+    return mobileShortcutList;
   }
 }

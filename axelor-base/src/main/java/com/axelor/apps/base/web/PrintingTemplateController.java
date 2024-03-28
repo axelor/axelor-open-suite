@@ -64,7 +64,7 @@ public class PrintingTemplateController {
     Long recordId = (Long) map.get(CONTEXT_MODEL_ID);
 
     List<PrintingTemplate> printingTemplates =
-        printingTemplateService.getPrintingTemplates(modelName);
+        printingTemplateService.getActivePrintingTemplates(modelName);
     if (printingTemplates.size() > 1) {
       List<Long> templateIdList =
           printingTemplates.stream().map(PrintingTemplate::getId).collect(Collectors.toList());
@@ -102,7 +102,7 @@ public class PrintingTemplateController {
         (Class<? extends Model>) request.getContext().getContextClass();
 
     List<PrintingTemplate> printingTemplates =
-        printingTemplateService.getPrintingTemplates(modelName);
+        printingTemplateService.getActivePrintingTemplates(modelName);
     if (printingTemplates.size() > 1) {
       List<Long> templateIdList =
           printingTemplates.stream().map(PrintingTemplate::getId).collect(Collectors.toList());
