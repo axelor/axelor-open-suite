@@ -56,16 +56,20 @@
   </grid>
 
   <form name="sale-order-line-form-nested" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
+    model="com.axelor.apps.sale.db.SaleOrderLine"
+    onLoad="action-sale-order-line-attrs-set-line-field-scale">
     <panel-related field="subSaleOrderLineList" colSpan="12"
-      form-view="sale-order-line-form" grid-view="sale-order-line-grid"
+      form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
       x-expandable-form="sale-order-line-form" x-expand-all="subSaleOrderLineList"
       x-display-mode="tree" x-expandable="true" x-show-header="false"/>
 
   </form>
 
+
+
   <grid name="sale-order-line-editable-grid" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
+    expandable="true" expandable-form-view="sale-order-line-form-nested">
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
@@ -81,7 +85,7 @@
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
-      validIf="$qtyValid != false"/>
+      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" colSpan="3"
       readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
       onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
@@ -1085,5 +1089,18 @@
       expr="eval:__repo__(SaleOrderLine).INVOICING_MODE_DIRECTLY" if="toInvoice"/>
     <field name="invoicingModeSelect" expr="eval:null" if="!toInvoice"/>
   </action-record>
+
+  <action-attrs name="action-sale-order-line-attrs-set-line-field-scale">
+    <attribute for="subSaleOrderLineList.qty" name="scale"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute
+      for="subSaleOrderLineList.price,subSaleOrderLineList.inTaxPrice,subSaleOrderLineList.priceDiscounted,subSaleOrderLineList.discountAmount"
+      name="scale" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute for="subSaleOrderLineList.discountAmount" name="scale"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale"
+      for="subSaleOrderLineList.exTaxTotal,saleOrderLineList.inTaxTotal"
+      expr="eval: currency?.numberOfDecimals"/>
+  </action-attrs>
 
 </object-views>
