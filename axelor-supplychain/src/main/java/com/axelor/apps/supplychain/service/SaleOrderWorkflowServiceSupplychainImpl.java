@@ -209,5 +209,6 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       }
     }
     super.completeSaleOrder(saleOrder);
+    accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 }
