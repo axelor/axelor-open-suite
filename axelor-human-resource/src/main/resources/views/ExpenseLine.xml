@@ -228,7 +228,7 @@
 
   <action-attrs name="action-expense-line-attrs-domain-project">
     <attribute name="domain" for="project"
-      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
+      expr="eval: &quot; ${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id} &quot;"/>
   </action-attrs>
 
   <action-record name="action-expense-line-default"
