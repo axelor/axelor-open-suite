@@ -14,6 +14,8 @@
     <field name="saleSupplySelect"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
     <field name="personalExpense"/>
+    <field name="trackingNumberConfiguration" hidden="true" if="__config__.app.isApp('stock')"
+      if-module="axelor-stock"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
   </grid>
@@ -99,6 +101,8 @@
     <field name="productTypeSelect" width="100"/>
     <field name="saleSupplySelect"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="trackingNumberConfiguration" hidden="true" if="__config__.app.isApp('stock')"
+      if-module="axelor-stock"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
   </grid>
