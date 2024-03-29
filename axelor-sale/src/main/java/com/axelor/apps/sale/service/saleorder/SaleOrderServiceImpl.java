@@ -385,20 +385,21 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrder.getExpendableSaleOrderLineList() != null) {
 
       // Copy childrens
-      if (saleOrder.getCompany().getSaleConfig().getCountTypeSelect() == SaleConfigRepository.COUNT_ONLY_CHILDREN){
+      if (saleOrder.getCompany().getSaleConfig().getCountTypeSelect()
+          == SaleConfigRepository.COUNT_ONLY_CHILDREN) {
         for (var expendableSaleOrderLineList : saleOrder.getExpendableSaleOrderLineList()) {
           synchronizeSaleOrderLineList(
-                  expendableSaleOrderLineList.getSubSaleOrderLineList(), saleOrder);
+              expendableSaleOrderLineList.getSubSaleOrderLineList(), saleOrder);
         }
       }
 
       // Copy parents
-      if (saleOrder.getCompany().getSaleConfig().getCountTypeSelect() == SaleConfigRepository.COUNT_ONLY_PARENTS){
+      if (saleOrder.getCompany().getSaleConfig().getCountTypeSelect()
+          == SaleConfigRepository.COUNT_ONLY_PARENTS) {
         for (SaleOrderLine saleOrderLine : saleOrder.getExpendableSaleOrderLineList()) {
           copyToSaleOrderLineList(saleOrder, saleOrderLine);
         }
       }
-
     }
   }
 
