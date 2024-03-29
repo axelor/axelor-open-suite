@@ -1,3 +1,3 @@
 ---
-title: "ContractTemplate / ContractVersion : Fixed script error due to the wrong usage of Additional Benefit Management field"
+title: "Contract template/Contract version: fixed 'Additional Benefit Management' field display."
 module: axelor-contract
