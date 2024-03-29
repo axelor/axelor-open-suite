@@ -9,7 +9,7 @@
 
     <extra-code><![CDATA[
 		// TYPE SELECT
-		public static final String PRICING_TYPE_SELECT_SALE_PRICING = "Pricing";
+		public static final String PRICING_TYPE_SELECT_CONTRACT_YEB_YER = "YEB/YER";
 	]]></extra-code>
   </entity>
 

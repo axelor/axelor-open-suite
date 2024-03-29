@@ -360,8 +360,9 @@
     model="com.axelor.apps.base.db.Pricing">
     <view type="grid" name="pricing-grid"/>
     <view type="form" name="pricing-form"/>
-    <domain>self.typeSelect = :_typeSelect AND self.concernedModel.name IS NOT 'InvoiceLine'</domain>
-    <context name="_typeSelect" expr="eval: 1"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING"/>
   </action-view>
 
   <menuitem title="Pricing rules" name="sc-root-sale-conf-pricing-rule"

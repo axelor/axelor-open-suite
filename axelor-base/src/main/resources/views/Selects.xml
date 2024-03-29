@@ -776,7 +776,7 @@
   </selection>
 
   <selection name="base.pricing.type.select">
-    <option value="0">Default</option>
+    <option value="Default">Default</option>
   </selection>
 
 </object-views>

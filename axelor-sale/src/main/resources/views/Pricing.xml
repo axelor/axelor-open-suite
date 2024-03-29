@@ -31,8 +31,8 @@
   </action-group>
 
   <action-attrs name="action-pricing-attrs-set-type-select-selection">
-    <attribute for="typeSelect" name="selection-in" expr="[0]" if="concernedModel"/>
-    <attribute for="typeSelect" name="selection-in" expr="[0,1]"
+    <attribute for="typeSelect" name="selection-in" expr="['Default']" if="concernedModel"/>
+    <attribute for="typeSelect" name="selection-in" expr="['Default','Pricing']"
       if="concernedModel?.packageName &amp;&amp; concernedModel?.packageName == 'com.axelor.apps.sale.db'"/>
     <attribute for="typeSelect" name="readonly"
       expr="eval: concernedModel?.packageName &amp;&amp; concernedModel?.packageName != 'com.axelor.apps.sale.db'"/>

@@ -106,7 +106,7 @@
   </selection>
 
   <selection name="base.pricing.type.select" id="sale.base.pricing.type.select">
-    <option value="1">Sale.Pricing</option>
+    <option value="Pricing">Sale.Pricing</option>
   </selection>
 
 </object-views>

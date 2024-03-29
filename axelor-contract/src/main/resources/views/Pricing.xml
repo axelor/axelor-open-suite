@@ -17,6 +17,18 @@
     </panel>
   </form>
 
+  <form model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-form"
+    id="contract-pricing-form" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-contract-pricing-group-onload"/>
+    </extend>
+
+    <extend target="//field[@name='concernedModel']">
+      <attribute name="onChange"
+        value="action-contract-pricing-group-concerned-model-onchange"/>
+    </extend>
+  </form>
+
   <action-attrs name="action-pricing-attrs-set-readonly">
     <attribute for="$usedInContract" name="value"
       expr="eval: __parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.contract.db.ContractLine
@@ -31,6 +43,9 @@
     <attribute for="concernedModel" name="value"
       expr="eval: __repo__(MetaModel).all().filter('self.name = \'InvoiceLine\'').fetchOne()"
       if="eval: !__parent__?.pricing"/>
+    <attribute for="typeSelect" name="value"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_CONTRACT_YEB_YER"/>
+    <attribute for="typeSelect" name="readonly" expr="eval: true"/>
   </action-attrs>
 
   <action-method name="action-pricing-method-copy-pricing">
@@ -47,4 +62,24 @@
     <action name="action-pricing-method-set-readonly"/>
     <action name="action-pricing-group-attrs-pricing-line-list"/>
   </action-group>
+
+  <action-group name="action-contract-pricing-group-onload">
+    <action name="action-sale-pricing-group-onload"/>
+    <action name="action-pricing-contract-attrs-set-type-select-selection"
+      if="__config__.app.isApp('contract')"/>
+  </action-group>
+
+  <action-group name="action-contract-pricing-group-concerned-model-onchange">
+    <action name="action-sale-pricing-group-concerned-model-onchange"/>
+    <action name="action-pricing-contract-attrs-set-type-select-selection"
+      if="__config__.app.isApp('contract')"/>
+  </action-group>
+
+  <action-attrs name="action-contract-pricing-attrs-set-type-select-selection">
+    <attribute for="typeSelect" name="value"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_CONTRACT_YEB_YER"
+      if="concernedModel?.name &amp;&amp; concernedModel?.name == 'InvoiceLine'"/>
+    <attribute for="typeSelect" name="readonly" expr="eval: true"
+      if="concernedModel?.name &amp;&amp; concernedModel?.name == 'InvoiceLine'"/>
+  </action-attrs>
 </object-views>

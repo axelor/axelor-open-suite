@@ -38,9 +38,9 @@ public interface PricingService {
    * @return a {@link Optional} of Pricing.c
    */
   Optional<Pricing> getRandomPricing(
-      Company company, Model model, Pricing pricing, Integer typeSelect);
+      Company company, Model model, Pricing pricing, String typeSelect);
 
-  Optional<Pricing> getRootPricingForNextPricings(Company company, Model model, Integer typeSelect);
+  Optional<Pricing> getRootPricingForNextPricings(Company company, Model model, String typeSelect);
 
   /**
    * This method will get all pricings filtered with company, product, productCategory, modelName,
@@ -52,9 +52,9 @@ public interface PricingService {
    * @param typeSelect: can be null
    * @return a {@link Optional} of Pricing.
    */
-  List<Pricing> getPricings(Company company, Model model, Pricing pricing, Integer typeSelect);
+  List<Pricing> getPricings(Company company, Model model, Pricing pricing, String typeSelect);
 
-  List<Pricing> getAllPricings(Company company, Model model, Integer typeSelect);
+  List<Pricing> getAllPricings(Company company, Model model, String typeSelect);
 
   public void historizePricing(Pricing pricing) throws AxelorException;
 

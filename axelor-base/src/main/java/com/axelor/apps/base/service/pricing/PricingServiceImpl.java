@@ -71,13 +71,13 @@ public class PricingServiceImpl implements PricingService {
 
   @Override
   public Optional<Pricing> getRandomPricing(
-      Company company, Model model, Pricing pricing, Integer typeSelect) {
+      Company company, Model model, Pricing pricing, String typeSelect) {
     return getPricings(company, model, null, typeSelect).stream().findAny();
   }
 
   @Override
   public Optional<Pricing> getRootPricingForNextPricings(
-      Company company, Model model, Integer typeSelect) {
+      Company company, Model model, String typeSelect) {
     List<Pricing> pricings = getAllPricings(company, model, typeSelect);
 
     Set<Long> pricingsPointedTo =
@@ -102,7 +102,7 @@ public class PricingServiceImpl implements PricingService {
 
   @Override
   public List<Pricing> getPricings(
-      Company company, Model model, Pricing pricing, Integer typeSelect) {
+      Company company, Model model, Pricing pricing, String typeSelect) {
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
     pricingFetchFilter(filter, bindings, company, model, typeSelect);
@@ -123,7 +123,7 @@ public class PricingServiceImpl implements PricingService {
   }
 
   @Override
-  public List<Pricing> getAllPricings(Company company, Model model, Integer typeSelect) {
+  public List<Pricing> getAllPricings(Company company, Model model, String typeSelect) {
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
     pricingFetchFilter(filter, bindings, company, model, typeSelect);
@@ -141,7 +141,7 @@ public class PricingServiceImpl implements PricingService {
       Map<String, Object> bindings,
       Company company,
       Model model,
-      Integer typeSelect) {
+      String typeSelect) {
     LOG.debug("Fetching pricings");
 
     filter.append("self.startDate <= :todayDate ");
