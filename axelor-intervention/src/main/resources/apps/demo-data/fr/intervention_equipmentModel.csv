@@ -1,0 +1,5 @@
+"importId";"parkModel.importId";"code";"name";"typeSelect";"parentEquipmentModel.importId";"equipmentFamily.importId";"inService";"updatableQuantities";"numberOfElementsToGenerate"
+1;1;"INSTPARC";"Installation parc informatique";"place";;;;false;1
+2;1;"MONITEURS";"Moniteurs";"equipment";1;1;true;true;1
+3;1;"STOCKAGE";"Stockage";"equipment";1;2;true;false;2
+4;1;"IMPRESSION";"Impression";"equipment";1;3;true;true;2
