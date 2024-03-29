@@ -422,7 +422,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(
-                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+                invoice.getPartner().getId(),
+                InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND,
+                invoice.getOperationSubTypeSelect());
 
         if (clientRefundsAmount > 0) {
           return I18n.get(AccountExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
@@ -432,7 +434,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
         long supplierRefundsAmount =
             getRefundsAmount(
-                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+                invoice.getPartner().getId(),
+                InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
+                invoice.getOperationSubTypeSelect());
 
         if (supplierRefundsAmount > 0) {
           return I18n.get(AccountExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
@@ -443,17 +447,21 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return null;
   }
 
-  protected long getRefundsAmount(Long partnerId, int refundType) {
+  protected long getRefundsAmount(Long partnerId, int refundType, int operationSubTypeSelect) {
     return invoiceRepo
         .all()
         .filter(
             "self.partner.id = ?"
                 + " AND self.operationTypeSelect = ?"
                 + " AND self.statusSelect = ?"
-                + " AND self.amountRemaining > 0",
+                + " AND self.amountRemaining > 0"
+                + " AND self.operationSubTypeSelect = ?",
             partnerId,
             refundType,
-            InvoiceRepository.STATUS_VENTILATED)
+            InvoiceRepository.STATUS_VENTILATED,
+            operationSubTypeSelect == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+                ? InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND
+                : InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND)
         .count();
   }
 

@@ -196,6 +196,8 @@
     <option value="1">Classic invoice</option>
     <option value="2">Advance payment invoice</option>
     <option value="3">Balance invoice</option>
+    <option value="10">Standard refund</option>
+    <option value="11">Advance payment refund</option>
   </selection>
 
   <selection name='iaccount.account.schedule.export.type.select'>
