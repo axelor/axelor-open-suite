@@ -20,8 +20,11 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -47,7 +50,7 @@ public class BankOrderController {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
-        Beans.get(BankOrderService.class).confirm(bankOrder);
+        Beans.get(BankOrderValidationService.class).confirm(bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -61,7 +64,7 @@ public class BankOrderController {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
-        Beans.get(BankOrderService.class).realize(bankOrder);
+        Beans.get(BankOrderValidationService.class).realize(bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -114,7 +117,8 @@ public class BankOrderController {
 
   public void fillBankDetails(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    BankDetails bankDetails = Beans.get(BankOrderService.class).getDefaultBankDetails(bankOrder);
+    BankDetails bankDetails =
+        Beans.get(BankOrderCheckService.class).getDefaultBankDetails(bankOrder);
     response.setValue("senderBankDetails", bankDetails);
   }
 
@@ -158,7 +162,7 @@ public class BankOrderController {
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-      Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
+      Beans.get(BankOrderCancelService.class).cancelBankOrder(bankOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

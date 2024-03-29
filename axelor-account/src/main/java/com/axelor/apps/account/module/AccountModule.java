@@ -340,6 +340,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
@@ -887,5 +889,7 @@ public class AccountModule extends AxelorModule {
         .to(ReconcileInvoiceTermComputationServiceImpl.class);
 
     bind(ReconcileGroupToolService.class).to(ReconcileGroupToolServiceImpl.class);
+
+    bind(InvoicePaymentMoveCreateService.class).to(InvoicePaymentMoveCreateServiceImpl.class);
   }
 }
