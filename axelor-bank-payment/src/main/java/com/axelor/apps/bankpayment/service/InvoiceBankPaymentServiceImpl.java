@@ -10,6 +10,7 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -96,11 +97,21 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
 
     resetInvoiceTermAmounts(invoice, oldInvoiceTermList);
     invoiceTermReplaceService.replaceInvoiceTerms(
-        invoice, oldMove, billOfExchangeMove.getMoveLineList(), invoice.getPartnerAccount());
+        invoice, oldInvoiceTermList, billOfExchangeInvoiceTermList);
+
+    List<InvoiceTerm> invoiceTermListToReset =
+        billOfExchangeMove.getMoveLineList().stream()
+            .filter(ml -> ml.getCredit().signum() != 0)
+            .findFirst()
+            .map(MoveLine::getInvoiceTermList)
+            .orElse(new ArrayList<>());
+    if (!ObjectUtils.isEmpty(invoiceTermListToReset)) {
+      resetInvoiceTermAmounts(invoice, invoiceTermListToReset);
+    }
   }
 
-  protected void resetInvoiceTermAmounts(Invoice invoice, List<InvoiceTerm> oldInvoiceTermList) {
-    for (InvoiceTerm invoiceTerm : oldInvoiceTermList) {
+  protected void resetInvoiceTermAmounts(Invoice invoice, List<InvoiceTerm> invoiceTermList) {
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
       if (!invoice.getInvoiceTermList().contains(invoiceTerm)) {
         invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
         invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getCompanyAmount());

@@ -44,6 +44,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 
 public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceProjectServiceImpl {
 
@@ -103,8 +104,13 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
 
   protected List<InvoiceLine> copyBudgetDistribution(
       List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine) {
-    if (!ObjectUtils.isEmpty(invoiceLineList)) {
-      for (InvoiceLine invoiceLine : invoiceLineList) {
+    if (ObjectUtils.isEmpty(invoiceLineList)) {
+      return invoiceLineList;
+    }
+
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      if (invoiceLine.getPurchaseOrderLine() != null
+          && Objects.equals(invoiceLine.getPurchaseOrderLine(), purchaseOrderLine)) {
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
         invoiceLine.setBudgetRemainingAmountToAllocate(
             purchaseOrderLine.getBudgetRemainingAmountToAllocate());

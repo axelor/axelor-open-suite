@@ -29,6 +29,9 @@
     <many-to-one name="producedProductStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product"
       massUpdate="true"/>
+    <many-to-one name="residualProductsDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for residual products"
+      massUpdate="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <many-to-one name="workshopStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Workshop" massUpdate="true"/>
@@ -69,6 +72,9 @@
                 pp.id
     ]]>
     </long>
+    <many-to-many name="generatedPurchaseOrderProductSet"
+      ref="com.axelor.apps.base.db.Product" title="Products for generated purchase order"/>
+    <boolean name="isPersonalized" title="Personalized"/>
 
     <extra-code><![CDATA[
 

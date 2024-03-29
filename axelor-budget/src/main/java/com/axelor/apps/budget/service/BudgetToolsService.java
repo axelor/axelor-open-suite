@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.BudgetStructure;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
@@ -49,6 +50,10 @@ public interface BudgetToolsService {
   GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
 
   GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
+
+  BudgetStructure getBudgetStructureUsingBudget(Budget budget);
+
+  BudgetStructure getBudgetStructureUsingBudgetLevel(BudgetLevel budgetLevel);
 
   String getBudgetExceedMessage(String budgetExceedAlert, boolean isOrder, boolean isError);
 

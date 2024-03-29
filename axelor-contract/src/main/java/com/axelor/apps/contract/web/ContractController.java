@@ -52,9 +52,18 @@ import java.time.LocalDate;
 public class ContractController {
 
   protected Contract getContract(ActionRequest request) {
-    return Contract.class.equals(request.getContext().getContextClass())
-        ? request.getContext().asType(Contract.class)
-        : request.getContext().asType(ContractVersion.class).getContract();
+    Class<?> contextClass = request.getContext().getContextClass();
+
+    if (Contract.class.equals(contextClass)) {
+      return request.getContext().asType(Contract.class);
+    }
+    if (ContractVersion.class.equals(contextClass)) {
+      ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
+      return contractVersion.getContract() != null
+          ? contractVersion.getContract()
+          : contractVersion.getNextContract();
+    }
+    return null;
   }
 
   public void waiting(ActionRequest request, ActionResponse response) {
@@ -310,11 +319,9 @@ public class ContractController {
     try {
       Contract contract = this.getContract(request);
 
-      if (contract != null) {
-        response.setAttrs(
-            Beans.get(ContractLineAttrsService.class)
-                .setScaleAndPrecision(contract, "contractLineList."));
-      }
+      response.setAttrs(
+          Beans.get(ContractLineAttrsService.class)
+              .setScaleAndPrecision(contract, "contractLineList."));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -324,11 +331,9 @@ public class ContractController {
     try {
       Contract contract = this.getContract(request);
 
-      if (contract != null) {
-        response.setAttrs(
-            Beans.get(ContractLineAttrsService.class)
-                .setScaleAndPrecision(contract, "additionalBenefitContractLineList."));
-      }
+      response.setAttrs(
+          Beans.get(ContractLineAttrsService.class)
+              .setScaleAndPrecision(contract, "additionalBenefitContractLineList."));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

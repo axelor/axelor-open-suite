@@ -23,11 +23,14 @@
   <input file="base_birtTemplateParameter.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
 
-  <input file="base_birtTemplateConfigLine.csv"
-    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
-    search="self.importId = :importId">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+  <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
+    separator=";" search="self.importId = :importId">
+    <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
+
+  <input file="base_printingTemplateLine.csv"
+    type="com.axelor.apps.base.db.PrintingTemplateLine" separator=";"
+    search="self.importId = :importId"/>
 
   <input file="base_templateContext.csv" separator=";"
     type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
@@ -46,9 +49,9 @@
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
-    <bind column="birtTemplateSet_importId" to="birtTemplateSet"
-      search="self.importId in :birtTemplateSet_importId"
-      eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+    <bind column="printTemplateSet_importId" to="printTemplateSet"
+      search="self.importId in :printTemplateSet_importId"
+      eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
     <bind to="templateContextList" search="self.name = :templateContext"
       if="templateContext != null &amp;&amp; !templateContext.empty"/>
   </input>

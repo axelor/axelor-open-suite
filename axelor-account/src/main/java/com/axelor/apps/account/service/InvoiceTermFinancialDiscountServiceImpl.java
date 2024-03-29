@@ -69,13 +69,16 @@ public class InvoiceTermFinancialDiscountServiceImpl
         invoice.getRemainingAmountAfterFinDiscount());
   }
 
-  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, MoveLine moveLine) {
-    this.computeFinancialDiscount(
-        invoiceTerm,
-        moveLine.getCredit().max(moveLine.getDebit()),
-        moveLine.getFinancialDiscount(),
-        moveLine.getFinancialDiscountTotalAmount(),
-        moveLine.getRemainingAmountAfterFinDiscount());
+  @Override
+  public void computeFinancialDiscount(InvoiceTerm invoiceTerm, MoveLine moveLine) {
+    if (moveLine != null) {
+      this.computeFinancialDiscount(
+          invoiceTerm,
+          moveLine.getCredit().max(moveLine.getDebit()),
+          moveLine.getFinancialDiscount(),
+          moveLine.getFinancialDiscountTotalAmount(),
+          moveLine.getRemainingAmountAfterFinDiscount());
+    }
   }
 
   @Override

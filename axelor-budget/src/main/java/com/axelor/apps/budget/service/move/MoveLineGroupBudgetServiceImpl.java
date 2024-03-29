@@ -42,6 +42,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -168,6 +169,23 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     Map<String, Object> valuesMap = super.getDebitCreditOnChangeValuesMap(moveLine, move);
 
     addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAccountOnChangeValuesMap(
+      MoveLine moveLine,
+      Move move,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate,
+      LocalDate dueDate)
+      throws AxelorException {
+
+    Map<String, Object> valuesMap =
+        super.getAccountOnChangeValuesMap(moveLine, move, cutOffStartDate, cutOffEndDate, dueDate);
+    valuesMap.put("budget", null);
+    valuesMap.put("budgetDistributionList", new ArrayList<>());
 
     return valuesMap;
   }

@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
@@ -155,21 +157,18 @@ public class SaleOrderLineController {
     }
   }
 
-  public void setBudgetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
-      String query = "self.id = 0";
+  @ErrorException
+  public void setBudgetDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+    String query = "self.id = 0";
 
-      if (saleOrder != null && saleOrder.getCompany() != null) {
-        query =
-            Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
-      }
-
-      response.setAttr("budget", "domain", query);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (saleOrder != null && saleOrder.getCompany() != null) {
+      query = Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
     }
+
+    response.setAttr("budget", "domain", query);
   }
 
   public void computeBudgetRemainingAmountToAllocate(
