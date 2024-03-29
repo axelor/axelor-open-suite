@@ -55,7 +55,6 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
@@ -418,27 +417,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
   }
 
-  protected Optional<SaleOrderLine> getSynchronzizeSaleOrderLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    if (saleOrder.getSaleOrderLineList() != null) {
-      return saleOrder.getSaleOrderLineList().stream()
-          .filter(sol -> saleOrderLine.equals(sol.getSynchronizedExpendableSaleOrderLine()))
-          .findAny();
-    }
-    return Optional.empty();
-  }
-
   protected void copyToSaleOrderLineList(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    getSynchronzizeSaleOrderLine(saleOrder, saleOrderLine)
-        .ifPresentOrElse(
-            synchroSol -> synchronizeSaleOrderLine(synchroSol, saleOrderLine),
-            () -> copySaleOrderLine(saleOrder, saleOrderLine));
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void synchronizeSaleOrderLine(SaleOrderLine toSynchroSol, SaleOrderLine saleOrderLine) {
-    toSynchroSol.setQty(saleOrderLine.getQty());
-    // TODO Synchro other values
+    copySaleOrderLine(saleOrder, saleOrderLine);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -447,7 +427,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     copy.clearSubSaleOrderLineList();
     copy.setParentLine(null);
     copy.setRootSaleOrder(null);
-    copy.setSynchronizedExpendableSaleOrderLine(saleOrderLine);
     saleOrder.addSaleOrderLineListItem(copy);
   }
 }
