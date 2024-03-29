@@ -89,8 +89,8 @@
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form"/>
     <field name="inTaxPrice"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="description"/>
     <field name="availableStatus" if="__config__.app.isApp('supplychain')" readonly="true">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -98,6 +98,7 @@
     </field>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
