@@ -137,7 +137,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
       AnalyticAxis analyticAxis =
           accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
-              .filter(it -> it.getSequence() + 1 == position)
+              .filter(it -> it.getSequence() == position)
               .findFirst()
               .stream()
               .map(AnalyticAxisByCompany::getAnalyticAxis)
@@ -283,19 +283,19 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     }
 
     switch (analyticAxisByCompany.getSequence()) {
-      case 0:
+      case 1:
         analyticLine.setAxis1AnalyticAccount(analyticAccount);
         break;
-      case 1:
+      case 2:
         analyticLine.setAxis2AnalyticAccount(analyticAccount);
         break;
-      case 2:
+      case 3:
         analyticLine.setAxis3AnalyticAccount(analyticAccount);
         break;
-      case 3:
+      case 4:
         analyticLine.setAxis4AnalyticAccount(analyticAccount);
         break;
-      case 4:
+      case 5:
         analyticLine.setAxis5AnalyticAccount(analyticAccount);
         break;
       default:

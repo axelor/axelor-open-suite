@@ -1,0 +1,5 @@
+---
+title: "Analytic axis by company: fixed processes that carried out with the initial sequence considered as 0"
+module: "axelor-account"
+developer: |
+  "The processes that previously assumed a starting sequence of 0 will now be adjusted to start from 1 in order to align with the behavior of AOP."
