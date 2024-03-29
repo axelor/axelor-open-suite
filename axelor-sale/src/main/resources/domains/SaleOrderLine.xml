@@ -130,6 +130,11 @@
       mappedBy="parentLine" title="Sub sale order lines"/>
     <many-to-one name="parentLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Parent line"/>
+    <many-to-one name="rootSaleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
+      title="Sale order"/>
+    <many-to-one name="synchronizedExpendableSaleOrderLine"
+      ref="com.axelor.apps.sale.db.SaleOrderLine" title="Synchronized line"/>
+
 
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 

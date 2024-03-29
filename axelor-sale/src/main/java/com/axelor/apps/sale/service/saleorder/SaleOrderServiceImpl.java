@@ -54,6 +54,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
@@ -375,5 +376,70 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrder);
       }
     }
+  }
+
+  @Override
+  public void synchronizeSaleOrderLineList(SaleOrder saleOrder) {
+    saleOrder.clearSaleOrderLineList();
+    if (saleOrder.getExpendableSaleOrderLineList() != null) {
+
+      // Copy childrens
+      for (var expendableSaleOrderLineList : saleOrder.getExpendableSaleOrderLineList()) {
+        synchronizeSaleOrderLineList(
+            expendableSaleOrderLineList.getSubSaleOrderLineList(), saleOrder);
+      }
+      // Copy parents
+      for (SaleOrderLine saleOrderLine : saleOrder.getExpendableSaleOrderLineList()) {
+        copyToSaleOrderLineList(saleOrder, saleOrderLine);
+      }
+    }
+  }
+
+  protected void synchronizeSaleOrderLineList(
+      List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) {
+    // This method will only copy last childrens
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        if (saleOrderLine.getSubSaleOrderLineList() != null
+            && !saleOrderLine.getSubSaleOrderLineList().isEmpty()) {
+          synchronizeSaleOrderLineList(saleOrderLine.getSubSaleOrderLineList(), saleOrder);
+        } else {
+          copyToSaleOrderLineList(saleOrder, saleOrderLine);
+        }
+      }
+    }
+  }
+
+  protected Optional<SaleOrderLine> getSynchronzizeSaleOrderLine(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    if (saleOrder.getSaleOrderLineList() != null) {
+      return saleOrder.getSaleOrderLineList().stream()
+          .filter(sol -> saleOrderLine.equals(sol.getSynchronizedExpendableSaleOrderLine()))
+          .findAny();
+    }
+    return Optional.empty();
+  }
+
+  protected void copyToSaleOrderLineList(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    getSynchronzizeSaleOrderLine(saleOrder, saleOrderLine)
+        .ifPresentOrElse(
+            synchroSol -> synchronizeSaleOrderLine(synchroSol, saleOrderLine),
+            () -> copySaleOrderLine(saleOrder, saleOrderLine));
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void synchronizeSaleOrderLine(SaleOrderLine toSynchroSol, SaleOrderLine saleOrderLine) {
+    toSynchroSol.setQty(saleOrderLine.getQty());
+    // TODO Synchro other values
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void copySaleOrderLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    SaleOrderLine copy = saleOrderLineRepo.copy(saleOrderLine, false);
+    copy.clearSubSaleOrderLineList();
+    copy.setParentLine(null);
+    copy.setRootSaleOrder(null);
+    copy.setSynchronizedExpendableSaleOrderLine(saleOrderLine);
+    saleOrder.addSaleOrderLineListItem(copy);
   }
 }

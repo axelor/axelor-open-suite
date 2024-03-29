@@ -103,4 +103,6 @@ public interface SaleOrderService {
   void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException;
 
   boolean isIncotermRequired(SaleOrder saleOrder);
+
+  void synchronizeSaleOrderLineList(SaleOrder saleOrder);
 }

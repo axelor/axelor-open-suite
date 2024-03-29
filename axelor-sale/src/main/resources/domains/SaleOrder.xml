@@ -172,6 +172,12 @@
 	    ]]>
     </many-to-one>
 
+    <one-to-many name="expendableSaleOrderLineList"
+      ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="rootSaleOrder" title="Sale order lines"
+      orderBy="sequence"/>
+
+
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
