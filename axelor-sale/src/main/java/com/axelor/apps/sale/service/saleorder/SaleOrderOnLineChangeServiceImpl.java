@@ -173,7 +173,10 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
 
   @Override
   public void onLineChange(SaleOrder saleOrder) throws AxelorException {
-    saleOrderService.synchronizeSaleOrderLineList(saleOrder);
+    if (appSaleService.getAppSale().getActivateMultiLevelSaleOrderLines()) {
+      saleOrderService.synchronizeSaleOrderLineList(saleOrder);
+    }
+
     this.handleComplementaryProducts(saleOrder);
     if (saleOrder.getSaleOrderLineList() != null
         && saleOrder.getSaleOrderLineList().stream()
