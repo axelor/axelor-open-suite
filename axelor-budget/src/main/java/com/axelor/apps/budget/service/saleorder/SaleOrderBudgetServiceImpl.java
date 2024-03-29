@@ -210,6 +210,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     for (InvoiceLine invoiceLine : invoiceLines) {
       if (saleOrderLine != null && saleOrderLine.getQty().signum() > 0) {
         invoiceLine.setBudget(saleOrderLine.getBudget());
+        invoiceLine.setBudgetRemainingAmountToAllocate(
+            saleOrderLine.getBudgetRemainingAmountToAllocate());
         this.copyBudgetDistributionList(
             saleOrderLine.getBudgetDistributionList(),
             invoiceLine,
