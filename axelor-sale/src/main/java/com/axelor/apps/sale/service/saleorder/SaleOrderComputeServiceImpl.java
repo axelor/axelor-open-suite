@@ -40,17 +40,13 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 
   protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderLineTaxService saleOrderLineTaxService;
-  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderComputeServiceImpl(
-      SaleOrderLineService saleOrderLineService,
-      SaleOrderLineTaxService saleOrderLineTaxService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService) {
 
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderLineTaxService = saleOrderLineTaxService;
-    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
