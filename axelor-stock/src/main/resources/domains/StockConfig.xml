@@ -78,15 +78,15 @@
     <boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed"
       default="true"/>
     <boolean name="isDisplaySaleValueInPrinting"
-      title="Display sale value in location financial data printing" default="true"/>
+      title="Display sale value in location financial data printing" default="false"/>
     <boolean name="isDisplayAccountingValueInPrinting"
-      title="Display accounting value in location financial data printing" default="true"/>
+      title="Display accounting value in location financial data printing" default="false"/>
     <boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing"
       default="true"/>
     <boolean name="isDisplayPurchaseValueInPrinting"
-      title="Display purchase value in location financial data printing" default="true"/>
+      title="Display purchase value in location financial data printing" default="false"/>
     <integer name="stockValuationTypeSelect" title="Stock location value on form view"
-      selection="stock.stock.location.value.type"/>
+      selection="stock.stock.location.value.type" default="5"/>
     <integer name="inventoryValuationTypeSelect" title="Inventory valuation type"
       selection="stock.stock.location.value.type"/>
 

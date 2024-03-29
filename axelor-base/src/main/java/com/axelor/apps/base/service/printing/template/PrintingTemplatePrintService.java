@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.printing.template;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.db.Model;
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +28,15 @@ import java.util.List;
 
 public interface PrintingTemplatePrintService {
 
-  String getPrintLink(PrintingTemplate template, Model model) throws AxelorException;
+  String getPrintLink(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException;
 
-  File getPrintFile(PrintingTemplate template, Model model) throws AxelorException;
+  String getPrintLink(
+      PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
+      throws AxelorException;
+
+  File getPrintFile(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException;
 
   <T extends Model> String getPrintLinkForList(
       List<Integer> idList, Class<T> contextClass, PrintingTemplate template)

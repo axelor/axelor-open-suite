@@ -41,6 +41,8 @@
     <field name="origin" width="120"/>
     <field name="description"/>
     <field name="dueDate"/>
+    <button name="viewMoveBtn" title="View entry" icon="fa-external-link"
+      onClick="action-move-line-view-open-move"/>
     <field name="analyticMoveLineList" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
@@ -639,6 +641,9 @@
   <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
     onNew="action-move-line-method-onnew" canNew="false" canDelete="false" canEdit="false"
     onLoad="action-move-line-method-onload" canArchive="false">
+    <toolbar>
+      <button name="viewMoveBtn" title="View entry" onClick="action-move-line-view-open-move"/>
+    </toolbar>
     <panel-include view="move-line-infos-form"/>
     <panel-include view="move-line-tabs-form"/>
     <panel name="movePanel" title="Move" sidebar="true">
@@ -897,6 +902,7 @@
   <action-view name="action-move-line-view-open-move" title="Account move"
     model="com.axelor.apps.account.db.Move">
     <view type="form" name="move-form"/>
+    <view type="grid" name="move-grid"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __repo__(MoveLine).find(id).move.id"/>
   </action-view>
@@ -931,6 +937,14 @@
     <view type="form" name="bank-reconciliation-line-form"/>
     <domain>self.moveLine = :_id</domain>
     <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-move-view-show-move-lines" title="Move lines"
+    model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>self.move.id = :_moveId</domain>
+    <context name="_moveId" expr="eval: id"/>
   </action-view>
 
   <search-filters name="move-line-filters"
