@@ -1,0 +1,6 @@
+---
+title: "PriceListLine : fixed translation issue on type select"
+module: axelor-base
+developer: |
+  Changed the typeSelect selection value from 'Addition' to 'Increase'
+  Fix the helper text and translation to make it coherent with the selection and title

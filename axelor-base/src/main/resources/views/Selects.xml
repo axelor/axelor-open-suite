@@ -158,7 +158,7 @@
 
   <selection name="base.price.list.line.type.select">
     <option value="1">Discount</option>
-    <option value="2">Additionnal</option>
+    <option value="2">Increase</option>
     <option value="3">Replace</option>
   </selection>
 
