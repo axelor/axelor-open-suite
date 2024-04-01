@@ -31,6 +31,7 @@ import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
@@ -106,7 +107,9 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
               @Override
               public void accept(T item) throws Exception {
                 try {
-                  File printFile = getPrintFile(template, new PrintingGenFactoryContext(item));
+                  File printFile =
+                      getPrintFile(
+                          template, new PrintingGenFactoryContext(EntityHelper.getEntity(item)));
                   if (!ReportSettings.FORMAT_PDF.equals(
                       FilenameUtils.getExtension(printFile.getName()))) {
                     isPDf.set(false);
