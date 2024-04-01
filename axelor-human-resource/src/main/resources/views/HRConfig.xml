@@ -136,9 +136,9 @@
         <field name="enableDPAE" widget="BooleanSwitch"/>
       </panel>
       <panel name="printingsPanel" title="Printings" colSpan="12">
-        <field name="employeeAnnualReportBirtTemplate"/>
-        <field name="employeePhoneBookBirtTemplate"/>
-        <field name="expenseReportBirtTemplate"/>
+        <field name="employeeAnnualReportPrintTemplate"/>
+        <field name="employeePhoneBookPrintTemplate"/>
+        <field name="expenseReportPrintTemplate"/>
       </panel>
     </panel-tabs>
 

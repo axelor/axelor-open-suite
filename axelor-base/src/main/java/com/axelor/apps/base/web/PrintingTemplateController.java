@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -169,7 +170,8 @@ public class PrintingTemplateController {
 
     String outputLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(printingTemplate, new PrintingGenFactoryContext(model));
+            .getPrintLink(
+                printingTemplate, new PrintingGenFactoryContext(EntityHelper.getEntity(model)));
     print(response, printingTemplate, outputLink);
   }
 
