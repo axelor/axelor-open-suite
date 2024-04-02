@@ -86,6 +86,7 @@
   </selection>
 
   <selection name="business.project.sale.order.line.invoicing.mode.select">
+    <option value="0">No billing</option>
     <option value="1">Directly</option>
     <option value="2">On delivery</option>
     <option value="3">On progress</option>
