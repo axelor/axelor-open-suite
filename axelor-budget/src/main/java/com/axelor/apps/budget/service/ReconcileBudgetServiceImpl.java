@@ -27,9 +27,10 @@ import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -46,6 +47,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymen
 import com.axelor.apps.account.service.reconcile.ReconcileSequenceService;
 import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -85,7 +87,9 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
+      InvoiceTermPfpService invoiceTermPfpService,
+      InvoiceTermFilterService invoiceTermFilterService,
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService) {
     super(
@@ -111,7 +115,9 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
         moveCreateService,
         moveLineCreateService,
         moveValidateService,
-        currencyScaleServiceAccount);
+        currencyScaleService,
+        invoiceTermPfpService,
+        invoiceTermFilterService);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;
   }

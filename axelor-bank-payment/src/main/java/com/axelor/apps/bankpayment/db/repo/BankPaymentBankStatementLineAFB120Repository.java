@@ -19,8 +19,8 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class BankPaymentBankStatementLineAFB120Repository
 
     json.put(
         "$currencyNumberOfDecimals",
-        Beans.get(CurrencyScaleServiceBankPayment.class).getScale(bankStatementLineAFB120));
+        Beans.get(CurrencyScaleService.class).getScale(bankStatementLineAFB120));
 
     return super.populate(json, context);
   }

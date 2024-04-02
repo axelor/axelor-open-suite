@@ -19,23 +19,22 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.bankpayment.db.BankStatementLine;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import java.util.Map;
 import javax.inject.Inject;
 
 public class ImportBankStatementLine {
 
   protected BankDetailsRepository bankDetailsRepository;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public ImportBankStatementLine(
-      BankDetailsRepository bankDetailsRepository,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      BankDetailsRepository bankDetailsRepository, CurrencyScaleService currencyScaleService) {
     this.bankDetailsRepository = bankDetailsRepository;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleService = currencyScaleService;
   }
 
   public Object importBankStatementLine(Object bean, Map<String, Object> values) {
@@ -50,7 +49,7 @@ public class ImportBankStatementLine {
 
     // Used for Bank reconcile process
     bankStatementLine.setAmountRemainToReconcile(
-        currencyScaleServiceBankPayment.getScaledValue(
+        currencyScaleService.getScaledValue(
             bankStatementLine, bankStatementLine.getDebit().add(bankStatementLine.getCredit())));
 
     return bankStatementLine;

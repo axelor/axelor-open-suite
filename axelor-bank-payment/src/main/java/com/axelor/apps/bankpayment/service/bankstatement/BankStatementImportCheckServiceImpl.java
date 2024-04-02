@@ -5,12 +5,12 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -21,7 +21,7 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
   protected BankStatementLineDeleteService bankStatementLineDeleteService;
   protected BankStatementRepository bankStatementRepository;
   protected BankStatementLineRepository bankStatementLineRepository;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankStatementImportCheckServiceImpl(
@@ -29,12 +29,12 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
       BankStatementLineDeleteService bankStatementLineDeleteService,
       BankStatementRepository bankStatementRepository,
       BankStatementLineRepository bankStatementLineRepository,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      CurrencyScaleService currencyScaleService) {
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankStatementLineDeleteService = bankStatementLineDeleteService;
     this.bankStatementRepository = bankStatementRepository;
     this.bankStatementLineRepository = bankStatementLineRepository;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -153,16 +153,16 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
   protected boolean isDeleteLines(
       BankStatementLine finalBankStatementLine, BankStatementLine initialBankStatementLine) {
     return ObjectUtils.notEmpty(finalBankStatementLine)
-        && (currencyScaleServiceBankPayment
+        && (currencyScaleService
                     .getScaledValue(initialBankStatementLine, initialBankStatementLine.getDebit())
                     .compareTo(
-                        currencyScaleServiceBankPayment.getScaledValue(
+                        currencyScaleService.getScaledValue(
                             finalBankStatementLine, finalBankStatementLine.getDebit()))
                 != 0
-            || currencyScaleServiceBankPayment
+            || currencyScaleService
                     .getScaledValue(initialBankStatementLine, initialBankStatementLine.getCredit())
                     .compareTo(
-                        currencyScaleServiceBankPayment.getScaledValue(
+                        currencyScaleService.getScaledValue(
                             finalBankStatementLine, finalBankStatementLine.getCredit()))
                 != 0);
   }

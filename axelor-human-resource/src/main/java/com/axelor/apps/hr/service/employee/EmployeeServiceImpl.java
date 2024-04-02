@@ -64,47 +64,59 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
-
-    try {
-      Period period =
-          Period.between(
-              employee.getSeniorityDate(),
-              refDate == null
-                  ? Beans.get(AppBaseService.class)
-                      .getTodayDate(
-                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                  : refDate);
-      return period.getYears();
-    } catch (IllegalArgumentException e) {
+    if (employee.getSeniorityDate() == null) {
       throw new AxelorException(
-          e.getCause(),
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE),
           employee.getName());
     }
+
+    Period period =
+        Period.between(
+            employee.getSeniorityDate(),
+            refDate == null
+                ? Beans.get(AppBaseService.class)
+                    .getTodayDate(
+                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                : refDate);
+    return period.getYears();
   }
 
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException {
-
-    try {
-      Period period =
-          Period.between(
-              employee.getBirthDate(),
-              refDate == null
-                  ? Beans.get(AppBaseService.class)
-                      .getTodayDate(
-                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                  : refDate);
-      return period.getYears();
-    } catch (IllegalArgumentException e) {
+    if (employee.getBirthDate() == null) {
       throw new AxelorException(
-          e.getCause(),
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_BIRTH_DATE),
           employee.getName());
     }
+
+    if (employee.getUser() == null) {
+      throw new AxelorException(
+          employee,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_USER),
+          employee.getName());
+    }
+
+    if (employee.getUser().getActiveCompany() == null) {
+      throw new AxelorException(
+          employee,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_ACTIVE_COMPANY),
+          employee.getName());
+    }
+
+    Period period =
+        Period.between(
+            employee.getBirthDate(),
+            refDate == null
+                ? Beans.get(AppBaseService.class)
+                    .getTodayDate(
+                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                : refDate);
+    return period.getYears();
   }
 
   @Override
@@ -291,7 +303,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     if (ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return employeeAnnualReportBirtTemplate;
   }
@@ -308,7 +320,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     if (ObjectUtils.isEmpty(employeePhoneBookBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return employeePhoneBookBirtTemplate;
   }
