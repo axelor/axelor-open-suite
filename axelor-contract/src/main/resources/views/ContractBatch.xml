@@ -13,9 +13,9 @@
 
   <form name="contract-batch-form" title="Contract batch"
     model="com.axelor.apps.contract.db.ContractBatch"
-    onNew="action-contract-batch-record-default-onnew">
+    onNew="action-contract-batch-record-default-onnew" onLoad="action-contract-batch-group-onload">
     <panel name="mainPanel">
-      <field name="actionSelect"/>
+      <field name="actionSelect" onChange="action-contract-batch-group-action-select-onchange"/>
       <field name="code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
@@ -38,6 +38,18 @@
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="batchBtn" title="Run batch"
         onClick="save,action-contract-method-run-batch" colSpan="12"/>
+
+    </panel>
+    <panel name="revaluatePanel" sidebar="true" hidden="true" showIf="actionSelect == 5">
+      <field name="$contractsToRevaluate" showTitle="false" readonly="true">
+        <viewer depends="$contractsToRevaluate">
+        <![CDATA[
+        <div style="padding-top: 2%; font-weight: 600" x-translate>Number of contracts to revaluate</div>
+        <div style="padding: 2% 0 5% 0; font-size: 22px; font-weight: 600; border-bottom: 1px solid #eee;">{{record.$contractsToRevaluate}}</div>
+        ]]>
+        </viewer>
+      </field>
+
     </panel>
   </form>
 
@@ -60,4 +72,19 @@
     <field name="invoicingDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
   </action-record>
+
+  <action-method name="action-contract-batch-method-count-contract-to-revaluate">
+    <call class="com.axelor.apps.contract.web.ContractBatchController"
+      method="countContractsToRevaluate"/>
+  </action-method>
+
+  <action-group name="action-contract-batch-group-action-select-onchange">
+    <action name="action-contract-batch-method-count-contract-to-revaluate"
+      if="actionSelect == __repo__(ContractBatch).REVALUATE_CONTRACTS"/>
+  </action-group>
+
+  <action-group name="action-contract-batch-group-onload">
+    <action name="action-contract-batch-method-count-contract-to-revaluate"
+      if="actionSelect == __repo__(ContractBatch).REVALUATE_CONTRACTS"/>
+  </action-group>
 </object-views>

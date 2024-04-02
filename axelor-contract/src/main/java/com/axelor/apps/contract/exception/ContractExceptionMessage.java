@@ -54,4 +54,7 @@ public final class ContractExceptionMessage {
 
   public static final String CONTRACT_MISSING_REVALUATION_PERIOD = /*$$(*/
       "Missing revaluation period for this contract." /*)*/;
+
+  public static final String CONTRACT_REVALUATION_NOT_NEEDED = /*$$(*/
+      "Revaluation not needed for the contract %s" /*)*/;
 }

@@ -27,6 +27,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.service.ContractRevaluationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -75,5 +76,11 @@ public class ContractBatchController {
     } finally {
       response.setReload(true);
     }
+  }
+
+  public void countContractsToRevaluate(ActionRequest request, ActionResponse response) {
+    response.setValue(
+        "$contractsToRevaluate",
+        Beans.get(ContractRevaluationService.class).getNumberOfContractsToRevaluateToday());
   }
 }
