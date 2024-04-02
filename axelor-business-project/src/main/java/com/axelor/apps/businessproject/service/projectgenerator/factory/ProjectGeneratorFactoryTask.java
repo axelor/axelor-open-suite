@@ -162,10 +162,10 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     } else {
       task.setToInvoice(project.getIsInvoicingTimesheet());
     }
-    if (saleOrderLine.getToInvoice()
-        && saleOrderLine.getInvoicingModeSelect()
-            == SaleOrderLineRepository.INVOICING_MODE_PROGRESS_BILLING) {
+    if (saleOrderLine.getInvoicingModeSelect()
+        == SaleOrderLineRepository.INVOICING_MODE_PROGRESS_BILLING) {
       task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
+      task.setToInvoice(true);
     }
 
     task.setTaskDate(startDate.toLocalDate());
