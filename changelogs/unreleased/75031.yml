@@ -1,9 +1,9 @@
 ---
-title: "Analytic : Fix amount computation when we change the analytic line percentage"
+title: "Analytic: fixed amount computation when we change the analytic line percentage."
 module: axelor-account
 developer: |
-  Removed getAnalyticAmountFromParent method from AnalyticLineService.
-  Removed calculateAmountWithPercentage method from AnalyticDistributionController.
-  Removed action-method : `action-method-calculate-amount-with-percentage-analytic-move-line` and replaced by existing action-method : `action-analytic-move-line-method-compute-amount`.
-  Added computeAmount method in AnalyticMoveLineService.
-  Updated parameters on getParentWithContext method from AnalyticControllerUtils.
+  "- Removed getAnalyticAmountFromParent method from AnalyticLineService.
+  - Removed calculateAmountWithPercentage method from AnalyticDistributionController.
+  - Removed action-method : `action-method-calculate-amount-with-percentage-analytic-move-line` and replaced by existing action-method : `action-analytic-move-line-method-compute-amount`.
+  - Added computeAmount method in AnalyticMoveLineService.
+  - Updated parameters on getParentWithContext method from AnalyticControllerUtils."
