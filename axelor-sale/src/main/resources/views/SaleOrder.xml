@@ -2376,6 +2376,12 @@
       expr="eval: !(__config__.app.getApp('sale')?.getIsEditableGridEnabled() &amp;&amp; __config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid())"/>
     <attribute for="saleOrderLineList.discountAmount" name="hidden"
       expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
+    <attribute for="expendableSaleOrderLineList.discountTypeSelect" name="hidden"
+      expr="eval: !(__config__.app.getApp('sale')?.getIsEditableGridEnabled() &amp;&amp; __config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid())"/>
+    <attribute for="expendableSaleOrderLineList.discountAmount" name="hidden"
+      expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
+
   </action-attrs>
+
 
 </object-views>
