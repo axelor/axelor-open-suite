@@ -1,5 +1,6 @@
 ---
-title: "Invoice: fixed printing of advance payment invoice in invoice report"
+title: "Invoice: fixed printing of advance payment invoice in invoice report."
 module: "axelor-account"
 developer: |
-  "Fixed to take into consideration all reconciles from payment move where advance invoice payment is used."
+  "- Updated Invoice.rptdesign file to fix an issue with multiple advance payment invoices. 
+   - On an advance invoice payment, 'Imputed by' field is now correctly filled with the reference to the payment on the invoice."
