@@ -126,6 +126,8 @@ import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQuery
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.AccountingBatchBankPaymentService;
+import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
+import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimbursementBankPayment;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment;
 import com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl;
@@ -262,6 +264,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankReconciliationLineRepository.class)
         .to(BankReconciliationLineManagementRepository.class);
     bind(BankStatementLineRepository.class).to(BankStatementLineManagementRepository.class);
+    bind(BatchBankPaymentService.class).to(BatchBankPaymentServiceImpl.class);
     bind(BankOrderValidationService.class).to(BankOrderValidationServiceImpl.class);
     bind(InvoicePaymentMoveCreateServiceImpl.class)
         .to(InvoicePaymentMoveCreateServiceBankPayImpl.class);

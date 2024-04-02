@@ -436,6 +436,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     if (move.getStatusSelect() != MoveRepository.STATUS_NEW) {
       moveAttrsService.getPfpAttrs(move, AuthUtils.getUser(), attrsMap);
     }
+    moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
 
     return attrsMap;
   }

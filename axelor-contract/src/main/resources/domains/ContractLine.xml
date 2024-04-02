@@ -80,19 +80,38 @@
 
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
-      return contractVersion != null && contractVersion.getContract() != null ? contractVersion.getContract().getCurrency() : null;
+		Currency currency = null;
+		if (contractVersion != null) {
+		    Contract contract = Optional.of(contractVersion).map(ContractVersion::getContract).orElse(contractVersion.getNextContract());
+		    if (contract != null) {
+		        currency = contract.getCompanyCurrency();
+		    }
+		}
+		return currency;
 	    ]]>
     </many-to-one>
     <many-to-one name="companyCurrency" transient="true"
       ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
-      return contractVersion != null && contractVersion.getContract() != null ? contractVersion.getContract().getCompanyCurrency() : null;
+		Currency companyCurrency = null;
+		if (contractVersion != null) {
+		    Contract contract = Optional.of(contractVersion).map(ContractVersion::getContract).orElse(contractVersion.getNextContract());
+		    if (contract != null) {
+		        companyCurrency = contract.getCompanyCurrency();
+		    }
+		}
+		return companyCurrency;
 	    ]]>
     </many-to-one>
 
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
 					   isConsumptionLine"/>
+
+    <extra-imports>
+      import java.util.Optional;
+    </extra-imports>
+
   </entity>
 
 </domain-models>
