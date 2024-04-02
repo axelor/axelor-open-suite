@@ -45,7 +45,8 @@
       <field name="eventSubjectGroovyFormula" showIf="enableEventCreation"/>
     </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
-      <field name="invoicingProjectAnnexBirtTemplate"/>
+      <field name="invoicingProjectAnnexPrintTemplate"/>
+      <field name="invoicingAnnexPrintTemplate"/>
     </panel>
 
     <panel-mail name="mailPanel">

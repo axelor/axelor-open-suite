@@ -60,8 +60,10 @@
     <many-to-one name="hoursUnit" ref="com.axelor.apps.base.db.Unit" title="Hours unit"/>
     <decimal name="defaultHoursADay" title="Default hours in a day" min="0"/>
 
-    <many-to-one name="invoicingProjectAnnexBirtTemplate"
-      title="Invoicing project annex template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="invoicingProjectAnnexPrintTemplate"
+      title="Invoicing project annex template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="invoicingAnnexPrintTemplate" title="Invoicing annex template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <track>
       <field name="productInvoicingProject" on="UPDATE"/>
@@ -83,7 +85,8 @@
       <field name="enableTaskTemplatesByProduct" on="UPDATE"/>
       <field name="automaticInvoicing" on="UPDATE"/>
       <field name="excludeTaskInvoicing" on="UPDATE"/>
-      <field name="invoicingProjectAnnexBirtTemplate" on="UPDATE"/>
+      <field name="invoicingProjectAnnexPrintTemplate" on="UPDATE"/>
+      <field name="invoicingAnnexPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>
