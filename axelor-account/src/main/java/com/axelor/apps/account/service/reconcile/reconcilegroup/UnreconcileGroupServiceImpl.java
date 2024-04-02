@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class UnReconcileGroupServiceImpl implements UnReconcileGroupService {
+public class UnreconcileGroupServiceImpl implements UnreconcileGroupService {
 
   protected ReconcileGroupFetchService reconcileGroupFetchService;
   protected AppBaseService appBaseService;
@@ -25,7 +25,7 @@ public class UnReconcileGroupServiceImpl implements UnReconcileGroupService {
   protected ReconcileGroupRepository reconcileGroupRepository;
 
   @Inject
-  public UnReconcileGroupServiceImpl(
+  public UnreconcileGroupServiceImpl(
       ReconcileGroupFetchService reconcileGroupFetchService,
       AppBaseService appBaseService,
       ReconcileGroupSequenceService reconcileGroupSequenceService,

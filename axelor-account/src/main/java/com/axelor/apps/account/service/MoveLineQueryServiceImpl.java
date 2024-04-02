@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.reconcile.UnReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
@@ -36,14 +36,14 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
   protected MoveLineQueryRepository moveLineQueryRepository;
   protected AppBaseService appBaseService;
   protected ReconcileRepository reconcileRepository;
-  protected UnReconcileService unReconcileService;
+  protected UnreconcileService unReconcileService;
 
   @Inject
   public MoveLineQueryServiceImpl(
       MoveLineQueryRepository moveLineQueryRepository,
       AppBaseService appBaseService,
       ReconcileRepository reconcileRepository,
-      UnReconcileService unReconcileService) {
+      UnreconcileService unReconcileService) {
     this.moveLineQueryRepository = moveLineQueryRepository;
     this.appBaseService = appBaseService;
     this.reconcileRepository = reconcileRepository;

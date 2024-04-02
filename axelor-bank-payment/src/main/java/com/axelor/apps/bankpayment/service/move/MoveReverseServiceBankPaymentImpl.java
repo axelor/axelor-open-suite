@@ -32,7 +32,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
-import com.axelor.apps.account.service.reconcile.UnReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
@@ -76,7 +76,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       BankReconciliationLineRepository bankReconciliationLineRepository,
       BankReconciliationLineService bankReconciliationLineService,
       CurrencyScaleService currencyScaleService,
-      UnReconcileService unReconcileService) {
+      UnreconcileService unReconcileService) {
     super(
         moveCreateService,
         reconcileService,

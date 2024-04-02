@@ -3,7 +3,7 @@ package com.axelor.apps.account.service.reconcile.reconcilegroup;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 
-public interface UnReconcileGroupService {
+public interface UnreconcileGroupService {
 
   /**
    * Remove a reconcile from a reconcile group then update the group.

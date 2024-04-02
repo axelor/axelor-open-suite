@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
-import com.axelor.apps.account.service.reconcile.UnReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
@@ -35,7 +35,7 @@ public class MoveCancelBankPaymentServiceImpl implements MoveCancelBankPaymentSe
   protected ReconcileService reconcileService;
   protected MoveReverseService moveReverseService;
   protected MoveValidateService moveValidateService;
-  protected UnReconcileService unReconcileService;
+  protected UnreconcileService unReconcileService;
 
   @Inject
   public MoveCancelBankPaymentServiceImpl(
@@ -43,7 +43,7 @@ public class MoveCancelBankPaymentServiceImpl implements MoveCancelBankPaymentSe
       ReconcileService reconcileService,
       MoveReverseService moveReverseService,
       MoveValidateService moveValidateService,
-      UnReconcileService unReconcileService) {
+      UnreconcileService unReconcileService) {
     this.appBaseService = appBaseService;
     this.reconcileService = reconcileService;
     this.moveReverseService = moveReverseService;

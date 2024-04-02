@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
-import com.axelor.apps.account.service.reconcile.UnReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
@@ -39,7 +39,7 @@ public class ReconcileController {
     Reconcile reconcile = request.getContext().asType(Reconcile.class);
 
     try {
-      Beans.get(UnReconcileService.class)
+      Beans.get(UnreconcileService.class)
           .unreconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()));
       response.setReload(true);
     } catch (Exception e) {

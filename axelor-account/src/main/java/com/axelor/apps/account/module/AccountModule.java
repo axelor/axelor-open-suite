@@ -374,14 +374,14 @@ import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileToolService;
 import com.axelor.apps.account.service.reconcile.ReconcileToolServiceImpl;
-import com.axelor.apps.account.service.reconcile.UnReconcileService;
-import com.axelor.apps.account.service.reconcile.UnReconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupToolService;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupToolServiceImpl;
-import com.axelor.apps.account.service.reconcile.reconcilegroup.UnReconcileGroupService;
-import com.axelor.apps.account.service.reconcile.reconcilegroup.UnReconcileGroupServiceImpl;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.UnreconcileGroupService;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.UnreconcileGroupServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupFetchService;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupFetchServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupLetterService;
@@ -879,9 +879,9 @@ public class AccountModule extends AxelorModule {
 
     bind(ReconcileToolService.class).to(ReconcileToolServiceImpl.class);
 
-    bind(UnReconcileGroupService.class).to(UnReconcileGroupServiceImpl.class);
+    bind(UnreconcileGroupService.class).to(UnreconcileGroupServiceImpl.class);
 
-    bind(UnReconcileService.class).to(UnReconcileServiceImpl.class);
+    bind(UnreconcileService.class).to(UnreconcileServiceImpl.class);
 
     bind(ReconcileCheckService.class).to(ReconcileCheckServiceImpl.class);
 
