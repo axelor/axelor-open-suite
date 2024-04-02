@@ -403,10 +403,20 @@ public class InvoiceController {
               ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
               : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
 
+      String viewTitle = AccountExceptionMessage.INVOICE_4_INVOICE_REFUND;
+      if (refund.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND) {
+        viewTitle = AccountExceptionMessage.INVOICE_4_REFUND;
+      } else if (refund.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+        viewTitle = AccountExceptionMessage.INVOICE_4_REFUND_ADVANCE_PAYMENT;
+      } else if (refund.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+        viewTitle = AccountExceptionMessage.INVOICE_4_ADVANCE_PAYMENT_REFUND;
+      }
+
       response.setView(
-          ActionView.define(
-                  String.format(
-                      I18n.get(AccountExceptionMessage.INVOICE_4), invoice.getInvoiceId()))
+          ActionView.define(String.format(I18n.get(viewTitle), invoice.getInvoiceId()))
               .model(Invoice.class.getName())
               .add("form", "invoice-form")
               .add("grid", "invoice-grid")
@@ -1290,6 +1300,43 @@ public class InvoiceController {
           .setInvoiceLineTaxScale(invoice, attrsMap, "invoiceLineTaxList.");
 
       response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageRefundFields(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    if (invoice == null) {
+      return;
+    }
+
+    String createRefundBtn = "";
+    String refundInvoiceList = "";
+    String originalInvoice = "";
+
+    try {
+      switch (invoice.getOperationSubTypeSelect()) {
+        case InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND:
+          createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_INVOICE;
+          refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_INVOICE;
+          originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_INVOICE;
+          break;
+        case InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND:
+          createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND;
+          refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_ADVANCE_PAYMENT_REFUND;
+          originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND;
+          break;
+        default:
+          createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_CLASSIC_REFUND;
+          refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_CLASSIC_REFUND;
+          originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_CLASSIC_REFUND;
+      }
+
+      response.setAttr("createRefundBtn", "title", I18n.get(createRefundBtn));
+      response.setAttr("refundInvoiceList", "title", I18n.get(refundInvoiceList));
+      response.setAttr("originalInvoice", "title", I18n.get(originalInvoice));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

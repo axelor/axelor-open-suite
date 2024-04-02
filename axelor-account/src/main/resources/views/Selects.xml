@@ -349,6 +349,7 @@
     <option value="6">Advance Payment Imputation</option>
     <option value="7">Irrecoverable Debt</option>
     <option value="8">Doubtful credit</option>
+    <option value="9">Refund Imputation</option>
   </selection>
 
   <selection name="invoice.payment.status.select">

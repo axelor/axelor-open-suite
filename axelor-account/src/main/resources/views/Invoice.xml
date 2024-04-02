@@ -1528,7 +1528,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
-    <action name="action-invoice-attrs-change-create-refund-title"/>
+    <action name="action-invoice-method-manage-refund-titles"/>
     <action name="action-invoice-record-printing-fields"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
@@ -1553,7 +1553,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-printing-fields"/>
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
-    <action name="action-invoice-attrs-change-create-refund-title"/>
+    <action name="action-invoice-method-manage-refund-titles"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
@@ -1840,7 +1840,7 @@ InvoiceSet.length > 0))"
       if="operationTypeSelect == 3"/>
     <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [10,11]"
       if="operationTypeSelect == 2 || operationTypeSelect == 4"/>
-    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: null"
+    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2,3]"
       if="operationTypeSelect == 1"/>
   </action-attrs>
 
@@ -2080,17 +2080,6 @@ InvoiceSet.length > 0))"
     <attribute name="hidden"
       expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || !__config__.app.getApp('invoice')?.getIsVentilationSkipped()"
       for="validateAndVentilateBtn"/>
-  </action-attrs>
-
-  <action-attrs name="action-invoice-attrs-change-create-refund-title">
-    <attribute name="title" for="createRefundBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Generate invoice')"
-      if="(operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND)
-        &amp;&amp; operationSubTypeSelect == __repo__(Invoice).OPERATION_SUB_TYPE_STANDARD_REFUND"/>
-    <attribute name="title" for="createRefundBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Generate advance payment')"
-      if="(operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND)
-        &amp;&amp; operationSubTypeSelect == __repo__(Invoice).OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-invoice-other-reason">
@@ -2455,6 +2444,10 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-set-invoice-line-list-scale">
     <call class="com.axelor.apps.account.web.InvoiceController" method="setInvoiceLinesScale"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-manage-refund-titles">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="manageRefundFields"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

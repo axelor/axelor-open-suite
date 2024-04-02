@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -53,15 +54,17 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
       ReconcileService reconcileService,
-      BankOrderService bankOrderService,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoicePaymentToolService invoicePaymentToolService,
+      InvoiceTermService invoiceTermService,
+      BankOrderService bankOrderService) {
 
     super(
         accountConfigService,
         invoicePaymentRepository,
         moveCancelService,
         reconcileService,
-        invoicePaymentToolService);
+        invoicePaymentToolService,
+        invoiceTermService);
 
     this.bankOrderService = bankOrderService;
   }
