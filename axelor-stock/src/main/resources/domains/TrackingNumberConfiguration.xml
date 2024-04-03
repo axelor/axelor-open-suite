@@ -52,6 +52,7 @@
 
     <many-to-one name="trackingNumberConfigurationProfile"
       ref="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile" title="Profile"/>
+    <boolean name="isDimensional" title="Dimensional"/>
 
     <extra-code>
    		<![CDATA[

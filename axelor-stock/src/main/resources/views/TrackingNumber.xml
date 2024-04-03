@@ -37,8 +37,7 @@
         domain="self.dtype = 'Product'" onChange="action-tracking-number-group-on-change-product"/>
       <field name="product.trackingNumberConfiguration.hasWarranty" hidden="true"/>
       <field name="product.trackingNumberConfiguration.isPerishable" hidden="true"/>
-      <field name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
-        hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isDimensional" hidden="true"/>
       <field name="hasWarranty" hideIf="!product.trackingNumberConfiguration.hasWarranty"/>
       <field name="warrantyExpirationDate" readonly="false" hideIf="!hasWarranty"/>
       <field name="isPerishable" hideIf="!product.trackingNumberConfiguration.isPerishable"/>
@@ -51,19 +50,17 @@
       <field name="note" colSpan="12"/>
     </panel>
     <panel name="dimensionsPanel" title="Dimension"
-      showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile">
+      showIf="product.trackingNumberConfiguration.isDimensional">
       <field name="dimension0" colSpan="6"/>
       <field name="dimension1" colSpan="6"/>
       <field name="dimension2" colSpan="6"/>
       <field name="dimension3" colSpan="6"/>
     </panel>
-    <panel name="massPanel"
-      showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile">
+    <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional">
       <field name="unitMass"/>
       <field name="metricMass"/>
       <field name="mass"/>
-      <field name="volume"
-        requiredIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
+      <field name="volume" requiredIf="product.trackingNumberConfiguration.isDimensional"
         onChange="action-tracking-number-validate-volume-change"/>
       <field name="originalVolume" x-dirty="false" hidden="true" type="decimal"/>
     </panel>
@@ -84,8 +81,7 @@
         domain="self.dtype = 'Product'" readonlyIf="$popup() || id != null"/>
       <field name="product.trackingNumberConfiguration.hasWarranty" hidden="true"/>
       <field name="product.trackingNumberConfiguration.isPerishable" hidden="true"/>
-      <field name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
-        hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isDimensional" hidden="true"/>
       <field name="hasWarranty" hideIf="!product.trackingNumberConfiguration.hasWarranty"/>
       <field name="warrantyExpirationDate" readonly="false" hideIf="!hasWarranty"/>
       <field name="isPerishable" hideIf="!product.trackingNumberConfiguration.isPerishable"/>
@@ -98,19 +94,17 @@
       <field name="note" colSpan="12"/>
 
       <panel name="dimensionsPanel" title="Dimension"
-        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile">
+        showIf="product.trackingNumberConfiguration.isDimensional">
         <field name="dimension0" colSpan="6"/>
         <field name="dimension1" colSpan="6"/>
         <field name="dimension2" colSpan="6"/>
         <field name="dimension3" colSpan="6"/>
       </panel>
-      <panel name="massPanel"
-        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile">
+      <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional">
         <field name="unitMass"/>
         <field name="metricMass"/>
         <field name="mass"/>
-        <field name="volume"
-          requiredIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
+        <field name="volume" requiredIf="product.trackingNumberConfiguration.isDimensionale"
           onChange="action-tracking-number-validate-volume-change"/>
         <field name="originalVolume" x-dirty="false" hidden="true" type="decimal"/>
       </panel>
