@@ -421,7 +421,8 @@
         <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
           if-module="axelor-business-project"
-          onChange="action-sale-order-line-validate-check-coefficient-config"/>
+          onChange="action-sale-order-line-record-set-to-invoice,action-sale-order-line-validate-check-coefficient-config"/>
+        <field name="toInvoice" colSpan="3" hidden="true"/>
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
           action="action-sale-order-line-view-project-tasks" colSpan="12"/>
       </panel>
@@ -1075,5 +1076,10 @@
   <action-attrs name="action-sale-order-line-attrs-reset-invoicing-mode">
     <attribute for="invoicingModeSelect" name="value" expr="eval: null"/>
   </action-attrs>
+
+  <action-record name="action-sale-order-line-record-set-to-invoice"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="toInvoice" expr="true" if="invoicingModeSelect != 0"/>
+  </action-record>
 
 </object-views>
