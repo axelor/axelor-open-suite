@@ -34,7 +34,6 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.schema.actions.ActionExport;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Inject;
@@ -42,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -59,7 +57,6 @@ import org.apache.commons.io.IOUtils;
 
 public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintService {
 
-  private static final String ZIP = "zip";
   protected AppBaseService appBaseService;
 
   @Inject
@@ -84,8 +81,15 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   @Override
   public File getPrintFile(PrintingTemplate template, PrintingGenFactoryContext context)
       throws AxelorException {
+    return getPrintFile(template, context, getOutputFileName(template));
+  }
+
+  @Override
+  public File getPrintFile(
+      PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
+      throws AxelorException {
     List<TemplatePrint> prints = getPrintList(template, context);
-    return getPrintFile(prints, getOutputFileName(template), isPdfFormat(prints));
+    return getPrintFile(prints, outputFileName, isPdfFormat(prints));
   }
 
   @Override
@@ -163,30 +167,12 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
 
   protected String mergeToFileLink(
       List<File> printFiles, boolean isPdfOutputFormat, String fileName) throws AxelorException {
-    String fileLink = null;
-    try {
-      if (CollectionUtils.isEmpty(printFiles)) {
-        return null;
-      }
-      if (isPdfOutputFormat) {
-        fileLink =
-            PdfHelper.mergePdfToFileLink(printFiles, fileName + "." + ReportSettings.FORMAT_PDF);
-      } else {
-        if (printFiles.size() == 1) {
-          Path output = printFiles.listIterator().next().toPath();
-          String name = FilenameUtils.getName(output.toString());
-          moveToExportDir(name, output);
-          return name;
-        }
-        fileLink = getZipFileLink(fileName, printFiles);
-      }
-    } catch (IOException e) {
-      throw new AxelorException(
-          e,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    if (CollectionUtils.isEmpty(printFiles)) {
+      return null;
     }
-    return fileLink;
+    File file = mergeToFile(printFiles, isPdfOutputFormat, fileName);
+    return PdfHelper.getFileLinkFromPdfFile(
+        file, fileName + "." + FilenameUtils.getExtension(file.getName()));
   }
 
   protected File mergeToFile(
@@ -227,13 +213,6 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
         .allMatch(ReportSettings.FORMAT_PDF::equals);
   }
 
-  protected String getZipFileLink(String zipFileName, List<File> fileList) throws IOException {
-    Path zip = createZip(zipFileName, fileList);
-    String outFileName = String.format("%s.%s", zipFileName, ZIP);
-    moveToExportDir(outFileName, zip);
-    return outFileName;
-  }
-
   protected Path createZip(String zipFileName, List<File> fileList) throws IOException {
     if (CollectionUtils.isEmpty(fileList)) {
       return null;
@@ -247,11 +226,6 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
       }
     }
     return zipFile;
-  }
-
-  protected void moveToExportDir(String fileName, Path filePath) throws IOException {
-    Path exportDirPath = Paths.get(ActionExport.getExportPath().getAbsolutePath(), fileName);
-    Files.move(filePath, exportDirPath, StandardCopyOption.REPLACE_EXISTING);
   }
 
   protected String getOutputFileName(PrintingTemplate template) {
