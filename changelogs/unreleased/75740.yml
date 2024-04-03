@@ -1,4 +1,4 @@
-title: "SaleOrderLine: Fixed a error that occured when changing project of a line"
+title: "Sale order line: fixed an error that occured when changing project of a line."
 module: axelor-sale
 developer: |
   "Removed action action-sale-order-line-record-progress"
