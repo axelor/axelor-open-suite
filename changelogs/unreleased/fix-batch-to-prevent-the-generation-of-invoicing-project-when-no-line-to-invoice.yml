@@ -1,0 +1,3 @@
+---
+title: "Invoicing project: fixed batch to prevent the generation of invoicing business project when there is nothing to invoice."
+module: axelor-business-project
