@@ -437,11 +437,12 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   public void addThirdPartyPayerPartnerReadonly(
       Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean isReadonly =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getInvoiceTermList)
-            .filter(CollectionUtils::isNotEmpty)
-            .flatMap(Collection::stream)
-            .allMatch(InvoiceTerm::getIsPaid);
+        CollectionUtils.isNotEmpty(move.getMoveLineList())
+            && move.getMoveLineList().stream()
+                .map(MoveLine::getInvoiceTermList)
+                .filter(CollectionUtils::isNotEmpty)
+                .flatMap(Collection::stream)
+                .allMatch(InvoiceTerm::getIsPaid);
 
     this.addAttr("thirdPartyPayerPartner", "readonly", isReadonly, attrsMap);
   }

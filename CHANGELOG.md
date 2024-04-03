@@ -1,3 +1,83 @@
+## [8.0.3] (2024-03-21)
+
+### Fixes
+#### Base
+
+* Webapp: Updated Axelor Open Platform dependency to 7.0.4.
+* App: removed warning during app installation.
+* Sale order/Purchase order: fixed number of decimals display in price and totals.
+* Fixed wrong french translation of 'Application' (was 'Domaine d'applicabilité').
+* Language: fixed an issue where getting default language did not use the configuration 'application.locale'.
+* App Base: fixed wrong currency conversion line in demo data.
+* Price list: check that the product is purchasable on purchase price lists.
+
+#### Account
+
+* Accounting batch : fix result move functional origin in closure/open batch.
+* Move: fixed mass entry technical origin missing in Move printing.
+* Payment voucher: fixed paid amount selecting overdue move line.
+* Accounting batch: fixed the block customer message when no result.
+* Partner/AccountingSituation: added error label when multiple accounting situation for a company and a partner.
+* Reconcile manager: fixed move lines selection.
+* Accounting batch: fixed currency amounts on result moves in opening/closure.
+* Invoice payment: fixed technical error when setting currency to null.
+* Financial discount: fixed technical error linked to invoice terms.
+* FEC Export: fixed technical error when journal is missing.
+
+#### Budget
+
+* Budget template: fixed database error related to scaling.
+* Purchase order line: fixed wrong budget distribution when invoicing multiple purchase order lines.
+
+#### Contract
+
+* Contract template: fixed error when opening an existing contract template or saving a new one.
+* Contract: fixed technical error when creating lines without saving.
+* Contract line: fixed analytic lines creation using amount in company currency.
+* Contract: fixed prorata invoicing when invoicing period is smaller than the invoicing frequency.
+
+#### CRM
+
+* Event: fixed an error preventing the computation of the event duration.
+* Tour: hide validate button when everything is validated.
+
+#### Helpdesk
+
+* SLA: added missing translations inside 'reach in' in readonly.
+* Ticket dashboard: fixed an issue preventing ticket dashboard loading.
+
+#### Human Resource
+
+* Expense: fixed internal error preventing employee selection.
+
+#### Production
+
+* Manufacturing order: fixed a bug where missing quantities were not displayed.
+* Prod process line: added missing filter on type for work centers.
+* Manufacturing order: fixed error on change of client partner for manuf orders without related sale orders.
+* MPS: fixed quantity not editable on MPS proposal.
+* Product: fixed an issue where 'economic manuf order qty' field was displayed twice.
+* Product: fixed cost sheet group display on product form on semi-finished products.
+
+#### Stock
+
+* Inventory: fixed type in inventory demo data.
+
+#### Supplier Management
+
+* Supplier request: fixed 'JNPE' error on partner selection in Supplier request form.
+
+
+### Developer
+
+#### Contract
+
+A new transient field `companyCurrency` was added in `ContractTemplate` so the model can implement the `Currenciable` interface.
+
+#### Production
+
+Moved `com.axelor.apps.production.service.ProdProductProductionRepository` to `com.axelor.apps.production.db.repo.ProdProductProductionRepository`
+
 ## [8.0.2] (2024-03-07)
 
 ### Fixes
@@ -323,6 +403,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.3]: https://github.com/axelor/axelor-open-suite/compare/v8.0.2...v8.0.3
 [8.0.2]: https://github.com/axelor/axelor-open-suite/compare/v8.0.1...v8.0.2
 [8.0.1]: https://github.com/axelor/axelor-open-suite/compare/v8.0.0...v8.0.1
 [8.0.0]: https://github.com/axelor/axelor-open-suite/compare/v7.2.7...v8.0.0

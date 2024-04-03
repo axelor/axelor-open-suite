@@ -31,8 +31,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -58,6 +58,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderToolService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -94,8 +95,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderRepository bankOrderRepo;
   protected CurrencyService currencyService;
-  protected AppAccountService appAccountService;
   protected DateService dateService;
+  protected BankOrderValidationService bankOrderValidationService;
 
   @Inject
   public PaymentSessionValidateBankPaymentServiceImpl(
@@ -120,15 +121,16 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
+      InvoiceTermFilterService invoiceTermFilterService,
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
-      AppAccountService appAccountService,
       InvoicePaymentRepository invoicePaymentRepo,
-      DateService dateService) {
+      DateService dateService,
+      BankOrderValidationService bankOrderValidationService) {
     super(
         appBaseService,
         moveCreateService,
@@ -151,15 +153,16 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         moveLineInvoiceTermService,
         invoiceTermFinancialDiscountService,
         moveLineFinancialDiscountService,
-        financialDiscountService);
+        financialDiscountService,
+        invoiceTermFilterService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderRepo = bankOrderRepo;
     this.currencyService = currencyService;
-    this.appAccountService = appAccountService;
     this.dateService = dateService;
+    this.bankOrderValidationService = bankOrderValidationService;
   }
 
   @Override
@@ -193,7 +196,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
-          bankOrderService.confirm(bankOrder);
+          bankOrderValidationService.confirm(bankOrder);
         } catch (JAXBException | IOException | DatatypeConfigurationException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());

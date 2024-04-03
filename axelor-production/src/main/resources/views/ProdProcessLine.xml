@@ -39,12 +39,14 @@
           readonlyIf="!prodProcess.prodProcessLinesOutsourcable || outsourcable" colSpan="4"/>
         <field name="outsourcable"
           readonlyIf="!prodProcess.prodProcessLinesOutsourcable || outsourcing" colSpan="4"/>
+        <field name="outsourcingDuration" showIf="outsourcing || outsourcable" colSpan="4"
+          widget="duration" x-big="true" x-seconds="true"/>
         <field name="outsourcingPartner"
-          showIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable" colSpan="4"
+          showIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable" colSpan="6"
           domain="self.isSubcontractor = true"
           requiredIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable"/>
         <field name="generatePurchaseOrderOnMoPlanning"
-          showIf="(outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing" colSpan="4"/>
+          showIf="(outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing" colSpan="6"/>
         <panel-related name="generatedPurchaseOrderProductPanel"
           field="generatedPurchaseOrderProductSet"
           showIf="((outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing) &amp;&amp; generatePurchaseOrderOnMoPlanning"
@@ -56,7 +58,8 @@
       <field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
       <field name="stockLocation"/>
-      <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
+      <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12"
+        hideIf="outsourcing">
         <field name="minCapacityPerCycle" colSpan="4"/>
         <field name="maxCapacityPerCycle" colSpan="4"/>
         <field name="durationPerCycleDecimal" colSpan="6"

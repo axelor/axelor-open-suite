@@ -332,6 +332,7 @@
     <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
     <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
+    <action name="action-purchase-order-line-record-init-dummy-fields"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-onload">
@@ -613,5 +614,12 @@
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
       method="computeAnalyticDistribution" if="__config__.app.isApp('supplychain')"/>
   </action-method>
+
+  <action-record name="action-purchase-order-line-record-init-dummy-fields"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <field name="$nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-record>
 
 </object-views>

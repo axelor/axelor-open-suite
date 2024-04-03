@@ -58,6 +58,7 @@
     <integer name="hrCostTypeSelect" title="Cost type"
       selection="iproduction.work.center.cost.type.select"/>
     <decimal name="hrCostAmount" title="Cost (W.T.)"/>
+    <long name="outsourcingDuration" title="Outsourcing duration" nullable="true"/>
 
     <track>
       <field name="prodProcess"/>

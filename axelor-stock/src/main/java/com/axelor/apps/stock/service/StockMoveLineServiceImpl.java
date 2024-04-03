@@ -330,7 +330,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           minQty,
           trackingNumberService.getTrackingNumber(
               product,
-              qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
               stockMove.getOrigin(),
@@ -348,7 +347,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
               product,
-              qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
               stockMove.getOrigin(),
@@ -821,22 +819,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
-
-      if (trackingNumber == null) {
+      if (trackingNumber == null
+          || !trackingNumber.getCheckExpirationDateAtStockMoveRealization()) {
         continue;
       }
-
       Product product = trackingNumber.getProduct();
 
-      if (product == null || !product.getCheckExpirationDateAtStockMoveRealization()) {
-        continue;
-      }
-
-      if (product.getHasWarranty()
+      if (trackingNumber.getHasWarranty()
               && trackingNumber
                   .getWarrantyExpirationDate()
                   .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))
-          || product.getIsPerishable()
+          || trackingNumber.getIsPerishable()
               && trackingNumber
                   .getPerishableExpirationDate()
                   .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))) {
@@ -1318,11 +1311,22 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       if (trackingNumber == null) {
         trackingNumber = new TrackingNumber();
-        trackingNumber.setCounter(counter);
         trackingNumber.setTrackingNumberSeq(trackingNumberItem.get("trackingNumberSeq").toString());
+        boolean hasWarranty =
+            trackingNumberItem.get("hasWarranty") != null
+                && Boolean.parseBoolean(trackingNumberItem.get("hasWarranty").toString());
+        trackingNumber.setHasWarranty(hasWarranty);
         if (trackingNumberItem.get("warrantyExpirationDate") != null) {
           trackingNumber.setWarrantyExpirationDate(
               LocalDate.parse(trackingNumberItem.get("warrantyExpirationDate").toString()));
+        }
+        boolean isPerishable =
+            trackingNumberItem.get("isPerishable") != null
+                && Boolean.parseBoolean(trackingNumberItem.get("isPerishable").toString());
+        trackingNumber.setIsPerishable(isPerishable);
+        if (trackingNumberItem.get("perishableExpirationDate") != null) {
+          trackingNumber.setPerishableExpirationDate(
+              LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
         }
         if (trackingNumberItem.get("origin") != null) {
           trackingNumber.setOrigin(trackingNumberItem.get("origin").toString());

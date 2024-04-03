@@ -29,23 +29,18 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
-import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -57,7 +52,6 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
@@ -89,45 +83,36 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
   protected AppAccountService appAccountService;
-  protected InvoiceVisibilityService invoiceVisibilityService;
-  protected AccountConfigService accountConfigService;
-  protected ReconcileService reconcileService;
-  protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected JournalService journalService;
   protected UserRepository userRepo;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected PfpService pfpService;
   protected CurrencyScaleService currencyScaleService;
   protected DMSFileRepository DMSFileRepo;
+  protected InvoiceTermPaymentService invoiceTermPaymentService;
 
   @Inject
   public InvoiceTermServiceImpl(
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
-      InvoiceVisibilityService invoiceVisibilityService,
-      AccountConfigService accountConfigService,
-      ReconcileService reconcileService,
-      InvoicePaymentCreateService invoicePaymentCreateService,
       JournalService journalService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       UserRepository userRepo,
       PfpService pfpService,
       CurrencyScaleService currencyScaleService,
-      DMSFileRepository DMSFileRepo) {
+      DMSFileRepository DMSFileRepo,
+      InvoiceTermPaymentService invoiceTermPaymentService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
-    this.invoiceVisibilityService = invoiceVisibilityService;
-    this.accountConfigService = accountConfigService;
-    this.reconcileService = reconcileService;
-    this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.userRepo = userRepo;
     this.journalService = journalService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.pfpService = pfpService;
     this.currencyScaleService = currencyScaleService;
     this.DMSFileRepo = DMSFileRepo;
+    this.invoiceTermPaymentService = invoiceTermPaymentService;
   }
 
   @Override
@@ -582,69 +567,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException {
-    boolean pfpCondition = invoiceVisibilityService.getPfpCondition(invoice);
-
-    return buildUnpaidInvoiceTermsQuery(invoice, pfpCondition);
-  }
-
-  @Override
-  public List<InvoiceTerm> getUnpaidInvoiceTermsWithoutPfpCheck(Invoice invoice)
-      throws AxelorException {
-
-    return buildUnpaidInvoiceTermsQuery(invoice, false);
-  }
-
-  protected List<InvoiceTerm> buildUnpaidInvoiceTermsQuery(Invoice invoice, boolean pfpCondition) {
-    String queryStr =
-        "self.invoice = :invoice AND (self.isPaid IS NOT TRUE OR self.amountRemaining > 0)";
-
-    if (pfpCondition) {
-      queryStr =
-          queryStr
-              + " AND self.pfpValidateStatusSelect IN (:noPfp, :validated, :partiallyValidated)";
-    }
-
-    Query<InvoiceTerm> invoiceTermQuery =
-        invoiceTermRepo.all().filter(queryStr).bind("invoice", invoice);
-
-    if (pfpCondition) {
-      invoiceTermQuery
-          .bind("noPfp", InvoiceTermRepository.PFP_STATUS_NO_PFP)
-          .bind("validated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
-          .bind("partiallyValidated", InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
-    }
-
-    return this.filterNotAwaitingPayment(invoiceTermQuery.order("dueDate").fetch());
-  }
-
-  @Override
-  public List<InvoiceTerm> filterInvoiceTermsByHoldBack(List<InvoiceTerm> invoiceTerms) {
-
-    if (CollectionUtils.isEmpty(invoiceTerms)) {
-      return invoiceTerms;
-    }
-
-    boolean isFirstHoldBack = invoiceTerms.get(0).getIsHoldBack();
-    invoiceTerms.removeIf(it -> it.getIsHoldBack() != isFirstHoldBack);
-
-    return invoiceTerms;
-  }
-
-  @Override
-  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException {
-
-    return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTerms(invoice));
-  }
-
-  @Override
-  public List<InvoiceTerm> getUnpaidInvoiceTermsFilteredWithoutPfpCheck(Invoice invoice)
-      throws AxelorException {
-
-    return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTermsWithoutPfpCheck(invoice));
-  }
-
-  @Override
   public LocalDate getLatestInvoiceTermDueDate(Invoice invoice) {
 
     List<InvoiceTerm> invoiceTerms = invoice.getInvoiceTermList();
@@ -854,26 +776,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .getTechnicalTypeSelect()
           == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE;
     }
-  }
-
-  @Override
-  public BigDecimal getAmountRemaining(
-      InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency) {
-    BigDecimal amountRemaining;
-
-    boolean applyFinancialDiscount =
-        invoiceTerm.getApplyFinancialDiscount()
-            && invoiceTerm.getFinancialDiscountDeadlineDate() != null
-            && date != null
-            && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date);
-    if (applyFinancialDiscount) {
-      amountRemaining = invoiceTerm.getAmountRemainingAfterFinDiscount();
-    } else if (isCompanyCurrency) {
-      amountRemaining = invoiceTerm.getCompanyAmountRemaining();
-    } else {
-      amountRemaining = invoiceTerm.getAmountRemaining();
-    }
-    return amountRemaining;
   }
 
   @Override
@@ -1273,32 +1175,28 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public InvoiceTerm updateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTerm,
+  public List<InvoiceTermPayment> updateInvoiceTerms(
+      List<InvoiceTerm> invoiceTermList,
+      InvoicePayment invoicePayment,
       BigDecimal amount,
-      Reconcile reconcile,
-      Move move,
-      PaymentSession paymentSession,
-      boolean isRefund)
+      Reconcile reconcile)
       throws AxelorException {
+    List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
+    if (invoiceTermList != null) {
+      invoiceTermPaymentList =
+          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+              invoicePayment, invoiceTermList, amount, reconcile.getAmount());
 
-    if (invoiceTerm.getInvoice() != null) {
-      InvoicePayment invoicePayment =
-          invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-      invoicePayment.setReconcile(reconcile);
+      for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
+        this.updateInvoiceTermsPaidAmount(
+            invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
 
-      List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
-
-      invoiceTermList.add(invoiceTerm);
-
-      reconcileService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
-    } else {
-      invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
+        if (invoicePayment == null) {
+          invoiceTermPayment.addReconcileListItem(reconcile);
+        }
+      }
     }
-
-    invoiceTerm = updateInvoiceTermsAmountsSessionPart(invoiceTerm, isRefund);
-
-    return invoiceTerm;
+    return invoiceTermPaymentList;
   }
 
   protected boolean getIsSignedNegative(InvoiceTerm invoiceTerm) {
@@ -1341,7 +1239,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return isSignedNegative;
   }
 
-  protected InvoiceTerm updateInvoiceTermsAmountsSessionPart(
+  @Override
+  public InvoiceTerm updateInvoiceTermsAmountsSessionPart(
       InvoiceTerm invoiceTerm, boolean isRefund) {
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
 
@@ -1373,41 +1272,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     return invoiceTerm;
-  }
-
-  public List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream().filter(this::isNotAwaitingPayment).collect(Collectors.toList());
-  }
-
-  public boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm) {
-    if (invoiceTerm == null) {
-      return false;
-    } else if (invoiceTerm.getInvoice() != null) {
-      Invoice invoice = invoiceTerm.getInvoice();
-
-      if (CollectionUtils.isNotEmpty(invoice.getInvoicePaymentList())) {
-        return invoice.getInvoicePaymentList().stream()
-            .filter(it -> it.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING)
-            .map(InvoicePayment::getInvoiceTermPaymentList)
-            .flatMap(Collection::stream)
-            .map(InvoiceTermPayment::getInvoiceTerm)
-            .noneMatch(it -> it.getId().equals(invoiceTerm.getId()));
-      }
-    }
-
-    return true;
-  }
-
-  public boolean isEnoughAmountToPay(
-      List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date) {
-    BigDecimal amountToPay =
-        invoiceTermList.stream()
-            .filter(this::isNotReadonly)
-            .map(it -> this.getAmountRemaining(it, date, false))
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-
-    return amountToPay.compareTo(amount) >= 0;
   }
 
   @Override
@@ -1550,19 +1414,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setBankDetails(move.getPartnerBankDetails());
   }
 
-  @Override
-  public boolean isNotReadonly(InvoiceTerm invoiceTerm) {
-    return this.isNotReadonlyExceptPfp(invoiceTerm)
-        && invoiceTerm.getPfpValidateStatusSelect() <= InvoiceTermRepository.PFP_STATUS_AWAITING;
-  }
-
-  @Override
-  public boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm) {
-    return !invoiceTerm.getIsPaid()
-        && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0
-        && this.isNotAwaitingPayment(invoiceTerm);
-  }
-
   public LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate) {
     if (invoiceTermList == null) {
       return defaultDate;
@@ -1657,46 +1508,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
-      MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
-        && moveLine.getAmountRemaining().abs().compareTo(thresholdDistanceFromRegulation) <= 0) {
-      BigDecimal reconcileAmount = this.getReconcileAmount(moveLine);
-      List<InvoiceTerm> unpaidInvoiceTermList =
-          moveLine.getInvoiceTermList().stream()
-              .filter(it -> !it.getIsPaid())
-              .collect(Collectors.toList());
-
-      for (InvoiceTerm invoiceTerm : unpaidInvoiceTermList) {
-        reconcileAmount = reconcileAmount.subtract(invoiceTerm.getCompanyAmountRemaining());
-
-        if (reconcileAmount.signum() <= 0) {
-          return unpaidInvoiceTermList.indexOf(invoiceTerm) != unpaidInvoiceTermList.size() - 1;
-        }
-      }
-    }
-
-    return true;
-  }
-
-  protected BigDecimal getReconcileAmount(MoveLine moveLine) {
-    List<Reconcile> reconcileList =
-        moveLine.getDebit().signum() > 0
-            ? moveLine.getDebitReconcileList()
-            : moveLine.getCreditReconcileList();
-
-    if (reconcileList == null) {
-      return BigDecimal.ZERO;
-    }
-
-    return reconcileList.stream()
-        .sorted(Comparator.comparing(Reconcile::getCreatedOn))
-        .reduce((first, second) -> second)
-        .map(Reconcile::getAmount)
-        .orElse(BigDecimal.ZERO);
-  }
-
-  @Override
   public BigDecimal adjustAmountInCompanyCurrency(
       List<InvoiceTerm> invoiceTermList,
       BigDecimal companyAmountRemaining,
@@ -1720,11 +1531,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal diff = moveLineAmountRemaining.subtract(invoiceTermAmountRemaining);
 
     return amountToPayInCompanyCurrency.add(diff).setScale(companyScale, RoundingMode.HALF_UP);
-  }
-
-  @Override
-  public boolean isPartiallyPaid(InvoiceTerm invoiceTerm) {
-    return invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0;
   }
 
   @Override

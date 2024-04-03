@@ -10,7 +10,7 @@
       <insert position="after">
         <button name="cancelBillOfExchange" title="Cancel bill of exchange" colSpan="3"
           onClick="save, action-method-invoice-cancel-bill-of-exchange"
-          showIf="lcrAccounted &amp;&amp; oldMove &amp;&amp; amountRemaining &gt; 0"/>
+          showIf="lcrAccounted &amp;&amp; oldMove &amp;&amp; amountRemaining &gt; 0 &amp;&amp; !hasPendingPayments"/>
       </insert>
     </extend>
   </form>

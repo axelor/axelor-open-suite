@@ -40,12 +40,20 @@ import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.contract.service.ContractVersionServiceImpl;
+import com.axelor.apps.contract.service.ContractYearEndBonusService;
+import com.axelor.apps.contract.service.ContractYearEndBonusServiceImpl;
 import com.axelor.apps.contract.service.IndexRevaluationService;
 import com.axelor.apps.contract.service.IndexRevaluationServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
+import com.axelor.apps.contract.service.InvoiceLinePricingService;
+import com.axelor.apps.contract.service.InvoiceLinePricingServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsServiceImpl;
+import com.axelor.apps.contract.service.pricing.ContractPricingService;
+import com.axelor.apps.contract.service.pricing.ContractPricingServiceImpl;
+import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
+import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
@@ -71,5 +79,9 @@ public class ContractModule extends AxelorModule {
     bind(ContractLineViewService.class).to(ContractLineViewServiceImpl.class);
     bind(ConsumptionLineRepository.class).to(ConsumptionLineManagementRepository.class);
     bind(ContractLineAttrsService.class).to(ContractLineAttrsServiceImpl.class);
+    bind(ContractLineRecordSetService.class).to(ContractLineRecordSetServiceImpl.class);
+    bind(InvoiceLinePricingService.class).to(InvoiceLinePricingServiceImpl.class);
+    bind(ContractPricingService.class).to(ContractPricingServiceImpl.class);
+    bind(ContractYearEndBonusService.class).to(ContractYearEndBonusServiceImpl.class);
   }
 }
