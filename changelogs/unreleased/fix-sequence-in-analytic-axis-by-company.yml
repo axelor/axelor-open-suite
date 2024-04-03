@@ -1,0 +1,8 @@
+---
+title: "Analytic axis by company: fixed analytic axis display error."
+module: "axelor-account"
+developer: |
+  "In accounting configuration, the field `analyticAxisByCompanyList` had previously a sequence starting with 0. However, since the upgrade of the framework to v7, the sequence of this list now starts with 1. 
+  The processes that previously assumed a starting sequence of 0 will now be adjusted to start from 1 in order to align with the behavior of AOP.
+  
+  If you use this configuration, after this patch please make sure that this sequence is starting with 1 in your database."
