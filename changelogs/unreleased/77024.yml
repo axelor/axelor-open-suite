@@ -1,0 +1,2 @@
+title: "GlobalBudget : fix structure validation when the global budget have no budget"
+module: axelor-budget
