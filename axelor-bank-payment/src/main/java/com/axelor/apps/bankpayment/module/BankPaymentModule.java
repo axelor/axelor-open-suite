@@ -53,8 +53,6 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
@@ -119,6 +117,8 @@ import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQuery
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.AccountingBatchBankPaymentService;
+import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
+import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimbursementBankPayment;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment;
 import com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl;
@@ -249,9 +249,9 @@ public class BankPaymentModule extends AxelorModule {
         .to(BankReconciliationReconciliationServiceImpl.class);
     bind(BankReconciliationSelectedLineComputationService.class)
         .to(BankReconciliationSelectedLineComputationServiceImpl.class);
-    bind(CurrencyScaleServiceBankPayment.class).to(CurrencyScaleServiceBankPaymentImpl.class);
     bind(BankReconciliationLineRepository.class)
         .to(BankReconciliationLineManagementRepository.class);
     bind(BankStatementLineRepository.class).to(BankStatementLineManagementRepository.class);
+    bind(BatchBankPaymentService.class).to(BatchBankPaymentServiceImpl.class);
   }
 }

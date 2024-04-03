@@ -22,7 +22,8 @@
     <panel name="namePanel">
       <field name="code"/>
       <field name="name"/>
-      <field name="product" canNew="true" canEdit="true"/>
+      <field name="product" canNew="true" canEdit="true"
+        onChange="action-bill-of-material-import-line-compute-is-created-product"/>
       <field name="quantity" colSpan="2"/>
       <field name="unit" colSpan="2"/>
       <field name="isCreatedProduct" colSpan="2" readonly="true"/>

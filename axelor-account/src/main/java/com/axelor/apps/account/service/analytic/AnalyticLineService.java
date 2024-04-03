@@ -20,12 +20,10 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticJournal;
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,8 +34,6 @@ public interface AnalyticLineService {
   LocalDate getDate(AnalyticLine line);
 
   Currency getCompanyCurrency(AnalyticLine analyticLine);
-
-  BigDecimal getAnalyticAmountFromParent(AnalyticLine line, AnalyticMoveLine analyticMoveLine);
 
   List<Long> getAxisDomains(AnalyticLine line, Company company, int position)
       throws AxelorException;

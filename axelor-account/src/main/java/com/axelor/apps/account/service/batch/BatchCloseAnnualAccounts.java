@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -50,7 +49,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -222,7 +220,14 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
 
       try {
         if (accountingBatch.getGenerateResultMove() && batch.getDone() > 0) {
-          resultMove = this.generateResultMove(resultMoveAmount);
+          Company company = companyRepo.find(accountingBatch.getCompany().getId());
+          accountingCloseAnnualService.generateResultMove(
+              company,
+              accountingBatch.getYear().getReportedBalanceDate(),
+              accountingBatch.getResultMoveDescription(),
+              accountingBatch.getBankDetails(),
+              accountingBatch.getSimulateGeneratedMoves(),
+              resultMoveAmount);
         }
       } catch (AxelorException e) {
         TraceBackService.trace(new AxelorException(e, e.getCategory(), null, batch.getId()));
@@ -450,104 +455,24 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                       + query
                       + " AND self.account.accountType.technicalTypeSelect = 'income'",
                   BigDecimal.class);
-      if (qIncome.getSingleResult() != null) {
-        Query qCharge =
-            JPA.em()
-                .createQuery(
-                    "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
-                        + query
-                        + " AND self.account.accountType.technicalTypeSelect = 'charge'",
-                    BigDecimal.class);
-        if (qCharge.getSingleResult() != null) {
-          return ((BigDecimal) qIncome.getSingleResult())
-              .subtract((BigDecimal) qCharge.getSingleResult());
-        }
-        return (BigDecimal) qIncome.getSingleResult();
-      }
+      Query qCharge =
+          JPA.em()
+              .createQuery(
+                  "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
+                      + query
+                      + " AND self.account.accountType.technicalTypeSelect = 'charge'",
+                  BigDecimal.class);
+
+      BigDecimal incomes = this.extractAmountFromQuery(qIncome);
+      BigDecimal charges = this.extractAmountFromQuery(qCharge);
+
+      return incomes.subtract(charges);
     }
     return BigDecimal.ZERO;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  protected Move generateResultMove(BigDecimal amount) throws AxelorException {
-    Company company = companyRepo.find(accountingBatch.getCompany().getId());
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    LocalDate date = accountingBatch.getYear().getReportedBalanceDate();
-    String description = accountingBatch.getResultMoveDescription();
-    Journal journal = accountConfigService.getReportedBalanceJournal(accountConfig);
-    Move move =
-        moveCreateService.createMove(
-            journal,
-            company,
-            company.getCurrency(),
-            null,
-            date,
-            date,
-            null,
-            null,
-            null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE,
-            false,
-            false,
-            false,
-            null,
-            description,
-            accountingBatch.getBankDetails());
-
-    Account accountCredit = null;
-    Account accountDebit = null;
-    if (amount.compareTo(BigDecimal.ZERO) < 0) {
-      accountCredit = accountConfig.getYearOpeningAccount();
-      accountDebit = accountConfig.getResultLossAccount();
-    } else {
-      accountCredit = accountConfig.getResultProfitAccount();
-      accountDebit = accountConfig.getYearOpeningAccount();
-    }
-    MoveLine credit =
-        new MoveLine(
-            move,
-            null,
-            accountCredit,
-            date,
-            date,
-            1,
-            BigDecimal.ZERO,
-            amount.abs(),
-            description,
-            null,
-            BigDecimal.ONE,
-            amount.abs(),
-            date);
-    MoveLine debit =
-        new MoveLine(
-            move,
-            null,
-            accountDebit,
-            date,
-            date,
-            2,
-            amount.abs(),
-            BigDecimal.ZERO,
-            description,
-            null,
-            BigDecimal.ONE,
-            amount.abs(),
-            date);
-    move.addMoveLineListItem(credit);
-    move.addMoveLineListItem(debit);
-
-    moveRepo.save(move);
-
-    if (accountConfig.getIsActivateSimulatedMove()
-        && accountingBatch.getSimulateGeneratedMoves()
-        && journal.getAuthorizeSimulatedMove()) {
-      moveSimulateService.simulate(move);
-    } else {
-      moveValidateService.accounting(move);
-    }
-
-    return move;
+  protected BigDecimal extractAmountFromQuery(Query query) {
+    return query.getSingleResult() != null ? (BigDecimal) query.getSingleResult() : BigDecimal.ZERO;
   }
 
   class AccountByPartner {

@@ -1,3 +1,198 @@
+## [8.0.3] (2024-03-21)
+
+### Fixes
+#### Base
+
+* Webapp: Updated Axelor Open Platform dependency to 7.0.4.
+* App: removed warning during app installation.
+* Sale order/Purchase order: fixed number of decimals display in price and totals.
+* Fixed wrong french translation of 'Application' (was 'Domaine d'applicabilité').
+* Language: fixed an issue where getting default language did not use the configuration 'application.locale'.
+* App Base: fixed wrong currency conversion line in demo data.
+* Price list: check that the product is purchasable on purchase price lists.
+
+#### Account
+
+* Accounting batch : fix result move functional origin in closure/open batch.
+* Move: fixed mass entry technical origin missing in Move printing.
+* Payment voucher: fixed paid amount selecting overdue move line.
+* Accounting batch: fixed the block customer message when no result.
+* Partner/AccountingSituation: added error label when multiple accounting situation for a company and a partner.
+* Reconcile manager: fixed move lines selection.
+* Accounting batch: fixed currency amounts on result moves in opening/closure.
+* Invoice payment: fixed technical error when setting currency to null.
+* Financial discount: fixed technical error linked to invoice terms.
+* FEC Export: fixed technical error when journal is missing.
+
+#### Budget
+
+* Budget template: fixed database error related to scaling.
+* Purchase order line: fixed wrong budget distribution when invoicing multiple purchase order lines.
+
+#### Contract
+
+* Contract template: fixed error when opening an existing contract template or saving a new one.
+* Contract: fixed technical error when creating lines without saving.
+* Contract line: fixed analytic lines creation using amount in company currency.
+* Contract: fixed prorata invoicing when invoicing period is smaller than the invoicing frequency.
+
+#### CRM
+
+* Event: fixed an error preventing the computation of the event duration.
+* Tour: hide validate button when everything is validated.
+
+#### Helpdesk
+
+* SLA: added missing translations inside 'reach in' in readonly.
+* Ticket dashboard: fixed an issue preventing ticket dashboard loading.
+
+#### Human Resource
+
+* Expense: fixed internal error preventing employee selection.
+
+#### Production
+
+* Manufacturing order: fixed a bug where missing quantities were not displayed.
+* Prod process line: added missing filter on type for work centers.
+* Manufacturing order: fixed error on change of client partner for manuf orders without related sale orders.
+* MPS: fixed quantity not editable on MPS proposal.
+* Product: fixed an issue where 'economic manuf order qty' field was displayed twice.
+* Product: fixed cost sheet group display on product form on semi-finished products.
+
+#### Stock
+
+* Inventory: fixed type in inventory demo data.
+
+#### Supplier Management
+
+* Supplier request: fixed 'JNPE' error on partner selection in Supplier request form.
+
+
+### Developer
+
+#### Contract
+
+A new transient field `companyCurrency` was added in `ContractTemplate` so the model can implement the `Currenciable` interface.
+
+#### Production
+
+Moved `com.axelor.apps.production.service.ProdProductProductionRepository` to `com.axelor.apps.production.db.repo.ProdProductProductionRepository`
+
+## [8.0.2] (2024-03-07)
+
+### Fixes
+
+* The format of this file has been updated: the fixes are now separated by modules to improve readability, and a new `developer` section was added with technical information that could be useful for developers working on modules on top of Axelor Open Suite.
+
+#### Base
+
+* Import configuration: fixed issue preventing from using zip file to import.
+* Studio Apps: fixed regression where some apps name were not translated.
+* Translation import/export: fixed display issue when an error occurs during import.
+* ABC class: fixed a bug where everything was classed in the first class.
+
+#### Account
+
+* Account clearance: fixed issue when opening a generated move line from account clearance.
+* Doubtful batch: fixed NPE errors on doubtful customer batch.
+* Invoice payment: added missing french translation for error message.
+* Invoice payment: fixed financial discount management when VAT is exempted.
+* Move: fixed technical error in move reverse on original move unreconcile.
+* Period: fixed an issue when checking user permission where the roles in user's group were not checked.
+* Account: manage dynamically decimals depending on the currency in Accounting reports.
+* Reconcile: fixed passed for payment check at reconcile confirmation.
+* Reconcile: fixed selected amount with negative values.
+* Fixed asset: fixed disposal wizard view and disposal sale move.
+* Move: fixed missing label in accounting move printing.
+* Reconcile generator: fixed scale management.
+
+#### CRM
+
+* CRM App: fixed small typos in english titles.
+* Tour: reset 'validated' status on lines after copying a tour.
+* Lead: fixed anomaly which was forcing a lead to have a company.
+
+#### Human Resource
+
+* Timesheet line: improved timesheet line creation process.
+* Leave request: fixed Payroll input display so it is visible for HR manager only.
+* Leave reason: fixed demo data.
+* Payroll preparation: fixed 'the exported file is not found' error on payroll generation when the export dir is different from upload dir.
+
+#### Mobile Settings
+
+* Mobile dashboard: deleting a mobile dashboard will now correctly delete related mobile dashboard lines.
+
+#### Production
+
+* Sale order: fixed a NPE that occured at the manuf order generation.
+* Bill of materials: fixed a bug where imported BOMs were linked to components.
+* Manufacturing order: fixed an issue when the products to consume are by operation where the product list to consume was not filled when planning.
+* Manufacturing order: real process are now correctly computed in cost sheet.
+* Manufacturing order: fixed a bug a producible quantity was not correctly computed when a component was not available.
+
+#### Sale
+
+* Sale order: improve performance on sale order save.
+
+#### Stock
+
+* Stock move: fixed 'concurrent modification' error preventing from planning a stock move.
+
+#### Supply Chain
+
+* Stock move: fixed a bug that prevented to totally invoice a stock move when partial invoicing for out stock move was activated.
+* Supplychain configuration: fixed default value for "Generation of out stock move for products".
+* Sale order: fixed a bug where sale orders waiting for stock move were not displayed.
+
+
+### Developer
+
+#### Base
+
+* CurrencyScale : Technical rework for CurrencyScale services
+
+Created an interface called "Currenciable" with the following public methods who take as parameter in most of cases a Currenciable object :
+
+- getScaledValue
+- getCompanyScaledValue
+- getScale
+- getCompanyScale
+- getCurrencyScale
+- getCompanyCurrencyScale
+- isGreaterThan
+- equals
+
+Removed CurrencyScaleServiceAccount, CurrencyScaleServiceBankPayment, CurrencyScaleServiceBudget, CurrencyScaleServiceContract, CurrencyScaleServicePurchase, CurrencyScaleServiceSale.
+And replace those services by CurrencyService call.
+
+Implement Currenciable interface into those models:
+
+- axelor-account -> AnalyticMoveLine, FixedAsset, FixedAssetLine, Invoice, InvoiceLine, InvoicePayment, InvoiceTerm, Move, MoveLine, PaymentVoucher
+- axelor-bank-payment -> BankReconciliation, BankReconciliationLine, BankStatementLine
+- axelor-budget -> Budget, BudgetDistribution, BudgetLevel, BudgetScenario, GlobalBudget
+- axelor-contract -> Contract, ContractLine
+- axelor-purchase -> PurchaseOrder, PurchaseOrderLine
+- axelor-sale -> SaleOrder, SaleOrderLine
+
+#### Account
+
+- Removal of `action-method-account-clearance-show-move-lines` and creation of `action-account-clearance-view-move-lines` for its replacement
+- `showAccountClearanceMoveLines` has been removed from `AccountClearanceController`
+
+---
+
+- Changed FixedAssetGroupService.getDisposalWizardValuesMap parameters: fixedAsset,disposalTypeSelect -> disposal, fixedAsset, disposalTypeSelect
+
+#### CRM
+
+- In `lead-form-view`, removed `required` from `enterpriseName`
+
+#### Human Resource
+
+- Moved every timesheet line creation methods into TimesheetLineCreationService. This service was added in the constructor of several other services.
+- Create TimesheetLineCreationProjectServiceImpl to override a creation method.
+
 ## [8.0.1] (2024-02-22)
 
 #### Fixed
@@ -208,5 +403,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.3]: https://github.com/axelor/axelor-open-suite/compare/v8.0.2...v8.0.3
+[8.0.2]: https://github.com/axelor/axelor-open-suite/compare/v8.0.1...v8.0.2
 [8.0.1]: https://github.com/axelor/axelor-open-suite/compare/v8.0.0...v8.0.1
 [8.0.0]: https://github.com/axelor/axelor-open-suite/compare/v7.2.7...v8.0.0

@@ -431,12 +431,7 @@ public class InvoiceTermController {
 
         if (moveLine != null && moveLine.getFinancialDiscount() != null) {
           Beans.get(InvoiceTermFinancialDiscountService.class)
-              .computeFinancialDiscount(
-                  invoiceTerm,
-                  moveLine.getCredit().max(moveLine.getDebit()),
-                  moveLine.getFinancialDiscount(),
-                  moveLine.getFinancialDiscountTotalAmount(),
-                  moveLine.getRemainingAmountAfterFinDiscount());
+              .computeFinancialDiscount(invoiceTerm, moveLine);
         }
       }
 

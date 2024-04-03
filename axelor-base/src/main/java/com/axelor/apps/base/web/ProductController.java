@@ -71,7 +71,7 @@ public class ProductController {
 
       Product newProduct = request.getContext().asType(Product.class);
 
-      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed())
+      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed() || !newProduct.getPurchasable())
           && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
         response.setAlert(I18n.get("Warning, this product is present in at least one price list"));
       }

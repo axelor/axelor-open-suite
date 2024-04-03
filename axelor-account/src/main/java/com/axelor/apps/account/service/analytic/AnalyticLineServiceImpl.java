@@ -28,18 +28,17 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +56,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   protected AccountService accountService;
   protected ListHelper listHelper;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public AnalyticLineServiceImpl(
@@ -68,7 +67,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AccountService accountService,
       ListHelper listHelper,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
     this.analyticToolService = analyticToolService;
@@ -76,7 +75,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     this.accountService = accountService;
     this.listHelper = listHelper;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -110,22 +109,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       return appBaseService.getTodayDate(analyticLine.getAccount().getCompany());
     }
     return appBaseService.getTodayDate(null);
-  }
-
-  @Override
-  public BigDecimal getAnalyticAmountFromParent(
-      AnalyticLine parent, AnalyticMoveLine analyticMoveLine) {
-
-    if (parent != null && parent.getLineAmount().signum() > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(parent.getLineAmount())
-          .divide(
-              new BigDecimal(100),
-              currencyScaleServiceAccount.getScale(analyticMoveLine),
-              RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
   }
 
   @Override
