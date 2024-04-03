@@ -6,7 +6,7 @@
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
     <toolbar>
-      <button name="printStockMoveGridBtn" title="Print StockMove(s)"
+      <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
         onClick="action-stock-move-group-merge"/>
@@ -54,7 +54,7 @@
   <grid name="stock-move-out-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
-      <button name="printStockMoveGridBtn" title="Print StockMove(s)"
+      <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
         onClick="action-print-picking-stock-move" icon="fa-print"/>
@@ -122,7 +122,7 @@
   <grid name="stock-move-out-availability-req-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
-      <button name="printStockMoveGridBtn" title="Print StockMove(s)"
+      <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
         onClick="action-print-picking-stock-move" icon="fa-print"/>
@@ -163,7 +163,7 @@
   <grid name="stock-move-in-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
-      <button name="printStockMoveGridBtn" title="Print StockMove(s)"
+      <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
         onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
@@ -222,6 +222,9 @@
     width="large" onLoad="action-group-stock-stockmove-onload"
     onNew="action-group-stock-stockmove-onnew"
     onSave="action-stock-move-group-save-and-update-stocks">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <menubar>
       <menu name="stockMoveReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printInternalMoveItem" title="Print Internal Move"
@@ -1562,8 +1565,7 @@
 
   <action-group name="action-stock-move-group-print-stock-move">
     <action name="action-stock-move-validate-printing-settings"/>
-    <action name="action-method-print-birt" if="id"/>
-    <action name="action-method-print-birt-list" if="!id"/>
+    <action name="action-group-print-template"/>
   </action-group>
 
   <action-validate name="action-stock-move-validate-printing-settings">
