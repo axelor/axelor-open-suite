@@ -133,10 +133,10 @@
       <field name="displayPriceOnPrinting" widget="boolean-switch"/>
     </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
-      <field name="pickingStockMoveBirtTemplate"/>
-      <field name="conformityCertificateBirtTemplate"/>
-      <field name="inventoryBirtTemplate"/>
-      <field name="stockLocationBirtTemplate"/>
+      <field name="pickingStockMovePrintTemplate"/>
+      <field name="conformityCertificatePrintTemplate"/>
+      <field name="inventoryPrintTemplate"/>
+      <field name="stockLocationPrintTemplate"/>
     </panel>
 
     <panel-mail name="mailPanel">
