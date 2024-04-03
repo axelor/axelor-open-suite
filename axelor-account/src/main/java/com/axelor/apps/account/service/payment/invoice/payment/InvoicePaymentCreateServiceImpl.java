@@ -41,7 +41,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -63,7 +62,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
-  protected CurrencyService currencyService;
   protected AppBaseService appBaseService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
@@ -75,7 +73,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
-      CurrencyService currencyService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
@@ -85,7 +82,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
-    this.currencyService = currencyService;
     this.appBaseService = appBaseService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
@@ -562,5 +558,34 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
 
     return invoiceToPay;
+  }
+
+  @Override
+  public InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
+      throws AxelorException {
+
+    if (invoiceTerm.getInvoice() != null) {
+      InvoicePayment invoicePayment =
+          this.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
+      invoicePayment.setReconcile(reconcile);
+
+      List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
+
+      invoiceTermList.add(invoiceTerm);
+
+      invoiceTermService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+    } else {
+      invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
+    }
+
+    invoiceTerm = invoiceTermService.updateInvoiceTermsAmountsSessionPart(invoiceTerm, isRefund);
+
+    return invoiceTerm;
   }
 }
