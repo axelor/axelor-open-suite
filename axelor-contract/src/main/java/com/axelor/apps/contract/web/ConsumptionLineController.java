@@ -51,8 +51,6 @@ public class ConsumptionLineController {
             .map(String::valueOf)
             .map(BigDecimal::new);
     if (consumptionLine.getProduct() == null
-        || contract.getInvoicePeriodStartDate() == null
-        || contract.getInvoicePeriodEndDate() == null
         || contract.getCurrentContractVersion().getContractLineList().isEmpty()) {
       return;
     }

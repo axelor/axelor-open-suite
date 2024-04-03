@@ -983,7 +983,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                         && consumptionLine
                             .getProduct()
                             .getId()
-                            .equals(consumptionLineCtx.getProduct().getId()))
+                            .equals(consumptionLineCtx.getProduct().getId())
+                        && !consumptionLine.getIsInvoiced())
             .map(ConsumptionLine::getQty)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -993,6 +994,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   private boolean dateInPeriod(LocalDate date, LocalDate startDate, LocalDate endDate) {
-    return date.compareTo(startDate) >= 0 && date.compareTo(endDate) <= 0;
+    if (startDate == null || endDate == null) {
+      return true;
+    }
+    return !date.isBefore(startDate) && !date.isAfter(endDate);
   }
 }
