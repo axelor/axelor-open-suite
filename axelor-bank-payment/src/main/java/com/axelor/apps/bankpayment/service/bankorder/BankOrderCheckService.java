@@ -21,6 +21,4 @@ public interface BankOrderCheckService {
 
   void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
       throws AxelorException;
-
-  void checkPreconditions(BankOrderLine bankOrderLine) throws AxelorException;
 }
