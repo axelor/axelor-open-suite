@@ -39,7 +39,7 @@ public class BankOrderCheckServiceImpl implements BankOrderCheckService {
     }
   }
 
-  public void validateBankOrderLines(
+  protected void validateBankOrderLines(
       List<BankOrderLine> bankOrderLines, int orderType, BigDecimal arithmeticTotal)
       throws AxelorException {
     BigDecimal totalAmount = BigDecimal.ZERO;
@@ -237,7 +237,7 @@ public class BankOrderCheckServiceImpl implements BankOrderCheckService {
     }
   }
 
-  public void checkPreconditions(BankOrderLine bankOrderLine) throws AxelorException {
+  protected void checkPreconditions(BankOrderLine bankOrderLine) throws AxelorException {
 
     if (bankOrderLine.getBankOrder().getPartnerTypeSelect()
         == BankOrderRepository.PARTNER_TYPE_COMPANY) {

@@ -103,6 +103,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createMoveForInvoicePayment(InvoicePayment invoicePayment)
       throws AxelorException {
@@ -216,7 +217,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     return invoicePayment;
   }
 
-  public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
+  protected String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
     String origin = invoicePayment.getInvoice().getInvoiceId();
     if (invoicePayment.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_CHEQUE
         || invoicePayment.getPaymentMode().getTypeSelect()
@@ -238,7 +239,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     return origin;
   }
 
-  public Move fillMove(
+  protected Move fillMove(
       InvoicePayment invoicePayment, Move move, Account customerAccount, BigDecimal maxAmount)
       throws AxelorException {
 
@@ -345,6 +346,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
         && appAccountService.getAppAccount().getManageFinancialDiscount();
   }
 
+  @Override
   public void createInvoicePaymentMove(InvoicePayment invoicePayment)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
     Invoice invoice = invoicePayment.getInvoice();

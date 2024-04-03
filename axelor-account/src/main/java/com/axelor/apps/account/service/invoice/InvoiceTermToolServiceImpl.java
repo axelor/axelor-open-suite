@@ -26,6 +26,7 @@ public class InvoiceTermToolServiceImpl implements InvoiceTermToolService {
     return invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0;
   }
 
+  @Override
   public boolean isEnoughAmountToPay(
       List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date) {
     BigDecimal amountToPay =

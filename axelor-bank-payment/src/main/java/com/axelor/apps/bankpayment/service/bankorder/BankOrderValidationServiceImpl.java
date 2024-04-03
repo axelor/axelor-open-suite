@@ -78,6 +78,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
     this.paymentSessionValidateService = paymentSessionValidateService;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {

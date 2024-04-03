@@ -85,6 +85,7 @@ public class ReconcileGroupToolServiceImpl implements ReconcileGroupToolService 
    * @param reconcileList a list of reconcile.
    * @throws AxelorException if the reconcile list is empty.
    */
+  @Override
   public void validate(ReconcileGroup reconcileGroup, List<Reconcile> reconcileList)
       throws AxelorException {
     if (CollectionUtils.isEmpty(reconcileList)) {
