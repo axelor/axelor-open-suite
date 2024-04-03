@@ -20,7 +20,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -42,6 +41,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoiceTermPaymentRepository invoiceTermPaymentRepository;
+  protected InvoiceRepository invoiceRepository;
 
   @Inject
   public ReconcileInvoiceTermComputationServiceImpl(
@@ -52,7 +52,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
       InvoiceTermService invoiceTermService,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoicePaymentRepository invoicePaymentRepository,
-      InvoiceTermPaymentRepository invoiceTermPaymentRepository) {
+      InvoiceTermPaymentRepository invoiceTermPaymentRepository,
+      InvoiceRepository invoiceRepository) {
     this.reconcileCheckService = reconcileCheckService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermFilterService = invoiceTermFilterService;
@@ -61,12 +62,12 @@ public class ReconcileInvoiceTermComputationServiceImpl
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoiceTermPaymentRepository = invoiceTermPaymentRepository;
+    this.invoiceRepository = invoiceRepository;
   }
 
   @Override
   public void updatePayments(Reconcile reconcile, boolean updateInvoiceTerms)
       throws AxelorException {
-    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();

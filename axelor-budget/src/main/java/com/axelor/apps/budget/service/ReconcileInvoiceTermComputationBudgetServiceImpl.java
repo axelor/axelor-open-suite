@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -53,6 +54,7 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
       InvoicePaymentToolService invoicePaymentToolService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
+      InvoiceRepository invoiceRepository,
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService,
       ReconcileToolBudgetService reconcileToolBudgetService) {
@@ -64,7 +66,8 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
         invoiceTermService,
         invoicePaymentToolService,
         invoicePaymentRepository,
-        invoiceTermPaymentRepository);
+        invoiceTermPaymentRepository,
+        invoiceRepository);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;
     this.reconcileToolBudgetService = reconcileToolBudgetService;
