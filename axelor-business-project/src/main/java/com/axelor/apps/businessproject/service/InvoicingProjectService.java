@@ -63,6 +63,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -548,6 +549,20 @@ public class InvoicingProjectService {
       return null;
     }
     InvoicingProject invoicingProject = new InvoicingProject();
+
+    clearLines(invoicingProject);
+    setLines(invoicingProject, project, 0);
+
+    if (invoicingProject.getSaleOrderLineSet().isEmpty()
+        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
+        && invoicingProject.getLogTimesSet().isEmpty()
+        && invoicingProject.getExpenseLineSet().isEmpty()
+        && invoicingProject.getProjectTaskSet().isEmpty()) {
+
+      return invoicingProject;
+    }
+
+    project = JPA.find(Project.class, project.getId());
     invoicingProject.setProject(project);
 
     if (consolidatePhaseSelect
@@ -560,19 +575,6 @@ public class InvoicingProjectService {
         == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
-    }
-    invoicingProject = invoicingProjectRepo.save(invoicingProject);
-
-    clearLines(invoicingProject);
-    setLines(invoicingProject, project, 0);
-
-    if (invoicingProject.getSaleOrderLineSet().isEmpty()
-        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
-        && invoicingProject.getLogTimesSet().isEmpty()
-        && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()) {
-
-      return invoicingProject;
     }
     return invoicingProjectRepo.save(invoicingProject);
   }
