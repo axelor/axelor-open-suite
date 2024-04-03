@@ -121,7 +121,7 @@ public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundServ
             refund, paymentAmount, InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION);
     InvoicePayment invoicePayment =
         createInvoicePaymentWithImputation(
-            advancePayment, paymentAmount, InvoicePaymentRepository.TYPE_REFUND_INVOICE);
+            advancePayment, paymentAmount, InvoicePaymentRepository.TYPE_REFUND_IMPUTATION);
     refundPayment.setDescription(advancePayment.getInvoiceId());
     refundPayment.setImputedBy(invoicePayment);
     refundPayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);

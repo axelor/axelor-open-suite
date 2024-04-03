@@ -60,6 +60,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     this.moveCancelService = moveCancelService;
     this.reconcileService = reconcileService;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -101,14 +102,14 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
         Arrays.asList(
             InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION,
             InvoicePaymentRepository.TYPE_REFUND_IMPUTATION);
+    InvoicePayment imputedBy = invoicePayment.getImputedBy();
     if (imputationType.contains(invoicePayment.getTypeSelect())
-        && invoicePayment.getImputedBy() != null
-        && imputationType.contains(invoicePayment.getImputedBy().getTypeSelect())) {
+        && imputedBy != null
+        && imputationType.contains(imputedBy.getTypeSelect())) {
       invoiceTermService.updateInvoiceTermsAmountRemaining(
           invoicePayment.getInvoiceTermPaymentList());
-      updateCancelStatus(invoicePayment.getImputedBy());
-      invoiceTermService.updateInvoiceTermsAmountRemaining(
-          invoicePayment.getImputedBy().getInvoiceTermPaymentList());
+      invoiceTermService.updateInvoiceTermsAmountRemaining(imputedBy.getInvoiceTermPaymentList());
+      updateCancelStatus(imputedBy);
     }
   }
 }
