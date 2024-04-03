@@ -206,6 +206,9 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
       "Current bank statement doesn't contain an initial line" /*)*/;
 
+  public static final String BANK_STATEMENT_NO_FINAL_LINE_ON_IMPORT = /*$$(*/
+      "Current bank statement doesn't contain an final line" /*)*/;
+
   /*
    * Batch direct debit
    */
