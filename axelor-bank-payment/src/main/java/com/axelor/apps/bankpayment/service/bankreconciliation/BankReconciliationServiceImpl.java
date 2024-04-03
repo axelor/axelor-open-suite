@@ -928,16 +928,18 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   }
 
   @Override
-  public String getRequestMoveLines() {
+  public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
-            + " AND self.move.currency = :bankReconciliationCurrency"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
             + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount)"
             + " AND (:includeOtherBankStatements IS TRUE OR (self.date BETWEEN :fromDate AND :toDate OR self.dueDate BETWEEN :fromDate AND :toDate))"
             + " AND (:journal IS NULL OR self.move.journal = :journal)"
             + " AND (:cashAccount IS NULL OR self.account = :cashAccount)";
+    if (bankReconciliation.getCurrency() != bankReconciliation.getCompany().getCurrency()) {
+      query = query + " AND self.move.currency = :bankReconciliationCurrency";
+    }
 
     return query;
   }
@@ -952,7 +954,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
     params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
     params.put("company", bankReconciliation.getCompany());
-    params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
     params.put("includeOtherBankStatements", bankReconciliation.getIncludeOtherBankStatements());
 
@@ -972,6 +973,10 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
 
     params.put("cashAccount", bankReconciliation.getCashAccount());
 
+    if (bankReconciliation.getCurrency() != bankReconciliation.getCompany().getCurrency()) {
+      params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
+    }
+
     return params;
   }
 
@@ -986,7 +991,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     List<MoveLine> moveLines =
         moveLineRepository
             .all()
-            .filter(getRequestMoveLines())
+            .filter(getRequestMoveLines(bankReconciliation))
             .bind(getBindRequestMoveLine(bankReconciliation))
             .fetch();
 
@@ -1231,7 +1236,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     List<MoveLine> authorizedMoveLines =
         moveLineRepository
             .all()
-            .filter(getRequestMoveLines())
+            .filter(getRequestMoveLines(bankReconciliation))
             .bind(getBindRequestMoveLine(bankReconciliation))
             .fetch();
 
@@ -1354,7 +1359,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
-    String filter = getRequestMoveLines();
+    String filter = getRequestMoveLines(bankReconciliation);
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
     List<MoveLine> moveLines =
         moveLineRepository
@@ -1462,7 +1467,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     List<MoveLine> authorizedMoveLinesOnClosedPeriod =
         moveLineRepository
             .all()
-            .filter(getRequestMoveLines() + onClosedPeriodClause)
+            .filter(getRequestMoveLines(bankReconciliation) + onClosedPeriodClause)
             .bind(getBindRequestMoveLine(bankReconciliation))
             .fetch();
     boolean haveMoveLineOnClosedPeriod = !authorizedMoveLinesOnClosedPeriod.isEmpty();
@@ -1506,7 +1511,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   @Override
   public BigDecimal computeUnreconciledMoveLinesSelection(BankReconciliation bankReconciliation)
       throws AxelorException {
-    String filter = getRequestMoveLines();
+    String filter = getRequestMoveLines(bankReconciliation);
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
     List<MoveLine> unreconciledMoveLines =
         moveLineRepository
