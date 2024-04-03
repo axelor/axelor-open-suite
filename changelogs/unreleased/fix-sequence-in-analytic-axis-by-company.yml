@@ -1,5 +1,5 @@
 ---
-title: "Analytic axis by company: fixed analytic order configured to start with 0."
+title: "Analytic axis by company: fixed analytic axis display error."
 module: "axelor-account"
 developer: |
   "In accounting configuration, the field `analyticAxisByCompanyList` had previously a sequence starting with 0. However, since the upgrade of the framework to v7, the sequence of this list now starts with 1. 
