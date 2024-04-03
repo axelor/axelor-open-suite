@@ -3500,6 +3500,8 @@
 "View",,,
 "View all unpaid invoices",,,
 "View emails generated",,,
+"View entry",,,
+"View entry lines",,,
 "WT amount in company currency",,,
 "Warning : The following invoice terms have been paid or partially paid since the payment session was created and thus won't be considered during validation. Do you wish to continue ?",,,
 "Warning : This will import move lines even if they have already been imported through this feature. Be careful not to import the same elements several times.",,,
