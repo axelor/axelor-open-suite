@@ -470,13 +470,14 @@
         <panel-related name="detailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null" colSpan="12" height="30"
           field="expendableSaleOrderLineList" form-view="sale-order-line-form"
-          grid-view="sale-order-line-editable-grid" orderBy="sequence"
+          grid-view="sale-order-line-simple-editable-grid" orderBy="sequence"
           onChange="action-sale-order-method-on-line-change"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canMove="true" x-widget="CollectionTree" x-expend-all="expendableSaleOrderLineList"
           x-display-mode="tree" x-expandable="true"
-          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"
+          onNew="action-sale-order-line-method-set-line-start-values"/>
 
         <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
           height="30" widget="MasterDetail" form-view="sale-order-line-form"

@@ -46,6 +46,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderGroupService;
+import com.axelor.apps.sale.service.SaleOrderServiceDemo;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
@@ -73,6 +74,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -667,20 +669,30 @@ public class SaleOrderController {
         "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
   }
 
-  public void onLineChange(ActionRequest request, ActionResponse response) {
+  public void onLineChange(ActionRequest request, ActionResponse response) throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    try {
-      if (saleOrder == null) {
-        return;
-      }
-
-      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
-
-      response.setValues(saleOrder);
-      response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (saleOrder == null) {
+      return;
     }
+
+    Map<String, Object> context = request.getRawContext();
+    if (context.get("expendableSaleOrderLineList") == null) {
+      return;
+    }
+    SaleOrderServiceDemo orderService = Beans.get(SaleOrderServiceDemo.class);
+    SaleOrderLine dirtyLine =
+        orderService.findDirtyLine(
+            (List<Map<String, Object>>) context.get("expendableSaleOrderLineList"));
+    if (dirtyLine == null) {
+      return;
+    }
+
+    orderService.updateRelatedLines(dirtyLine, saleOrder);
+
+    Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+
+    response.setValues(saleOrder);
+    response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
   }
 
   public void createNewVersion(ActionRequest request, ActionResponse response)

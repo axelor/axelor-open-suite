@@ -132,6 +132,10 @@
       title="Parent line"/>
     <many-to-one name="rootSaleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
       title="Sale order"/>
+    <decimal name="qtyBeforeUpdate" title="Qty before update" default="1"/>
+    <decimal name="priceBeforeUpdate" title="Price before update"/>
+    <string name="lineIndex" title="Index" readonly="true"/>
+    <integer name="saleOrderLineListSize"/>
 
 
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
