@@ -1,3 +1,54 @@
+## [7.2.11] (2024-04-04)
+
+### Fixes
+#### Account
+
+* Invoice: fixed report when invoice is linked to more than one stock move.
+* Move: fixed error when selecting a third party payer partner.
+* Move template line: added missing tax in demo data.
+* Payment Session: fixed error when selecting bank details where payment mode have empty accounting setting.
+* Accounting Situation: fixed used credit calculation not taking in account completed sale orders.
+* Accounting Batch: in closing account batch, prevented result move generation when no accounts are treated.
+* Accounting batch: fixed move generation on account closing/opening batch.
+
+#### Bank Payment
+
+* Bank reconciliation: move lines to reconcile in other currencies are now displayed.
+
+#### Business Project
+
+* Invoicing project: fixed batch to prevent the generation of invoicing business project when there is nothing to invoice.
+
+#### Contract
+
+* Contract template/Contract version: fixed 'Additional Benefit Management' field display.
+* Contract template: fixed an error occuring in the server logs on opening a contract template.
+
+#### Human Resource
+
+* Expense: fixed expenses creation for subordinates.
+* Expense line: fixed project filter to use user related to employee instead of current user.
+
+#### Production
+
+* Manufacturing order: fixed unable to select a tracking number on a consumed product.
+
+#### Sale
+
+* Sale order line: fixed an error that occured when changing project of a line.
+* Sale order: 'Total W.T' is no longer displayed twice in template grid view.
+
+#### Talent
+
+* App config: fixed demo data in the recruitment app config.
+
+
+### Developer
+
+#### Sale
+
+Removed action `action-sale-order-line-record-progress`
+
 ## [7.2.10] (2024-03-21)
 
 ### Fixes
@@ -694,6 +745,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.11]: https://github.com/axelor/axelor-open-suite/compare/v7.2.10...v7.2.11
 [7.2.10]: https://github.com/axelor/axelor-open-suite/compare/v7.2.9...v7.2.10
 [7.2.9]: https://github.com/axelor/axelor-open-suite/compare/v7.2.8...v7.2.9
 [7.2.8]: https://github.com/axelor/axelor-open-suite/compare/v7.2.7...v7.2.8
