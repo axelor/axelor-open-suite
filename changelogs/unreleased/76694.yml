@@ -1,0 +1,2 @@
+title: "InvoicePayment: fix financial discount management when there is no payment date"
+module: axelor-account
