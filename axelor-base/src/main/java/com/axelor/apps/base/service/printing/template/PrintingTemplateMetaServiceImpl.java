@@ -27,6 +27,7 @@ import com.axelor.web.ITranslation;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import net.fortuna.ical4j.util.Optional;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaService {
@@ -42,46 +43,51 @@ public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaServ
 
   @Override
   public void addPrintButton(String model, Response response) {
+    var data = response.getData();
     if (!printingTemplateService.hasActivePrintingTemplates(model)
-        || !isValidViewForToolBar(response.getData())) {
+        || !isValidViewForToolBar(data)) {
       return;
     }
     try {
-      List<Button> toolbar = getToolbar(response);
-      if (toolbar.stream().map(Button::getName).noneMatch(PRINT_BTN_NAME::equals)) {
-        toolbar.add(getPrintBtn());
-      }
+      addButton(data);
     } catch (IllegalAccessException e) {
       TraceBackService.trace(e);
     }
   }
 
-  protected List<Button> getToolbar(Response response) {
-    List<Button> toolbar = new ArrayList<>();
-    Object data = response.getData();
+  protected void addButton(Object data) throws IllegalAccessException {
+
     if (data instanceof FormView) {
       FormView form = (FormView) data;
-      if (form.getToolbar() == null) {
-        form.setToolbar(toolbar);
+      List<Button> toolbar = Optional.ofNullable(form.getToolbar()).orElse(new ArrayList<>());
+      if (!hasPrintBtn(toolbar)) {
+        toolbar.add(getPrintBtn(true));
       }
-      toolbar = form.getToolbar();
+      form.setToolbar(toolbar);
     } else if (data instanceof GridView) {
       GridView grid = (GridView) data;
-      if (grid.getToolbar() == null) {
-        grid.setToolbar(toolbar);
+      List<Button> toolbar = Optional.ofNullable(grid.getToolbar()).orElse(new ArrayList<>());
+      if (!hasPrintBtn(toolbar)) {
+        toolbar.add(getPrintBtn(false));
       }
-      toolbar = grid.getToolbar();
+      grid.setToolbar(toolbar);
     }
-    return toolbar;
   }
 
-  protected Button getPrintBtn() throws IllegalAccessException {
+  protected Button getPrintBtn(boolean isFormView) throws IllegalAccessException {
     Button printBtn = new Button();
     printBtn.setName(PRINT_BTN_NAME);
     printBtn.setOnClick("action-group-print-template");
     printBtn.setTitle(ITranslation.PRINTING_TEMPLATE_PRINT_BTN);
+    if (isFormView) {
+      printBtn.setShowIf("id");
+    }
     FieldUtils.writeField(printBtn, "icon", "fa-print", true);
     return printBtn;
+  }
+
+  protected boolean hasPrintBtn(List<Button> toolbar) {
+    return toolbar.stream().map(Button::getName).anyMatch(PRINT_BTN_NAME::equals);
   }
 
   protected boolean isValidViewForToolBar(Object object) {
