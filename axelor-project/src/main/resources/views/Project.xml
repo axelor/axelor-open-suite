@@ -142,7 +142,7 @@
           domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
       </panel>
       <field name="description" colSpan="12" widget="html"/>
-      <field name="siteSet" widget="tag-select"
+      <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"
         domain="self.isEnterableOnProject = true"/>
     </panel>
