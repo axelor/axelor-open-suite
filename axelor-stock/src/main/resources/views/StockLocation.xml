@@ -89,8 +89,8 @@
           grid-view="company-grid"
           onChange="action-stock-location-record-empty-site-parent-stock-location"/>
         <field name="typeSelect" onChange="action-stock-location-group-type-select-on-change"/>
-        <button name="$stockLocationValueBtn" title="Stock location value" readonly="true"
-          hidden="true" showIf="isValued &amp;&amp; id" onClick="rien" widget="info-button"/>
+        <button name="$stockLocationValueBtn" title="Stock location value"
+          hidden="true" showIf="isValued &amp;&amp; id &amp;&amp; $readonly()" onClick="" widget="info-button"/>
         <field name="stockLocationValue" hidden="true"/>
         <panel name="barcodePanel" colSpan="12"
           if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
@@ -272,7 +272,7 @@
     <attribute for="site" name="domain"
       expr="self.typeSelect = 1 AND :company MEMBER OF self.companySet" if="eval: typeSelect == 1"/>
     <attribute for="site" name="domain"
-      expr="self.typeSelect = 2 AND self.partner = :partner AND &amp;&amp; :company MEMBER OF self.companySet"
+      expr="self.typeSelect = 2 AND self.partner = :partner AND :company MEMBER OF self.companySet"
       if="eval: typeSelect == 2 &amp;&amp; partner != null"/>
     <attribute for="site" name="domain"
       expr="self.typeSelect = 2 AND :company MEMBER OF self.companySet"
