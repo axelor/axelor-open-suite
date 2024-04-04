@@ -78,6 +78,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected MoveSimulateService moveSimulateService;
 
   protected boolean end = false;
+  protected Move resultMove;
+  protected BigDecimal resultMoveAmount;
   protected AccountingBatch accountingBatch;
 
   @Inject
@@ -109,22 +111,14 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       accountingBatch = accountingBatchRepository.find(batch.getAccountingBatch().getId());
       Beans.get(AccountingReportService.class)
           .testReportedDateField(accountingBatch.getYear().getReportedBalanceDate());
-      BigDecimal resultMoveAmount = getResultMoveAmount();
+      resultMoveAmount = getResultMoveAmount();
 
       if (resultMoveAmount.signum() == 0) {
         return;
       }
 
       this.testCloseAnnualBatchFields(resultMoveAmount);
-      if (accountingBatch.getGenerateResultMove()) {
-        accountingCloseAnnualService.generateResultMove(
-            accountingBatch.getCompany(),
-            accountingBatch.getYear().getReportedBalanceDate(),
-            accountingBatch.getResultMoveDescription(),
-            accountingBatch.getBankDetails(),
-            accountingBatch.getSimulateGeneratedMoves(),
-            resultMoveAmount);
-      }
+
     } catch (AxelorException | PersistenceException e) {
       TraceBackService.trace(e, ExceptionOriginRepository.REPORTED_BALANCE, batch.getId());
       incrementAnomaly();
@@ -223,6 +217,22 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
               openingAccountAndPartnerPairList, false, accountingBatch.getOpenYear(), map);
 
       generateMoves(map);
+
+      try {
+        if (accountingBatch.getGenerateResultMove() && batch.getDone() > 0) {
+          Company company = companyRepo.find(accountingBatch.getCompany().getId());
+          accountingCloseAnnualService.generateResultMove(
+              company,
+              accountingBatch.getYear().getReportedBalanceDate(),
+              accountingBatch.getResultMoveDescription(),
+              accountingBatch.getBankDetails(),
+              accountingBatch.getSimulateGeneratedMoves(),
+              resultMoveAmount);
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(new AxelorException(e, e.getCategory(), null, batch.getId()));
+        incrementAnomaly();
+      }
     }
   }
 
@@ -407,6 +417,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                 BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
+    if (batch.getAccountingBatch() != null && resultMove != null) {
+      sb.append(
+          String.format(
+              " " + I18n.get(AccountExceptionMessage.BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_RESULT_MOVE),
+              resultMove.getReference()));
+    }
+
     addComment(sb.toString());
     super.stop();
   }
