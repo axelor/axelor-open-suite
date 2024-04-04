@@ -1,3 +1,0 @@
----
-title: "Expense line: fixed project filter to use user related to employee instead of current user."
-module: axelor-human-resource
