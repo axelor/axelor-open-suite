@@ -2292,6 +2292,7 @@
 "One of the move line has the partner %s whereas the partner in the header is %s.","Une des lignes a comme tiers %s alors que le tiers de l'entête est %s.",,
 "One of the move line is reconciled, to cancel this move, please reverse it.","Une des lignes d'écriture est lettrée, pour annuler cette écriture, veuillez l'extourner.",,
 "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?","Une ou plusieurs échéances présentent un calcul d’escompte qui n’est plus applicable. Souhaitez-vous continuer ?",,
+"One result move generated %s.","Une écriture de résultat générée %s.",,
 "One time global period","Une seule période globale",,
 "Ongoing Cession","Sortie d'immobilisation en cours",,
 "Ongoing Schedules","Échéanciers en cours",,
