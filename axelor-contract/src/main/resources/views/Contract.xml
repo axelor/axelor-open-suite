@@ -55,6 +55,11 @@
 					</>
                     ]]></viewer>
         </field>
+        <field name="priceList"
+          readonlyIf="(currentContractVersion?.contractLineList &amp;&amp; currentContractVersion?.contractLineList.length > 0) || statusSelect >= 2"
+          onSelect="action-contract-method-price-list-domain" canEdit="false"
+          form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
+          colSpan="3"/>
         <field name="name" colSpan="12" css="highlight"
           hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
         <panel name="companyPanel" itemSpan="4" colSpan="12">
@@ -807,6 +812,7 @@
   <action-group name="action-contract-group-partner-onchange">
     <action name="action-contract-attrs-partner-payment-config"/>
     <action name="action-contract-method-fill-invoiced-partner-if-only-one"/>
+    <action name="action-contract-method-fill-price-list"/>
   </action-group>
 
   <action-validate
@@ -862,6 +868,15 @@
   <action-method name="action-contract-method-additional-contract-line-list-on-change">
     <call class="com.axelor.apps.contract.web.ContractController"
       method="onChangeAdditionalContractLines"/>
+  </action-method>
+
+  <action-method name="action-contract-method-price-list-domain">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="changePriceListDomain"/>
+  </action-method>
+
+  <action-method name="action-contract-method-fill-price-list">
+    <call class="com.axelor.apps.contract.web.ContractController" method="fillPriceList"/>
   </action-method>
 
   <action-method name="action-contract-method-generate-sale-order">

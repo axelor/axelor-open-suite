@@ -184,9 +184,11 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
   }
 
   public PartnerPriceList getPartnerPriceList(Partner partner, int priceListTypeSelect) {
-    if (priceListTypeSelect == PriceListRepository.TYPE_SALE) {
+    if (priceListTypeSelect == PriceListRepository.TYPE_SALE
+        || priceListTypeSelect == PriceListRepository.TYPE_CUSTOMER_CONTRACT) {
       return partner.getSalePartnerPriceList();
-    } else if (priceListTypeSelect == PriceListRepository.TYPE_PURCHASE) {
+    } else if (priceListTypeSelect == PriceListRepository.TYPE_PURCHASE
+        || priceListTypeSelect == PriceListRepository.TYPE_SUPPLIER_CONTRACT) {
       return partner.getPurchasePartnerPriceList();
     }
     return null;

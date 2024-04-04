@@ -143,6 +143,35 @@
     <domain>self.concernedModel.name = 'InvoiceLine'</domain>
   </action-view>
 
+  <menuitem name="contracts-conf-customer-price-list" parent="contracts-root-conf-all"
+    title="Customer price lists" action="contracts.conf.customer.price.list" order="800"/>
+
+  <action-view name="contracts.conf.customer.price.list" title="Customer price lists"
+    model="com.axelor.apps.base.db.PriceList">
+    <view type="grid" name="price-list-grid"/>
+    <view type="form" name="customer-contract-price-list-form"/>
+    <domain>self.typeSelect = 3 and self.id not in (select priceList.id from PriceList priceList
+      where parentPriceList IS NOT NULL ) and self.id not in (select priceList.id from PriceList
+      priceList join PartnerPriceList partnerPriceList on priceList member of
+      partnerPriceList.priceListSet where priceList.typeSelect = 3 and partnerPriceList.isExclusive
+      IS TRUE )</domain>
+  </action-view>
+
+  <menuitem name="contracts-conf-supplier-price-list" parent="contracts-root-conf-all"
+    title="Supplier price lists" action="contracts.conf.supplier.price.list" order="900"/>
+
+  <action-view name="contracts.conf.supplier.price.list" title="Supplier price lists"
+    model="com.axelor.apps.base.db.PriceList">
+    <view type="grid" name="price-list-grid"/>
+    <view type="form" name="supplier-contract-price-list-form"/>
+    <domain>self.typeSelect = 4 and self.id not in (select priceList.id from PriceList priceList
+      where parentPriceList IS NOT NULL ) and self.id not in (select priceList.id from PriceList
+      priceList join PartnerPriceList partnerPriceList on priceList member of
+      partnerPriceList.priceListSet where priceList.typeSelect = 4 and partnerPriceList.isExclusive
+      IS TRUE )</domain>
+  </action-view>
+
+
   <menuitem name="admin-root-batch-contract" parent="admin-root-batch"
     title="Contract batches" action="admin.root.batch.contract"
     if="__config__.app.isApp('contract')" order="1200"/>

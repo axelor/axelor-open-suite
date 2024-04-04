@@ -155,6 +155,8 @@
   <selection name="base.price.list.type.select">
     <option value="1">Sale</option>
     <option value="2">Purchase</option>
+    <option value="3">Customer contract</option>
+    <option value="4">Supplier contract</option>
   </selection>
 
   <selection name="base.price.list.line.type.select">

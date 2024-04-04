@@ -24,6 +24,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Duration;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
@@ -112,18 +114,25 @@ public class ContractLineServiceImpl implements ContractLineService {
 
   @Override
   public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
-    Company company =
+    Contract contract =
         contractLine.getContractVersion() != null
-            ? contractLine.getContractVersion().getContract() != null
-                ? contractLine.getContractVersion().getContract().getCompany()
-                : null
+            ? contractLine.getContractVersion().getContract()
             : null;
+    Company company = contract != null ? contract.getCompany() : null;
+
     contractLine.setProductName((String) productCompanyService.get(product, "name", company));
     Unit unit = (Unit) productCompanyService.get(product, "salesUnit", company);
     if (unit != null) {
       contractLine.setUnit(unit);
     } else {
       contractLine.setUnit((Unit) productCompanyService.get(product, "unit", company));
+    }
+    Map<String, Object> discounts =
+        getDiscountsFromPriceLists(contract, contractLine, contractLine.getPrice());
+
+    if (discounts != null) {
+      contractLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      contractLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
     }
     contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     contractLine.setDescription(
@@ -285,5 +294,29 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setDescription(null);
 
     return contractLine;
+  }
+
+  @Override
+  public Map<String, Object> getDiscountsFromPriceLists(
+      Contract contract, ContractLine contractLine, BigDecimal price) {
+
+    Map<String, Object> discounts = null;
+
+    PriceList priceList = contract.getPriceList();
+
+    if (priceList != null) {
+      PriceListLine priceListLine = this.getPriceListLine(contractLine, priceList, price);
+      discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+    }
+
+    return discounts;
+  }
+
+  @Override
+  public PriceListLine getPriceListLine(
+      ContractLine contractLine, PriceList priceList, BigDecimal price) {
+
+    return priceListService.getPriceListLine(
+        contractLine.getProduct(), contractLine.getQty(), priceList, price);
   }
 }
