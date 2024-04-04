@@ -19,7 +19,6 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -43,7 +42,6 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
@@ -51,10 +49,9 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -91,7 +88,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Inject protected ProductConversionService productConversionService;
 
-  @Inject protected BirtTemplateService birtTemplateService;
+  @Inject protected PurchaseOrderPrintService purchaseOrderPrintService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -290,24 +287,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Override
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException {
-    checkPrintingSettings(purchaseOrder);
-    BirtTemplate purchaseOrderBirtTemplate =
-        purchaseConfigService.getPurchaseOrderBirtTemplate(purchaseOrder.getCompany());
-
-    String title =
-        I18n.get("Purchase order")
-            + purchaseOrder.getPurchaseOrderSeq()
-            + ((purchaseOrder.getVersionNumber() > 1)
-                ? "-V" + purchaseOrder.getVersionNumber()
-                : "");
-
-    birtTemplateService.generateBirtTemplateLink(
-        purchaseOrderBirtTemplate,
-        EntityHelper.getEntity(purchaseOrder),
-        null,
-        title + "-${date}",
-        true,
-        ReportSettings.FORMAT_PDF);
+    purchaseOrderPrintService.print(
+        purchaseOrder,
+        purchaseConfigService.getPurchaseOrderPrintTemplate(purchaseOrder.getCompany()),
+        true);
   }
 
   @Override
