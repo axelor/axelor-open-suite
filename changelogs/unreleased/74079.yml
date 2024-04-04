@@ -1,0 +1,2 @@
+title: "Accounting Batch: in closing account batch, prevented result move generation when no accounts are treated."
+module: axelor-account

@@ -588,6 +588,9 @@ public final class AccountExceptionMessage {
   public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
       "%d accounts treated successfully," /*)*/;
 
+  public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_RESULT_MOVE = /*$$(*/
+      "One result move generated %s." /*)*/;
+
   /** Cfonb export service */
   public static final String CFONB_EXPORT_1 = /*$$(*/
       "You must configure a RIB for the reimbursement" /*)*/;
