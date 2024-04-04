@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed report when invoice is linked to more than one stock move."
+module: axelor-account
