@@ -85,14 +85,15 @@
           grid-view="address-grid" colSpan="12"/>
       </panel>
       <panel name="sidePanel" colSpan="4">
-        <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-          grid-view="company-grid"
-          onChange="action-stock-location-record-empty-site-parent-stock-location"/>
-        <field name="typeSelect" onChange="action-stock-location-group-type-select-on-change"/>
-        <button name="$stockLocationValueBtn" title="Stock location value"
-          hidden="true" showIf="isValued &amp;&amp; id &amp;&amp; $readonly()" onClick="" widget="info-button"/>
-        <field name="stockLocationValue" hidden="true"/>
-        <panel name="barcodePanel" colSpan="12"
+          <panel name="leftPanel" colSpan="6">
+            <field  name="company" widget="SuggestBox" canEdit="false" colSpan="12" onChange="action-stock-location-record-empty-site-parent-stock-location" form-view="company-form" grid-view="company-grid"/>
+          </panel>
+          <panel name="rightPanel" colSpan="6">
+            <field name="typeSelect" onChange="action-stock-location-group-type-select-on-change" colSpan="12"/>
+            <button name="$stockLocationValueBtn" title="Stock location value" colSpan="12" hidden="true" showIf="isValued &amp;&amp; id &amp;&amp; $readonly()" onClick="" widget="info-button"/>
+            <field name="stockLocationValue" hidden="true"/>
+          </panel>
+          <panel name="barcodePanel" colSpan="12"
           if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
           <panel name="barcodeInfoPanel" colSpan="8" stacked="true">
             <field name="serialNumber" readonlyIf="barCode != null" colSpan="6"/>
