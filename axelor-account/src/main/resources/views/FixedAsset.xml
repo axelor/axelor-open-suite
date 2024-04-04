@@ -50,10 +50,12 @@
           showIf="fixedAssetCategory != null"
           onChange="action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"
           hidden="true"/>
-        <field name="qty" required="true" min="0.01" title="Quantity"
+        <field name="isFromTransfer"
+          onChange="action-fixed-asset-record-is-from-transfer-onchange"/>
+        <field name="qty" colSpan="3" required="true" min="0.01" title="Quantity"
           readonlyIf="statusSelect > 1" showIf="trackingNumber == null" hidden="true"/>
-        <field if-module="axelor-supplychain" name="trackingNumber.counter" title="Quantity"
-          showIf="trackingNumber != null" hidden="true"/>
+        <field if-module="axelor-supplychain" colSpan="3" name="trackingNumber.counter"
+          title="Quantity" showIf="trackingNumber != null" hidden="true"/>
         <field if-module="axelor-supplychain" name="stockLocation" canNew="false"
           canEdit="false" domain="self.company = :company" form-view="stock-location-form"
           grid-view="stock-location-grid"/>
@@ -164,8 +166,8 @@
         <field name="fixedAssetCategory.isProrataTemporis"/>
         <field name="fixedAssetCategory.isUSProrataTemporis"
           showIf="fixedAssetCategory.isProrataTemporis" hidden="true"/>
-        <panel name="importValuesPanel" showIf="originSelect == 99" title="Import parameters"
-          readonlyIf="statusSelect > 1" hidden="true">
+        <panel name="importValuesPanel" showIf="originSelect == 99 &amp;&amp; isFromTransfer"
+          title="Import parameters" readonlyIf="statusSelect > 1" hidden="true">
           <field name="importNbrOfPastDepreciations" requiredIf="originSelect == 99" min="0"/>
           <field name="importAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"
             x-scale="company.currency.numberOfDecimals"/>
@@ -279,7 +281,8 @@
     </panel>
     <panel name="importValuesPanel" showIf="originSelect == 99" title="Import parameters"
       sidebar="true" readonlyIf="statusSelect > 1" hidden="true">
-      <field name="importDepreciationDate" requiredIf="originSelect == 99"/>
+      <field name="importDepreciationDate"
+        requiredIf="originSelect == 99 &amp;&amp; isFromTransfer"/>
     </panel>
     <panel name="toUpdateValuesPanel" title="Update Depreciation parameters"
       showIf="statusSelect == 2"
@@ -433,6 +436,12 @@
   <action-record name="action-fixed-asset-record-set-residual-value"
     model="com.axelor.apps.account.db.FixedAsset">
     <field name="fixedAssetLineList" expr="eval: null" if="!grossValue"/>
+  </action-record>
+
+  <action-record name="action-fixed-asset-record-is-from-transfer-onchange"
+    model="com.axelor.apps.account.db.FixedAsset">
+    <field name="originSelect" expr="eval: FixedAssetRepository.ORIGINAL_SELECT_IMPORT"
+      if="isFromTransfer"/>
   </action-record>
 
   <action-group name="action-fixed-asset-group-disposal-asset">

@@ -418,7 +418,8 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
   protected boolean isImported(FixedAsset fixedAsset) {
     return fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT
         && fixedAsset.getImportId() != null
-        && fixedAsset.getImportDepreciationDate() != null;
+        && fixedAsset.getImportDepreciationDate() != null
+        && fixedAsset.getIsFromTransfer();
   }
 
   protected boolean isFirstDepreciationOnFailoverDate(
