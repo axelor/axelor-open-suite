@@ -45,27 +45,27 @@
         name="configPanel">
         <panel name="generalSubPanel" title="General"
           if="__config__.app.getApp('contract')?.isInvoicingManagement" colSpan="12">
-          <field name="isInvoicingManagement" colSpan="6" widget="boolean-switch"
+          <field name="isInvoicingManagement" widget="boolean-switch"
             onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"/>
           <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
-            colSpan="6">
+            colSpan="12">
             <field if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
-              name="isAdditionaBenefitManagement" colSpan="6" widget="boolean-switch"/>
+              name="isAdditionaBenefitManagement" colSpan="4" widget="boolean-switch"/>
+            <field name="currentContractVersion" showTitle="false"
+              readonlyIf="currentContractVersion.statusSelect > 2" colSpan="8" x-show-icons="false">
+              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                <panel colSpan="6" name="paymentPanel">
+                  <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false"
+                    form-view="payment-mode-form" grid-view="payment-mode-grid"
+                    onSelect="action-contract-template-attrs-set-payment-mode-domain"/>
+                  <field name="paymentCondition" colSpan="6" widget="SuggestBox"
+                    canEdit="false" form-view="payment-condition-form"
+                    grid-view="payment-condition-grid"
+                    onSelect="action-contract-template-attrs-payment-condition-set-domain"/>
+                </panel>
+              </editor>
+            </field>
           </panel>
-
-          <field name="currentContractVersion" showTitle="false"
-            readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
-            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-              <panel colSpan="6" name="paymentPanel">
-                <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false"
-                  form-view="payment-mode-form" grid-view="payment-mode-grid"
-                  onSelect="action-contract-template-attrs-set-payment-mode-domain"/>
-                <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false"
-                  form-view="payment-condition-form" grid-view="payment-condition-grid"
-                  onSelect="action-contract-template-attrs-payment-condition-set-domain"/>
-              </panel>
-            </editor>
-          </field>
         </panel>
 
         <panel if="__config__.app.getApp('contract')?.isInvoicingManagement" title="Invoicing"
@@ -152,6 +152,7 @@
   <action-record name="action-contract-template-record-default-record-onnew"
     model="com.axelor.apps.contract.db.Contract">
     <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="contractTypeSelect" expr="eval: 1"/>
   </action-record>
 
   <action-method name="action-contract-template-method-change-product">

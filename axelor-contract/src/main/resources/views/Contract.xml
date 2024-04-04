@@ -294,31 +294,34 @@
           if="__config__.app.getApp('contract')?.isInvoicingManagement" colSpan="12">
           <field name="isInvoicingManagement"
             onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"
-            colSpan="6" widget="boolean-switch"/>
+            widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
             colSpan="12">
             <field name="isAdditionaBenefitManagement"
               if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
               widget="boolean-switch" colSpan="4" hideIf="targetTypeSelect > 2"/>
+            <field name="currentContractVersion" showTitle="false" colSpan="8"
+              x-show-icons="false">
+              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                <panel colSpan="6">
+                  <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false"
+                    form-view="payment-mode-form" grid-view="payment-mode-grid"
+                    onSelect="action-contract-attrs-set-payment-mode-domain"/>
+                  <field name="paymentCondition" colSpan="6" widget="SuggestBox"
+                    canEdit="false" form-view="payment-condition-form"
+                    grid-view="payment-condition-grid"
+                    onSelect="action-contract-attrs-payment-condition-set-domain"/>
+                </panel>
+              </editor>
+            </field>
           </panel>
-          <field name="currentContractVersion" showTitle="false" colSpan="12"
-            x-show-icons="false">
-            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-              <panel colSpan="6">
-                <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false"
-                  form-view="payment-mode-form" grid-view="payment-mode-grid"
-                  onSelect="action-contract-attrs-set-payment-mode-domain"/>
-                <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false"
-                  form-view="payment-condition-form" grid-view="payment-condition-grid"
-                  onSelect="action-contract-attrs-payment-condition-set-domain"/>
-              </panel>
-            </editor>
-          </field>
+
         </panel>
         <panel name="configSubPanel" title="Invoicing"
           if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
           showIf="contractTypeSelect == 1 &amp;&amp; isInvoicingManagement" colSpan="12">
           <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4"/>
+          <spacer/>
           <field name="isConsumptionManagement"
             if="__config__.app.getApp('contract')?.isConsumptionManagement"
             onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
@@ -545,7 +548,7 @@
     <context name="_showRecord" expr="eval: nextVersion.id"/>
   </action-view>
 
-  <action-view name="action-view-contract-add-version" title="Nouvelle version"
+  <action-view name="action-view-contract-add-version" title="New version"
     model="com.axelor.apps.contract.db.ContractVersion">
     <view type="form" name="contract-version-next-form"/>
     <view type="grid" name="contract-version-next-grid"/>

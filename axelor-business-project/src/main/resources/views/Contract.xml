@@ -15,4 +15,16 @@
       </insert>
     </extend>
   </form>
+
+  <action-view name="action-view-contract-add-version"
+    id="business-rpoject-action-view-contract-add-version" title="New version"
+    model="com.axelor.apps.contract.db.ContractVersion">
+    <view type="form" name="contract-version-next-form"/>
+    <view type="grid" name="contract-version-next-grid"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_xContractId" expr="eval: id"/>
+    <context name="_xIsNextVersion" expr="true"/>
+    <context name="_xProjectSet"
+      expr="eval: currentContractVersion?.frameworkContractProjectSet"/>
+  </action-view>
 </object-views>
