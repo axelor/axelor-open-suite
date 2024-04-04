@@ -1,3 +1,47 @@
+## [6.5.31] (2024-04-04)
+
+### Fixes
+#### Account
+
+* Payment Session: fixed error when selecting bank details where payment mode have empty accounting setting.
+* Accounting Situation: fixed used credit calculation not taking in account completed sale orders.
+* Accounting Batch: in closing account batch, prevented result move generation when no accounts are treated.
+* Accounting batch: fixed move generation on account closing/opening batch.
+
+#### Bank Payment
+
+* Bank reconciliation: move lines to reconcile in other currencies are now displayed.
+
+#### Business Project
+
+* Invoicing project: fixed batch to prevent the generation of invoicing business project when there is nothing to invoice.
+
+#### Contract
+
+* Contract template/Contract version: fixed 'Additional Benefit Management' field display.
+* Contract template: fixed an error occuring in the server logs on opening a contract template.
+
+#### Human Resource
+
+* Expense: fixed expenses creation for subordinates.
+* Expense line: fixed project filter to use user related to employee instead of current user.
+
+#### Production
+
+* Manufacturing order: fixed unable to select a tracking number on a consumed product.
+
+#### Sale
+
+* Sale order line: fixed an error that occured when changing project of a line.
+* Sale order: 'Total W.T' is no longer displayed twice in template grid view.
+
+
+### Developer
+
+#### Sale
+
+Removed `action action-sale-order-line-record-progress`
+
 ## [6.5.30] (2024-03-21)
 
 ### Fixes
@@ -1218,6 +1262,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.31]: https://github.com/axelor/axelor-open-suite/compare/v6.5.30...v6.5.31
 [6.5.30]: https://github.com/axelor/axelor-open-suite/compare/v6.5.29...v6.5.30
 [6.5.29]: https://github.com/axelor/axelor-open-suite/compare/v6.5.28...v6.5.29
 [6.5.28]: https://github.com/axelor/axelor-open-suite/compare/v6.5.27...v6.5.28
