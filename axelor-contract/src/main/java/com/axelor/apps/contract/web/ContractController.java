@@ -19,6 +19,7 @@
 package com.axelor.apps.contract.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -35,8 +36,11 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.contract.service.ContractSalePurchaseOrderGeneration;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -337,5 +341,42 @@ public class ContractController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void generateSaleOrderFromContract(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Contract contract = this.getContract(request);
+
+    SaleOrder saleOrder =
+        Beans.get(ContractSalePurchaseOrderGeneration.class)
+            .generateSaleOrder(JPA.find(Contract.class, contract.getId()));
+
+    response.setView(
+        ActionView.define(I18n.get("Generated sale order"))
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .add("grid", "sale-order-grid")
+            .param("forceTitle", "true")
+            .param("forceEdit", "true")
+            .context("_showRecord", saleOrder.getId())
+            .map());
+  }
+
+  public void generatePurchaseOrderFromContract(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Contract contract = this.getContract(request);
+    PurchaseOrder purchaseOrder =
+        Beans.get(ContractSalePurchaseOrderGeneration.class)
+            .generatePurchaseOrder(JPA.find(Contract.class, contract.getId()));
+
+    response.setView(
+        ActionView.define(I18n.get("Generated purchase order"))
+            .model(PurchaseOrder.class.getName())
+            .add("form", "purchase-order-form")
+            .add("grid", "purchase-order-grid")
+            .param("forceTitle", "true")
+            .param("forceEdit", "true")
+            .context("_showRecord", purchaseOrder.getId())
+            .map());
   }
 }
