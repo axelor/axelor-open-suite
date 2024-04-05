@@ -385,4 +385,13 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
     return groovyScriptHelper.eval(subjectGroovyFormula);
   }
+
+  @Override
+  public ProjectPlanningTime loadLinkedPlanningTime(ICalendarEvent event) {
+    return planningTimeRepo
+            .all()
+            .filter("self.icalendarEvent = :icalendarEvent")
+            .bind("icalendarEvent", event)
+            .fetchOne();
+  }
 }

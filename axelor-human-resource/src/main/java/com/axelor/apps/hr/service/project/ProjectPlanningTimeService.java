@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -52,4 +53,6 @@ public interface ProjectPlanningTimeService {
   void updateLinkedEvent(ProjectPlanningTime projectPlanningTime);
 
   void deleteLinkedProjectPlanningTime(List<Long> ids);
+
+  ProjectPlanningTime loadLinkedPlanningTime(ICalendarEvent event);
 }

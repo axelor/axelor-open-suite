@@ -132,13 +132,4 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
     return planningTime;
   }
 
-
-  @Override
-  public ProjectPlanningTime loadLinkedPlanningTime(ICalendarEvent event) {
-    return planningTimeRepo
-        .all()
-        .filter("self.icalendarEvent = :icalendarEvent")
-        .bind("icalendarEvent", event)
-        .fetchOne();
-  }
 }
