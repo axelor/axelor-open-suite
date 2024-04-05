@@ -1,2 +1,2 @@
-"importId";"invoiceId"
-1;1
+"importId";"invoiceId";"invoiceDate";"dueDate";"exTaxTotal";"inTaxTotal";"amountRemaining"
+1;1;"01/01/2024";"15/01/2024";0;0;0

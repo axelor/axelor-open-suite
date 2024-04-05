@@ -4,13 +4,8 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
-import com.axelor.apps.base.db.repo.AddressRepository;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.loader.LoaderHelper;
 import com.axelor.utils.junit.BaseTest;
@@ -29,11 +24,6 @@ class TestInvoiceFinancialDiscountComputation extends BaseTest {
   protected final InvoiceRepository invoiceRepository;
   protected final FinancialDiscountRepository financialDiscountRepository;
   protected final PartnerRepository partnerRepository;
-  protected final CompanyRepository companyRepository = null;
-  protected final AddressRepository addressRepository = null;
-  protected final ProductRepository productRepository = null;
-  protected final TaxLineRepository taxLineRepository = null;
-  protected final UnitRepository unitRepository = null;
   protected final InvoiceFinancialDiscountService invoiceFinancialDiscountService;
 
   @Inject
@@ -56,11 +46,12 @@ class TestInvoiceFinancialDiscountComputation extends BaseTest {
     loaderHelper.importCsv("data/base-config-input.xml");
     loaderHelper.importCsv("data/account-config-input.xml");
     loaderHelper.importCsv("data/account-invoice-input.xml");
-    loaderHelper.importCsv("data/account-invoice-line-input.xml");
+    // loaderHelper.importCsv("data/account-invoice-line-input.xml");
   }
 
   @Test
   void testComputeFinancialDiscount2PercentWT() {
+    Invoice invoice = invoiceRepository.all().fetchOne();
     // Invoice invoice = this.computeInvoiceData(1L);
 
     // invoiceFinancialDiscountService.setFinancialDiscountInformations(invoice);

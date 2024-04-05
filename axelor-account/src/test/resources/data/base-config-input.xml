@@ -17,13 +17,13 @@
   </input>
 
   <input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner"
-    search="self.importId = :importId" update="true">
+    search="self.importId = :importId">
     <bind to="isContact" eval="isContact == 'true' ? true : false"/>
     <bind to="isCustomer" eval="isCustomer == 'true' ? true : false"/>
     <bind to="isSupplier" eval="isSupplier == 'true' ? true : false"/>
   </input>
 
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"
-    search="self.importId = :importId" update="true"/>
+    search="self.importId = :importId"/>
 
 </csv-inputs>
