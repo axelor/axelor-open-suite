@@ -294,8 +294,12 @@ public class SaleOrderServiceDemo {
       if (context.getParent() != null
           && context.getParent().getContextClass().equals(SaleOrderLine.class)) {
         SaleOrderLine parent = context.getParent().asType(SaleOrderLine.class);
+        int size = 0;
+        if(parent.getSubSaleOrderLineList()!=null){
+          size = parent.getSubSaleOrderLineList().size();
+        }
         saleOrderLine.setLineIndex(
-            parent.getLineIndex() + "." + (parent.getSaleOrderLineListSize() + 1));
+            parent.getLineIndex() + "." + (size +1));
       }
     }
     return saleOrderLine;

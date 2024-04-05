@@ -66,8 +66,7 @@
   </form>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
-    expandable="true" expandable-form-view="sale-order-line-form-nested">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true">
     <hilite strong="true" color="default" if="saleOrderLineListSize &gt; 0"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
