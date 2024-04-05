@@ -161,26 +161,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       StockMove stockMove, SaleOrder saleOrder, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
 
-    // we block if we are trying to invoice partially if config is deactivated
-    if (!supplyChainConfigService
-            .getSupplyChainConfig(stockMove.getCompany())
-            .getActivateOutStockMovePartialInvoicing()
-        && computeNonCanceledInvoiceQty(stockMove).signum() > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR),
-          stockMove.getStockMoveSeq());
-    }
-
     InvoiceGenerator invoiceGenerator =
         saleOrderInvoiceService.createInvoiceGenerator(saleOrder, stockMove.getIsReversion());
 
     Invoice invoice = invoiceGenerator.generate();
-
-    // When not null, we are in a partial invoicing
-    if (qtyToInvoiceMap != null) {
-      checkSplitSalePartiallyInvoicedStockMoveLines(stockMove, stockMove.getStockMoveLineList());
-    }
 
     invoiceGenerator.populate(
         invoice,
@@ -258,15 +242,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public Invoice createInvoiceFromPurchaseOrder(
       StockMove stockMove, PurchaseOrder purchaseOrder, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
-
-    if (!supplyChainConfigService
-            .getSupplyChainConfig(stockMove.getCompany())
-            .getActivateIncStockMovePartialInvoicing()
-        && computeNonCanceledInvoiceQty(stockMove).signum() > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR));
-    }
 
     InvoiceGenerator invoiceGenerator =
         purchaseOrderInvoiceService.createInvoiceGenerator(
@@ -395,21 +370,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
-    List<StockMoveLine> stockMoveLineToInvoiceList;
-    if ((ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())
-            && supplyChainConfigService
-                .getSupplyChainConfig(invoice.getCompany())
-                .getActivateIncStockMovePartialInvoicing())
-        || (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())
-            && supplyChainConfigService
-                .getSupplyChainConfig(invoice.getCompany())
-                .getActivateOutStockMovePartialInvoicing())) {
-      // we do not consolidate because the invoicing is partial
-      stockMoveLineToInvoiceList = stockMoveLineList;
-    } else {
-      stockMoveLineToInvoiceList = getConsolidatedStockMoveLineList(stockMoveLineList);
-    }
-    for (StockMoveLine stockMoveLine : stockMoveLineToInvoiceList) {
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
 
       InvoiceLine invoiceLineCreated;
       Long id = stockMoveLine.getId();
@@ -598,22 +559,45 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       BigDecimal qty =
           stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine));
-      if (qty.compareTo(BigDecimal.ZERO) != 0) {
-        Map<String, Object> stockMoveLineMap = new HashMap<>();
-        stockMoveLineMap.put(
-            "productCode",
-            stockMoveLine.getProduct() != null ? stockMoveLine.getProduct().getCode() : null);
-        stockMoveLineMap.put("productName", stockMoveLine.getProductName());
-        stockMoveLineMap.put("remainingQty", qty);
-        stockMoveLineMap.put("realQty", stockMoveLine.getRealQty());
-        stockMoveLineMap.put("qtyInvoiced", computeNonCanceledInvoiceQty(stockMoveLine));
-        stockMoveLineMap.put("qtyToInvoice", BigDecimal.ZERO);
-        stockMoveLineMap.put("invoiceAll", false);
-        stockMoveLineMap.put("stockMoveLineId", stockMoveLine.getId());
-        stockMoveLines.add(stockMoveLineMap);
-      }
+      addToStockMoveLineListToInvoice(stockMoveLine, qty, stockMoveLines);
     }
     return stockMoveLines;
+  }
+
+  @Override
+  public List<Map<String, Object>> getStockMoveLinesToInvoiceEmpty(StockMove stockMove)
+      throws AxelorException {
+    List<Map<String, Object>> stockMoveLines = new ArrayList<>();
+
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+
+      addToStockMoveLineListToInvoice(stockMoveLine, BigDecimal.ZERO, stockMoveLines);
+    }
+    return stockMoveLines;
+  }
+
+  protected void addToStockMoveLineListToInvoice(
+      StockMoveLine stockMoveLine,
+      BigDecimal qtyToInvoice,
+      List<Map<String, Object>> stockMoveLines)
+      throws AxelorException {
+    BigDecimal remainingQty =
+        stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine));
+
+    if (remainingQty.compareTo(BigDecimal.ZERO) != 0) {
+      Map<String, Object> stockMoveLineMap = new HashMap<>();
+      stockMoveLineMap.put(
+          "productCode",
+          stockMoveLine.getProduct() != null ? stockMoveLine.getProduct().getCode() : null);
+      stockMoveLineMap.put("productName", stockMoveLine.getProductName());
+      stockMoveLineMap.put("remainingQty", remainingQty);
+      stockMoveLineMap.put("realQty", stockMoveLine.getRealQty());
+      stockMoveLineMap.put("qtyInvoiced", computeNonCanceledInvoiceQty(stockMoveLine));
+      stockMoveLineMap.put("qtyToInvoice", qtyToInvoice);
+      stockMoveLineMap.put("invoiceAll", false);
+      stockMoveLineMap.put("stockMoveLineId", stockMoveLine.getId());
+      stockMoveLines.add(stockMoveLineMap);
+    }
   }
 
   @Override

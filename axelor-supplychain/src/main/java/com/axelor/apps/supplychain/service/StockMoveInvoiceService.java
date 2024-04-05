@@ -70,6 +70,9 @@ public interface StockMoveInvoiceService {
   public List<Map<String, Object>> getStockMoveLinesToInvoice(StockMove stockMove)
       throws AxelorException;
 
+  List<Map<String, Object>> getStockMoveLinesToInvoiceEmpty(StockMove stockMove)
+      throws AxelorException;
+
   /**
    * Sum the total of non canceled invoice qty in every stock move lines of the stock move.
    *

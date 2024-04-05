@@ -297,88 +297,42 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       if (stockMoveLine == null) {
         continue;
       }
-      if (isStockMoveInvoicingPartiallyActivated(invoice, stockMoveLine)) {
-        BigDecimal qty = stockMoveLine.getQtyInvoiced();
-        StockMove stockMove = stockMoveLine.getStockMove();
+      BigDecimal qty = stockMoveLine.getQtyInvoiced();
+      StockMove stockMove = stockMoveLine.getStockMove();
 
-        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
-          qty = qty.subtract(invoiceLine.getQty());
-        } else {
-          qty = qty.add(invoiceLine.getQty());
-        }
-
-        Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
-        try {
-          qty =
-              unitConversionService.convert(
-                  invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
-        } catch (AxelorException e) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
-                  + "\n"
-                  + e.getMessage());
-        }
-
-        if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
-          stockMoveLine.setQtyInvoiced(qty);
-        } else {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              String.format(
-                  I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX),
-                  qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
-                      .toString(),
-                  stockMoveLine
-                      .getRealQty()
-                      .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
-                      .toString(),
-                  stockMoveLine.getProductName()));
-        }
+      if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
+        qty = qty.subtract(invoiceLine.getQty());
       } else {
-        // set qty invoiced to the maximum (or emptying it if refund) for all stock move lines
-        boolean invoiceIsRefund =
-            stockMoveInvoiceService.isInvoiceRefundingStockMove(
-                stockMoveLine.getStockMove(), invoice);
+        qty = qty.add(invoiceLine.getQty());
+      }
 
-        // This case happens if you mix into a single invoice refund and non-refund stock moves.
-        if (invoiceLine.getQty().compareTo(BigDecimal.ZERO) < 0) {
-          stockMoveLine.setQtyInvoiced(
-              invoiceIsRefund ? stockMoveLine.getRealQty() : BigDecimal.ZERO);
-        }
-        // This is the most general case
-        else {
-          stockMoveLine.setQtyInvoiced(
-              invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
-        }
+      Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
+      try {
+        qty =
+            unitConversionService.convert(
+                invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
+      } catch (AxelorException e) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
+                + "\n"
+                + e.getMessage());
+      }
 
-        // search in sale/purchase order lines to set split stock move lines to invoiced.
-        if (stockMoveLine.getSaleOrderLine() != null) {
-          stockMoveLineRepository
-              .all()
-              .filter(
-                  "self.saleOrderLine.id = :saleOrderLineId AND self.stockMove.id = :stockMoveId")
-              .bind("saleOrderLineId", stockMoveLine.getSaleOrderLine().getId())
-              .bind("stockMoveId", stockMoveLine.getStockMove().getId())
-              .fetch()
-              .forEach(
-                  stockMvLine ->
-                      stockMvLine.setQtyInvoiced(
-                          invoiceIsRefund ? BigDecimal.ZERO : stockMvLine.getRealQty()));
-        }
-        if (stockMoveLine.getPurchaseOrderLine() != null) {
-          stockMoveLineRepository
-              .all()
-              .filter(
-                  "self.purchaseOrderLine.id = :purchaseOrderLineId AND self.stockMove.id = :stockMoveId")
-              .bind("purchaseOrderLineId", stockMoveLine.getPurchaseOrderLine().getId())
-              .bind("stockMoveId", stockMoveLine.getStockMove().getId())
-              .fetch()
-              .forEach(
-                  stockMvLine ->
-                      stockMvLine.setQtyInvoiced(
-                          invoiceIsRefund ? BigDecimal.ZERO : stockMvLine.getRealQty()));
-        }
+      if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
+        stockMoveLine.setQtyInvoiced(qty);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(
+                I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX),
+                qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                    .toString(),
+                stockMoveLine
+                    .getRealQty()
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                    .toString(),
+                stockMoveLine.getProductName()));
       }
     }
 

@@ -558,7 +558,7 @@ public class StockMoveInvoiceController {
         response.setAttr("operationSelect", "selection-in", "[2]");
       }
       List<Map<String, Object>> stockMoveLines =
-          Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
+          Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoiceEmpty(stockMove);
       response.setValue("$stockMoveLines", stockMoveLines);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -596,9 +596,10 @@ public class StockMoveInvoiceController {
                 .context("_id", stockMove.getId())
                 .map());
       } else if (!stockMoveLines.isEmpty()) {
-        // invoice everything if config is disabled.
+        // invoice everything that remains if config is disabled.
         Invoice invoice =
-            stockMoveInvoiceService.createInvoice(stockMove, StockMoveRepository.INVOICE_ALL, null);
+            stockMoveInvoiceService.createInvoice(
+                stockMove, StockMoveRepository.INVOICE_PARTIALLY, stockMoveLines);
         if (invoice != null) {
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))

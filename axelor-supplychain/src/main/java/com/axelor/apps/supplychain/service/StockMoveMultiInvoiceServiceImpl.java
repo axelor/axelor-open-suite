@@ -438,8 +438,6 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     for (StockMove stockMoveLocal : stockMoveList) {
 
-      stockMoveInvoiceService.checkSplitSalePartiallyInvoicedStockMoveLines(
-          stockMoveLocal, stockMoveLocal.getStockMoveLineList());
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
               invoice, stockMoveLocal, stockMoveLocal.getStockMoveLineList(), null);
