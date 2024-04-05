@@ -60,7 +60,8 @@
     <panel-related field="subSaleOrderLineList" colSpan="12"
       form-view="sale-order-line-form" grid-view="sale-order-line-simple-editable-grid"
       x-expandable-form="sale-order-line-form" x-expand-all="subSaleOrderLineList"
-      x-display-mode="tree" x-expandable="true" x-show-header="false"/>
+      x-display-mode="tree" x-expandable="true" x-show-header="false"
+      onNew="action-sale-order-line-method-set-line-start-values"/>
 
   </form>
 
@@ -110,32 +111,27 @@
   </grid>
 
   <grid name="sale-order-line-simple-editable-grid" title="SO lines"
-        model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
-        expandable="true" expandable-form-view="sale-order-line-form-nested">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
+    expandable="true" expandable-form-view="sale-order-line-form-nested">
     <hilite strong="true" color="default" if="saleOrderLineListSize &gt; 0"/>
     <field name="lineIndex"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
-           width="51"/>
+      width="51"/>
     <field name="product" canEdit="false"
-           onChange="action-group-sale-saleorderline-product-onchange"
-           onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
-           grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+      onChange="action-group-sale-saleorderline-product-onchange"
+      onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
+      grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
     <field name="product" canEdit="false"
-           onChange="action-group-sale-saleorderline-product-onchange"
-           onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
-           grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
+      onChange="action-group-sale-saleorderline-product-onchange"
+      onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
+      grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
-           validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
+      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" colSpan="3"
-           onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"/>
+      onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="taxLineSet" widget="MultiSelect" canEdit="false" colSpan="6"
-           readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
-           onChange="action-group-sale-saleorderline-tax-line-onchange"
-           domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-           form-view="tax-line-form"/>
     <field name="inTaxPrice"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
@@ -1159,7 +1155,8 @@
   </action-attrs>
 
   <action-method name="action-sale-order-line-method-set-line-start-values">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="setSOLineStartValues"/>
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="setSOLineStartValues"/>
   </action-method>
 
 

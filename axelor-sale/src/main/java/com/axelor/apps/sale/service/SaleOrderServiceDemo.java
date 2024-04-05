@@ -69,20 +69,6 @@ public class SaleOrderServiceDemo {
     this.saleOrderLineService = saleOrderLineService;
   }
 
-  public SaleOrder calculate(SaleOrder order) throws AxelorException {
-    order.getSaleOrderLineList().clear();
-    if (!ObjectUtils.isEmpty(order.getExpendableSaleOrderLineList())) {
-      for (SaleOrderLine item : order.getExpendableSaleOrderLineList()) {
-        if (!item.getIsNotCountable()) {
-          order.addSaleOrderLineListItem(item);
-        }
-      }
-    }
-    order = saleOrderComputeService.computeSaleOrder(order);
-
-    return order;
-  }
-
   public List<SaleOrderLine> updateRelatedLines(SaleOrderLine dirtyLine, SaleOrder order)
       throws AxelorException {
     List<SaleOrderLine> items = order.getExpendableSaleOrderLineList();
@@ -306,10 +292,10 @@ public class SaleOrderServiceDemo {
       }
 
       if (context.getParent() != null
-              && context.getParent().getContextClass().equals(SaleOrderLine.class)) {
+          && context.getParent().getContextClass().equals(SaleOrderLine.class)) {
         SaleOrderLine parent = context.getParent().asType(SaleOrderLine.class);
         saleOrderLine.setLineIndex(
-                parent.getLineIndex() + "." + (parent.getSaleOrderLineListSize() + 1));
+            parent.getLineIndex() + "." + (parent.getSaleOrderLineListSize() + 1));
       }
     }
     return saleOrderLine;
@@ -317,12 +303,12 @@ public class SaleOrderServiceDemo {
 
   protected String calculatePrentSolLineIndex(SaleOrder saleOrder) {
     return saleOrder.getExpendableSaleOrderLineList().stream()
-            .filter(slo -> slo.getLineIndex() != null)
-            .map(slo -> slo.getLineIndex().split("\\.")[0])
-            .mapToInt(Integer::parseInt)
-            .boxed()
-            .collect(Collectors.maxBy(Integer::compareTo))
-            .map(max -> String.valueOf(max + 1))
-            .orElse("1");
+        .filter(slo -> slo.getLineIndex() != null)
+        .map(slo -> slo.getLineIndex().split("\\.")[0])
+        .mapToInt(Integer::parseInt)
+        .boxed()
+        .collect(Collectors.maxBy(Integer::compareTo))
+        .map(max -> String.valueOf(max + 1))
+        .orElse("1");
   }
 }

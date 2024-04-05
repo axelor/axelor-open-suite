@@ -34,7 +34,6 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderServiceDemo;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -465,7 +464,6 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
     response.setValues(
-            Beans.get(SaleOrderServiceDemo.class).setSOLineStartValues(saleOrderLine,context));
+        Beans.get(SaleOrderServiceDemo.class).setSOLineStartValues(saleOrderLine, context));
   }
-
 }

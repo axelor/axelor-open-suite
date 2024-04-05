@@ -489,7 +489,7 @@
           title="Details Lines" orderBy="sequence"
           onChange="action-sale-order-method-on-line-change" onClick="action-orderSaleLine-tree"
           canMove="true"
-          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
+          if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
 
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == saleOrderLinenull || statusSelect != 1" colSpan="12"

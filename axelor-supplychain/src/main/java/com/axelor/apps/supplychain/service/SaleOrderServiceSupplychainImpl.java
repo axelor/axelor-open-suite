@@ -408,7 +408,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             .anyMatch(
                 saleOrderLine ->
                     saleOrderLine.getProduct() != null
-                        && saleOrderLine.getProduct().getProductTypeSelect() != null && saleOrderLine
+                        && saleOrderLine.getProduct().getProductTypeSelect() != null
+                        && saleOrderLine
                             .getProduct()
                             .getProductTypeSelect()
                             .equals(ProductRepository.PRODUCT_TYPE_STORABLE))
