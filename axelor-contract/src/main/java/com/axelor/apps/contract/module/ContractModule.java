@@ -52,8 +52,10 @@ import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsServiceImpl;
 import com.axelor.apps.contract.service.pricing.ContractPricingService;
 import com.axelor.apps.contract.service.pricing.ContractPricingServiceImpl;
+import com.axelor.apps.contract.service.pricing.PricingGroupContractServiceImpl;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
+import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
@@ -82,6 +84,7 @@ public class ContractModule extends AxelorModule {
     bind(ContractLineRecordSetService.class).to(ContractLineRecordSetServiceImpl.class);
     bind(InvoiceLinePricingService.class).to(InvoiceLinePricingServiceImpl.class);
     bind(ContractPricingService.class).to(ContractPricingServiceImpl.class);
+    bind(PricingGroupSaleServiceImpl.class).to(PricingGroupContractServiceImpl.class);
     bind(ContractYearEndBonusService.class).to(ContractYearEndBonusServiceImpl.class);
   }
 }
