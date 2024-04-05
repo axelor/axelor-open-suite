@@ -132,7 +132,6 @@
     title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="form" name="project-planning-time-form"/>
     <view-param name="popup" value="reload"/>
-    <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
