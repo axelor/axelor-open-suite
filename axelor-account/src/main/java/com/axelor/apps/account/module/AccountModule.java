@@ -28,8 +28,6 @@ import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.db.repo.AccountingReportTypeManagementRepository;
-import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.ChequeRejectionManagementRepository;
@@ -864,8 +862,6 @@ public class AccountModule extends AxelorModule {
 
     bind(FixedAssetDerogatoryLineRepository.class)
         .to(FixedAssetDerogatoryLineManagementRepository.class);
-
-    bind(AccountingReportTypeRepository.class).to(AccountingReportTypeManagementRepository.class);
 
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
 

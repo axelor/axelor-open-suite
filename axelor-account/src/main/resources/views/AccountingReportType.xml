@@ -8,9 +8,8 @@
     <field name="name"/>
     <field name="reportExportTypeSelect"/>
     <field name="typeSelect"/>
-    <field name="$companyStr" type="string" title="Company(ies)"/>
+    <field name="companySet" widget="TagSelect"/>
     <field name="company" hidden="true"/>
-    <field name="companySet" hidden="true"/>
   </grid>
 
   <form title="Report type" name="accounting-report-type-form"
