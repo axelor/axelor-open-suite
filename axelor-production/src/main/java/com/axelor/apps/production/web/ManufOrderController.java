@@ -19,17 +19,18 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProcess;
@@ -347,14 +348,14 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 
       Company company = manufOrder.getCompany();
-      BirtTemplate prodProcessBirtTemplate = null;
+      PrintingTemplate prodProcessPrintTemplate = null;
       if (ObjectUtils.notEmpty(company)) {
-        prodProcessBirtTemplate =
+        prodProcessPrintTemplate =
             Beans.get(ProductionConfigService.class)
                 .getProductionConfig(company)
-                .getProdProcessBirtTemplate();
+                .getProdProcessPrintTemplate();
       }
-      if (ObjectUtils.isEmpty(prodProcessBirtTemplate)) {
+      if (ObjectUtils.isEmpty(prodProcessPrintTemplate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
@@ -364,9 +365,11 @@ public class ManufOrderController {
           Beans.get(ProdProcessRepository.class).find(manufOrder.getProdProcess().getId());
       String prodProcessLable = manufOrder.getProdProcess().getName();
       String fileLink =
-          Beans.get(BirtTemplateService.class)
-              .generateBirtTemplateLink(
-                  prodProcessBirtTemplate, prodProcess, prodProcessLable + "-${date}");
+          Beans.get(PrintingTemplatePrintService.class)
+              .getPrintLink(
+                  prodProcessPrintTemplate,
+                  new PrintingGenFactoryContext(prodProcess),
+                  prodProcessLable + "-${date}");
 
       response.setView(ActionView.define(prodProcessLable).add("html", fileLink).map());
     } catch (Exception e) {

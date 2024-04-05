@@ -28,8 +28,8 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -45,7 +45,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FilenameUtils;
 
 @Singleton
 public class PrintingTemplateController {
@@ -169,7 +168,8 @@ public class PrintingTemplateController {
 
     String outputLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(printingTemplate, new PrintingGenFactoryContext(model));
+            .getPrintLink(
+                printingTemplate, new PrintingGenFactoryContext(EntityHelper.getEntity(model)));
     print(response, printingTemplate, outputLink);
   }
 
@@ -187,11 +187,7 @@ public class PrintingTemplateController {
 
   protected void print(
       ActionResponse response, PrintingTemplate printingTemplate, String outputLink) {
-    if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(outputLink))) {
-      response.setView(
-          ActionView.define(I18n.get(printingTemplate.getName())).add("html", outputLink).map());
-    } else {
-      response.setExportFile(outputLink);
-    }
+    response.setView(
+        ActionView.define(I18n.get(printingTemplate.getName())).add("html", outputLink).map());
   }
 }

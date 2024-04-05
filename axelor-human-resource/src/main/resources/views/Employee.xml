@@ -37,8 +37,6 @@
     <toolbar>
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id"
         onClick="action-employee-view-annual-report-wizard"/>
-      <button name="employeeReportBtn" title="Print" showIf="id"
-        onClick="save,action-method-print-birt"/>
       <button onClick="action-employee-view-employee-planning" name="employeePlanningBtn"
         title="Employee planning" if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
     </toolbar>
