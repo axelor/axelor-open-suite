@@ -75,7 +75,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -466,19 +465,15 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     Company company = mrp.getStockLocation().getCompany();
 
-    Optional<MrpLine> originalMrpLineOpt =
-        mrpLineOriginList.stream().findAny().map(MrpLineOrigin::getMrpLine);
-
-    BillOfMaterial billOfMaterial = null;
-    if (originalMrpLineOpt.map(MrpLine::getBillOfMaterial).isPresent()) {
-      billOfMaterial =
-          billOfMaterialMrpLineService
-              .getEligibleBillOfMaterialOfProductInMrpLine(originalMrpLineOpt.orElse(null), product)
-              .orElse(null);
-    }
-    if (billOfMaterial == null) {
-      billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
-    }
+    BillOfMaterial billOfMaterial =
+        mrpLineOriginList.stream()
+            .findAny()
+            .map(MrpLineOrigin::getMrpLine)
+            .flatMap(
+                mrpLine ->
+                    billOfMaterialMrpLineService.getEligibleBillOfMaterialOfProductInMrpLine(
+                        mrpLine, product))
+            .orElse(billOfMaterialService.getDefaultBOM(product, company));
 
     if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
