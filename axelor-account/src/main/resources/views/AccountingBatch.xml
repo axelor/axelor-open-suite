@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -18,7 +18,7 @@
     onLoad="action-accounting-batch-group-on-load">
     <panel name="mainPanel">
       <field name="actionSelect"
-        onChange="action-accounting-batch-group-action-select-onchange"/>
+        onChange="action-accounting-batch-group-action-select-on-change"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
@@ -141,16 +141,20 @@
         <field name="moveDescription" colSpan="12"/>
         <panel-related field="closureAccountSet" form-view="account-form"
           grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
-          domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'equity' OR self.accountType.technicalTypeSelect = 'provision' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation' OR self.accountType.technicalTypeSelect = 'currentAsset' OR self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable' OR self.accountType.technicalTypeSelect = 'tax' OR self.accountType.technicalTypeSelect = 'cash' OR self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'income')"
+          domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'charge', 'income', 'asset')"
           showIf="closeYear"/>
         <panel-related field="openingAccountSet" form-view="account-form"
           grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
-          domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'equity' OR self.accountType.technicalTypeSelect = 'provision' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation' OR self.accountType.technicalTypeSelect = 'currentAsset' OR self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable' OR self.accountType.technicalTypeSelect = 'tax' OR self.accountType.technicalTypeSelect = 'cash')"
+          domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'asset')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>
-        <field name="includeSpecialAccounts" showIf="openYear &amp;&amp; generateResultMove"/>
         <field name="resultMoveDescription" showIf="generateResultMove"/>
         <field name="generateGeneralLedger" showIf="openYear"/>
+        <field name="includeSpecialAccounts"
+          showIf="openYear &amp;&amp; generateResultMove &amp;&amp; generateGeneralLedger"/>
+        <field name="isDeleteSimulatedMove" readonlyIf="isDeleteSimulatedMove"
+          showIf="company.accountConfig.isActivateSimulatedMove"/>
+        <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
         <!-- <field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid"
           widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
       </panel>
@@ -362,9 +366,10 @@
       if="!previewRecordsToProcess"/>
   </action-group>
 
-  <action-group name="action-accounting-batch-group-action-select-onchange">
+  <action-group name="action-accounting-batch-group-action-select-on-change">
     <action name="action-accounting-batch-record-default-currency"/>
     <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
+    <action name="action-accounting-batch-record-set-is-delete-simulated-move"/>
     <action name="action-method-accounting-batch-generated-move-status-domain"
       if="[21,26].contains(actionSelect)"/>
   </action-group>
@@ -384,6 +389,12 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="billOfExchangeStepBatchSelect" expr="eval: 1"/>
     <field name="actionSelect" expr="eval: _actionSelect" if="_actionSelect"/>
+  </action-record>
+
+  <action-record name="action-accounting-batch-record-set-is-delete-simulated-move"
+    model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="isDeleteSimulatedMove"
+      expr="eval: company?.accountConfig?.isActivateSimulatedMove"/>
   </action-record>
 
   <action-record name="action-accounting-batch-record-default-currency"

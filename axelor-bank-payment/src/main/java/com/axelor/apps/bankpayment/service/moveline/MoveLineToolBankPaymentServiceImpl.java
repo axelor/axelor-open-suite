@@ -19,13 +19,24 @@
 package com.axelor.apps.bankpayment.service.moveline;
 
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.google.inject.Inject;
 
 public class MoveLineToolBankPaymentServiceImpl implements MoveLineToolBankPaymentService {
+
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public MoveLineToolBankPaymentServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
+  }
+
   @Override
   public boolean checkBankReconciledAmount(MoveLine moveLine) {
-    return moveLine
-            .getBankReconciledAmount()
-            .compareTo(moveLine.getDebit().add(moveLine.getCredit()))
-        > 0;
+    return currencyScaleService.isGreaterThan(
+        moveLine.getBankReconciledAmount(),
+        moveLine.getDebit().add(moveLine.getCredit()),
+        moveLine,
+        true);
   }
 }

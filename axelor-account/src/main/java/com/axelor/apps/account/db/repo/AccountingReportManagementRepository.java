@@ -23,7 +23,11 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportManagementRepository extends AccountingReportRepository {
 
@@ -59,5 +63,33 @@ public class AccountingReportManagementRepository extends AccountingReportReposi
     copy.setBalance(BigDecimal.ZERO);
 
     return copy;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    // Concatenate company names into company field for custom reports
+    if (context.containsKey("_isCustom")) {
+      boolean isCustom = (boolean) context.get("_isCustom");
+
+      if (isCustom) {
+        if (json.containsKey("companySet")) {
+          List<Map<String, Object>> companySet = (List<Map<String, Object>>) json.get("companySet");
+
+          if (CollectionUtils.isNotEmpty(companySet)) {
+            String companyStr =
+                companySet.stream()
+                    .map(it -> (String) it.get("name"))
+                    .collect(Collectors.joining(","));
+            json.put("$companyStr", companyStr);
+          }
+        }
+      } else if (json.containsKey("company")) {
+        Map<String, Object> company = (Map<String, Object>) json.get("company");
+        json.put("$companyStr", company.get("name"));
+      }
+    }
+
+    return super.populate(json, context);
   }
 }

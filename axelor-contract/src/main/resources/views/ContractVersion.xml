@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="contract-version-next-grid" title="Versions"
     model="com.axelor.apps.contract.db.ContractVersion">
@@ -101,12 +101,23 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
-        <field if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
-          showIf="nextContract.isInvoicingManagement" name="contractLineList" colSpan="12"
-          form-view="contract-line-form" grid-view="contract-line-grid"
-          onChange="action-contract-method-contract-line-list-on-change"/>
-        <field name="description" colSpan="9" widget="html"/>
-        <field name="metaFile" colSpan="3" widget="binary-link"/>
+        <panel name="contractLineListPanel" showIf="nextContract.isInvoicingManagement"
+          colSpan="12">
+          <field if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
+            name="contractLineList" colSpan="12" form-view="contract-line-form"
+            grid-view="contract-line-grid"
+            onChange="action-contract-method-contract-line-list-on-change"/>
+        </panel>
+        <panel name="yerContractLineListPanel" hidden="true"
+          showIf="nextContract.isInvoicingManagement &amp;&amp; nextContract.targetTypeSelect > 2"
+          colSpan="12">
+          <field name="contractLineList" showTitle="false" colSpan="12"
+            form-view="contract-line-yer-form" grid-view="contract-line-yer-grid"/>
+        </panel>
+        <panel name="descriptionPanel">
+          <field name="description" colSpan="9" widget="html"/>
+          <field name="metaFile" colSpan="3" widget="binary-link"/>
+        </panel>
       </panel>
       <panel if="__config__.app.getApp('contract')?.isConfigContract" title="Config."
         name="configPanel">
@@ -115,14 +126,17 @@
           <field name="nextContract.isInvoicingManagement" colSpan="6" widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true"
             showIf="nextContract.isInvoicingManagement" colSpan="6">
-            <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement"
-              widget="boolean-switch" name="nextContract.isAdditionaBenefitManagement" colSpan="6"/>
+            <field if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
+              widget="boolean-switch" name="nextContract.isAdditionaBenefitManagement" colSpan="6"
+              hideIf="nextContract.targetTypeSelect > 2"/>
             <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
-              widget="boolean-switch" name="nextContract.isConsumptionManagement" colSpan="6"/>
+              widget="boolean-switch" name="nextContract.isConsumptionManagement" colSpan="6"
+              hideIf="nextContract.targetTypeSelect > 2"/>
           </panel>
           <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
             widget="boolean-switch" name="isConsumptionBeforeEndDate" hidden="true"
-            showIf="nextContract.isConsumptionManagement" colSpan="6"/>
+            showIf="nextContract.isConsumptionManagement &amp;&amp; nextContract.targetTypeSelect &lt; 2"
+            colSpan="6"/>
           <panel name="invoicingSubPanel" hidden="true"
             showIf="nextContract.isInvoicingManagement" colSpan="12">
             <panel name="paymentPanel" colSpan="12">
@@ -147,6 +161,7 @@
                   hidden="true"/>
               </panel>
             </panel>
+            <field name="nextContract.targetTypeSelect" hidden="true"/>
           </panel>
         </panel>
         <panel if="__config__.app.getApp('contract')?.isRenewalManagement" title="Renewal"

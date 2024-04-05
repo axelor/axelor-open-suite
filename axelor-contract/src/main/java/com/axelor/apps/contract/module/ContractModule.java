@@ -20,6 +20,8 @@ package com.axelor.apps.contract.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
+import com.axelor.apps.contract.db.repo.ConsumptionLineManagementRepository;
+import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractBatchContractRepository;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractLineManagementRepository;
@@ -38,14 +40,22 @@ import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.contract.service.ContractVersionServiceImpl;
-import com.axelor.apps.contract.service.CurrencyScaleServiceContract;
-import com.axelor.apps.contract.service.CurrencyScaleServiceContractImpl;
+import com.axelor.apps.contract.service.ContractYearEndBonusService;
+import com.axelor.apps.contract.service.ContractYearEndBonusServiceImpl;
 import com.axelor.apps.contract.service.IndexRevaluationService;
 import com.axelor.apps.contract.service.IndexRevaluationServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
+import com.axelor.apps.contract.service.InvoiceLinePricingService;
+import com.axelor.apps.contract.service.InvoiceLinePricingServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsServiceImpl;
+import com.axelor.apps.contract.service.pricing.ContractPricingService;
+import com.axelor.apps.contract.service.pricing.ContractPricingServiceImpl;
+import com.axelor.apps.contract.service.pricing.PricingGroupContractServiceImpl;
+import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
+import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
+import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
@@ -69,7 +79,12 @@ public class ContractModule extends AxelorModule {
     bind(IndexRevaluationService.class).to(IndexRevaluationServiceImpl.class);
     bind(ContractRevaluationService.class).to(ContractRevaluationServiceImpl.class);
     bind(ContractLineViewService.class).to(ContractLineViewServiceImpl.class);
+    bind(ConsumptionLineRepository.class).to(ConsumptionLineManagementRepository.class);
     bind(ContractLineAttrsService.class).to(ContractLineAttrsServiceImpl.class);
-    bind(CurrencyScaleServiceContract.class).to(CurrencyScaleServiceContractImpl.class);
+    bind(ContractLineRecordSetService.class).to(ContractLineRecordSetServiceImpl.class);
+    bind(InvoiceLinePricingService.class).to(InvoiceLinePricingServiceImpl.class);
+    bind(ContractPricingService.class).to(ContractPricingServiceImpl.class);
+    bind(PricingGroupSaleServiceImpl.class).to(PricingGroupContractServiceImpl.class);
+    bind(ContractYearEndBonusService.class).to(ContractYearEndBonusServiceImpl.class);
   }
 }

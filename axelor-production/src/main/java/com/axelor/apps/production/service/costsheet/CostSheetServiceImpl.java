@@ -614,30 +614,13 @@ public class CostSheetServiceImpl implements CostSheetService {
         continue;
       }
 
-      BigDecimal valuationQty = BigDecimal.ZERO;
-
-      if (calculationTypeSelect == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
-
-        BigDecimal plannedConsumeQty =
-            computeTotalQtyPerUnit(toConsumeProdProductList, product, unit);
-
-        valuationQty = realQty.subtract(plannedConsumeQty.multiply(ratio));
-      }
-
-      valuationQty =
-          valuationQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-
-      if (valuationQty.compareTo(BigDecimal.ZERO) == 0) {
-        continue;
-      }
-
       costSheetLineService.createConsumedProductCostSheetLine(
           parentCostSheet.getManufOrder().getCompany(),
           product,
           unit,
           bomLevel,
           parentCostSheetLine,
-          valuationQty,
+          realQty,
           CostSheetService.ORIGIN_MANUF_ORDER,
           null);
     }
@@ -995,8 +978,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     BigDecimal costPerHour =
         appProductionService.getIsCostPerProcessLine()
-            ? prodProcessLine.getCostAmount()
-            : workCenter.getCostAmount();
+            ? prodProcessLine.getHrCostAmount()
+            : workCenter.getHrCostAmount();
     BigDecimal durationHours =
         realDuration.divide(
             new BigDecimal(3600),

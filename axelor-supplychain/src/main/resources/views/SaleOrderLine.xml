@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
@@ -69,23 +69,16 @@
       </insert>
 
       <insert position="after">
-        <panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration">
+        <panel name="settingsPanel" title="Configuration">
           <field name="saleSupplySelect"
             onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
           <field name="standardDelay" hidden="true"
-            showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
+            showIf="saleSupplySelect == 2 || saleSupplySelect == 3 || saleSupplySelect == 4"/>
           <field name="pricingScaleLogs" colSpan="12"
             showIf="pricingScaleLogs &amp;&amp; product"/>
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
             onSelect="action-sale-order-line-method-supplier-partner-domain"
             form-view="partner-form" grid-view="partner-grid"/>
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
-            if-module="axelor-production" form-view="bill-of-material-form"
-            grid-view="bill-of-material-grid" if="__config__.app.isApp('production')" canEdit="true"/>
-          <button name="customizeBOMBtn" title="Customize BOM"
-            onClick="action-production-method-customize-bill-of-material"
-            if-module="axelor-production" if="__config__.app.isApp('production')"/>
         </panel>
       </insert>
     </extend>
@@ -116,19 +109,12 @@
           <field name="saleSupplySelect"
             onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
           <field name="standardDelay" hidden="true"
-            showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
+            showIf="saleSupplySelect == 2 || saleSupplySelect == 3 || saleSupplySelect == 4"/>
           <field name="pricingScaleLogs" colSpan="12"
             showIf="pricingScaleLogs &amp;&amp; product"/>
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
             onSelect="action-sale-order-line-method-supplier-partner-domain"
             form-view="partner-form" grid-view="partner-grid"/>
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
-            if-module="axelor-production" form-view="bill-of-material-form"
-            grid-view="bill-of-material-grid" if="__config__.app.isApp('production')"/>
-          <button name="customizeBOMBtn" title="Customize BOM"
-            onClick="action-production-method-customize-bill-of-material"
-            if-module="axelor-production" if="__config__.app.isApp('production')"/>
         </panel>
       </insert>
     </extend>
@@ -234,7 +220,7 @@
       if="__config__.app.isApp('production')"/>
     <action name="action-sale-order-line-method-supplier-partner-default"
       if="__config__.app.isApp('production')"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
       if="__config__.app.isApp('production')"/>
     <action name="action-sale-order-line-method-check-stock"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>

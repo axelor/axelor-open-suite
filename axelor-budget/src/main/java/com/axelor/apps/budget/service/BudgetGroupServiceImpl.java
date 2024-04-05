@@ -1,7 +1,26 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.BudgetStructure;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
@@ -24,10 +43,14 @@ public class BudgetGroupServiceImpl implements BudgetGroupService {
 
   @Override
   public Map<String, Object> getOnNewValuesMap(
-      Budget budget, BudgetLevel parent, GlobalBudget global, String typeSelect) {
+      Budget budget,
+      BudgetLevel parent,
+      GlobalBudget global,
+      BudgetStructure budgetStructure,
+      String typeSelect) {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    fillParentFields(budget, parent, global);
+    fillParentFields(budget, parent, global, budgetStructure);
 
     valuesMap.put("sourceSelect", BudgetLevelRepository.BUDGET_LEVEL_SOURCE_CUSTOM);
     valuesMap.put("fromDate", budget.getFromDate());
@@ -38,11 +61,13 @@ public class BudgetGroupServiceImpl implements BudgetGroupService {
     valuesMap.put("typeSelect", typeSelect);
     valuesMap.put("budgetLevel", budget.getBudgetLevel());
     valuesMap.put("globalBudget", budget.getGlobalBudget());
+    valuesMap.put("budgetStructure", budget.getBudgetStructure());
 
     return valuesMap;
   }
 
-  protected void fillParentFields(Budget budget, BudgetLevel parent, GlobalBudget global) {
+  protected void fillParentFields(
+      Budget budget, BudgetLevel parent, GlobalBudget global, BudgetStructure budgetStructure) {
     if (parent != null) {
       budget.setBudgetLevel(parent);
       budget.setInChargeUser(parent.getBudgetManager());
@@ -55,6 +80,9 @@ public class BudgetGroupServiceImpl implements BudgetGroupService {
       budget.setCompany(global.getCompany());
       budget.setFromDate(global.getFromDate());
       budget.setToDate(global.getToDate());
+    } else if (budgetStructure != null) {
+      budget.setBudgetStructure(budgetStructure);
+      budget.setCompany(budgetStructure.getCompany());
     }
 
     if (budget.getCompany() == null) {

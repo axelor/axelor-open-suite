@@ -33,7 +33,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -93,6 +95,24 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     return totalDuration;
   }
 
+  @Override
+  public long computeLeadTimeDuration(ProdProcess prodProcess, BigDecimal qty)
+      throws AxelorException {
+
+    Map<Integer, Long> maxDurationPerPriority = new HashMap<>();
+    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+      Integer priority = prodProcessLine.getPriority();
+      Long duration = maxDurationPerPriority.get(priority);
+      Long computedDuration = this.computeEntireCycleDuration(null, prodProcessLine, qty);
+
+      if (duration == null || computedDuration > duration) {
+        maxDurationPerPriority.put(priority, computedDuration);
+      }
+    }
+
+    return maxDurationPerPriority.values().stream().mapToLong(l -> l).sum();
+  }
+
   protected Pair<Long, BigDecimal> getDurationNbCyclesPair(
       WorkCenter workCenter, ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException {
@@ -128,12 +148,12 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
             I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
-      duration += workCenter.getStartingDuration();
-      duration += workCenter.getEndingDuration();
+      duration += prodProcessLine.getStartingDuration();
+      duration += prodProcessLine.getEndingDuration();
       duration +=
           nbCycles
               .subtract(new BigDecimal(1))
-              .multiply(new BigDecimal(workCenter.getSetupDuration()))
+              .multiply(new BigDecimal(prodProcessLine.getSetupDuration()))
               .longValue();
     }
 

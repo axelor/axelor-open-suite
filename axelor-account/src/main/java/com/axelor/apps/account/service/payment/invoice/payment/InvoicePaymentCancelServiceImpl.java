@@ -22,8 +22,6 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
@@ -34,26 +32,20 @@ import org.slf4j.LoggerFactory;
 
 public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelService {
 
-  protected AccountConfigService accountConfigService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected MoveCancelService moveCancelService;
-  protected ReconcileService reconcileService;
   protected InvoicePaymentToolService invoicePaymentToolService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public InvoicePaymentCancelServiceImpl(
-      AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
-      ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService) {
 
-    this.accountConfigService = accountConfigService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveCancelService = moveCancelService;
-    this.reconcileService = reconcileService;
     this.invoicePaymentToolService = invoicePaymentToolService;
   }
 
@@ -81,11 +73,11 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
 
   @Transactional(rollbackOn = {Exception.class})
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException {
-
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
 
-    invoicePaymentRepository.save(invoicePayment);
-
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+    invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
+
+    invoicePaymentRepository.save(invoicePayment);
   }
 }

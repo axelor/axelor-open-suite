@@ -65,6 +65,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   protected OperationOrderPlanningInfiniteCapacityService
       operationOrderPlanningInfiniteCapacityService;
   protected ManufOrderWorkflowService manufOrderWorkflowService;
+  protected OperationOrderOutsourceService operationOrderOutsourceService;
 
   @Inject
   public OperationOrderPlanningServiceImpl(
@@ -76,7 +77,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
       ManufOrderService manufOrderService,
       OperationOrderService operationOrderService,
       OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
-      ManufOrderWorkflowService manufOrderWorkflowService) {
+      ManufOrderWorkflowService manufOrderWorkflowService,
+      OperationOrderOutsourceService operationOrderOutsourceService) {
     this.productionConfigService = productionConfigService;
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.machineService = machineService;
@@ -87,11 +89,15 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     this.operationOrderPlanningInfiniteCapacityService =
         operationOrderPlanningInfiniteCapacityService;
     this.manufOrderWorkflowService = manufOrderWorkflowService;
+    this.operationOrderOutsourceService = operationOrderOutsourceService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void plan(List<OperationOrder> operationOrders) throws AxelorException {
+    if (CollectionUtils.isEmpty(operationOrders)) {
+      return;
+    }
 
     ManufOrder manufOrder = operationOrders.get(0).getManufOrder();
     Company company = manufOrder.getCompany();
@@ -153,6 +159,9 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void replan(List<OperationOrder> operationOrders) throws AxelorException {
+    if (CollectionUtils.isEmpty(operationOrders)) {
+      return;
+    }
 
     ManufOrder manufOrder = operationOrders.get(0).getManufOrder();
     Company company = manufOrder.getCompany();
@@ -170,13 +179,22 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
       for (OperationOrder operationOrder : operationOrders) {
         operationOrder.setPlannedStartDateT(
             operationOrderService.getLastOperationDate(operationOrder));
-        operationOrder.setPlannedEndDateT(
-            operationOrderPlanningInfiniteCapacityService.computePlannedEndDateT(operationOrder));
 
-        operationOrder.setPlannedDuration(
-            DurationHelper.getSecondsDuration(
-                Duration.between(
-                    operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+        if (operationOrder.getOutsourcing()) {
+          operationOrder.setPlannedDuration(
+              operationOrderOutsourceService.getOutsourcingDuration(operationOrder));
+          operationOrder.setPlannedEndDateT(
+              operationOrder
+                  .getPlannedStartDateT()
+                  .plusSeconds(operationOrder.getPlannedDuration()));
+        } else {
+          operationOrder.setPlannedEndDateT(
+              operationOrderPlanningInfiniteCapacityService.computePlannedEndDateT(operationOrder));
+          operationOrder.setPlannedDuration(
+              DurationHelper.getSecondsDuration(
+                  Duration.between(
+                      operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+        }
       }
     } else {
       throw new AxelorException(

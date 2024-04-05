@@ -20,18 +20,19 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.ReconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import java.util.Map;
 
 public class ImportReconcile {
 
-  private ReconcileServiceImpl reconcileService;
+  private ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService;
 
   @Inject
-  public ImportReconcile(ReconcileServiceImpl reconcileService) {
-    this.reconcileService = reconcileService;
+  public ImportReconcile(
+      ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService) {
+    this.reconcileInvoiceTermComputationService = reconcileInvoiceTermComputationService;
   }
 
   public Object updateInvoicePayments(Object bean, Map<String, Object> values)
@@ -39,7 +40,7 @@ public class ImportReconcile {
     assert bean instanceof Reconcile;
     Reconcile reconcile = (Reconcile) bean;
     if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-      reconcileService.updatePayments(reconcile, true);
+      reconcileInvoiceTermComputationService.updatePayments(reconcile, true);
     }
     return reconcile;
   }

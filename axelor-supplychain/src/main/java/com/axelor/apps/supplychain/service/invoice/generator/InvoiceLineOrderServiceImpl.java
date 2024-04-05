@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -64,7 +65,7 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
 
     BigDecimal lineAmountToInvoiceInclTax =
         taxService.convertUnitPrice(
-            invoicingProduct.getInAti(), orderLineTax.getTaxLine(), price, scale);
+            invoicingProduct.getInAti(), Sets.newHashSet(orderLineTax.getTaxLine()), price, scale);
 
     return new InvoiceLineGenerator(
         invoice,
@@ -76,7 +77,7 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
         invoicingProduct.getDescription(),
         BigDecimal.ONE,
         invoicingProduct.getUnit(),
-        taxLine,
+        Sets.newHashSet(taxLine),
         InvoiceLineGenerator.DEFAULT_SEQUENCE,
         BigDecimal.ZERO,
         PriceListLineRepository.AMOUNT_TYPE_NONE,

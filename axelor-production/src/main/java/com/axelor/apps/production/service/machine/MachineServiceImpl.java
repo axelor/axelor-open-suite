@@ -42,6 +42,7 @@ import java.util.Optional;
 
 public class MachineServiceImpl implements MachineService {
 
+  public static final int MAX_LOOP_CALL = 1000;
   protected OperationOrderRepository operationOrderRepository;
   protected WeeklyPlanningService weeklyPlanningService;
   protected DayPlanningService dayPlanningService;
@@ -69,7 +70,25 @@ public class MachineServiceImpl implements MachineService {
         startDateT,
         endDateT,
         operationOrder,
-        DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)));
+        DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)),
+        false);
+  }
+
+  @Override
+  public MachineTimeSlot getClosestTimeSlotFrom(
+      Machine machine,
+      LocalDateTime startDateT,
+      LocalDateTime endDateT,
+      OperationOrder operationOrder)
+      throws AxelorException {
+
+    return getClosestAvailableTimeSlotFrom(
+        machine,
+        startDateT,
+        endDateT,
+        operationOrder,
+        DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)),
+        true);
   }
 
   @SuppressWarnings("unchecked")
@@ -78,7 +97,8 @@ public class MachineServiceImpl implements MachineService {
       LocalDateTime startDateT,
       LocalDateTime endDateT,
       OperationOrder operationOrder,
-      long initialDuration)
+      long initialDuration,
+      boolean ignoreConcurrency)
       throws AxelorException {
 
     EventsPlanning planning = machine.getPublicHolidayEventsPlanning();
@@ -99,7 +119,8 @@ public class MachineServiceImpl implements MachineService {
           nextDayDateT,
           nextDayDateT.plusSeconds(initialDuration),
           operationOrder,
-          initialDuration);
+          initialDuration,
+          ignoreConcurrency);
     }
 
     if (machine.getWeeklyPlanning() != null) {
@@ -124,20 +145,36 @@ public class MachineServiceImpl implements MachineService {
       plannedEndDateT =
           dayPlanningService.getAllowedStartDateTPeriodAt(dayPlanning, plannedEndDateT).get();
       // Void duration is time where machine is not used (not in any period)
-      long voidDuration =
-          dayPlanningService.computeVoidDurationBetween(
-              dayPlanning, plannedStartDateT, plannedEndDateT);
+      long remainingTime = 0l;
+      int counter = 0;
+      do {
 
-      long remainingTime =
-          initialDuration
-              - DurationHelper.getSecondsDuration(
-                  Duration.between(plannedStartDateT, plannedEndDateT).minusSeconds(voidDuration));
-      // So the time 'spent' must be reported
-      plannedEndDateT = plannedEndDateT.plusSeconds(remainingTime);
+        long voidDuration =
+            dayPlanningService.computeVoidDurationBetween(
+                dayPlanning, plannedStartDateT, plannedEndDateT);
 
-      // And of course it must end in a existing period.
-      plannedEndDateT =
-          dayPlanningService.getAllowedStartDateTPeriodAt(dayPlanning, plannedEndDateT).get();
+        remainingTime =
+            initialDuration
+                - DurationHelper.getSecondsDuration(
+                    Duration.between(plannedStartDateT, plannedEndDateT)
+                        .minusSeconds(voidDuration));
+
+        // So the time 'spent' must be reported
+        plannedEndDateT = plannedEndDateT.plusSeconds(remainingTime);
+
+        // And of course it must end in a existing period.
+        plannedEndDateT =
+            dayPlanningService.getAllowedStartDateTPeriodAt(dayPlanning, plannedEndDateT).get();
+
+        counter++;
+
+      } while (remainingTime > 0 && counter < MAX_LOOP_CALL);
+
+      if (counter == MAX_LOOP_CALL) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            ProductionExceptionMessage.TOO_MANY_CALL_GETTING_END_DATE);
+      }
 
     } else {
       // The machine does not have weekly planning so dates are ok for now.
@@ -145,6 +182,21 @@ public class MachineServiceImpl implements MachineService {
       plannedEndDateT = endDateT;
     }
 
+    if (ignoreConcurrency) {
+      return new MachineTimeSlot(plannedStartDateT, plannedEndDateT);
+    }
+
+    return getClosestAvailableMachineTimeSlot(
+        machine, operationOrder, initialDuration, plannedStartDateT, plannedEndDateT);
+  }
+
+  protected MachineTimeSlot getClosestAvailableMachineTimeSlot(
+      Machine machine,
+      OperationOrder operationOrder,
+      long initialDuration,
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
+      throws AxelorException {
     long timeBeforeNextOperation =
         Optional.ofNullable(operationOrder.getWorkCenter())
             .map(WorkCenter::getTimeBeforeNextOperation)
@@ -160,7 +212,8 @@ public class MachineServiceImpl implements MachineService {
                     + " AND ((self.plannedStartDateT <= :startDate AND self.plannedEndDateT > :startDateWithTime)"
                     + " OR (self.plannedStartDateT <= :endDate AND self.plannedEndDateT > :endDateWithTime))"
                     + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
-                    + " AND self.id != :operationOrderId")
+                    + " AND self.id != :operationOrderId"
+                    + " AND self.outsourcing = false")
             .bind("startDate", plannedStartDateT)
             .bind("endDate", plannedEndDateT)
             .bind("startDateWithTime", plannedStartDateT.minusSeconds(timeBeforeNextOperation))
@@ -184,7 +237,8 @@ public class MachineServiceImpl implements MachineService {
               .getPlannedEndDateT()
               .plusSeconds(timeBeforeNextOperation + initialDuration),
           operationOrder,
-          initialDuration);
+          initialDuration,
+          false);
     }
   }
 
@@ -201,7 +255,25 @@ public class MachineServiceImpl implements MachineService {
         startDateT,
         endDateT,
         operationOrder,
-        DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)));
+        DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)),
+        false);
+  }
+
+  @Override
+  public MachineTimeSlot getFurthestTimeSlotFrom(
+      Machine machine,
+      LocalDateTime startDateT,
+      LocalDateTime endDateT,
+      OperationOrder operationOrder)
+      throws AxelorException {
+
+    return getFurthestAvailableTimeSlotFrom(
+        machine,
+        startDateT,
+        endDateT,
+        operationOrder,
+        DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)),
+        true);
   }
 
   @SuppressWarnings("unchecked")
@@ -210,7 +282,8 @@ public class MachineServiceImpl implements MachineService {
       LocalDateTime startDateT,
       LocalDateTime endDateT,
       OperationOrder operationOrder,
-      long initialDuration)
+      long initialDuration,
+      boolean ignoreConcurrency)
       throws AxelorException {
 
     EventsPlanning planning = machine.getPublicHolidayEventsPlanning();
@@ -229,7 +302,8 @@ public class MachineServiceImpl implements MachineService {
           previousDayDateT.minusSeconds(initialDuration),
           previousDayDateT,
           operationOrder,
-          initialDuration);
+          initialDuration,
+          ignoreConcurrency);
     }
 
     LocalDateTime plannedStartDateT = null;
@@ -241,7 +315,7 @@ public class MachineServiceImpl implements MachineService {
           weeklyPlanningService.findDayPlanning(
               machine.getWeeklyPlanning(), startDateT.toLocalDate());
       Optional<LocalDateTime> allowedEndDateTPeriodAt =
-          dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, startDateT);
+          dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, endDateT);
 
       if (allowedEndDateTPeriodAt.isEmpty()) {
         throw new AxelorException(
@@ -257,20 +331,35 @@ public class MachineServiceImpl implements MachineService {
       plannedStartDateT =
           dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, plannedStartDateT).get();
       // Void duration is time when machine is not used (not in any period)
-      long voidDuration =
-          dayPlanningService.computeVoidDurationBetween(
-              dayPlanning, plannedStartDateT, plannedEndDateT);
 
-      long remainingTime =
-          initialDuration
-              - DurationHelper.getSecondsDuration(
-                  Duration.between(plannedStartDateT, plannedEndDateT).minusSeconds(voidDuration));
-      // So the time 'spent' must be reported
-      plannedStartDateT = plannedStartDateT.plusSeconds(remainingTime);
+      long remainingTime = 0l;
+      int counter = 0;
+      do {
 
-      // And of course it must start also in an existing period.
-      plannedStartDateT =
-          dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, plannedStartDateT).get();
+        long voidDuration =
+            dayPlanningService.computeVoidDurationBetween(
+                dayPlanning, plannedStartDateT, plannedEndDateT);
+
+        remainingTime =
+            initialDuration
+                - DurationHelper.getSecondsDuration(
+                    Duration.between(plannedStartDateT, plannedEndDateT)
+                        .minusSeconds(voidDuration));
+        // So the time 'spent' must be reported
+        plannedStartDateT = plannedStartDateT.minusSeconds(remainingTime);
+
+        // And of course it must start also in an existing period.
+        plannedStartDateT =
+            dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, plannedStartDateT).get();
+
+        counter++;
+      } while (remainingTime > 0 && counter < MAX_LOOP_CALL);
+
+      if (counter == MAX_LOOP_CALL) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            ProductionExceptionMessage.TOO_MANY_CALL_GETTING_START_DATE);
+      }
 
     } else {
       // The machine does not have weekly planning so dates are ok for now.
@@ -278,13 +367,26 @@ public class MachineServiceImpl implements MachineService {
       plannedEndDateT = endDateT;
     }
 
+    if (ignoreConcurrency) {
+      return new MachineTimeSlot(plannedStartDateT, plannedEndDateT);
+    }
+    return getFurthestAvailableMachineTimeSlot(
+        machine, operationOrder, initialDuration, plannedStartDateT, plannedEndDateT);
+  }
+
+  protected MachineTimeSlot getFurthestAvailableMachineTimeSlot(
+      Machine machine,
+      OperationOrder operationOrder,
+      long initialDuration,
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
+      throws AxelorException {
     long timeBeforeNextOperation =
         Optional.ofNullable(operationOrder.getWorkCenter())
             .map(WorkCenter::getTimeBeforeNextOperation)
             .orElse(0l);
     // Must check if dates are occupied by other operation orders
     // The first one of the list will be the first to start
-
     List<OperationOrder> concurrentOperationOrders =
         operationOrderRepository
             .all()
@@ -294,7 +396,8 @@ public class MachineServiceImpl implements MachineService {
                     + " OR (self.plannedStartDateT < :endDate AND self.plannedEndDateT > :endDateWithTime)"
                     + " OR (self.plannedStartDateT >= :startDate AND self.plannedEndDateT <= :endDateWithTime))"
                     + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
-                    + " AND self.id != :operationOrderId")
+                    + " AND self.id != :operationOrderId"
+                    + " AND self.outsourcing = false")
             .bind("startDate", plannedStartDateT)
             .bind("endDate", plannedEndDateT)
             .bind("startDateWithTime", plannedStartDateT.minusSeconds(timeBeforeNextOperation))
@@ -318,7 +421,8 @@ public class MachineServiceImpl implements MachineService {
               .minusSeconds(initialDuration + timeBeforeNextOperation),
           firstOperationOrder.getPlannedStartDateT().minusSeconds(timeBeforeNextOperation),
           operationOrder,
-          initialDuration);
+          initialDuration,
+          false);
     }
   }
 }

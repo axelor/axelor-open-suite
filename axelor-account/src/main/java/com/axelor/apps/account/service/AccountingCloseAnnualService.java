@@ -21,8 +21,11 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -74,4 +77,13 @@ public interface AccountingCloseAnnualService {
 
   public List<Pair<Long, Long>> assignPartner(
       List<Long> accountIdList, Year year, boolean allocatePerPartner);
+
+  void generateResultMove(
+      Company company,
+      LocalDate date,
+      String description,
+      BankDetails bankDetails,
+      Integer generatedMoveStatusSelect,
+      BigDecimal amount)
+      throws AxelorException;
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -49,6 +49,7 @@
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
           showIf="project.isShowStatus" x-order="sequence"/>
+        <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
         <field name="$viewerTags" showTitle="false" readonly="true"
@@ -159,9 +160,14 @@
         <field name="taskDeadline" title="Task deadline" colSpan="4"/>
         <field name="projectTaskTagSet" widget="TagSelect" x-color-field="colorSelect"
           form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
-        <field name="progressSelect" widget="SelectProgress"
-          onChange="action-project-task-update-planned-progress" showIf="project.isShowProgress"
-          colSpan="4"/>
+        <field name="progress" onChange="action-project-task-group-progress-onchange"
+          showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
+        <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
+        <field name="progress" showIf="project.isShowProgress &amp;&amp; $readonly()"
+          colSpan="4" widget="SelectProgress"/>
+        <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; $readonly()"/>
+        <field name="invoicingProgress" readonly="true" colSpan="6"
+          showIf="invoicingType == 4"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="project.isShowProgress" hidden="true"/>
         <field name="project.isShowSection" hidden="true"/>
@@ -169,8 +175,6 @@
         <field name="project.isShowPriority" hidden="true"/>
         <field name="project.isShowTaskCategory" hidden="true"/>
       </panel>
-
-      <field name="typeSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="internalDescriptionPanel" title="Internal Description"
@@ -186,26 +190,9 @@
        			]]></viewer>
         </field>
         <spacer name="budgetedTimeSpacer" colSpan="4"/>
-        <button name="addMultipleLinesBtn" title="Add multiple lines"
-          css="btn-custom text-left"
-          onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3"
-          hideIf="$popup()"/>
-        <button name="projectPlanningTimeLineBtn" title="New line" colSpan="3"
-          css="btn-custom text-left" onClick="save,action-project-task-view-time-planned,save"/>
-        <button name="removeProjectPlanningTimeLineBtn" title="Remove lines"
-          css="btn-custom text-left" colSpan="3"
-          onClick="save,action-project-task-attrs-project-planning-time-remove,save"/>
-        <field name="$projectPlanningTimeSet" hidden="true" type="many-to-many"
-          widget="TagSelect" title="Planned Time Planning" colSpan="12"
-          target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
-          grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
-        <button name="removeSelectedPlanningTimeBtn" colSpan="3" hidden="true"
-          title="Remove selected lines"
-          onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
-        <button name="cancelRemovePlanningTimeBtn" colSpan="3" hidden="true" title="Cancel"
-          onClick="action-project-attrs-project-planning-time-cancel-remove"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-          action="action-project-task-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
+          x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
+          colSpan="12" canSearch="true"/>
         <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
         <field name="project.isShowPlanning" hidden="true"/>
       </panel>
@@ -313,14 +300,14 @@
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
     </node>
 
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
     </node>
 
   </tree>
@@ -334,7 +321,7 @@
     <field name="taskDeadline"/>
     <field name="priority.name"/>
     <field name="priority.technicalTypeSelect"/>
-    <field name="progressSelect"/>
+    <field name="progress"/>
     <field name="project.isShowProgress"/>
     <template>
 		<![CDATA[
@@ -361,7 +348,7 @@
 				</Box>
 				{project.isShowProgress &&
 					<Box mt={1}>
-						{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
+						{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 					</Box>
 				}
          		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
@@ -381,7 +368,7 @@
     <field name="taskDeadline"/>
     <field name="priority.name"/>
     <field name="priority.technicalTypeSelect"/>
-    <field name="progressSelect"/>
+    <field name="progress"/>
     <template>
 		<![CDATA[
 			<>
@@ -406,7 +393,7 @@
 					</Box>
 				</Box>
 				<Box mt={1}>
-					{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
+					{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 				</Box>
          		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
          			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
@@ -511,15 +498,15 @@
     <view-param name="forceEdit" value="true"/>
     <view-param name="forceTitle" value="true"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
-    <context name="_projectTask" expr="eval:__self__"
+    <context name="_projectTask" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_timeUnit" expr="eval:__self__.timeUnit"
+    <context name="_timeUnit" expr="eval:__parent__.timeUnit"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_employee" expr="eval:assignedTo.employee"
+    <context name="_employee" expr="eval:__parent__.assignedTo.employee"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__self__.project"
+    <context name="_project" expr="eval:__parent__.project"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__self__"
+    <context name="_project" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.Project'"/>
   </action-view>
 
@@ -574,10 +561,19 @@
       if="__config__.app.getApp('business-support').providerCompany"/>
   </action-record>
 
+  <action-group name="action-project-task-group-progress-onchange">
+    <action name="action-project-task-update-planned-progress"/>
+    <action name="action-project-task-method-update-progress-select"/>
+  </action-group>
+
   <action-record name="action-project-task-update-planned-progress"
     model="com.axelor.apps.project.db.ProjectTask">
-    <field name="plannedProgress" expr="eval: progressSelect"/>
+    <field name="plannedProgress" expr="eval: progress"/>
   </action-record>
+
+  <action-method name="action-project-task-method-update-progress-select">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillProgressSelect"/>
+  </action-method>
 
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -713,7 +709,6 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-business-support-provider"
       if="__config__.app.isApp('business-support')"/>
-    <action name="action-project-attrs-project-planning-time-cancel-remove"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
   </action-group>
 
@@ -769,18 +764,6 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
   </action-view>
-
-  <action-attrs name="action-project-task-attrs-project-planning-time-remove">
-    <attribute name="readonly" for="removeProjectPlanningTimeLineBtn" expr="eval:true"/>
-    <attribute name="hidden" for="cancelRemovePlanningTimeBtn" expr="eval:false"/>
-    <attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:false"/>
-    <attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
-    <attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
-    <attribute name="title" for="$projectPlanningTimeSet"
-      expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
-    <attribute name="domain" for="$projectPlanningTimeSet"
-      expr="eval:&quot;self.projectTask.id = :id&quot;"/>
-  </action-attrs>
 
   <action-record name="action-project-task-record-change-status"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -862,7 +845,6 @@
     <field name="project.invoicingSequenceSelect" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
     <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="invoiceLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="invoicingUnit" hidden="true" if="!__config__.app.isApp('business-project')"/>

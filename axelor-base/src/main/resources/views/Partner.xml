@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -166,8 +166,6 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="!id"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="!id"
           showIf="isCustomer" if-module="axelor-account"/>
@@ -378,22 +376,8 @@
       <panel name="informationPanel" title="Information">
         <panel name="employeeAddressPanel" title="Contact address" colSpan="12"
           showIf="isEmployee">
-          <field name="mainAddress" form-view="address-form" grid-view="address-grid">
-            <editor x-show-titles="false" x-viewer="true">
-              <field name="addressL2" x-bind="{{addressL2|uppercase}}"
-                placeholder="e.g. Financial department, CEO"/>
-              <field name="addressL3" x-bind="{{addressL3|uppercase}}"
-                placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-              <field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
-              <field name="addressL5" x-bind="{{addressL5|uppercase}}"
-                placeholder="e.g. POB 254"/>
-              <field name="city" canNew="true" onChange="action-address-change-city"
-                form-view="city-form" grid-view="city-grid"/>
-              <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
-              <field name="addressL7Country" required="true" form-view="country-form"
-                grid-view="country-grid"/>
-            </editor>
-          </field>
+          <field name="mainAddress" form-view="address-form" grid-view="address-grid"
+            canNew="true" colSpan="12"/>
         </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
@@ -427,7 +411,7 @@
             </editor>
           </field>
           <spacer/>
-          <field name="headOfficeAddress"
+          <field name="headOfficeAddress" if-module="axelor-account"
             if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"
             colSpan="12"/>
         </panel>
@@ -472,34 +456,8 @@
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
-      <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
-        if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
-        <panel-include view="incl-invoice-payment-partner-form"/>
-        <panel-include if-module="axelor-account"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
-          view="incl-sepa-direct-debit-partner-form"/>
-        <panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
-          <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-        <panel name="descriptionToDisplayOnProformaPanel"
-          title="Comment to display on proforma" colSpan="12">
-          <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-      </panel>
-      <panel name="accountingSituationPanel" if-module="axelor-account"
-        if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact"
-        onSelect="action-account-accounting-situation-method-update-customer-account">
-        <field name="isCompensation" colSpan="12" widget="boolean-switch"
-          showIf="isCustomer &amp;&amp; isSupplier"/>
-        <panel-related name="accountingSituationListPanel"
-          field="accountingSituationList" title="Accounting situation" hideIf="isContact"
-          colSpan="12" grid-view="accounting-situation-partner-grid"
-          form-view="accounting-situation-partner-form"/>
-      </panel>
-      <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
-        if="__config__.app.isApp('account')"/>
-      <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
         <button name="callBtn" title="Create a call" link="" icon="fa-phone"
@@ -512,14 +470,15 @@
           icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
       </panel>
-      <panel name="opportunitiesPanel" title="Opportunities" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="opportunitiesPanel" title="Opportunities"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')">
         <button name="createOpportunityBtn" title="Create opportunity"
           onClick="save,action-partner-view-create-opportunity" link="" colSpan="3"/>
         <panel-include view="incl-opportunities-partner-form"/>
       </panel>
-      <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="emailPanel" title="Emails" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" if="__config__.app.isApp('crm')">
         <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
         <panel-dashlet name="sentEmailsPanel" title="Sent emails"
@@ -527,8 +486,9 @@
         <panel-dashlet name="receivedEmailsPanel" title="Received emails"
           action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
       </panel>
-      <panel name="marketingCampaignPanel" title="Marketing campaigns" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('marketing')">
+      <panel name="marketingCampaignPanel" title="Marketing campaigns"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('marketing')">
         <panel-dashlet name="marketingCampaignsPanel"
           action="action-partner-view-marketing-campaigns" colSpan="12" height="800"/>
       </panel>
@@ -655,8 +615,6 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -758,8 +716,9 @@
         <panel-include view="incl-activities-contact-form"/>
       </panel>
       <panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12"
-        action="action-contact-view-opportunities" height="550" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
+        action="action-contact-view-opportunities" height="550"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')"/>
       <panel name="saleOrderContactPanel" title="Sales orders" showIf="id != null"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
         <panel-include view="incl-sales-contact-form"/>
@@ -954,8 +913,6 @@
     onSave="save,action-partner-method-set-user-partner">
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -1171,7 +1128,7 @@
 
   <action-validate name="action-partner-validate-registration-code">
     <error message="Registration code is required."
-      if="partnerAddressList?.findAll{it.address?.addressL7Country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
+      if="partnerAddressList?.findAll{it.address?.country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
   </action-validate>
 
   <action-record name="action-partner-record-factor-supplier-customer-no-error"

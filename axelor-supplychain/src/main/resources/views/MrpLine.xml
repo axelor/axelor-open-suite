@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="mrp-line-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Results"
     groupBy="product" sortable="false"
@@ -19,8 +19,6 @@
     <hilite color="info" strong="true"
       if="[5,8,9,11].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="product" hidden="true"/>
-    <button name="alertIconButton" showIf="$get('isOutDayNbBetweenPurchaseAndProposal')"
-      onClick="refresh" readonlyIf="true" icon="fa-exclamation-triangle"/>
     <button name="toggleBtn" icon="fa-exchange" onClick="action-mrp-line-method-toggle"
       showIf="!proposalGenerated &amp;&amp; [5,8].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="proposalToProcess" showIf="!proposalGenerated"/>
@@ -57,7 +55,6 @@
     <field name="product.defaultSupplierPartner.id" hidden="true"/>
     <field name="supplierPartner.id" hidden="true"/>
     <field name="warnDelayFromSupplier" hidden="true"/>
-    <field name="isOutDayNbBetweenPurchaseAndProposal" hidden="true"/>
   </grid>
 
   <form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
@@ -13,6 +13,10 @@
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"
       onChange="action-expense-line-attrs-project-on-change"/>
+    <field name="projectTask" canView="false"
+      onSelect="action-expense-line-method-compute-project-task-domain"
+      onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
+      form-view="project-task-form"/>
     <field name="expenseProduct" canView="false"
       onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
       form-view="product-expense-form" grid-view="product-expense-grid" width="200"
@@ -42,12 +46,17 @@
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
       grid-view="project-grid" width="120"/>
+    <field name="projectTask" canView="false"
+      onSelect="action-expense-line-method-compute-project-task-domain"
+      onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
+      form-view="project-task-form"/>
     <field name="expenseDate" title="Date" width="95"
       onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
     <field name="kilometricAllowParam" canEdit="false" required="true" width="60"
       onChange="action-kilometric-allowance-method-compute"
       onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"/>
-    <field name="kilometricTypeSelect" required="true" width="100"/>
+    <field name="kilometricTypeSelect" required="true" width="100"
+      onChange="action-kilometric-allowance-method-compute-distance"/>
     <field name="distance" required="true"
       onChange="action-kilometric-allowance-method-compute" width="150"/>
     <field name="fromCity" required="true"
@@ -75,6 +84,7 @@
       if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"
       background="danger"/>
     <field name="project"/>
+    <field name="projectTask"/>
     <field name="expenseProduct"/>
     <field name="expenseDate"/>
     <field name="employee" hidden="true"/>
@@ -101,6 +111,10 @@
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="project-form" grid-view="project-grid"/>
+      <field name="projectTask" edit-icon="false" canEdit="false"
+        onSelect="action-expense-line-method-compute-project-task-domain"
+        onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
+        grid-view="project-task-grid"/>
       <field name="expenseProduct" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
         form-view="product-expense-form" grid-view="product-expense-grid"
@@ -141,7 +155,8 @@
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      showIf="expense.statusSelect >= 3">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
@@ -152,6 +167,7 @@
         onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
       <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       <field name="expenseProduct.amountLimit" hidden="true"/>
+      <field name="expense.statusSelect" hidden="true"/>
     </panel>
 
     <panel name="attrsPanel">
@@ -170,11 +186,16 @@
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="project-form" grid-view="project-grid"/>
+      <field name="projectTask" edit-icon="false" canEdit="false"
+        onSelect="action-expense-line-method-compute-project-task-domain"
+        onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
+        grid-view="project-task-grid"/>
       <field name="expenseDate"/>
-      <field name="kilometricAllowParam"
+      <field name="kilometricAllowParam" required="true"
         onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
         onChange="action-kilometric-allowance-method-compute"/>
-      <field name="kilometricTypeSelect" required="true"/>
+      <field name="kilometricTypeSelect" required="true"
+        onChange="action-kilometric-allowance-method-compute-distance"/>
       <field name="distance" onChange="action-kilometric-allowance-method-compute"
         required="true"/>
       <panel name="cityDetailsPanel" colSpan="12">
@@ -193,7 +214,8 @@
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      showIf="expense.statusSelect >= 3">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
@@ -203,6 +225,7 @@
         form-view="analytic-move-line-distribution-form" colSpan="12"
         onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
       <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      <field name="expense.statusSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -275,7 +298,16 @@
 
   <action-attrs name="action-expense-line-attrs-domain-project">
     <attribute name="domain" for="project"
-      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
+      expr="eval: &quot; ${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id} &quot;"/>
+  </action-attrs>
+
+  <action-method name="action-expense-line-method-compute-project-task-domain">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="computeProjectTaskDomain"/>
+  </action-method>
+
+  <action-attrs name="action-expense-line-attrs-on-project-task-change">
+    <attribute for="project" name="value" expr="eval: projectTask?.project"/>
   </action-attrs>
 
   <action-record name="action-expense-line-default"

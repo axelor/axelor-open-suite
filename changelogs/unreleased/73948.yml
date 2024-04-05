@@ -1,5 +1,0 @@
----
-title: "LOCALIZATION : remove the Company.locale and use the localization instead"
-type: feature
-description: |
-  On a Company, there was a field locale. This field is now removed and we use localization on it instead.

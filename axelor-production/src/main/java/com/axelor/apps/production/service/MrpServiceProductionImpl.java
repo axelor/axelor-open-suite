@@ -32,7 +32,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -514,12 +514,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       throws AxelorException {
 
     long totalDuration = 0;
-    if (defaultBillOfMaterial.getProdProcess() != null) {
-      for (ProdProcessLine prodProcessLine :
-          defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
-        totalDuration +=
-            prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty);
-      }
+    ProdProcess prodProcess = defaultBillOfMaterial.getProdProcess();
+    if (prodProcess != null) {
+      totalDuration = prodProcessLineService.computeLeadTimeDuration(prodProcess, reorderQty);
     }
     // If days should be rounded to a upper value
     if (totalDuration != 0 && totalDuration % TimeUnit.DAYS.toSeconds(1) != 0) {
@@ -652,8 +649,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct) && billOfMaterialLine.getBillOfMaterial() != null) {
-          this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
+        if (this.isMrpProduct(subProduct)) {
+          this.assignProductLevel(billOfMaterialLine, level);
 
           Company company = mrp.getStockLocation().getCompany();
           BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);
@@ -667,6 +664,34 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           }
         }
       }
+    }
+  }
+
+  protected void assignProductLevel(BillOfMaterialLine billOfMaterialLine, int level)
+      throws AxelorException {
+
+    if (level > 100) {
+      if (billOfMaterialLine == null || billOfMaterialLine.getProduct() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH_PRODUCT),
+            billOfMaterialLine.getProduct().getFullName());
+      }
+    }
+
+    Product product = billOfMaterialLine.getProduct();
+
+    log.debug("Add product: {} for the level : {} ", product.getFullName(), level);
+    this.productMap.put(product.getId(), this.getMaxLevel(product, level));
+
+    // No bill of material = End product so no more level
+    // Bom should be same level as bom line so no leveling also
+    if (billOfMaterialLine.getBillOfMaterial() != null) {
+      this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
     }
   }
 

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankstatement.afb120;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
@@ -13,6 +31,7 @@ import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatemen
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -27,6 +46,7 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
   protected BankStatementLineDeleteService bankStatementLineDeleteService;
   protected BankStatementLineFetchService bankStatementLineFetchService;
   protected BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankStatementImportAFB120Service(
@@ -34,13 +54,15 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
       BankStatementLineDeleteService bankStatementLineDeleteService,
       BankStatementLineFetchService bankStatementLineFetchService,
-      BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service) {
+      BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service,
+      CurrencyScaleService currencyScaleService) {
     super(bankStatementRepository);
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
     this.bankStatementLineDeleteService = bankStatementLineDeleteService;
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankStatementLineCreateAFB120Service = bankStatementLineCreateAFB120Service;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -145,13 +167,22 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
               .order("-sequence")
               .fetchOne();
       if (ObjectUtils.notEmpty(finalBankStatementLineAFB120)
-          && (initialBankStatementLineAFB120
-                      .getDebit()
-                      .compareTo(finalBankStatementLineAFB120.getDebit())
+          && (currencyScaleService
+                      .getScaledValue(
+                          initialBankStatementLineAFB120, initialBankStatementLineAFB120.getDebit())
+                      .compareTo(
+                          currencyScaleService.getScaledValue(
+                              finalBankStatementLineAFB120,
+                              finalBankStatementLineAFB120.getDebit()))
                   != 0
-              || initialBankStatementLineAFB120
-                      .getCredit()
-                      .compareTo(finalBankStatementLineAFB120.getCredit())
+              || currencyScaleService
+                      .getScaledValue(
+                          initialBankStatementLineAFB120,
+                          initialBankStatementLineAFB120.getCredit())
+                      .compareTo(
+                          currencyScaleService.getScaledValue(
+                              finalBankStatementLineAFB120,
+                              finalBankStatementLineAFB120.getCredit()))
                   != 0)) {
         deleteLines = true;
       }
@@ -191,15 +222,23 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
         for (int i = 0; i < initialBankStatementLineAFB120.size(); i++) {
           deleteLines =
               deleteLines
-                  || (initialBankStatementLineAFB120
-                              .get(i)
-                              .getDebit()
-                              .compareTo(finalBankStatementLineAFB120.get(i).getDebit())
+                  || (currencyScaleService
+                              .getScaledValue(
+                                  initialBankStatementLineAFB120.get(i),
+                                  initialBankStatementLineAFB120.get(i).getDebit())
+                              .compareTo(
+                                  currencyScaleService.getScaledValue(
+                                      finalBankStatementLineAFB120.get(i),
+                                      finalBankStatementLineAFB120.get(i).getDebit()))
                           != 0
-                      || initialBankStatementLineAFB120
-                              .get(i)
-                              .getCredit()
-                              .compareTo(finalBankStatementLineAFB120.get(i).getCredit())
+                      || currencyScaleService
+                              .getScaledValue(
+                                  initialBankStatementLineAFB120.get(i),
+                                  initialBankStatementLineAFB120.get(i).getCredit())
+                              .compareTo(
+                                  currencyScaleService.getScaledValue(
+                                      finalBankStatementLineAFB120.get(i),
+                                      finalBankStatementLineAFB120.get(i).getCredit()))
                           != 0);
           if (deleteLines) {
             break;

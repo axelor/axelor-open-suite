@@ -35,7 +35,7 @@ public class ReportingTool {
         .map(User::getActiveCompany)
         .map(Company::getLocalization)
         .map(Localization::getCode)
-        .map(Locale::new)
+        .map(LocaleService::computeLocaleByLocaleCode)
         .orElseGet(AppFilter::getLocale);
   }
 }

@@ -74,7 +74,7 @@ public class InventoryController {
       if (ObjectUtils.isEmpty(inventoryBirtTemplate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+            I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
       }
 
       String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();

@@ -150,7 +150,7 @@ public class BatchLeaveManagement extends BatchStrategy {
       LeaveManagement leaveManagement =
           leaveManagementService.createLeaveManagement(
               leaveLine,
-              employeeService.getUser(employee),
+              employee.getUser(),
               hrBatch.getComments(),
               null,
               hrBatch.getStartDate(),
@@ -173,7 +173,7 @@ public class BatchLeaveManagement extends BatchStrategy {
       leaveReasonList.addAll(
           leaveReasonRepository
               .all()
-              .filter("self.leaveReasonTypeSelect = :typeSelect AND self.isActive = true")
+              .filter("self.leaveReasonTypeSelect = :typeSelect AND self.isAutoIncrement = true")
               .bind("typeSelect", hrBatch.getLeaveReasonTypeSelect())
               .fetch());
     }

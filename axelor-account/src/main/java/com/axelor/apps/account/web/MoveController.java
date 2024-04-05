@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
@@ -35,10 +34,12 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -190,11 +191,11 @@ public class MoveController {
                 .fetch();
 
         if (!moveList.isEmpty()) {
-          PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
+          PeriodCheckService periodCheckService = Beans.get(PeriodCheckService.class);
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
+            if (!periodCheckService.isAuthorizedToAccountOnPeriod(move, user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -411,7 +412,7 @@ public class MoveController {
       boolean paymentConditionChange =
           this.getChangeDummyBoolean(context, "paymentConditionChange");
 
-      response.setValues(moveGroupService.getDateOnChangeValuesMap(move, paymentConditionChange));
+      response.setValues(moveGroupService.getDateOnChangeValuesMap(move));
       response.setAttrs(moveGroupService.getDateOnChangeAttrsMap(move, paymentConditionChange));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -534,9 +535,13 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       LocalDate dueDate = this.extractDueDate(request);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
       response.setValues(
           Beans.get(MoveGroupService.class).getGenerateCounterpartOnClickValuesMap(move, dueDate));
+
+      Beans.get(MoveAttrsService.class).addThirdPartyPayerPartnerReadonly(move, attrsMap);
+      response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -567,11 +572,8 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
-      boolean paymentConditionChange =
-          this.getChangeDummyBoolean(request.getContext(), "paymentConditionChange");
 
-      response.setValues(
-          moveGroupService.getCompanyOnChangeValuesMap(move, paymentConditionChange));
+      response.setValues(moveGroupService.getCompanyOnChangeValuesMap(move));
       response.setAttrs(moveGroupService.getCompanyOnChangeAttrsMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -680,6 +682,14 @@ public class MoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void onSelectJournal(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+
+    response.setAttrs(Beans.get(MoveGroupService.class).getJournalOnSelectAttrsMap(move));
   }
 
   public void onSelectThirdPartyPayerPartner(ActionRequest request, ActionResponse response) {

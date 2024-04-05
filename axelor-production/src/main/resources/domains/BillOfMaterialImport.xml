@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -20,6 +20,9 @@
       title="Main bill of materials generated" ref="com.axelor.apps.production.db.BillOfMaterial"/>
     <one-to-many name="billOfMaterialImportLineList" title="Results"
       mappedBy="billOfMaterialImport" ref="com.axelor.apps.production.db.BillOfMaterialImportLine"/>
+    <one-to-many name="billOfMaterialGeneratedList"
+      ref="com.axelor.apps.production.db.BillOfMaterial" title="Bills of materials generated"
+      mappedBy="billOfMaterialsImport"/>
 
     <extra-code>
       <![CDATA[

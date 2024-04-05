@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -175,7 +175,11 @@ public class StockMoveMergingServiceImpl implements StockMoveMergingService {
     mergedStockMove.setTrackingNumber(stockMove.getTrackingNumber());
     mergedStockMove.setModeOfTransport(stockMove.getModeOfTransport());
     mergedStockMove.setIsReversion(stockMove.getIsReversion());
-    mergedStockMove.setOrigin(stockMove.getOrigin());
+    mergedStockMove.setOrigin(
+        stockMoveList.stream()
+            .map(StockMove::getOrigin)
+            .filter(Objects::nonNull)
+            .collect(Collectors.joining("|")));
     mergedStockMove.setNote(
         stockMoveList.stream()
             .map(StockMove::getNote)

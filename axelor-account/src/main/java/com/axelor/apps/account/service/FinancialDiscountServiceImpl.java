@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
@@ -8,20 +26,20 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class FinancialDiscountServiceImpl implements FinancialDiscountService {
   AccountConfigService accountConfigService;
-  CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  CurrencyScaleService currencyScaleService;
 
   @Inject
   public FinancialDiscountServiceImpl(
-      AccountConfigService accountConfigService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      AccountConfigService accountConfigService, CurrencyScaleService currencyScaleService) {
     this.accountConfigService = accountConfigService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -54,7 +72,7 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
         .multiply(amount)
         .divide(
             new BigDecimal(100),
-            currencyScaleServiceAccount.getScale(currency),
+            currencyScaleService.getCurrencyScale(currency),
             RoundingMode.HALF_UP);
   }
 
@@ -71,7 +89,7 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
             .multiply(financialDiscount.getDiscountRate())
             .divide(
                 inTaxTotal.multiply(BigDecimal.valueOf(100)),
-                currencyScaleServiceAccount.getScale(currency),
+                currencyScaleService.getCurrencyScale(currency),
                 RoundingMode.HALF_UP);
   }
 

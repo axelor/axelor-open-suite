@@ -20,20 +20,36 @@ package com.axelor.apps.hr.service.timesheet.timer;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.TSTimer;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import java.math.BigDecimal;
 
 public interface TimesheetTimerService {
 
+  String TS_TIMER_UPDATE_START = "start";
+  String TS_TIMER_UPDATE_PAUSE = "pause";
+  String TS_TIMER_UPDATE_STOP = "stop";
+  String TS_TIMER_UPDATE_RESET = "reset";
+
+  void start(TSTimer timer);
+
   public void pause(TSTimer timer);
 
-  public void stop(TSTimer timer) throws AxelorException;
+  void stopAndGenerateTimesheetLine(TSTimer timer) throws AxelorException;
+
+  void stop(TSTimer timer) throws AxelorException;
+
+  void resetTimer(TSTimer timer);
 
   public void calculateDuration(TSTimer timer);
 
   public TimesheetLine generateTimesheetLine(TSTimer timer) throws AxelorException;
 
+  TimesheetLine generateTimesheetLine(TSTimer timer, Timesheet timesheet);
+
   public TSTimer getCurrentTSTimer();
 
   public BigDecimal convertSecondDurationInHours(long durationInSeconds);
+
+  void setUpdatedDuration(TSTimer timer, Long duration);
 }
