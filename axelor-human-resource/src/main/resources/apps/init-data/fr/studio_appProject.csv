@@ -1,2 +1,2 @@
 "code";"invoicingProjectAnnexBirtTemplate.importId";"eventSubjectGroovyFormula"
-"business-project";86;"project.fullName + "" - "" + projectTask.fullName"
+"project";86;"project.fullName + "" - "" + projectTask.fullName"

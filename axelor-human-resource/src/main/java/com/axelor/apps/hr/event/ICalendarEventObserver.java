@@ -3,6 +3,7 @@ package com.axelor.apps.hr.event;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Adapter;
 import com.axelor.event.Observes;
@@ -20,6 +21,11 @@ import javax.inject.Named;
 public class ICalendarEventObserver {
   void onSave(
       @Observes @Named(RequestEvent.SAVE) @EntityType(ICalendarEvent.class) PostRequest event) {
+    AppProjectService appProjectService = Beans.get(AppProjectService.class);
+    if (!appProjectService.isApp("project")
+        || !appProjectService.getAppProject().getEnableEventCreation()) {
+      return;
+    }
     Map<String, Object> data = event.getRequest().getData();
 
     Object id = data.getOrDefault("id", 0);

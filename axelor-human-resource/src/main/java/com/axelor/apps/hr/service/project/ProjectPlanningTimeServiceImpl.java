@@ -375,11 +375,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected Object computeSubjectFromGroovy(ProjectPlanningTime projectPlanningTime) {
 
     Context scriptContext =
-            new Context(Mapper.toMap(projectPlanningTime), projectPlanningTime.getClass());
+        new Context(Mapper.toMap(projectPlanningTime), projectPlanningTime.getClass());
     GroovyScriptHelper groovyScriptHelper = new GroovyScriptHelper(scriptContext);
 
-    String subjectGroovyFormula =
-            appProjectService.getAppProject().getEventSubjectGroovyFormula();
+    String subjectGroovyFormula = appProjectService.getAppProject().getEventSubjectGroovyFormula();
     if (StringUtils.isBlank(subjectGroovyFormula)) {
       subjectGroovyFormula = "project.fullName" + "-" + "projectTask.fullName";
     }
@@ -389,9 +388,9 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Override
   public ProjectPlanningTime loadLinkedPlanningTime(ICalendarEvent event) {
     return planningTimeRepo
-            .all()
-            .filter("self.icalendarEvent = :icalendarEvent")
-            .bind("icalendarEvent", event)
-            .fetchOne();
+        .all()
+        .filter("self.icalendarEvent = :icalendarEvent")
+        .bind("icalendarEvent", event)
+        .fetchOne();
   }
 }

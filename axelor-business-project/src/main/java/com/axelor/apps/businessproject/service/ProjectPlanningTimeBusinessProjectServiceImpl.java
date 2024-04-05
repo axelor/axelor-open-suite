@@ -19,7 +19,6 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
@@ -39,11 +38,8 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.common.StringUtils;
-import com.axelor.db.mapper.Mapper;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.Context;
-import com.axelor.script.GroovyScriptHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -64,6 +60,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
+      AppProjectService appProjectService,
       AppBusinessProjectService appBusinessProjectService) {
     super(
         planningTimeRepo,
@@ -73,7 +70,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         holidayService,
         productRepo,
         employeeRepo,
-        timesheetLineRepository);
+        timesheetLineRepository,
+        appProjectService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
@@ -131,5 +129,4 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
 
     return planningTime;
   }
-
 }

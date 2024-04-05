@@ -9,15 +9,15 @@ import com.axelor.rpc.ActionResponse;
 
 public class ICalendarEventHumanResourceController {
 
-    public void loadLinkedPlanningTime(ActionRequest request, ActionResponse response) {
-        ICalendarEvent event = request.getContext().asType(ICalendarEvent.class);
+  public void loadLinkedPlanningTime(ActionRequest request, ActionResponse response) {
+    ICalendarEvent event = request.getContext().asType(ICalendarEvent.class);
 
-        ProjectPlanningTime projectPlanningTime =
-                Beans.get(ProjectPlanningTimeService.class).loadLinkedPlanningTime(event);
+    ProjectPlanningTime projectPlanningTime =
+        Beans.get(ProjectPlanningTimeService.class).loadLinkedPlanningTime(event);
 
-        if (projectPlanningTime != null) {
-            response.setAttr("$_linkedProjectPlanningTime", "hidden", false);
-            response.setValue("$_linkedProjectPlanningTime", projectPlanningTime);
-        }
+    if (projectPlanningTime != null) {
+      response.setAttr("$_linkedProjectPlanningTime", "hidden", false);
+      response.setValue("$_linkedProjectPlanningTime", projectPlanningTime);
     }
+  }
 }
