@@ -19,9 +19,12 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -34,8 +37,14 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Adapter;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -59,6 +68,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected EmployeeRepository employeeRepo;
   protected TimesheetLineRepository timesheetLineRepository;
 
+  protected AppProjectService appProjectService;
+  protected ICalendarService iCalendarService;
+  protected ICalendarEventRepository iCalendarEventRepository;
+
   @Inject
   public ProjectPlanningTimeServiceImpl(
       ProjectPlanningTimeRepository planningTimeRepo,
@@ -68,7 +81,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       PublicHolidayHrService holidayService,
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
-      TimesheetLineRepository timesheetLineRepository) {
+      TimesheetLineRepository timesheetLineRepository,
+      AppProjectService appProjectService) {
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
@@ -78,6 +92,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.productRepo = productRepo;
     this.employeeRepo = employeeRepo;
     this.timesheetLineRepository = timesheetLineRepository;
+    this.appProjectService = appProjectService;
   }
 
   @Override
@@ -209,13 +224,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
   }
 
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime)
-      throws AxelorException {
-    planningTimeRepo.save(projectPlanningTime);
-  }
-
   protected ProjectPlanningTime createProjectPlanningTime(
       LocalDateTime fromDate,
       ProjectTask projectTask,
@@ -255,15 +263,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   }
 
   @Override
-  @Transactional
-  public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime) {
-    if (!JPA.em().contains(projectPlanningTime)) {
-      projectPlanningTime = planningTimeRepo.find(projectPlanningTime.getId());
-    }
-    planningTimeRepo.remove(projectPlanningTime);
-  }
-
-  @Override
   public BigDecimal getDurationForCustomer(ProjectTask projectTask) {
     String query =
         "SELECT SUM(self.durationForCustomer) FROM TimesheetLine AS self WHERE self.timesheet.statusSelect = :statusSelect AND self.projectTask = :projectTask";
@@ -274,5 +273,116 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
             .setParameter("projectTask", projectTask)
             .getSingleResult();
     return durationForCustomer != null ? durationForCustomer : BigDecimal.ZERO;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    if (appProjectService.getAppProject().getEnableEventCreation()) {
+      createICalendarEvent(projectPlanningTime);
+    }
+    planningTimeRepo.save(projectPlanningTime);
+  }
+
+  @Override
+  @Transactional
+  public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime) {
+    if (!JPA.em().contains(projectPlanningTime)) {
+      projectPlanningTime = planningTimeRepo.find(projectPlanningTime.getId());
+    }
+
+    if (projectPlanningTime.getIcalendarEvent() != null) {
+      ICalendarEvent event = projectPlanningTime.getIcalendarEvent();
+      projectPlanningTime.setIcalendarEvent(null);
+      iCalendarEventRepository.remove(iCalendarEventRepository.find(event.getId()));
+    }
+
+    planningTimeRepo.remove(projectPlanningTime);
+  }
+
+  protected void createICalendarEvent(ProjectPlanningTime planningTime) {
+    String subject = computeSubjectFromGroovy(planningTime).toString();
+    ICalendarEvent event =
+        iCalendarService.createEvent(
+            planningTime.getStartDateTime(),
+            planningTime.getEndDateTime(),
+            planningTime.getEmployee().getUser(),
+            planningTime.getDescription(),
+            0,
+            subject);
+    iCalendarEventRepository.save(event);
+    planningTime.setIcalendarEvent(event);
+  }
+
+  @Override
+  @Transactional
+  public void updateProjectPlanningTime(
+      ProjectPlanningTime projectPlanningTime,
+      LocalDateTime startDateTime,
+      LocalDateTime endDateTime,
+      String description) {
+    if (startDateTime != null) {
+      projectPlanningTime.setStartDateTime(startDateTime);
+    }
+    if (endDateTime != null) {
+      projectPlanningTime.setEndDateTime(endDateTime);
+    }
+    if (description != null) {
+      projectPlanningTime.setDescription(description);
+    }
+    planningTimeRepo.save(projectPlanningTime);
+  }
+
+  @Override
+  @Transactional
+  public void updateLinkedEvent(ProjectPlanningTime projectPlanningTime) {
+    ICalendarEvent icalendarEvent = projectPlanningTime.getIcalendarEvent();
+    if (appProjectService.getAppProject().getEnableEventCreation() && icalendarEvent != null) {
+
+      icalendarEvent.setStartDateTime(projectPlanningTime.getStartDateTime());
+      icalendarEvent.setEndDateTime(projectPlanningTime.getEndDateTime());
+      icalendarEvent.setDescription(projectPlanningTime.getDescription());
+      User user = projectPlanningTime.getEmployee().getUser();
+      if (user != null) {
+        icalendarEvent.setUser(user);
+        icalendarEvent.setCalendar(user.getiCalendar());
+      }
+
+      iCalendarEventRepository.save(icalendarEvent);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void deleteLinkedProjectPlanningTime(List<Long> ids) {
+    List<ProjectPlanningTime> projectPlanningTimeList =
+        planningTimeRepo
+            .all()
+            .filter("self.icalendarEvent.id IN :icalendarEvent")
+            .bind("icalendarEvent", ids)
+            .fetch();
+
+    if (projectPlanningTimeList.isEmpty()) {
+      return;
+    }
+    for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
+      projectPlanningTime.setIcalendarEvent(null);
+      planningTimeRepo.remove(projectPlanningTime);
+    }
+  }
+
+  protected Object computeSubjectFromGroovy(ProjectPlanningTime projectPlanningTime) {
+
+    Context scriptContext =
+            new Context(Mapper.toMap(projectPlanningTime), projectPlanningTime.getClass());
+    GroovyScriptHelper groovyScriptHelper = new GroovyScriptHelper(scriptContext);
+
+    String subjectGroovyFormula =
+            appProjectService.getAppProject().getEventSubjectGroovyFormula();
+    if (StringUtils.isBlank(subjectGroovyFormula)) {
+      subjectGroovyFormula = "project.fullName" + "-" + "projectTask.fullName";
+    }
+    return groovyScriptHelper.eval(subjectGroovyFormula);
   }
 }

@@ -9,7 +9,7 @@
     <extend target="//field[@name='isEnablePerProjectTaskSequence']">
       <insert position="after">
         <field name="enableEventCreation" widget="boolean-switch"/>
-        <field name="subjectGroovyFormula" showIf="enableEventCreation"/>
+        <field name="eventSubjectGroovyFormula" showIf="enableEventCreation"/>
       </insert>
     </extend>
 

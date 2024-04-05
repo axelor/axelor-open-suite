@@ -1,7 +1,6 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.db.ICalendarEvent;
-import com.axelor.apps.businessproject.service.ProjectPlanningTimeBusinessProjectService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;

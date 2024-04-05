@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -41,4 +42,14 @@ public interface ProjectPlanningTimeService {
   public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime);
 
   public BigDecimal getDurationForCustomer(ProjectTask projectTask);
+
+  void updateProjectPlanningTime(
+      ProjectPlanningTime projectPlanningTime,
+      LocalDateTime startDateTime,
+      LocalDateTime endDateTime,
+      String description);
+
+  void updateLinkedEvent(ProjectPlanningTime projectPlanningTime);
+
+  void deleteLinkedProjectPlanningTime(List<Long> ids);
 }
