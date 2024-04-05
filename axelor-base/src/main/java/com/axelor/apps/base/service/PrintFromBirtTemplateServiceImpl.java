@@ -45,11 +45,13 @@ import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateService {
 
@@ -85,7 +87,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
               @Override
               public void accept(T item) throws Exception {
                 try {
-                  printedRecords.add(generateBirtTemplate(birtTemplate, item));
+                  printedRecords.add(generateBirtTemplate(birtTemplate, item, null));
                 } catch (Exception e) {
                   TraceBackService.trace(e);
                   throw e;
@@ -110,15 +112,19 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
   }
 
   @Override
-  public <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
+  public <T extends Model> File generateBirtTemplate(
+      BirtTemplate birtTemplate, T model, Map<String, Object> context)
       throws AxelorException, IOException {
     String name = birtTemplate.getName();
     String format = birtTemplate.getFormat();
     Path src =
         birtTemplateService
-            .generateBirtTemplateFile(birtTemplate, model, name, false, format)
+            .generateBirtTemplateFile(birtTemplate, model, context, name, false, format)
             .toPath();
-    String outFileName = String.format("%s-%s.%s", name, model.getId(), format);
+    String outFileName =
+        String.format(
+            "%s-%s.%s",
+            name, model == null ? RandomStringUtils.randomAlphanumeric(4) : model.getId(), format);
     Path dest =
         Files.move(src, src.resolveSibling(outFileName), StandardCopyOption.REPLACE_EXISTING);
     return dest.toFile();

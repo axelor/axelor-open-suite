@@ -32,7 +32,6 @@ import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
@@ -58,13 +57,16 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
+import com.google.common.collect.Sets;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -259,21 +261,6 @@ public class MoveLineController {
     }
   }
 
-  public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine.setMove(this.getMove(request, moveLine));
-
-      response.setAttr(
-          "invoiceTermPanel",
-          "readonly",
-          Beans.get(MoveLineControlService.class)
-              .isInvoiceTermReadonly(moveLine, request.getUser()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -374,24 +361,56 @@ public class MoveLineController {
     try {
       Context parentContext = request.getContext().getParent();
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
       if (parentContext != null) {
         Move move = parentContext.asType(Move.class);
-        TaxLine taxLine = moveLine.getTaxLine();
+        Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
+        Set<TaxLine> newTaxLineSet =
+            ObjectUtils.notEmpty(taxLineSet) ? Sets.newHashSet(taxLineSet) : Sets.newHashSet();
+        Set<TaxLine> taxLineBeforeReverseSet = new HashSet<>();
+
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
-        response.setValue("taxLineBeforeReverse", null);
+        FiscalPositionService fiscalPositionService = Beans.get(FiscalPositionService.class);
+        TaxService taxService = Beans.get(TaxService.class);
 
-        if (fiscalPosition != null && taxLine != null) {
-          taxEquiv =
-              Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
+        if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
+          Map<TaxLine, TaxLine> taxMap = new HashMap<>();
+          if (CollectionUtils.isNotEmpty(moveLine.getTaxLineBeforeReverseSet())) {
+            for (TaxLine taxLineBeforeRev : moveLine.getTaxLineBeforeReverseSet()) {
+              taxEquiv =
+                  fiscalPositionService.getTaxEquiv(fiscalPosition, taxLineBeforeRev.getTax());
+              if (taxEquiv != null) {
+                TaxLine fromTax = taxEquiv.getToTax().getActiveTaxLine();
+                TaxLine toTax = taxLineBeforeRev;
 
-          if (taxEquiv != null) {
-            response.setValue("taxLineBeforeReverse", taxLine);
-            taxLine =
-                Beans.get(TaxService.class).getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+                // Check if fromTax is present in taxLineSet
+                if (taxLineSet.stream().anyMatch(tl -> tl.equals(fromTax))) {
+                  taxMap.put(fromTax, toTax);
+                } else {
+                  taxLineBeforeReverseSet.remove(taxLineBeforeRev);
+                }
+              }
+            }
+          }
+
+          for (TaxLine taxLine : taxLineSet) {
+            if (taxMap.containsKey(taxLine)) {
+              taxLineBeforeReverseSet.add(taxMap.get(taxLine));
+            } else {
+              taxLineBeforeReverseSet.add(taxLine);
+            }
+            taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, taxLine.getTax());
+            if (taxEquiv != null) {
+              TaxLine newTaxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+
+              newTaxLineSet.add(newTaxLine);
+              newTaxLineSet.remove(taxLine);
+            }
           }
         }
-        response.setValue("taxLine", taxLine);
+        response.setValue("taxLineBeforeReverseSet", taxLineBeforeReverseSet);
+        response.setValue("taxLineSet", newTaxLineSet);
         response.setValue("taxEquiv", taxEquiv);
       }
     } catch (Exception e) {

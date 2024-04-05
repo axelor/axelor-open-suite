@@ -7,7 +7,7 @@
 
   <entity name="OperationOrderDuration">
     <many-to-one name="operationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder" title="Operation Order"/>
+      ref="com.axelor.apps.production.db.OperationOrder" title="Manufacturing Operation"/>
 
     <many-to-one name="startedBy" ref="com.axelor.auth.db.User" title="Started by"
       readonly="true"/>

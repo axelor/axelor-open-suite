@@ -7,6 +7,7 @@
     <option value="1">Time spent</option>
     <option value="2">ProjectTask.Package</option>
     <option value="3">No invoicing</option>
+    <option value="4">On progress</option>
   </selection>
 
   <selection name="business.project.invoicing.sequence.select">
@@ -84,4 +85,14 @@
     <option value="3">Employee</option>
   </selection>
 
+  <selection name="business.project.sale.order.line.invoicing.mode.select">
+    <option value="1">Directly</option>
+    <option value="2">On delivery</option>
+    <option value="3">On progress</option>
+  </selection>
+
+  <selection name='iinvoice.operation.sub.type.select'
+    id="business.project.iinvoice.operation.sub.type.select">
+    <option value='8'>In progress invoice</option>
+  </selection>
 </object-views>

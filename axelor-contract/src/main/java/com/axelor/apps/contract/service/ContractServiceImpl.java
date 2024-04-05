@@ -59,7 +59,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -68,14 +67,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ContractServiceImpl extends ContractRepository implements ContractService {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
   protected ContractVersionService versionService;
@@ -89,6 +85,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected InvoiceRepository invoiceRepository;
   protected InvoiceService invoiceService;
   protected AnalyticLineModelService analyticLineModelService;
+  protected ContractYearEndBonusService contractYearEndBonusService;
 
   @Inject
   public ContractServiceImpl(
@@ -102,7 +99,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractVersionRepository contractVersionRepository,
       InvoiceRepository invoiceRepository,
       InvoiceService invoiceService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      ContractYearEndBonusService contractYearEndBonusService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -114,6 +112,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.invoiceRepository = invoiceRepository;
     this.invoiceService = invoiceService;
     this.analyticLineModelService = analyticLineModelService;
+    this.contractYearEndBonusService = contractYearEndBonusService;
   }
 
   @Override
@@ -407,8 +406,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceRepository.save(invoice);
     computeContractLines(contract, invoice);
     // Increase invoice period date
+    contractYearEndBonusService.invoiceYebContract(contract, invoice);
     increaseInvoiceDates(contract);
     setRevaluationFormulaDescription(contract, invoice);
+
     return computeAndSave(invoice);
   }
 
@@ -491,7 +492,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           tmp.setFromDate(start);
           ratio =
               durationService.computeRatio(
-                  start, end, contract.getStartDate(), contract.getInvoicePeriodEndDate());
+                  start,
+                  end,
+                  contract.getStartDate(),
+                  contract.getInvoicePeriodEndDate(),
+                  contract.getCurrentContractVersion().getInvoicingDuration());
         }
         tmp.setQty(
             tmp.getQty()
@@ -634,7 +639,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     BigDecimal inTaxPriceComputed =
         taxService.convertUnitPrice(
             false,
-            line.getTaxLine(),
+            line.getTaxLineSet(),
             line.getPrice(),
             appBaseService.getNbDecimalDigitForUnitPrice());
     String description =
@@ -665,7 +670,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             description,
             line.getQty(),
             line.getUnit(),
-            line.getTaxLine(),
+            line.getTaxLineSet(),
             line.getSequence(),
             line.getDiscountAmount(),
             line.getDiscountTypeSelect(),
@@ -695,16 +700,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice)
             == PriceListRepository.TYPE_PURCHASE;
 
-    TaxLine taxLine =
+    Set<TaxLine> taxLineSet =
         Beans.get(AccountManagementService.class)
-            .getTaxLine(
+            .getTaxLineSet(
                 appBaseService.getTodayDate(invoice.getCompany()),
                 invoiceLine.getProduct(),
                 invoice.getCompany(),
                 fiscalPosition,
                 isPurchase);
 
-    invoiceLine.setTaxLine(taxLine);
+    invoiceLine.setTaxLineSet(taxLineSet);
     invoiceLine.setAccount(replacedAccount);
 
     invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());

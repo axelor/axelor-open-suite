@@ -560,7 +560,7 @@ from InvoiceTerm as self
 		LEFT JOIN
 			base_address AS _address ON _address.id = _invoice.address
 		LEFT JOIN
-			base_country AS _country ON _country.id = _address.addressl7country
+			base_country AS _country ON _country.id = _address.country
 		WHERE _invoice.status_select = 3
         AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
 		GROUP BY

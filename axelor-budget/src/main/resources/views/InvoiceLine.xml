@@ -11,6 +11,19 @@
       <attribute name="onNew" value="action-group-budget-invoice-line-onnew"/>
     </extend>
 
+    <extend target="//panel[@name='customerInvoicePanel']/field[@name='product']">
+      <attribute name="onChange"
+        value="action-budget-group-account-invoice-line-product-onchange"/>
+    </extend>
+    <extend target="//panel[@name='supplierInvoicePanel']/field[@name='product']">
+      <attribute name="onChange"
+        value="action-budget-group-account-invoice-line-product-onchange"/>
+    </extend>
+
+    <extend target="//field[@name='account']">
+      <attribute name="onChange" value="action-budget-invoice-line-group-account-onchange"/>
+    </extend>
+
     <extend target="//panel[@name='accountingPanel']">
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
@@ -49,6 +62,16 @@
   <action-group name="action-group-budget-invoice-line-budget-distribution-onchange">
     <action name="action-method-invoice-line-budget-distribution-validate-amount"/>
     <action name="action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+  </action-group>
+
+  <action-group name="action-budget-group-account-invoice-line-product-onchange">
+    <action name="action-group-account-invoice-line-product-onchange"/>
+    <action name="action-reset-budget-method"/>
+  </action-group>
+
+  <action-group name="action-budget-invoice-line-group-account-onchange">
+    <action name="action-invoice-line-group-account-onchange"/>
+    <action name="action-reset-budget-method"/>
   </action-group>
 
   <action-method

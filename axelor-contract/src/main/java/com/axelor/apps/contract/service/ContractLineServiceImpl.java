@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
@@ -44,11 +45,14 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractLineServiceImpl implements ContractLineService {
   protected AppBaseService appBaseService;
@@ -61,6 +65,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AnalyticLineModelService analyticLineModelService;
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
+  protected TaxService taxService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -73,7 +78,8 @@ public class ContractLineServiceImpl implements ContractLineService {
       DurationService durationService,
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      TaxService taxService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
@@ -84,6 +90,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.analyticLineModelService = analyticLineModelService;
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -94,7 +101,7 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     Map<String, Object> contractLineMap = Mapper.toMap(new ContractLine());
     contractLineMap.put("inTaxTotal", null);
-    contractLineMap.put("taxLine", null);
+    contractLineMap.put("taxLineSet", null);
     contractLineMap.put("productName", null);
     contractLineMap.put("unit", null);
     contractLineMap.put("price", null);
@@ -141,21 +148,21 @@ public class ContractLineServiceImpl implements ContractLineService {
     // TODO: maybe put tax computing in another method
     contractLine.setFiscalPosition(contract.getPartner().getFiscalPosition());
 
-    TaxLine taxLine =
-        accountManagementService.getTaxLine(
+    Set<TaxLine> taxLineSet =
+        accountManagementService.getTaxLineSet(
             appBaseService.getTodayDate(contract.getCompany()),
             product,
             contract.getCompany(),
             contractLine.getFiscalPosition(),
             false);
-    contractLine.setTaxLine(taxLine);
+    contractLine.setTaxLineSet(taxLineSet);
 
-    if (taxLine != null
+    if (CollectionUtils.isNotEmpty(taxLineSet)
         && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
       BigDecimal price = contractLine.getPrice();
       price =
           price.divide(
-              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              taxService.getTotalTaxRate(taxLineSet).add(BigDecimal.ONE),
               2,
               BigDecimal.ROUND_HALF_UP);
       contractLine.setPrice(price);
@@ -188,13 +195,13 @@ public class ContractLineServiceImpl implements ContractLineService {
       throws AxelorException {
     BigDecimal taxRate = BigDecimal.ZERO;
 
-    if (contractLine.getTaxLine() != null) {
-      taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
+    Set<TaxLine> taxLineSet = contractLine.getTaxLineSet();
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      taxRate = taxService.getTotalTaxRate(taxLineSet);
     }
 
     if (contractLine.getContractVersion() != null) {
       contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
-      contract = contractLine.getContractVersion().getContract();
     }
 
     BigDecimal price =
@@ -271,7 +278,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setPrice(null);
     contractLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     contractLine.setDiscountAmount(null);
-    contractLine.setTaxLine(null);
+    contractLine.setTaxLineSet(Sets.newHashSet());
     contractLine.setUnit(null);
     contractLine.setExTaxTotal(null);
     contractLine.setInTaxTotal(null);

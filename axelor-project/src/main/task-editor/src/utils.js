@@ -234,7 +234,7 @@ export const getStatus = (task = {}, project) => {
 };
 
 export function translate(str) {
-  if (window.top && window.top._t && typeof str === "string") {
+  if (window.top && window.top._t && typeof str === 'string') {
     return window.top._t(str);
   }
   return str;
@@ -251,7 +251,7 @@ export function getSortOptions(project) {
     options = options.filter(option => option.code !== 'status');
   }
   if (!isShowProgress) {
-    options = options.filter(option => option.code !== 'progressSelect');
+    options = options.filter(option => option.code !== 'progress');
   }
   if (!isShowTaskCategory) {
     options = options.filter(option => option.code !== 'projectTaskCategory');

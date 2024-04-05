@@ -594,6 +594,9 @@ public final class AccountExceptionMessage {
   public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
       "%d accounts treated successfully," /*)*/;
 
+  public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_RESULT_MOVE = /*$$(*/
+      "One result move generated %s." /*)*/;
+
   /** Batch auto move lettering */
   public static final String BATCH_AUTO_MOVE_LETTERING_REPORT_TITLE = /*$$(*/
       "Report for auto move lettering batch:" /*)*/;
@@ -1692,6 +1695,9 @@ public final class AccountExceptionMessage {
       "Fiscal year and periods have been generated successfully." /*)*/;
   public static final String ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS = /*$$(*/
       "The accounting configurations have been imported successfully for the company %s." /*)*/;
+
+  public static final String MOVE_USER_NOT_AUTHORIZED_ON_JOURNAL_ROLE_SET = /*$$(*/
+      "You are not authorized to save the move %s (check the %s journal's role config)." /*)*/;
 
   public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
       "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
