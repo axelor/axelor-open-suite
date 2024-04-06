@@ -35,7 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.SaleOrderServiceDemo;
+import com.axelor.apps.sale.service.MultiLevelSaleOrderLineService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
@@ -462,8 +462,8 @@ public class SaleOrderLineController {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
     response.setValues(
-        Beans.get(SaleOrderServiceDemo.class).setSOLineStartValues(saleOrderLine, context));
+        Beans.get(MultiLevelSaleOrderLineService.class)
+            .setSOLineStartValues(saleOrderLine, context));
   }
 }

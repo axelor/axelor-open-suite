@@ -42,6 +42,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.AddressServiceSaleImpl;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.sale.service.MultiLevelSaleOrderLineService;
+import com.axelor.apps.sale.service.MultiLevelSaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.PackLineService;
 import com.axelor.apps.sale.service.PackLineServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleService;
@@ -158,5 +160,6 @@ public class SaleModule extends AxelorModule {
     bind(PricingMetaServiceImpl.class).to(SalePricingMetaServiceImpl.class);
     bind(SaleOrderAttrsService.class).to(SaleOrderAttrsServiceImpl.class);
     bind(SaleOrderGroupService.class).to(SaleOrderGroupServiceImpl.class);
+    bind(MultiLevelSaleOrderLineService.class).to(MultiLevelSaleOrderLineServiceImpl.class);
   }
 }

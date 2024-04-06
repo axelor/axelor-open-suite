@@ -44,9 +44,9 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.MultiLevelSaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderGroupService;
-import com.axelor.apps.sale.service.SaleOrderServiceDemo;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
@@ -679,15 +679,16 @@ public class SaleOrderController {
     if (context.get("expendableSaleOrderLineList") == null) {
       return;
     }
-    SaleOrderServiceDemo orderService = Beans.get(SaleOrderServiceDemo.class);
+    MultiLevelSaleOrderLineService multiLevelSaleOrderLineService =
+        Beans.get(MultiLevelSaleOrderLineService.class);
     SaleOrderLine dirtyLine =
-        orderService.findDirtyLine(
+        multiLevelSaleOrderLineService.findDirtyLine(
             (List<Map<String, Object>>) context.get("expendableSaleOrderLineList"));
     if (dirtyLine == null) {
       return;
     }
 
-    orderService.updateRelatedLines(dirtyLine, saleOrder);
+    multiLevelSaleOrderLineService.updateRelatedLines(dirtyLine, saleOrder);
 
     Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
 

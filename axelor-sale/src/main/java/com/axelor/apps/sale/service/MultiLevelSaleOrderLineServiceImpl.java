@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SaleOrderServiceDemo {
+public class MultiLevelSaleOrderLineServiceImpl implements MultiLevelSaleOrderLineService {
 
   protected final SaleOrderComputeService saleOrderComputeService;
 
@@ -54,7 +54,7 @@ public class SaleOrderServiceDemo {
   protected final SaleOrderLineService saleOrderLineService;
 
   @Inject
-  public SaleOrderServiceDemo(
+  public MultiLevelSaleOrderLineServiceImpl(
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderRepository saleOrderRepository,
       TaxService taxService,
@@ -69,74 +69,76 @@ public class SaleOrderServiceDemo {
     this.saleOrderLineService = saleOrderLineService;
   }
 
-  public List<SaleOrderLine> updateRelatedLines(SaleOrderLine dirtyLine, SaleOrder order)
+  @Override
+  public List<SaleOrderLine> updateRelatedLines(SaleOrderLine dirtyLine, SaleOrder saleOrder)
       throws AxelorException {
-    List<SaleOrderLine> items = order.getExpendableSaleOrderLineList();
-    updateChild(dirtyLine, order);
-    replaceDirtyLineInItems(dirtyLine, items);
-    updateParent(dirtyLine, items, order);
-    return items;
+    List<SaleOrderLine> expendableSaleOrderLineList = saleOrder.getExpendableSaleOrderLineList();
+    updateChild(dirtyLine, saleOrder);
+    replaceDirtyLine(dirtyLine, expendableSaleOrderLineList);
+    updateParent(dirtyLine, expendableSaleOrderLineList, saleOrder);
+    return expendableSaleOrderLineList;
   }
 
-  protected void updateChild(SaleOrderLine line, SaleOrder order) throws AxelorException {
-    List<SaleOrderLine> items = line.getSubSaleOrderLineList();
-    BigDecimal qtyCoef = getQtyCoef(line);
-    BigDecimal priceCoef = getPriceCoef(line);
-    if (ObjectUtils.isEmpty(items)
+  protected void updateChild(SaleOrderLine orderLine, SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> subSaleOrderLineList = orderLine.getSubSaleOrderLineList();
+    BigDecimal qtyCoef = getQtyCoef(orderLine);
+    BigDecimal priceCoef = getPriceCoef(orderLine);
+    if (ObjectUtils.isEmpty(subSaleOrderLineList)
         || (BigDecimal.ONE.compareTo(qtyCoef) == 0 && BigDecimal.ONE.compareTo(priceCoef) == 0)) {
       return;
     }
-    for (SaleOrderLine orderLine : items) {
-      updateValues(orderLine, qtyCoef, priceCoef, order);
+    for (SaleOrderLine saleOrderLine : subSaleOrderLineList) {
+      updateValues(saleOrderLine, qtyCoef, priceCoef, saleOrder);
     }
   }
 
   protected void updateValues(
-      SaleOrderLine orderLine, BigDecimal qtyCoef, BigDecimal priceCoef, SaleOrder order)
+      SaleOrderLine saleOrderLine, BigDecimal qtyCoef, BigDecimal priceCoef, SaleOrder saleOrder)
       throws AxelorException {
-    updateQty(orderLine, qtyCoef);
-    updatePrice(orderLine, priceCoef);
-    orderLine.setExTaxTotal(orderLine.getQty().multiply(orderLine.getPrice()));
-    computeAllValues(orderLine, order);
-    // setDefaultSaleOrderLineProperties(orderLine, order);
-    orderLine.setPriceBeforeUpdate(orderLine.getPrice());
-    orderLine.setQtyBeforeUpdate(orderLine.getQty());
-    List<SaleOrderLine> items = orderLine.getSubSaleOrderLineList();
-    if (ObjectUtils.isEmpty(items)) {
+    updateQty(saleOrderLine, qtyCoef);
+    updatePrice(saleOrderLine, priceCoef);
+    saleOrderLine.setExTaxTotal(saleOrderLine.getQty().multiply(saleOrderLine.getPrice()));
+    computeAllValues(saleOrderLine, saleOrder);
+    saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
+    saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (ObjectUtils.isEmpty(subSaleOrderLineList)) {
       return;
     }
-    for (SaleOrderLine line : items) {
-      updateValues(line, qtyCoef, priceCoef, order);
+    for (SaleOrderLine saleOrderLine1 : subSaleOrderLineList) {
+      updateValues(saleOrderLine1, qtyCoef, priceCoef, saleOrder);
     }
   }
 
-  protected void updateQty(SaleOrderLine orderLine, BigDecimal qtyCoef) {
+  protected void updateQty(SaleOrderLine saleOrderLine, BigDecimal qtyCoef) {
     BigDecimal qty =
-        orderLine.getQty().equals(BigDecimal.ZERO) ? BigDecimal.ONE : orderLine.getQty();
-    orderLine.setQty(qtyCoef.multiply(qty).setScale(2, RoundingMode.HALF_EVEN));
+        saleOrderLine.getQty().equals(BigDecimal.ZERO) ? BigDecimal.ONE : saleOrderLine.getQty();
+    saleOrderLine.setQty(qtyCoef.multiply(qty).setScale(2, RoundingMode.HALF_EVEN));
   }
 
-  protected void updatePrice(SaleOrderLine orderLine, BigDecimal priceCoef) {
+  protected void updatePrice(SaleOrderLine saleOrderLine, BigDecimal priceCoef) {
     BigDecimal newPrice =
         priceCoef
-            .multiply(orderLine.getPrice().signum() == 0 ? BigDecimal.ONE : orderLine.getPrice())
+            .multiply(
+                saleOrderLine.getPrice().signum() == 0 ? BigDecimal.ONE : saleOrderLine.getPrice())
             .setScale(4, RoundingMode.HALF_EVEN);
-    orderLine.setPrice(newPrice);
+    saleOrderLine.setPrice(newPrice);
   }
 
-  protected boolean replaceDirtyLineInItems(SaleOrderLine dirtyLine, List<SaleOrderLine> items) {
-    if (items == null) {
+  protected boolean replaceDirtyLine(
+      SaleOrderLine dirtyLine, List<SaleOrderLine> subSaleOrderLineList) {
+    if (subSaleOrderLineList == null) {
       return false;
     }
 
     int i = 0;
-    for (SaleOrderLine orderLine : items) {
-      if (isEqual(orderLine, dirtyLine)) {
-        items.set(i, dirtyLine);
+    for (SaleOrderLine saleOrderLine : subSaleOrderLineList) {
+      if (isEqual(saleOrderLine, dirtyLine)) {
+        subSaleOrderLineList.set(i, dirtyLine);
         return true;
       }
-      if (orderLine.getSubSaleOrderLineList() != null
-          && replaceDirtyLineInItems(dirtyLine, orderLine.getSubSaleOrderLineList())) {
+      if (saleOrderLine.getSubSaleOrderLineList() != null
+          && replaceDirtyLine(dirtyLine, saleOrderLine.getSubSaleOrderLineList())) {
         return true;
       }
       i++;
@@ -144,24 +146,25 @@ public class SaleOrderServiceDemo {
     return false;
   }
 
-  protected void updateParent(SaleOrderLine dirtyLine, List<SaleOrderLine> list, SaleOrder order)
+  protected void updateParent(
+      SaleOrderLine dirtyLine, List<SaleOrderLine> expendableSaleOrderLineList, SaleOrder saleOrder)
       throws AxelorException {
-    for (SaleOrderLine orderLine : list) {
-      if (isOrHasDirtyLine(orderLine, dirtyLine)) {
-        compute(orderLine, order);
+    for (SaleOrderLine saleOrderLine : expendableSaleOrderLineList) {
+      if (isOrHasDirtyLine(saleOrderLine, dirtyLine)) {
+        compute(saleOrderLine, saleOrder);
       }
     }
   }
 
-  protected void compute(SaleOrderLine orderLine, SaleOrder order) throws AxelorException {
-    List<SaleOrderLine> items = orderLine.getSubSaleOrderLineList();
+  protected void compute(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> items = saleOrderLine.getSubSaleOrderLineList();
     if (ObjectUtils.isEmpty(items)) {
       return;
     }
-    BigDecimal quantity = orderLine.getQty();
+    BigDecimal quantity = saleOrderLine.getQty();
     BigDecimal totalPrice = BigDecimal.ZERO;
     for (SaleOrderLine line : items) {
-      compute(line, order);
+      compute(line, saleOrder);
       totalPrice = totalPrice.add(line.getExTaxTotal());
     }
     totalPrice = quantity.equals(BigDecimal.ZERO) ? BigDecimal.ZERO : totalPrice;
@@ -169,32 +172,25 @@ public class SaleOrderServiceDemo {
         quantity.equals(BigDecimal.ZERO)
             ? BigDecimal.ZERO
             : totalPrice.divide(quantity, 4, RoundingMode.HALF_EVEN);
-    orderLine.setPrice(price);
-    orderLine.setExTaxTotal(totalPrice);
-    computeAllValues(orderLine, order);
-    // setDefaultSaleOrderLineProperties(orderLine, order);
-    orderLine.setPriceBeforeUpdate(orderLine.getPrice());
-    orderLine.setQtyBeforeUpdate(orderLine.getQty());
+    saleOrderLine.setPrice(price);
+    saleOrderLine.setExTaxTotal(totalPrice);
+    computeAllValues(saleOrderLine, saleOrder);
+    saleOrderLine.setPriceBeforeUpdate(saleOrderLine.getPrice());
+    saleOrderLine.setQtyBeforeUpdate(saleOrderLine.getQty());
   }
 
-  protected boolean isOrHasDirtyLine(SaleOrderLine orderLine, SaleOrderLine dirtyLine) {
+  protected boolean isOrHasDirtyLine(SaleOrderLine saleOrderLine, SaleOrderLine dirtyLine) {
 
-    if (isEqual(orderLine, dirtyLine)) {
+    if (isEqual(saleOrderLine, dirtyLine)) {
       return true;
     }
-    if (orderLine.getSubSaleOrderLineList() == null) {
+
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (subSaleOrderLineList == null) {
       return false;
     }
 
-    List<SaleOrderLine> items = orderLine.getSubSaleOrderLineList();
-    /*    if (orderLine.getId() != null && items == null) {
-      List<SaleOrderLine> list = saleOrderRepository.find(orderLine.getId()).getExpendableSaleOrderLineList();
-      if (list != null) {
-        items = list;
-      }
-    }*/
-
-    for (SaleOrderLine line : items) {
+    for (SaleOrderLine line : subSaleOrderLineList) {
       if (isOrHasDirtyLine(line, dirtyLine)) {
         return true;
       }
@@ -202,18 +198,20 @@ public class SaleOrderServiceDemo {
     return false;
   }
 
-  protected BigDecimal getPriceCoef(SaleOrderLine line) {
+  protected BigDecimal getPriceCoef(SaleOrderLine saleOrderLine) {
     BigDecimal oldPrice =
-        line.getPriceBeforeUpdate().signum() == 0 ? BigDecimal.ONE : line.getPriceBeforeUpdate();
-    return line.getPrice().divide(oldPrice, 4, RoundingMode.HALF_EVEN);
+        saleOrderLine.getPriceBeforeUpdate().signum() == 0
+            ? BigDecimal.ONE
+            : saleOrderLine.getPriceBeforeUpdate();
+    return saleOrderLine.getPrice().divide(oldPrice, 4, RoundingMode.HALF_EVEN);
   }
 
-  protected BigDecimal getQtyCoef(SaleOrderLine line) {
+  protected BigDecimal getQtyCoef(SaleOrderLine saleOrderLine) {
     BigDecimal oldQty =
-        line.getQtyBeforeUpdate().equals(BigDecimal.ZERO)
+        saleOrderLine.getQtyBeforeUpdate().equals(BigDecimal.ZERO)
             ? BigDecimal.ONE
-            : line.getQtyBeforeUpdate();
-    return line.getQty().divide(oldQty, 4, RoundingMode.HALF_EVEN);
+            : saleOrderLine.getQtyBeforeUpdate();
+    return saleOrderLine.getQty().divide(oldQty, 4, RoundingMode.HALF_EVEN);
   }
 
   @SuppressWarnings("unchecked")
@@ -221,15 +219,15 @@ public class SaleOrderServiceDemo {
     if (list == null) {
       return null;
     }
-    for (Map<String, Object> orderLine : list) {
-      Object items = orderLine.get("subSaleOrderLineList");
-      if (isChanged(orderLine)) {
-        return getDirtyLine(orderLine);
+    for (Map<String, Object> saleOrderLine : list) {
+      Object saleOrderLineList = saleOrderLine.get("subSaleOrderLineList");
+      if (isChanged(saleOrderLine)) {
+        return getDirtyLine(saleOrderLine);
       }
-      if (items == null) {
+      if (saleOrderLineList == null) {
         continue;
       }
-      SaleOrderLine dirtyLine = findDirtyLine((List<Map<String, Object>>) items);
+      SaleOrderLine dirtyLine = findDirtyLine((List<Map<String, Object>>) saleOrderLineList);
       if (dirtyLine != null) {
         return dirtyLine;
       }
@@ -238,11 +236,11 @@ public class SaleOrderServiceDemo {
   }
 
   @SuppressWarnings("unchecked")
-  protected SaleOrderLine getDirtyLine(Map<String, Object> orderLine) {
-    SaleOrderLine bean = Mapper.toBean(SaleOrderLine.class, orderLine);
-    if (orderLine.get("_original") != null) {
+  protected SaleOrderLine getDirtyLine(Map<String, Object> saleOrderLine) {
+    SaleOrderLine bean = Mapper.toBean(SaleOrderLine.class, saleOrderLine);
+    if (saleOrderLine.get("_original") != null) {
       SaleOrderLine oldValue =
-          Mapper.toBean(SaleOrderLine.class, (Map<String, Object>) orderLine.get("_original"));
+          Mapper.toBean(SaleOrderLine.class, (Map<String, Object>) saleOrderLine.get("_original"));
       bean.setQtyBeforeUpdate(oldValue.getQty());
       bean.setPriceBeforeUpdate(oldValue.getPrice());
     }
@@ -257,11 +255,11 @@ public class SaleOrderServiceDemo {
     return Boolean.TRUE.equals(isChanged.get("_changed"));
   }
 
-  protected boolean isEqual(SaleOrderLine a, SaleOrderLine b) {
-    boolean isId = b.getId() != null && a.getId() != null;
+  protected boolean isEqual(SaleOrderLine slo1, SaleOrderLine slo2) {
+    boolean isId = slo2.getId() != null && slo1.getId() != null;
     return isId
-        ? a.getId().equals(b.getId())
-        : (a.getCid() != null && a.getCid().equals(b.getCid()));
+        ? slo1.getId().equals(slo2.getId())
+        : (slo1.getCid() != null && slo1.getCid().equals(slo2.getCid()));
   }
 
   protected void computeAllValues(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -275,37 +273,35 @@ public class SaleOrderServiceDemo {
     saleOrderLineService.computeValues(saleOrder, saleOrderLine);
   }
 
-  protected void setDefaultSaleOrderLineProperties(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {}
-
+  @Override
   public SaleOrderLine setSOLineStartValues(SaleOrderLine saleOrderLine, Context context) {
+
+    saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
 
     if (saleOrderLine.getLineIndex() == null) {
       Context parentContext = context.getParent();
       if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
         SaleOrder parent = parentContext.asType(SaleOrder.class);
         if (parent.getExpendableSaleOrderLineList() != null) {
-          saleOrderLine.setLineIndex(calculatePrentSolLineIndex(parent));
+          saleOrderLine.setLineIndex(calculateParentSolLineIndex(parent));
         } else {
           saleOrderLine.setLineIndex("1");
         }
       }
 
-      if (context.getParent() != null
-          && context.getParent().getContextClass().equals(SaleOrderLine.class)) {
-        SaleOrderLine parent = context.getParent().asType(SaleOrderLine.class);
+      if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
+        SaleOrderLine parent = parentContext.asType(SaleOrderLine.class);
         int size = 0;
-        if(parent.getSubSaleOrderLineList()!=null){
+        if (parent.getSubSaleOrderLineList() != null) {
           size = parent.getSubSaleOrderLineList().size();
         }
-        saleOrderLine.setLineIndex(
-            parent.getLineIndex() + "." + (size +1));
+        saleOrderLine.setLineIndex(parent.getLineIndex() + "." + (size + 1));
       }
     }
     return saleOrderLine;
   }
 
-  protected String calculatePrentSolLineIndex(SaleOrder saleOrder) {
+  protected String calculateParentSolLineIndex(SaleOrder saleOrder) {
     return saleOrder.getExpendableSaleOrderLineList().stream()
         .filter(slo -> slo.getLineIndex() != null)
         .map(slo -> slo.getLineIndex().split("\\.")[0])
