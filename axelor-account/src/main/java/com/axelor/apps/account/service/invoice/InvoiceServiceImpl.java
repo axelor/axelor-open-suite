@@ -287,6 +287,29 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Transactional(rollbackOn = {Exception.class})
   protected void ventilateProcess(Invoice invoice) throws AxelorException {
+
+    this.checkPreconditions(invoice);
+
+    this.computeEstimatedPaymentDate(invoice);
+    invoiceTermService.checkAndComputeInvoiceTerms(invoice);
+
+    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
+
+    ventilateFactory.getVentilator(invoice).process();
+
+    invoiceRepo.save(invoice);
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      Beans.get(InvoicePrintService.class)
+          .printAndSave(
+              invoice,
+              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
+              ReportSettings.FORMAT_PDF,
+              null);
+    }
+  }
+
+  @Override
+  public void checkPreconditions(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -344,22 +367,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       throw new AxelorException(
           invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
-    }
-
-    this.computeEstimatedPaymentDate(invoice);
-
-    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
-
-    ventilateFactory.getVentilator(invoice).process();
-
-    invoiceRepo.save(invoice);
-    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
-      Beans.get(InvoicePrintService.class)
-          .printAndSave(
-              invoice,
-              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
-              ReportSettings.FORMAT_PDF,
-              null);
     }
   }
 

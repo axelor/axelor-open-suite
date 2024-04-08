@@ -90,6 +90,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected CurrencyScaleService currencyScaleService;
   protected DMSFileRepository DMSFileRepo;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -102,7 +103,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       PfpService pfpService,
       CurrencyScaleService currencyScaleService,
       DMSFileRepository DMSFileRepo,
-      InvoiceTermPaymentService invoiceTermPaymentService) {
+      InvoiceTermPaymentService invoiceTermPaymentService,
+      AppBaseService appBaseService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -113,6 +115,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.currencyScaleService = currencyScaleService;
     this.DMSFileRepo = DMSFileRepo;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -1627,5 +1630,49 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     } else {
       return BigDecimal.ZERO;
     }
+  }
+
+  @Override
+  public void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+        || checkIfCustomizedInvoiceTerms(invoice)) {
+      return;
+    }
+    if (InvoiceToolService.isPurchase(invoice)) {
+      if (invoice.getOriginDate() != null) {
+        invoice = setDueDates(invoice, invoice.getOriginDate());
+      } else {
+        invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
+      }
+    } else {
+      if (invoice.getInvoiceDate() != null) {
+        invoice = setDueDates(invoice, invoice.getInvoiceDate());
+      } else {
+        invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
+      }
+    }
+    return;
+  }
+
+  @Override
+  public void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException {
+    if (invoice.getPaymentCondition() == null
+        || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      if (invoice.getInvoiceTermList() != null) {
+        invoice.getInvoiceTermList().clear();
+      } else {
+        invoice.setInvoiceTermList(new ArrayList<>());
+      }
+
+      return;
+    }
+
+    InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+        || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+      return;
+    }
+
+    computeInvoiceTerms(invoice);
   }
 }

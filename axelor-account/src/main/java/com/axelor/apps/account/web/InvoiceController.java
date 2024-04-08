@@ -57,7 +57,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.address.AddressService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
@@ -74,7 +73,6 @@ import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -271,25 +269,11 @@ public class InvoiceController {
   public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getPaymentCondition() == null
-          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
-        if (invoice.getInvoiceTermList() != null) {
-          invoice.getInvoiceTermList().clear();
-        } else {
-          invoice.setInvoiceTermList(new ArrayList<>());
-        }
-
-        response.setValues(invoice);
-        return;
-      }
 
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-      if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
-        return;
-      }
 
-      invoice = invoiceTermService.computeInvoiceTerms(invoice);
+      invoiceTermService.checkAndComputeInvoiceTerms(invoice);
+
       if (invoice != null) {
         response.setValues(invoice);
       } else {
@@ -304,27 +288,7 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
-        return;
-      }
-      if (InvoiceToolService.isPurchase(invoice)) {
-        if (invoice.getOriginDate() != null) {
-          invoice = invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
-        } else {
-          invoice =
-              invoiceTermService.setDueDates(
-                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
-        }
-      } else {
-        if (invoice.getInvoiceDate() != null) {
-          invoice = invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
-        } else {
-          invoice =
-              invoiceTermService.setDueDates(
-                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
-        }
-      }
+      invoiceTermService.computeInvoiceTermsDueDates(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
     } catch (Exception e) {
