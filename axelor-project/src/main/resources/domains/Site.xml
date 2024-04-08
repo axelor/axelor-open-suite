@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Site">
-    <boolean name="isEnterableOnProject" title="Enterable on project"/>
+    <boolean name="isUsableOnProject" title="Usable on project"/>
   </entity>
 
 </domain-models>

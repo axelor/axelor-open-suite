@@ -532,9 +532,9 @@
 
   <action-attrs name="action-timesheet-line-attrs-set-site-domain">
     <attribute for="site" name="domain"
-      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}?.join(',')}) AND self.isEnterableOnTimesheet = true&quot;"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}?.join(',')}) AND self.isUsableOnTimesheet = true&quot;"
       if="project"/>
-    <attribute for="site" name="domain" expr="self.isEnterableOnTimesheet = true"
+    <attribute for="site" name="domain" expr="self.isUsableOnTimesheet = true"
       if="!project"/>
   </action-attrs>
 

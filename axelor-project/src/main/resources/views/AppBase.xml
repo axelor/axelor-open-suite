@@ -12,7 +12,7 @@
           if="__config__.app.isApp('project')"/>
         <field name="defaultSitesSet" widget="TagSelect" hidden="true"
           showIf="enableSiteManagementForProject" if="__config__.app.isApp('project')"
-          domain="self.isEnterableOnProject = true"/>
+          domain="self.isUsableOnProject = true"/>
       </insert>
     </extend>
   </form>

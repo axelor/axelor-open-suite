@@ -144,7 +144,7 @@
       <field name="description" colSpan="12" widget="html"/>
       <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"
-        domain="self.isEnterableOnProject = true"/>
+        domain="self.isUsableOnProject = true"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">

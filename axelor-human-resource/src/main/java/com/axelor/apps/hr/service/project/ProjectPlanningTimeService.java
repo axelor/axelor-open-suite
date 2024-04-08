@@ -19,15 +19,12 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Site;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface ProjectPlanningTimeService {
 
@@ -44,6 +41,4 @@ public interface ProjectPlanningTimeService {
   public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime);
 
   public BigDecimal getDurationForCustomer(ProjectTask projectTask);
-
-  Optional<Site> getDefaultSiteFromProjectTask(Context context);
 }

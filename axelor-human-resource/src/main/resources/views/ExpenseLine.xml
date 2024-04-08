@@ -493,8 +493,7 @@
     <attribute for="site" name="domain"
       expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"
       if="project"/>
-    <attribute for="site" name="domain" expr="self.isEnterableOnExpense = true"
-      if="!project"/>
+    <attribute for="site" name="domain" expr="self.isUsableOnExpense = true" if="!project"/>
   </action-attrs>
 
   <action-group name="action-expense-line-group-fill-arrival-and-compute">

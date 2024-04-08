@@ -16,7 +16,7 @@
       <insert position="after">
         <panel name="projectPanel" title="Project"
           if="__config__.app.getApp('base')?.enableSiteManagementForProject">
-          <field name="isEnterableOnProject" widget="boolean-switch"/>
+          <field name="isUsableOnProject" widget="boolean-switch"/>
         </panel>
       </insert>
     </extend>
@@ -27,7 +27,7 @@
     <attribute for="companySet" name="value" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <attribute for="typeSelect" name="value" expr="1"/>
-    <attribute for="isEnterableOnProject" name="value" expr="eval:_isFromProject"/>
+    <attribute for="isUsableOnProject" name="value" expr="eval:_isFromProject"/>
   </action-attrs>
 
 </object-views>

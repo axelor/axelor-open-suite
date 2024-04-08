@@ -7,8 +7,8 @@
 
   <entity name="Site">
 
-    <boolean name="isEnterableOnExpense" title="Enterable on expense"/>
-    <boolean name="isEnterableOnTimesheet" title="Enterable on timesheet"/>
+    <boolean name="isUsableOnExpense" title="Usable on expense"/>
+    <boolean name="isUsableOnTimesheet" title="Usable on timesheet"/>
 
   </entity>
 

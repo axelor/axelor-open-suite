@@ -120,7 +120,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
       Site site = projectPlanningTime.getSite();
-      if (site != null && site.getIsEnterableOnTimesheet()) {
+      if (site != null && site.getIsUsableOnTimesheet()) {
         timesheetLine.setSite(site);
       }
     }

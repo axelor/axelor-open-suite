@@ -36,7 +36,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Adapter;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -44,7 +43,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -276,15 +274,5 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
             .setParameter("projectTask", projectTask)
             .getSingleResult();
     return durationForCustomer != null ? durationForCustomer : BigDecimal.ZERO;
-  }
-
-  @Override
-  public Optional<Site> getDefaultSiteFromProjectTask(Context context) {
-    Map<String, Object> objMap = (Map) context.get("projectTask");
-    if (objMap == null) {
-      return Optional.empty();
-    }
-    ProjectTask projectTask = projectTaskRepo.find(Long.parseLong(objMap.get("id").toString()));
-    return Optional.ofNullable(projectTask.getSite());
   }
 }
