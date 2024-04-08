@@ -1,0 +1,2 @@
+title: "PaymentVoucher : fix required message at on new and fix invoice refresh at confirm"
+module: axelor-account
