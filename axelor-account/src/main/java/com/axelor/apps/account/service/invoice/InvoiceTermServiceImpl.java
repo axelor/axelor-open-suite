@@ -1667,9 +1667,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return;
     }
 
-    InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        || checkIfCustomizedInvoiceTerms(invoice)) {
       return;
     }
 
