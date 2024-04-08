@@ -18,12 +18,15 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectClosingControlService;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -121,5 +124,16 @@ public class ProjectController {
         response.setError(I18n.get(ProjectExceptionMessage.RESOURCE_ALREADY_BOOKED_ERROR_MSG));
       }
     }
+  }
+
+  public void finishProject(ActionRequest request, ActionResponse response) throws AxelorException {
+    Project project = request.getContext().asType(Project.class);
+    project = JPA.find(Project.class, project.getId());
+    String errorMessage = Beans.get(ProjectClosingControlService.class).finishProject(project);
+    if (!errorMessage.isEmpty()) {
+      response.setError(errorMessage);
+      response.setValues(project);
+    }
+    response.setReload(true);
   }
 }

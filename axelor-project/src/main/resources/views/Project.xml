@@ -520,7 +520,7 @@
     </panel>
     <panel name="actionsPanel" colSpan="2" sidebar="true">
       <button name="finishBtn" title="Finish" colSpan="12" icon="fa-check"
-        showIf="!projectStatus.isCompleted" onClick="action-project-group-status-finish"
+        showIf="!projectStatus.isCompleted" onClick="action-project-method-finish-project,save"
         hidden="true"/>
       <button name="cancelBtn" title="Cancel" colSpan="12" css="btn-danger"
         hideIf="projectStatus.id == $canceledProjectStatusId" icon="fa-times-circle"
@@ -949,11 +949,9 @@
     <call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
   </action-method>
 
-  <action-record name="action-project-record-status-finish"
-    model="com.axelor.apps.project.db.Project">
-    <field name="projectStatus"
-      expr="eval: __config__.app.getApp('project')?.completedProjectStatus"/>
-  </action-record>
+  <action-method name="action-project-method-finish-project">
+    <call class="com.axelor.apps.project.web.ProjectController" method="finishProject"/>
+  </action-method>
 
   <action-record name="action-project-record-status-canceled"
     model="com.axelor.apps.project.db.Project">
