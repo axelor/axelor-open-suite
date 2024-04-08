@@ -133,12 +133,21 @@
       1</domain>
   </action-view>
 
-  <action-view id="addons.maintenance.manufacturing.root.prod.process"
-    name="manufacturing.root.prod.process" title="Production processes"
+  <action-view id="addons.maintenance.manufacturing.root.general.prod.process"
+    name="manufacturing.root.general.prod.process" title="General production processes"
     model="com.axelor.apps.production.db.ProdProcess">
     <view type="grid" name="prod-process-grid"/>
     <view type="form" name="prod-process-form"/>
-    <domain>self.typeSelect = 1</domain>
+    <domain>self.isPersonalized = false AND self.typeSelect = 1</domain>
+  </action-view>
+
+  <action-view id="addons.maintenance.manufacturing.root.personalized.prod.process"
+    name="manufacturing.root.personalized.prod.process" title="Personalized production processes"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <view type="grid" name="personalized-prod-process-grid"/>
+    <view type="form" name="prod-process-form"/>
+    <view-param name="search-filters" value="prod-process-filters"/>
+    <domain>self.isPersonalized = true AND self.typeSelect = 1</domain>
   </action-view>
 
   <action-view id="maintenance.manufacturing.root.general.bill.of.material"

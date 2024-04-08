@@ -18,29 +18,21 @@
  */
 package com.axelor.apps.budget.web;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AdvancedExportRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetStructure;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
-import com.axelor.apps.budget.exception.BudgetExceptionMessage;
-import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetGroupService;
 import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -48,7 +40,6 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -62,48 +53,6 @@ public class BudgetController {
           "totalAmountExpected", Beans.get(BudgetService.class).computeTotalAmount(budget));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void exportBudgetLevel(ActionRequest request, ActionResponse response) {
-
-    try {
-      Context context = request.getContext();
-
-      if (context.get("_id") == null || Long.valueOf(String.valueOf(context.get("_id"))) == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(BudgetExceptionMessage.BUDGET_IS_MISSING));
-      }
-      Long budgetId = Long.valueOf(String.valueOf(context.get("_id")));
-      Budget budget = Beans.get(BudgetRepository.class).find(budgetId);
-      Object advancedExportBudgetObj = context.get("advancedExportBudget");
-      Object advancedExportPurchasedOrderLineObj = context.get("advancedExportPurchaseOrderLine");
-      if (budget != null
-          && advancedExportBudgetObj != null
-          && advancedExportPurchasedOrderLineObj != null) {
-        BudgetLevel budgetLevel =
-            Beans.get(BudgetLevelRepository.class).find(budget.getBudgetLevel().getId());
-        AdvancedExportRepository advancedExportRepository =
-            Beans.get(AdvancedExportRepository.class);
-        AdvancedExport advancedExportBudget =
-            advancedExportRepository.find(
-                Long.valueOf(
-                    String.valueOf(((Map<String, Object>) advancedExportBudgetObj).get("id"))));
-        AdvancedExport advancedExportPurchasedOrderLine =
-            advancedExportRepository.find(
-                Long.valueOf(
-                    String.valueOf(
-                        ((Map<String, Object>) advancedExportPurchasedOrderLineObj).get("id"))));
-
-        Beans.get(BudgetLevelController.class)
-            .downloadExportFile(
-                response,
-                Beans.get(ExportGlobalBudgetLevelService.class)
-                    .export(budgetLevel, advancedExportBudget, advancedExportPurchasedOrderLine));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

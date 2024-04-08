@@ -24,10 +24,11 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -61,6 +62,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
+      CurrencyService currencyService,
       CurrencyScaleService currencyScaleService,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
@@ -78,6 +80,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         commonInvoiceService,
         addressService,
         invoiceLineOrderService,
+        currencyService,
         currencyScaleService,
         priceListService,
         purchaseOrderLineService,

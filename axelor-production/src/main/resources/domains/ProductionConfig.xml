@@ -30,8 +30,8 @@
     <integer name="scheduling" title="Scheduling"
       selection="production.config.scheduling.select" nullable="false" default="1"/>
 
-    <many-to-one name="prodProcessBirtTemplate" title="Prod process template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="prodProcessPrintTemplate" title="Prod process template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -56,7 +56,7 @@
       <field name="finishMoMessageTemplate" on="UPDATE"/>
       <field name="partFinishMoAutomaticEmail" on="UPDATE"/>
       <field name="partFinishMoMessageTemplate" on="UPDATE"/>
-      <field name="prodProcessBirtTemplate" on="UPDATE"/>
+      <field name="prodProcessPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

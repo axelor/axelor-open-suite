@@ -13,6 +13,10 @@
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"
       onChange="action-expense-line-attrs-project-on-change"/>
+    <field name="projectTask" canView="false"
+      onSelect="action-expense-line-method-compute-project-task-domain"
+      onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
+      form-view="project-task-form"/>
     <field name="expenseProduct" canView="false"
       onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
       form-view="product-expense-form" grid-view="product-expense-grid" width="200"
@@ -42,6 +46,10 @@
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
       grid-view="project-grid" width="120"/>
+    <field name="projectTask" canView="false"
+      onSelect="action-expense-line-method-compute-project-task-domain"
+      onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
+      form-view="project-task-form"/>
     <field name="expenseDate" title="Date" width="95"
       onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
     <field name="kilometricAllowParam" canEdit="false" required="true" width="60"
@@ -76,6 +84,7 @@
       if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"
       background="danger"/>
     <field name="project"/>
+    <field name="projectTask"/>
     <field name="expenseProduct"/>
     <field name="expenseDate"/>
     <field name="employee" hidden="true"/>
@@ -102,6 +111,10 @@
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="project-form" grid-view="project-grid"/>
+      <field name="projectTask" edit-icon="false" canEdit="false"
+        onSelect="action-expense-line-method-compute-project-task-domain"
+        onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
+        grid-view="project-task-grid"/>
       <field name="expenseProduct" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
         form-view="product-expense-form" grid-view="product-expense-grid"
@@ -173,6 +186,10 @@
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="project-form" grid-view="project-grid"/>
+      <field name="projectTask" edit-icon="false" canEdit="false"
+        onSelect="action-expense-line-method-compute-project-task-domain"
+        onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
+        grid-view="project-task-grid"/>
       <field name="expenseDate"/>
       <field name="kilometricAllowParam" required="true"
         onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
@@ -282,6 +299,15 @@
   <action-attrs name="action-expense-line-attrs-domain-project">
     <attribute name="domain" for="project"
       expr="eval: &quot; ${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id} &quot;"/>
+  </action-attrs>
+
+  <action-method name="action-expense-line-method-compute-project-task-domain">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="computeProjectTaskDomain"/>
+  </action-method>
+
+  <action-attrs name="action-expense-line-attrs-on-project-task-change">
+    <attribute for="project" name="value" expr="eval: projectTask?.project"/>
   </action-attrs>
 
   <action-record name="action-expense-line-default"

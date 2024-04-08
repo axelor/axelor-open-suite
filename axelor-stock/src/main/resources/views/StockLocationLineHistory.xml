@@ -24,6 +24,11 @@
       <field name="typeSelect"/>
       <field name="origin" colSpan="12"/>
     </panel>
+    <panel title="Price history" name="priceHistoryPanel">
+      <field name="salePrice"/>
+      <field name="purchasePrice"/>
+      <field name="costPrice"/>
+    </panel>
   </form>
 
   <action-attrs name="action-stock-history-attrs-set-scale">

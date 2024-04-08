@@ -52,10 +52,13 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -110,19 +113,20 @@ public class FixedAssetController {
       }
       Long fixedAssetId = Long.valueOf(context.get("_id").toString());
       Boolean generateSaleMove = false;
-      TaxLine saleTaxLine = null;
+      Set<TaxLine> saleTaxLineSet = new HashSet<>();
       if (context.get("generateSaleMove") != null) {
         generateSaleMove = Boolean.parseBoolean(context.get("generateSaleMove").toString());
       }
       if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_ONGOING_CESSION) {
         generateSaleMove = false;
       }
-      if (context.get("saleTaxLine") != null) {
-        saleTaxLine =
-            Beans.get(TaxLineRepository.class)
-                .find(
-                    ((Integer) ((HashMap<String, Object>) context.get("saleTaxLine")).get("id"))
-                        .longValue());
+      if (context.get("saleTaxLineSet") != null) {
+        Collection<Map<String, Object>> saleTaxLineMapSet =
+            (Collection<Map<String, Object>>) context.get("saleTaxLineSet");
+        TaxLineRepository taxLineRepository = Beans.get(TaxLineRepository.class);
+        saleTaxLineMapSet.stream()
+            .map(saleTax -> taxLineRepository.find(Long.parseLong(saleTax.get("id").toString())))
+            .forEach(saleTaxLineSet::add);
       }
 
       FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
@@ -135,7 +139,7 @@ public class FixedAssetController {
                   disposalQtySelect,
                   disposalQty,
                   generateSaleMove,
-                  saleTaxLine,
+                  saleTaxLineSet,
                   disposalTypeSelect,
                   disposalAmount,
                   assetDisposalReason,

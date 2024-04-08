@@ -21,10 +21,13 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
+import java.util.Set;
 
 public interface FiscalPositionService {
 
   public Tax getTax(FiscalPosition fiscalPosition, Tax tax);
 
   public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax);
+
+  public Set<TaxEquiv> getTaxEquivSet(FiscalPosition fiscalPosition, Set<Tax> taxSet);
 }

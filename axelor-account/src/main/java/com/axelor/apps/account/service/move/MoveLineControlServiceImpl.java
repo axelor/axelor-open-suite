@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -28,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
@@ -36,11 +36,8 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.auth.db.Role;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.servlet.RequestScoped;
@@ -61,6 +58,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public MoveLineControlServiceImpl(
@@ -69,13 +67,15 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       InvoiceTermService invoiceTermService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
-      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      InvoiceTermFilterService invoiceTermFilterService) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   @Override
@@ -214,22 +214,6 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     }
   }
 
-  public boolean isInvoiceTermReadonly(MoveLine moveLine, User user) {
-    if (BigDecimal.ZERO.equals(moveLine.getAmountRemaining())
-        || moveLine.getMove().getPeriod().getStatusSelect() > PeriodRepository.STATUS_OPENED) {
-      AccountConfig accountConfig = user.getActiveCompany().getAccountConfig();
-
-      return !this.checkRoles(user.getRoles(), accountConfig)
-          && !this.checkRoles(user.getGroup().getRoles(), accountConfig);
-    }
-
-    return false;
-  }
-
-  protected boolean checkRoles(Set<Role> roles, AccountConfig accountConfig) {
-    return roles.stream().anyMatch(it -> accountConfig.getClosureAuthorizedRoleList().contains(it));
-  }
-
   @Override
   public boolean displayInvoiceTermWarningMessage(MoveLine moveLine) {
     Move move = moveLine.getMove();
@@ -318,7 +302,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0
         && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
             || moveLine.getInvoiceTermList().stream()
-                .allMatch(invoiceTermService::isNotAwaitingPayment));
+                .allMatch(invoiceTermFilterService::isNotAwaitingPayment));
   }
 
   @Override

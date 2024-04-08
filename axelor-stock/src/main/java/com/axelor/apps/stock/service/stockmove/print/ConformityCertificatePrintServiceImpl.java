@@ -19,11 +19,12 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
@@ -48,16 +49,16 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
 
   protected StockMoveService stockMoveService;
   protected StockConfigService stockConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   @Inject
   public ConformityCertificatePrintServiceImpl(
       StockMoveService stockMoveService,
       StockConfigService stockConfigService,
-      BirtTemplateService birtTemplateService) {
+      PrintingTemplatePrintService printingTemplatePrintService) {
     this.stockMoveService = stockMoveService;
     this.stockConfigService = stockConfigService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
@@ -80,19 +81,21 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
   public File prepareReportSettings(StockMove stockMove, String format) throws AxelorException {
     stockMoveService.checkPrintingSettings(stockMove);
 
-    BirtTemplate conformityCertificateBirtTemplate =
+    PrintingTemplate conformityCertificatePrintTemplate =
         stockConfigService
             .getStockConfig(stockMove.getCompany())
-            .getConformityCertificateBirtTemplate();
-    if (ObjectUtils.isEmpty(conformityCertificateBirtTemplate)) {
+            .getConformityCertificatePrintTemplate();
+    if (ObjectUtils.isEmpty(conformityCertificatePrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String title = getFileName(stockMove);
-    return birtTemplateService.generateBirtTemplateFile(
-        conformityCertificateBirtTemplate, stockMove, title + " - ${date}");
+    return printingTemplatePrintService.getPrintFile(
+        conformityCertificatePrintTemplate,
+        new PrintingGenFactoryContext(stockMove),
+        title + " - ${date}");
   }
 
   @Override

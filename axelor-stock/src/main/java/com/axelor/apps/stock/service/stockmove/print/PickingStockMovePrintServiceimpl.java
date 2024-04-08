@@ -19,12 +19,13 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
@@ -49,16 +50,16 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
 
   protected StockMoveService stockMoveService;
   protected StockConfigService stockConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   @Inject
   public PickingStockMovePrintServiceimpl(
       StockMoveService stockMoveService,
       StockConfigService stockConfigService,
-      BirtTemplateService birtTemplateService) {
+      PrintingTemplatePrintService printingTemplatePrintService) {
     this.stockMoveService = stockMoveService;
     this.stockConfigService = stockConfigService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
@@ -93,18 +94,22 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
   @Override
   public File prepareReportSettings(StockMove stockMove, String format) throws AxelorException {
     stockMoveService.checkPrintingSettings(stockMove);
-    BirtTemplate pickingStockMoveBirtTemplate =
-        stockConfigService.getStockConfig(stockMove.getCompany()).getPickingStockMoveBirtTemplate();
-    if (ObjectUtils.isEmpty(pickingStockMoveBirtTemplate)) {
+    PrintingTemplate pickingStockMovePrintTemplate =
+        stockConfigService
+            .getStockConfig(stockMove.getCompany())
+            .getPickingStockMovePrintTemplate();
+    if (ObjectUtils.isEmpty(pickingStockMovePrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String title = getFileName(stockMove);
 
-    return birtTemplateService.generateBirtTemplateFile(
-        pickingStockMoveBirtTemplate, stockMove, title + " - ${date}");
+    return printingTemplatePrintService.getPrintFile(
+        pickingStockMovePrintTemplate,
+        new PrintingGenFactoryContext(stockMove),
+        title + " - ${date}");
   }
 
   @Override

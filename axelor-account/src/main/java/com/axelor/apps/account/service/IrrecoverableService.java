@@ -51,6 +51,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -58,6 +59,7 @@ import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -105,6 +107,7 @@ public class IrrecoverableService {
   protected IrrecoverableRepository irrecoverableRepo;
 
   protected AppAccountService appAccountService;
+  protected CurrencyService currencyService;
 
   @Inject
   public IrrecoverableService(
@@ -125,7 +128,8 @@ public class IrrecoverableService {
       IrrecoverableCustomerLineRepository irrecoverableCustomerLineRepo,
       InvoiceRepository invoiceRepo,
       ManagementObjectRepository managementObjectRepo,
-      IrrecoverableRepository irrecoverableRepo) {
+      IrrecoverableRepository irrecoverableRepo,
+      CurrencyService currencyService) {
 
     this.sequenceService = sequenceService;
     this.moveToolService = moveToolService;
@@ -146,6 +150,7 @@ public class IrrecoverableService {
     this.irrecoverableRepo = irrecoverableRepo;
 
     this.appAccountService = appAccountService;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -818,16 +823,15 @@ public class IrrecoverableService {
    * @return the remaining invoice rate
    */
   public BigDecimal getProrataRate(Invoice invoice, boolean isInvoiceReject) {
-    BigDecimal prorataRate = null;
+    BigDecimal prorataRate =
+        currencyService.computeScaledExchangeRate(
+            invoice.getCompanyInTaxTotalRemaining(), invoice.getCompanyInTaxTotal());
+
     if (isInvoiceReject) {
       prorataRate =
-          (invoice.getRejectMoveLine().getAmountRemaining().abs())
-              .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
-    } else {
-      prorataRate =
-          invoice
-              .getCompanyInTaxTotalRemaining()
-              .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
+          currencyService.computeScaledExchangeRate(
+              invoice.getRejectMoveLine().getAmountRemaining().abs(),
+              invoice.getCompanyInTaxTotal());
     }
 
     log.debug("Prorata rate for the invoice {} : {}", invoice.getInvoiceId(), prorataRate);
@@ -943,7 +947,7 @@ public class IrrecoverableService {
                   invoiceMoveLine.getAccount(),
                   amount,
                   true,
-                  invoiceMoveLine.getTaxLine(),
+                  invoiceMoveLine.getTaxLineSet(),
                   appAccountService.getTodayDate(company),
                   seq,
                   originStr,
@@ -960,7 +964,7 @@ public class IrrecoverableService {
                   accountConfig.getIrrecoverableAccount(),
                   amount,
                   true,
-                  invoiceMoveLine.getTaxLine(),
+                  invoiceMoveLine.getTaxLineSet(),
                   appAccountService.getTodayDate(company),
                   seq,
                   originStr,

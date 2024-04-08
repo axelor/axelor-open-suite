@@ -26,9 +26,9 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.IrrecoverableService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -51,11 +52,11 @@ import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -1144,10 +1145,10 @@ public class InvoiceController {
   public void updateInvoiceTermPaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      InvoiceTermToolService invoiceTermToolService = Beans.get(InvoiceTermToolService.class);
 
       invoice.getInvoiceTermList().stream()
-          .filter(invoiceTermService::isNotReadonly)
+          .filter(invoiceTermToolService::isNotReadonly)
           .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
 
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
@@ -1162,7 +1163,7 @@ public class InvoiceController {
 
       if (Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms()
           || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || !Beans.get(InvoiceTermService.class)
+          || !Beans.get(InvoiceTermToolService.class)
               .isNotReadonly(invoice.getInvoiceTermList().get(0))) {
         return;
       }

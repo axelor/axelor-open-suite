@@ -246,10 +246,11 @@ public interface StockLocationLineService {
    *
    * @param stockLocationLine stock location line to updated.
    * @param wap weighted average price which will update the field avgPrice.
+   * @throws AxelorException
    * @deprecated Please use updateHistory this method will not create a proper history
    */
   @Deprecated
-  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap);
+  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap) throws AxelorException;
 
   /**
    * Update avgPrice in stock location line and save wap history in the line.
@@ -257,10 +258,12 @@ public interface StockLocationLineService {
    * @param stockLocationLine stock location line to updated.
    * @param wap weighted average price which will update the field avgPrice.
    * @param stockMoveLine the move line responsible for the WAP change.
+   * @throws AxelorException
    * @deprecated Please use updateHistory this method will not create a proper history
    */
   @Deprecated
-  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine);
+  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine)
+      throws AxelorException;
 
   /**
    * Same as {@link #updateWap(StockLocationLine, BigDecimal, StockMoveLine)} but date and origin
@@ -270,6 +273,7 @@ public interface StockLocationLineService {
    * @param wap
    * @param stockMoveLine
    * @param date
+   * @throws AxelorException
    * @deprecated Please use updateHistory this method will not create a proper history
    */
   @Deprecated
@@ -278,7 +282,8 @@ public interface StockLocationLineService {
       BigDecimal wap,
       StockMoveLine stockMoveLine,
       LocalDate date,
-      String origin);
+      String origin)
+      throws AxelorException;
 
   /**
    * Update stock location line history
@@ -288,11 +293,13 @@ public interface StockLocationLineService {
    * @param dateT can be null but will be by default todayDate
    * @param origin can be null
    * @param typeSelect must not be null (see {@link StockLocationLineHistoryRepository})
+   * @throws AxelorException
    */
   void updateHistory(
       StockLocationLine stockLocationLine,
       StockMoveLine stockMoveLine,
       LocalDateTime dateT,
       String origin,
-      String typeSelect);
+      String typeSelect)
+      throws AxelorException;
 }

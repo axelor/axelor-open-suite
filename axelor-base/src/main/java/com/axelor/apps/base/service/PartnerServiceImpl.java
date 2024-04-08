@@ -23,7 +23,6 @@ import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVI
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -198,7 +197,6 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     this.setPartnerFullName(partner);
-    this.setCompanyStr(partner);
   }
 
   /**
@@ -654,29 +652,11 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public void setCompanyStr(Partner partner) {
-    partner.setCompanyStr(this.computeCompanyStr(partner));
-  }
-
-  @Override
-  public String computeCompanyStr(Partner partner) {
-    String companyStr = "";
-    if (partner.getCompanySet() != null && partner.getCompanySet().size() > 0) {
-      for (Company company : partner.getCompanySet()) {
-        companyStr += company.getCode() + ",";
-      }
-      return companyStr.substring(0, companyStr.length() - 1);
-    }
-    return null;
-  }
-
-  @Override
   public String getTaxNbrFromRegistrationCode(Partner partner) {
     String taxNbr = "";
 
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
+    if (partner.getMainAddress() != null && partner.getMainAddress().getCountry() != null) {
+      String countryCode = partner.getMainAddress().getCountry().getAlpha2Code();
       String regCode = partner.getRegistrationCode();
 
       if (regCode != null) {
@@ -775,15 +755,14 @@ public class PartnerServiceImpl implements PartnerService {
         || Strings.isNullOrEmpty(registrationCode)
         || CollectionUtils.isEmpty(addresses)
         || addresses.stream()
-                .filter(
-                    address ->
-                        address.getAddress() != null
-                            && address.getAddress().getAddressL7Country() != null
-                            && "FR"
-                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
-                .collect(Collectors.toList())
-                .size()
-            == 0) {
+            .filter(
+                address ->
+                    address.getAddress() != null
+                        && address.getAddress().getCountry() != null
+                        && "FR".equals(address.getAddress().getCountry().getAlpha2Code()))
+            .collect(Collectors.toList())
+            .isEmpty()) {
+
       return true;
     }
 
