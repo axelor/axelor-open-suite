@@ -45,6 +45,8 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderMergingService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOperationOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
@@ -283,7 +285,7 @@ public class ManufOrderController {
 
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      ManufOrderService moService = Beans.get(ManufOrderService.class);
+      ManufOrderOperationOrderService moService = Beans.get(ManufOrderOperationOrderService.class);
       manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
       moService.preFillOperations(manufOrder);
       response.setReload(true);
@@ -549,7 +551,7 @@ public class ManufOrderController {
           if (ids.size() < 2) {
             response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
           } else {
-            boolean canMerge = Beans.get(ManufOrderService.class).canMerge(ids);
+            boolean canMerge = Beans.get(ManufOrderMergingService.class).canMerge(ids);
             if (canMerge) {
               response.setAlert(I18n.get(ProductionExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
             } else {
@@ -575,7 +577,7 @@ public class ManufOrderController {
   public void generateMergeManufOrder(ActionRequest request, ActionResponse response) {
     try {
       List<Long> ids = (List<Long>) request.getContext().get("_ids");
-      Beans.get(ManufOrderService.class).merge(ids);
+      Beans.get(ManufOrderMergingService.class).merge(ids);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -755,7 +757,7 @@ public class ManufOrderController {
       }
       List<Map<String, Object>> manufOrders = (List<Map<String, Object>>) object;
       List<Long> ids =
-          Beans.get(ManufOrderService.class).planSelectedOrdersAndDiscardOthers(manufOrders);
+          Beans.get(ManufOrderPlanService.class).planSelectedOrdersAndDiscardOthers(manufOrders);
       if (ObjectUtils.isEmpty(ids)) {
         ids.add(0L);
       }
@@ -804,7 +806,8 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       response.setValue(
-          "$areLinesOutsourced", Beans.get(ManufOrderService.class).areLinesOutsourced(manufOrder));
+          "$areLinesOutsourced",
+          Beans.get(ManufOrderOutsourceService.class).areLinesOutsourced(manufOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -813,7 +816,7 @@ public class ManufOrderController {
   public void setOperationOrdersOutsourcing(ActionRequest request, ActionResponse response) {
     ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 
-    Beans.get(ManufOrderService.class).setOperationOrdersOutsourcing(manufOrder);
+    Beans.get(ManufOrderOutsourceService.class).setOperationOrdersOutsourcing(manufOrder);
     response.setValue("operationOrderList", manufOrder.getOperationOrderList());
   }
 

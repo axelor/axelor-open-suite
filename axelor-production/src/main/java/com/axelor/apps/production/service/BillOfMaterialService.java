@@ -94,4 +94,6 @@ public interface BillOfMaterialService {
   int getPriority(BillOfMaterial billOfMaterial);
 
   List<BillOfMaterial> getSubBillOfMaterial(BillOfMaterial billOfMaterial);
+
+  boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
 }

@@ -20,7 +20,7 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.ProductionProductStockLocationService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.i18n.I18n;
@@ -47,7 +47,7 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(ManufOrderService.class)
+        Beans.get(ProductionProductStockLocationService.class)
             .getBuildingQtyForAProduct(productId, companyId, stockLocationId);
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
     String title = I18n.get(VIEW_BUILDING_QTY_TITLE);
@@ -74,7 +74,7 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(ManufOrderService.class)
+        Beans.get(ProductionProductStockLocationService.class)
             .getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
 
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
@@ -102,7 +102,7 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(ManufOrderService.class)
+        Beans.get(ProductionProductStockLocationService.class)
             .getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
     String title = I18n.get(VIEW_MISSING_QTY_TITLE);

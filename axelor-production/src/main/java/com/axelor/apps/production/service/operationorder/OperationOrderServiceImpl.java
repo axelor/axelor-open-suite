@@ -37,10 +37,9 @@ import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderProdProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -73,6 +72,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   protected ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService;
   protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
   protected ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService;
+  protected ManufOrderProdProductService manufOrderProdProductService;
 
   @Inject
   public OperationOrderServiceImpl(
@@ -84,7 +84,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       OperationOrderOutsourceService operationOrderOutsourceService,
       ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService,
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService,
+      ManufOrderProdProductService manufOrderProdProductService) {
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -94,6 +95,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     this.manufOrderCheckStockMoveLineService = manufOrderCheckStockMoveLineService;
     this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
     this.manufOrderUpdateStockMoveService = manufOrderUpdateStockMoveService;
+    this.manufOrderProdProductService = manufOrderProdProductService;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -193,9 +195,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
 
         BigDecimal qty =
-            Beans.get(ManufOrderService.class)
-                .computeToConsumeProdProductLineQuantity(
-                    bomQty, manufOrderQty, prodProduct.getQty());
+            manufOrderProdProductService.computeToConsumeProdProductLineQuantity(
+                bomQty, manufOrderQty, prodProduct.getQty());
 
         operationOrder.addToConsumeProdProductListItem(
             new ProdProduct(prodProduct.getProduct(), qty, prodProduct.getUnit()));
@@ -226,8 +227,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       List<StockMoveLine> stockMoveLineList)
       throws AxelorException {
     List<ProdProduct> diffConsumeList =
-        Beans.get(ManufOrderService.class)
-            .createDiffProdProductList(prodProductList, stockMoveLineList);
+        manufOrderProdProductService.createDiffProdProductList(prodProductList, stockMoveLineList);
     diffConsumeList.forEach(
         prodProduct -> prodProduct.setDiffConsumeOperationOrder(operationOrder));
     return diffConsumeList;
@@ -249,10 +249,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     ManufOrder manufOrder = operationOrder.getManufOrder();
     Company company = manufOrder.getCompany();
     List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
-    StockLocation fromStockLocation =
-        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
-    StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
     if (consumedStockMoveLineList == null) {
       return;
     }

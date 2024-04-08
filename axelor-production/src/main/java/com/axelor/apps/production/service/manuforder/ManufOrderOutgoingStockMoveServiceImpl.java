@@ -34,17 +34,14 @@ import java.util.Objects;
 public class ManufOrderOutgoingStockMoveServiceImpl implements ManufOrderOutgoingStockMoveService {
 
   protected AppSupplychainService appSupplychainService;
-  protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public ManufOrderOutgoingStockMoveServiceImpl(
       AppSupplychainService appSupplychainService,
-      StockMoveLineRepository stockMoveLineRepository,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      StockMoveLineRepository stockMoveLineRepository) {
     this.appSupplychainService = appSupplychainService;
     this.stockMoveLineRepository = stockMoveLineRepository;
-    this.manufOrderStockMoveService = manufOrderStockMoveService;
   }
 
   @Override
