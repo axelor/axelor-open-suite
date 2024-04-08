@@ -48,6 +48,9 @@
     model="com.axelor.apps.production.db.ManufOrder" width="large"
     onLoad="action-maintenance-manuf-order-group-onload"
     onNew="action-maintenance-manuf-order-group-onnew">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <menubar>
       <menu name="manufOrderReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
         <item name="printItem" title="Print" showIf="statusSelect > 1"

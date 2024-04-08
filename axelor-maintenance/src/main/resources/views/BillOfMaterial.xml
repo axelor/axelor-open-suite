@@ -5,6 +5,9 @@
 
   <grid name="maintenance-bill-of-material-grid" title="Bills of material"
     model="com.axelor.apps.production.db.BillOfMaterial">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <field name="fullName"/>
     <field name="company"/>
     <field name="workshopStockLocation"/>
@@ -21,10 +24,10 @@
     onLoad="action-bill-of-material-group-on-load"
     onSave="save,action-bill-of-material-method-name,action-bill-of-material-method-validate-prod-process"
     onNew="action-maintenance-bill-of-material-group-onnew" canNew="!_isPersonalized">
+    <toolbar>
+      <button name="printBtn" title="Print" onClick="action-bill-of-material-method-print"/>
+    </toolbar>
     <menubar>
-      <menu name="bomReportsMenu" title="Reports">
-        <item name="printItem" title="Print" action="action-bill-of-material-method-print"/>
-      </menu>
       <menu name="bomOptionsMenu" title="Options">
         <item if="__config__.app.getApp('production')?.manageBillOfMaterialVersion"
           name="generateNewVersionItem" title="Generate new version"
