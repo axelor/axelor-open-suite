@@ -25,6 +25,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.crm.db.Opportunity;
 import com.google.common.collect.Multimap;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -168,4 +169,7 @@ public interface ContractService {
   Contract getNextContract(Contract contract) throws AxelorException;
 
   void setInitialPriceOnContractLines(Contract contract);
+
+  Contract generateContractFromOpportunity(
+      Opportunity opportunity, ContractTemplate contractTemplate);
 }

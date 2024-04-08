@@ -32,6 +32,8 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
@@ -50,8 +52,10 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.date.LocalDateHelper;
@@ -898,5 +902,38 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
     }
     contractRepository.save(contract);
+  }
+
+  @Override
+  @Transactional
+  public Contract generateContractFromOpportunity(
+      Opportunity opportunity, ContractTemplate contractTemplate) {
+    Contract contract = new Contract();
+    Currency currency = null;
+    Company company = opportunity.getCompany();
+    if (opportunity.getCurrency() != null) {
+      currency = opportunity.getCurrency();
+    } else if (opportunity.getPartner() != null && opportunity.getPartner().getCurrency() != null) {
+      currency = opportunity.getPartner().getCurrency();
+    } else if (company != null) {
+      currency = company.getCurrency();
+    }
+
+    contract.setCompany(company);
+    contract.setCurrency(currency);
+    contract.setPartner(opportunity.getPartner());
+    contract.setTargetTypeSelect(ContractRepository.CUSTOMER_CONTRACT);
+    contract.setName(opportunity.getName());
+    contract.setStatusSelect(ContractRepository.DRAFT_CONTRACT);
+    contract.setCurrentContractVersion(new ContractVersion());
+
+    if (contractTemplate != null) {
+      contract.setAdditionalBenefitContractLineList(
+          contractTemplate.getAdditionalBenefitContractLineList());
+    }
+
+    JPA.save(contract);
+
+    return contract;
   }
 }
