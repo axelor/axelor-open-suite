@@ -211,28 +211,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         .orElse(BigDecimal.ZERO);
   }
 
-  protected BigDecimal getAvailableAmountInCurrency(
-      InvoicePayment invoicePayment,
-      InvoiceTerm invoiceTermToPay,
-      BigDecimal availableAmount,
-      boolean inverseCurrencies)
-      throws AxelorException {
-    boolean isSamePaymentCurrency =
-        invoicePayment != null && invoicePayment.getCurrency() == invoiceTermToPay.getCurrency();
-
-    if (invoicePayment == null || isSamePaymentCurrency) {
-      return availableAmount;
-    }
-
-    Currency startCurrency =
-        inverseCurrencies ? invoiceTermToPay.getCurrency() : invoicePayment.getCurrency();
-    Currency endCurrency =
-        inverseCurrencies ? invoicePayment.getCurrency() : invoiceTermToPay.getCurrency();
-
-    return currencyService.getAmountCurrencyConvertedAtDate(
-        startCurrency, endCurrency, availableAmount, invoicePayment.getPaymentDate());
-  }
-
   protected InvoiceTerm getInvoiceTermToPay(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
