@@ -41,6 +41,9 @@
       <field name="defaultHoursADay"
         help="The days to hours conversion can be set for each project. This will determine the default value."/>
     </panel>
+    <panel name="workflowPanel" title="Workflow management" colSpan="12">
+      <field name="closingProjectRuleSelect"/>
+    </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
       <field name="invoicingProjectAnnexPrintTemplate"/>
       <field name="invoicingAnnexPrintTemplate"/>

@@ -95,4 +95,10 @@
     id="business.project.iinvoice.operation.sub.type.select">
     <option value='8'>In progress invoice</option>
   </selection>
+
+  <selection name="business.project.app.closing.project.rule.select">
+    <option value="1">None</option>
+    <option value="2">Non-blocking</option>
+    <option value="3">AppBusinessProject.Blocking</option>
+  </selection>
 </object-views>
