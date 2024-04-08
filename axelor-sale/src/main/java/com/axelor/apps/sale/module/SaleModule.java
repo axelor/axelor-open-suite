@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingGenericServiceImpl;
+import com.axelor.apps.base.service.pricing.PricingGroupServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingMetaServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingObserverImpl;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
@@ -46,6 +47,7 @@ import com.axelor.apps.sale.service.PackLineService;
 import com.axelor.apps.sale.service.PackLineServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
+import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.sale.service.ProductCategorySaleService;
 import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
@@ -156,6 +158,7 @@ public class SaleModule extends AxelorModule {
     bind(PricingObserverImpl.class).to(SaleOrderLinePricingObserver.class);
     bind(PricingGenericServiceImpl.class).to(SalePricingGenericServiceImpl.class);
     bind(PricingMetaServiceImpl.class).to(SalePricingMetaServiceImpl.class);
+    bind(PricingGroupServiceImpl.class).to(PricingGroupSaleServiceImpl.class);
     bind(SaleOrderAttrsService.class).to(SaleOrderAttrsServiceImpl.class);
     bind(SaleOrderGroupService.class).to(SaleOrderGroupServiceImpl.class);
   }

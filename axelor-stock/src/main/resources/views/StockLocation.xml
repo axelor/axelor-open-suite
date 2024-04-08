@@ -150,8 +150,10 @@
     <panel name="mainPanel">
       <field name="$printingType" title="Printing Type"
         selection="stock.stock.location.printing.type"/>
-      <field name="$exportTypeSelect" title="Export Type"
-        selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
+      <field name="$stockLocationPrintTemplate" title="Stock location template"
+        type="many-to-one" target="com.axelor.apps.base.db.PrintingTemplate" colSpan="3"
+        domain="self.metaModel.name = 'StockLocation'" grid-view="printing-template-grid"
+        form-view="printing-template-form"/>
       <field name="$financialDataDateTime" title="Date and time" type="datetime" hidden="true"
         showIf="$printingType == 1" colSpan="3"/>
       <spacer colSpan="3"/>
@@ -159,7 +161,7 @@
         title="Without details by stock location" hidden="true" showIf="$printingType == 1"
         colSpan="3"/>
       <button name="printBtn" title="Print" onClick="action-stock-location-method-print"
-        readonlyIf="$exportTypeSelect == null" colSpan="3"/>
+        readonlyIf="$stockLocationPrintTemplate == null" colSpan="3"/>
     </panel>
   </form>
 
@@ -250,7 +252,6 @@
     name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
     <attribute name="value" for="$printingType"
       expr="eval: _stockLocation?.isValued ? '1' : '2'"/>
-    <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
     <attribute name="selection-in" for="$printingType" expr="eval:['2']"
       if="!_stockLocation?.isValued"/>
   </action-attrs>

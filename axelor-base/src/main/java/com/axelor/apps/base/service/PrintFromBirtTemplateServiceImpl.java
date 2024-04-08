@@ -51,7 +51,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 
 public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateService {
 
@@ -121,12 +120,9 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
         birtTemplateService
             .generateBirtTemplateFile(birtTemplate, model, context, name, false, format)
             .toPath();
-    String outFileName =
-        String.format(
-            "%s-%s.%s",
-            name, model == null ? RandomStringUtils.randomAlphanumeric(4) : model.getId(), format);
     Path dest =
-        Files.move(src, src.resolveSibling(outFileName), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(
+            src, src.resolveSibling(name + "." + format), StandardCopyOption.REPLACE_EXISTING);
     return dest.toFile();
   }
 

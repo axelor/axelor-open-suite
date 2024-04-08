@@ -6,16 +6,14 @@
   <form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line"
     name="sale-order-line-form" extension="true" id="project-sale-order-line-form">
     <extend target="//field[@name='project']">
-      <attribute name="onChange"
-        value="action-sale-order-line-record-progress,action-sale-order-line-method-update-distribution"/>
+      <attribute name="onChange" value="action-sale-order-line-method-update-distribution"/>
     </extend>
   </form>
 
   <form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line"
     name="sale-order-line-template-form" extension="true" id="project-sale-order-line-template-form">
     <extend target="//field[@name='project']">
-      <attribute name="onChange"
-        value="action-sale-order-line-record-progress,action-sale-order-line-method-update-distribution"/>
+      <attribute name="onChange" value="action-sale-order-line-method-update-distribution"/>
     </extend>
   </form>
 

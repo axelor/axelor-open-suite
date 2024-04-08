@@ -22,10 +22,8 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
-import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -37,10 +35,8 @@ import org.slf4j.LoggerFactory;
 
 public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelService {
 
-  protected AccountConfigService accountConfigService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected MoveCancelService moveCancelService;
-  protected ReconcileService reconcileService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected InvoiceTermService invoiceTermService;
 
@@ -48,17 +44,12 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
 
   @Inject
   public InvoicePaymentCancelServiceImpl(
-      AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
-      ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoiceTermService invoiceTermService) {
-
-    this.accountConfigService = accountConfigService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveCancelService = moveCancelService;
-    this.reconcileService = reconcileService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoiceTermService = invoiceTermService;
   }
