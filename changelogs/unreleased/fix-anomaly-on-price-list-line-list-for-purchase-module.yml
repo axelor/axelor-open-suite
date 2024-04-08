@@ -1,5 +1,0 @@
----
-title: "Anomalie on priceListLineList for purchase uses"
-module: axelor-base
-developer: |
-  Added new anomalySelect for purchase anomaly in PriceListLine

@@ -427,7 +427,7 @@
             </editor>
           </field>
           <spacer/>
-          <field name="headOfficeAddress"
+          <field name="headOfficeAddress" if-module="axelor-account"
             if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"
             colSpan="12"/>
         </panel>
