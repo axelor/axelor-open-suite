@@ -128,6 +128,9 @@
     <one-to-many name="expenseLimitList" ref="com.axelor.apps.hr.db.ExpenseLimit"
       title="Expense limit list" mappedBy="employee"/>
 
+    <one-to-many name="bankCardList" ref="com.axelor.apps.hr.db.BankCard"
+      title="Bank cards" mappedBy="employee"/>
+
     <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";

@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -174,9 +175,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     // It is supposed that only one pricing match those criteria (because of the configuration)
     // Having more than one pricing matched may result on a unexpected result
     if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
-      return pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
+      return pricingService.getRandomPricing(
+          saleOrder.getCompany(),
+          saleOrderLine,
+          null,
+          PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
     } else {
-      return pricingService.getRootPricingForNextPricings(saleOrder.getCompany(), saleOrderLine);
+      return pricingService.getRootPricingForNextPricings(
+          saleOrder.getCompany(),
+          saleOrderLine,
+          PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
     }
   }
 

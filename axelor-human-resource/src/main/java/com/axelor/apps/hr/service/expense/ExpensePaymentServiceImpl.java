@@ -34,7 +34,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -62,7 +62,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
   protected ReconcileService reconcileService;
-  protected BankOrderService bankOrderService;
+  protected BankOrderCancelService bankOrderCancelService;
   protected MoveCancelService moveCancelService;
   protected BankOrderRepository bankOrderRepository;
   protected ExpenseRepository expenseRepository;
@@ -77,7 +77,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
       ReconcileService reconcileService,
-      BankOrderService bankOrderService,
+      BankOrderCancelService bankOrderCancelService,
       MoveCancelService moveCancelService,
       BankOrderRepository bankOrderRepository,
       ExpenseRepository expenseRepository,
@@ -89,7 +89,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
     this.reconcileService = reconcileService;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderCancelService = bankOrderCancelService;
     this.moveCancelService = moveCancelService;
     this.bankOrderRepository = bankOrderRepository;
     this.expenseRepository = expenseRepository;
@@ -254,7 +254,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));
       } else if (bankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
-        bankOrderService.cancelBankOrder(bankOrder);
+        bankOrderCancelService.cancelBankOrder(bankOrder);
       }
     }
 

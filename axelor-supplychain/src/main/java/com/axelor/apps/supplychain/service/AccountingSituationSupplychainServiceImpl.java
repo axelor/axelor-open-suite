@@ -154,7 +154,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
                 accountingSituation.getCompany(),
                 accountingSituation.getPartner(),
                 SaleOrderRepository.STATUS_DRAFT_QUOTATION,
-                SaleOrderRepository.STATUS_CANCELED)
+                SaleOrderRepository.STATUS_ORDER_COMPLETED)
             .fetch();
     for (SaleOrder saleOrder : saleOrderList) {
       sum = sum.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));

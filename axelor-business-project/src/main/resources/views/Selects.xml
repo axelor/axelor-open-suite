@@ -91,4 +91,8 @@
     <option value="3">On progress</option>
   </selection>
 
+  <selection name='iinvoice.operation.sub.type.select'
+    id="business.project.iinvoice.operation.sub.type.select">
+    <option value='8'>In progress invoice</option>
+  </selection>
 </object-views>

@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -1144,10 +1145,10 @@ public class InvoiceController {
   public void updateInvoiceTermPaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      InvoiceTermToolService invoiceTermToolService = Beans.get(InvoiceTermToolService.class);
 
       invoice.getInvoiceTermList().stream()
-          .filter(invoiceTermService::isNotReadonly)
+          .filter(invoiceTermToolService::isNotReadonly)
           .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
 
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
@@ -1162,7 +1163,7 @@ public class InvoiceController {
 
       if (Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms()
           || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || !Beans.get(InvoiceTermService.class)
+          || !Beans.get(InvoiceTermToolService.class)
               .isNotReadonly(invoice.getInvoiceTermList().get(0))) {
         return;
       }

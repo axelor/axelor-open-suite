@@ -24,7 +24,7 @@
     <field name="partner.fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="partner.emailAddress.address"/>
     <field name="partner.mainAddress"/>
-    <field name="partner.companyStr"/>
+    <field name="partner.companySet"/>
     <field name="company"/>
   </grid>
 

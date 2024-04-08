@@ -201,19 +201,4 @@ public class PurchaseOrderLineController {
                 purchaseOrderLine.getBudgetDistributionList(),
                 purchaseOrderLine.getCompanyExTaxTotal()));
   }
-
-  public void resetBudget(ActionRequest request, ActionResponse response) {
-    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-    if (purchaseOrder == null && request.getContext().getParent() != null) {
-      purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-    }
-
-    Beans.get(PurchaseOrderLineBudgetService.class)
-        .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
-
-    response.setValue(
-        "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
-    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
-  }
 }

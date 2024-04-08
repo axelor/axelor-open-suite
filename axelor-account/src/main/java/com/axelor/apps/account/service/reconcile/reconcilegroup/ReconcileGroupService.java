@@ -38,11 +38,4 @@ public interface ReconcileGroupService {
    * @param reconcile a reconcile.
    */
   void addAndValidateReconcileGroup(Reconcile reconcile) throws AxelorException;
-
-  /**
-   * Remove a reconcile from a reconcile group then update the group.
-   *
-   * @param reconcile a reconcile with a reconcile group.
-   */
-  void remove(Reconcile reconcile) throws AxelorException;
 }
