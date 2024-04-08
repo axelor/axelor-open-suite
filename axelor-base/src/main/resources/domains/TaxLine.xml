@@ -17,8 +17,6 @@
 	    	String name = "";
 	    	if(tax != null)  { name += tax.getCode();  }
 	    	name += " : " + value.setScale(2);
-			name += " : " + startDate;
-			if (endDate != null) { name += " - " + endDate; }
 	    	return name;
 	   	]]>
     </string>
