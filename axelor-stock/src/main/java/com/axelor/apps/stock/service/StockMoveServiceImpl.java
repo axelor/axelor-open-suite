@@ -57,7 +57,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -1236,58 +1235,27 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  public Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException {
+  public String viewDirection(StockMove stockMove) throws AxelorException {
 
     String fromAddressStr = stockMove.getFromAddressStr();
     String toAddressStr = stockMove.getToAddressStr();
 
-    String dString;
-    String aString;
-    BigDecimal dLat = BigDecimal.ZERO;
-    BigDecimal dLon = BigDecimal.ZERO;
-    BigDecimal aLat = BigDecimal.ZERO;
-    BigDecimal aLon = BigDecimal.ZERO;
-    if (Strings.isNullOrEmpty(fromAddressStr)) {
-      Address fromAddress = stockMove.getCompany().getAddress();
-      dString = fromAddress.getAddressL4() + " ," + fromAddress.getAddressL6();
-      dLat = fromAddress.getLatit();
-      dLon = fromAddress.getLongit();
-    } else {
-      dString = fromAddressStr.replace('\n', ' ');
-    }
-    if (toAddressStr == null) {
-      Address toAddress = stockMove.getCompany().getAddress();
-      aString = toAddress.getAddressL4() + " ," + toAddress.getAddressL6();
-      aLat = toAddress.getLatit();
-      aLon = toAddress.getLongit();
-    } else {
-      aString = toAddressStr.replace('\n', ' ');
-    }
+    Address companyAddress = stockMove.getCompany().getAddress();
+    String companyAddressStr = companyAddress.getAddressL4() + " ," + companyAddress.getAddressL6();
+    String dString =
+        Strings.isNullOrEmpty(fromAddressStr)
+            ? companyAddressStr
+            : fromAddressStr.replace('\n', ' ');
+    String aString =
+        Strings.isNullOrEmpty(toAddressStr) ? companyAddressStr : toAddressStr.replace('\n', ' ');
+
     if (Strings.isNullOrEmpty(dString) || Strings.isNullOrEmpty(aString)) {
       throw new AxelorException(
           stockMove,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(StockExceptionMessage.STOCK_MOVE_11));
     }
-    Map<String, Object> result;
-    if (appBaseService.getAppBase().getMapApiSelect()
-        == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
-      result =
-          Beans.get(MapService.class).getDirectionMapOsm(dString, dLat, dLon, aString, aLat, aLon);
-    } else {
-      result =
-          Beans.get(MapService.class)
-              .getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
-    }
-    if (result == null) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.STOCK_MOVE_13),
-          dString,
-          aString);
-    }
-    return result;
+    return Beans.get(MapService.class).getDirectionUrl("stockMove", stockMove.getId());
   }
 
   @Override

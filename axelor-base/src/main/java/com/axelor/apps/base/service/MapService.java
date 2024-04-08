@@ -264,76 +264,44 @@ public class MapService {
     }
   }
 
-  public String getDirectionUrl(
-      String key,
-      Pair<BigDecimal, BigDecimal> departureLatLong,
-      Pair<BigDecimal, BigDecimal> arrivalLatLong) {
-    return getDirectionUrl(
-        key,
-        departureLatLong.getLeft(),
-        departureLatLong.getRight(),
-        arrivalLatLong.getLeft(),
-        arrivalLatLong.getRight());
-  }
+  public String getDirectionUrl(String name, Long id) {
 
-  public String getDirectionUrl(
-      String key, BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon) {
-    String queryParam = "dx=" + dLat + "&dy=" + dLon + "&ax=" + aLat + "&ay=" + aLon;
-    if (appBaseService.getAppBase().getMapApiSelect()
-        == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
-      return "map/osm-directions.html?" + queryParam;
+    switch (appBaseService.getAppBase().getMapApiSelect()) {
+      case AppBaseRepository.MAP_API_GOOGLE:
+        return "map/directions.html?key=" + getGoogleMapsApiKey() + "&object=" + name + "&id=" + id;
+
+      case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+        return "map/osm-directions.html?object=" + name + "&id=" + id;
+
+      default:
+        return null;
     }
-    return "map/directions.html?" + queryParam + "&key=" + key;
   }
 
-  public Map<String, Object> getDirectionMapGoogle(
-      String dString,
-      BigDecimal dLat,
-      BigDecimal dLon,
-      String aString,
-      BigDecimal aLat,
-      BigDecimal aLon) {
-    LOG.debug("departureString = {}", dString);
-    LOG.debug("arrivalString = {}", aString);
-    Map<String, Object> result = new HashMap<>();
+  public Pair<BigDecimal, BigDecimal> getLatLong(
+      String address, BigDecimal latit, BigDecimal longit) {
     try {
-      if (!checkNotNullNotZero(dLat) || !checkNotNullNotZero(dLon)) {
-        getGoogleResponse(dString);
-        dLat = lat;
-        dLon = lon;
+      Integer mapApi = appBaseService.getAppBase().getMapApiSelect();
+      if (!checkNotNullNotZero(latit) || !checkNotNullNotZero(longit)) {
+        switch (mapApi) {
+          case AppBaseRepository.MAP_API_GOOGLE:
+            getGoogleResponse(address);
+            break;
+          case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+            getOsmResponse(address);
+            break;
+          default:
+            break;
+        }
+        latit = lat;
+        longit = lon;
       }
-      LOG.debug("departureLat = {}, departureLng={}", dLat, dLon);
-      if (!checkNotNullNotZero(aLat) || !checkNotNullNotZero(aLon)) {
-        getGoogleResponse(aString);
-        aLat = lat;
-        aLon = lon;
-      }
-      LOG.debug("arrivalLat = {}, arrivalLng={}", aLat, aLon);
-
-      if (checkNotNullNotZero(dLat)
-          && checkNotNullNotZero(dLon)
-          && checkNotNullNotZero(aLon)
-          && checkNotNullNotZero(aLat)) {
-        result.put(
-            "url",
-            "map/directions.html?key="
-                + getGoogleMapsApiKey()
-                + "&dx="
-                + dLat
-                + "&dy="
-                + dLon
-                + "&ax="
-                + aLat
-                + "&ay="
-                + aLon);
-        result.put("aLat", aLat);
-        result.put("dLat", dLat);
-        return result;
-      }
+      LOG.debug("addressString = {}", address);
+      LOG.debug("Lat = {}, Lng={}", latit, longit);
+      return Pair.of(latit, longit);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
-
     return null;
   }
 
@@ -484,56 +452,6 @@ public class MapService {
       TraceBackService.trace(e);
       return getErrorURI(e.getMessage());
     }
-  }
-
-  public Map<String, Object> getDirectionMapOsm(
-      String dString,
-      BigDecimal dLat,
-      BigDecimal dLon,
-      String aString,
-      BigDecimal aLat,
-      BigDecimal aLon) {
-    LOG.debug("departureString = {}", dString);
-    LOG.debug("arrivalString = {}", aString);
-    Map<String, Object> result = new HashMap<>();
-    try {
-      if (!checkNotNullNotZero(dLat) || !checkNotNullNotZero(dLon)) {
-        getOsmResponse(dString);
-        dLat = lat;
-        dLon = lon;
-      }
-      LOG.debug("departureLat = {}, departureLng={}", dLat, dLon);
-      if (!checkNotNullNotZero(aLat) || !checkNotNullNotZero(aLon)) {
-        getOsmResponse(aString);
-        aLat = lat;
-        aLon = lon;
-      }
-      LOG.debug("arrivalLat = {}, arrivalLng={}", aLat, aLon);
-
-      if (checkNotNullNotZero(dLat)
-          && checkNotNullNotZero(dLon)
-          && checkNotNullNotZero(aLon)
-          && checkNotNullNotZero(aLat)) {
-        result.put(
-            "url",
-            "map/osm-directions.html?"
-                + "dx="
-                + dLat
-                + "&dy="
-                + dLon
-                + "&ax="
-                + aLat
-                + "&ay="
-                + aLon);
-        result.put("aLat", aLat);
-        result.put("dLat", dLat);
-        return result;
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
-
-    return null;
   }
 
   protected void getOsmResponse(String qString) throws AxelorException, JSONException {

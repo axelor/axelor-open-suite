@@ -287,12 +287,10 @@ public class StockMoveController {
 
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
-      Map<String, Object> result = Beans.get(StockMoveService.class).viewDirection(stockMove);
-      Map<String, Object> mapView = new HashMap<>();
-      mapView.put("title", I18n.get("Map"));
-      mapView.put("resource", result.get("url"));
-      mapView.put("viewType", "html");
-      response.setView(mapView);
+      response.setView(
+          ActionView.define("Map")
+              .add("html", Beans.get(StockMoveService.class).viewDirection(stockMove))
+              .map());
     } catch (Exception e) {
       response.setInfo(e.getLocalizedMessage());
     }

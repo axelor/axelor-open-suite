@@ -41,12 +41,12 @@ import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Singleton;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
@@ -242,11 +242,6 @@ public class AddressController {
     AddressRepository addressRepository = Beans.get(AddressRepository.class);
     try {
       MapService mapService = Beans.get(MapService.class);
-      String key = null;
-      if (Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
-          == AppBaseRepository.MAP_API_GOOGLE) {
-        key = mapService.getGoogleMapsApiKey();
-      }
 
       Company company =
           Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
@@ -281,14 +276,10 @@ public class AddressController {
             String.format(I18n.get(BaseExceptionMessage.ADDRESS_5), arrivalAddress.getFullName()));
         return;
       }
-
-      Map<String, Object> mapView = new HashMap<>();
-      mapView.put("title", "Map");
-      mapView.put(
-          "resource",
-          mapService.getDirectionUrl(key, departureLatLong.get(), arrivalLatLong.get()));
-      mapView.put("viewType", "html");
-      response.setView(mapView);
+      response.setView(
+          ActionView.define("Map")
+              .add("html", mapService.getDirectionUrl("address", arrivalAddress.getId()))
+              .map());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

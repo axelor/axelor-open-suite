@@ -18,8 +18,10 @@
  */
 package com.axelor.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
@@ -29,7 +31,9 @@ import com.axelor.apps.crm.db.Tour;
 import com.axelor.apps.crm.db.TourLine;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.TourLineRepository;
 import com.axelor.apps.crm.db.repo.TourRepository;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -41,6 +45,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.GET;
@@ -48,6 +54,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Path("/map")
 @Deprecated
@@ -60,6 +67,10 @@ public class MapRestCrm {
   @Inject private OpportunityRepository opportunityRepo;
 
   @Inject private TourRepository tourRepo;
+
+  @Inject private TourLineRepository tourLineRepo;
+
+  @Inject private MapService mapService;
 
   private JsonNodeFactory factory = JsonNodeFactory.instance;
 
@@ -208,28 +219,36 @@ public class MapRestCrm {
         return mainNode;
       }
 
-      ArrayNode arrayNode = factory.arrayNode();
+      Collections.sort(tourLineList, Comparator.comparing(TourLine::getTourLineOrder));
 
+      ArrayNode arrayNode = factory.arrayNode();
       for (TourLine tourLine : tourLineList) {
+        tourLine = tourLineRepo.find(tourLine.getId());
         ObjectNode objectNode = factory.objectNode();
         Partner partner = tourLine.getPartner();
         objectNode.put("fullName", partner.getFullName());
 
         Address address = tourLine.getAddress();
-        if (!StringUtils.isBlank(address.getFullName())) {
-          String addressString = mapRestService.makeAddressString(address, objectNode);
-          if (StringUtils.isBlank(addressString)) {
-            continue;
+        if (StringUtils.notEmpty(address.getFullName())) {
+          AxelorException exception =
+              new AxelorException(
+                  TraceBackRepository.CATEGORY_NO_VALUE,
+                  I18n.get(CrmExceptionMessage.TOUR_ADDRESS_NOT_FOUND),
+                  address.getFullName());
+          try {
+            if (!address.getIsValidLatLong()) {
+              mapRestService.setError(objectNode, exception);
+            }
+            String addressString = mapRestService.makeAddressString(address, objectNode);
+            Pair<BigDecimal, BigDecimal> latLong =
+                mapService.getLatLong(addressString, address.getLatit(), address.getLongit());
+            objectNode.put("address", addressString.replace("<br/>", ", "));
+            objectNode.put("latit", latLong.getLeft());
+            objectNode.put("longit", latLong.getRight());
+          } catch (Exception e) {
+            mapRestService.setError(objectNode, exception);
           }
-          objectNode.put("address", addressString);
         }
-        objectNode.put(
-            "fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : "");
-        objectNode.put(
-            "emailAddress",
-            partner.getEmailAddress() != null ? partner.getEmailAddress().getAddress() : "");
-        objectNode.put("pinColor", "blue");
-        objectNode.put("pinChar", "T");
 
         arrayNode.add(objectNode);
       }

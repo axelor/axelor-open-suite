@@ -154,4 +154,6 @@ public final class CrmExceptionMessage {
 
   public static final String CRM_EMAIL_DOMAIN_ALREADY_EXISTS = /*$$(*/
       "We found the following similar leads/contacts/partners in the system, do you still want to create this lead ?" /*)*/;
+
+  public static final String TOUR_ADDRESS_NOT_FOUND = /*$$(*/ "%s address is not found." /*)*/;
 }

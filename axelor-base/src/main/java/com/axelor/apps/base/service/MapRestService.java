@@ -55,4 +55,6 @@ public interface MapRestService {
    */
   String makeAddressString(Address address, ObjectNode objectNode)
       throws AxelorException, JSONException;
+
+  String makeAddressString(Address address);
 }

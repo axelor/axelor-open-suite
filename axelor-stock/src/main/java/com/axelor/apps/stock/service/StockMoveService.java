@@ -176,7 +176,7 @@ public interface StockMoveService {
    * @param stockMove
    * @return the direction for the google map API
    */
-  Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
+  String viewDirection(StockMove stockMove) throws AxelorException;
 
   /**
    * Update fully spread over logistical forms flag on stock move.

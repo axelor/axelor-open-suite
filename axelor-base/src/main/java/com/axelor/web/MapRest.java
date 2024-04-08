@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -58,6 +59,8 @@ public class MapRest {
   @Inject private PartnerService partnerService;
 
   @Inject private PartnerRepository partnerRepo;
+
+  @Inject private AddressRepository addressRepository;
 
   JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
 
@@ -366,5 +369,38 @@ public class MapRest {
     }
 
     return fullName;
+  }
+
+  @Path("/address/{id}")
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public JsonNode getAddress(@PathParam("id") long id) {
+    ObjectNode mainNode = nodeFactory.objectNode();
+
+    try {
+      Address departureAddress = AuthUtils.getUser().getActiveCompany().getAddress();
+      Address arrivalAddress = addressRepository.find(id);
+
+      ArrayNode arrayNode = nodeFactory.arrayNode();
+      List<Address> addressList = List.of(departureAddress, arrivalAddress);
+
+      for (Address address : addressList) {
+        ObjectNode objectNode = nodeFactory.objectNode();
+        if (address != null && address.getIsValidLatLong()) {
+          String addressString = mapRestService.makeAddressString(address, objectNode);
+          if (StringUtils.isBlank(addressString)) {
+            continue;
+          }
+          objectNode.put("address", addressString.replace("<br/>", ", "));
+        }
+
+        arrayNode.add(objectNode);
+      }
+      mapRestService.setData(mainNode, arrayNode);
+    } catch (Exception e) {
+      mapRestService.setError(mainNode, e);
+    }
+
+    return mainNode;
   }
 }
