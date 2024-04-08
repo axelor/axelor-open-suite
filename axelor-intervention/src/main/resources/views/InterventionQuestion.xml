@@ -143,7 +143,5 @@
     <call class="com.axelor.apps.intervention.web.InterventionQuestionController"
       method="advancedMonitoringAnswer"/>
   </action-method>
-  <!--<action-record name="action-intervention-question-record-advanced-monitoring-answer" model="com.axelor.apps.barkene.db.InterventionQuestion">
-    <field name="advancedMonitoringAddress" expr="eval: " if=""/> </action-record> -->
 
 </object-views>

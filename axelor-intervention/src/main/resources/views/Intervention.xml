@@ -414,8 +414,6 @@
     <call class="com.axelor.apps.intervention.web.InterventionController"
       method="setDefaultInvoicedPartner"/>
   </action-method>
-  <!-- <action-view name="action-intervention-view-show-schedule" title="Scheduler"> <view name="barkene-planning?id={{id}}"
-    type="html"/> <context name="id" expr="eval:prodTradingName?.defaultScheduler?.id"/> </action-view> -->
 
   <action-view name="action-intervention-view-question-summary" title="Recap questions"
     model="com.axelor.apps.intervention.db.InterventionQuestion">
