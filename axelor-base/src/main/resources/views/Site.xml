@@ -12,7 +12,7 @@
   </grid>
 
   <form title="Site" name="site-form" model="com.axelor.apps.base.db.Site"
-    onNew="action-site-record-set-default-company">
+    onNew="action-site-attrs-set-defaults">
     <panel name="mainPanel">
       <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
         <editor x-show-titles="false">
@@ -23,6 +23,11 @@
       <field name="address" canNew="true"/>
       <field name="companySet" widget="tagSelect" canNew="false"/>
     </panel>
+    <panel-tabs>
+      <panel name="basePanel" hidden="true">
+        <!-- empty panel for extension -->
+      </panel>
+    </panel-tabs>
     <panel name="siteTypePanel" sidebar="true">
       <field name="typeSelect"/>
       <field name="partner" hidden="true" showIf="typeSelect == 2"
@@ -30,9 +35,10 @@
     </panel>
   </form>
 
-  <action-record name="action-site-record-set-default-company"
-    model="com.axelor.apps.base.db.Site">
-    <field name="companySet" expr="eval:__user__.activeCompany"
+  <action-attrs name="action-site-attrs-set-defaults">
+    <attribute for="companySet" name="value" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
-  </action-record>
+    <attribute for="typeSelect" name="value" expr="1"/>
+  </action-attrs>
+
 </object-views>
