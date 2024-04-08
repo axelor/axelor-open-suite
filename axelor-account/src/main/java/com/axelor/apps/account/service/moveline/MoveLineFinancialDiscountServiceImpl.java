@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -39,12 +40,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
@@ -58,6 +61,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   protected MoveLineCreateService moveLineCreateService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineToolService moveLineToolService;
+  protected TaxAccountService taxAccountService;
 
   @Inject
   public MoveLineFinancialDiscountServiceImpl(
@@ -67,7 +71,8 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       FinancialDiscountService financialDiscountService,
       MoveLineCreateService moveLineCreateService,
       CurrencyScaleService currencyScaleService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      TaxAccountService taxAccountService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
@@ -75,6 +80,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     this.moveLineCreateService = moveLineCreateService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineToolService = moveLineToolService;
+    this.taxAccountService = taxAccountService;
   }
 
   @Override
@@ -178,8 +184,8 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean financialDiscountVat)
       throws AxelorException {
     Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap = this.getFinancialDiscountTaxMap(invoice);
-    Map<Tax, Integer> vatSystemTaxMap = this.getVatSystemTaxMap(invoice.getMove());
-    Map<Tax, Account> accountTaxMap = this.getAccountTaxMap(invoice.getMove());
+    Map<Tax, Integer> vatSystemTaxMap = this.getVatSystemTaxMap(invoice);
+    Map<Tax, Account> accountTaxMap = this.getAccountTaxMap(invoice, move);
 
     Account financialDiscountAccount =
         financialDiscountService.getFinancialDiscountAccount(
@@ -407,35 +413,100 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   }
 
   @Override
-  public Map<Tax, Account> getAccountTaxMap(Move move) {
-    Map<Tax, Account> vatSystemMap = new HashMap<>();
+  public Map<Tax, Account> getAccountTaxMap(Invoice invoice, Move move) throws AxelorException {
+    if (invoice == null) {
+      return new HashMap<>();
+    }
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
-        vatSystemMap.put(moveLine.getTaxLine().getTax(), moveLine.getAccount());
+    Move invoiceMove = invoice.getMove();
+
+    if (invoiceMove == null) {
+      return this.getAccountTaxMap(invoice.getInvoiceLineTaxList(), invoice.getCompany(), move);
+    }
+
+    return this.getAccountTaxMap(invoiceMove);
+  }
+
+  public Map<Tax, Account> getAccountTaxMap(Move move) {
+    Map<Tax, Account> accountTaxMap = new HashMap<>();
+
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine
+            .getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_TAX)) {
+          accountTaxMap.put(moveLine.getTaxLine().getTax(), moveLine.getAccount());
+        }
+      }
+    }
+
+    return accountTaxMap;
+  }
+
+  protected Map<Tax, Account> getAccountTaxMap(
+      List<InvoiceLineTax> invoiceLineTaxes, Company company, Move move) throws AxelorException {
+    Map<Tax, Account> accountTaxMap = new HashMap<>();
+
+    if (ObjectUtils.notEmpty(invoiceLineTaxes)) {
+      for (InvoiceLineTax invoiceLineTax : invoiceLineTaxes) {
+        accountTaxMap.put(
+            invoiceLineTax.getTaxLine().getTax(),
+            taxAccountService.getAccount(
+                invoiceLineTax.getTaxLine().getTax(),
+                company,
+                move.getJournal(),
+                invoiceLineTax.getVatSystemSelect(),
+                false,
+                move.getFunctionalOriginSelect()));
+      }
+    }
+
+    return accountTaxMap;
+  }
+
+  @Override
+  public Map<Tax, Integer> getVatSystemTaxMap(Invoice invoice) {
+    if (invoice == null) {
+      return new HashMap<>();
+    }
+
+    Move move = invoice.getMove();
+
+    if (move == null) {
+      return this.getVatSystemTaxMap(invoice.getInvoiceLineTaxList());
+    }
+
+    return this.getVatSystemTaxMap(move);
+  }
+
+  public Map<Tax, Integer> getVatSystemTaxMap(Move move) {
+    Map<Tax, Integer> vatSystemMap = new HashMap<>();
+
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine
+            .getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_TAX)) {
+          vatSystemMap.put(moveLine.getTaxLine().getTax(), moveLine.getVatSystemSelect());
+        } else if (moveLine.getTaxLine() != null) {
+          vatSystemMap.put(moveLine.getTaxLine().getTax(), MoveLineRepository.VAT_SYSTEM_DEFAULT);
+        }
       }
     }
 
     return vatSystemMap;
   }
 
-  @Override
-  public Map<Tax, Integer> getVatSystemTaxMap(Move move) {
+  protected Map<Tax, Integer> getVatSystemTaxMap(List<InvoiceLineTax> invoiceLineTaxes) {
     Map<Tax, Integer> vatSystemMap = new HashMap<>();
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
-        vatSystemMap.put(moveLine.getTaxLine().getTax(), moveLine.getVatSystemSelect());
-      } else if (moveLine.getTaxLine() != null) {
-        vatSystemMap.put(moveLine.getTaxLine().getTax(), MoveLineRepository.VAT_SYSTEM_DEFAULT);
+    if (ObjectUtils.notEmpty(invoiceLineTaxes)) {
+      for (InvoiceLineTax invoiceLineTax : invoiceLineTaxes) {
+        vatSystemMap.put(invoiceLineTax.getTaxLine().getTax(), invoiceLineTax.getVatSystemSelect());
       }
     }
 
