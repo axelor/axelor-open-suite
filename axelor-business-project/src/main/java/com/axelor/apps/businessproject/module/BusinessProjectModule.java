@@ -28,6 +28,7 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.AnalyticLineModelProjectServiceImpl;
+import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServiceImpl;
 import com.axelor.apps.businessproject.service.ContractLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseInvoiceLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseLineCreateServiceProjectImpl;
@@ -88,6 +89,7 @@ import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
+import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateServiceImpl;
@@ -97,6 +99,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
+import com.axelor.apps.project.service.ProjectClosingControlServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
@@ -176,5 +179,9 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoicingProjectStockMovesService.class).to(InvoicingProjectStockMovesServiceImpl.class);
     bind(ProjectHoldBackLineService.class).to(ProjectHoldBackLineServiceImpl.class);
     bind(ProjectTaskProgressUpdateService.class).to(ProjectTaskProgressUpdateServiceImpl.class);
+    bind(ProjectPlanningTimeBusinessProjectServiceImpl.class)
+        .to(ProjectPlanningTimeBusinessProjectServiceImpl.class);
+    bind(ICalendarEventObserver.class);
+    bind(ProjectClosingControlServiceImpl.class).to(BusinessProjectClosingControlServiceImpl.class);
   }
 }
