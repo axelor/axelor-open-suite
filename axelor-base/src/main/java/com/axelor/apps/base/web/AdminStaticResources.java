@@ -18,7 +18,8 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.web.StaticResourceProvider;
+import com.axelor.util.StaticResourceProvider;
+
 import java.util.List;
 
 public class AdminStaticResources implements StaticResourceProvider {

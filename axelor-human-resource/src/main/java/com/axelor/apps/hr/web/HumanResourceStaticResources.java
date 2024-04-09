@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.hr.web;
 
-import com.axelor.web.StaticResourceProvider;
+import com.axelor.util.StaticResourceProvider;
 import java.util.List;
 
 public class HumanResourceStaticResources implements StaticResourceProvider {

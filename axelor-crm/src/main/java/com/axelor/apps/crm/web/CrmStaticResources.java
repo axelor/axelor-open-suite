@@ -18,7 +18,8 @@
  */
 package com.axelor.apps.crm.web;
 
-import com.axelor.web.StaticResourceProvider;
+import com.axelor.util.StaticResourceProvider;
+
 import java.util.List;
 
 public class CrmStaticResources implements StaticResourceProvider {

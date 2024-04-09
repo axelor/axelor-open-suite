@@ -331,55 +331,30 @@ from InvoiceTerm as self
     <field name="_company" expr="eval:__repo__(User).find(__user__.id)?.activeCompany"/>
   </action-record>
 
-  <chart name="chart.account.invoice.summary" title="Account Invoice Summary">
-    <dataset type="sql">
-		    <![CDATA[
-			SELECT
-				coalesce(SUM(_invoice._total),0.00) AS _amount,
-				_meta._type AS _invoice_type
-			FROM
-				(SELECT company_in_tax_total_remaining AS _total, operation_type_select FROM account_invoice WHERE status_select=3) AS _invoice
-			RIGHT JOIN
-				(SELECT cast(value as int) AS _select_item, title AS _type
-				FROM meta_select_item
-				WHERE select_id IN
-				(SELECT id FROM meta_select where name='iinvoice.operation.type.select')) AS _meta
-			ON	_invoice.operation_type_select = _meta._select_item
-			GROUP BY
-				_meta._type
-			ORDER BY
-				_meta._type
-    	    ]]>
-    </dataset>
-    <category key="_invoice_type" type="text" title="Invoice"/>
-    <series key="_amount" type="bar" title="Amount"/>
+  <chart name="chart.account.invoice.summary" title="Account Invoice Summary" onInit="select.default.invoice.category">
+    <search-fields>
+      <field title="Operation" type="string" name="operation" selection="select.invoice.type.revenue.cost"
+             x-required="true"/>
+      <field name="companyCode" title="Company" type="string" selection="select.invoice.company.code"
+             x-required="true" hideIf="operation == 'EBITDA' || operation == 'WORKFORCE_COST'"/>
+    </search-fields>
+
+    <dataset type="rpc">com.axelor.apps.account.web.AccountInvoiceSummaryChartController:calculate</dataset>
+    <category key="monthNo" type="month" title="Month"/>
+    <series key="turnOver" type="line" groupBy="year" title="Amount"/>
   </chart>
 
-  <chart name="chart.invoiced.turnover.ytd.vs.lastyear"
-    title="Invoiced Turnover This year vs Last year">
-    <dataset type="sql">
-	    <![CDATA[
-			SELECT
-				SUM(CASE _invoice.operation_type_select
-						WHEN 3 THEN _invoice.ex_tax_total
-						WHEN 4 THEN -_invoice.ex_tax_total
-						END) AS _turn_over,
-				DATE_PART('year',_invoice.invoice_date) AS _year
-			FROM
-				account_invoice AS _invoice
-			WHERE
-				_invoice.status_select = 3
-				AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
-				AND DATE_PART('year',_invoice.invoice_date)
-				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
-			GROUP BY
-				_year
-			ORDER BY
-				_year
-	    ]]>
-    </dataset>
-    <category key="_year" type="text" title="Year"/>
-    <series key="_turn_over" type="bar" title="TurnOver"/>
+
+  <chart name="chart.invoiced.turnover.ytd.vs.lastyear" title="Invoiced Turnover This year vs Last year"
+         onInit="select.default.invoice.type.revenue">
+    <search-fields>
+      <field type="string" name="operation" title="Revenue vs Cost" selection="select.invoice.type.revenue.cost"
+             x-required="true"/>
+
+    </search-fields>
+    <dataset type="rpc">com.axelor.apps.account.web.InvoicedTurnoverThisVsLastYearChartController:calculate</dataset>
+    <category key="year" type="text" title="Year"/>
+    <series key="turnOver" type="bar" title="TurnOver"/>
   </chart>
 
   <chart stacked="true" name="chart.invoice.turnover.cust.history"
