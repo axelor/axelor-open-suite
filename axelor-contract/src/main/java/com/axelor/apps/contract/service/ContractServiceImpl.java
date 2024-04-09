@@ -927,13 +927,15 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     contract.setStatusSelect(ContractRepository.DRAFT_CONTRACT);
     contract.setCurrentContractVersion(new ContractVersion());
 
+    ContractTemplate contractTemplate1 = JPA.copy(contractTemplate,true);
     if (contractTemplate != null) {
       contract.setAdditionalBenefitContractLineList(
-          contractTemplate.getAdditionalBenefitContractLineList());
+              contractTemplate1.getAdditionalBenefitContractLineList());
     }
 
     JPA.save(contract);
-
+    opportunity.setContractGenerated(true);
+    JPA.save(opportunity);
     return contract;
   }
 }

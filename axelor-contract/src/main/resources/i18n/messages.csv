@@ -65,6 +65,7 @@
 "Contract can't be empty for compute contract line price.",,,
 "Contract closing invoice",,,
 "Contract filters",,,
+"Contract has already been generated for this opportunity",,,
 "Contract information",,,
 "Contract invoice",,,
 "Contract line",,,

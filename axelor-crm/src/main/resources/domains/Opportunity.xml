@@ -57,6 +57,8 @@
     <integer name="opportunityRating" title="Opportunity scoring"
       selection="gold.rating.icon.select"/>
 
+    <boolean name="contractGenerated" title="Contract generated" default="false"/>
+
     <finder-method name="findByPartner" using="partner" all="true"/>
 
     <track>
