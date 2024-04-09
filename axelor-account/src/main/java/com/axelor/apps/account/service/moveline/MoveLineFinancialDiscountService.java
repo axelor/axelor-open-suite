@@ -68,11 +68,7 @@ public interface MoveLineFinancialDiscountService {
       boolean financialDiscountVat)
       throws AxelorException;
 
-  Map<Tax, Account> getAccountTaxMap(Invoice invoice, Move move) throws AxelorException;
-
   Map<Tax, Account> getAccountTaxMap(Move move);
-
-  Map<Tax, Integer> getVatSystemTaxMap(Invoice invoice);
 
   Map<Tax, Integer> getVatSystemTaxMap(Move move);
 

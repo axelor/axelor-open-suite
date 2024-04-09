@@ -47,7 +47,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
@@ -184,8 +183,8 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean financialDiscountVat)
       throws AxelorException {
     Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap = this.getFinancialDiscountTaxMap(invoice);
-    Map<Tax, Integer> vatSystemTaxMap = this.getVatSystemTaxMap(invoice);
-    Map<Tax, Account> accountTaxMap = this.getAccountTaxMap(invoice, move);
+    Map<Tax, Integer> vatSystemTaxMap = this.getVatSystemTaxMap(invoice.getMove());
+    Map<Tax, Account> accountTaxMap = this.getAccountTaxMap(invoice.getMove());
 
     Account financialDiscountAccount =
         financialDiscountService.getFinancialDiscountAccount(
@@ -412,21 +411,6 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     moveLine.setAmountRemaining(signedAmount);
   }
 
-  @Override
-  public Map<Tax, Account> getAccountTaxMap(Invoice invoice, Move move) throws AxelorException {
-    if (invoice == null) {
-      return new HashMap<>();
-    }
-
-    Move invoiceMove = invoice.getMove();
-
-    if (invoiceMove == null) {
-      return this.getAccountTaxMap(invoice.getInvoiceLineTaxList(), invoice.getCompany(), move);
-    }
-
-    return this.getAccountTaxMap(invoiceMove);
-  }
-
   public Map<Tax, Account> getAccountTaxMap(Move move) {
     Map<Tax, Account> accountTaxMap = new HashMap<>();
 
@@ -445,42 +429,6 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     return accountTaxMap;
   }
 
-  protected Map<Tax, Account> getAccountTaxMap(
-      List<InvoiceLineTax> invoiceLineTaxes, Company company, Move move) throws AxelorException {
-    Map<Tax, Account> accountTaxMap = new HashMap<>();
-
-    if (ObjectUtils.notEmpty(invoiceLineTaxes)) {
-      for (InvoiceLineTax invoiceLineTax : invoiceLineTaxes) {
-        accountTaxMap.put(
-            invoiceLineTax.getTaxLine().getTax(),
-            taxAccountService.getAccount(
-                invoiceLineTax.getTaxLine().getTax(),
-                company,
-                move.getJournal(),
-                invoiceLineTax.getVatSystemSelect(),
-                false,
-                move.getFunctionalOriginSelect()));
-      }
-    }
-
-    return accountTaxMap;
-  }
-
-  @Override
-  public Map<Tax, Integer> getVatSystemTaxMap(Invoice invoice) {
-    if (invoice == null) {
-      return new HashMap<>();
-    }
-
-    Move move = invoice.getMove();
-
-    if (move == null) {
-      return this.getVatSystemTaxMap(invoice.getInvoiceLineTaxList());
-    }
-
-    return this.getVatSystemTaxMap(move);
-  }
-
   public Map<Tax, Integer> getVatSystemTaxMap(Move move) {
     Map<Tax, Integer> vatSystemMap = new HashMap<>();
 
@@ -495,18 +443,6 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
         } else if (moveLine.getTaxLine() != null) {
           vatSystemMap.put(moveLine.getTaxLine().getTax(), MoveLineRepository.VAT_SYSTEM_DEFAULT);
         }
-      }
-    }
-
-    return vatSystemMap;
-  }
-
-  protected Map<Tax, Integer> getVatSystemTaxMap(List<InvoiceLineTax> invoiceLineTaxes) {
-    Map<Tax, Integer> vatSystemMap = new HashMap<>();
-
-    if (ObjectUtils.notEmpty(invoiceLineTaxes)) {
-      for (InvoiceLineTax invoiceLineTax : invoiceLineTaxes) {
-        vatSystemMap.put(invoiceLineTax.getTaxLine().getTax(), invoiceLineTax.getVatSystemSelect());
       }
     }
 
