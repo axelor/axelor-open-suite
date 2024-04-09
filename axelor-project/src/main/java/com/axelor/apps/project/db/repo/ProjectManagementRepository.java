@@ -45,7 +45,6 @@ public class ProjectManagementRepository extends ProjectRepository {
   @Inject AppProjectService appProjectService;
 
   protected void setAllProjectFullName(Project project) throws AxelorException {
-
     setProjectFullName(project);
     if (project.getChildProjectList() != null && !project.getChildProjectList().isEmpty()) {
       for (Project child : project.getChildProjectList()) {
