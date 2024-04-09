@@ -30,7 +30,7 @@ public class OpportunityContractController {
             .map(linkedHashMap -> ((Integer) linkedHashMap.get("id")).longValue())
             .orElse(null);
     Opportunity opportunity = Beans.get(OpportunityRepository.class).find(oppID);
-    if(opportunity.getContractGenerated()){
+    if (opportunity.getContractGenerated()) {
       response.setError(I18n.get("Contract has already been generated for this opportunity"));
       return;
     }
