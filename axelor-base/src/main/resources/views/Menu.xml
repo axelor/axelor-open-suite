@@ -1128,6 +1128,8 @@
     model="com.axelor.apps.base.db.Pricing">
     <view type="grid" name="pricing-grid"/>
     <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: PricingRepository.PRICING_TYPE_SELECT_DEFAULT"/>
   </action-view>
 
   <menuitem title="Pricing classification rules" name="base-pricing-classification-rule"

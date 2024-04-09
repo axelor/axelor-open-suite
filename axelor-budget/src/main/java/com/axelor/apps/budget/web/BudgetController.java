@@ -280,6 +280,8 @@ public class BudgetController {
         globalBudget = Beans.get(GlobalBudgetRepository.class).find(Long.valueOf(globalId));
       }
     }
+
+    parent = EntityHelper.getEntity(parent);
     globalBudget = EntityHelper.getEntity(globalBudget);
     budgetStructure = EntityHelper.getEntity(budgetStructure);
 

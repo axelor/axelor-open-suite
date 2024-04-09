@@ -142,6 +142,9 @@
           domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
       </panel>
       <field name="description" colSpan="12" widget="html"/>
+      <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"
+        domain="self.isUsableOnProject = true"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -761,6 +764,9 @@
     <attribute name="value" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
     <attribute name="value" for="parentProject"
       expr="eval:__repo__(Project).find(_parentProjectId)" if="_parentProjectId != null"/>
+    <attribute name="value" for="siteSet"
+      expr="eval: __config__.app.getApp('base')?.defaultSitesSet"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-project-add-member"

@@ -1,3 +1,170 @@
+## [8.0.4] (2024-04-04)
+
+### Fixes
+#### Base
+
+* Pricing: fixed the parent product filter in computed pricing formula.
+* Company: fixed missing info in the demo data import.
+
+#### Account
+
+* Invoice: fixed printing of advance payment invoice in invoice report.
+* Analytic axis by company: fixed analytic axis display error.
+* Invoice: fixed report when invoice is linked to more than one stock move.
+* Move: fixed error when selecting a third party payer partner.
+* Move template line: added missing tax in demo data.
+* Payment Session: fixed error when selecting bank details where payment mode have empty accounting setting.
+* Accounting Situation: fixed used credit calculation not taking in account completed sale orders.
+* Analytic: fixed amount computation when we change the analytic line percentage.
+* Accounting Batch: in closing account batch, prevented result move generation when no accounts are treated.
+* Accounting batch: fixed move generation on account closing/opening batch.
+
+#### Bank Payment
+
+* Bank reconciliation: move lines to reconcile in other currencies are now displayed.
+* AccountingBatch: fixed direct debit batch.
+
+#### Business Project
+
+* Invoicing project: fixed batch to prevent the generation of invoicing business project when there is nothing to invoice.
+
+#### Contract
+
+* Contract template/Contract version: fixed 'Additional Benefit Management' field display.
+* Contract template: fixed an error occuring in the server logs on opening a contract template.
+* Contract: fixed issue on change of contract line fields on a new version.
+
+#### Human Resource
+
+* Expense: fixed expenses creation for subordinates.
+* Expense line: fixed project filter to use user related to employee instead of current user.
+
+#### Production
+
+* Manufacturing order: fixed unable to select a tracking number on a consumed product.
+* Bill of materials import: fixed creation of a new product from bill of materials import form view.
+* Outsourcing: fixed setting outsourced in a new prod process line.
+
+#### Quality
+
+* Quality: fixed formula of dimension in control type demo data.
+
+#### Sale
+
+* Sale order line: fixed an error that occured when changing project of a line.
+* Sale order: fixed scale for quantity and price fields in editable grid.
+
+#### Talent
+
+* App config: fixed demo data in the recruitment app config.
+
+
+### Developer
+
+#### Account
+
+- Updated Invoice.rptdesign file with some fixes.
+- On an advance invoice payment, 'Imputed by' field is now correctly filled with the reference to the payment on the invoice.
+
+---
+
+In accounting configuration, the field `analyticAxisByCompanyList` had previously a sequence starting with 0. However, since the upgrade of the framework to v7, the sequence of this list now starts with 1. 
+The processes that previously assumed a starting sequence of 0 will now be adjusted to start from 1 in order to align with the behavior of AOP.
+
+If you use this configuration, after this patch please make sure that this sequence is starting with 1 in your database.
+
+---
+
+- Removed getAnalyticAmountFromParent method from AnalyticLineService.
+- Removed calculateAmountWithPercentage method from AnalyticDistributionController.
+- Removed action-method : `action-method-calculate-amount-with-percentage-analytic-move-line` and replaced by existing action-method : `action-analytic-move-line-method-compute-amount`.
+- Added computeAmount method in AnalyticMoveLineService.
+- Updated parameters on getParentWithContext method from AnalyticControllerUtils.
+
+#### Sale
+
+Removed `action action-sale-order-line-record-progress`
+
+## [8.0.3] (2024-03-21)
+
+### Fixes
+#### Base
+
+* Webapp: Updated Axelor Open Platform dependency to 7.0.4.
+* App: removed warning during app installation.
+* Sale order/Purchase order: fixed number of decimals display in price and totals.
+* Fixed wrong french translation of 'Application' (was 'Domaine d'applicabilité').
+* Language: fixed an issue where getting default language did not use the configuration 'application.locale'.
+* App Base: fixed wrong currency conversion line in demo data.
+* Price list: check that the product is purchasable on purchase price lists.
+
+#### Account
+
+* Accounting batch : fix result move functional origin in closure/open batch.
+* Move: fixed mass entry technical origin missing in Move printing.
+* Payment voucher: fixed paid amount selecting overdue move line.
+* Accounting batch: fixed the block customer message when no result.
+* Partner/AccountingSituation: added error label when multiple accounting situation for a company and a partner.
+* Reconcile manager: fixed move lines selection.
+* Accounting batch: fixed currency amounts on result moves in opening/closure.
+* Invoice payment: fixed technical error when setting currency to null.
+* Financial discount: fixed technical error linked to invoice terms.
+* FEC Export: fixed technical error when journal is missing.
+
+#### Budget
+
+* Budget template: fixed database error related to scaling.
+* Purchase order line: fixed wrong budget distribution when invoicing multiple purchase order lines.
+
+#### Contract
+
+* Contract template: fixed error when opening an existing contract template or saving a new one.
+* Contract: fixed technical error when creating lines without saving.
+* Contract line: fixed analytic lines creation using amount in company currency.
+* Contract: fixed prorata invoicing when invoicing period is smaller than the invoicing frequency.
+
+#### CRM
+
+* Event: fixed an error preventing the computation of the event duration.
+* Tour: hide validate button when everything is validated.
+
+#### Helpdesk
+
+* SLA: added missing translations inside 'reach in' in readonly.
+* Ticket dashboard: fixed an issue preventing ticket dashboard loading.
+
+#### Human Resource
+
+* Expense: fixed internal error preventing employee selection.
+
+#### Production
+
+* Manufacturing order: fixed a bug where missing quantities were not displayed.
+* Prod process line: added missing filter on type for work centers.
+* Manufacturing order: fixed error on change of client partner for manuf orders without related sale orders.
+* MPS: fixed quantity not editable on MPS proposal.
+* Product: fixed an issue where 'economic manuf order qty' field was displayed twice.
+* Product: fixed cost sheet group display on product form on semi-finished products.
+
+#### Stock
+
+* Inventory: fixed type in inventory demo data.
+
+#### Supplier Management
+
+* Supplier request: fixed 'JNPE' error on partner selection in Supplier request form.
+
+
+### Developer
+
+#### Contract
+
+A new transient field `companyCurrency` was added in `ContractTemplate` so the model can implement the `Currenciable` interface.
+
+#### Production
+
+Moved `com.axelor.apps.production.service.ProdProductProductionRepository` to `com.axelor.apps.production.db.repo.ProdProductProductionRepository`
+
 ## [8.0.2] (2024-03-07)
 
 ### Fixes
@@ -323,6 +490,8 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.4]: https://github.com/axelor/axelor-open-suite/compare/v8.0.3...v8.0.4
+[8.0.3]: https://github.com/axelor/axelor-open-suite/compare/v8.0.2...v8.0.3
 [8.0.2]: https://github.com/axelor/axelor-open-suite/compare/v8.0.1...v8.0.2
 [8.0.1]: https://github.com/axelor/axelor-open-suite/compare/v8.0.0...v8.0.1
 [8.0.0]: https://github.com/axelor/axelor-open-suite/compare/v7.2.7...v8.0.0

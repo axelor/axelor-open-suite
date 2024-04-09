@@ -9,7 +9,7 @@
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="ref" width="120"/>
     <field name="date"/>
-    <field name="$companyStr" type="string" title="Company(ies)"/>
+    <field name="companySet" widget="TagSelect"/>
     <field name="currency"/>
     <field name="exportTypeSelect"/>
     <field name="reportType"/>
@@ -24,7 +24,6 @@
     <field name="statusSelect"/>
     <field name="publicationDateTime"/>
     <field name="company" hidden="true"/>
-    <field name="companySet" hidden="true"/>
   </grid>
 
   <form name="accounting-report-form" title="Accounting report"

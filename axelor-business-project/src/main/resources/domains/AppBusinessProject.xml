@@ -49,7 +49,11 @@
       ref="com.axelor.apps.project.db.TaskStatus"/>
     <string name="excludeTaskInvoicing" title="Exclude tasks for invoicing"
       help="Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria"/>
-    <boolean name="enableSiteManagement" title="Enable site management"/>
+
+    <boolean name="enableEventCreation" title="Enable event creation"
+      help="This will attach an event to a project planning time"/>
+    <string name="eventSubjectGroovyFormula" title="Event subject groovy formula"
+      help="This will customize the event subject."/>
 
     <!-- planification fields -->
     <many-to-one name="daysUnit" ref="com.axelor.apps.base.db.Unit" title="Days unit"/>

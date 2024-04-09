@@ -44,6 +44,9 @@
   <input file="base_registrationNumberTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.RegistrationNumberTemplate" search="self.importId = :importId"/>
 
+  <input file="base_economicArea.csv" separator=";"
+    type="com.axelor.apps.base.db.EconomicArea" search="self.importId = :importId"/>
+
   <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
     search="self.importId = :importId"/>
 
@@ -78,9 +81,9 @@
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
-    <bind column="birtTemplateSet_importId" to="birtTemplateSet"
-      search="self.importId in :birtTemplateSet_importId"
-      eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+    <bind column="printTemplateSet_importId" to="printTemplateSet"
+      search="self.importId in :printTemplateSet_importId"
+      eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
   </input>
 
   <input file="base_team.csv" separator=";" type="com.axelor.team.db.Team"
@@ -91,9 +94,6 @@
 
   <input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source"
     search="self.code = :code"/>
-
-  <input file="base_economicArea.csv" separator=";"
-    type="com.axelor.apps.base.db.EconomicArea" search="self.importId = :importId"/>
 
   <input file="base_addressTemplateLine.csv" separator=";"
     type="com.axelor.apps.base.db.AddressTemplateLine" search="self.importId = :importId">

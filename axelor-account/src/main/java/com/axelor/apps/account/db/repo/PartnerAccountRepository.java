@@ -19,7 +19,8 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.service.AccountingSituationInitService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -36,11 +37,16 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 
   private AccountingSituationInitService accountingSituationInitService;
 
+  private AccountingSituationCheckService accountingSituationCheckService;
+
   @Inject
   public PartnerAccountRepository(
-      AppService appService, AccountingSituationInitService accountingSituationInitService) {
+      AppService appService,
+      AccountingSituationInitService accountingSituationInitService,
+      AccountingSituationCheckService accountingSituationCheckService) {
     this.appService = appService;
     this.accountingSituationInitService = accountingSituationInitService;
+    this.accountingSituationCheckService = accountingSituationCheckService;
   }
 
   @Override
@@ -56,6 +62,8 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
           // Create & fill
           accountingSituationInitService.createAccountingSituation(this.find(partner.getId()));
         }
+
+        accountingSituationCheckService.checkDuplicatedCompaniesInAccountingSituation(partner);
 
         // We do this for contacts too as it seems this is the way employees are handled
         if (CollectionUtils.isNotEmpty(partner.getAccountingSituationList())) {

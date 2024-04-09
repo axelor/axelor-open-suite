@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -167,6 +168,12 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       activity = productRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
 
+    Site site = null;
+    if (datas.get("site") != null) {
+      objMap = (Map) datas.get("site");
+      site = JPA.find(Site.class, Long.valueOf(objMap.get("id").toString()));
+    }
+
     BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
     while (fromDate.isBefore(toDate)) {
@@ -193,12 +200,20 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
                 employee,
                 activity,
                 dailyWorkHrs,
-                taskEndDateTime);
+                taskEndDateTime,
+                site);
         planningTimeRepo.save(planningTime);
       }
 
       fromDate = fromDate.plusDays(1);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    planningTimeRepo.save(projectPlanningTime);
   }
 
   protected ProjectPlanningTime createProjectPlanningTime(
@@ -209,7 +224,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       Employee employee,
       Product activity,
       BigDecimal dailyWorkHrs,
-      LocalDateTime taskEndDateTime)
+      LocalDateTime taskEndDateTime,
+      Site site)
       throws AxelorException {
     ProjectPlanningTime planningTime = new ProjectPlanningTime();
 
@@ -220,6 +236,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     planningTime.setStartDateTime(fromDate);
     planningTime.setEndDateTime(taskEndDateTime);
     planningTime.setProject(project);
+    planningTime.setSite(site);
 
     BigDecimal totalHours = BigDecimal.ZERO;
     if (timePercent > 0) {
@@ -232,20 +249,18 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Override
   @Transactional
   public void removeProjectPlanningLines(List<Integer> projectPlanningLineIds) {
-
     for (Integer id : projectPlanningLineIds) {
-      ProjectPlanningTime projectPlanningTime =
-          planningTimeRepo.find(Long.parseLong(String.valueOf(id)));
-      planningTimeRepo.remove(projectPlanningTime);
+      removeProjectPlanningLine(planningTimeRepo.find(Long.valueOf(id)));
     }
   }
 
   @Override
   @Transactional
   public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime) {
-
-    ProjectPlanningTime planningTime = planningTimeRepo.find(projectPlanningTime.getId());
-    planningTimeRepo.remove(planningTime);
+    if (!JPA.em().contains(projectPlanningTime)) {
+      projectPlanningTime = planningTimeRepo.find(projectPlanningTime.getId());
+    }
+    planningTimeRepo.remove(projectPlanningTime);
   }
 
   @Override

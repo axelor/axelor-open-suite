@@ -21,9 +21,9 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -35,12 +35,12 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerRegistrationCodeService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.RegistrationNumberValidator;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -109,9 +109,9 @@ public class PartnerController {
   public void printContactPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    BirtTemplate contactPhoneBookBirtTemplate =
-        Beans.get(AppBaseService.class).getAppBase().getContactPhoneBookBirtTemplate();
-    if (ObjectUtils.isEmpty(contactPhoneBookBirtTemplate)) {
+    PrintingTemplate contactPhoneBookTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getContactPhoneBookPrintTemplate();
+    if (ObjectUtils.isEmpty(contactPhoneBookTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
@@ -119,7 +119,7 @@ public class PartnerController {
 
     String name = I18n.get("Phone Book");
     String fileLink =
-        Beans.get(PrintFromBirtTemplateService.class).print(contactPhoneBookBirtTemplate, null);
+        Beans.get(PrintingTemplatePrintService.class).getPrintLink(contactPhoneBookTemplate, null);
 
     LOG.debug("Printing " + name);
 
@@ -138,9 +138,9 @@ public class PartnerController {
   public void printCompanyPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    BirtTemplate companyPhoneBookBirtTemplate =
-        Beans.get(AppBaseService.class).getAppBase().getCompanyPhoneBookBirtTemplate();
-    if (ObjectUtils.isEmpty(companyPhoneBookBirtTemplate)) {
+    PrintingTemplate companyPhoneBookTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getCompanyPhoneBookPrintTemplate();
+    if (ObjectUtils.isEmpty(companyPhoneBookTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
@@ -148,7 +148,7 @@ public class PartnerController {
 
     String name = I18n.get("Company PhoneBook");
     String fileLink =
-        Beans.get(PrintFromBirtTemplateService.class).print(companyPhoneBookBirtTemplate, null);
+        Beans.get(PrintingTemplatePrintService.class).getPrintLink(companyPhoneBookTemplate, null);
 
     LOG.debug("Printing " + name);
 
@@ -168,24 +168,22 @@ public class PartnerController {
     Partner partner = context.asType(Partner.class);
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
 
-    BirtTemplate clientSituationBirtTemplate =
-        Beans.get(AppBaseService.class).getAppBase().getClientSituationBirtTemplate();
-    if (ObjectUtils.isEmpty(clientSituationBirtTemplate)) {
+    PrintingTemplate clientSituationPrintTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getClientSituationPrintTemplate();
+    if (ObjectUtils.isEmpty(clientSituationPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Customer Situation");
+
+    PrintingGenFactoryContext factoryContext = new PrintingGenFactoryContext(partner);
+    factoryContext.setContext(getParamsMap(context));
+
     String fileLink =
-        Beans.get(BirtTemplateService.class)
-            .generateBirtTemplateLink(
-                clientSituationBirtTemplate,
-                partner,
-                getParamsMap(context),
-                name + "-${date}",
-                false,
-                clientSituationBirtTemplate.getFormat());
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintLink(clientSituationPrintTemplate, factoryContext, name + "-${date}");
 
     LOG.debug("Printing " + name);
 

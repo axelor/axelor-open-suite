@@ -71,6 +71,8 @@
     <integer name="nextProjectTaskSequence" title="Next project sequence" hidden="true"
       default="1"/>
 
+    <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
+
     <!-- Configuration fields -->
     <boolean name="isShowStatus" title="Status?" default="true"/>
     <many-to-many name="projectTaskStatusSet"

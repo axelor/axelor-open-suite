@@ -175,7 +175,7 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
     List<MoveLine> authorizedMoveLines =
         moveLineRepository
             .all()
-            .filter(bankReconciliationQueryService.getRequestMoveLines())
+            .filter(bankReconciliationQueryService.getRequestMoveLines(bankReconciliation))
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
             .fetch();
 
@@ -204,12 +204,5 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
     journalIds = String.join(",", journalIdSet);
 
     return journalIds;
-  }
-
-  @Override
-  public String createDomainForBankDetails(BankReconciliation bankReconciliation) {
-
-    return bankDetailsService.getActiveCompanyBankDetails(
-        bankReconciliation.getCompany(), bankReconciliation.getCurrency());
   }
 }
