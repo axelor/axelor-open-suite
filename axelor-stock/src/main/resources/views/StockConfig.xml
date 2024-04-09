@@ -78,7 +78,8 @@
       <field name="stockRuleMessageTemplate"/>
     </panel>
     <panel name="stockLocationValuePanel" title="Stock location value">
-      <field name="stockValuationTypeSelect"/>
+      <field name="stockValuationTypeSelect"
+        onChange="action-stock-config-record-set-stock-move-printing-settings"/>
       <field name="inventoryValuationTypeSelect"/>
       <field name="percentToleranceForWapChange"/>
     </panel>
@@ -132,10 +133,10 @@
       <field name="displayPriceOnPrinting" widget="boolean-switch"/>
     </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
-      <field name="pickingStockMoveBirtTemplate"/>
-      <field name="conformityCertificateBirtTemplate"/>
-      <field name="inventoryBirtTemplate"/>
-      <field name="stockLocationBirtTemplate"/>
+      <field name="pickingStockMovePrintTemplate"/>
+      <field name="conformityCertificatePrintTemplate"/>
+      <field name="inventoryPrintTemplate"/>
+      <field name="stockLocationPrintTemplate"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -183,5 +184,15 @@
     <attribute name="domain" for="pickupDefaultStockLocation"
       expr="eval: &quot; self.company = :company and self.typeSelect != 3 &quot;"/>
   </action-attrs>
+
+  <action-record name="action-stock-config-record-set-stock-move-printing-settings"
+    model="com.axelor.apps.stock.db.StockConfig">
+    <field name="isDisplaySaleValueInPrinting" expr="eval: stockValuationTypeSelect == 3"/>
+    <field name="isDisplayAccountingValueInPrinting"
+      expr="eval: stockValuationTypeSelect == 2"/>
+    <field name="isDisplayAgPriceInPrinting"
+      expr="eval: stockValuationTypeSelect == 1 || stockValuationTypeSelect == 5"/>
+    <field name="isDisplayPurchaseValueInPrinting" expr="eval: stockValuationTypeSelect == 4"/>
+  </action-record>
 
 </object-views>

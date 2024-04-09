@@ -52,4 +52,6 @@ public interface ITranslation {
 
   public static final String ALL_META_MODEL_EXIST = /*$$(*/
       "All MetaModel seem to be existing."; /*)*/
+
+  public static final String PRINTING_TEMPLATE_PRINT_BTN = /*$$(*/ "Print"; /*)*/
 }

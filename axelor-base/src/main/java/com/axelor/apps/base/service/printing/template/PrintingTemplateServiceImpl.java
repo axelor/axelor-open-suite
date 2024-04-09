@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
@@ -38,21 +39,39 @@ public class PrintingTemplateServiceImpl implements PrintingTemplateService {
   }
 
   @Override
-  public List<PrintingTemplate> getPrintingTemplates(String modelName) throws AxelorException {
+  public List<PrintingTemplate> getActivePrintingTemplates(String modelName)
+      throws AxelorException {
 
-    List<PrintingTemplate> list =
-        printingTemplateRepository
-            .all()
-            .filter("self.metaModel.fullName = :modelName")
-            .bind("modelName", modelName)
-            .fetch();
+    List<PrintingTemplate> templates =
+        getPrintTemplates(
+            modelName, List.of(PrintingTemplateRepository.PRINTING_TEMPLATE_STATUS_SELECT_ACTIVE));
 
-    if (CollectionUtils.isEmpty(list)) {
+    if (CollectionUtils.isEmpty(templates)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    return list;
+    return templates;
+  }
+
+  @Override
+  public boolean hasActivePrintingTemplates(String modelName) {
+    List<PrintingTemplate> templates =
+        getPrintTemplates(
+            modelName, List.of(PrintingTemplateRepository.PRINTING_TEMPLATE_STATUS_SELECT_ACTIVE));
+    return ObjectUtils.notEmpty(templates);
+  }
+
+  protected List<PrintingTemplate> getPrintTemplates(
+      String modelName, List<Integer> statusSelects) {
+    return printingTemplateRepository
+        .all()
+        .filter(
+            "self.metaModel.fullName = :modelName AND (:statusSelects IS NULL OR self.statusSelect IN :statusSelects)")
+        .bind("modelName", modelName)
+        .bind("statusSelects", statusSelects)
+        .cacheable()
+        .fetch();
   }
 }

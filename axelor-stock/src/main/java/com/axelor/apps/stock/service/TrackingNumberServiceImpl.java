@@ -20,7 +20,6 @@ import com.axelor.studio.db.AppStock;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,29 +50,11 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
-      Product product,
-      BigDecimal sizeOfLot,
-      Company company,
-      LocalDate date,
-      String origin,
-      Partner supplier)
+      Product product, Company company, LocalDate date, String origin, Partner supplier)
       throws AxelorException {
 
-    TrackingNumber trackingNumber =
-        trackingNumberRepo
-            .all()
-            .filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot)
-            .fetchOne();
-
-    if (trackingNumber == null) {
-      trackingNumber =
-          trackingNumberRepo.save(
-              this.createTrackingNumber(product, company, date, origin, supplier));
-    }
-
-    trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));
-
-    return trackingNumber;
+    return trackingNumberRepo.save(
+        this.createTrackingNumber(product, company, date, origin, supplier));
   }
 
   @Override
@@ -115,7 +96,6 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
     TrackingNumber trackingNumber = new TrackingNumber();
 
     trackingNumber.setProduct(product);
-    trackingNumber.setCounter(BigDecimal.ZERO);
 
     TrackingNumberConfiguration trackingNumberConfiguration =
         (TrackingNumberConfiguration)

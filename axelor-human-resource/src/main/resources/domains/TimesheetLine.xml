@@ -23,6 +23,8 @@
     <string name="fullName" namecolumn="true"></string>
     <boolean name="enableEditor" title="Allow updates via editor" nullable="true"/>
 
+    <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
+
     <many-to-one name="projectPlanningTime"
       ref="com.axelor.apps.project.db.ProjectPlanningTime"/>
 

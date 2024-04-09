@@ -28,8 +28,6 @@ import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.db.repo.AccountingReportTypeManagementRepository;
-import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.ChequeRejectionManagementRepository;
@@ -193,6 +191,8 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupServiceImpl;
@@ -202,6 +202,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineTaxAttrsService;
@@ -330,10 +332,14 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.PaymentServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
@@ -352,10 +358,28 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueEleme
 import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueElementServiceImpl;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelServiceImpl;
+import com.axelor.apps.account.service.period.PeriodCheckService;
+import com.axelor.apps.account.service.period.PeriodCheckServiceImpl;
+import com.axelor.apps.account.service.period.PeriodControlService;
+import com.axelor.apps.account.service.period.PeriodControlServiceImpl;
+import com.axelor.apps.account.service.period.PeriodServiceAccount;
+import com.axelor.apps.account.service.period.PeriodServiceAccountImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileCheckService;
+import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.ReconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileToolService;
+import com.axelor.apps.account.service.reconcile.ReconcileToolServiceImpl;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupServiceImpl;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupToolService;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupToolServiceImpl;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.UnreconcileGroupService;
+import com.axelor.apps.account.service.reconcile.reconcilegroup.UnreconcileGroupServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupFetchService;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupFetchServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupLetterService;
@@ -839,8 +863,29 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetDerogatoryLineRepository.class)
         .to(FixedAssetDerogatoryLineManagementRepository.class);
 
-    bind(AccountingReportTypeRepository.class).to(AccountingReportTypeManagementRepository.class);
-
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
+
+    bind(PeriodCheckService.class).to(PeriodCheckServiceImpl.class);
+
+    bind(InvoicePaymentComputeService.class).to(InvoicePaymentComputeServiceImpl.class);
+
+    bind(InvoiceTermToolService.class).to(InvoiceTermToolServiceImpl.class);
+
+    bind(InvoiceTermFilterService.class).to(InvoiceTermFilterServiceImpl.class);
+
+    bind(ReconcileToolService.class).to(ReconcileToolServiceImpl.class);
+
+    bind(UnreconcileGroupService.class).to(UnreconcileGroupServiceImpl.class);
+
+    bind(UnreconcileService.class).to(UnreconcileServiceImpl.class);
+
+    bind(ReconcileCheckService.class).to(ReconcileCheckServiceImpl.class);
+
+    bind(ReconcileInvoiceTermComputationService.class)
+        .to(ReconcileInvoiceTermComputationServiceImpl.class);
+
+    bind(ReconcileGroupToolService.class).to(ReconcileGroupToolServiceImpl.class);
+
+    bind(InvoicePaymentMoveCreateService.class).to(InvoicePaymentMoveCreateServiceImpl.class);
   }
 }

@@ -56,7 +56,6 @@ import org.apache.commons.collections.CollectionUtils;
 @RequestScoped
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
-  protected static final int CURRENCY_RATE_SCALE = 5;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
@@ -299,10 +298,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (move.getMoveLineList().size() == 0 || moveLine.getCurrencyRate().signum() == 0) {
       try {
         moveLine.setCurrencyRate(
-            currencyService
-                .getCurrencyConversionRate(
-                    move.getCurrency(), move.getCompanyCurrency(), move.getDate())
-                .setScale(CURRENCY_RATE_SCALE, RoundingMode.HALF_UP));
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompanyCurrency(), move.getDate()));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);
       }

@@ -22,9 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PrintingTemplateLine;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.common.FileUtils;
-import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.io.File;
@@ -35,7 +35,8 @@ import java.nio.file.StandardCopyOption;
 
 public interface PrintingGeneratorFactory {
 
-  public TemplatePrint generate(PrintingTemplateLine printTemplateLine, Model model)
+  public TemplatePrint generate(
+      PrintingTemplateLine printTemplateLine, PrintingGenFactoryContext context)
       throws AxelorException;
 
   default File renameFile(File file, PrintingTemplateLine printTemplateLine) throws IOException {

@@ -87,6 +87,19 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
   }
 
   @Override
+  public File generateBirtTemplateFile(
+      BirtTemplate template,
+      Model model,
+      Map<String, Object> context,
+      String outputName,
+      Boolean toAttach,
+      String format)
+      throws AxelorException {
+    ReportSettings settings = generate(template, model, context, outputName, toAttach, format);
+    return settings.getFile();
+  }
+
+  @Override
   public ReportSettings generate(
       BirtTemplate template,
       Model model,

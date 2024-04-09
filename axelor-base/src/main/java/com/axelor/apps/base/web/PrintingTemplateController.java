@@ -24,10 +24,11 @@ import com.axelor.apps.base.db.PrintingTemplateWizard;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
@@ -41,17 +42,19 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FilenameUtils;
 
 @Singleton
 public class PrintingTemplateController {
 
   private static final String CONTEXT_MODEL_CLASS = "_modelClass";
   private static final String CONTEXT_MODEL_ID = "_modelId";
+  private static final String CONTEXT_FROM_TEST_WIZARD = "_fromTestWizard";
   private static final String CONTEXT_ID_LIST = "_idList";
 
   @ErrorException
@@ -62,9 +65,10 @@ public class PrintingTemplateController {
     Map<String, Object> map = getModelAndId(request);
     String modelName = map.get(CONTEXT_MODEL_CLASS).toString();
     Long recordId = (Long) map.get(CONTEXT_MODEL_ID);
+    boolean fromTestWizard = (boolean) map.get(CONTEXT_FROM_TEST_WIZARD);
 
     List<PrintingTemplate> printingTemplates =
-        printingTemplateService.getPrintingTemplates(modelName);
+        printingTemplateService.getActivePrintingTemplates(modelName);
     if (printingTemplates.size() > 1) {
       List<Long> templateIdList =
           printingTemplates.stream().map(PrintingTemplate::getId).collect(Collectors.toList());
@@ -75,6 +79,7 @@ public class PrintingTemplateController {
               .context("_printingTemplateIdList", templateIdList)
               .context(CONTEXT_MODEL_ID, recordId)
               .context(CONTEXT_MODEL_CLASS, modelName)
+              .context(CONTEXT_FROM_TEST_WIZARD, fromTestWizard)
               .param("popup", "true")
               .param("popup-save", "false")
               .param("show-toolbar", "false")
@@ -83,7 +88,7 @@ public class PrintingTemplateController {
     }
 
     PrintingTemplate printingTemplate = printingTemplates.iterator().next();
-    printTemplate(response, printingTemplate, Class.forName(modelName), recordId);
+    printTemplate(response, printingTemplate, Class.forName(modelName), recordId, fromTestWizard);
   }
 
   @SuppressWarnings("unchecked")
@@ -102,7 +107,7 @@ public class PrintingTemplateController {
         (Class<? extends Model>) request.getContext().getContextClass();
 
     List<PrintingTemplate> printingTemplates =
-        printingTemplateService.getPrintingTemplates(modelName);
+        printingTemplateService.getActivePrintingTemplates(modelName);
     if (printingTemplates.size() > 1) {
       List<Long> templateIdList =
           printingTemplates.stream().map(PrintingTemplate::getId).collect(Collectors.toList());
@@ -113,6 +118,7 @@ public class PrintingTemplateController {
               .context("_printingTemplateIdList", templateIdList)
               .context(CONTEXT_ID_LIST, idList)
               .context(CONTEXT_MODEL_CLASS, modelName)
+              .context(CONTEXT_FROM_TEST_WIZARD, false)
               .param("popup", "true")
               .param("popup-save", "false")
               .param("show-toolbar", "false")
@@ -144,32 +150,35 @@ public class PrintingTemplateController {
         Beans.get(PrintingTemplateRepository.class).find(printingTemplateId);
 
     Class<?> klass = Class.forName(context.get(CONTEXT_MODEL_CLASS).toString());
+    boolean fromTestWizard = (boolean) context.get(CONTEXT_FROM_TEST_WIZARD);
     if (context.get(CONTEXT_MODEL_ID) != null) {
       Long id = Long.valueOf(context.get(CONTEXT_MODEL_ID).toString());
-      printTemplate(response, printingTemplate, klass, id);
-    } else {
+      printTemplate(response, printingTemplate, klass, id, fromTestWizard);
+    } else if (ObjectUtils.notEmpty(context.get(CONTEXT_ID_LIST))) {
       List<Integer> idList = (List<Integer>) context.get(CONTEXT_ID_LIST);
-      if (idList != null && idList.size() == 1) {
-        printTemplate(response, printingTemplate, klass, Long.valueOf(idList.get(0)));
-      } else {
-        String outputLink =
-            Beans.get(PrintingTemplatePrintService.class)
-                .getPrintLinkForList(idList, (Class<? extends Model>) klass, printingTemplate);
+      String outputLink =
+          Beans.get(PrintingTemplatePrintService.class)
+              .getPrintLinkForList(idList, (Class<? extends Model>) klass, printingTemplate);
 
-        print(response, printingTemplate, outputLink);
-      }
+      print(response, printingTemplate, outputLink);
     }
   }
 
   @SuppressWarnings("unchecked")
   protected <T extends Model> void printTemplate(
-      ActionResponse response, PrintingTemplate printingTemplate, Class<?> modelClass, Long modelId)
+      ActionResponse response,
+      PrintingTemplate printingTemplate,
+      Class<?> modelClass,
+      Long modelId,
+      boolean fromTestWizard)
       throws AxelorException {
     Model model = JPA.find((Class<T>) modelClass, modelId);
-
     String outputLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(printingTemplate, EntityHelper.getEntity(model));
+            .getPrintLink(
+                printingTemplate,
+                new PrintingGenFactoryContext(EntityHelper.getEntity(model)),
+                !fromTestWizard && printingTemplate.getToAttach());
     print(response, printingTemplate, outputLink);
   }
 
@@ -177,21 +186,25 @@ public class PrintingTemplateController {
     String model = request.getModel();
     Context context = request.getContext();
     Long id = Long.valueOf(context.get("id").toString());
+    boolean fromTestWizard = false;
     if (context.getContextClass() == PrintingTemplateWizard.class) {
       PrintingTemplateWizard printingTemplateWizard = context.asType(PrintingTemplateWizard.class);
       model = printingTemplateWizard.getMetaModel().getFullName();
       id = Long.valueOf(printingTemplateWizard.getRecordValue());
+      fromTestWizard = true;
     }
-    return Map.of(CONTEXT_MODEL_CLASS, model, CONTEXT_MODEL_ID, id);
+    return Map.of(
+        CONTEXT_MODEL_CLASS, model, CONTEXT_MODEL_ID, id, CONTEXT_FROM_TEST_WIZARD, fromTestWizard);
   }
 
   protected void print(
       ActionResponse response, PrintingTemplate printingTemplate, String outputLink) {
-    if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(outputLink))) {
-      response.setView(
-          ActionView.define(I18n.get(printingTemplate.getName())).add("html", outputLink).map());
-    } else {
-      response.setExportFile(outputLink);
-    }
+
+    ZonedDateTime todayDateTime = Beans.get(AppBaseService.class).getTodayDateTime();
+    String title =
+        I18n.get(printingTemplate.getName())
+            .replace("${date}", todayDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+            .replace("${time}", todayDateTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+    response.setView(ActionView.define(title).add("html", outputLink).map());
   }
 }

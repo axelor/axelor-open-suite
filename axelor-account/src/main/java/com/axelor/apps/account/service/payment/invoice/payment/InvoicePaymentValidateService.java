@@ -31,7 +31,4 @@ public interface InvoicePaymentValidateService {
 
   public void validate(InvoicePayment invoicePayment)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
-
-  public InvoicePayment createMoveForInvoicePayment(InvoicePayment invoicePayment)
-      throws AxelorException;
 }

@@ -68,45 +68,59 @@
         onClick="save,action-stock-location-method-open-print-wizard"/>
     </toolbar>
     <panel name="mainPanel">
-      <field name="name"
-        onChange="action-stock-location-attrs-set-default-serial-number-with-name"/>
-      <field name="typeSelect" colSpan="3"
-        onChange="action-stock-location-attrs-set-isOutsourcingLocation,action-stock-set-partner-domain-attrs,action-stock-location-attrs-set-is-valued"/>
-      <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
-        grid-view="stock-location-grid"/>
-      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
-      <field name="partner" canEdit="false" showIf="typeSelect == 2"
-        domain="self.isContact = false AND :company member of self.companySet"
-        form-view="partner-form" grid-view="partner-grid"/>
-      <field name="address" canEdit="false" form-view="address-form" grid-view="address-grid"/>
-      <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
-      <field name="stockLocationValue" readonly="true" showIf="isValued">
-        <viewer>
-					<![CDATA[
-						<> {$fmt('stockLocationValue')} </>
-					]]>
-        </viewer>
-      </field>
-      <field name="site" if="__config__.app.getApp('stock')?.enableSiteManagement"
-        showIf="typeSelect != 3" onSelect="action-stock-location-attrs-set-site-domain"/>
-      <panel name="barcodePanel" title="Barcode" colSpan="12"
-        if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
-        <field name="barCode" showTitle="false" widget="Image" colSpan="2"/>
-        <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
-        <field name="barcodeTypeConfig" readonlyIf="barCode != null"
-          if="__config__.app.getApp('stock')?.getEditStockLocationBarcodeType()" colSpan="4"/>
+      <panel name="centralPanel" colSpan="8">
+        <field name="name"
+          onChange="action-stock-location-attrs-set-default-serial-number-with-name" colSpan="12"/>
+        <field name="site" if="__config__.app.getApp('base')?.enableSiteManagementForStock"
+          showIf="typeSelect != 3" onSelect="action-stock-location-attrs-set-site-domain"
+          colSpan="4"/>
+        <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
+          grid-view="stock-location-grid" colSpan="4"/>
+        <field name="partner" canEdit="false" showIf="typeSelect == 2"
+          domain="self.isContact = false AND :company member of self.companySet"
+          form-view="partner-form" grid-view="partner-grid" colSpan="4"/>
+        <field name="address" canEdit="false" form-view="address-form"
+          grid-view="address-grid" colSpan="12"/>
+      </panel>
+      <panel name="sidePanel" colSpan="4">
+        <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
+          grid-view="company-grid"/>
+        <field name="typeSelect"
+          onChange="action-stock-location-attrs-set-isOutsourcingLocation,action-stock-set-partner-domain-attrs,action-stock-location-attrs-set-is-valued"/>
+        <field name="stockLocationValue" readonly="true" showIf=" id &amp;&amp; isValued">
+          <viewer>
+          <![CDATA[
+                    <> {$fmt('stockLocationValue')} </>
+                  ]]>
+          </viewer>
+        </field>
+        <panel name="barcodePanel" colSpan="12"
+          if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
+          <panel name="barcodeInfoPanel" colSpan="8" stacked="true">
+            <field name="serialNumber" readonlyIf="barCode != null" colSpan="6"/>
+            <field name="barcodeTypeConfig" readonlyIf="barCode != null"
+              if="__config__.app.getApp('stock')?.getEditStockLocationBarcodeType()" colSpan="6"/>
+          </panel>
+          <panel name="barcodeImagePanel" colSpan="4">
+            <field name="barCode" showTitle="false" widget="Image" colSpan="12"/>
+          </panel>
+        </panel>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="locationContentPanel" title="Location Content">
+        <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
         <panel-dashlet name="stockLocationLinesPanel" title="Location Lines"
           field="stockLocationLineList" canNew="false" colSpan="12"
           action="action-location-view-location-content" canSearch="true" height="600"/>
       </panel>
-      <panel-dashlet name="detailsStockLocationLinesPanel"
-        title="Stock location details" field="detailsStockLocationLineList"
-        action="action-location-details-view-location-content" canSearch="true" height="600"/>
+      <panel name="detailsLocationContentPanel" title="Location Content">
+        <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
+        <panel-dashlet name="detailsStockLocationLinesPanel"
+          title="Stock location details" field="detailsStockLocationLineList"
+          action="action-location-details-view-location-content" canSearch="true" height="600"
+          colSpan="12"/>
+      </panel>
       <panel name="configPanel" title="Configuration" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
         <field name="usableOnSaleOrder" colSpan="3"/>
@@ -136,8 +150,10 @@
     <panel name="mainPanel">
       <field name="$printingType" title="Printing Type"
         selection="stock.stock.location.printing.type"/>
-      <field name="$exportTypeSelect" title="Export Type"
-        selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
+      <field name="$stockLocationPrintTemplate" title="Stock location template"
+        type="many-to-one" target="com.axelor.apps.base.db.PrintingTemplate" colSpan="3"
+        domain="self.metaModel.name = 'StockLocation'" grid-view="printing-template-grid"
+        form-view="printing-template-form"/>
       <field name="$financialDataDateTime" title="Date and time" type="datetime" hidden="true"
         showIf="$printingType == 1" colSpan="3"/>
       <spacer colSpan="3"/>
@@ -145,7 +161,7 @@
         title="Without details by stock location" hidden="true" showIf="$printingType == 1"
         colSpan="3"/>
       <button name="printBtn" title="Print" onClick="action-stock-location-method-print"
-        readonlyIf="$exportTypeSelect == null" colSpan="3"/>
+        readonlyIf="$stockLocationPrintTemplate == null" colSpan="3"/>
     </panel>
   </form>
 
@@ -236,7 +252,6 @@
     name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
     <attribute name="value" for="$printingType"
       expr="eval: _stockLocation?.isValued ? '1' : '2'"/>
-    <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
     <attribute name="selection-in" for="$printingType" expr="eval:['2']"
       if="!_stockLocation?.isValued"/>
   </action-attrs>

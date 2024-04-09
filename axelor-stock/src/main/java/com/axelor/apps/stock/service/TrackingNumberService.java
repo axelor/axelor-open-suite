@@ -24,17 +24,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface TrackingNumberService {
   TrackingNumber getTrackingNumber(
-      Product product,
-      BigDecimal sizeOfLot,
-      Company company,
-      LocalDate date,
-      String origin,
-      Partner supplier)
+      Product product, Company company, LocalDate date, String origin, Partner supplier)
       throws AxelorException;
 
   String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration);

@@ -415,6 +415,11 @@
     <option value="2">Birt</option>
   </selection>
 
+  <selection name="base.printing.template.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Active</option>
+  </selection>
+
   <selection name="base.blocking.select">
     <option value="1">Reminder blocking</option>
     <option value="2">Invoicing blocking</option>
@@ -768,6 +773,10 @@
   <selection name="base.site.type.select">
     <option value="1">Internal</option>
     <option value="2">External</option>
+  </selection>
+
+  <selection name="base.pricing.type.select">
+    <option value="Default">Default</option>
   </selection>
 
 </object-views>

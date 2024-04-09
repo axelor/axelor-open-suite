@@ -121,10 +121,8 @@
   </selection>
 
   <selection name='inventory.export.format.select'>
-    <option value="pdf">PDF</option>
-    <option value="xlsx">XLS</option>
+    <option value="printingTemplate">Printing template</option>
     <option value="csv">CSV</option>
-    <option value="ods">ODS</option>
   </selection>
 
   <selection name="stock.correction.status.select">

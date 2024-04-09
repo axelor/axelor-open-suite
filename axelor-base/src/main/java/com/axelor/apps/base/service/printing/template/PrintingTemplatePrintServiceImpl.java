@@ -25,29 +25,29 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.common.FileUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.schema.actions.ActionExport;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Inject;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -58,24 +58,68 @@ import org.apache.commons.io.IOUtils;
 
 public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintService {
 
-  private static final String ZIP = "zip";
   protected AppBaseService appBaseService;
+  protected MetaFiles metaFiles;
 
   @Inject
-  public PrintingTemplatePrintServiceImpl(AppBaseService appBaseService) {
+  public PrintingTemplatePrintServiceImpl(AppBaseService appBaseService, MetaFiles metaFiles) {
     this.appBaseService = appBaseService;
+    this.metaFiles = metaFiles;
   }
 
   @Override
-  public String getPrintLink(PrintingTemplate template, Model model) throws AxelorException {
-    List<TemplatePrint> prints = getPrintList(template, model);
-    return getPrintFileLink(prints, getOutputFileName(template), isPdfFormat(prints));
+  public String getPrintLink(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException {
+    return getPrintLink(template, context, template.getName());
   }
 
   @Override
-  public File getPrintFile(PrintingTemplate template, Model model) throws AxelorException {
-    List<TemplatePrint> prints = getPrintList(template, model);
-    return getPrintFile(prints, getOutputFileName(template), isPdfFormat(prints));
+  public String getPrintLink(
+      PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
+      throws AxelorException {
+    return getPrintLink(template, context, outputFileName, template.getToAttach());
+  }
+
+  @Override
+  public String getPrintLink(
+      PrintingTemplate template, PrintingGenFactoryContext context, boolean toAttach)
+      throws AxelorException {
+    return getPrintLink(template, context, template.getName(), toAttach);
+  }
+
+  @Override
+  public String getPrintLink(
+      PrintingTemplate template,
+      PrintingGenFactoryContext context,
+      String outputFileName,
+      boolean toAttach)
+      throws AxelorException {
+    File file = getPrintFile(template, context, outputFileName, toAttach);
+    return getFileLink(file);
+  }
+
+  @Override
+  public File getPrintFile(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException {
+    return getPrintFile(template, context, template.getName());
+  }
+
+  @Override
+  public File getPrintFile(
+      PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
+      throws AxelorException {
+    return getPrintFile(template, context, outputFileName, template.getToAttach());
+  }
+
+  @Override
+  public File getPrintFile(
+      PrintingTemplate template,
+      PrintingGenFactoryContext context,
+      String outputFileName,
+      Boolean toAttach)
+      throws AxelorException {
+    List<TemplatePrint> prints = getPrintList(template, context);
+    return getPrintFile(prints, outputFileName, isPdfFormat(prints), context, toAttach);
   }
 
   @Override
@@ -92,7 +136,11 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
               @Override
               public void accept(T item) throws Exception {
                 try {
-                  File printFile = getPrintFile(template, item);
+                  File printFile =
+                      getPrintFile(
+                          template,
+                          new PrintingGenFactoryContext(EntityHelper.getEntity(item)),
+                          template.getName() + "-" + item.getId());
                   if (!ReportSettings.FORMAT_PDF.equals(
                       FilenameUtils.getExtension(printFile.getName()))) {
                     isPDf.set(false);
@@ -104,38 +152,46 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
                 }
               }
             });
-    if (errorCount > 0) {
+    if (errorCount > 0 || CollectionUtils.isEmpty(printedRecords)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
-    String fileName = getOutputFileName(template);
-    return mergeToFileLink(printedRecords, isPDf.get(), fileName);
+    File file = mergeToFile(printedRecords, isPDf.get(), template.getName());
+    return getFileLink(file);
   }
 
-  protected List<TemplatePrint> getPrintList(PrintingTemplate printingTemplate, Model model)
-      throws AxelorException {
+  protected List<TemplatePrint> getPrintList(
+      PrintingTemplate printingTemplate, PrintingGenFactoryContext context) throws AxelorException {
     List<TemplatePrint> prints = new ArrayList<>();
     for (PrintingTemplateLine templateLine : printingTemplate.getPrintingTemplateLineList()) {
       PrintingGeneratorFactory factory = PrintingGeneratorFactory.getFactory(templateLine);
-      TemplatePrint print = factory.generate(templateLine, model);
+      TemplatePrint print = factory.generate(templateLine, context);
       prints.add(print);
     }
     return prints;
   }
 
-  protected String getPrintFileLink(
-      List<TemplatePrint> prints, String outputFileName, boolean isPdfOutputFormat)
-      throws AxelorException {
-    List<File> printFiles = getPrintFilesList(prints);
-    return mergeToFileLink(printFiles, isPdfOutputFormat, outputFileName);
-  }
-
   protected File getPrintFile(
-      List<TemplatePrint> prints, String outputFileName, boolean isPdfOutputFormat)
+      List<TemplatePrint> prints,
+      String outputFileName,
+      boolean isPdfOutputFormat,
+      PrintingGenFactoryContext context,
+      boolean toAttach)
       throws AxelorException {
     List<File> printFiles = getPrintFilesList(prints);
-    return mergeToFile(printFiles, isPdfOutputFormat, outputFileName);
+    File file = mergeToFile(printFiles, isPdfOutputFormat, outputFileName);
+    if (toAttach && context != null && context.getModel() != null) {
+      try {
+        metaFiles.attach(new FileInputStream(file), file.getName(), context.getModel());
+      } catch (IOException e) {
+        throw new AxelorException(
+            e,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+      }
+    }
+    return file;
   }
 
   protected List<File> getPrintFilesList(List<TemplatePrint> prints) throws AxelorException {
@@ -151,34 +207,6 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
         .collect(Collectors.toList());
   }
 
-  protected String mergeToFileLink(
-      List<File> printFiles, boolean isPdfOutputFormat, String fileName) throws AxelorException {
-    String fileLink = null;
-    try {
-      if (CollectionUtils.isEmpty(printFiles)) {
-        return null;
-      }
-      if (isPdfOutputFormat) {
-        fileLink =
-            PdfHelper.mergePdfToFileLink(printFiles, fileName + "." + ReportSettings.FORMAT_PDF);
-      } else {
-        if (printFiles.size() == 1) {
-          Path output = printFiles.listIterator().next().toPath();
-          String name = FilenameUtils.getName(output.toString());
-          moveToExportDir(name, output);
-          return name;
-        }
-        fileLink = getZipFileLink(fileName, printFiles);
-      }
-    } catch (IOException e) {
-      throw new AxelorException(
-          e,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
-    }
-    return fileLink;
-  }
-
   protected File mergeToFile(
       List<File> printFiles, boolean isPdfOutputFormat, String outputFileName)
       throws AxelorException {
@@ -188,17 +216,20 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
         return null;
       }
 
+      outputFileName = formatOutputName(outputFileName);
+
       if (printFiles.size() == 1) {
-        return printFiles.listIterator().next();
+        String outputName =
+            outputFileName
+                + "."
+                + FilenameUtils.getExtension(
+                    printFiles.listIterator().next().toPath().getFileName().toString());
+        return renameFile(outputName, printFiles.listIterator().next().toPath()).toFile();
       }
 
       if (isPdfOutputFormat) {
         Path output = PdfHelper.mergePdf(printFiles).toPath();
-        file =
-            Files.move(
-                output,
-                output.resolveSibling(outputFileName + "." + ReportSettings.FORMAT_PDF),
-                StandardCopyOption.REPLACE_EXISTING);
+        file = renameFile(outputFileName + "." + ReportSettings.FORMAT_PDF, output);
       } else {
         file = createZip(outputFileName, printFiles);
       }
@@ -217,13 +248,6 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
         .allMatch(ReportSettings.FORMAT_PDF::equals);
   }
 
-  protected String getZipFileLink(String zipFileName, List<File> fileList) throws IOException {
-    Path zip = createZip(zipFileName, fileList);
-    String outFileName = String.format("%s.%s", zipFileName, ZIP);
-    moveToExportDir(outFileName, zip);
-    return outFileName;
-  }
-
   protected Path createZip(String zipFileName, List<File> fileList) throws IOException {
     if (CollectionUtils.isEmpty(fileList)) {
       return null;
@@ -239,17 +263,34 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
     return zipFile;
   }
 
-  protected void moveToExportDir(String fileName, Path filePath) throws IOException {
-    Path exportDirPath = Paths.get(ActionExport.getExportPath().getAbsolutePath(), fileName);
-    Files.move(filePath, exportDirPath, StandardCopyOption.REPLACE_EXISTING);
+  protected String getFileLink(File file) throws AxelorException {
+    String originalName = file.getName();
+    String safeName = FileUtils.safeFileName(originalName);
+
+    try {
+      if (!originalName.equals(safeName)) {
+        file = renameFile(safeName, file.toPath()).toFile();
+      }
+    } catch (IOException e) {
+      throw new AxelorException(
+          e,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
+
+    return PdfHelper.getFileLinkFromPdfFile(file, originalName);
   }
 
-  protected String getOutputFileName(PrintingTemplate template) {
-    return I18n.get(template.getName())
-        + " - "
-        + appBaseService
-            .getTodayDate(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .format(DateTimeFormatter.BASIC_ISO_DATE);
+  protected Path renameFile(String newName, Path path) throws IOException {
+    return Files.move(path, path.resolveSibling(newName), StandardCopyOption.REPLACE_EXISTING);
+  }
+
+  protected String formatOutputName(String outputFileName) {
+    ZonedDateTime todayDateTime = appBaseService.getTodayDateTime();
+    outputFileName =
+        outputFileName
+            .replace("${date}", todayDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+            .replace("${time}", todayDateTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+    return outputFileName;
   }
 }
