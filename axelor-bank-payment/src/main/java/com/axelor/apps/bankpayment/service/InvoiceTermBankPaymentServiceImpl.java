@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.auth.db.repo.UserRepository;
 import com.google.inject.Inject;
 
@@ -52,7 +53,8 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
       UserRepository userRepo,
       JournalService journalService,
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
-      PfpService pfpService) {
+      PfpService pfpService,
+      CurrencyService currencyService) {
     super(
         invoiceTermRepo,
         invoiceRepo,
@@ -63,7 +65,8 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
         invoicePaymentCreateService,
         journalService,
         userRepo,
-        pfpService);
+        pfpService,
+        currencyService);
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
   }
 
