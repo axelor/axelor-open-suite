@@ -62,6 +62,8 @@
       <field name="mass"/>
       <field name="volume" requiredIf="product.trackingNumberConfiguration.isDimensional"
         onChange="action-tracking-number-validate-volume-change"/>
+      <button name="calculateBtn" title="Calculate"
+        onClick="action-tracking-number-method-calculate-volume"/>
       <field name="originalVolume" x-dirty="false" hidden="true" type="decimal"/>
     </panel>
     <panel name="barcodePanel" title="Barcode"
@@ -106,6 +108,8 @@
         <field name="mass"/>
         <field name="volume" requiredIf="product.trackingNumberConfiguration.isDimensionale"
           onChange="action-tracking-number-validate-volume-change"/>
+        <button name="calculateBtn" title="Calculate"
+          onClick="action-tracking-number-method-calculate-volume"/>
         <field name="originalVolume" x-dirty="false" hidden="true" type="decimal"/>
       </panel>
     </panel>
@@ -205,6 +209,11 @@
     <field if="eval: __parent__?.stockMove?.statusSelect == 2" name="counter"
       expr="eval: __parent__?.realQty"/>
   </action-record>
+
+  <action-method name="action-tracking-number-method-calculate-volume">
+    <call class="com.axelor.apps.stock.web.TrackingNumberController" method="calculateVolume"/>
+  </action-method>
+
 
   <action-attrs name="action-tracking-number-attrs-product-stock-move-line">
     <attribute for="product" name="value" expr="eval: __parent__.product"

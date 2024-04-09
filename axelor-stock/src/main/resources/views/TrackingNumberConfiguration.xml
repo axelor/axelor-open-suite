@@ -37,9 +37,10 @@
     </panel>
     <panel name="warrantyAndPerishabilityPanel" title="Warranty and perishability">
       <field name="hasWarranty"/>
-      <field name="warrantyNbrOfMonths" hideIf="!hasWarranty" />
+      <field name="warrantyNbrOfMonths" hideIf="!hasWarranty"/>
       <field name="isPerishable"
-        onChange="action-tracking-number-config-record-set-check-expiration-date-to-false-if-is-perishable-is-false" colSpan="12"/>
+        onChange="action-tracking-number-config-record-set-check-expiration-date-to-false-if-is-perishable-is-false"
+        colSpan="12"/>
       <field name="perishableNbrOfDays" hideIf="!isPerishable"/>
       <field name="checkExpirationDateAtStockMoveRealization" hideIf="!isPerishable"/>
       <field name="isDimensional"/>

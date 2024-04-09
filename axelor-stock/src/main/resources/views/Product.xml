@@ -140,6 +140,7 @@
           <panel colSpan="12" name="massPanel">
             <field name="unitMass"/>
             <field name="metricMass"/>
+            <field name="productDensity"/>
           </panel>
         </panel>
       </insert>

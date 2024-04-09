@@ -13,7 +13,11 @@
     <string name="titleOfDimension2" title="Title of dimension name (2)"/>
     <string name="titleOfDimension3" title="Title of dimension name (3)"/>
 
-    <string name="volumeFormula" title="Volume formula" large="true"/>
+
+    <many-to-many name="profileFieldFormulaSet"
+      ref="com.axelor.apps.stock.db.TrackingNumberConfigurationProfileFieldFormula"
+      title="Fields formula"/>
+
 
   </entity>
 

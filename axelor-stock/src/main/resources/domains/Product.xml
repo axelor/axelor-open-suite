@@ -22,6 +22,7 @@
       scale="10"/>
     <decimal name="metricMass" title="Metric weight in kg/m" default="0" min="0"
       precision="20" scale="10"/>
+    <decimal name="productDensity" title="Final product density" precision="20" scale="3"/>
 
     <track on="UPDATE">
       <field name="trackingNumberConfiguration"/>
