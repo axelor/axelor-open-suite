@@ -42,7 +42,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
-import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
@@ -57,7 +57,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     implements InvoiceServiceProject {
 
   protected AppBusinessProjectService appBusinessProjectService;
-  protected ProjectStatusRepository projectStatusRepository;
+  protected AppProjectService appProjectService;
 
   @Inject
   public InvoiceServiceProjectImpl(
@@ -81,7 +81,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository,
       AppBusinessProjectService appBusinessProjectService,
-      ProjectStatusRepository projectStatusRepository) {
+      AppProjectService appProjectService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -103,7 +103,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         intercoService,
         stockMoveRepository);
     this.appBusinessProjectService = appBusinessProjectService;
-    this.projectStatusRepository = projectStatusRepository;
+    this.appProjectService = appProjectService;
   }
 
   @Override
@@ -142,7 +142,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         && closingProjectRuleSelect == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_BLOCKING) {
       checkAndUpdateProject(project);
     }
-
     return refund;
   }
 
@@ -156,10 +155,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         .map(ProjectStatus::getIsDefaultCompleted)
         .orElse(false)) {
       project.setProjectStatus(
-          projectStatusRepository
-              .all()
-              .filter("self.isCompleted = false AND self.isInProgress = true")
-              .fetchOne());
+          appProjectService.getAppProject().getProjectStatusInProgressStatus());
     }
   }
 }

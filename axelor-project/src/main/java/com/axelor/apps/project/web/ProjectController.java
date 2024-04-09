@@ -131,8 +131,7 @@ public class ProjectController {
     project = JPA.find(Project.class, project.getId());
     String errorMessage = Beans.get(ProjectClosingControlService.class).finishProject(project);
     if (!errorMessage.isEmpty()) {
-      response.setError(errorMessage);
-      response.setValues(project);
+      response.setInfo(errorMessage);
     }
     response.setReload(true);
   }
