@@ -23,6 +23,8 @@
     <many-to-many name="defaultPrioritySet" title="Default priorities"
       ref="com.axelor.apps.project.db.ProjectPriority"/>
     <boolean name="generateProjectSequence" title="Generate sequence for project"/>
+    <string name="fullNameGroovyFormula" title="Full name groovy formula"
+      help="This formula allows you to define the composition of the fullName through a groovy formula"/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>

@@ -28,8 +28,11 @@ import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
 import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
@@ -39,17 +42,40 @@ import javax.persistence.PersistenceException;
 public class ProjectManagementRepository extends ProjectRepository {
 
   @Inject ProjectTaskService projectTaskService;
+  @Inject AppProjectService appProjectService;
 
-  protected void setAllProjectFullName(Project project) {
-    String projectCode =
-        (Strings.isNullOrEmpty(project.getCode())) ? "" : project.getCode() + " - ";
-    project.setFullName(projectCode + project.getName());
+  protected void setAllProjectFullName(Project project) throws AxelorException {
+
+    setProjectFullName(project);
     if (project.getChildProjectList() != null && !project.getChildProjectList().isEmpty()) {
       for (Project child : project.getChildProjectList()) {
-        String code = (Strings.isNullOrEmpty(child.getCode())) ? "" : child.getCode() + " - ";
-        child.setFullName(code + child.getName());
+        setProjectFullName(child);
       }
     }
+  }
+
+  protected void setProjectFullName(Project project) throws AxelorException {
+    Context scriptContext = new Context(Mapper.toMap(project), project.getClass());
+    GroovyScriptHelper groovyScriptHelper = new GroovyScriptHelper(scriptContext);
+
+    String fullNameGroovyFormula = appProjectService.getAppProject().getFullNameGroovyFormula();
+    if (Strings.isNullOrEmpty(project.getCode())) {
+      project.setCode("");
+    }
+    if (Strings.isNullOrEmpty(project.getName())) {
+      project.setName("");
+    }
+    if (StringUtils.isBlank(fullNameGroovyFormula)) {
+      fullNameGroovyFormula = "code +\"-\"+ name";
+    }
+    Object result = groovyScriptHelper.eval(fullNameGroovyFormula);
+    if (result == null) {
+      throw new AxelorException(
+          project,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProjectExceptionMessage.PROJECT_GROOVY_FORMULA_ERROR));
+    }
+    project.setFullName(result.toString());
   }
 
   public static void setAllProjectMembersUserSet(Project project) {
@@ -100,7 +126,11 @@ public class ProjectManagementRepository extends ProjectRepository {
         project.getMembersUserSet().forEach(team::addMember);
       }
     }
-    setAllProjectFullName(project);
+    try {
+      setAllProjectFullName(project);
+    } catch (AxelorException e) {
+      throw new PersistenceException(e.getMessage(), e);
+    }
     project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
     return super.save(project);
   }
