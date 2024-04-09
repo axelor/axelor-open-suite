@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
-import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -60,7 +59,6 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   protected MoveLineCreateService moveLineCreateService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineToolService moveLineToolService;
-  protected TaxAccountService taxAccountService;
 
   @Inject
   public MoveLineFinancialDiscountServiceImpl(
@@ -70,8 +68,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       FinancialDiscountService financialDiscountService,
       MoveLineCreateService moveLineCreateService,
       CurrencyScaleService currencyScaleService,
-      MoveLineToolService moveLineToolService,
-      TaxAccountService taxAccountService) {
+      MoveLineToolService moveLineToolService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
@@ -79,7 +76,6 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     this.moveLineCreateService = moveLineCreateService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineToolService = moveLineToolService;
-    this.taxAccountService = taxAccountService;
   }
 
   @Override
