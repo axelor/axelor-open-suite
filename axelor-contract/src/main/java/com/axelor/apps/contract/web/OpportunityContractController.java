@@ -1,12 +1,15 @@
 package com.axelor.apps.contract.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.LinkedHashMap;
@@ -31,6 +34,15 @@ public class OpportunityContractController {
     if (contractTemplateID != null) {
       contractTemplate = Beans.get(ContractTemplateRepository.class).find(contractTemplateID);
     }
-    Beans.get(ContractService.class).generateContractFromOpportunity(opportunity, contractTemplate);
+    Contract contract =
+        Beans.get(ContractService.class)
+            .generateContractFromOpportunity(opportunity, contractTemplate);
+    response.setView(
+        ActionView.define(I18n.get("Contract"))
+            .model(Contract.class.getName())
+            .add("form", "contract-form")
+            .add("grid", "contract-grid")
+            .context("_showRecord", contract.getId().toString())
+            .map());
   }
 }
