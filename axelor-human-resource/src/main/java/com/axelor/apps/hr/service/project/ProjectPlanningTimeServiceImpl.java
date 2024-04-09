@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -167,6 +168,12 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       activity = productRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
 
+    Site site = null;
+    if (datas.get("site") != null) {
+      objMap = (Map) datas.get("site");
+      site = JPA.find(Site.class, Long.valueOf(objMap.get("id").toString()));
+    }
+
     BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
     while (fromDate.isBefore(toDate)) {
@@ -193,7 +200,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
                 employee,
                 activity,
                 dailyWorkHrs,
-                taskEndDateTime);
+                taskEndDateTime,
+                site);
         planningTimeRepo.save(planningTime);
       }
 
@@ -216,7 +224,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       Employee employee,
       Product activity,
       BigDecimal dailyWorkHrs,
-      LocalDateTime taskEndDateTime)
+      LocalDateTime taskEndDateTime,
+      Site site)
       throws AxelorException {
     ProjectPlanningTime planningTime = new ProjectPlanningTime();
 
@@ -227,6 +236,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     planningTime.setStartDateTime(fromDate);
     planningTime.setEndDateTime(taskEndDateTime);
     planningTime.setProject(project);
+    planningTime.setSite(site);
 
     BigDecimal totalHours = BigDecimal.ZERO;
     if (timePercent > 0) {

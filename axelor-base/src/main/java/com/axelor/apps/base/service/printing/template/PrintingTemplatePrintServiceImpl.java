@@ -29,13 +29,13 @@ import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryCo
 import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.FileUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,7 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
       boolean toAttach)
       throws AxelorException {
     File file = getPrintFile(template, context, outputFileName, toAttach);
-    return PdfHelper.getFileLinkFromPdfFile(file, file.getName());
+    return getFileLink(file);
   }
 
   @Override
@@ -157,7 +158,7 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
           I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
     File file = mergeToFile(printedRecords, isPDf.get(), template.getName());
-    return PdfHelper.getFileLinkFromPdfFile(file, file.getName());
+    return getFileLink(file);
   }
 
   protected List<TemplatePrint> getPrintList(
@@ -218,23 +219,18 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
       outputFileName = formatOutputName(outputFileName);
 
       if (printFiles.size() == 1) {
-        Path first = printFiles.listIterator().next().toPath();
         String outputName =
-            outputFileName + "." + FilenameUtils.getExtension(first.getFileName().toString());
-        return Files.move(
-                first, first.resolveSibling(outputName), StandardCopyOption.REPLACE_EXISTING)
-            .toFile();
+            outputFileName
+                + "."
+                + FilenameUtils.getExtension(
+                    printFiles.listIterator().next().toPath().getFileName().toString());
+        return renameFile(outputName, printFiles.listIterator().next().toPath()).toFile();
       }
 
       if (isPdfOutputFormat) {
         Path output = PdfHelper.mergePdf(printFiles).toPath();
-        file =
-            Files.move(
-                output,
-                output.resolveSibling(outputFileName + "." + ReportSettings.FORMAT_PDF),
-                StandardCopyOption.REPLACE_EXISTING);
+        file = renameFile(outputFileName + "." + ReportSettings.FORMAT_PDF, output);
       } else {
-
         file = createZip(outputFileName, printFiles);
       }
     } catch (IOException e) {
@@ -267,16 +263,34 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
     return zipFile;
   }
 
+  protected String getFileLink(File file) throws AxelorException {
+    String originalName = file.getName();
+    String safeName = FileUtils.safeFileName(originalName);
+
+    try {
+      if (!originalName.equals(safeName)) {
+        file = renameFile(safeName, file.toPath()).toFile();
+      }
+    } catch (IOException e) {
+      throw new AxelorException(
+          e,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
+
+    return PdfHelper.getFileLinkFromPdfFile(file, originalName);
+  }
+
+  protected Path renameFile(String newName, Path path) throws IOException {
+    return Files.move(path, path.resolveSibling(newName), StandardCopyOption.REPLACE_EXISTING);
+  }
+
   protected String formatOutputName(String outputFileName) {
+    ZonedDateTime todayDateTime = appBaseService.getTodayDateTime();
     outputFileName =
         outputFileName
-            .replace(
-                "${date}",
-                appBaseService.getTodayDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-            .replace(
-                "${time}",
-                appBaseService.getTodayDateTime().format(DateTimeFormatter.ofPattern("HHmmss")));
-    outputFileName = StringHelper.getFilename(outputFileName);
+            .replace("${date}", todayDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+            .replace("${time}", todayDateTime.format(DateTimeFormatter.ofPattern("HHmmss")));
     return outputFileName;
   }
 }
