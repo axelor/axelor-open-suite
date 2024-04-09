@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form title="Partner" name="incl-contracts-partner-form"
+    model="com.axelor.apps.base.db.Partner">
+    <panel-dashlet name="partnerContractsPanel" action="action-partner-view-contracts"
+      colSpan="12" height="550"/>
+  </form>
+
+  <action-view name="action-partner-view-contracts" title="Contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <domain>self.partner.id = :id</domain>
+  </action-view>
+
+</object-views>
