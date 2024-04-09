@@ -10,7 +10,6 @@
     <integer name="sequence" title="Sequence"/>
     <string name="name" translatable="true"/>
     <boolean name="isCompleted" title="Completed ?"/>
-    <boolean name="isInProgress" title="In progress ?"/>
     <finder-method name="getNotCompleted" using="" filter="self.isCompleted = false"/>
 
   </entity>

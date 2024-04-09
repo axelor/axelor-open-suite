@@ -6,7 +6,6 @@
   <grid name="project-status-grid" title="Project status"
     model="com.axelor.apps.project.db.ProjectStatus" orderBy="sequence" canMove="true">
     <field name="name"/>
-    <field name="isInProgress"/>
     <field name="isCompleted"/>
     <field name="sequence" hidden="true"/>
   </grid>
@@ -15,7 +14,6 @@
     model="com.axelor.apps.project.db.ProjectStatus">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="isInProgress"/>
       <field name="isCompleted"/>
       <field name="sequence" hidden="true"/>
     </panel>
