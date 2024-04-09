@@ -7,7 +7,7 @@
     model="com.axelor.studio.db.AppMobileSettings" width="large"
     onLoad="action-app-mobile-settings-config-group-on-load" canNew="false" canDelete="false">
     <panel name="mainPanel">
-      <panel name="applicationsPanel" title="Mobile apps" colSpan="10" itemSpan="2">
+      <panel name="applicationsPanel" title="Mobile apps" colSpan="10" itemSpan="3">
         <field name="isStockAppEnabled" widget="boolean-switch"
           readonlyIf="isProductionAppEnabled"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
@@ -20,6 +20,8 @@
         <field name="isHRAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
         <field name="isQualityAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isInterventionAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
       </panel>
       <panel name="qrCodePanel" colSpan="2">
@@ -58,6 +60,8 @@
           onClick="action.hr.config.view"/>
         <button name="qualityAppBtn" title="Config Quality" hidden="true"
           showIf="isQualityAppEnabled" onClick="action.quality.config.view"/>
+        <button name="interventionAppBtn" title="Config Intervention" hidden="true"
+          showIf="isInterventionAppEnabled" onClick="action.intervention.config.view"/>
       </panel>
     </panel>
     <panel-tabs name="appConfigPanelTab">
@@ -210,6 +214,16 @@
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-quality').fetchOne()?.id"/>
   </action-view>
 
+  <action-view name="action.intervention.config.view" title="Intervention config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-intervention').fetchOne()?.id"/>
+  </action-view>
+
   <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"
     model="com.axelor.apps.mobilesettings.db.MobileDashboard">
     <view type="grid" name="mobile-dashboard-grid"/>
@@ -228,6 +242,8 @@
       expr="!__config__.app.isApp('expense')"/>
     <attribute for="isQualityAppEnabled" name="readonly"
       expr="!__config__.app.isApp('quality')"/>
+    <attribute for="isInterventionAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('intervention')"/>
   </action-attrs>
 
   <action-group name="action-app-mobile-settings-config-group-on-load">
