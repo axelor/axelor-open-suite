@@ -779,7 +779,7 @@
                )
              )
           &quot;"
-      if="__parent__"/>
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMove'"/>
 
     <attribute name="domain" for="trackingNumber"
       expr="eval: &quot;
@@ -795,7 +795,7 @@
                )
              )
           &quot;"
-      if="!__parent__ &amp;&amp; stockMove != null"/>
+      if="__parent__?._model != 'com.axelor.apps.stock.db.StockMove' &amp;&amp; stockMove != null"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-line-attrs-scale-and-precision">

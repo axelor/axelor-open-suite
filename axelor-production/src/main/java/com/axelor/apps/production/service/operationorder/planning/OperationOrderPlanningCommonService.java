@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.google.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 
 public abstract class OperationOrderPlanningCommonService {
 
@@ -45,6 +46,10 @@ public abstract class OperationOrderPlanningCommonService {
   protected abstract void planWithStrategy(OperationOrder operationOrder) throws AxelorException;
 
   public OperationOrder plan(OperationOrder operationOrder) throws AxelorException {
+
+    if (CollectionUtils.isEmpty(operationOrder.getToConsumeProdProductList())) {
+      operationOrderService.createToConsumeProdProductList(operationOrder);
+    }
 
     planWithStrategy(operationOrder);
 

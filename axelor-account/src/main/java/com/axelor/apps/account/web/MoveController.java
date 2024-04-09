@@ -534,9 +534,13 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       LocalDate dueDate = this.extractDueDate(request);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
       response.setValues(
           Beans.get(MoveGroupService.class).getGenerateCounterpartOnClickValuesMap(move, dueDate));
+
+      Beans.get(MoveAttrsService.class).addSubrogationPartnerReadonly(move, attrsMap);
+      response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -214,7 +214,8 @@
 
   <action-record name="action-record-fill-paidAmount-fromMoveLine"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <field name="paidAmount" expr="eval: moveLine?.amountRemaining"/>
+    <field name="paidAmount" expr="eval: moveLine?.amountRemaining?.abs()"/>
+    <field name="remainingAmount" expr="eval: paidAmount"/>
   </action-record>
 
   <action-attrs name="action-pv-attrs-auto-imputation">

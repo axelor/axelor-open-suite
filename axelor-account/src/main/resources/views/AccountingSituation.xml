@@ -35,7 +35,7 @@
     <panel name="mainPanel">
       <field name="company" widget="SuggestBox" canEdit="false"
         onChange="action-accounting-situation-group-company-onchange" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" required="true"/>
       <spacer/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
         onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
@@ -153,7 +153,8 @@
     onLoad="action-accounting-situation-attrs-hidden-multi-banks">
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid" onChange="action-accounting-situation-method-set-holdback-accounts"/>
+        required="true" grid-view="company-grid"
+        onChange="action-accounting-situation-method-set-holdback-accounts"/>
       <field name="partner" domain=":company member of self.companySet"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="customerAccount"

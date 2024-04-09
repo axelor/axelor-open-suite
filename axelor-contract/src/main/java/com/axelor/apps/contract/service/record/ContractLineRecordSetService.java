@@ -16,18 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.contract.service.record;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Duration;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
 
-public interface DurationService {
-  LocalDate computeDuration(Duration duration, LocalDate date);
+public interface ContractLineRecordSetService {
 
-  BigDecimal computeRatio(
-      LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd, Duration duration);
-
-  BigDecimal getFactor(int durationType) throws AxelorException;
+  void setCompanyExTaxTotal(
+      AnalyticLineContractModel analyticLineContractModel, ContractLine contractLine)
+      throws AxelorException;
 }

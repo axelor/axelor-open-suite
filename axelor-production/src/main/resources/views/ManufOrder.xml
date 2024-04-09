@@ -591,7 +591,8 @@
   <action-attrs name="action-manuf-order-attrs-sale-order-onchange-client-partner">
     <attribute name="value"
       expr="eval: __repo__(SaleOrder).all().filter('self.clientPartner.id = ?1 AND self.id IN (?2)',clientPartner.id, saleOrderSet?.collect{it?.id}).fetch()"
-      for="saleOrderSet" if="clientPartner"/>
+      for="saleOrderSet"
+      if="clientPartner &amp;&amp; saleOrderSet != null &amp;&amp; !saleOrderSet.isEmpty()"/>
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-scale-and-precision">
