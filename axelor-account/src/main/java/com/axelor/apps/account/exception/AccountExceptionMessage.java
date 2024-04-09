@@ -1704,4 +1704,7 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
       "No partner involved, please look for your blocking configuration if necessary." /*)*/;
+
+  public static final String FINANCIAL_DISCOUNT_NOT_COMPATIBLE_WITH_ADVANCE_PAYMENT_INVOICE =
+      /*$$(*/ "Financial discount is not compatible with the advance payment invoice. Please unselect financial discount in order to continue." /*)*/;
 }
