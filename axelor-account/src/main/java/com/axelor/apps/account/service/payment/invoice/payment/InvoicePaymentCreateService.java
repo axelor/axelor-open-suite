@@ -63,6 +63,15 @@ public interface InvoicePaymentCreateService {
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber);
+
+  InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      InvoiceTerm invoiceTerm,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
       PaymentSession paymentSession);
 
   /**
