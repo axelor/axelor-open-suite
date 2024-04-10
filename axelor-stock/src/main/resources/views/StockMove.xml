@@ -1617,7 +1617,6 @@
     <view type="form" name="stock-move-send-notification-wizard-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
-    <context name="_stockMove" expr="eval: __this__"/>
   </action-view>
 
   <action-method name="action-stock-move-method-send-notification">

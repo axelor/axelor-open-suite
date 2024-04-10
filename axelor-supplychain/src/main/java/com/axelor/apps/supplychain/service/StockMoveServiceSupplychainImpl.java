@@ -243,9 +243,27 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove) throws AxelorException {
 
+    cancelStockMove(stockMove);
+    Boolean supplierArrivalCancellationAutomaticMail =
+        stockConfigService
+            .getStockConfig(stockMove.getCompany())
+            .getSupplierArrivalCancellationAutomaticMail();
+    if (!supplierArrivalCancellationAutomaticMail
+        || stockMove.getIsReversion()
+        || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
+      return;
+    }
+    Template supplierCancellationMessageTemplate =
+        stockConfigService
+            .getStockConfig(stockMove.getCompany())
+            .getSupplierArrivalCancellationMessageTemplate();
+    super.sendMailForStockMove(stockMove, supplierCancellationMessageTemplate);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void cancelStockMove(StockMove stockMove) throws AxelorException {
     if (!appSupplyChainService.isApp("supplychain")) {
       super.cancel(stockMove);
       return;
@@ -269,20 +287,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_CANCELED);
     }
-    Boolean supplierArrivalCancellationAutomaticMail =
-        stockConfigService
-            .getStockConfig(stockMove.getCompany())
-            .getSupplierArrivalCancellationAutomaticMail();
-    if (!supplierArrivalCancellationAutomaticMail
-        || stockMove.getIsReversion()
-        || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
-      return;
-    }
-    Template supplierCancellationMessageTemplate =
-        stockConfigService
-            .getStockConfig(stockMove.getCompany())
-            .getSupplierArrivalCancellationMessageTemplate();
-    super.sendMailForStockMove(stockMove, supplierCancellationMessageTemplate);
   }
 
   @Override

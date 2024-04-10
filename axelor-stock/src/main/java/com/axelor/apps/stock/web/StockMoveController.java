@@ -195,11 +195,10 @@ public class StockMoveController {
       ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      Optional<Integer> stockMoveID =
+      Optional<Long> stockMoveID =
           Optional.ofNullable(context)
-              .map(ctx -> ctx.get("_stockMove"))
-              .map(hashMap -> ((LinkedHashMap) hashMap).get("id"))
-              .map(Integer.class::cast);
+              .map(context1 -> context1.get("_id"))
+              .map(o -> ((Integer) o).longValue());
       Optional<Integer> supplierArrivalCancellationMessageTemplateID =
           Optional.ofNullable(context)
               .map(ctx -> ctx.get("supplierArrivalCancellationMessageTemplate"))
@@ -210,7 +209,7 @@ public class StockMoveController {
       }
       Beans.get(StockMoveService.class)
           .sendSupplierCancellationMail(
-              Beans.get(StockMoveRepository.class).find(stockMoveID.get().longValue()),
+              Beans.get(StockMoveRepository.class).find(stockMoveID.get()),
               Beans.get(TemplateRepository.class)
                   .find(supplierArrivalCancellationMessageTemplateID.get().longValue()));
     } catch (Exception e) {
