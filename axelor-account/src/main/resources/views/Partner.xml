@@ -179,8 +179,8 @@
   <form name="incl-sepa-direct-debit-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner">
     <panel name="sepaDirectDebitPanel" title="SEPA Direct Debit" colSpan="12">
-      <field name="activeUmr" colSpan="3" canNew="false" domain="self.partner.id = :id"/>
-      <panel-related name="umrListPanel" field="umrList" title="History" colSpan="12"/>
+      <panel-related name="invoicingPaymentSituationListPanel"
+        field="invoicingPaymentSituationList" title="Invoicing/payment situations" colSpan="12"/>
     </panel>
   </form>
 
