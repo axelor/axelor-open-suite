@@ -68,7 +68,6 @@
       <field name="financialDiscount" on="UPDATE"/>
       <field name="das2Activity" on="UPDATE"/>
       <field name="paymentCondition" on="UPDATE"/>
-      <field name="activeUmr" on="UPDATE"/>
     </track>
 
   </entity>

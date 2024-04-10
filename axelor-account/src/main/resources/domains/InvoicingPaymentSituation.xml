@@ -15,6 +15,10 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
 
     <finder-method name="findByCompanyAndPartner" using="company,partner"/>
+
+    <track>
+      <field name="activeUmr" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>
