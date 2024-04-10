@@ -61,6 +61,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -939,8 +940,10 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
         Beans.get(InvoiceLineService.class).updateLinesAfterFiscalPositionChange(invoice);
+        response.setValue(
+            "invoiceLineList",
+            invoice.getInvoiceLineList().stream().map(Mapper::toMap).collect(Collectors.toList()));
       }
-      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
