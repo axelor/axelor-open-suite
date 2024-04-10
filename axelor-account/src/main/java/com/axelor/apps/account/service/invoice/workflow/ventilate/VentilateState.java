@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationSe
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -163,7 +162,7 @@ public class VentilateState extends WorkflowInvoice {
   protected void setJournal() throws AxelorException {
     // Journal is actually set upon validation but we keep this for backward compatibility
     if (invoice.getJournal() == null) {
-      invoice.setJournal(Beans.get(InvoiceService.class).getJournal(invoice));
+      invoice.setJournal(InvoiceToolService.getJournal(invoice));
     }
   }
 

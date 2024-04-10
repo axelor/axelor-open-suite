@@ -515,18 +515,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 partnerAccountingSituation.getFullName(),
                 company.getCode());
           }
-          int vatSystemSelect =
-              accountingSituationService.determineVatSystemSelect(
-                  accountingSituation, invoiceLineTax);
 
-          account =
-              taxAccountService.getAccount(
-                  tax,
-                  company,
-                  move.getJournal(),
-                  vatSystemSelect,
-                  true,
-                  move.getFunctionalOriginSelect());
+          account = invoiceLineTax.getImputedAccount();
+
           if (account == null) {
             throw new AxelorException(
                 move,
@@ -570,17 +561,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 partnerAccountingSituation.getFullName(),
                 company.getCode());
           }
-          int vatSystemSelect =
-              accountingSituationService.determineVatSystemSelect(
-                  accountingSituation, invoiceLineTax);
-          account =
-              taxAccountService.getAccount(
-                  tax,
-                  company,
-                  move.getJournal(),
-                  vatSystemSelect,
-                  false,
-                  move.getFunctionalOriginSelect());
+
+          account = invoiceLineTax.getImputedAccount();
+
           if (account == null) {
             throw new AxelorException(
                 move,
@@ -605,6 +588,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   moveLineId++,
                   origin,
                   null);
+
           moveLine.setTaxLineSet(Sets.newHashSet(invoiceLineTax.getTaxLine()));
           moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
           moveLine.setTaxCode(tax.getCode());

@@ -108,7 +108,7 @@ public class ValidateState extends WorkflowInvoice {
     setPartnerAccount();
 
     if (invoice.getJournal() == null) {
-      invoice.setJournal(invoiceService.getJournal(invoice));
+      invoice.setJournal(InvoiceToolService.getJournal(invoice));
     }
 
     workflowValidationService.afterValidation(invoice);
