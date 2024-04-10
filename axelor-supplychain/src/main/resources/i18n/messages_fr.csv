@@ -230,7 +230,7 @@
 "Generate invoice from purchase order","Générer facture pour les Devis/Cmde fournisseur",,
 "Generate invoice from sale order","Générer facture pour les Devis/Cmde client",,
 "Generate invoice from stock move","Générer facture depuis BR/BL",,
-Generate invoices","Générer les factures",,
+"Generate invoices","Générer les factures",,
 "Generate one invoice per incoming stockMove","Générer une facture par BR",,
 "Generate one invoice per outgoing stockMove","Générer une facture par BL",,
 "Generate out. moves for products","Générer BL pour les articles",,

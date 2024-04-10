@@ -151,7 +151,7 @@
     canNew="false" canEdit="false">
     <toolbar>
       <button name="openSolToInvoiceFormBtn" title="Invoice selected lines"
-        onClick="action-sale-order-line-validate-selected-lines,action-sol-method-set-sale-order-line-list-to-invoice"/>
+        onClick="action-sale-order-line-validate-selected-lines"/>
     </toolbar>
     <field name="saleOrder.clientPartner"/>
     <field name="project" if-module="axelor-business-project"
@@ -176,21 +176,6 @@
     <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
   </grid>
 
-  <action-view name="action-open-sale-order-view" title="Open sale order"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="form" name="sale-order-form"/>
-    <context name="_showRecord" expr="eval: __this__.saleOrder.id"/>
-  </action-view>
-
-  <action-method name="action-sol-method-set-sale-order-line-list-to-invoice">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
-      method="setSaleOrderLineListToInvoice"/>
-  </action-method>
-
-  <action-validate name="action-sale-order-line-validate-selected-lines">
-    <alert message="No items have been selected. Do you want to continue?" if="!_ids"/>
-  </action-validate>
-
   <form name="sale-order-line-multi-invoicing-form" model="com.axelor.utils.db.Wizard"
     title="Mass sale order line invoicing" canSave="false" canNew="false"
     onNew="action-sale-order-line-attrs-set-saleOrderLineListToInvoice">
@@ -203,21 +188,10 @@
         canEdit="true" grid-view="sale-order-line-to-invoice-popup-grid"
         form-view="sale-order-line-form"/>
       <panel name="actionsPanel" title="Actions">
-        <button name="generateInvoiceBtn" title="Generate invoices"
-          onClick="action-sale-order-line-method-generate-invoice"/>
+        <button name="generateInvoiceBtn" title="Generate invoices" onClick=""/>
       </panel>
     </panel>
   </form>
-
-  <action-attrs name="action-sale-order-line-attrs-set-saleOrderLineListToInvoice">
-    <attribute for="$saleOrderLineListToInvoice" name="value"
-      expr="eval: _saleOrderLineListToInvoice"/>
-  </action-attrs>
-
-  <action-method name="action-sale-order-line-method-generate-invoice">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
-      method="generateInvoicesFromSelectedLines"/>
-  </action-method>
 
   <grid name="sale-order-line-to-invoice-popup-grid" title="Lines to invoice" edit-icon="false"
     model="com.axelor.apps.sale.db.SaleOrderLine" groupBy="saleOrder" editable="true">
@@ -258,6 +232,12 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-open-sale-order-view" title="Open sale order"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-form"/>
+    <context name="_showRecord" expr="eval: __this__.saleOrder.id"/>
   </action-view>
 
   <!-- ACTION GROUP -->
@@ -384,6 +364,17 @@
     <attribute name="domain" for="analyticDistributionTemplate"
       expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
   </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-set-saleOrderLineListToInvoice">
+    <attribute for="$saleOrderLineListToInvoice" name="value"
+      expr="eval: _saleOrderLineListToInvoice"/>
+  </action-attrs>
+
+  <!-- ACTION VALIDATE -->
+
+  <action-validate name="action-sale-order-line-validate-selected-lines">
+    <alert message="No items have been selected. Do you want to continue?" if="!_ids"/>
+  </action-validate>
 
   <!-- ACTION METHOD -->
 
