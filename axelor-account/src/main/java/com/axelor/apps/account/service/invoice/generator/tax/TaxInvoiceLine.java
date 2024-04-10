@@ -384,7 +384,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     }
 
     public int hashCode() {
-      return (int) (this.taxline.getId() * 10 + this.vatSystem);
+      return (int) (this.account.getId() * 10000 + this.taxline.getId() * 10 + this.vatSystem);
     }
 
     public boolean equals(Object o) {
