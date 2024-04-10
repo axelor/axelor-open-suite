@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.tax;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -26,6 +27,9 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceJournalService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
@@ -53,13 +57,17 @@ public class TaxInvoiceLine extends TaxGenerator {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected CurrencyScaleService currencyScaleService;
+  protected TaxAccountService taxAccountService;
   protected TaxAccountToolService taxAccountToolService;
+  protected InvoiceJournalService invoiceJournalService;
 
   public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
     super(invoice, invoiceLines);
 
     this.currencyScaleService = Beans.get(CurrencyScaleService.class);
+    this.taxAccountService = Beans.get(TaxAccountService.class);
     this.taxAccountToolService = Beans.get(TaxAccountToolService.class);
+    this.invoiceJournalService = Beans.get(InvoiceJournalService.class);
   }
 
   /**
@@ -108,7 +116,6 @@ public class TaxInvoiceLine extends TaxGenerator {
   protected void createInvoiceLineTaxes(
       InvoiceLine invoiceLine, Map<TaxLineByVatSystem, InvoiceLineTax> map) throws AxelorException {
     Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
-
     int vatSystem = 0;
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
@@ -127,12 +134,16 @@ public class TaxInvoiceLine extends TaxGenerator {
                       || invoice.getOperationTypeSelect()
                           == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
         }
-        createOrUpdateInvoiceLineTax(invoiceLine, taxLine, vatSystem, map);
+
+        Account imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
+
+        createOrUpdateInvoiceLineTax(invoiceLine, taxLine, imputedAccount, vatSystem, map);
       }
 
       Set<TaxEquiv> taxEquivSet = invoiceLine.getTaxEquivSet();
       AppBaseService appBaseService = Beans.get(AppBaseService.class);
       TaxService taxService = Beans.get(TaxService.class);
+
       if (ObjectUtils.notEmpty(taxEquivSet)) {
         for (TaxEquiv taxEquiv : taxEquivSet) {
           TaxLine taxLineRC = null;
@@ -152,29 +163,47 @@ public class TaxInvoiceLine extends TaxGenerator {
                                     .map(Invoice::getCompany)
                                     .orElse(null))));
           }
+
           if (taxLineRC != null) {
-            createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, taxEquiv, vatSystem, map);
+            Account imputedAccount = getImputedAccount(invoiceLine, taxLineRC, vatSystem);
+
+            createOrUpdateInvoiceLineTaxRc(
+                invoiceLine, taxLineRC, taxEquiv, imputedAccount, vatSystem, map);
           }
         }
       }
     }
   }
 
+  protected Account getImputedAccount(InvoiceLine invoiceLine, TaxLine taxLine, int vatSystem)
+      throws AxelorException {
+    return taxAccountService.getAccount(
+        taxLine.getTax(),
+        invoice.getCompany(),
+        invoiceJournalService.getJournal(invoice),
+        vatSystem,
+        invoiceLine.getFixedAssets(),
+        InvoiceToolService.getFunctionalOrigin(invoice));
+  }
+
   protected void createOrUpdateInvoiceLineTax(
       InvoiceLine invoiceLine,
       TaxLine taxLine,
+      Account imputedAccount,
       int vatSystem,
       Map<TaxLineByVatSystem, InvoiceLineTax> map)
       throws AxelorException {
     LOG.debug("Tax {}", taxLine);
 
-    TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLine, vatSystem);
+    TaxLineByVatSystem taxLineByVatSystem =
+        new TaxLineByVatSystem(taxLine, imputedAccount, vatSystem);
     InvoiceLineTax invoiceLineTax = map.get(taxLineByVatSystem);
+
     if (invoiceLineTax != null) {
       updateInvoiceLineTax(invoiceLine, invoiceLineTax, vatSystem);
       invoiceLineTax.setReverseCharged(false);
     } else {
-      invoiceLineTax = createInvoiceLineTax(invoiceLine, taxLine, vatSystem);
+      invoiceLineTax = createInvoiceLineTax(invoiceLine, taxLine, imputedAccount, vatSystem);
       invoiceLineTax.setReverseCharged(false);
       map.put(taxLineByVatSystem, invoiceLineTax);
     }
@@ -184,17 +213,23 @@ public class TaxInvoiceLine extends TaxGenerator {
       InvoiceLine invoiceLine,
       TaxLine taxLineRC,
       TaxEquiv taxEquiv,
+      Account imputedAccount,
       int vatSystem,
       Map<TaxLineByVatSystem, InvoiceLineTax> map) {
-    TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLineRC, vatSystem);
+    TaxLineByVatSystem taxLineByVatSystem =
+        new TaxLineByVatSystem(taxLineRC, imputedAccount, vatSystem);
+
     if (map.containsKey(taxLineByVatSystem)) {
       TaxLineByVatSystem taxLineByVatSystemEquiv =
-          new TaxLineByVatSystem(taxEquiv.getReverseChargeTax().getActiveTaxLine(), vatSystem);
+          new TaxLineByVatSystem(
+              taxEquiv.getReverseChargeTax().getActiveTaxLine(), imputedAccount, vatSystem);
+
       InvoiceLineTax invoiceLineTaxRC = map.get(taxLineByVatSystemEquiv);
       updateInvoiceLineTax(invoiceLine, invoiceLineTaxRC, vatSystem);
       invoiceLineTaxRC.setReverseCharged(true);
     } else {
-      InvoiceLineTax invoiceLineTaxRC = createInvoiceLineTax(invoiceLine, taxLineRC, vatSystem);
+      InvoiceLineTax invoiceLineTaxRC =
+          createInvoiceLineTax(invoiceLine, taxLineRC, imputedAccount, vatSystem);
       invoiceLineTaxRC.setReverseCharged(true);
       map.put(taxLineByVatSystem, invoiceLineTaxRC);
     }
@@ -227,7 +262,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected InvoiceLineTax createInvoiceLineTax(
-      InvoiceLine invoiceLine, TaxLine taxLine, int vatSystem) {
+      InvoiceLine invoiceLine, TaxLine taxLine, Account imputedAccount, int vatSystem) {
     InvoiceLineTax invoiceLineTax = new InvoiceLineTax();
     invoiceLineTax.setInvoice(invoice);
 
@@ -247,16 +282,19 @@ public class TaxInvoiceLine extends TaxGenerator {
                   .getCompanySubTotalExcludingFixedAssets()
                   .add(invoiceLine.getCompanyExTaxTotal())));
     }
+
+    invoiceLineTax.setImputedAccount(imputedAccount);
     invoiceLineTax.setVatSystemSelect(vatSystem);
     invoiceLineTax.setTaxLine(taxLine);
     invoiceLineTax.setCoefficient(invoiceLine.getCoefficient());
     invoiceLineTax.setTaxType(
         Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
+
     return invoiceLineTax;
   }
 
   protected List<InvoiceLineTax> finalizeInvoiceLineTaxes(
-      Map<TaxLineByVatSystem, InvoiceLineTax> map) {
+      Map<TaxLineByVatSystem, InvoiceLineTax> map) throws AxelorException {
 
     List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
 
@@ -324,6 +362,7 @@ public class TaxInvoiceLine extends TaxGenerator {
           currencyScaleService.getCompanyScaledValue(
               invoiceLineTax.getInvoice(),
               companyTaxTotal.subtract(invoiceLineTax.getCompanySubTotalExcludingFixedAssets())));
+
       invoiceLineTaxList.add(invoiceLineTax);
 
       LOG.debug(
@@ -338,26 +377,33 @@ public class TaxInvoiceLine extends TaxGenerator {
   class TaxLineByVatSystem {
 
     protected TaxLine taxline;
+    protected Account account;
     protected int vatSystem;
 
-    public TaxLineByVatSystem(TaxLine taxline, int vatSystem) {
+    public TaxLineByVatSystem(TaxLine taxline, Account account, int vatSystem) {
       this.taxline = taxline;
+      this.account = account;
       this.vatSystem = vatSystem;
     }
 
     public int hashCode() {
-      return (int) (this.taxline.getId() * 10 + this.vatSystem);
+      return (int) (this.account.getId() * 10000 + this.taxline.getId() * 10 + this.vatSystem);
     }
 
     public boolean equals(Object o) {
       if (o == this) {
         return true;
       }
+
       if (!(o instanceof TaxLineByVatSystem)) {
         return false;
       }
+
       TaxLineByVatSystem other = (TaxLineByVatSystem) o;
-      return this.vatSystem == other.vatSystem && this.taxline.equals(other.taxline);
+
+      return this.vatSystem == other.vatSystem
+          && this.taxline.equals(other.taxline)
+          && this.account.equals(other.account);
     }
   }
 }
