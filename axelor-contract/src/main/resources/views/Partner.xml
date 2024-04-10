@@ -3,6 +3,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
+  <form id="contract-partner-form" title="Partner" name="partner-form"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="//panel[@name='opportunitiesPanel']">
+      <insert position="after">
+        <panel name="contractsPanel" title="Contracts" showIf="id"
+          if="__config__.app.isApp('contract')">
+          <panel-include view="incl-contracts-partner-form"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
   <form title="Partner" name="incl-contracts-partner-form"
     model="com.axelor.apps.base.db.Partner">
     <panel-dashlet name="partnerContractsPanel" action="action-partner-view-contracts"

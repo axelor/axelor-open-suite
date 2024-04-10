@@ -481,10 +481,6 @@
           onClick="save,action-partner-view-create-opportunity" link="" colSpan="3"/>
         <panel-include view="incl-opportunities-partner-form"/>
       </panel>
-      <panel name="contractsPanel" title="Contracts" showIf="id != null"
-        if="__config__.app.isApp('contract')">
-        <panel-include view="incl-contracts-partner-form"/>
-      </panel>
       <panel name="emailPanel" title="Emails" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" if="__config__.app.isApp('crm')">
         <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
