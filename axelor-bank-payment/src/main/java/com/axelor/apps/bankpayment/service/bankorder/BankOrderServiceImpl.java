@@ -19,7 +19,6 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -75,7 +74,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected AppBaseService appBaseService;
   protected CurrencyService currencyService;
   protected BankDetailsService bankDetailsService;
-  protected UmrService umrService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -84,8 +82,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       SequenceService sequenceService,
       AppBaseService appBaseService,
       CurrencyService currencyService,
-      BankDetailsService bankDetailsService,
-      UmrService umrService) {
+      BankDetailsService bankDetailsService) {
 
     this.bankOrderRepository = bankOrderRepository;
     this.bankPaymentConfigService = bankPaymentConfigService;
@@ -93,7 +90,6 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.bankDetailsService = bankDetailsService;
-    this.umrService = umrService;
   }
 
   @Override
