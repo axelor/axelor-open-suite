@@ -970,6 +970,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       if (contractLines.isEmpty()) {
         return false;
       }
+      if (contractLines.get(0).getConsumptionMaxQuantity() == null) {
+        return false;
+      }
       max = contractLines.get(0).getConsumptionMaxQuantity();
     }
     BigDecimal sum =
