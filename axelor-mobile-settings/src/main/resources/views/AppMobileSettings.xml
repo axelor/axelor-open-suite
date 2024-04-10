@@ -44,6 +44,8 @@
           onClick="action.mobile.settings.tracebacks.view"/>
         <button name="viewDashboardBtn" title="View dashboards"
           onClick="action.hr.config.mobile.dashboards.view"/>
+        <button name="seeWebViewBtn" title="See web views"
+          onClick="action.mobile.settings.web.view"/>
       </panel>
       <panel name="configAppPanel" title="App configuration">
         <button name="stockAppBtn" title="Config Stock" hidden="true"
@@ -214,6 +216,12 @@
     model="com.axelor.apps.mobilesettings.db.MobileDashboard">
     <view type="grid" name="mobile-dashboard-grid"/>
     <view type="form" name="mobile-dashboard-form"/>
+  </action-view>
+
+  <action-view name="action.mobile.settings.web.view" title="Mobile web views"
+    model="com.axelor.apps.mobilesettings.db.MobileWebView">
+    <view type="grid" name="mobile-web-view-grid"/>
+    <view type="form" name="mobile-web-view-form"/>
   </action-view>
 
   <action-attrs name="action-app-mobile-settings-config-attrs-boolean-readonly">
