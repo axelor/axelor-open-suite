@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationSe
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -76,6 +77,7 @@ public class VentilateState extends WorkflowInvoice {
   protected InvoiceTermService invoiceTermService;
 
   protected AccountingSituationService accountingSituationService;
+  protected InvoiceJournalService invoiceJournalService;
 
   @Inject
   public VentilateState(
@@ -88,7 +90,8 @@ public class VentilateState extends WorkflowInvoice {
       UserService userService,
       FixedAssetGenerationService fixedAssetGenerationService,
       InvoiceTermService invoiceTermService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      InvoiceJournalService invoiceJournalService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
@@ -99,6 +102,7 @@ public class VentilateState extends WorkflowInvoice {
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.invoiceTermService = invoiceTermService;
     this.accountingSituationService = accountingSituationService;
+    this.invoiceJournalService = invoiceJournalService;
   }
 
   @Override
@@ -162,7 +166,7 @@ public class VentilateState extends WorkflowInvoice {
   protected void setJournal() throws AxelorException {
     // Journal is actually set upon validation but we keep this for backward compatibility
     if (invoice.getJournal() == null) {
-      invoice.setJournal(InvoiceToolService.getJournal(invoice));
+      invoice.setJournal(invoiceJournalService.getJournal(invoice));
     }
   }
 

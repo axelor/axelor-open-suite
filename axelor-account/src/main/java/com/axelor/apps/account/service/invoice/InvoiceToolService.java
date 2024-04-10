@@ -18,10 +18,8 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -406,47 +404,6 @@ public class InvoiceToolService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK),
           invoice.getPartnerAccount().getName());
-    }
-  }
-
-  /**
-   * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
-   *
-   * @param invoice Invoice to fetch the journal for.
-   * @return The suitable journal or null (!) if invoice's company is empty.
-   * @throws AxelorException If operationTypeSelect is empty
-   */
-  public static Journal getJournal(Invoice invoice) throws AxelorException {
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-    Company company = invoice.getCompany();
-    if (company == null) return null;
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    // Taken from legacy JournalService but negative cases seem rather strange
-    switch (invoice.getOperationTypeSelect()) {
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getSupplierCreditNoteJournal(accountConfig)
-            : accountConfigService.getSupplierPurchaseJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getSupplierPurchaseJournal(accountConfig)
-            : accountConfigService.getSupplierCreditNoteJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getCustomerCreditNoteJournal(accountConfig)
-            : accountConfigService.getCustomerSalesJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getCustomerSalesJournal(accountConfig)
-            : accountConfigService.getCustomerCreditNoteJournal(accountConfig);
-      default:
-        throw new AxelorException(
-            invoice,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(AccountExceptionMessage.JOURNAL_1),
-            invoice.getInvoiceId());
     }
   }
 }

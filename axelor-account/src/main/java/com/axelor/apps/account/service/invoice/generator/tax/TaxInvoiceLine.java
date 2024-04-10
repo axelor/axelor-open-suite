@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 import com.axelor.apps.account.util.TaxAccountToolService;
@@ -58,6 +59,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   protected CurrencyScaleService currencyScaleService;
   protected TaxAccountService taxAccountService;
   protected TaxAccountToolService taxAccountToolService;
+  protected InvoiceJournalService invoiceJournalService;
 
   public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
     super(invoice, invoiceLines);
@@ -65,6 +67,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     this.currencyScaleService = Beans.get(CurrencyScaleService.class);
     this.taxAccountService = Beans.get(TaxAccountService.class);
     this.taxAccountToolService = Beans.get(TaxAccountToolService.class);
+    this.invoiceJournalService = Beans.get(InvoiceJournalService.class);
   }
 
   /**
@@ -177,7 +180,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     return taxAccountService.getAccount(
         taxLine.getTax(),
         invoice.getCompany(),
-        InvoiceToolService.getJournal(invoice),
+        invoiceJournalService.getJournal(invoice),
         vatSystem,
         invoiceLine.getFixedAssets(),
         InvoiceToolService.getFunctionalOrigin(invoice));
