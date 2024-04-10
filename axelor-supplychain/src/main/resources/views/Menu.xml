@@ -277,5 +277,21 @@
     <view type="grid" name="stock-move-invoice-blocking-reason-grid"/>
     <view type="form" name="stock-move-invoice-blocking-reason-form"/>
   </action-view>
+
+  <menuitem name="sc-root-sale-order-lines-to-invoice"
+    title="Mass sale order line invoicing" parent="sc-root-sale" order="601"
+    action="sc.root.sale.order.lines.to.invoice"/>
+
+  <action-view name="sc.root.sale.order.lines.to.invoice"
+    title="Mass sale order line invoicing" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <view type="grid" name="sale-order-line-to-invoice-grid-menu"/>
+    <view type="form" name="sale-order-line-form"/>
+    <domain>
+      (self.invoiced = false OR self.amountInvoiced &lt; self.qty * self.price) AND
+      self.saleOrder.statusSelect = 3
+    </domain>
+    <context name="_nbDecimalDigit"
+      expr="eval: __config__.app.getApp('base')?.nbDecimalDigitForUnitPrice"/>
+  </action-view>
 </object-views>
 
