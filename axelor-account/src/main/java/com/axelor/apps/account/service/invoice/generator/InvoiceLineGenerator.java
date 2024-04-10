@@ -228,11 +228,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     if (product != null) {
-      Set<TaxEquiv> taxEquivSet =
+      TaxEquiv taxEquiv =
           Beans.get(AccountManagementService.class)
-              .getProductTaxEquivSet(product, company, invoice.getFiscalPosition(), isPurchase);
+              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
 
-      invoiceLine.setTaxEquivSet(taxEquivSet);
+      invoiceLine.setTaxEquiv(taxEquiv);
     }
 
     invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
