@@ -955,7 +955,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   @Override
   public boolean checkConsumptionLineQuantity(
-      Contract contractCtx, ConsumptionLine consumptionLineCtx, BigDecimal initQt) {
+      Contract contractCtx, ConsumptionLine consumptionLineCtx, BigDecimal initQty) {
 
     BigDecimal max = BigDecimal.ZERO;
     if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
@@ -988,7 +988,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             .map(ConsumptionLine::getQty)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    sum = sum.subtract(initQt);
+    sum = sum.subtract(initQty);
     sum = sum.add(consumptionLineCtx.getQty());
     return sum.compareTo(max) > 0;
   }

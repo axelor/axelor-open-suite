@@ -172,6 +172,7 @@ public interface ContractService {
   void setInitialPriceOnContractLines(Contract contract);
 
   boolean checkConsumptionLineQuantity(
+      Contract contract, ConsumptionLine consumptionLine, BigDecimal initQty);
       Contract contract, ConsumptionLine consumptionLine, BigDecimal initQt);
 
   Contract generateContractFromOpportunity(
