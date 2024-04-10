@@ -82,7 +82,9 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
-      AppProjectService appProjectService) {
+      AppProjectService appProjectService,
+      ICalendarService iCalendarService,
+      ICalendarEventRepository iCalendarEventRepository) {
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
@@ -93,6 +95,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.employeeRepo = employeeRepo;
     this.timesheetLineRepository = timesheetLineRepository;
     this.appProjectService = appProjectService;
+    this.iCalendarService = iCalendarService;
+    this.iCalendarEventRepository = iCalendarEventRepository;
   }
 
   @Override
@@ -380,7 +384,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
     String subjectGroovyFormula = appProjectService.getAppProject().getEventSubjectGroovyFormula();
     if (StringUtils.isBlank(subjectGroovyFormula)) {
-      subjectGroovyFormula = "project.fullName" + "-" + "projectTask.fullName";
+      subjectGroovyFormula = "project.fullName +" + "\"-\"" + "+ projectTask.fullName";
     }
     return groovyScriptHelper.eval(subjectGroovyFormula);
   }

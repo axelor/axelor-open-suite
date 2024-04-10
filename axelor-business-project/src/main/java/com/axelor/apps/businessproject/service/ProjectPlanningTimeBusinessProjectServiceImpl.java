@@ -22,8 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -61,7 +63,9 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
       AppProjectService appProjectService,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      ICalendarService iCalendarService,
+      ICalendarEventRepository iCalendarEventRepository) {
     super(
         planningTimeRepo,
         projectRepo,
@@ -71,7 +75,9 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         productRepo,
         employeeRepo,
         timesheetLineRepository,
-        appProjectService);
+        appProjectService,
+        iCalendarService,
+        iCalendarEventRepository);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
