@@ -408,10 +408,12 @@
     <panel name="mainPanel">
       <field name="printedPDF" hidden="true"/><!-- Needed to be able to use it in menu -->
       <panel name="statusSelectPanel" colSpan="7" stacked="true">
-        <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect != 2"
+        <field name="statusSelect" widget="NavSelect"
+          showIf="operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
           showTitle="false"/>
-        <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect == 2"
-          showTitle="false" selection-in="[1,2,4]"/>
+        <field name="statusSelect" widget="NavSelect"
+          showIf="operationSubTypeSelect == 2 || operationSubTypeSelect == 11" showTitle="false"
+          selection-in="[1,2,4]"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="5">
         <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
@@ -698,7 +700,8 @@
         <panel name="refundPanel" title="Credit note"
           showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
           <button name="createRefundBtn" title="Generate credit note" colSpan="3"
-            showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund"/>
+            showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 11"
+            onClick="save,action-invoice-method-create-refund"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
             form-view="invoice-form" grid-view="invoice-grid"/>
           <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
@@ -736,12 +739,13 @@
           readonly="true"/>
       </panel>
       <panel name="advancePaymentPanel" title="Advance payments"
-        showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
+        showIf="operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 10 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
 InvoiceSet.length > 0))"
         if="__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()">
         <field name="advancePaymentInvoiceSet" widget="TagSelect" canNew="false"
           canEdit="false" onSelect="action-invoice-method-create-advance-payment-domain"
-          readonlyIf="statusSelect == 3" form-view="invoice-form" grid-view="invoice-grid"/>
+          readonlyIf="statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 11)"
+          form-view="invoice-form" grid-view="invoice-grid"/>
       </panel>
       <panel title="Printing" name="printingPanel" colSpan="12">
         <field name="printingSettings" canEdit="false"/>
@@ -891,7 +895,7 @@ InvoiceSet.length > 0))"
       <button name="validateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-on-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
-        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
+        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
@@ -975,6 +979,7 @@ InvoiceSet.length > 0))"
 								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
 							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
@@ -992,6 +997,7 @@ InvoiceSet.length > 0))"
 									{typeSelect == 5 && <span> {_t('On')} </span>}
 									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+									{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
 								</Box>
 								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
@@ -1243,7 +1249,8 @@ InvoiceSet.length > 0))"
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
         onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
-      <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
+      <button name="ventilateBtn" title="Ventilate"
+        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
@@ -2023,7 +2030,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
     <attribute name="hidden" for="cancelBtn"
-      expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
+      expr="((operationSubTypeSelect == 2 || operationSubTypeSelect == 11) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-set-partner-domain">

@@ -261,8 +261,11 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
       if (optBudgetLine.isPresent()) {
         BudgetLine budgetLine = optBudgetLine.get();
         BigDecimal amount = budgetDistribution.getAmount();
-        if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+        if (((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                    || invoice.getOperationTypeSelect()
+                        == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+                && invoice.getOperationSubTypeSelect()
+                    == InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND)
             || invoice.getOperationSubTypeSelect()
                 == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
           amount = amount.negate();

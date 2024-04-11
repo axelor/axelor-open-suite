@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -680,7 +681,16 @@ public class InvoiceController {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      String domain = Beans.get(InvoiceService.class).createAdvancePaymentInvoiceSetDomain(invoice);
+      String domain = "";
+      if (invoice.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+        domain =
+            Beans.get(AdvancePaymentRefundService.class)
+                .createAdvancePaymentInvoiceSetDomain(invoice);
+      } else {
+        domain = Beans.get(InvoiceService.class).createAdvancePaymentInvoiceSetDomain(invoice);
+      }
+
       response.setAttr("advancePaymentInvoiceSet", "domain", domain);
 
     } catch (Exception e) {
@@ -701,9 +711,17 @@ public class InvoiceController {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      Set<Invoice> invoices =
-          Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice);
-      response.setValue("advancePaymentInvoiceSet", invoices);
+      if (invoice.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+        Set<Invoice> invoices =
+            Beans.get(AdvancePaymentRefundService.class).getDefaultAdvancePaymentInvoice(invoice);
+        response.setValue("advancePaymentInvoiceSet", invoices);
+      } else {
+        Set<Invoice> invoices =
+            Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice);
+        response.setValue("advancePaymentInvoiceSet", invoices);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

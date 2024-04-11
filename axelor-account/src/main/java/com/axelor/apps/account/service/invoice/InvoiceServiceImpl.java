@@ -228,7 +228,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         };
 
     Invoice invoice1 = invoiceGenerator.generate();
-    invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    if (invoice.getOperationSubTypeSelect()
+        != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+      invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    }
+
     invoice1.setInvoiceProductStatement(
         invoiceProductStatementService.getInvoiceProductStatement(invoice1));
     return invoice1;
@@ -266,7 +270,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
-    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        || (List.of(
+                    InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
+                    InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+                .contains(invoice.getOperationTypeSelect())
+            && invoice.getOperationSubTypeSelect()
+                == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)) {
       ventilate(invoice);
     }
   }
@@ -760,6 +770,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             + "AND self.currency = :_currency "
             + "AND self.operationTypeSelect = :_operationTypeSelect "
             + "AND self.internalReference IS NULL";
+
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo

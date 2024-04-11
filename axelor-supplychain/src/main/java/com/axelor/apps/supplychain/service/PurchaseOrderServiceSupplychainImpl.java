@@ -48,6 +48,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.RefundService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -77,6 +78,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected CurrencyScaleService currencyScaleService;
+  protected RefundService refundService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -89,7 +91,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PurchaseOrderLineService purchaseOrderLineService,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      RefundService refundService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -101,6 +104,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.currencyScaleService = currencyScaleService;
+    this.refundService = refundService;
   }
 
   @Override
@@ -189,7 +193,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return total;
     }
     for (Invoice advance : advancePaymentInvoiceList) {
-      total = total.add(advance.getAmountPaid());
+      BigDecimal advancePaymentAmount = advance.getAmountPaid();
+      advancePaymentAmount =
+          advancePaymentAmount.subtract(refundService.getRefundPaidAmount(advance));
+      total = total.add(advancePaymentAmount);
     }
     return total;
   }

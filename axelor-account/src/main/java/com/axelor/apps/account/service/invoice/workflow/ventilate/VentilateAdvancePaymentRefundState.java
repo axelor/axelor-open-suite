@@ -72,11 +72,9 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
     setPartnerAccount();
     setInvoiceId();
     updatePaymentSchedule();
+    updateAdvancePaymentAmounts();
     // we don't create the move
     // and the invoice stays validated
-    updateAdvancePaymentAmounts();
-    setStatus();
-    setVentilatedLog();
 
     workflowService.afterVentilation(invoice);
   }

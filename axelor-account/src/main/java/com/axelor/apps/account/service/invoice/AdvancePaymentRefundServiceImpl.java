@@ -9,12 +9,18 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundService {
 
@@ -61,6 +67,58 @@ public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundServ
     }
   }
 
+  @Override
+  public String createAdvancePaymentInvoiceSetDomain(Invoice refund) throws AxelorException {
+    Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(refund);
+    String domain = "self.id IN (" + StringHelper.getIdListString(invoices) + ")";
+
+    return domain;
+  }
+
+  @Override
+  public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice refund) throws AxelorException {
+    Set<Invoice> advancePaymentInvoices;
+
+    Company company = refund.getCompany();
+    Currency currency = refund.getCurrency();
+    Partner partner = refund.getPartner();
+    if (company == null
+        || currency == null
+        || partner == null
+        || refund.getStatusSelect() != InvoiceRepository.STATUS_DRAFT) {
+      return new HashSet<>();
+    }
+    String filter = writeGeneralFilterForAdvancePayment();
+    filter +=
+        " AND self.partner = :_partner "
+            + "AND self.currency = :_currency "
+            + "AND self.operationTypeSelect = :_operationTypeSelect "
+            + "AND self.internalReference IS NULL "
+            + "AND self.amountRemaining > 0";
+
+    Integer operationTypeSelect =
+        refund.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+
+    advancePaymentInvoices =
+        new HashSet<>(
+            invoiceRepository
+                .all()
+                .filter(filter)
+                .bind("_status", InvoiceRepository.STATUS_VALIDATED)
+                .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+                .bind("_operationTypeSelect", operationTypeSelect)
+                .bind("_partner", partner)
+                .bind("_currency", currency)
+                .fetch());
+    return advancePaymentInvoices;
+  }
+
+  protected String writeGeneralFilterForAdvancePayment() {
+    return "self.statusSelect = :_status" + " AND self.operationSubTypeSelect = :_operationSubType";
+  }
+
   protected List<Invoice> getAdvancePaymentList(Invoice refund) {
     List<Invoice> advancePaymentList = new ArrayList<>();
 
@@ -72,6 +130,10 @@ public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundServ
         && refund.getOriginalInvoice().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
         && refund.getOriginalInvoice().getStatusSelect() == InvoiceRepository.STATUS_VALIDATED) {
       advancePaymentList.add(refund.getOriginalInvoice());
+    }
+    List<Invoice> refundAdvancePaymentList = new ArrayList<>(refund.getAdvancePaymentInvoiceSet());
+    if (!ObjectUtils.isEmpty(refundAdvancePaymentList)) {
+      advancePaymentList.addAll(refundAdvancePaymentList);
     }
 
     String filter =
