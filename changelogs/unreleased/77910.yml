@@ -1,0 +1,2 @@
+title: "Invoice: fix invoice term amount remaining on invoice payment move"
+module: axelor-account
