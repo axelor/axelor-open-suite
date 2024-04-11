@@ -690,16 +690,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           && invoicePayment.getCurrency().equals(invoiceTerm.getCurrency())) {
         paidAmount = invoiceTermPayment.getPaidAmount();
       } else {
-        paidAmount = invoiceTermPayment.getCompanyPaidAmount();
-        if (invoicePayment != null
-            && invoicePayment.getCurrency().equals(invoiceTerm.getCompanyCurrency())) {
-          paidAmount =
-              currencyService.getAmountCurrencyConvertedAtDate(
-                  invoicePayment.getCurrency(),
-                  invoiceTerm.getCurrency(),
-                  invoiceTermPayment.getCompanyPaidAmount(),
-                  invoicePayment.getPaymentDate());
-        }
+        paidAmount = this.computePaidAmount(invoiceTermPayment, invoicePayment, invoiceTerm);
       }
       paidAmount = paidAmount.add(invoiceTermPayment.getFinancialDiscountAmount());
 
@@ -730,6 +721,36 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       invoiceTermFinancialDiscountService.computeAmountRemainingAfterFinDiscount(invoiceTerm);
     }
+  }
+
+  protected BigDecimal computePaidAmount(
+      InvoiceTermPayment invoiceTermPayment, InvoicePayment invoicePayment, InvoiceTerm invoiceTerm)
+      throws AxelorException {
+    Currency currency = null;
+    boolean needConvert = true;
+
+    BigDecimal paidAmount = invoiceTermPayment.getCompanyPaidAmount();
+    Currency invoiceTermCompanyCurrency = invoiceTerm.getCompanyCurrency();
+
+    if (invoicePayment != null && invoicePayment.getCurrency().equals(invoiceTermCompanyCurrency)) {
+      currency = invoicePayment.getCurrency();
+    } else if (invoicePayment == null
+        && !invoiceTerm.getCurrency().equals(invoiceTermCompanyCurrency)) {
+      currency = invoiceTermCompanyCurrency;
+    } else {
+      needConvert = false;
+    }
+
+    if (needConvert) {
+      paidAmount =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              currency,
+              invoiceTerm.getCurrency(),
+              invoiceTermPayment.getCompanyPaidAmount(),
+              invoiceTerm.getDueDate());
+    }
+
+    return paidAmount;
   }
 
   @Override
