@@ -51,7 +51,7 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
   @Override
   protected Integer getMediaTypeSelect(Template template) {
 
-    if (template.getMediaTypeSelect() == TemplateRepository.MEDIA_TYPE_EMAILING
+    if (template.getMediaTypeSelect() == TemplateRepository.MEDIA_TYPE_EMAIL
         && Beans.get(AppService.class).isApp("marketing")) {
       return MessageRepository.MEDIA_TYPE_EMAIL;
     }
