@@ -14,7 +14,6 @@ import com.axelor.db.EntityHelper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.helpers.ContextHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -93,11 +92,11 @@ public class InvoicingPaymentSituationController {
 
   protected Partner getPartner(
       ActionRequest request, InvoicingPaymentSituation invoicingPaymentSituation) {
-    if (invoicingPaymentSituation != null && invoicingPaymentSituation.getPartner() != null) {
-      return invoicingPaymentSituation.getPartner();
+    if (request.getContext().getParent() != null
+        && Partner.class.equals(request.getContext().getParent().getContextClass())) {
+      return EntityHelper.getEntity(request.getContext().getParent().asType(Partner.class));
     }
 
-    return EntityHelper.getEntity(
-        ContextHelper.getContextParent(request.getContext(), Partner.class, 1));
+    return invoicingPaymentSituation.getPartner();
   }
 }
