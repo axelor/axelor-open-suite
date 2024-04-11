@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="TrackingNumber">
+    <integer name="originMoveTypeSelect" title="Move origin type"
+      selection="stock.tracking.number.origin.move.type.select" default="0"
+      help="This field can have one of the following values (Purchase, Manufacturing, Inventory, Sale, Manual). The value is fixed when the tracking number is created."/>
+
+    <many-to-one name="originStockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"
+      title="Origin stock move line"/>
+    <many-to-one name="originPurchaseOrderLine"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Origin purchase order line"/>
+    <many-to-one name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Origin sale order line"/>
+    <many-to-one name="originInventory" ref="com.axelor.apps.stock.db.Inventory"
+      title="Origin inventory"/>
+
+  </entity>
+
+</domain-models>
