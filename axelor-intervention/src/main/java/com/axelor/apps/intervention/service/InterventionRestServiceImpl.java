@@ -13,7 +13,6 @@ import com.axelor.apps.intervention.rest.dto.InterventionStatusPutRequest;
 import com.axelor.apps.intervention.service.helper.InterventionHelper;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -25,15 +24,18 @@ public class InterventionRestServiceImpl implements InterventionRestService {
   protected final InterventionService interventionService;
   protected final UserRepository userRepository;
   protected final EquipmentRepository equipmentRepository;
+  protected final InterventionSurveyGenerator interventionSurveyGenerator;
 
   @Inject
   public InterventionRestServiceImpl(
       InterventionService interventionService,
       UserRepository userRepository,
-      EquipmentRepository equipmentRepository) {
+      EquipmentRepository equipmentRepository,
+      InterventionSurveyGenerator interventionSurveyGenerator) {
     this.interventionService = interventionService;
     this.userRepository = userRepository;
     this.equipmentRepository = equipmentRepository;
+    this.interventionSurveyGenerator = interventionSurveyGenerator;
   }
 
   @Override
@@ -183,8 +185,6 @@ public class InterventionRestServiceImpl implements InterventionRestService {
     if (intervention.getStatusSelect().compareTo(InterventionRepository.INTER_STATUS_PLANNED) >= 0
         && InterventionHelper.isSurveyGenerated(intervention)) {
       ControllerCallableTool<Integer> controllerCallableTool = new ControllerCallableTool<>();
-      InterventionSurveyGenerator interventionSurveyGenerator =
-          Beans.get(InterventionSurveyGenerator.class);
       interventionSurveyGenerator.configure(intervention);
       controllerCallableTool.runInSeparateThread(interventionSurveyGenerator, null);
     }
