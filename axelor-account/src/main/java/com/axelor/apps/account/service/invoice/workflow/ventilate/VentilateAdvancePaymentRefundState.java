@@ -24,18 +24,20 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
+import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 public class VentilateAdvancePaymentRefundState extends VentilateState {
+
+  protected AdvancePaymentRefundService advancePaymentRefundService;
 
   @Inject
   public VentilateAdvancePaymentRefundState(
@@ -48,7 +50,9 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
       UserService userService,
       FixedAssetGenerationService fixedAssetGenerationService,
       InvoiceTermService invoiceTermService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      InvoiceJournalService invoiceJournalService,
+      AdvancePaymentRefundService advancePaymentRefundService) {
     super(
         sequenceService,
         moveCreateFromInvoiceService,
@@ -59,7 +63,9 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
         userService,
         fixedAssetGenerationService,
         invoiceTermService,
-        accountingSituationService);
+        accountingSituationService,
+        invoiceJournalService);
+    this.advancePaymentRefundService = advancePaymentRefundService;
   }
 
   @Override
@@ -80,6 +86,6 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
   }
 
   protected void updateAdvancePaymentAmounts() throws AxelorException {
-    Beans.get(AdvancePaymentRefundService.class).updateAdvancePaymentAmounts(invoice);
+    advancePaymentRefundService.updateAdvancePaymentAmounts(invoice);
   }
 }
