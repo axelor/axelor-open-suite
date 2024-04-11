@@ -249,7 +249,7 @@
   <action-record name="action-stock-location-record-set-stock-location-value-btn"
     model="com.axelor.apps.stock.db.StockLocation">
     <field name="$stockLocationValueBtn"
-      expr="eval: __user__.language.empty ? java.text.NumberFormat.getInstance(Locale.US).format(stockLocationValue): java.text.NumberFormat.getInstance(Locale.forLanguageTag(__user__.language)).format(stockLocationValue)"/>
+      expr="call:com.axelor.apps.base.service.user.UserLocaleHelper:formatNumberWithLocale(stockLocationValue)"/>
   </action-record>
 
   <action-view name="action-stock-location-view-show-form-view" title="Stock location"
