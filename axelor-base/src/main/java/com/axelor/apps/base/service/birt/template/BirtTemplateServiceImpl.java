@@ -47,7 +47,7 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
 
     ReportSettings settings = generate(template, model, context, outputName, toAttach, format);
 
-    return settings.getFileLink();
+    return settings.generate().getFileLink();
   }
 
   @Override
@@ -64,7 +64,7 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
 
     ReportSettings settings = generate(template, model, null, outputName, toAttach, format);
 
-    return settings.getFile();
+    return settings.generate().getFile();
   }
 
   @Override
@@ -83,7 +83,7 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
             .withFormat(format)
             .build();
 
-    return settings.getFile();
+    return settings.generate().getFile();
   }
 
   @Override
