@@ -107,7 +107,7 @@ public class InterventionRestServiceImpl implements InterventionRestService {
   protected void suspend(Intervention intervention, InterventionStatusPutRequest request)
       throws AxelorException {
     suspendAndFinishCheck(intervention, request);
-    interventionService.start(intervention, request.getDateTime());
+    interventionService.suspend(intervention, request.getDateTime());
   }
 
   protected void finish(Intervention intervention, InterventionStatusPutRequest request)
