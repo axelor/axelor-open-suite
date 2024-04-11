@@ -15,11 +15,14 @@
     <panel name="mainPanel" colSpan="12">
       <field name="company" readonlyIf="activeUmr || (umrList &amp;&amp; umrList.length != 0)"
         onSelect="action-method-invoicing-payment-situation-company-onselect"/>
-      <field name="activeUmr"
-        onSelect="action-method-invoicing-payment-situation-umr-onselect"
-        onChange="action-method-invoicing-payment-situation-umr-onchange" canNew="true"/>
-      <panel-related name="umrListPanel" readonly="true" field="umrList"
-        title="History" colSpan="12"/>
+      <panel name="sepaDirectDebitPanel" title="SEPA Direct Debit" colSpan="12"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment">
+        <field name="activeUmr"
+          onSelect="action-method-invoicing-payment-situation-umr-onselect"
+          onChange="action-method-invoicing-payment-situation-umr-onchange" canNew="true"/>
+        <panel-related name="umrListPanel" readonly="true" field="umrList"
+          title="History" colSpan="12"/>
+      </panel>
     </panel>
   </form>
 

@@ -15,6 +15,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +61,7 @@ public class InvoicingPaymentSituationController {
     Partner partner = getPartner(request, invoicingPaymentSituation);
 
     response.setValue("partner", partner);
+    response.setValue("umrList", new ArrayList<>());
 
     Company defaultCompany =
         Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
@@ -82,6 +84,7 @@ public class InvoicingPaymentSituationController {
 
     List<Umr> umrList = invoicingPaymentSituation.getUmrList();
     Umr umr = invoicingPaymentSituation.getActiveUmr();
+
     if (umr != null && (ObjectUtils.isEmpty(umrList) || !umrList.contains(umr))) {
       umrList.add(umr);
       response.setValue("umrList", umrList);
