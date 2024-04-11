@@ -1,6 +1,7 @@
 package com.axelor.apps.intervention.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.db.Intervention;
@@ -9,8 +10,10 @@ import com.axelor.apps.intervention.exception.InterventionExceptionMessage;
 import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.apps.intervention.rest.dto.InterventionEquipmentPutRequest;
 import com.axelor.apps.intervention.rest.dto.InterventionStatusPutRequest;
+import com.axelor.apps.intervention.service.helper.InterventionHelper;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -144,8 +147,8 @@ public class InterventionRestServiceImpl implements InterventionRestService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void addEquipment(InterventionEquipmentPutRequest request, Intervention intervention)
-      throws AxelorException {
+  public Intervention addEquipment(
+      InterventionEquipmentPutRequest request, Intervention intervention) throws AxelorException {
     Equipment equipment = equipmentRepository.find(request.getEquipmentId());
     if (equipment == null) {
       throw new AxelorException(
@@ -155,12 +158,13 @@ public class InterventionRestServiceImpl implements InterventionRestService {
               request.getEquipmentId()));
     }
     intervention.addEquipmentSetItem(equipment);
+    return intervention;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void removeEquipment(InterventionEquipmentPutRequest request, Intervention intervention)
-      throws AxelorException {
+  public Intervention removeEquipment(
+      InterventionEquipmentPutRequest request, Intervention intervention) throws AxelorException {
     Equipment equipment = equipmentRepository.find(request.getEquipmentId());
     if (equipment == null) {
       throw new AxelorException(
@@ -170,5 +174,19 @@ public class InterventionRestServiceImpl implements InterventionRestService {
               request.getEquipmentId()));
     }
     intervention.removeEquipmentSetItem(equipment);
+    return intervention;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateSurvey(Intervention intervention) {
+    if (intervention.getStatusSelect().compareTo(InterventionRepository.INTER_STATUS_PLANNED) >= 0
+        && InterventionHelper.isSurveyGenerated(intervention)) {
+      ControllerCallableTool<Integer> controllerCallableTool = new ControllerCallableTool<>();
+      InterventionSurveyGenerator interventionSurveyGenerator =
+          Beans.get(InterventionSurveyGenerator.class);
+      interventionSurveyGenerator.configure(intervention);
+      controllerCallableTool.runInSeparateThread(interventionSurveyGenerator, null);
+    }
   }
 }

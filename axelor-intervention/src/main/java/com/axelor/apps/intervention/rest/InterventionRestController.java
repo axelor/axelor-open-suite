@@ -66,7 +66,8 @@ public class InterventionRestController {
     InterventionRestService interventionRestService = Beans.get(InterventionRestService.class);
     Intervention intervention =
         ObjectFinder.find(Intervention.class, interventionId, request.getVersion());
-    interventionRestService.addEquipment(request, intervention);
+    intervention = interventionRestService.addEquipment(request, intervention);
+    interventionRestService.updateSurvey(intervention);
 
     return ResponseConstructor.build(
         Response.Status.OK,
@@ -89,7 +90,8 @@ public class InterventionRestController {
     InterventionRestService interventionRestService = Beans.get(InterventionRestService.class);
     Intervention intervention =
         ObjectFinder.find(Intervention.class, interventionId, request.getVersion());
-    interventionRestService.removeEquipment(request, intervention);
+    intervention = interventionRestService.removeEquipment(request, intervention);
+    interventionRestService.updateSurvey(intervention);
 
     return ResponseConstructor.build(
         Response.Status.OK,
