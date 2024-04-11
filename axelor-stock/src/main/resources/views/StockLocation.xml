@@ -60,7 +60,7 @@
   <form name="stock-location-form" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation"
     onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued" width="large"
-    onLoad="action-stock-location-method-set-stock-location-value,action-stock-location-record-set-stock-location-value-Btn">
+    onLoad="action-stock-location-method-set-stock-location-value,action-stock-location-record-set-stock-location-value-btn">
     <toolbar>
       <button name="createInventoryBtn" title="Create inventory"
         onClick="action-location-view-create-inventory"/>
@@ -246,10 +246,10 @@
       method="setStocklocationValue"/>
   </action-method>
 
-  <action-record name="action-stock-location-record-set-stock-location-value-Btn"
+  <action-record name="action-stock-location-record-set-stock-location-value-btn"
     model="com.axelor.apps.stock.db.StockLocation">
     <field name="$stockLocationValueBtn"
-      expr="eval: java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(stockLocationValue)"/>
+      expr="eval: __user__.language.empty ? java.text.NumberFormat.getInstance(Locale.US).format(stockLocationValue): java.text.NumberFormat.getInstance(Locale.forLanguageTag(__user__.language)).format(stockLocationValue)"/>
   </action-record>
 
   <action-view name="action-stock-location-view-show-form-view" title="Stock location"
@@ -330,8 +330,8 @@
 
   <action-group name="action-stock-location-group-type-select-on-change">
     <action name="action-stock-location-attrs-set-isOutsourcingLocation"/>
-    <action
-      name="action-stock-set-partner-domain-attrs,action-stock-location-attrs-set-is-valued"/>
+    <action name="action-stock-set-partner-domain-attrs"/>
+    <action name="action-stock-location-attrs-set-is-valued"/>
     <action name="action-stock-location-record-empty-site"/>
   </action-group>
 
