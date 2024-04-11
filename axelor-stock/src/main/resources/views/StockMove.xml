@@ -224,8 +224,8 @@
     onSave="action-stock-move-group-save-and-update-stocks">
 
     <toolbar>
-      <button name="sendNotifBtn" title="Send notification" hidden="true" showIf="statusSelect == 4"
-              onClick="action-stock-move-view-open-notification-wizard"/>
+      <button name="sendNotifBtn" title="Send notification" hidden="true"
+        showIf="statusSelect == 4" onClick="action-stock-move-view-open-notification-wizard"/>
       <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
     <menubar>
