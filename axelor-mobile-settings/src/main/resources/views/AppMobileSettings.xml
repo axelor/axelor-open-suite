@@ -62,6 +62,8 @@
     </panel>
     <panel-tabs name="appConfigPanelTab">
       <panel name="generalUserPanel" title="General" colSpan="12">
+        <field name="isOneLineShortcut" widget="boolean-radio" x-true-text="Line"
+          x-false-text="isOneLineShortcut.Grid"/>
         <field name="mobileShortcutList" title="Shortcut management" colSpan="12"/>
         <field name="mobileDashboardList" title="Dashboard management" colSpan="12"/>
       </panel>

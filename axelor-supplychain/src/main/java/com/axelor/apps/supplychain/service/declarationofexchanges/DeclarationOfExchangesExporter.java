@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.dms.db.DMSFile;
@@ -62,7 +62,7 @@ public abstract class DeclarationOfExchangesExporter {
 
   protected List<String> columnHeadersList;
   protected SupplyChainConfigService supplyChainConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   public DeclarationOfExchangesExporter(
       DeclarationOfExchanges declarationOfExchanges,
