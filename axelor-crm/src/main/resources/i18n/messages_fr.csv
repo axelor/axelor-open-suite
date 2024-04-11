@@ -482,6 +482,7 @@
 "Please fill default partner status in App CRM configuration.","Merci de renseigner le statut par défaut pour les tiers dans la configuration de l'App CRM.",,
 "Please fill lost lead status in App CRM configuration.","Merci de définir le statut ""Piste perdue"" dans la configuration de l'application CRM",,
 "Please fill sales proposition status in App CRM configuration.","Merci de renseigner l'étape de proposition commerciale dans la configuration de l'App CRM.",,
+"Please make sure the opportunity was saved before generating the contract.","Veuillez vous assurer que l'opportunité a été enregistrée avant de générer le contrat.",,
 "Please save the event before setting the recurrence","Veuillez sauvegarder l’évènement avant de définir la récurrence",,
 "Please select a customer to be able to convert opportunity into contract.","Veuillez sélectionner un client pour pouvoir convertir l'opportunité en contrat.",,
 "Please select a lead",,,

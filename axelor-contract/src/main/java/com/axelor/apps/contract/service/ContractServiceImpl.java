@@ -53,6 +53,7 @@ import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -84,6 +85,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   protected ContractLineRepository contractLineRepo;
   protected ContractRepository contractRepository;
+
+  protected OpportunityRepository opportunityRepository;
   protected TaxService taxService;
   protected ContractVersionRepository contractVersionRepository;
   protected InvoiceRepository invoiceRepository;
@@ -104,7 +107,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       InvoiceRepository invoiceRepository,
       InvoiceService invoiceService,
       AnalyticLineModelService analyticLineModelService,
-      ContractYearEndBonusService contractYearEndBonusService) {
+      ContractYearEndBonusService contractYearEndBonusService,
+      OpportunityRepository opportunityRepository) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -117,6 +121,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.invoiceService = invoiceService;
     this.analyticLineModelService = analyticLineModelService;
     this.contractYearEndBonusService = contractYearEndBonusService;
+    this.opportunityRepository = opportunityRepository;
   }
 
   @Override
@@ -905,17 +910,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Contract generateContractFromOpportunity(
       Opportunity opportunity, ContractTemplate contractTemplate) {
     Contract contract = new Contract();
-    Currency currency = null;
+    Currency currency = opportunity.getCurrency();
     Company company = opportunity.getCompany();
-    if (opportunity.getCurrency() != null) {
-      currency = opportunity.getCurrency();
-    } else if (opportunity.getPartner() != null && opportunity.getPartner().getCurrency() != null) {
+    if (currency == null && opportunity.getPartner() != null) {
       currency = opportunity.getPartner().getCurrency();
-    } else if (company != null) {
+    }
+    if (currency == null && company != null) {
       currency = company.getCurrency();
     }
 
@@ -933,9 +937,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           contractTemplate1.getAdditionalBenefitContractLineList());
     }
 
-    JPA.save(contract);
+    contractRepository.save(contract);
     opportunity.setContractGenerated(true);
-    JPA.save(opportunity);
+    opportunityRepository.save(opportunity);
     return contract;
   }
 }
