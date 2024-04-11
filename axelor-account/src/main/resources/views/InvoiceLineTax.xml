@@ -28,10 +28,6 @@
       <field name="inTaxTotal"/>
       <field name="imputedAccount"/>
       <field name="vatSystemSelect" readonly="true"/>
-      <field name="subTotalExcludingFixedAssets" hidden="true"/>
-      <field name="subTotalOfFixedAssets" hidden="true"/>
-      <field name="companySubTotalExcludingFixedAssets" hidden="true"/>
-      <field name="companySubTotalOfFixedAssets" hidden="true"/>
     </panel>
   </form>
 
