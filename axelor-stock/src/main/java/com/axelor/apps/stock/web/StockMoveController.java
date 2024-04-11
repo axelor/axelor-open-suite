@@ -43,6 +43,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -184,6 +186,32 @@ public class StockMoveController {
               Beans.get(StockMoveRepository.class).find(stockMove.getId()),
               stockMove.getCancelReason());
       response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void sendSupplierArrivalCancellationMessage(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Optional<Long> stockMoveID =
+          Optional.ofNullable(context)
+              .map(context1 -> context1.get("_id"))
+              .map(o -> ((Integer) o).longValue());
+      Optional<Integer> supplierArrivalCancellationMessageTemplateID =
+          Optional.ofNullable(context)
+              .map(ctx -> ctx.get("supplierArrivalCancellationMessageTemplate"))
+              .map(hash -> ((LinkedHashMap<?, ?>) hash).get("id"))
+              .map(Integer.class::cast);
+      if (!supplierArrivalCancellationMessageTemplateID.isPresent() || !stockMoveID.isPresent()) {
+        return;
+      }
+      Beans.get(StockMoveService.class)
+          .sendSupplierCancellationMail(
+              Beans.get(StockMoveRepository.class).find(stockMoveID.get()),
+              Beans.get(TemplateRepository.class)
+                  .find(supplierArrivalCancellationMessageTemplateID.get().longValue()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
