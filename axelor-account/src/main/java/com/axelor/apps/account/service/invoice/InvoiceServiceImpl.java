@@ -84,6 +84,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -289,7 +290,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
-          && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+          && !Arrays.asList(
+                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
+              .contains(invoice.getOperationSubTypeSelect())) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,

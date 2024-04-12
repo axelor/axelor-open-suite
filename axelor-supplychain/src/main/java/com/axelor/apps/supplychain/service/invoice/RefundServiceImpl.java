@@ -48,7 +48,7 @@ public class RefundServiceImpl implements RefundService {
                 InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND,
                 advancePayment,
                 advancePayment.getId(),
-                InvoiceRepository.STATUS_VENTILATED)
+                InvoiceRepository.STATUS_VALIDATED)
             .fetch();
 
     return refundList;
