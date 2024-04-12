@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -414,5 +415,12 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && moveLine.getAccount().getAccountType() != null
         && AccountTypeRepository.TYPE_TAX.equals(
             moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
+  }
+
+  @Override
+  public void setIsNonDeductibleTax(MoveLine moveLine, Tax tax) {
+    if (tax.getIsNonDeductibleTax()) {
+      moveLine.setIsNonDeductibleTax(true);
+    }
   }
 }

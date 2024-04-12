@@ -922,7 +922,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
     Set<TaxLine> taxLineSet =
         moveLine.getTaxLineSet().stream()
-            .filter(it -> it.getTax().getIsNonDeductibleTax())
+            .filter(it -> !it.getTax().getIsNonDeductibleTax())
             .collect(Collectors.toSet());
 
     return lineTotal

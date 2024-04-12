@@ -1106,6 +1106,7 @@ public class IrrecoverableService {
             3,
             moveLine.getMove().getOrigin() + ":" + irrecoverableName,
             moveLine.getDescription());
+    moveLineToolService.setIsNonDeductibleTax(creditMoveLine2, tax);
     move.getMoveLineList().add(creditMoveLine2);
 
     return move;

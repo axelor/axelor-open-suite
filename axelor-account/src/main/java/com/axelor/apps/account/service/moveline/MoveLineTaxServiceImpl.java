@@ -304,12 +304,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             || accountType.equals(AccountTypeRepository.TYPE_INCOME)
             || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
 
-    boolean taxLineCondition =
-        CollectionUtils.isEmpty(moveLine.getTaxLineSet())
-            || moveLine.getTaxLineSet().size() != 1
-            || !moveLine.getTaxLineSet().iterator().next().getTax().getIsNonDeductibleTax();
-
-    return accountTypeCondition && taxLineCondition;
+    return accountTypeCondition && !moveLine.getIsNonDeductibleTax();
   }
 
   @Override

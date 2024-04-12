@@ -507,6 +507,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
         moveLine.setTaxCode(tax.getCode());
         moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
+        moveLineToolService.setIsNonDeductibleTax(moveLine, tax);
         moveLines.add(moveLine);
       }
     }
@@ -994,6 +995,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     moveLine.setSourceTaxLineSet(Sets.newHashSet(taxLine));
     moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
     moveLine.setDescription(move.getDescription());
+    moveLineToolService.setIsNonDeductibleTax(moveLine, taxLine.getTax());
     return moveLine;
   }
 
