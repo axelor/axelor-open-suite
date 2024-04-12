@@ -3,31 +3,25 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
-  <grid name="tracking-number-grid" title="Tracking number"
-    model="com.axelor.apps.stock.db.TrackingNumber" extension="true"
-    id="supplychain-tracking-number-grid">
-    <extend target="//field[@name='supplier']">
-      <insert position="after">
-        <field name="originMoveTypeSelect" widget="single-select"/>
-      </insert>
-    </extend>
-  </grid>
-
-
   <form name="tracking-number-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber" id="supplychain-tracking-number-form"
     extension="true">
-    <extend target="//panel[@name='barcodePanel']">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventory']">
       <insert position="after">
-        <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
-          <field name="originMoveTypeSelect" widget="single-select" colSpan="12"/>
-          <field name="createdBy" colSpan="6"/>
-          <field name="createdOn" colSpan="6"/>
-          <field name="originStockMoveLine"/>
-          <field name="originPurchaseOrderLine"/>
-          <field name="originSaleOrderLine"/>
-          <field name="originInventory"/>
-        </panel>
+        <field name="originPurchaseOrderLine"/>
+        <field name="originSaleOrderLine"/>
+      </insert>
+    </extend>
+  </form>
+
+
+  <form name="tracking-number-stock-move-line-form" title="Tracking number"
+    id="supplychain-tracking-number-stock-move-line-form"
+    model="com.axelor.apps.stock.db.TrackingNumber" extension="true">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventory']">
+      <insert position="after">
+        <field name="originPurchaseOrderLine"/>
+        <field name="originSaleOrderLine"/>
       </insert>
     </extend>
   </form>
