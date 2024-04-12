@@ -1058,8 +1058,9 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_4_REFUND_ADVANCE_PAYMENT = /*$$(*/
       "Credit notes from advance payment %s" /*)*/;
   public static final String INVOICE_4_ADVANCE_PAYMENT_REFUND = /*$$(*/
-      "Advance payment from refund %s" /*)*/;
-  public static final String INVOICE_4_INVOICE_REFUND = /*$$(*/ "Invoice from refund %s" /*)*/;
+      "Advance payment from credit note %s" /*)*/;
+  public static final String INVOICE_4_INVOICE_REFUND = /*$$(*/
+      "Invoice from credit notes %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
 

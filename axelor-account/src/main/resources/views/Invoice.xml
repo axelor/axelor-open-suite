@@ -434,8 +434,8 @@
 	                        		{operationSubTypeSelect == 5 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Contract closing invoice')}</Badge>}
 	                        		{operationSubTypeSelect == 6 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Subscription')}</Badge>}
 	                        		{operationSubTypeSelect == 7 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Periodic contract')}</Badge>}
-	                        		{operationSubTypeSelect == 10 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard refund')}</Badge>}
-	                        		{operationSubTypeSelect == 11 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment refund')}</Badge>}
+	                        		{operationSubTypeSelect == 10 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard credit note')}</Badge>}
+	                        		{operationSubTypeSelect == 11 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
 
 	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
 	                        	</Box>
