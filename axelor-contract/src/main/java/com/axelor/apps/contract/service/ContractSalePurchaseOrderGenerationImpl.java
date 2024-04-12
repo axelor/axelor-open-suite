@@ -3,14 +3,18 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -19,34 +23,48 @@ import com.google.inject.persist.Transactional;
 public class ContractSalePurchaseOrderGenerationImpl
     implements ContractSalePurchaseOrderGeneration {
 
+  protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected AnalyticMoveLineRepository analyticMoveLineRepo;
   protected SaleOrderCreateService saleOrderCreateService;
+  protected SaleOrderComputeService saleOrderComputeService;
+  protected PurchaseOrderService purchaseOrderService;
 
   @Inject
   public ContractSalePurchaseOrderGenerationImpl(
+      AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       AnalyticMoveLineRepository analyticMoveLineRepo,
-      SaleOrderCreateService saleOrderCreateService) {
+      SaleOrderCreateService saleOrderCreateService,
+      SaleOrderComputeService saleOrderComputeService,
+      PurchaseOrderService purchaseOrderService) {
+    this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.analyticMoveLineRepo = analyticMoveLineRepo;
     this.saleOrderCreateService = saleOrderCreateService;
+    this.saleOrderComputeService = saleOrderComputeService;
+    this.purchaseOrderService = purchaseOrderService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateSaleOrder(Contract contract) throws AxelorException {
+    Partner clientPartner = contract.getPartner();
 
     SaleOrder saleOrder = saleOrderCreateService.createSaleOrder(contract.getCompany());
     saleOrder.setCurrency(contract.getCurrency());
-    saleOrder.setClientPartner(contract.getPartner());
+    saleOrder.setClientPartner(clientPartner);
     saleOrder.setInvoicedPartner(contract.getInvoicedPartner());
     saleOrder.setPaymentMode(contract.getCurrentContractVersion().getPaymentMode());
     saleOrder.setPaymentCondition(contract.getInvoicedPartner().getPaymentCondition());
     saleOrder.setContract(contract);
+
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+      saleOrder.setDeliveredPartner(clientPartner);
+    }
 
     for (ContractLine contractLine : contract.getCurrentContractVersion().getContractLineList()) {
       createSaleOrderLineFromContractLine(contractLine, saleOrder);
@@ -55,6 +73,7 @@ public class ContractSalePurchaseOrderGenerationImpl
     for (ContractLine contractLine : contract.getAdditionalBenefitContractLineList()) {
       createSaleOrderLineFromContractLine(contractLine, saleOrder);
     }
+    saleOrderComputeService.computeSaleOrder(saleOrder);
     return saleOrderRepository.save(saleOrder);
   }
 
@@ -79,6 +98,7 @@ public class ContractSalePurchaseOrderGenerationImpl
       createPurchaseOrderLineFromContractLine(contractLine, purchaseOrder);
     }
 
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
     return purchaseOrderRepository.save(purchaseOrder);
   }
 
