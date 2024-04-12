@@ -562,6 +562,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
   }
 
+  public void sendSupplierCancellationMail(StockMove stockMove, Template template)
+      throws AxelorException {
+    sendMailForStockMove(stockMove, template);
+  }
   /**
    * Generate and send mail. Throws exception if the template is not found or if there is an error
    * while generating the message.

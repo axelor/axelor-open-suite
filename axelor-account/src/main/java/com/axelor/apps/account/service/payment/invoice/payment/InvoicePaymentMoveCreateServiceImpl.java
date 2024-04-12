@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -270,24 +271,23 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
 
-    BigDecimal currencyRate =
-        currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
     companyPaymentAmount =
-        companyPaymentAmount.subtract(
-            invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));
-
+        companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
+    BigDecimal currencyRate =
+        this.computeCurrencyRate(
+            companyPaymentAmount,
+            paymentAmount,
+            invoice.getCurrency(),
+            invoicePayment.getCurrency(),
+            invoice.getCompany().getCurrency(),
+            invoice.getMove());
     companyPaymentAmount =
         invoiceTermService.adjustAmountInCompanyCurrency(
             invoice.getInvoiceTermList(),
             invoice.getCompanyInTaxTotalRemaining(),
             companyPaymentAmount,
             paymentAmount,
-            invoice.getMove() != null
-                ? invoice.getMove().getMoveLineList().stream()
-                    .map(MoveLine::getCurrencyRate)
-                    .findAny()
-                    .orElse(BigDecimal.ONE)
-                : BigDecimal.ONE,
+            currencyRate,
             company);
 
     move.addMoveLineListItem(
@@ -362,5 +362,27 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       accountingSituationService.updateCustomerCredit(invoice.getPartner());
       invoicePaymentRepository.save(invoicePayment);
     }
+  }
+
+  protected BigDecimal computeCurrencyRate(
+      BigDecimal companyPaymentAmount,
+      BigDecimal paymentAmount,
+      Currency invoiceCurrency,
+      Currency paymentCurrency,
+      Currency companyCurrency,
+      Move invoiceMove) {
+    BigDecimal currencyRate =
+        currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
+
+    if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
+      return invoiceMove != null
+          ? invoiceMove.getMoveLineList().stream()
+              .map(MoveLine::getCurrencyRate)
+              .findAny()
+              .orElse(currencyRate)
+          : currencyRate;
+    }
+
+    return currencyRate;
   }
 }
