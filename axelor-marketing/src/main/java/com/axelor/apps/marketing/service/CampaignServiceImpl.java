@@ -41,29 +41,29 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
+import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class CampaignServiceImpl implements CampaignService {
 
-  protected TemplateMessageMarketingService templateMessageMarketingService;
-
   protected EventRepository eventRepo;
+  protected MessageService messageService;
+  protected TemplateMessageService templateMessageService;
 
   @Inject
   public CampaignServiceImpl(
-      TemplateMessageService templateMessageService,
       EventRepository eventRepo,
-      TemplateMessageMarketingService templateMessageMarketingService) {
-    this.templateMessageMarketingService = templateMessageMarketingService;
+      MessageService messageService,
+      TemplateMessageService templateMessageService) {
     this.eventRepo = eventRepo;
+    this.messageService = messageService;
+    this.templateMessageService = templateMessageService;
   }
 
   public MetaFile sendEmail(Campaign campaign) {
 
     String errorPartners = "";
     String errorLeads = "";
-
-    templateMessageMarketingService.setEmailAccount(campaign.getEmailAccount());
 
     if (campaign.getPartnerTemplate() != null) {
       errorPartners =
@@ -86,8 +86,6 @@ public class CampaignServiceImpl implements CampaignService {
 
     String errorPartners = "";
     String errorLeads = "";
-
-    templateMessageMarketingService.setEmailAccount(campaign.getEmailAccount());
 
     if (campaign.getPartnerReminderTemplate() != null) {
       errorPartners =
@@ -113,7 +111,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, partner, template);
-      } catch (ClassNotFoundException | IOException | JSONException e) {
+      } catch (ClassNotFoundException | IOException | JSONException | MessagingException e) {
         errors.append(partner.getName() + "\n");
         e.printStackTrace();
       }
@@ -130,7 +128,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, lead, template);
-      } catch (ClassNotFoundException | IOException | JSONException e) {
+      } catch (ClassNotFoundException | IOException | JSONException | MessagingException e) {
         errors.append(lead.getName() + "\n");
         e.printStackTrace();
       }
@@ -141,10 +139,13 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
-      throws ClassNotFoundException, IOException, JSONException {
-    Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
-    Beans.get(MessageService.class)
-        .addMessageRelatedTo(message, Campaign.class.getCanonicalName(), campaign.getId());
+      throws ClassNotFoundException, IOException, JSONException, MessagingException {
+    Message message = templateMessageService.generateMessage(model, template);
+    message.setMailAccount(campaign.getEmailAccount());
+
+    messageService.sendByEmail(message);
+    messageService.addMessageRelatedTo(
+        message, Campaign.class.getCanonicalName(), campaign.getId());
   }
 
   protected MetaFile generateLog(
