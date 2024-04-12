@@ -421,7 +421,8 @@
     <field name="partnerCategory" form-view="partner-category-form"
       grid-view="partner-category-grid"/>
     <field name="user"/>
-    <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="companyStr"/>
+    <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="companySet"
+      widget="TagSelect"/>
     <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
     <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="scheduleEventBtn"
       title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event"/>
@@ -431,7 +432,7 @@
 
   <grid id="crm-partner-grid" name="partner-grid" title="Partners"
     model="com.axelor.apps.base.db.Partner" orderBy="name" extension="true">
-    <extend target="//field[@name='companyStr']">
+    <extend target="//field[@name='companySet']">
       <insert position="after">
         <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
       </insert>

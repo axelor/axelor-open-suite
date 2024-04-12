@@ -6,6 +6,9 @@
   <form name="mrp-manuf-order-form" model="com.axelor.apps.supplychain.db.Mrp" title="MPS"
     width="large" onLoad="action-attrs-mrp-generate-all-proposals"
     onNew="action-mrp-manuf-order-record-onnew">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <menubar>
       <menu title="Tools" showTitle="true" icon="fa-wrench">
         <item name="runCalculationItem" title="Run calculation" showIf="statusSelect != 1"
@@ -78,6 +81,9 @@
   </form>
 
   <grid name="mrp-manuf-order-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <hilite if="statusSelect == 1" strong="true" color="warning"/>
     <hilite if="statusSelect == 2" strong="true" color="success"/>
     <field name="mrpSeq" title="MPS number"/>

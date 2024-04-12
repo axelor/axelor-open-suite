@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -156,40 +155,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   // WKF
-
-  public Journal getJournal(Invoice invoice) throws AxelorException {
-
-    Company company = invoice.getCompany();
-    if (company == null) return null;
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    // Taken from legacy JournalService but negative cases seem rather strange
-    switch (invoice.getOperationTypeSelect()) {
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getSupplierCreditNoteJournal(accountConfig)
-            : accountConfigService.getSupplierPurchaseJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getSupplierPurchaseJournal(accountConfig)
-            : accountConfigService.getSupplierCreditNoteJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getCustomerCreditNoteJournal(accountConfig)
-            : accountConfigService.getCustomerSalesJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getCustomerSalesJournal(accountConfig)
-            : accountConfigService.getCustomerCreditNoteJournal(accountConfig);
-      default:
-        throw new AxelorException(
-            invoice,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(AccountExceptionMessage.JOURNAL_1),
-            invoice.getInvoiceId());
-    }
-  }
 
   /**
    * Fonction permettant de calculer l'intégralité d'une facture :

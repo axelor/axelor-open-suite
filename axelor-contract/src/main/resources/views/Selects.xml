@@ -70,4 +70,8 @@
     <option value="500">Contract batch</option>
   </selection>
 
+  <selection name="base.pricing.type.select" id="contract.base.pricing.type.select">
+    <option value="YEB/YER">YEB/YER</option>
+  </selection>
+
 </object-views>

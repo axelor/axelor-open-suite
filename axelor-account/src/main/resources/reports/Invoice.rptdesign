@@ -636,20 +636,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="heading">originalInvoiceId</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">StockMoveRealDate</property>
-                    <property name="alias">StockMoveRealDate</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">StockMoveRealDate</text-property>
-                    <text-property name="heading">StockMoveRealDate</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">StockMoveSeq</property>
-                    <property name="alias">StockMoveSeq</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">StockMoveSeq</text-property>
-                    <text-property name="heading">StockMoveSeq</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">isAppSupplyChainActive</property>
                     <property name="alias">isAppSupplyChainActive</property>
                     <property name="analysis">measure</property>
@@ -707,6 +693,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="columnName">tableFontSize</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">tableFontSize</text-property>
                     <text-property name="heading">tableFontSize</text-property>
                 </structure>
@@ -1050,66 +1037,56 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     </structure>
                     <structure>
                         <property name="position">63</property>
-                        <property name="name">StockMoveRealDate</property>
-                        <property name="dataType">date</property>
-                    </structure>
-                    <structure>
-                        <property name="position">64</property>
-                        <property name="name">StockMoveSeq</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">65</property>
                         <property name="name">isAppSupplyChainActive</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">66</property>
+                        <property name="position">64</property>
                         <property name="name">isStockMoveEmpty</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">67</property>
+                        <property name="position">65</property>
                         <property name="name">displayStockMoveOnInvoicePrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">68</property>
+                        <property name="position">66</property>
                         <property name="name">legal_notice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">69</property>
+                        <property name="position">67</property>
                         <property name="name">supplierVatSystemSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">70</property>
+                        <property name="position">68</property>
                         <property name="name">companyVatSystemSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">71</property>
+                        <property name="position">69</property>
                         <property name="name">display_siren</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">72</property>
+                        <property name="position">70</property>
                         <property name="name">invoice_product_statement</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">73</property>
+                        <property name="position">71</property>
                         <property name="name">displayItemsCategoriesOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">74</property>
+                        <property name="position">72</property>
                         <property name="name">tableFontSize</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">75</property>
+                        <property name="position">73</property>
                         <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1558,90 +1535,76 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="position">63</property>
-                    <property name="name">StockMoveRealDate</property>
-                    <property name="nativeName">StockMoveRealDate</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
-                </structure>
-                <structure>
-                    <property name="position">64</property>
-                    <property name="name">StockMoveSeq</property>
-                    <property name="nativeName">StockMoveSeq</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">65</property>
                     <property name="name">isAppSupplyChainActive</property>
                     <property name="nativeName">isAppSupplyChainActive</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">66</property>
+                    <property name="position">64</property>
                     <property name="name">isStockMoveEmpty</property>
                     <property name="nativeName">isStockMoveEmpty</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">67</property>
+                    <property name="position">65</property>
                     <property name="name">displayStockMoveOnInvoicePrinting</property>
                     <property name="nativeName">displayStockMoveOnInvoicePrinting</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">68</property>
+                    <property name="position">66</property>
                     <property name="name">legal_notice</property>
                     <property name="nativeName">legal_notice</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">69</property>
+                    <property name="position">67</property>
                     <property name="name">supplierVatSystemSelect</property>
                     <property name="nativeName">supplierVatSystemSelect</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">70</property>
+                    <property name="position">68</property>
                     <property name="name">companyVatSystemSelect</property>
                     <property name="nativeName">companyVatSystemSelect</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">71</property>
+                    <property name="position">69</property>
                     <property name="name">display_siren</property>
                     <property name="nativeName">display_siren</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">72</property>
+                    <property name="position">70</property>
                     <property name="name">invoice_product_statement</property>
                     <property name="nativeName">invoice_product_statement</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">73</property>
+                    <property name="position">71</property>
                     <property name="name">displayItemsCategoriesOnPrinting</property>
                     <property name="nativeName">displayItemsCategoriesOnPrinting</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">74</property>
+                    <property name="position">72</property>
                     <property name="name">tableFontSize</property>
                     <property name="nativeName">tableFontSize</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">75</property>
+                    <property name="position">73</property>
                     <property name="name">number_of_decimals</property>
                     <property name="nativeName">number_of_decimals</property>
                     <property name="dataType">integer</property>
@@ -1717,8 +1680,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
     ContactPartner.title_select as "contactPartnerTitleSelect",
     Invoice.original_invoice as "originalInvoice",
     OriginalInvoice.invoice_id as "originalInvoiceId",
-    StockMove.real_date as "StockMoveRealDate",
-    StockMove.stock_move_seq as "StockMoveSeq",
     AppSupplychain.active as "isAppSupplyChainActive",
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
@@ -1751,7 +1712,6 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join stock_stock_move as StockMove on (StockMove.id = InvoiceStockMove.stock_move_set)
 left outer join account_accounting_situation as SupplierAccountingSituation on  Partner.id = SupplierAccountingSituation.partner
 left outer join account_accounting_situation as CompanyAccountingSituation on  CompanyPartner.id = CompanyAccountingSituation.partner
 where Invoice.id = ?
@@ -2034,11 +1994,11 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
 FROM (
     SELECT
     	Invoice.id as inv_id,
-        TaxLine.value, 
-        InvoiceLineTax.ex_tax_base, 
-        InvoiceLineTax.tax_total, 
+        TaxLine.value,
+        InvoiceLineTax.ex_tax_base,
+        InvoiceLineTax.tax_total,
         Currency.number_of_decimals,
-        MetaSelectItem.title AS tax_type, 
+        MetaSelectItem.title AS tax_type,
         TaxType.name AS tax_type_name,
         TaxType.code as tax_type_code,
         Tax.code AS tax_code,
@@ -4334,10 +4294,103 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select TaxLine.value,Tax.code
-from account_invoice_line_tax_line_set as InvoiceLineTaxLine  
+from account_invoice_line_tax_line_set as InvoiceLineTaxLine
 left outer join account_tax_line as TaxLine on (TaxLine.id = InvoiceLineTaxLine.tax_line_set)
 left outer join account_tax as Tax on (Tax.id = TaxLine.tax)
 where InvoiceLineTaxLine.account_invoice_line = ?;]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="StockMoveSet" id="6059">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">StockMoveRealDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">StockMoveRealDate</text-property>
+                    <text-property name="heading">StockMoveRealDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">StockMoveSeq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">StockMoveSeq</text-property>
+                    <text-property name="heading">StockMoveSeq</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">InvoiceId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">StockMoveRealDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">StockMoveSeq</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">StockMoveRealDate</property>
+                    <property name="nativeName">StockMoveRealDate</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">StockMoveSeq</property>
+                    <property name="nativeName">StockMoveSeq</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT
+	StockMove.real_date AS "StockMoveRealDate",
+    StockMove.stock_move_seq AS "StockMoveSeq"
+
+FROM account_invoice AS Invoice
+
+LEFT JOIN account_invoice_stock_move_set AS InvoiceStockMove
+ON InvoiceStockMove.invoice_set = Invoice.id
+
+LEFT JOIN stock_stock_move AS StockMove
+ON StockMove.id = InvoiceStockMove.stock_move_set
+
+WHERE Invoice.id = ?;]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -4944,18 +4997,6 @@ where InvoiceLineTaxLine.account_invoice_line = ?;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">StockMoveRealDate</property>
-                    <text-property name="displayName">StockMoveRealDate</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
-                    <property name="dataType">date</property>
-                </structure>
-                <structure>
-                    <property name="name">StockMoveSeq</property>
-                    <text-property name="displayName">StockMoveSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">isAppSupplyChainActive</property>
                     <text-property name="displayName">isAppSupplyChainActive</text-property>
                     <expression name="expression" type="javascript">dataSetRow["isAppSupplyChainActive"]</expression>
@@ -5020,18 +5061,6 @@ where InvoiceLineTaxLine.account_invoice_line = ?;]]></xml-property>
                     <text-property name="displayName">invoiceCoefficientEnabled</text-property>
                     <expression name="expression" type="javascript">dataSetRow["invoiceCoefficientEnabled"]</expression>
                     <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">_stockMoveRealDate</property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
-                    <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">_stockMoveSeq</property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
@@ -6617,169 +6646,38 @@ row["partnerFirstName"]
                 <cell id="5747">
                     <property name="colSpan">8</property>
                     <property name="rowSpan">1</property>
-                    <data id="6103">
-                        <property name="backgroundAttachment">scroll</property>
-                        <property name="backgroundPositionX">0%</property>
-                        <property name="backgroundPositionY">0%</property>
-                        <property name="backgroundRepeat">repeat</property>
-                        <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="fontStyle">normal</property>
-                        <property name="fontVariant">normal</property>
-                        <property name="color">black</property>
-                        <property name="textLineThrough">none</property>
-                        <property name="textOverline">none</property>
-                        <property name="textUnderline">none</property>
-                        <property name="borderBottomColor">black</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderBottomWidth">medium</property>
-                        <property name="borderLeftColor">black</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderLeftWidth">medium</property>
-                        <property name="borderRightColor">black</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderRightWidth">medium</property>
-                        <property name="borderTopColor">black</property>
-                        <property name="borderTopStyle">none</property>
-                        <property name="borderTopWidth">medium</property>
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">0pt</property>
-                        <property name="marginBottom">0pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="paddingTop">5pt</property>
-                        <property name="paddingLeft">0pt</property>
-                        <property name="paddingBottom">1pt</property>
-                        <property name="paddingRight">1pt</property>
-                        <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
-                        </structure>
-                        <property name="textAlign">left</property>
-                        <property name="letterSpacing">normal</property>
-                        <property name="lineHeight">normal</property>
-                        <property name="orphans">2</property>
-                        <property name="textTransform">none</property>
-                        <property name="whiteSpace">normal</property>
-                        <property name="widows">2</property>
-                        <property name="wordSpacing">normal</property>
-                        <property name="display">inline</property>
-                        <property name="pageBreakAfter">auto</property>
-                        <property name="pageBreakBefore">auto</property>
-                        <property name="pageBreakInside">auto</property>
-                        <property name="showIfBlank">false</property>
-                        <property name="canShrink">false</property>
-                        <property name="overflow">hidden</property>
-                        <property name="resultSetColumn">_stockMoveRealDate</property>
-                    </data>
-                    <text id="6104">
-                        <property name="backgroundAttachment">scroll</property>
-                        <property name="backgroundPositionX">0%</property>
-                        <property name="backgroundPositionY">0%</property>
-                        <property name="backgroundRepeat">repeat</property>
-                        <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="fontStyle">normal</property>
-                        <property name="fontVariant">normal</property>
-                        <property name="color">black</property>
-                        <property name="textLineThrough">none</property>
-                        <property name="textOverline">none</property>
-                        <property name="textUnderline">none</property>
-                        <property name="borderBottomColor">black</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderBottomWidth">medium</property>
-                        <property name="borderLeftColor">black</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderLeftWidth">medium</property>
-                        <property name="borderRightColor">black</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderRightWidth">medium</property>
-                        <property name="borderTopColor">black</property>
-                        <property name="borderTopStyle">none</property>
-                        <property name="borderTopWidth">medium</property>
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">0pt</property>
-                        <property name="marginBottom">0pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="paddingTop">5pt</property>
-                        <property name="paddingLeft">1pt</property>
-                        <property name="paddingBottom">1pt</property>
-                        <property name="paddingRight">1pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="textIndent">0em</property>
-                        <property name="letterSpacing">normal</property>
-                        <property name="lineHeight">normal</property>
-                        <property name="orphans">2</property>
-                        <property name="textTransform">none</property>
-                        <property name="whiteSpace">normal</property>
-                        <property name="widows">2</property>
-                        <property name="wordSpacing">normal</property>
-                        <property name="display">inline</property>
-                        <property name="pageBreakAfter">auto</property>
-                        <property name="pageBreakBefore">auto</property>
-                        <property name="pageBreakInside">auto</property>
-                        <property name="showIfBlank">false</property>
-                        <property name="canShrink">false</property>
-                        <property name="overflow">hidden</property>
-                        <property name="contentType">auto</property>
-                        <text-property name="content"><![CDATA[-]]></text-property>
-                    </text>
-                    <data id="6105">
-                        <property name="backgroundAttachment">scroll</property>
-                        <property name="backgroundPositionX">0%</property>
-                        <property name="backgroundPositionY">0%</property>
-                        <property name="backgroundRepeat">repeat</property>
-                        <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="fontStyle">normal</property>
-                        <property name="fontVariant">normal</property>
-                        <property name="color">black</property>
-                        <property name="textLineThrough">none</property>
-                        <property name="textOverline">none</property>
-                        <property name="textUnderline">none</property>
-                        <property name="borderBottomColor">black</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderBottomWidth">medium</property>
-                        <property name="borderLeftColor">black</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderLeftWidth">medium</property>
-                        <property name="borderRightColor">black</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderRightWidth">medium</property>
-                        <property name="borderTopColor">black</property>
-                        <property name="borderTopStyle">none</property>
-                        <property name="borderTopWidth">medium</property>
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">0pt</property>
-                        <property name="marginBottom">0pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="paddingTop">5pt</property>
-                        <property name="paddingLeft">1pt</property>
-                        <property name="paddingBottom">1pt</property>
-                        <property name="paddingRight">1pt</property>
-                        <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
-                        </structure>
-                        <property name="textAlign">left</property>
-                        <property name="letterSpacing">normal</property>
-                        <property name="lineHeight">normal</property>
-                        <property name="orphans">2</property>
-                        <property name="textTransform">none</property>
-                        <property name="whiteSpace">normal</property>
-                        <property name="widows">2</property>
-                        <property name="wordSpacing">normal</property>
-                        <property name="display">inline</property>
-                        <property name="pageBreakAfter">auto</property>
-                        <property name="pageBreakBefore">auto</property>
-                        <property name="pageBreakInside">auto</property>
-                        <property name="showIfBlank">false</property>
-                        <property name="canShrink">false</property>
-                        <property name="overflow">hidden</property>
-                        <property name="resultSetColumn">_stockMoveSeq</property>
-                    </data>
+                    <table id="6118">
+                        <property name="dataSet">StockMoveSet</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">StockMoveRealDate</property>
+                                <text-property name="displayName">StockMoveRealDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">StockMoveSeq</property>
+                                <text-property name="displayName">StockMoveSeq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <column id="6125"/>
+                        <detail>
+                            <row id="6121">
+                                <cell id="6122">
+                                    <text id="6126">
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="MM/dd/yyyy">
+if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VALUE-OF>
+<VALUE-OF format="dd/MM/yyyy">if(params["__locale"].value.substring(0, 2) != 'en')row["StockMoveRealDate"]</VALUE-OF> - 
+<VALUE-OF>row["StockMoveSeq"]</VALUE-OF>
+]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </detail>
+                    </table>
                 </cell>
             </row>
             <row id="5350">
@@ -8828,18 +8726,6 @@ else{ 1.00 }
                     <property name="name">originalInvoiceId</property>
                     <text-property name="displayName">originalInvoiceId</text-property>
                     <expression name="expression" type="javascript">dataSetRow["originalInvoiceId"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">StockMoveRealDate</property>
-                    <text-property name="displayName">StockMoveRealDate</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
-                    <property name="dataType">date</property>
-                </structure>
-                <structure>
-                    <property name="name">StockMoveSeq</property>
-                    <text-property name="displayName">StockMoveSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -11208,18 +11094,6 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">StockMoveRealDate</property>
-                                    <text-property name="displayName">StockMoveRealDate</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
-                                    <property name="dataType">date</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">StockMoveSeq</property>
-                                    <text-property name="displayName">StockMoveSeq</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
                                     <property name="name">isAppSupplyChainActive</property>
                                     <text-property name="displayName">isAppSupplyChainActive</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["isAppSupplyChainActive"]</expression>
@@ -12714,18 +12588,6 @@ else {'Invoice.totalTaxes'}</value>
                     <property name="name">originalInvoiceId</property>
                     <text-property name="displayName">originalInvoiceId</text-property>
                     <expression name="expression" type="javascript">dataSetRow["originalInvoiceId"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">StockMoveRealDate</property>
-                    <text-property name="displayName">StockMoveRealDate</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
-                    <property name="dataType">date</property>
-                </structure>
-                <structure>
-                    <property name="name">StockMoveSeq</property>
-                    <text-property name="displayName">StockMoveSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>

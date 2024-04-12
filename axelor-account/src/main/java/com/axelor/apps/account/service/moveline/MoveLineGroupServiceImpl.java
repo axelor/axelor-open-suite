@@ -18,9 +18,12 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -30,11 +33,17 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveLineService moveLineService;
@@ -51,6 +60,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected AnalyticAttrsService analyticAttrsService;
   protected MoveCutOffService moveCutOffService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected FiscalPositionService fiscalPositionService;
+  protected TaxService taxService;
 
   @Inject
   public MoveLineGroupServiceImpl(
@@ -67,7 +78,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveAttrsService moveAttrsService,
       AnalyticAttrsService analyticAttrsService,
       MoveCutOffService moveCutOffService,
-      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
 
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -83,6 +96,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.analyticAttrsService = analyticAttrsService;
     this.moveCutOffService = moveCutOffService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.fiscalPositionService = fiscalPositionService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -534,6 +549,43 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getTaxLineOnChangesValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
+    TaxEquiv taxEquiv = null;
+    FiscalPosition fiscalPosition = move.getFiscalPosition();
+
+    Map<String, Object> valuesMap = new HashMap<>();
+    if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
+      valuesMap.put("taxLineBeforeReverseSet", Sets.newHashSet());
+      valuesMap.put("taxEquiv", null);
+      return valuesMap;
+    }
+    taxEquiv = moveLine.getTaxEquiv();
+
+    Set<TaxLine> fromTaxSet = moveLine.getTaxLineBeforeReverseSet();
+    if (taxEquiv != null && !taxLineSet.equals(taxEquiv.getToTaxSet())) {
+      Set<TaxLine> toTaxSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), moveLine.getDate());
+      taxLineSet.stream().filter(Predicate.not(toTaxSet::contains)).forEach(fromTaxSet::add);
+      toTaxSet.stream().filter(Predicate.not(taxLineSet::contains)).forEach(fromTaxSet::remove);
+    } else {
+      fromTaxSet = taxLineSet;
+    }
+    taxEquiv = fiscalPositionService.getTaxEquivFromTaxLines(fiscalPosition, fromTaxSet);
+    if (taxEquiv != null) {
+      taxLineSet =
+          taxService.getTaxLineSet(
+              fiscalPositionService.getTaxSet(fiscalPosition, taxService.getTaxSet(fromTaxSet)),
+              moveLine.getDate());
+    }
+
+    valuesMap.put("taxLineBeforeReverseSet", fromTaxSet);
+    valuesMap.put("taxLineSet", taxLineSet);
+    valuesMap.put("taxEquiv", taxEquiv);
     return valuesMap;
   }
 }

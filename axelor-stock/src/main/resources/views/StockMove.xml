@@ -6,7 +6,7 @@
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
     <toolbar>
-      <button name="printStockMoveGridBtn" title="Print StockMove(s)"
+      <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
         onClick="action-stock-move-group-merge"/>
@@ -54,7 +54,7 @@
   <grid name="stock-move-out-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
-      <button name="printStockMoveGridBtn" title="Print StockMove(s)"
+      <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
         onClick="action-print-picking-stock-move" icon="fa-print"/>
@@ -122,7 +122,7 @@
   <grid name="stock-move-out-availability-req-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
-      <button name="printStockMoveGridBtn" title="Print StockMove(s)"
+      <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
         onClick="action-print-picking-stock-move" icon="fa-print"/>
@@ -163,7 +163,7 @@
   <grid name="stock-move-in-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
-      <button name="printStockMoveGridBtn" title="Print StockMove(s)"
+      <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
         onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
@@ -222,6 +222,12 @@
     width="large" onLoad="action-group-stock-stockmove-onload"
     onNew="action-group-stock-stockmove-onnew"
     onSave="action-stock-move-group-save-and-update-stocks">
+
+    <toolbar>
+      <button name="sendNotifBtn" title="Send notification" hidden="true"
+        showIf="statusSelect == 4" onClick="action-stock-move-view-open-notification-wizard"/>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <menubar>
       <menu name="stockMoveReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printInternalMoveItem" title="Print Internal Move"
@@ -902,6 +908,7 @@
       if="partner?.partnerAddressList?.size() > 1"/>
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
+    <action name="action-stock-move-attrs-show-send-notif-button"/>
   </action-group>
 
   <action-group name="action-stock-move-line-change-group">
@@ -1401,6 +1408,10 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
     <context name="_xApplicationType" expr="eval: _model"/>
+    <context name="_supplierArrivalCancellationAutomaticMail"
+      expr="eval: supplierArrivalCancellationAutomaticMail"/>
+    <context name="_supplierArrivalCancellationMessageTemplate"
+      expr="eval: supplierArrivalCancellationMessageTemplate"/>
   </action-view>
 
   <form name="stock-move-cancel-wizard-form" model="com.axelor.apps.stock.db.StockMove"
@@ -1562,8 +1573,7 @@
 
   <action-group name="action-stock-move-group-print-stock-move">
     <action name="action-stock-move-validate-printing-settings"/>
-    <action name="action-method-print-birt" if="id"/>
-    <action name="action-method-print-birt-list" if="!id"/>
+    <action name="action-group-print-template"/>
   </action-group>
 
   <action-validate name="action-stock-move-validate-printing-settings">
@@ -1585,4 +1595,33 @@
   <action-method name="action-stock-move-method-merge">
     <call class="com.axelor.apps.stock.web.StockMoveMergingController" method="mergeStockMoves"/>
   </action-method>
+
+  <action-attrs name="action-stock-move-attrs-show-send-notif-button">
+    <attribute for="sendNotifBtn" name="hidden"
+      expr="eval: !(_typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !_isReversion &amp;&amp; statusSelect == 4)"/>
+  </action-attrs>
+
+  <form title="Choose a template" name="stock-move-send-notification-wizard-form"
+    model="com.axelor.utils.db.Wizard" canSave="false" canNew="false">
+    <panel name="mainPanel">
+      <field name="$supplierArrivalCancellationMessageTemplate" type="many-to-one"
+        target="com.axelor.message.db.Template" title="Message template" required="true" colSpan="6"
+        widget="SuggestBox" domain="self.metaModel.name = 'StockMove'"/>
+      <button name="sendNotifBtn" title="Send notification"
+        onClick="action-stock-move-method-send-notification" colSpan="6"/>
+    </panel>
+  </form>
+
+  <action-view name="action-stock-move-view-open-notification-wizard"
+    title="Choose a template" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="stock-move-send-notification-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+  </action-view>
+
+  <action-method name="action-stock-move-method-send-notification">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="sendSupplierArrivalCancellationMessage"/>
+  </action-method>
+
 </object-views>

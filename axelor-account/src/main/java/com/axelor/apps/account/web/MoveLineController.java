@@ -18,11 +18,8 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -46,8 +43,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
@@ -57,16 +52,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.google.common.collect.Sets;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -359,60 +351,11 @@ public class MoveLineController {
 
   public void updateTaxEquiv(ActionRequest request, ActionResponse response) {
     try {
-      Context parentContext = request.getContext().getParent();
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      if (parentContext != null) {
-        Move move = parentContext.asType(Move.class);
-        Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
-        Set<TaxLine> newTaxLineSet =
-            ObjectUtils.notEmpty(taxLineSet) ? Sets.newHashSet(taxLineSet) : Sets.newHashSet();
-        Set<TaxLine> taxLineBeforeReverseSet = new HashSet<>();
-
-        TaxEquiv taxEquiv = null;
-        FiscalPosition fiscalPosition = move.getFiscalPosition();
-        FiscalPositionService fiscalPositionService = Beans.get(FiscalPositionService.class);
-        TaxService taxService = Beans.get(TaxService.class);
-
-        if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
-          Map<TaxLine, TaxLine> taxMap = new HashMap<>();
-          if (CollectionUtils.isNotEmpty(moveLine.getTaxLineBeforeReverseSet())) {
-            for (TaxLine taxLineBeforeRev : moveLine.getTaxLineBeforeReverseSet()) {
-              taxEquiv =
-                  fiscalPositionService.getTaxEquiv(fiscalPosition, taxLineBeforeRev.getTax());
-              if (taxEquiv != null) {
-                TaxLine fromTax = taxEquiv.getToTax().getActiveTaxLine();
-                TaxLine toTax = taxLineBeforeRev;
-
-                // Check if fromTax is present in taxLineSet
-                if (taxLineSet.stream().anyMatch(tl -> tl.equals(fromTax))) {
-                  taxMap.put(fromTax, toTax);
-                } else {
-                  taxLineBeforeReverseSet.remove(taxLineBeforeRev);
-                }
-              }
-            }
-          }
-
-          for (TaxLine taxLine : taxLineSet) {
-            if (taxMap.containsKey(taxLine)) {
-              taxLineBeforeReverseSet.add(taxMap.get(taxLine));
-            } else {
-              taxLineBeforeReverseSet.add(taxLine);
-            }
-            taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, taxLine.getTax());
-            if (taxEquiv != null) {
-              TaxLine newTaxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
-
-              newTaxLineSet.add(newTaxLine);
-              newTaxLineSet.remove(taxLine);
-            }
-          }
-        }
-        response.setValue("taxLineBeforeReverseSet", taxLineBeforeReverseSet);
-        response.setValue("taxLineSet", newTaxLineSet);
-        response.setValue("taxEquiv", taxEquiv);
-      }
+      Move move = getMove(request, moveLine);
+      response.setValues(
+          Beans.get(MoveLineGroupService.class).getTaxLineOnChangesValuesMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
