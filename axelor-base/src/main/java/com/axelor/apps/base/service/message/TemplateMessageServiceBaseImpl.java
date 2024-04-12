@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServi
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
+import com.axelor.message.service.MailMessageActionService;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateContextService;
 import com.axelor.message.service.TemplateMessageServiceImpl;
@@ -55,8 +56,9 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   public TemplateMessageServiceBaseImpl(
       MessageService messageService,
       TemplateContextService templateContextService,
+      MailMessageActionService mailMessageActionService,
       PrintingTemplatePrintService printTemplatePrintService) {
-    super(messageService, templateContextService);
+    super(messageService, templateContextService, mailMessageActionService);
     this.printTemplatePrintService = printTemplatePrintService;
   }
 

@@ -33,6 +33,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
@@ -42,11 +43,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
+import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class CampaignServiceImpl implements CampaignService {
 
-  protected TemplateMessageMarketingService templateMessageMarketingService;
+  protected TemplateMessageService templateMessageService;
   protected MessageService messageService;
   protected TargetListService targetListService;
   protected MetaFiles metaFiles;
@@ -61,8 +63,8 @@ public class CampaignServiceImpl implements CampaignService {
       MetaFiles metaFiles,
       EventRepository eventRepository,
       CampaignRepository campaignRepository,
-      TemplateMessageMarketingService templateMessageMarketingService) {
-    this.templateMessageMarketingService = templateMessageMarketingService;
+      TemplateMessageService templateMessageMarketingService) {
+    this.templateMessageService = templateMessageMarketingService;
     this.messageService = messageService;
     this.targetListService = targetListService;
     this.metaFiles = metaFiles;
@@ -74,8 +76,6 @@ public class CampaignServiceImpl implements CampaignService {
 
     String errorPartners = "";
     String errorLeads = "";
-
-    templateMessageMarketingService.setEmailAccount(campaign.getEmailAccount());
 
     if (campaign.getPartnerTemplate() != null) {
       errorPartners =
@@ -98,8 +98,6 @@ public class CampaignServiceImpl implements CampaignService {
 
     String errorPartners = "";
     String errorLeads = "";
-
-    templateMessageMarketingService.setEmailAccount(campaign.getEmailAccount());
 
     if (campaign.getPartnerReminderTemplate() != null) {
       errorPartners =
@@ -125,7 +123,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, partner, template);
-      } catch (ClassNotFoundException | IOException | JSONException e) {
+      } catch (ClassNotFoundException | IOException | JSONException | MessagingException e) {
         errors.append(partner.getName()).append("\n");
         TraceBackService.trace(e);
       }
@@ -142,7 +140,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, lead, template);
-      } catch (ClassNotFoundException | IOException | JSONException e) {
+      } catch (ClassNotFoundException | IOException | JSONException | MessagingException e) {
         errors.append(lead.getName()).append("\n");
         TraceBackService.trace(e);
       }
@@ -153,8 +151,11 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
-      throws ClassNotFoundException, IOException, JSONException {
-    Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
+      throws ClassNotFoundException, IOException, JSONException, MessagingException {
+    Message message = templateMessageService.generateMessage(model, template);
+    message.setMailAccount(campaign.getEmailAccount());
+
+    messageService.sendByEmail(message);
     messageService.addMessageRelatedTo(
         message, Campaign.class.getCanonicalName(), campaign.getId());
   }
