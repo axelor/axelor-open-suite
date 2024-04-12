@@ -24,6 +24,10 @@
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 
+    <many-to-many name="parentTrackingNumberSet"
+      ref="com.axelor.apps.stock.db.TrackingNumber" title="Parent tracking numbers"/>
+
+
     <unique-constraint columns="product,trackingNumberSeq"/>
 
     <finder-method name="findBySeq" using="trackingNumberSeq"/>

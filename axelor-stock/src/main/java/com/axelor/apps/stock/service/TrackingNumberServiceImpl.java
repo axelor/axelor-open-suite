@@ -20,6 +20,10 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TrackingNumberServiceImpl implements TrackingNumberService {
 
@@ -168,5 +172,29 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
     trackingNumber.setNote(notes);
     trackingNumberRepo.save(trackingNumber);
     return trackingNumber;
+  }
+
+  @Override
+  public Set<TrackingNumber> getOriginParents(TrackingNumber trackingNumber) {
+    Objects.requireNonNull(trackingNumber);
+
+    if (trackingNumber.getParentTrackingNumberSet() != null
+        && !trackingNumber.getParentTrackingNumberSet().isEmpty()) {
+      return getOriginParentsRecursive(trackingNumber);
+    }
+    return Set.of();
+  }
+
+  protected Set<TrackingNumber> getOriginParentsRecursive(TrackingNumber trackingNumber) {
+
+    if (trackingNumber.getParentTrackingNumberSet() != null
+        && !trackingNumber.getParentTrackingNumberSet().isEmpty()) {
+      return trackingNumber.getParentTrackingNumberSet().stream()
+          .map(this::getOriginParentsRecursive)
+          .flatMap(Set::stream)
+          .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    return Set.of(trackingNumber);
   }
 }
