@@ -571,6 +571,8 @@
       <panel name="businessProjectPanel" title="Business project"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         if-module="axelor-business-project">
+        <field name="contract" readonly="true" hidden="true" showIf="contract"
+          form-view="contract-form" grid-view="contract-grid"/>
         <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
           form-view="project-form" grid-view="project-grid" edit-window="blank"
           onChange="action-business-project-sale-order-method-update-lines"/>

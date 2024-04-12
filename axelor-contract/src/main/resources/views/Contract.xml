@@ -215,7 +215,7 @@
         </panel>
       </panel>
       <panel name="invoicingPanel" title="Invoicing" hidden="true"
-        showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
+        showIf="contractTypeSelect == 1 &amp;&amp; isInvoicingManagement &amp;&amp; statusSelect >= 2">
         <field name="invoicePeriodStartDate"
           showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"
           requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"
@@ -429,7 +429,7 @@
         showIf="id &amp;&amp; targetTypeSelect == 1 &amp;&amp; contractTypeSelect == 2"/>
 
       <panel-dashlet name="generatedPurchaseOrdersPanel" title="Purchase orders"
-        action="action-contract-view-generated-purchase-orders"
+        action="action-contract-view-generated-purchase-orders" hidden="true"
         showIf="id &amp;&amp; targetTypeSelect == 2 &amp;&amp; contractTypeSelect == 2"/>
     </panel-tabs>
     <panel-mail name="mailsPanel">
@@ -753,7 +753,7 @@
   </action-view>
 
   <action-view name="action-contract-view-generated-purchase-orders"
-    title="Purchase orders" model="com.axelor.apps.sale.db.PurchaseOrder">
+    title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
     <view type="grid" name="purchase-order-grid"/>
     <view type="form" name="purchase-order-form"/>
     <domain>self.contract.id = :id</domain>
