@@ -116,6 +116,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       InvoiceLine invoiceLine, Map<TaxLineByVatSystem, InvoiceLineTax> map) throws AxelorException {
     Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
     int vatSystem = 0;
+    Account imputedAccount;
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       for (TaxLine taxLine : taxLineSet) {
@@ -132,9 +133,11 @@ public class TaxInvoiceLine extends TaxGenerator {
                   (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
                       || invoice.getOperationTypeSelect()
                           == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
-        }
 
-        Account imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
+          imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
+        } else {
+          imputedAccount = null;
+        }
 
         createOrUpdateInvoiceLineTax(invoiceLine, taxLine, imputedAccount, vatSystem, map);
       }
@@ -156,7 +159,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       }
       if (CollectionUtils.isNotEmpty(taxLineRCSet)) {
         for (TaxLine taxLineRC : taxLineRCSet) {
-          Account imputedAccount = getImputedAccount(invoiceLine, taxLineRC, vatSystem);
+          imputedAccount = getImputedAccount(invoiceLine, taxLineRC, vatSystem);
           createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, imputedAccount, vatSystem, map);
         }
       }
@@ -317,7 +320,9 @@ public class TaxInvoiceLine extends TaxGenerator {
     }
 
     public int hashCode() {
-      return (int) (this.account.getId() * 10000 + this.taxline.getId() * 10 + this.vatSystem);
+      long accountId = Optional.ofNullable(this.account).map(Account::getId).orElse(0L) * 10000;
+
+      return (int) (accountId + this.taxline.getId() * 10 + this.vatSystem);
     }
 
     public boolean equals(Object o) {
@@ -333,7 +338,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
       return this.vatSystem == other.vatSystem
           && this.taxline.equals(other.taxline)
-          && this.account.equals(other.account);
+          && Objects.equals(this.account, other.account);
     }
   }
 }
