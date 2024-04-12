@@ -163,7 +163,8 @@
     <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" title="Unit price"/>
     <field name="saleOrder.currency"/>
     <field name="exTaxTotal" x-scale="saleOrder.currency.numberOfDecimals" title="Total price"/>
-    <field name="amountInvoiced"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
+    <field name="amountInvoiced" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="saleOrder.stockLocation"/>
     <field name="deliveryState"/>
     <field name="estimatedShippingDate"/>
@@ -318,7 +319,7 @@
 
   <action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(saleOrder.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
   <action-attrs
