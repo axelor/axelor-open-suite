@@ -995,7 +995,7 @@ InvoiceSet.length > 0))"
 								</Box>
 								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
 								{financialDiscountTaxAmount == 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountAmount).toFixed(currency.numberOfDecimals)}</Box>}
-							</Box>addUmrInList
+							</Box>
 						}
 					</Box>
 				</>
