@@ -20,14 +20,9 @@ package com.axelor.apps.marketing.service;
 
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
-import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAccount;
-import com.axelor.message.db.Template;
-import com.axelor.message.db.repo.MessageRepository;
-import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateContextService;
-import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -46,17 +41,6 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
       TemplateContextService templateContextService,
       PrintingTemplatePrintService printTemplatePrintService) {
     super(messageService, templateContextService, printTemplatePrintService);
-  }
-
-  @Override
-  protected Integer getMediaTypeSelect(Template template) {
-
-    if (template.getMediaTypeSelect() == TemplateRepository.MEDIA_TYPE_EMAILING
-        && Beans.get(AppService.class).isApp("marketing")) {
-      return MessageRepository.MEDIA_TYPE_EMAIL;
-    }
-
-    return super.getMediaTypeSelect(template);
   }
 
   @Override

@@ -1,7 +1,7 @@
 "name";"mediaTypeSelect";"metaModel.name";localizationSet.importId
-"Invitation Salon";"4";"Partner";2
-"Invitation Webinar";"4";"Partner";2
-"Envoi lien de téléchargement";"4";"Partner";2
-"Invitation Salon";"4";"Lead";2
-"Invitation Webinar";"4";"Lead";2
-"Envoi lien de téléchargement";"4";"Lead";2
+"Invitation Salon";2;"Partner";2
+"Invitation Webinar";2;"Partner";2
+"Envoi lien de téléchargement";2;"Partner";2
+"Invitation Salon";2;"Lead";2
+"Invitation Webinar";2;"Lead";2
+"Envoi lien de téléchargement";2;"Lead";2
