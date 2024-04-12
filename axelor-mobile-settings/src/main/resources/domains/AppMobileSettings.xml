@@ -104,6 +104,7 @@
       ref="com.axelor.apps.mobilesettings.db.MobileDashboard" mappedBy="appMobileSettings"/>
     <one-to-many name="mobileShortcutList" title="Mobile shortcut list"
       ref="com.axelor.apps.mobilesettings.db.MobileShortcut" mappedBy="appMobileSettings"/>
+    <boolean name="isOneLineShortcut" title="Shortcuts display" default="false"/>
 
     <extra-code>
       <![CDATA[

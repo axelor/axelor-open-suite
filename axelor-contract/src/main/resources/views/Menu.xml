@@ -31,7 +31,8 @@
   </action-view>
 
   <menuitem title="YEB/YER Customer contracts" name="contracts-root-yer-customer-all"
-    action="contracts.root.yer.customer.all" parent="contracts-root" order="300"/>
+    action="contracts.root.yer.customer.all" parent="contracts-root" order="300"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <action-view name="contracts.root.yer.customer.all" title="YEB/YER Customer contracts"
     model="com.axelor.apps.contract.db.Contract">
@@ -43,7 +44,8 @@
   </action-view>
 
   <menuitem title="YEB/YER Supplier contracts" name="contracts-root-yer-supplier-all"
-    action="contracts.root.yer.supplier.all" parent="contracts-root" order="400"/>
+    action="contracts.root.yer.supplier.all" parent="contracts-root" order="400"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <action-view name="contracts.root.yer.supplier.all" title="YEB/YER Supplier contracts"
     model="com.axelor.apps.contract.db.Contract">

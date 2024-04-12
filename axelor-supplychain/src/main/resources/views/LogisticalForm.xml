@@ -5,7 +5,7 @@
 
   <action-group name="action-group-logistical-form-print-packing-list">
     <action name="save"/>
-    <action name="action-method-print-birt"/>
+    <action name="action-method-print-template"/>
   </action-group>
 
 

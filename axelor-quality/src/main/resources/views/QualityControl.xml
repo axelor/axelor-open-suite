@@ -8,6 +8,7 @@
     <toolbar>
       <button name="sendEmailBtn" title="Send email"
         onClick="action-quality-control-method-send-email"/>
+      <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
     <field name="reference" width="120"/>
     <field name="name"/>
@@ -26,11 +27,13 @@
     model="com.axelor.apps.quality.db.QualityControl"
     onNew="action-quality-control-group-onnew-actions"
     onLoad="action-quality-control-group-onload-actions">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="save,action-quality-control-validate-printing-settings,action-method-print-template"
+        showIf="statusSelect == 6"/>
+    </toolbar>
     <menubar>
       <menu title="Tools">
-        <item title="Print"
-          action="save,action-quality-control-validate-printing-settings,action-method-print-birt"
-          showIf="statusSelect == 6"/>
         <item title="Send email" action="save,action-quality-control-method-send-email"
           showIf="statusSelect == 6"/>
       </menu>
