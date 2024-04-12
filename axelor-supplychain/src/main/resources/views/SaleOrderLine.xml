@@ -149,30 +149,26 @@
   <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid-menu"
     model="com.axelor.apps.sale.db.SaleOrderLine" edit-icon="false" groupBy="saleOrder"
     canNew="false" canEdit="false">
-    <toolbar>
-      <button name="openSolToInvoiceFormBtn" title="Invoice selected lines"
-        onClick="action-sale-order-line-validate-selected-lines"/>
-    </toolbar>
-    <field name="saleOrder.clientPartner"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.clientPartner" width="200"/>
     <field name="project" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
-    <field name="saleOrder.company"/>
+      if="__config__.app.isApp('business-project')" width="150"/>
+    <field name="saleOrder.company" width="200"/>
     <field name="saleOrder.tradingName"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="product.code"/>
     <field name="productName"/>
-    <field name="qty" x-scale="_nbDecimalDigit"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit"/>
-    <field name="price" x-scale="_nbDecimalDigit"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" title="Unit price"/>
     <field name="saleOrder.currency"/>
-    <field name="exTaxTotal"/>
+    <field name="exTaxTotal" x-scale="saleOrder.currency.numberOfDecimals" title="Total price"/>
     <field name="amountInvoiced"/>
     <field name="saleOrder.stockLocation"/>
     <field name="deliveryState"/>
     <field name="estimatedShippingDate"/>
     <field name="estimatedDeliveryDate"/>
-    <field name="deliveredQty" x-scale="_nbDecimalDigit"/>
-    <field name="priceDiscounted" x-scale="_nbDecimalDigit"/>
+    <field name="deliveredQty" x-scale="$nbDecimalDigitForQty"/>
     <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
   </grid>
 
@@ -372,9 +368,7 @@
 
   <!-- ACTION VALIDATE -->
 
-  <action-validate name="action-sale-order-line-validate-selected-lines">
-    <alert message="No items have been selected. Do you want to continue?" if="!_ids"/>
-  </action-validate>
+
 
   <!-- ACTION METHOD -->
 

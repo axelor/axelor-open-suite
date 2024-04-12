@@ -290,8 +290,6 @@
       (self.invoiced = false OR self.amountInvoiced &lt; self.qty * self.price) AND
       self.saleOrder.statusSelect = 3
     </domain>
-    <context name="_nbDecimalDigit"
-      expr="eval: __config__.app.getApp('base')?.nbDecimalDigitForUnitPrice"/>
   </action-view>
 </object-views>
 
