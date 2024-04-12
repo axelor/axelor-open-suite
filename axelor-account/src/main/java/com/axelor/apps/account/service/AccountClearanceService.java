@@ -186,7 +186,13 @@ public class AccountClearanceService {
 
       Account taxAccount =
           taxAccountService.getAccount(
-              tax, company, journal, vatSystemSelect, false, MoveRepository.FUNCTIONAL_ORIGIN_SALE);
+              tax,
+              company,
+              journal,
+              profitAccount,
+              vatSystemSelect,
+              false,
+              MoveRepository.FUNCTIONAL_ORIGIN_SALE);
       Move move =
           this.createAccountClearanceMove(
               moveLine,

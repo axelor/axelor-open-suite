@@ -306,6 +306,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       Tax tax,
       Company company,
       Journal journal,
+      Account originalAccount,
       int vatSystemSelect,
       int functionalOrigin,
       boolean isFixedAssets)
@@ -328,8 +329,12 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
           }
         } else if (functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
           if (tax.getIsNonDeductibleTax()) {
-            account = accountManagement.getPurchaseAccount();
-            error = AccountExceptionMessage.ACCOUNT_MANAGEMENT_PURCHASE_ACCOUNT_MISSING_TAX;
+            if (accountManagement.getChargeOnOriginalAccount()) {
+              account = originalAccount;
+            } else {
+              account = accountManagement.getPurchaseAccount();
+              error = AccountExceptionMessage.ACCOUNT_MANAGEMENT_PURCHASE_ACCOUNT_MISSING_TAX;
+            }
           } else if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
             account = accountManagement.getPurchaseTaxVatSystem1Account();
             error =
