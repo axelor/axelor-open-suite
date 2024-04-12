@@ -916,6 +916,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               move.getFunctionalOriginSelect());
@@ -930,6 +931,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               move.getFunctionalOriginSelect());
@@ -951,6 +953,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               true,
               move.getFunctionalOriginSelect());

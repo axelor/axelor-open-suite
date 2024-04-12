@@ -35,7 +35,6 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
@@ -51,6 +50,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -108,6 +108,7 @@ public class IrrecoverableService {
 
   protected AppAccountService appAccountService;
   protected CurrencyService currencyService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public IrrecoverableService(
@@ -129,7 +130,8 @@ public class IrrecoverableService {
       InvoiceRepository invoiceRepo,
       ManagementObjectRepository managementObjectRepo,
       IrrecoverableRepository irrecoverableRepo,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      MoveLineToolService moveLineToolService) {
 
     this.sequenceService = sequenceService;
     this.moveToolService = moveToolService;
@@ -151,6 +153,7 @@ public class IrrecoverableService {
 
     this.appAccountService = appAccountService;
     this.currencyService = currencyService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   /**
@@ -932,8 +935,7 @@ public class IrrecoverableService {
                 .getCredit()
                 .multiply(prorataRate)
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        if (AccountTypeRepository.TYPE_TAX.equals(
-            invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+        if (moveLineToolService.isMoveLineTaxAccount(invoiceMoveLine)) {
           if (invoiceMoveLine.getVatSystemSelect() == null
               || invoiceMoveLine.getVatSystemSelect() == 0) {
             throw new AxelorException(
@@ -1088,6 +1090,7 @@ public class IrrecoverableService {
             tax,
             company,
             move.getJournal(),
+            moveLine.getAccount(),
             moveLine.getAccount().getVatSystemSelect(),
             false,
             move.getFunctionalOriginSelect());

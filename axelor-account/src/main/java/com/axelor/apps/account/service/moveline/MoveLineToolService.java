@@ -67,4 +67,6 @@ public interface MoveLineToolService {
   boolean isCutOffActive(MoveLine moveLine);
 
   void setDecimals(MoveLine moveLine, Move move);
+
+  boolean isMoveLineTaxAccount(MoveLine moveLine);
 }

@@ -182,6 +182,7 @@ public class TaxInvoiceLine extends TaxGenerator {
         taxLine.getTax(),
         invoice.getCompany(),
         invoiceJournalService.getJournal(invoice),
+        invoiceLine.getAccount(),
         vatSystem,
         invoiceLine.getFixedAssets(),
         InvoiceToolService.getFunctionalOrigin(invoice));

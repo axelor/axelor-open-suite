@@ -1507,6 +1507,8 @@ public final class AccountExceptionMessage {
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
           "Please select a purchase account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String ACCOUNT_MANAGEMENT_PURCHASE_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a purchase account for non deductible Tax: %s (company: %s)" /*)*/;
 
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/

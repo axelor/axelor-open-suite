@@ -334,8 +334,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && Objects.equals(ml.getVatSystemSelect(), vatSystem)
         && !Objects.equals(ml.getId(), id)
         && ml.getAccount().getAccountType() != null
-        && AccountTypeRepository.TYPE_TAX.equals(
-            ml.getAccount().getAccountType().getTechnicalTypeSelect())
+        && this.isMoveLineTaxAccount(ml)
         && ml.getAccount().equals(account);
   }
 
@@ -407,5 +406,13 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
       moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
     }
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
+    return moveLine.getAccount() != null
+        && moveLine.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 }
