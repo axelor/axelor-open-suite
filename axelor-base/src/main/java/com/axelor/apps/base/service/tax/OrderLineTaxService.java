@@ -21,6 +21,7 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
+import com.axelor.apps.base.interfaces.PricedOrderLine;
 import java.util.Set;
 
 public interface OrderLineTaxService {
@@ -34,4 +35,7 @@ public interface OrderLineTaxService {
       PricedOrder pricedOrder,
       Set<String> specificNotes,
       String partnerNote);
+
+  void addTaxEquivSpecificNote(
+      PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes);
 }

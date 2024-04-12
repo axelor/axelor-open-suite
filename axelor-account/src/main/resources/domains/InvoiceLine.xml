@@ -26,7 +26,7 @@
     <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20"/>
     <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
       title="Taxes"/>
-    <many-to-many name="taxEquivSet" ref="com.axelor.apps.account.db.TaxEquiv"
+    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>

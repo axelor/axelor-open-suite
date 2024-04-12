@@ -36,14 +36,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -99,9 +98,8 @@ public class TaxInvoiceLine extends TaxGenerator {
       if (invoiceLines != null) {
         invoice.setSpecificNotes(
             invoiceLines.stream()
-                .map(InvoiceLine::getTaxEquivSet)
+                .map(InvoiceLine::getTaxEquiv)
                 .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
                 .map(TaxEquiv::getSpecificNote)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -141,36 +139,25 @@ public class TaxInvoiceLine extends TaxGenerator {
         createOrUpdateInvoiceLineTax(invoiceLine, taxLine, imputedAccount, vatSystem, map);
       }
 
-      Set<TaxEquiv> taxEquivSet = invoiceLine.getTaxEquivSet();
+      TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
       AppBaseService appBaseService = Beans.get(AppBaseService.class);
       TaxService taxService = Beans.get(TaxService.class);
-
-      if (ObjectUtils.notEmpty(taxEquivSet)) {
-        for (TaxEquiv taxEquiv : taxEquivSet) {
-          TaxLine taxLineRC = null;
-
-          if (taxEquiv != null && taxEquiv.getReverseCharge()) {
-            // We get active tax line if it exist, else we fetch one in taxLine list of reverse
-            // charge
-            // tax
-            taxLineRC =
-                Optional.ofNullable(taxEquiv.getReverseChargeTax())
-                    .map(Tax::getActiveTaxLine)
-                    .orElse(
-                        taxService.getTaxLine(
-                            taxEquiv.getReverseChargeTax(),
-                            appBaseService.getTodayDate(
-                                Optional.ofNullable(invoiceLine.getInvoice())
-                                    .map(Invoice::getCompany)
-                                    .orElse(null))));
-          }
-
-          if (taxLineRC != null) {
-            Account imputedAccount = getImputedAccount(invoiceLine, taxLineRC, vatSystem);
-
-            createOrUpdateInvoiceLineTaxRc(
-                invoiceLine, taxLineRC, taxEquiv, imputedAccount, vatSystem, map);
-          }
+      Set<TaxLine> taxLineRCSet = new HashSet<>();
+      if (taxEquiv != null && taxEquiv.getReverseCharge()) {
+        // We get active tax line if it exist, else we fetch one in taxLine list of reverse charge
+        // tax
+        taxLineRCSet =
+            taxService.getTaxLineSet(
+                taxEquiv.getReverseChargeTaxSet(),
+                appBaseService.getTodayDate(
+                    Optional.ofNullable(invoiceLine.getInvoice())
+                        .map(Invoice::getCompany)
+                        .orElse(null)));
+      }
+      if (CollectionUtils.isNotEmpty(taxLineRCSet)) {
+        for (TaxLine taxLineRC : taxLineRCSet) {
+          Account imputedAccount = getImputedAccount(invoiceLine, taxLineRC, vatSystem);
+          createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, imputedAccount, vatSystem, map);
         }
       }
     }
@@ -212,27 +199,19 @@ public class TaxInvoiceLine extends TaxGenerator {
   protected void createOrUpdateInvoiceLineTaxRc(
       InvoiceLine invoiceLine,
       TaxLine taxLineRC,
-      TaxEquiv taxEquiv,
       Account imputedAccount,
       int vatSystem,
       Map<TaxLineByVatSystem, InvoiceLineTax> map) {
     TaxLineByVatSystem taxLineByVatSystem =
         new TaxLineByVatSystem(taxLineRC, imputedAccount, vatSystem);
-
-    if (map.containsKey(taxLineByVatSystem)) {
-      TaxLineByVatSystem taxLineByVatSystemEquiv =
-          new TaxLineByVatSystem(
-              taxEquiv.getReverseChargeTax().getActiveTaxLine(), imputedAccount, vatSystem);
-
-      InvoiceLineTax invoiceLineTaxRC = map.get(taxLineByVatSystemEquiv);
+    InvoiceLineTax invoiceLineTaxRC = map.get(taxLineByVatSystem);
+    if (invoiceLineTaxRC != null) {
       updateInvoiceLineTax(invoiceLine, invoiceLineTaxRC, vatSystem);
-      invoiceLineTaxRC.setReverseCharged(true);
     } else {
-      InvoiceLineTax invoiceLineTaxRC =
-          createInvoiceLineTax(invoiceLine, taxLineRC, imputedAccount, vatSystem);
-      invoiceLineTaxRC.setReverseCharged(true);
+      invoiceLineTaxRC = createInvoiceLineTax(invoiceLine, taxLineRC, imputedAccount, vatSystem);
       map.put(taxLineByVatSystem, invoiceLineTaxRC);
     }
+    invoiceLineTaxRC.setReverseCharged(true);
   }
 
   protected void updateInvoiceLineTax(
