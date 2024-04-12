@@ -179,10 +179,10 @@ public class TaxInvoiceLine extends TaxGenerator {
   protected Account getImputedAccount(InvoiceLine invoiceLine, TaxLine taxLine, int vatSystem)
       throws AxelorException {
     return taxAccountService.getAccount(
+        invoiceLine,
         taxLine.getTax(),
         invoice.getCompany(),
         invoiceJournalService.getJournal(invoice),
-        invoiceLine.getAccount(),
         vatSystem,
         invoiceLine.getFixedAssets(),
         InvoiceToolService.getFunctionalOrigin(invoice));

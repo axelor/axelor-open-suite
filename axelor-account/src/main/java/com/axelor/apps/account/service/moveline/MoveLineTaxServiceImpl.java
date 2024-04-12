@@ -106,8 +106,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
                 paymentAmount,
                 invoiceTotalAmount,
                 invoiceMoveLine.getVatSystemSelect());
-        taxPaymentMoveLineList.forEach(
-            tpm -> customerPaymentMoveLine.addTaxPaymentMoveLineListItem(tpm));
+        taxPaymentMoveLineList.forEach(customerPaymentMoveLine::addTaxPaymentMoveLineListItem);
 
       } else if (!moveLineToolService.isMoveLineTaxAccount(invoiceMoveLine)
           && CollectionUtils.isNotEmpty(invoiceMoveLine.getTaxLineSet())
@@ -126,8 +125,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
                 paymentAmount,
                 invoiceTotalAmount,
                 invoiceMoveLine.getAccount().getVatSystemSelect());
-        taxPaymentMoveLineList.forEach(
-            tpm -> customerPaymentMoveLine.addTaxPaymentMoveLineListItem(tpm));
+        taxPaymentMoveLineList.forEach(customerPaymentMoveLine::addTaxPaymentMoveLineListItem);
       }
     }
     this.computeTaxAmount(customerPaymentMoveLine);

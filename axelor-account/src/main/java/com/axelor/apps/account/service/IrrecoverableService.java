@@ -1090,7 +1090,6 @@ public class IrrecoverableService {
             tax,
             company,
             move.getJournal(),
-            moveLine.getAccount(),
             moveLine.getAccount().getVatSystemSelect(),
             false,
             move.getFunctionalOriginSelect());
