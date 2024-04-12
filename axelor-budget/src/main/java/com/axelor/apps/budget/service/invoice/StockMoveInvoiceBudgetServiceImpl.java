@@ -50,6 +50,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
   protected BudgetInvoiceService budgetInvoiceService;
   protected AppBudgetService appBudgetService;
   protected InvoiceToolBudgetService invoiceToolBudgetService;
+  protected BudgetInvoiceLineService budgetInvoiceLineService;
 
   @Inject
   public StockMoveInvoiceBudgetServiceImpl(
@@ -66,7 +67,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       AppStockService appStockService,
       BudgetInvoiceService budgetInvoiceService,
       AppBudgetService appBudgetService,
-      InvoiceToolBudgetService invoiceToolBudgetService) {
+      InvoiceToolBudgetService invoiceToolBudgetService,
+      BudgetInvoiceLineService budgetInvoiceLineService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -82,6 +84,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
     this.budgetInvoiceService = budgetInvoiceService;
     this.appBudgetService = appBudgetService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;
+    this.budgetInvoiceLineService = budgetInvoiceLineService;
   }
 
   @Override
@@ -105,7 +108,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
   public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
       throws AxelorException {
     InvoiceLine invoiceLine = super.createInvoiceLine(invoice, stockMoveLine, qty);
-    if (appBudgetService.isApp("budget")) {
+    if (appBudgetService.isApp("budget") && invoiceLine != null) {
       if (invoiceLine.getPurchaseOrderLine() != null) {
         PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
@@ -131,6 +134,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
                     AppBaseService.COMPUTATION_SCALING,
                     RoundingMode.HALF_UP));
       }
+
+      budgetInvoiceLineService.computeBudgetDistributionSumAmount(invoiceLine, invoice);
     }
     return invoiceLine;
   }

@@ -1,0 +1,2 @@
+title: "PurchaseOrder/SaleOrder/StockMove/Invoice : link order's budget to invoice after stock move generation"
+module: axelor-budget
