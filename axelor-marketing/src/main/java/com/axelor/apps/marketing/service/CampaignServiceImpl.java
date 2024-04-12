@@ -20,21 +20,22 @@ package com.axelor.apps.marketing.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
+import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.MessageService;
-import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.ByteArrayInputStream;
@@ -46,16 +47,27 @@ import wslite.json.JSONException;
 public class CampaignServiceImpl implements CampaignService {
 
   protected TemplateMessageMarketingService templateMessageMarketingService;
+  protected MessageService messageService;
+  protected TargetListService targetListService;
+  protected MetaFiles metaFiles;
 
-  protected EventRepository eventRepo;
+  protected EventRepository eventRepository;
+  protected CampaignRepository campaignRepository;
 
   @Inject
   public CampaignServiceImpl(
-      TemplateMessageService templateMessageService,
-      EventRepository eventRepo,
+      MessageService messageService,
+      TargetListService targetListService,
+      MetaFiles metaFiles,
+      EventRepository eventRepository,
+      CampaignRepository campaignRepository,
       TemplateMessageMarketingService templateMessageMarketingService) {
     this.templateMessageMarketingService = templateMessageMarketingService;
-    this.eventRepo = eventRepo;
+    this.messageService = messageService;
+    this.targetListService = targetListService;
+    this.metaFiles = metaFiles;
+    this.eventRepository = eventRepository;
+    this.campaignRepository = campaignRepository;
   }
 
   public MetaFile sendEmail(Campaign campaign) {
@@ -114,8 +126,8 @@ public class CampaignServiceImpl implements CampaignService {
       try {
         generateAndSendMessage(campaign, partner, template);
       } catch (ClassNotFoundException | IOException | JSONException e) {
-        errors.append(partner.getName() + "\n");
-        e.printStackTrace();
+        errors.append(partner.getName()).append("\n");
+        TraceBackService.trace(e);
       }
     }
 
@@ -131,8 +143,8 @@ public class CampaignServiceImpl implements CampaignService {
       try {
         generateAndSendMessage(campaign, lead, template);
       } catch (ClassNotFoundException | IOException | JSONException e) {
-        errors.append(lead.getName() + "\n");
-        e.printStackTrace();
+        errors.append(lead.getName()).append("\n");
+        TraceBackService.trace(e);
       }
     }
 
@@ -143,8 +155,8 @@ public class CampaignServiceImpl implements CampaignService {
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
       throws ClassNotFoundException, IOException, JSONException {
     Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
-    Beans.get(MessageService.class)
-        .addMessageRelatedTo(message, Campaign.class.getCanonicalName(), campaign.getId());
+    messageService.addMessageRelatedTo(
+        message, Campaign.class.getCanonicalName(), campaign.getId());
   }
 
   protected MetaFile generateLog(
@@ -159,20 +171,20 @@ public class CampaignServiceImpl implements CampaignService {
     builder.append(I18n.get(MarketingExceptionMessage.EMAIL_ERROR1));
     builder.append("\n");
     if (!errorPartners.isEmpty()) {
-      builder.append(I18n.get("Partners") + ":\n");
+      builder.append(I18n.get("Partners")).append(":\n");
       builder.append(errorPartners);
     }
     if (!errorLeads.isEmpty()) {
-      builder.append(I18n.get("Leads") + ":\n");
+      builder.append(I18n.get("Leads")).append(":\n");
       builder.append(errorLeads);
     }
 
     ByteArrayInputStream stream = new ByteArrayInputStream(builder.toString().getBytes());
 
     try {
-      return Beans.get(MetaFiles.class).upload(stream, metaFile.getFileName());
+      return metaFiles.upload(stream, metaFile.getFileName());
     } catch (IOException e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
 
     return null;
@@ -187,7 +199,14 @@ public class CampaignServiceImpl implements CampaignService {
     Long duration = campaign.getDuration();
 
     for (Partner partner : campaign.getPartnerSet()) {
-      Event event = new Event();
+      Event event =
+          this.createEvent(
+              campaign,
+              partner.getUser(),
+              partner.getTeam(),
+              eventStartDateTime,
+              eventEndDateTime,
+              duration);
 
       if (partner.getIsContact()) {
         event.setContactPartner(partner);
@@ -195,45 +214,48 @@ public class CampaignServiceImpl implements CampaignService {
         event.setPartner(partner);
       }
 
-      event.setUser(
-          campaign.getGenerateEventPerPartnerOrLead()
-              ? partner.getUser()
-              : campaign.getEventUser());
-      event.setSubject(campaign.getSubject());
-      event.setTypeSelect(campaign.getEventTypeSelect());
-      event.setStartDateTime(eventStartDateTime);
-      event.setEndDateTime(eventEndDateTime);
-      event.setDuration(duration);
-      event.setTeam(
-          campaign.getGenerateEventPerPartnerOrLead() ? partner.getTeam() : campaign.getTeam());
-      event.setCampaign(campaign);
-      event.setStatusSelect(1);
-      eventRepo.save(event);
+      eventRepository.save(event);
     }
 
     for (Lead lead : campaign.getLeadSet()) {
-      Event event = new Event();
+      Event event =
+          this.createEvent(
+              campaign,
+              lead.getUser(),
+              lead.getTeam(),
+              eventStartDateTime,
+              eventEndDateTime,
+              duration);
       event.setEventLead(lead);
-      event.setUser(
-          campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
-      event.setSubject(campaign.getSubject());
-      event.setTypeSelect(campaign.getEventTypeSelect());
-      event.setStartDateTime(eventStartDateTime);
-      event.setEndDateTime(eventEndDateTime);
-      event.setDuration(duration);
-      event.setTeam(
-          campaign.getGenerateEventPerPartnerOrLead() ? lead.getTeam() : campaign.getTeam());
-      event.setCampaign(campaign);
-      event.setStatusSelect(1);
-      eventRepo.save(event);
+
+      eventRepository.save(event);
     }
+  }
+
+  protected Event createEvent(
+      Campaign campaign,
+      User user,
+      Team team,
+      LocalDateTime eventStartDateTime,
+      LocalDateTime eventEndDateTime,
+      Long duration) {
+    Event event = new Event();
+
+    event.setUser(campaign.getGenerateEventPerPartnerOrLead() ? user : campaign.getEventUser());
+    event.setSubject(campaign.getSubject());
+    event.setTypeSelect(campaign.getEventTypeSelect());
+    event.setStartDateTime(eventStartDateTime);
+    event.setEndDateTime(eventEndDateTime);
+    event.setDuration(duration);
+    event.setTeam(campaign.getGenerateEventPerPartnerOrLead() ? team : campaign.getTeam());
+    event.setCampaign(campaign);
+    event.setStatusSelect(1);
+
+    return event;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void generateTargets(Campaign campaign) throws AxelorException {
-
-    TargetListService targetListService = Beans.get(TargetListService.class);
-
     Set<Partner> partnerSet = targetListService.getAllPartners(campaign.getTargetModelSet());
     Set<Lead> leadSet = targetListService.getAllLeads(campaign.getTargetModelSet());
 
@@ -265,7 +287,7 @@ public class CampaignServiceImpl implements CampaignService {
       }
     }
 
-    Beans.get(CampaignRepository.class).save(campaign);
+    campaignRepository.save(campaign);
   }
 
   @Override
@@ -289,7 +311,7 @@ public class CampaignServiceImpl implements CampaignService {
         campaign.addInvitedLeadSetItem(lead);
       }
     }
-    Beans.get(CampaignRepository.class).save(campaign);
+    campaignRepository.save(campaign);
   }
 
   @Override
@@ -310,7 +332,7 @@ public class CampaignServiceImpl implements CampaignService {
       }
     }
 
-    Beans.get(CampaignRepository.class).save(campaign);
+    campaignRepository.save(campaign);
   }
 
   @Override
@@ -331,7 +353,7 @@ public class CampaignServiceImpl implements CampaignService {
       }
     }
 
-    Beans.get(CampaignRepository.class).save(campaign);
+    campaignRepository.save(campaign);
   }
 
   @Override
@@ -339,7 +361,7 @@ public class CampaignServiceImpl implements CampaignService {
   public void markLeadPresent(Campaign campaign, Lead lead) {
 
     campaign.addPresentLeadSetItem(lead);
-    Beans.get(CampaignRepository.class).save(campaign);
+    campaignRepository.save(campaign);
   }
 
   @Override
@@ -347,6 +369,6 @@ public class CampaignServiceImpl implements CampaignService {
   public void markPartnerPresent(Campaign campaign, Partner partner) {
 
     campaign.addPresentPartnerSetItem(partner);
-    Beans.get(CampaignRepository.class).save(campaign);
+    campaignRepository.save(campaign);
   }
 }
