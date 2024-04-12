@@ -146,7 +146,7 @@
     </panel>
   </form>
 
-  <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid-menu"
+  <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
     model="com.axelor.apps.sale.db.SaleOrderLine" edit-icon="false" groupBy="saleOrder"
     canNew="false" canEdit="false">
     <field name="saleOrder" hidden="true"/>
@@ -319,7 +319,7 @@
 
   <action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(saleOrder.company)?.analyticDistributionTypeSelect != 1"/>
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
   <action-attrs
