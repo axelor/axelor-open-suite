@@ -77,11 +77,18 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   public BigDecimal convert(
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
-    return genericConvert(startUnit, endUnit, value, scale, product, "Product");
+    List<? extends UnitConversion> unitConversionList = fetchUnitConversionList();
+    return convert(unitConversionList, startUnit, endUnit, value, scale, product, "Product");
   }
 
-  protected BigDecimal genericConvert(
-      Unit startUnit, Unit endUnit, BigDecimal value, int scale, Model model, String nameInProject)
+  protected BigDecimal convert(
+      List<? extends UnitConversion> unitConversionList,
+      Unit startUnit,
+      Unit endUnit,
+      BigDecimal value,
+      int scale,
+      Model model,
+      String nameInContext)
       throws AxelorException {
     if ((startUnit == null && endUnit == null)) {
       throw new AxelorException(
@@ -105,7 +112,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
     else {
       try {
         BigDecimal coefficient =
-            this.genericGetCoefficient(startUnit, endUnit, model, nameInProject);
+            this.getCoefficient(unitConversionList, startUnit, endUnit, model, nameInContext);
 
         return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_UP);
       } catch (IOException | ClassNotFoundException e) {
@@ -132,13 +139,17 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   @Override
   public BigDecimal getCoefficient(Unit startUnit, Unit endUnit, Product product)
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
-    return genericGetCoefficient(startUnit, endUnit, product, "Product");
+    List<? extends UnitConversion> unitConversionList = fetchUnitConversionList();
+    return getCoefficient(unitConversionList, startUnit, endUnit, product, "Product");
   }
 
-  protected BigDecimal genericGetCoefficient(
-      Unit startUnit, Unit endUnit, Model model, String nameInProject)
+  protected BigDecimal getCoefficient(
+      List<? extends UnitConversion> unitConversionList,
+      Unit startUnit,
+      Unit endUnit,
+      Model model,
+      String nameInContext)
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
-    List<? extends UnitConversion> unitConversionList = this.fetchUnitConversionList();
     /* Looking for the start unit and the end unit in the unitConversionList to get the coefficient */
     TemplateMaker maker = null;
     if (model != null) {
@@ -154,7 +165,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
               AppFilter.getLocale(),
               TEMPLATE_DELIMITER,
               TEMPLATE_DELIMITER);
-      maker.setContext(model, nameInProject);
+      maker.setContext(model, nameInContext);
     }
     String eval = null;
     for (UnitConversion unitConversion : unitConversionList) {

@@ -423,7 +423,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         projectPlanningTime.getDisplayTimeUnit(),
         projectPlanningTime.getTimeUnit(),
         projectPlanningTime.getDisplayPlannedTime(),
-        2,
+        projectPlanningTime.getDisplayPlannedTime().scale(),
         projectPlanningTime.getProject());
   }
 

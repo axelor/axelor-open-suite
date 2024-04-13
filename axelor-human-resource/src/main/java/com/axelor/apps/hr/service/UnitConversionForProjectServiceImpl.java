@@ -55,7 +55,8 @@ public class UnitConversionForProjectServiceImpl extends UnitConversionServiceIm
   public BigDecimal convert(
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Project project)
       throws AxelorException {
-    return super.genericConvert(startUnit, endUnit, value, scale, project, "Project");
+    List<? extends UnitConversion> unitConversionList = fetchUnitConversionForProjectList();
+    return super.convert(unitConversionList, startUnit, endUnit, value, scale, project, "Project");
   }
 
   /**
@@ -75,10 +76,11 @@ public class UnitConversionForProjectServiceImpl extends UnitConversionServiceIm
   @Override
   public BigDecimal getCoefficient(Unit startUnit, Unit endUnit, Project project)
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
-    return super.genericGetCoefficient(startUnit, endUnit, project, "Project");
+    List<? extends UnitConversion> unitConversionList = fetchUnitConversionForProjectList();
+    return super.getCoefficient(unitConversionList, startUnit, endUnit, project, "Project");
   }
 
-  protected List<? extends UnitConversion> fetchUnitConversionList() {
+  protected List<? extends UnitConversion> fetchUnitConversionForProjectList() {
     return unitConversionRepo
         .all()
         .filter("self.entitySelect = :entitySelect")
