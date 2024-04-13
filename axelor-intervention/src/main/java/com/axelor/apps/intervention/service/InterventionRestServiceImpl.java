@@ -97,7 +97,8 @@ public class InterventionRestServiceImpl implements InterventionRestService {
 
   protected void start(Intervention intervention, InterventionStatusPutRequest request)
       throws AxelorException {
-    if (intervention.getStatusSelect() != InterventionRepository.INTER_STATUS_PLANNED) {
+    if (intervention.getStatusSelect() != InterventionRepository.INTER_STATUS_PLANNED
+        && intervention.getStatusSelect() != InterventionRepository.INTER_STATUS_SUSPENDED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(InterventionExceptionMessage.INTERVENTION_API_WRONG_STATUS));
