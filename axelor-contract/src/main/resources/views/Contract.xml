@@ -76,12 +76,12 @@
     </panel>
     <panel sidebar="true" name="actionPanel">
       <panel name="templatePanel" hidden="true"
-        showIf="(statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2)"
-        stacked="true">
+        showIf="!id &amp;&amp; (statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2)"
+        stacked="true" readonlyIf="!partner">
         <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE"
           canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
         <button name="copyFromTemplateBtn" title="Use this template"
-          showIf="$contractTemplate"
+          readonlyIf="!$contractTemplate"
           prompt="Do you really wish to fill your contract based on this template ?"
           onClick="save,action-contract-method-copy-from-template"/>
       </panel>
@@ -92,11 +92,11 @@
           showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentContractVersion.statusSelect == 3"
           onClick="save,action-view-contract-add-version"/>
         <button if="__config__.app.getApp('contract')?.isAmendmentManagement"
-          name="showNextVersionBtn" title="Show next version"
+          name="showNextVersionBtn" title="Show next amendment"
           showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3"
           onClick="save,action-view-contract-show-version"/>
         <button if="__config__.app.getApp('contract')?.isAmendmentManagement"
-          name="deleteNextVersionBtn" title="Delete next version"
+          name="deleteNextVersionBtn" title="Delete next amendment"
           showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3"
           onClick="save,action-contract-method-delete-next-version"/>
         <button name="waitingBtn" title="Put on-hold"
@@ -168,20 +168,20 @@
         <field name="startDate" readonly="true" showIf="statusSelect >= 2"/>
         <field name="endDate" hidden="true" showIf="statusSelect == 3"/>
       </panel>
-      <panel name="currentVersionPanel" title="Current version">
+      <panel name="currentVersionPanel" title="Current amendment">
         <field name="currentContractVersion" showTitle="false" colSpan="12"
           x-show-icons="false">
           <editor x-viewer="true" x-show-on-new="true" x-show-titles="true" itemSpan="12">
             <panel name="activationPanel">
-              <panel hideIf="statusSelect >= 3" colSpan="12">
+              <panel hideIf="statusSelect >= 3" colSpan="12" itemSpan="12">
                 <field name="supposedActivationDate"
                   onChange="action-method-contract-version-check-supposed-activation-date,save,action-method-contract-version-update-contract-lines"/>
                 <field name="supposedEndDate"/>
               </panel>
               <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
-                <field name="activatedByUser" colSpan="4"/>
-                <field name="activationDateTime" colSpan="4"/>
-                <panel colSpan="4">
+                <field name="activatedByUser" colSpan="6"/>
+                <field name="activationDateTime" colSpan="6"/>
+                <panel colSpan="12">
                   <field name="supposedEndDate" hidden="true" readonly="true"
                     showIf="statusSelect == 3" colSpan="12"/>
                   <field name="endDateTime" hidden="true" readonly="true"
@@ -200,20 +200,20 @@
           colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
       </panel>
     </panel>
-    <panel name="nextVersionPanel" title="Next version" sidebar="true" showIf="nextVersion"
+    <panel name="nextVersionPanel" title="Next amendment" sidebar="true" showIf="nextVersion"
       canCollapse="true" readonly="true">
       <field name="nextVersion" showTitle="false" colSpan="12" x-show-icons="false">
         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true" itemSpan="12">
           <panel name="activationPanel">
-            <panel hideIf="statusSelect >= 3" colSpan="12">
+            <panel hideIf="statusSelect >= 3" colSpan="12" itemSpan="12">
               <field name="supposedActivationDate"
                 onChange="action-method-contract-version-check-supposed-activation-date,save,action-method-contract-version-update-contract-lines"/>
               <field name="supposedEndDate"/>
             </panel>
             <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
-              <field name="activatedByUser" colSpan="4"/>
-              <field name="activationDateTime" colSpan="4"/>
-              <panel colSpan="4">
+              <field name="activatedByUser" colSpan="12"/>
+              <field name="activationDateTime" colSpan="12"/>
+              <panel colSpan="12">
                 <field name="supposedEndDate" hidden="true" readonly="true"
                   showIf="statusSelect == 3" colSpan="12"/>
                 <field name="endDateTime" hidden="true" readonly="true"
@@ -435,8 +435,8 @@
               <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
               <field name="renewalDuration" domain="self.applicationTypeSelect = 2"
                 hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
-              <field name="isAutoEnableVersionOnRenew" hidden="true" showIf="isTacitRenewal"
-                colSpan="6" widget="boolean-switch"/>
+              <field name="isAutoEnableVersionOnRenew" title="" hidden="true"
+                showIf="isTacitRenewal" colSpan="6" widget="boolean-switch"/>
             </editor>
           </field>
         </panel>
@@ -582,7 +582,7 @@
     <call class="com.axelor.apps.contract.web.ContractController" method="renew"/>
   </action-method>
 
-  <form name="contract-archived-version-form" title="Version"
+  <form name="contract-archived-version-form" title="Amendment"
     model="com.axelor.apps.contract.db.ContractVersion"
     onLoad="action-contract-method-contract-line-list-on-change">
     <panel title="Information" name="informationsPanel">
@@ -662,7 +662,7 @@
     </panel-tabs>
   </form>
 
-  <action-view name="action-view-contract-show-version" title="Version"
+  <action-view name="action-view-contract-show-version" title="Amendment"
     model="com.axelor.apps.contract.db.ContractVersion">
     <view type="grid" name="contract-version-next-grid"/>
     <view type="form" name="contract-version-next-form"/>

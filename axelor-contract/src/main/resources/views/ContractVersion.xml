@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
-  <grid name="contract-version-next-grid" title="Versions"
+  <grid name="contract-version-next-grid" title="Amendments"
     model="com.axelor.apps.contract.db.ContractVersion">
     <field name="contract.contractId"/>
     <field name="contract.name"/>
@@ -12,7 +12,7 @@
     <field name="statusSelect"/>
   </grid>
 
-  <form name="contract-version-next-form" title="Version"
+  <form name="contract-version-next-form" title="Amendment"
     model="com.axelor.apps.contract.db.ContractVersion" width="large"
     onLoad="action-contract-version-group-form-onload"
     onSave="save,action-contract-version-method-save" onNew="action-contract-version-group-on-new"
@@ -43,11 +43,13 @@
 					</>
                   ]]></viewer>
         </field>
-        <field name="nextContract.company" colSpan="4"/>
-        <field name="nextContract.partner" colSpan="4"/>
-        <field if="__config__.app.getApp('contract')?.isInvoicingManagement"
-          name="nextContract.currency" colSpan="4"/>
-        <field name="nextContract.name" css="highlight" colSpan="12"/>
+        <panel name="contractInfoPanel" title="Contract information" colSpan="12">
+          <field name="nextContract.name" css="highlight" colSpan="12"/>
+          <field name="nextContract.company" colSpan="4"/>
+          <field name="nextContract.partner" colSpan="4"/>
+          <field if="__config__.app.getApp('contract')?.isInvoicingManagement"
+            name="nextContract.currency" colSpan="4"/>
+        </panel>
         <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
           colSpan="12">
           <field name="nextContract.createdOn" colSpan="3"/>
