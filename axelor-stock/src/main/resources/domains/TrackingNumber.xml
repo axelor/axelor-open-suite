@@ -25,7 +25,7 @@
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 
     <many-to-many name="parentTrackingNumberSet"
-      ref="com.axelor.apps.stock.db.TrackingNumber" title="Parent tracking numbers"/>
+      ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking number's parents"/>
 
 
     <unique-constraint columns="product,trackingNumberSeq"/>
