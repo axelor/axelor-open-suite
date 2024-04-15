@@ -1968,6 +1968,7 @@
 "Invoice.expenseTaxAmount",,,
 "Invoice.expenseTitle",,,
 "Invoice.expenseTotalAmount",,,
+"Invoice.expensesOnReceipts",,,
 "Invoice.headOfficeAddress",,,
 "Invoice.imputedOn",,,
 "Invoice.invoiceAdvPaymentNo",,,

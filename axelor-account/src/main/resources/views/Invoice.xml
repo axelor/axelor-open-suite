@@ -760,6 +760,12 @@ InvoiceSet.length > 0))"
           hidden="true"/>
         <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
           hidden="true"/>
+        <field name="isExpenseLineOnInvoiceGrouped" if-module="axelor-business-project"
+          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
+          showIf="displayExpenseOnPrinting"/>
+        <field name="groupingPeriodSelect" if-module="axelor-business-project"
+          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
+          showIf="isExpenseLineOnInvoiceGrouped &amp;&amp; displayExpenseOnPrinting"/>
         <field name="displayStockMoveOnInvoicePrinting" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$localization" title="Localization" type="many-to-one"
