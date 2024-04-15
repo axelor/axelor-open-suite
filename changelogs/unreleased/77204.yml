@@ -1,2 +1,2 @@
-title: "Birt Template: Two printouts generated when attach boolean is set to true"
+title: "Birt template: fixed duplicated printouts generated when attach boolean is set to true."
 module: axelor-base
