@@ -135,9 +135,9 @@
         <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
           if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
           <panel-include view="incl-invoice-payment-partner-form"/>
-          <panel-include if-module="axelor-account"
+          <panel-related name="invoicingPaymentSituationListPanel"
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
-            view="incl-sepa-direct-debit-partner-form"/>
+            field="invoicingPaymentSituationList" title="Invoicing/payment situations" colSpan="12"/>
           <panel name="invoiceCommentsPanel" title="Comment to display on invoice"
             colSpan="12">
             <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
@@ -175,14 +175,6 @@
   <!-- </form> -->
   <!-- </field> -->
   <!-- </form> -->
-
-  <form name="incl-sepa-direct-debit-partner-form" title="Partner"
-    model="com.axelor.apps.base.db.Partner">
-    <panel name="sepaDirectDebitPanel" title="SEPA Direct Debit" colSpan="12">
-      <field name="activeUmr" colSpan="3" canNew="false" domain="self.partner.id = :id"/>
-      <panel-related name="umrListPanel" field="umrList" title="History" colSpan="12"/>
-    </panel>
-  </form>
 
   <action-view name="action-partner-view-partner-invoice" title="Invoices"
     model="com.axelor.apps.account.db.Invoice">

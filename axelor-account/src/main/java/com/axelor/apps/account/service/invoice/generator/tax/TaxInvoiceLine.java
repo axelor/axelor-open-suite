@@ -36,13 +36,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -98,9 +98,8 @@ public class TaxInvoiceLine extends TaxGenerator {
       if (invoiceLines != null) {
         invoice.setSpecificNotes(
             invoiceLines.stream()
-                .map(InvoiceLine::getTaxEquivSet)
+                .map(InvoiceLine::getTaxEquiv)
                 .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
                 .map(TaxEquiv::getSpecificNote)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -117,6 +116,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       InvoiceLine invoiceLine, Map<TaxLineByVatSystem, InvoiceLineTax> map) throws AxelorException {
     Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
     int vatSystem = 0;
+    Account imputedAccount;
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       for (TaxLine taxLine : taxLineSet) {
@@ -133,43 +133,34 @@ public class TaxInvoiceLine extends TaxGenerator {
                   (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
                       || invoice.getOperationTypeSelect()
                           == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
-        }
 
-        Account imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
+          imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
+        } else {
+          imputedAccount = null;
+        }
 
         createOrUpdateInvoiceLineTax(invoiceLine, taxLine, imputedAccount, vatSystem, map);
       }
 
-      Set<TaxEquiv> taxEquivSet = invoiceLine.getTaxEquivSet();
+      TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
       AppBaseService appBaseService = Beans.get(AppBaseService.class);
       TaxService taxService = Beans.get(TaxService.class);
-
-      if (ObjectUtils.notEmpty(taxEquivSet)) {
-        for (TaxEquiv taxEquiv : taxEquivSet) {
-          TaxLine taxLineRC = null;
-
-          if (taxEquiv != null && taxEquiv.getReverseCharge()) {
-            // We get active tax line if it exist, else we fetch one in taxLine list of reverse
-            // charge
-            // tax
-            taxLineRC =
-                Optional.ofNullable(taxEquiv.getReverseChargeTax())
-                    .map(Tax::getActiveTaxLine)
-                    .orElse(
-                        taxService.getTaxLine(
-                            taxEquiv.getReverseChargeTax(),
-                            appBaseService.getTodayDate(
-                                Optional.ofNullable(invoiceLine.getInvoice())
-                                    .map(Invoice::getCompany)
-                                    .orElse(null))));
-          }
-
-          if (taxLineRC != null) {
-            Account imputedAccount = getImputedAccount(invoiceLine, taxLineRC, vatSystem);
-
-            createOrUpdateInvoiceLineTaxRc(
-                invoiceLine, taxLineRC, taxEquiv, imputedAccount, vatSystem, map);
-          }
+      Set<TaxLine> taxLineRCSet = new HashSet<>();
+      if (taxEquiv != null && taxEquiv.getReverseCharge()) {
+        // We get active tax line if it exist, else we fetch one in taxLine list of reverse charge
+        // tax
+        taxLineRCSet =
+            taxService.getTaxLineSet(
+                taxEquiv.getReverseChargeTaxSet(),
+                appBaseService.getTodayDate(
+                    Optional.ofNullable(invoiceLine.getInvoice())
+                        .map(Invoice::getCompany)
+                        .orElse(null)));
+      }
+      if (CollectionUtils.isNotEmpty(taxLineRCSet)) {
+        for (TaxLine taxLineRC : taxLineRCSet) {
+          imputedAccount = getImputedAccount(invoiceLine, taxLineRC, vatSystem);
+          createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, imputedAccount, vatSystem, map);
         }
       }
     }
@@ -191,8 +182,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       TaxLine taxLine,
       Account imputedAccount,
       int vatSystem,
-      Map<TaxLineByVatSystem, InvoiceLineTax> map)
-      throws AxelorException {
+      Map<TaxLineByVatSystem, InvoiceLineTax> map) {
     LOG.debug("Tax {}", taxLine);
 
     TaxLineByVatSystem taxLineByVatSystem =
@@ -212,32 +202,23 @@ public class TaxInvoiceLine extends TaxGenerator {
   protected void createOrUpdateInvoiceLineTaxRc(
       InvoiceLine invoiceLine,
       TaxLine taxLineRC,
-      TaxEquiv taxEquiv,
       Account imputedAccount,
       int vatSystem,
       Map<TaxLineByVatSystem, InvoiceLineTax> map) {
     TaxLineByVatSystem taxLineByVatSystem =
         new TaxLineByVatSystem(taxLineRC, imputedAccount, vatSystem);
-
-    if (map.containsKey(taxLineByVatSystem)) {
-      TaxLineByVatSystem taxLineByVatSystemEquiv =
-          new TaxLineByVatSystem(
-              taxEquiv.getReverseChargeTax().getActiveTaxLine(), imputedAccount, vatSystem);
-
-      InvoiceLineTax invoiceLineTaxRC = map.get(taxLineByVatSystemEquiv);
+    InvoiceLineTax invoiceLineTaxRC = map.get(taxLineByVatSystem);
+    if (invoiceLineTaxRC != null) {
       updateInvoiceLineTax(invoiceLine, invoiceLineTaxRC, vatSystem);
-      invoiceLineTaxRC.setReverseCharged(true);
     } else {
-      InvoiceLineTax invoiceLineTaxRC =
-          createInvoiceLineTax(invoiceLine, taxLineRC, imputedAccount, vatSystem);
-      invoiceLineTaxRC.setReverseCharged(true);
+      invoiceLineTaxRC = createInvoiceLineTax(invoiceLine, taxLineRC, imputedAccount, vatSystem);
       map.put(taxLineByVatSystem, invoiceLineTaxRC);
     }
+    invoiceLineTaxRC.setReverseCharged(true);
   }
 
   protected void updateInvoiceLineTax(
       InvoiceLine invoiceLine, InvoiceLineTax invoiceLineTax, int vatSystem) {
-
     // Dans la devise de la facture
     invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
     // Dans la devise de la société
@@ -246,18 +227,6 @@ public class TaxInvoiceLine extends TaxGenerator {
             invoiceLine,
             invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal())));
 
-    if (!invoiceLine.getFixedAssets()) {
-      invoiceLineTax.setSubTotalExcludingFixedAssets(
-          currencyScaleService.getScaledValue(
-              invoiceLine,
-              invoiceLineTax.getSubTotalExcludingFixedAssets().add(invoiceLine.getExTaxTotal())));
-      invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
-          currencyScaleService.getCompanyScaledValue(
-              invoiceLine,
-              invoiceLineTax
-                  .getCompanySubTotalExcludingFixedAssets()
-                  .add(invoiceLine.getCompanyExTaxTotal())));
-    }
     invoiceLineTax.setVatSystemSelect(vatSystem);
   }
 
@@ -272,17 +241,6 @@ public class TaxInvoiceLine extends TaxGenerator {
     invoiceLineTax.setCompanyExTaxBase(
         currencyScaleService.getCompanyScaledValue(invoice, invoiceLine.getCompanyExTaxTotal()));
 
-    if (!invoiceLine.getFixedAssets()) {
-      invoiceLineTax.setSubTotalExcludingFixedAssets(
-          currencyScaleService.getScaledValue(invoice, invoiceLine.getExTaxTotal()));
-      invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
-          currencyScaleService.getCompanyScaledValue(
-              invoice,
-              invoiceLineTax
-                  .getCompanySubTotalExcludingFixedAssets()
-                  .add(invoiceLine.getCompanyExTaxTotal())));
-    }
-
     invoiceLineTax.setImputedAccount(imputedAccount);
     invoiceLineTax.setVatSystemSelect(vatSystem);
     invoiceLineTax.setTaxLine(taxLine);
@@ -294,13 +252,19 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected List<InvoiceLineTax> finalizeInvoiceLineTaxes(
-      Map<TaxLineByVatSystem, InvoiceLineTax> map) throws AxelorException {
-
+      Map<TaxLineByVatSystem, InvoiceLineTax> map) {
     List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
 
     for (InvoiceLineTax invoiceLineTax : map.values()) {
+      BigDecimal taxValue =
+          invoiceLineTax
+              .getTaxLine()
+              .getValue()
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
 
-      BigDecimal taxValue = invoiceLineTax.getTaxLine().getValue().divide(new BigDecimal(100));
       // Dans la devise de la facture
       BigDecimal exTaxBase =
           (invoiceLineTax.getReverseCharged())
@@ -332,37 +296,6 @@ public class TaxInvoiceLine extends TaxGenerator {
       invoiceLineTax.setCompanyInTaxTotal(
           invoiceLineTax.getCompanyExTaxBase().add(companyTaxTotal));
 
-      BigDecimal subTotalExcludingFixedAssets =
-          invoiceLineTax.getReverseCharged()
-              ? invoiceLineTax.getSubTotalExcludingFixedAssets().negate()
-              : invoiceLineTax.getSubTotalExcludingFixedAssets();
-      invoiceLineTax.setSubTotalExcludingFixedAssets(
-          computeAmount(
-              subTotalExcludingFixedAssets,
-              taxValue,
-              currencyScaleService.getScale(invoiceLineTax.getInvoice()),
-              null));
-
-      invoiceLineTax.setSubTotalOfFixedAssets(
-          currencyScaleService.getScaledValue(
-              invoiceLineTax.getInvoice(),
-              taxTotal.subtract(invoiceLineTax.getSubTotalExcludingFixedAssets())));
-
-      BigDecimal companySubTotalExcludingFixedAssets =
-          invoiceLineTax.getReverseCharged()
-              ? invoiceLineTax.getCompanySubTotalExcludingFixedAssets().negate()
-              : invoiceLineTax.getCompanySubTotalExcludingFixedAssets();
-      invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
-          computeAmount(
-              companySubTotalExcludingFixedAssets,
-              taxValue,
-              currencyScaleService.getCompanyScale(invoiceLineTax.getInvoice()),
-              null));
-      invoiceLineTax.setCompanySubTotalOfFixedAssets(
-          currencyScaleService.getCompanyScaledValue(
-              invoiceLineTax.getInvoice(),
-              companyTaxTotal.subtract(invoiceLineTax.getCompanySubTotalExcludingFixedAssets())));
-
       invoiceLineTaxList.add(invoiceLineTax);
 
       LOG.debug(
@@ -387,7 +320,9 @@ public class TaxInvoiceLine extends TaxGenerator {
     }
 
     public int hashCode() {
-      return (int) (this.account.getId() * 10000 + this.taxline.getId() * 10 + this.vatSystem);
+      long accountId = Optional.ofNullable(this.account).map(Account::getId).orElse(0L) * 10000;
+
+      return (int) (accountId + this.taxline.getId() * 10 + this.vatSystem);
     }
 
     public boolean equals(Object o) {
@@ -403,7 +338,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
       return this.vatSystem == other.vatSystem
           && this.taxline.equals(other.taxline)
-          && this.account.equals(other.account);
+          && Objects.equals(this.account, other.account);
     }
   }
 }

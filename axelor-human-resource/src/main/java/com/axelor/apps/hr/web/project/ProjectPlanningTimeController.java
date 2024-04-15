@@ -97,4 +97,11 @@ public class ProjectPlanningTimeController {
           "site", Optional.ofNullable(projectTask).map(ProjectTask::getSite).orElse(null));
     }
   }
+
+  public void updateEvent(ActionRequest request, ActionResponse response) {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    Beans.get(ProjectPlanningTimeService.class).updateLinkedEvent(projectPlanningTime);
+  }
 }

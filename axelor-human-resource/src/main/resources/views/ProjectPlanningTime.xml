@@ -34,7 +34,8 @@
 
   <form name="project-planning-time-form" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime"
-    onNew="action-project-planning-time-attrs-default">
+    onNew="action-project-planning-time-attrs-default"
+    onSave="action-project-planning-time-method-update-event">
     <panel name="mainPanel">
       <field name="projectTask" domain="self.project = :project" canEdit="false"
         onChange="action-project-planning-time-attrs-project-task-onChange"/>
@@ -58,6 +59,7 @@
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
       <field name="project" hidden="true"/>
       <field name="description" colSpan="12" widget="html"/>
+      <field name="icalendarEvent" hidden="true"/>
       <button name="createBtn" title="Create"
         onClick="save,action-project-planning-time-method-create-line" showIf="_timePlannedPopup"/>
     </panel>
@@ -235,6 +237,11 @@
   <action-method name="action-project-planning-time-method-create-line">
     <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
       method="addSingleProjectPlanningTime"/>
+  </action-method>
+
+  <action-method name="action-project-planning-time-method-update-event">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="updateEvent"/>
   </action-method>
 
 </object-views>
