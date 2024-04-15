@@ -128,7 +128,7 @@
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
-        <field name="taxEquivSet" hidden="true" grid-view="tax-equiv-grid"
+        <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="invoice" hidden="true"/>
         <field name="invoice.company.currency.symbol" hidden="true"/>

@@ -1729,4 +1729,6 @@ public final class AccountExceptionMessage {
   public static final String ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND = /*$$(*/
       "Original advance payment" /*)*/;
   public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
+  public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
+      "Duplicate from tax found for this fiscal position." /*)*/;
 }
