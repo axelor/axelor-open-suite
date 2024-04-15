@@ -328,10 +328,6 @@
       expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
   </action-attrs>
 
-  <!-- ACTION VALIDATE -->
-
-
-
   <!-- ACTION METHOD -->
 
   <action-method name="action-method-sale-order-line-available-and-allocated-stock"
