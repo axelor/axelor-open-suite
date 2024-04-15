@@ -58,4 +58,21 @@ public class OpportunityContractController {
             .context("_showRecord", contract.getId().toString())
             .map());
   }
+
+  public void checkContractIsGenerated(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Long opportunityId =
+        Optional.ofNullable(request.getContext())
+            .map(context -> (Long) context.get("id"))
+            .orElseThrow(
+                () ->
+                    new AxelorException(
+                        TraceBackRepository.CATEGORY_INCONSISTENCY,
+                        I18n.get(CrmExceptionMessage.CRM_MISSING_OPPORTUNITY_ID)));
+
+    Opportunity opportunity = Beans.get(OpportunityRepository.class).find(opportunityId);
+    if (opportunity.getContractGenerated()) {
+      response.setError(I18n.get(ContractExceptionMessage.CONTRACT_ALREADY_GENERATED_FROM_OPP));
+    }
+  }
 }

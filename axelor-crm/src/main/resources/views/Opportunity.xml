@@ -122,8 +122,6 @@
         <item name="convertIntoQuotationItem" if="__config__.app.isApp('sale')"
           if-module="axelor-sale" title="Create a quotation"
           action="save,action-sale-group-generate-sale-order"/>
-        <item name="createContractMenuItem" title="Create a contract"
-          action="save,action-contract-group-generate-contract"/>
         <item title="Schedule Event" action="save,action-opportunity-view-schedule-event"/>
       </menu>
     </menubar>
@@ -435,18 +433,6 @@
 	 	]]></template>
   </cards>
 
-  <form title="Pick a template" name="generate-contract-wizard-form"
-    model="com.axelor.utils.db.Wizard" canNew="false" canSave="false">
-    <panel name="mainPanel">
-      <field name="$useTemplate" title="Use a template" type="boolean" colSpan="12"/>
-      <field name="$contractTemplate" colSpan="6" hidden="true" showIf="$useTemplate"
-        title="Contract template" type="many-to-one"
-        target="com.axelor.apps.contract.db.ContractTemplate" domain="self.targetTypeSelect = 1"/>
-      <button name="generateContractBtn" colSpan="6" title="Generate contract"
-        onClick="action-contract-method-generate-contract"/>
-    </panel>
-  </form>
-
   <action-view name="action-opportunity-view-opportunity-lost-popup-view"
     model="com.axelor.apps.crm.db.Opportunity" title="Lost reason">
     <view type="form" name="opportunity-form-lost-popup"/>
@@ -720,26 +706,5 @@
       method="kanbanOpportunityOnMove"/>
   </action-method>
 
-  <action-view name="action-opportunity-view-open-generate-contract-wizard"
-    title="Pick a template" model="com.axelor.utils.db.Wizard">
-    <view type="form" name="generate-contract-wizard-form"/>
-    <view-param name="popup-save" value="false"/>
-    <view-param name="popup" value="true"/>
-  </action-view>
-
-  <action-validate name="action-contract-validate-create-client">
-    <error message="Please select a customer to be able to convert opportunity into contract."
-      if="partner == null"/>
-  </action-validate>
-
-  <action-method name="action-contract-method-generate-contract">
-    <call class="com.axelor.apps.contract.web.OpportunityContractController"
-      method="generateContract"/>
-  </action-method>
-
-  <action-group name="action-contract-group-generate-contract">
-    <action name="action-contract-validate-create-client"/>
-    <action name="action-opportunity-view-open-generate-contract-wizard"/>
-  </action-group>
 
 </object-views>
