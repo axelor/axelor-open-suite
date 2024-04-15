@@ -53,7 +53,7 @@ public class TaxAccountService {
         accountManagement, tax, company, journal, vatSystemSelect, functionalOrigin, isFixedAssets);
   }
 
-  public AccountManagement getTaxAccount(Tax tax, Company company) {
+  protected AccountManagement getTaxAccount(Tax tax, Company company) {
 
     if (tax != null && tax.getAccountManagementList() != null) {
 
