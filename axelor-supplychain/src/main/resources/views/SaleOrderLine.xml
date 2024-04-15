@@ -173,6 +173,19 @@
     <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
   </grid>
 
+  <form title="Sale Order lines to invoice" name="sale-order-line-to-invoice-form"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <panel name="saleOrderInfoPanel">
+      <field name="saleOrder"/>
+      <field name="saleOrder.clientPartner"/>
+      <field name="saleOrder.company"/>
+      <field name="saleOrder.tradingName"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+      <field name="saleOrder.currency"/>
+    </panel>
+    <panel-include view="sale-order-line-form"/>
+  </form>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-view-sale-order-line-allocated-qty-wizard"
@@ -195,12 +208,6 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: id"/>
-  </action-view>
-
-  <action-view name="action-open-sale-order-view" title="Open sale order"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="form" name="sale-order-form"/>
-    <context name="_showRecord" expr="eval: __this__.saleOrder.id"/>
   </action-view>
 
   <!-- ACTION GROUP -->
