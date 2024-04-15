@@ -67,6 +67,10 @@
       ref="com.axelor.apps.account.db.Account" title="Sale account on payments"
       help="Account settings which will be used when generating accounting tax move lines depending on the VAT System accounting setting on the financial account and the partner VAT System in the accountingSituation by company."/>
 
+    <many-to-one name="vatPendingAccount" ref="com.axelor.apps.account.db.Account"
+      title="Pending tax account"
+      help="This tax account is used while generating taxes which are due by the company while receiving payments and while they should be deducted from the taxes due when the final invoices are issued. If this configuration is empty, then no tax will be deducted from advance payments."/>
+
     <string name="name">
           <![CDATA[
       String name = "";

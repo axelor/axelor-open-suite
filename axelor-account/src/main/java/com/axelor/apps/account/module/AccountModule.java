@@ -189,6 +189,8 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolService;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
@@ -900,5 +902,7 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceJournalService.class).to(InvoiceJournalServiceImpl.class);
 
     bind(FiscalPositionRepository.class).to(FiscalPositionManagementRepository.class);
+
+    bind(InvoiceLineTaxToolService.class).to(InvoiceLineTaxToolServiceImpl.class);
   }
 }
