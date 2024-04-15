@@ -9,7 +9,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -40,8 +39,7 @@ public class UmrServiceImpl implements UmrService {
       throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    LocalDate date =
-        Beans.get(AppBaseService.class).getTodayDate(invoicingPaymentSituation.getCompany());
+    LocalDate date = appBaseService.getTodayDate(invoicingPaymentSituation.getCompany());
 
     valuesMap.put("creationDate", date);
     valuesMap.put("mandateSignatureDate", date);
