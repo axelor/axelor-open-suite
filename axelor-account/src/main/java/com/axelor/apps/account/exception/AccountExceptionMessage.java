@@ -1707,4 +1707,7 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
       "No partner involved, please look for your blocking configuration if necessary." /*)*/;
+
+  public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
+      "Duplicate from tax found for this fiscal position." /*)*/;
 }

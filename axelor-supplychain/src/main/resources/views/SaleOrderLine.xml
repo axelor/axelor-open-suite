@@ -146,6 +146,33 @@
     </panel>
   </form>
 
+  <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
+    model="com.axelor.apps.sale.db.SaleOrderLine" edit-icon="false" groupBy="saleOrder"
+    canNew="false" canEdit="false">
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.clientPartner" width="200"/>
+    <field name="project" if-module="axelor-business-project"
+      if="__config__.app.isApp('business-project')" width="150"/>
+    <field name="saleOrder.company" width="200"/>
+    <field name="saleOrder.tradingName"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="product.code"/>
+    <field name="productName"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unit"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" title="Unit price"/>
+    <field name="saleOrder.currency"/>
+    <field name="exTaxTotal" x-scale="saleOrder.currency.numberOfDecimals" title="Total price"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
+    <field name="amountInvoiced" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="saleOrder.stockLocation"/>
+    <field name="deliveryState"/>
+    <field name="estimatedShippingDate"/>
+    <field name="estimatedDeliveryDate"/>
+    <field name="deliveredQty" x-scale="$nbDecimalDigitForQty"/>
+    <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
+  </grid>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-view-sale-order-line-allocated-qty-wizard"
@@ -168,6 +195,12 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-open-sale-order-view" title="Open sale order"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-form"/>
+    <context name="_showRecord" expr="eval: __this__.saleOrder.id"/>
   </action-view>
 
   <!-- ACTION GROUP -->
