@@ -1,2 +1,2 @@
-title: "PaymentVoucher : fix required message at on new and fix invoice refresh at confirm"
+title: "Payment voucher: fixed required message at on new and fixed invoice refresh at confirm."
 module: axelor-account
