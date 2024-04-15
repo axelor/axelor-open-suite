@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ public class InvoicingPaymentSituationServiceImpl implements InvoicingPaymentSit
     }
     String domain = "(self.archived = false OR self.archived is null)";
     List<InvoicingPaymentSituation> partnerInvoicingPaymentSituationList =
-        partner.getInvoicingPaymentSituationList();
+        new ArrayList<>(partner.getInvoicingPaymentSituationList());
     partnerInvoicingPaymentSituationList.remove(invoicingPaymentSituation);
     if (ObjectUtils.isEmpty(partnerInvoicingPaymentSituationList)) {
       return domain;

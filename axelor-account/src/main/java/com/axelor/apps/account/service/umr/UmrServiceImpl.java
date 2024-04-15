@@ -40,10 +40,8 @@ public class UmrServiceImpl implements UmrService {
       throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    LocalDate date = LocalDate.now();
-    if (invoicingPaymentSituation.getCompany() != null) {
-      date = Beans.get(AppBaseService.class).getTodayDate(invoicingPaymentSituation.getCompany());
-    }
+    LocalDate date =
+        Beans.get(AppBaseService.class).getTodayDate(invoicingPaymentSituation.getCompany());
 
     valuesMap.put("creationDate", date);
     valuesMap.put("mandateSignatureDate", date);
