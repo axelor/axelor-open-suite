@@ -37,7 +37,7 @@
       title="Taxes"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3"/>
     <decimal name="inTaxTotal" title="Total A.T.I." precision="20" scale="3"/>
-    <many-to-many name="taxEquivSet" ref="com.axelor.apps.account.db.TaxEquiv"
+    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
 
     <string name="description" title="Description" large="true"/>
