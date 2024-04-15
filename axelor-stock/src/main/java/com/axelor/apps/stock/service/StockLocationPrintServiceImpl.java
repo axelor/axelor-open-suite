@@ -165,7 +165,7 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
                 "WithoutDetailsByStockLocation",
                 withoutDetailsByStockLocation),
             title + "-${date}",
-            stockLocationBirtTemplate.getAttach(),
+            false,
             exportType);
 
     log.debug("Printing {}", title);
