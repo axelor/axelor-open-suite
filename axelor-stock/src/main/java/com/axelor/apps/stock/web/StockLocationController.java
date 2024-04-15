@@ -136,7 +136,7 @@ public class StockLocationController {
                     null,
                     Map.of("StockLocationId", locationIds, "PrintType", printType),
                     title + "-${date}",
-                    stockLocationBirtTemplate.getAttach(),
+                    false,
                     exportType);
 
         logger.debug("Printing " + title);
