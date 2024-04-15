@@ -54,6 +54,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.service.BankCardService;
 import com.axelor.apps.hr.service.BankCardServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
@@ -342,6 +343,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseLineToolService.class).to(ExpenseLineToolServiceImpl.class);
     bind(ExpenseLineUpdateService.class).to(ExpenseLineUpdateServiceImpl.class);
     bind(BankOrderValidationServiceImpl.class).to(BankOrderValidationServiceHRImpl.class);
+    bind(ICalendarEventObserver.class);
     bind(BankCardService.class).to(BankCardServiceImpl.class);
   }
 }
