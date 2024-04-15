@@ -294,7 +294,7 @@
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="invoice" hidden="true"/>
-        <panel name="discountPanel" title="Discount" colSpan="12">
+        <panel name="discountPanel" title="Financial Discount" colSpan="12">
           <field name="discountTypeSelect"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
           <field name="discountAmount"
