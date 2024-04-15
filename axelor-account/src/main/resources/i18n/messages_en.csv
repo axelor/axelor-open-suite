@@ -1966,6 +1966,7 @@
 "Invoice.expenseTaxAmount",,,
 "Invoice.expenseTitle","Expense details",,
 "Invoice.expenseTotalAmount","Total amount",,
+"Invoice.expensesOnReceipts","Expenses on receipts",,
 "Invoice.headOfficeAddress","Head Office Address",,
 "Invoice.imputedOn","imputed on",,
 "Invoice.invoiceAdvPaymentNo","ADVANCE INVOICE N°",,
