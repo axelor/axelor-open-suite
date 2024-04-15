@@ -41,8 +41,8 @@
 
   <action-attrs name="action-account-management-attrs-hide-yer-account">
     <attribute for="yearEndBonusSaleAccount" name="hidden"
-      expr="eval: typeSelect == __repo__(AccountManagement).TYPE_PRODUCT &amp;&amp; !__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isYebAccountConfigByProductFamilyEnabled"/>
+      expr="eval: (typeSelect == __repo__(AccountManagement).TYPE_PRODUCT &amp;&amp; !__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isYebAccountConfigByProductFamilyEnabled) &amp;&amp; (product != __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.yearEndBonusProduct)"/>
     <attribute for="yearEndBonusPurchaseAccount" name="hidden"
-      expr="eval: typeSelect == __repo__(AccountManagement).TYPE_PRODUCT &amp;&amp; !__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isYebAccountConfigByProductFamilyEnabled"/>
+      expr="eval: (typeSelect == __repo__(AccountManagement).TYPE_PRODUCT &amp;&amp; !__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isYebAccountConfigByProductFamilyEnabled) &amp;&amp; (product != __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.yearEndBonusProduct)"/>
   </action-attrs>
 </object-views>

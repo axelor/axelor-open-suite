@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
@@ -43,6 +44,7 @@ public class ContractYearEndBonusServiceImpl implements ContractYearEndBonusServ
 
     invoiceLinePricingService.computePricing(invoice);
     replaceAccount(invoice);
+    changeOperationType(contract, invoice);
   }
 
   protected void replaceAccount(Invoice invoice) throws AxelorException {
@@ -112,5 +114,17 @@ public class ContractYearEndBonusServiceImpl implements ContractYearEndBonusServ
     yerTypes.add(ContractRepository.YEB_CUSTOMER_CONTRACT);
     yerTypes.add(ContractRepository.YEB_SUPPLIER_CONTRACT);
     return yerTypes.contains(targetTypeSelect);
+  }
+
+  protected void changeOperationType(Contract contract, Invoice invoice) {
+    int targetTypeSelect = contract.getTargetTypeSelect();
+
+    if (targetTypeSelect == ContractRepository.YEB_CUSTOMER_CONTRACT) {
+      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+    }
+
+    if (targetTypeSelect == ContractRepository.YEB_SUPPLIER_CONTRACT) {
+      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+    }
   }
 }

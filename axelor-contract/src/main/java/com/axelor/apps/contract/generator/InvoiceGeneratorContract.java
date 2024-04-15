@@ -36,7 +36,6 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
   public InvoiceGeneratorContract(Contract contract) throws AxelorException {
     super(
         contract.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT
-                || contract.getTargetTypeSelect() == ContractRepository.YEB_CUSTOMER_CONTRACT
             ? InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
             : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
         contract.getCompany(),

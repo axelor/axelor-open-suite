@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -20,8 +21,14 @@ public class AccountManagementContractServiceImpl extends AccountManagementServi
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AccountConfigService accountConfigService,
-      AccountRepository accountRepository) {
-    super(fiscalPositionService, taxService, accountConfigService, accountRepository);
+      AccountRepository accountRepository,
+      FiscalPositionAccountService fiscalPositionAccountService) {
+    super(
+        fiscalPositionService,
+        taxService,
+        accountConfigService,
+        accountRepository,
+        fiscalPositionAccountService);
   }
 
   @Override
