@@ -11,6 +11,7 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineImport
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportConfiguration;
+import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -18,8 +19,11 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.FileUtils;
 
 public class BankStatementImportClassicService extends BankStatementImportAbstractService {
 
@@ -58,7 +62,11 @@ public class BankStatementImportClassicService extends BankStatementImportAbstra
   public void runImport(BankStatement bankStatement) throws AxelorException, IOException {
     bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
     bankStatementLineImporter.setBankStatement(bankStatement);
-    bankStatementLineImporter.init(createImportConfiguration(bankStatement)).run();
+    ImportHistory importHistory =
+        bankStatementLineImporter.init(createImportConfiguration(bankStatement)).run();
+    File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
+    FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
+        .replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
     bankStatement = bankStatementRepository.find(bankStatement.getId());
     checkImport(bankStatement);
     updateBankDetailsBalance(bankStatement);

@@ -4,6 +4,7 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -13,6 +14,7 @@ import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -30,6 +32,7 @@ public class BankStatementLineImporter extends Importer {
   protected final BankStatementDateService bankStatementDateService;
   protected List<BankStatementLine> bankStatementLineList = new ArrayList<>();
   private BankStatement bankStatement;
+  private int anomaly;
 
   @Inject
   public BankStatementLineImporter(
@@ -45,7 +48,7 @@ public class BankStatementLineImporter extends Importer {
 
   @Override
   protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException {
+      throws IOException, AxelorException {
     CSVImporter importer = new CSVImporter(bind, data);
 
     ImporterListener listener =
@@ -61,6 +64,7 @@ public class BankStatementLineImporter extends Importer {
                       TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                       rootCause.getMessage()));
             }
+            anomaly++;
             super.handle(bean, e);
           }
 
@@ -92,6 +96,11 @@ public class BankStatementLineImporter extends Importer {
     importContext.put("BankStatement", bankStatement);
     importer.setContext(importContext);
     importer.run();
+    if (anomaly > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_IMPORT_ERROR));
+    }
     return addHistory(listener);
   }
 
@@ -118,7 +127,7 @@ public class BankStatementLineImporter extends Importer {
   }
 
   @Override
-  protected ImportHistory process(String bind, String data) throws IOException {
+  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
     return process(bind, data, null);
   }
 

@@ -19,9 +19,11 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import java.math.BigDecimal;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -51,6 +53,10 @@ public class ImportBankStatementLine {
     bankStatementLine.setAmountRemainToReconcile(
         currencyScaleService.getScaledValue(
             bankStatementLine, bankStatementLine.getDebit().add(bankStatementLine.getCredit())));
+
+    if (bankStatementLine.getLineTypeSelect() != BankStatementLineRepository.LINE_TYPE_MOVEMENT) {
+      bankStatementLine.setAmountRemainToReconcile(BigDecimal.ZERO);
+    }
 
     return bankStatementLine;
   }
