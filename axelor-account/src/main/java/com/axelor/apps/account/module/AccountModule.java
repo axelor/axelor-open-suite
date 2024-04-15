@@ -28,8 +28,6 @@ import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.db.repo.AccountingReportTypeManagementRepository;
-import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.ChequeRejectionManagementRepository;
@@ -38,6 +36,8 @@ import com.axelor.apps.account.db.repo.DebtRecoveryAccountRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
+import com.axelor.apps.account.db.repo.FiscalPositionManagementRepository;
+import com.axelor.apps.account.db.repo.FiscalPositionRepository;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineManagementRepository;
@@ -179,6 +179,8 @@ import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceJournalService;
+import com.axelor.apps.account.service.invoice.InvoiceJournalServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
@@ -394,6 +396,8 @@ import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterServ
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
+import com.axelor.apps.account.service.umr.UmrService;
+import com.axelor.apps.account.service.umr.UmrServiceImpl;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.account.util.TaxAccountToolServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
@@ -865,8 +869,6 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetDerogatoryLineRepository.class)
         .to(FixedAssetDerogatoryLineManagementRepository.class);
 
-    bind(AccountingReportTypeRepository.class).to(AccountingReportTypeManagementRepository.class);
-
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
 
     bind(PeriodCheckService.class).to(PeriodCheckServiceImpl.class);
@@ -891,5 +893,12 @@ public class AccountModule extends AxelorModule {
     bind(ReconcileGroupToolService.class).to(ReconcileGroupToolServiceImpl.class);
 
     bind(InvoicePaymentMoveCreateService.class).to(InvoicePaymentMoveCreateServiceImpl.class);
+
+    bind(InvoicingPaymentSituationService.class).to(InvoicingPaymentSituationServiceImpl.class);
+    bind(UmrService.class).to(UmrServiceImpl.class);
+
+    bind(InvoiceJournalService.class).to(InvoiceJournalServiceImpl.class);
+
+    bind(FiscalPositionRepository.class).to(FiscalPositionManagementRepository.class);
   }
 }

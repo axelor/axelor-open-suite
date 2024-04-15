@@ -24,6 +24,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,6 +53,7 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       MoveLineCreateService moveLineCreateService,
       AccountingSituationService accountingSituationService,
+      CurrencyService currencyService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderValidationService bankOrderValidationService,
       InvoicePaymentRepository invoicePaymentRepository) {
@@ -69,6 +71,7 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
         moveLineFinancialDiscountService,
         moveLineCreateService,
         accountingSituationService,
+        currencyService,
         invoicePaymentRepository);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderValidationService = bankOrderValidationService;

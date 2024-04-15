@@ -594,6 +594,9 @@ public final class AccountExceptionMessage {
   public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
       "%d accounts treated successfully," /*)*/;
 
+  public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_RESULT_MOVE = /*$$(*/
+      "One result move generated %s." /*)*/;
+
   /** Batch auto move lettering */
   public static final String BATCH_AUTO_MOVE_LETTERING_REPORT_TITLE = /*$$(*/
       "Report for auto move lettering batch:" /*)*/;
@@ -1704,4 +1707,7 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
       "No partner involved, please look for your blocking configuration if necessary." /*)*/;
+
+  public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
+      "Duplicate from tax found for this fiscal position." /*)*/;
 }

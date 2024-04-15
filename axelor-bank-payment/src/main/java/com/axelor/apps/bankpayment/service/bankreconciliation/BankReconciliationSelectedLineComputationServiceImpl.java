@@ -60,7 +60,7 @@ public class BankReconciliationSelectedLineComputationServiceImpl
   @Override
   public BigDecimal computeUnreconciledMoveLinesSelection(BankReconciliation bankReconciliation)
       throws AxelorException {
-    String filter = bankReconciliationQueryService.getRequestMoveLines();
+    String filter = bankReconciliationQueryService.getRequestMoveLines(bankReconciliation);
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
     List<MoveLine> unreconciledMoveLines =
         moveLineRepository

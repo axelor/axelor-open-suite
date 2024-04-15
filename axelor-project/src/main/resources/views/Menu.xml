@@ -204,4 +204,14 @@
     <view type="form" name="project-hold-back-form"/>
   </action-view>
 
+  <menuitem name="project-sites" parent="project-configurations" title="Sites"
+    action="project.sites" order="110"
+    if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+
+  <action-view name="project.sites" title="Sites" model="com.axelor.apps.base.db.Site">
+    <view type="grid" name="site-grid"/>
+    <view type="form" name="site-form"/>
+    <context name="_isFromProject" expr="eval: true"/>
+  </action-view>
+
 </object-views>

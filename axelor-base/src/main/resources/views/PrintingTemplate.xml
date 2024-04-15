@@ -8,6 +8,7 @@
     <field name="name"/>
     <field name="metaModel"/>
     <field name="statusSelect"/>
+    <field name="toAttach"/>
   </grid>
 
   <form name="printing-template-form" title="Printing template"
@@ -16,6 +17,7 @@
       <field name="name"/>
       <field name="metaModel"/>
       <field name="statusSelect"/>
+      <field name="toAttach"/>
       <panel-related name="printingTemplateLineListPanel"
         field="printingTemplateLineList" grid-view="printing-template-line-grid"
         form-view="printing-template-line-form" colSpan="12"/>

@@ -65,6 +65,12 @@
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
     search="self.importId = :importId">
     <bind to="importOrigin" eval="_dataFileName"/>
+    <bind column="fromTaxSet" to="fromTaxSet" search="self.code in :fromTaxSet"
+      eval="fromTaxSet.split('\\|') as List"/>
+    <bind column="toTaxSet" to="toTaxSet" search="self.code in :toTaxSet"
+      eval="toTaxSet.split('\\|') as List"/>
+    <bind column="reverseChargeTaxSet" to="reverseChargeTaxSet"
+      search="self.code in :reverseChargeTaxSet" eval="reverseChargeTaxSet.split('\\|') as List"/>
   </input>
 
   <input file="account_tax.csv" separator=";" update="true" search="self.code = :code"

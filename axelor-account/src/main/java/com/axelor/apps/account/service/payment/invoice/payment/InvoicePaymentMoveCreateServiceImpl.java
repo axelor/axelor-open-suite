@@ -31,8 +31,10 @@ import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -40,7 +42,6 @@ import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -61,6 +62,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected MoveLineCreateService moveLineCreateService;
   protected AccountingSituationService accountingSituationService;
+  protected CurrencyService currencyService;
   protected InvoicePaymentRepository invoicePaymentRepository;
 
   @Inject
@@ -78,6 +80,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       MoveLineCreateService moveLineCreateService,
       AccountingSituationService accountingSituationService,
+      CurrencyService currencyService,
       InvoicePaymentRepository invoicePaymentRepository) {
     this.dateService = dateService;
     this.paymentModeService = paymentModeService;
@@ -92,6 +95,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.moveLineCreateService = moveLineCreateService;
     this.accountingSituationService = accountingSituationService;
+    this.currencyService = currencyService;
     this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
@@ -267,23 +271,23 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
 
-    BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
     companyPaymentAmount =
-        companyPaymentAmount.subtract(
-            invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));
-
+        companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
+    BigDecimal currencyRate =
+        this.computeCurrencyRate(
+            companyPaymentAmount,
+            paymentAmount,
+            invoice.getCurrency(),
+            invoicePayment.getCurrency(),
+            invoice.getCompany().getCurrency(),
+            invoice.getMove());
     companyPaymentAmount =
         invoiceTermService.adjustAmountInCompanyCurrency(
             invoice.getInvoiceTermList(),
             invoice.getCompanyInTaxTotalRemaining(),
             companyPaymentAmount,
             paymentAmount,
-            invoice.getMove() != null
-                ? invoice.getMove().getMoveLineList().stream()
-                    .map(MoveLine::getCurrencyRate)
-                    .findAny()
-                    .orElse(BigDecimal.ONE)
-                : BigDecimal.ONE,
+            currencyRate,
             company);
 
     move.addMoveLineListItem(
@@ -358,5 +362,27 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       accountingSituationService.updateCustomerCredit(invoice.getPartner());
       invoicePaymentRepository.save(invoicePayment);
     }
+  }
+
+  protected BigDecimal computeCurrencyRate(
+      BigDecimal companyPaymentAmount,
+      BigDecimal paymentAmount,
+      Currency invoiceCurrency,
+      Currency paymentCurrency,
+      Currency companyCurrency,
+      Move invoiceMove) {
+    BigDecimal currencyRate =
+        currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
+
+    if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
+      return invoiceMove != null
+          ? invoiceMove.getMoveLineList().stream()
+              .map(MoveLine::getCurrencyRate)
+              .findAny()
+              .orElse(currencyRate)
+          : currencyRate;
+    }
+
+    return currencyRate;
   }
 }
