@@ -148,7 +148,7 @@
 
   <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
     model="com.axelor.apps.sale.db.SaleOrderLine" edit-icon="false" groupBy="saleOrder"
-    canNew="false" canEdit="false">
+    canNew="false" canEdit="false" canDelete="false" canArchive="false">
     <field name="saleOrder" hidden="true"/>
     <field name="saleOrder.clientPartner" width="200"/>
     <field name="project" if-module="axelor-business-project"
