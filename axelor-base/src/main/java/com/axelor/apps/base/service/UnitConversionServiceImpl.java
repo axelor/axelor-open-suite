@@ -77,12 +77,12 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   public BigDecimal convert(
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
-    List<? extends UnitConversion> unitConversionList = fetchUnitConversionList();
+    List<UnitConversion> unitConversionList = fetchUnitConversionList();
     return convert(unitConversionList, startUnit, endUnit, value, scale, product, "Product");
   }
 
   protected BigDecimal convert(
-      List<? extends UnitConversion> unitConversionList,
+      List<UnitConversion> unitConversionList,
       Unit startUnit,
       Unit endUnit,
       BigDecimal value,
@@ -139,12 +139,12 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   @Override
   public BigDecimal getCoefficient(Unit startUnit, Unit endUnit, Product product)
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
-    List<? extends UnitConversion> unitConversionList = fetchUnitConversionList();
+    List<UnitConversion> unitConversionList = fetchUnitConversionList();
     return getCoefficient(unitConversionList, startUnit, endUnit, product, "Product");
   }
 
   protected BigDecimal getCoefficient(
-      List<? extends UnitConversion> unitConversionList,
+      List<UnitConversion> unitConversionList,
       Unit startUnit,
       Unit endUnit,
       Model model,
@@ -219,7 +219,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
         endUnit.getName());
   }
 
-  protected List<? extends UnitConversion> fetchUnitConversionList() {
+  protected List<UnitConversion> fetchUnitConversionList() {
     return unitConversionRepo
         .all()
         .filter("self.entitySelect = :entitySelect")
