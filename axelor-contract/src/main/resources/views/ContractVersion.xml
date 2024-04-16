@@ -15,8 +15,7 @@
   <form name="contract-version-next-form" title="Version"
     model="com.axelor.apps.contract.db.ContractVersion" width="large"
     onLoad="action-contract-version-group-form-onload"
-    onSave="save,action-contract-version-method-save"
-    onNew="action-contract-version-method-new-draft,action-contract-version-attrs-load">
+    onSave="save,action-contract-version-method-save" onNew="action-contract-version-group-on-new">
     <panel name="mainPanel">
       <panel name="generalInfoPanel" colSpan="9">
         <panel name="hiddenFieldsPanel" hidden="true" colSpan="12">
@@ -196,6 +195,11 @@
       <mail-followers/>
     </panel-mail>
   </form>
+
+  <action-group name="action-contract-version-group-on-new">
+    <action name="action-contract-version-method-new-draft"/>
+    <action name="action-contract-version-attrs-load"/>
+  </action-group>
 
   <action-group name="action-contract-version-group-form-onload">
     <action name="action-contract-version-attrs-load"/>

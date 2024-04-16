@@ -6,7 +6,8 @@
   <form name="contract-version-next-form" id="business-project-contract-version-next-form"
     title="Version" model="com.axelor.apps.contract.db.ContractVersion" extension="true">
     <extend target="/">
-      <attribute name="onNew" value="action-contract-version-group-on-new"/>
+      <attribute name="onNew"
+        value="action-business-project-contract-version-group-on-new"/>
     </extend>
     <extend target="//field[@name='supposedEndDate']">
       <insert position="after">
@@ -15,10 +16,9 @@
     </extend>
   </form>
 
-  <!-- EXTEND contract-version-next-form onNew action -->
-  <action-group name="action-contract-version-group-on-new">
-    <action name="action-contract-version-method-new-draft"/>
-    <action name="action-contract-version-attrs-load"/>
+  <!-- extend contract-version-next-form onNew action -->
+  <action-group name="action-business-project-contract-version-group-on-new">
+    <action name="action-contract-version-group-on-new"/>
     <action name="action-contract-version-attrs-set-projects"/>
   </action-group>
 
