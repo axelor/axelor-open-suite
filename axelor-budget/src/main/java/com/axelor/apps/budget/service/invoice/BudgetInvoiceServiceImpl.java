@@ -21,7 +21,6 @@ package com.axelor.apps.budget.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -44,6 +43,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,11 +261,10 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
       if (optBudgetLine.isPresent()) {
         BudgetLine budgetLine = optBudgetLine.get();
         BigDecimal amount = budgetDistribution.getAmount();
-        if ((InvoiceToolService.isRefund(invoice)
-                && invoice.getOperationSubTypeSelect()
-                    == InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND)
-            || invoice.getOperationSubTypeSelect()
-                == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+        if (Arrays.asList(
+                InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+                InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND)
+            .contains(invoice.getOperationSubTypeSelect())) {
           amount = amount.negate();
         }
         budgetLine.setRealizedWithPo(budgetLine.getRealizedWithPo().add(amount));

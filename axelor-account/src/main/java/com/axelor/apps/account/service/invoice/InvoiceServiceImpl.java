@@ -236,10 +236,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
-    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-        || (InvoiceToolService.isRefund(invoice)
-            && invoice.getOperationSubTypeSelect()
-                == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)) {
+    if (Arrays.asList(
+            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
+        .contains(invoice.getOperationSubTypeSelect())) {
       ventilate(invoice);
     }
   }
