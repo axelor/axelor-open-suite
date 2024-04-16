@@ -422,7 +422,7 @@
 "Entry","Saisie",,
 "Entry code","Code d'entrée",,
 "Equivalent amount in sender bank details' currency","Montant équivalent dans la devise du compte à débiter",,
-"Error while reading the csv file. Make sure that decimal values use a dot and not a comma.","Erreur lors de la lecture du fichier csv. Vérifiez que les valeurs décimales utilises des points et non des virgules.",,
+"Error while reading the csv file. Make sure that decimal values use a dot and not a comma.","Erreur lors de la lecture du fichier csv. Vérifiez que les valeurs décimales utilisent des points et non des virgules.",,
 "Exempt","Exonéré",,
 "Expense","Note de frais",,
 "Export type select","Format d’export",,
