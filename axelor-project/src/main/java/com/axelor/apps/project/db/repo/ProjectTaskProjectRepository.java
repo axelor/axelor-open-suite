@@ -121,15 +121,14 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       ProjectTask savedTask = find(Long.parseLong(json.get("id").toString()));
       if (json.get("plannedProgress") != null) {
         BigDecimal plannedProgress = new BigDecimal(json.get("plannedProgress").toString());
-        if (plannedProgress != null
-            && savedTask.getPlannedProgress().intValue() != plannedProgress.intValue()) {
-          logger.debug("Updating progress: {}", plannedProgress.intValue());
-          json.put("progress", plannedProgress.intValue());
+        if (savedTask.getPlannedProgress().equals(plannedProgress)) {
+          logger.debug("Updating progress: {}", plannedProgress);
+          json.put("progress", plannedProgress);
         }
       } else if (json.get("progress") != null) {
-        Integer progress = Integer.valueOf(json.get("progress").toString());
+        BigDecimal progress = new BigDecimal(json.get("progress").toString());
         logger.debug("Updating plannedProgress: {}", progress);
-        json.put("plannedProgress", new BigDecimal(progress));
+        json.put("plannedProgress", progress);
       }
       if (json.get("durationHours") != null) {
         BigDecimal durationHours = new BigDecimal(json.get("durationHours").toString());
@@ -149,8 +148,8 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     } else {
 
       if (json.get("progress") != null) {
-        json.put(
-            "plannedProgress", new BigDecimal(Integer.parseInt(json.get("progress").toString())));
+        BigDecimal progress = new BigDecimal(json.get("progress").toString());
+        json.put("plannedProgress", progress);
       }
       if (json.get("taskDuration") != null) {
         Integer taskDuration = new Integer(json.get("taskDuration").toString());
