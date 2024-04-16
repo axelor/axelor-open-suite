@@ -192,6 +192,7 @@
     <string name="fiscalYearCode"/>
     <date name="accountingDate"/>
     <boolean name="adjustingMove"/>
+    <boolean name="isNonDeductibleTax"/>
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 

@@ -1507,6 +1507,8 @@ public final class AccountExceptionMessage {
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
           "Please select a purchase account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String ACCOUNT_MANAGEMENT_PURCHASE_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a purchase account for non deductible Tax: %s (company: %s)" /*)*/;
 
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
@@ -1707,4 +1709,7 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
       "No partner involved, please look for your blocking configuration if necessary." /*)*/;
+
+  public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
+      "Duplicate from tax found for this fiscal position." /*)*/;
 }

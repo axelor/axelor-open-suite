@@ -59,9 +59,6 @@
     orderBy="-contactDate">
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
     <menubar>
-      <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printItem" title="Print" action="action-method-print-birt-list"/>
-      </menu>
       <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
         <item name="assignToMeItem" title="Assign to me"
           action="action-lead-method-assign-to-me-multiple"/>
@@ -94,11 +91,6 @@
     onLoad="action-group-crm-lead-onload" onNew="action-group-crm-lead-onnew"
     onSave="action-crm-lead-method-check-name,action-lead-method-show-duplicate-records-fullname">
 
-    <menubar>
-      <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
-      </menu>
-    </menubar>
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
         <field name="$isLost" type="boolean" hidden="true"/>

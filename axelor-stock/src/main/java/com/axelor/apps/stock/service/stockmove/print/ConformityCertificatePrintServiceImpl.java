@@ -23,10 +23,9 @@ import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
-import com.axelor.apps.base.utils.PdfHelper;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -62,7 +61,7 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
   }
 
   @Override
-  public String printConformityCertificates(List<Long> ids) throws IOException {
+  public String printConformityCertificates(List<Long> ids) throws IOException, AxelorException {
     List<File> printedConformityCertificates = new ArrayList<>();
     ModelHelper.apply(
         StockMove.class,
@@ -70,15 +69,15 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
         new ThrowConsumer<StockMove, Exception>() {
           @Override
           public void accept(StockMove stockMove) throws Exception {
-            printedConformityCertificates.add(print(stockMove, ReportSettings.FORMAT_PDF));
+            printedConformityCertificates.add(print(stockMove));
           }
         });
-    String fileName = getConformityCertificateFilesName(true, ReportSettings.FORMAT_PDF);
-    return PdfHelper.mergePdfToFileLink(printedConformityCertificates, fileName);
+    String fileName = getConformityCertificateFilesName(true);
+    return PrintingTemplateHelper.mergeToFileLink(printedConformityCertificates, fileName);
   }
 
   @Override
-  public File prepareReportSettings(StockMove stockMove, String format) throws AxelorException {
+  public File print(StockMove stockMove) throws AxelorException {
     stockMoveService.checkPrintingSettings(stockMove);
 
     PrintingTemplate conformityCertificatePrintTemplate =
@@ -99,15 +98,9 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
   }
 
   @Override
-  public File print(StockMove stockMove, String format) throws AxelorException {
-    return prepareReportSettings(stockMove, format);
-  }
-
-  @Override
-  public String printConformityCertificate(StockMove stockMove, String format)
+  public String printConformityCertificate(StockMove stockMove)
       throws AxelorException, IOException {
-    String fileName = getConformityCertificateFilesName(false, ReportSettings.FORMAT_PDF);
-    return PdfHelper.getFileLinkFromPdfFile(print(stockMove, format), fileName);
+    return PrintingTemplateHelper.getFileLink(print(stockMove));
   }
 
   /**
@@ -115,16 +108,14 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
    *
    * @param plural if there is one or multiple certificates.
    */
-  public String getConformityCertificateFilesName(boolean plural, String format) {
+  public String getConformityCertificateFilesName(boolean plural) {
 
     return I18n.get(plural ? "Conformity Certificates" : "Certificate of conformity")
         + " - "
         + Beans.get(AppBaseService.class)
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + format;
+            .format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 
   @Override
