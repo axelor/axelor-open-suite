@@ -452,4 +452,9 @@
       method="setSaleOrderLineListToInvoice"/>
   </action-method>
 
+  <action-method name="action-sale-order-line-method-generate-invoice">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="generateInvoicesFromSelectedLines"/>
+  </action-method>
+
 </object-views>
