@@ -1,2 +1,2 @@
-title: "PurchaseOrder/SaleOrder/StockMove/Invoice : link order's budget to invoice after stock move generation"
+title: "Purchase order/Sale order/Stock move/Invoice: link order budget to invoice after stock move generation."
 module: axelor-budget
