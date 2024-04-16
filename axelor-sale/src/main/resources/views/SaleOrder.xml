@@ -268,6 +268,9 @@
           action="save,action-sale-order-method-cancel-reservation"
           showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
           if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item title="Recompute prices" action="action-sale-order-group-recompute-prices-btn"
+          showIf="statusSelect == 1"
+          if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -742,9 +745,6 @@
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
       <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
         showIf="statusSelect == 1" onClick="save,action-sale-order-method-separate-in-new-quotation"/>
-      <button name="computeBtn" title="Compute lines with pricing scale"
-        onClick="action-sale-order-group-compute-pricing-scale-btn" showIf="statusSelect == 1"
-        if="__config__.app.getApp('base')?.getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
@@ -2275,9 +2275,10 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateSaleOrderLineList"/>
   </action-method>
 
-  <action-group name="action-sale-order-group-compute-pricing-scale-btn">
+  <action-group name="action-sale-order-group-recompute-prices-btn">
     <action name="action-sale-order-method-update-sale-order-line-list"/>
     <action name="action-sale-order-method-compute"/>
+    <action name="save"/>
   </action-group>
 
   <action-attrs name="action-sale-order-attrs-template-deafult-currency">
