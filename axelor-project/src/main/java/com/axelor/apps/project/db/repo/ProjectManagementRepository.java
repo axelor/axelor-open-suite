@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -67,14 +68,22 @@ public class ProjectManagementRepository extends ProjectRepository {
     if (StringUtils.isBlank(fullNameGroovyFormula)) {
       fullNameGroovyFormula = "code +\"-\"+ name";
     }
-    Object result = groovyScriptHelper.eval(fullNameGroovyFormula);
-    if (result == null) {
+    try {
+      Object result = groovyScriptHelper.eval(fullNameGroovyFormula);
+      if (result == null) {
+        throw new AxelorException(
+            project,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProjectExceptionMessage.PROJECT_GROOVY_FORMULA_ERROR));
+      }
+      project.setFullName(result.toString());
+    } catch (Exception e) {
       throw new AxelorException(
+          e,
           project,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProjectExceptionMessage.PROJECT_GROOVY_FORMULA_ERROR));
+          I18n.get(ProjectExceptionMessage.PROJECT_GROOVY_FORMULA_SYNTAX_ERROR));
     }
-    project.setFullName(result.toString());
   }
 
   public static void setAllProjectMembersUserSet(Project project) {
@@ -128,6 +137,7 @@ public class ProjectManagementRepository extends ProjectRepository {
     try {
       setAllProjectFullName(project);
     } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e.getCause());
       throw new PersistenceException(e.getMessage(), e);
     }
     project.setDescription(projectTaskService.getTaskLink(project.getDescription()));

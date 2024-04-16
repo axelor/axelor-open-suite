@@ -143,6 +143,7 @@
 "From","De",,
 "From Date","Du",,
 "From date","Date de",,
+"Full name could not be computed, please check the groovy formula.","Le nom complet n'a pas pu être calculé, veuillez vérifier la formule groovy.",,
 "Full name groovy formula","Formule groovy du nom complet",,
 "Full screen","Plein écran",,
 "Gantt",,,

@@ -48,4 +48,7 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_GROOVY_FORMULA_ERROR = /*$$(*/
       "Please check the compute full name groovy formula in project app configuration" /*)*/;
+
+  public static final String PROJECT_GROOVY_FORMULA_SYNTAX_ERROR = /*$$(*/
+      "Full name could not be computed, please check the groovy formula." /*)*/;
 }
