@@ -7,6 +7,8 @@
 
   <entity name="AccountManagement">
 
+    <boolean name="chargeOnOriginalAccount" title="Charge directly on original account"/>
+
     <many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account"
       title="Purchase account"/>
     <many-to-one name="saleAccount" ref="com.axelor.apps.account.db.Account"

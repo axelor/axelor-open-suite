@@ -142,13 +142,15 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     deleteExistingPublishDmsFile(depositSlip, filename);
 
     BirtTemplate chequeDepositSlipBirtTemplate = getChequeDepositSlipBirtTemplate(depositSlip);
-    birtTemplateService.generate(
-        chequeDepositSlipBirtTemplate,
-        depositSlip,
-        Map.of("BankDetailsId", bankDetails.getId(), "ChequeDate", chequeDate),
-        filename,
-        true,
-        chequeDepositSlipBirtTemplate.getFormat());
+    birtTemplateService
+        .generate(
+            chequeDepositSlipBirtTemplate,
+            depositSlip,
+            Map.of("BankDetailsId", bankDetails.getId(), "ChequeDate", chequeDate),
+            filename,
+            true,
+            chequeDepositSlipBirtTemplate.getFormat())
+        .generate();
   }
 
   protected void deleteExistingPublishDmsFile(DepositSlip depositSlip, String filename) {
