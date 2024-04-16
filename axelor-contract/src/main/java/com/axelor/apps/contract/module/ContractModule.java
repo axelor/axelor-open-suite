@@ -27,6 +27,8 @@ import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractLineManagementRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.service.AnalyticLineModelFromContractService;
+import com.axelor.apps.contract.service.AnalyticLineModelFromContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl;
 import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
@@ -92,5 +94,7 @@ public class ContractModule extends AxelorModule {
     bind(ContractYearEndBonusService.class).to(ContractYearEndBonusServiceImpl.class);
     bind(ContractSaleOrderGeneration.class).to(ContractSaleOrderGenerationImpl.class);
     bind(ContractPurchaseOrderGeneration.class).to(ContractPurchaseOrderGenerationImpl.class);
+    bind(AnalyticLineModelFromContractService.class)
+        .to(AnalyticLineModelFromContractServiceImpl.class);
   }
 }

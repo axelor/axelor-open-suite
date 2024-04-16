@@ -1,7 +1,5 @@
 package com.axelor.apps.contract.service;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
@@ -10,6 +8,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -19,19 +18,19 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
 
   protected AppBaseService appBaseService;
   protected PurchaseOrderRepository purchaseOrderRepository;
-  protected AnalyticMoveLineRepository analyticMoveLineRepo;
   protected PurchaseOrderService purchaseOrderService;
+  protected AnalyticLineModelFromContractService analyticLineModelFromContractService;
 
   @Inject
   public ContractPurchaseOrderGenerationImpl(
       AppBaseService appBaseService,
       PurchaseOrderRepository purchaseOrderRepository,
-      AnalyticMoveLineRepository analyticMoveLineRepo,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      AnalyticLineModelFromContractService analyticLineModelFromContractService) {
     this.appBaseService = appBaseService;
     this.purchaseOrderRepository = purchaseOrderRepository;
-    this.analyticMoveLineRepo = analyticMoveLineRepo;
     this.purchaseOrderService = purchaseOrderService;
+    this.analyticLineModelFromContractService = analyticLineModelFromContractService;
   }
 
   @Override
@@ -88,28 +87,8 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
     purchaseOrderLine.setTaxLineSet(Sets.newHashSet(contractLine.getTaxLineSet()));
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
 
-    copyAnalyticsDataToPurchaseOrderLine(contractLine, purchaseOrderLine);
-  }
-
-  protected void copyAnalyticsDataToPurchaseOrderLine(
-      ContractLine contractLine, PurchaseOrderLine purchaseOrderLine) {
-
-    purchaseOrderLine.setAnalyticDistributionTemplate(
-        contractLine.getAnalyticDistributionTemplate());
-
-    purchaseOrderLine.setAxis1AnalyticAccount(contractLine.getAxis1AnalyticAccount());
-    purchaseOrderLine.setAxis2AnalyticAccount(contractLine.getAxis2AnalyticAccount());
-    purchaseOrderLine.setAxis3AnalyticAccount(contractLine.getAxis3AnalyticAccount());
-    purchaseOrderLine.setAxis4AnalyticAccount(contractLine.getAxis4AnalyticAccount());
-    purchaseOrderLine.setAxis5AnalyticAccount(contractLine.getAxis5AnalyticAccount());
-
-    for (AnalyticMoveLine originalAnalyticMoveLine : contractLine.getAnalyticMoveLineList()) {
-      AnalyticMoveLine analyticMoveLine =
-          analyticMoveLineRepo.copy(originalAnalyticMoveLine, false);
-
-      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
-      analyticMoveLine.setContractLine(null);
-      purchaseOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
-    }
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+    analyticLineModelFromContractService.copyAnalyticsDataFromContractLine(
+        contractLine, analyticLineModel);
   }
 }
