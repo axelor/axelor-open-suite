@@ -97,8 +97,8 @@
   </selection>
 
   <selection name="business.project.app.closing.project.rule.select">
-    <option value="1">None</option>
-    <option value="2">Non-blocking</option>
-    <option value="3">AppBusinessProject.Blocking</option>
+    <option value="0">None</option>
+    <option value="1">Non-blocking</option>
+    <option value="2">AppBusinessProject.Blocking</option>
   </selection>
 </object-views>

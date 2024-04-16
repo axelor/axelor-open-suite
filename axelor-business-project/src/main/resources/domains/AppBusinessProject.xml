@@ -64,9 +64,9 @@
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <extra-code><![CDATA[
-		public static final int CLOSING_PROJECT_RULE_NONE = 1;
-		public static final int CLOSING_PROJECT_RULE_NON_BLOCKING = 2;
-		public static final int CLOSING_PROJECT_RULE_BLOCKING = 3;
+		public static final int CLOSING_PROJECT_RULE_NONE = 0;
+		public static final int CLOSING_PROJECT_RULE_NON_BLOCKING = 1;
+		public static final int CLOSING_PROJECT_RULE_BLOCKING = 2;
 		]]>
     </extra-code>
 
