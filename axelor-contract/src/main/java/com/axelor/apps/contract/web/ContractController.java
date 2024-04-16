@@ -36,7 +36,8 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.apps.contract.service.ContractSalePurchaseOrderGeneration;
+import com.axelor.apps.contract.service.ContractPurchaseOrderGeneration;
+import com.axelor.apps.contract.service.ContractSaleOrderGeneration;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -348,7 +349,7 @@ public class ContractController {
     Contract contract = this.getContract(request);
 
     SaleOrder saleOrder =
-        Beans.get(ContractSalePurchaseOrderGeneration.class)
+        Beans.get(ContractSaleOrderGeneration.class)
             .generateSaleOrder(JPA.find(Contract.class, contract.getId()));
 
     response.setView(
@@ -366,7 +367,7 @@ public class ContractController {
       throws AxelorException {
     Contract contract = this.getContract(request);
     PurchaseOrder purchaseOrder =
-        Beans.get(ContractSalePurchaseOrderGeneration.class)
+        Beans.get(ContractPurchaseOrderGeneration.class)
             .generatePurchaseOrder(JPA.find(Contract.class, contract.getId()));
 
     response.setView(
