@@ -55,4 +55,8 @@ public interface ProjectPlanningTimeService {
   void deleteLinkedProjectPlanningTime(List<Long> ids);
 
   ProjectPlanningTime loadLinkedPlanningTime(ICalendarEvent event);
+
+  BigDecimal computePlannedTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
+
+  String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime);
 }

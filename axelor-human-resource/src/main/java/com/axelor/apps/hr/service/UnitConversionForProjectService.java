@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.project.db.Project;
 import java.io.IOException;
 import java.math.BigDecimal;
 import org.codehaus.groovy.control.CompilationFailedException;
 
-public interface UnitConversionService {
+public interface UnitConversionForProjectService {
 
   /**
    * Convert a value from a unit to another
@@ -34,11 +34,11 @@ public interface UnitConversionService {
    * @param endUnit The end unit
    * @param value The value to convert
    * @param scale The wanted scale of the result
-   * @param product Optional, a product used for complex conversions. Input null if needless.
+   * @param project Optional, a project used for complex conversions. Input null if needless.
    * @return The converted value with the specified scale
    * @throws AxelorException
    */
-  BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
+  BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value, int scale, Project project)
       throws AxelorException;
 
   /**
@@ -46,16 +46,15 @@ public interface UnitConversionService {
    * the end unit can not be found in the list, then the units are swapped. If there still isn't any
    * result, an Exception is thrown.
    *
-   * @param unitConversionList A list of conversions between units
    * @param startUnit The start unit
    * @param endUnit The end unit
-   * @param product Optional, a product used for complex conversions. INput null if needless.
+   * @param project Optional, a product used for complex conversions. Input null if needless.
    * @return A conversion coefficient to convert from startUnit to endUnit.
    * @throws AxelorException The required units are not found in the conversion list.
    * @throws CompilationFailedException
    * @throws ClassNotFoundException
    * @throws IOException
    */
-  public BigDecimal getCoefficient(Unit startUnit, Unit endUnit, Product product)
+  BigDecimal getCoefficient(Unit startUnit, Unit endUnit, Project project)
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException;
 }

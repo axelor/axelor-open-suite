@@ -22,14 +22,18 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -45,13 +49,16 @@ import com.axelor.db.mapper.Adapter;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +74,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected ProductRepository productRepo;
   protected EmployeeRepository employeeRepo;
   protected TimesheetLineRepository timesheetLineRepository;
+  protected UnitConversionForProjectService unitConversionForProjectService;
+  protected UnitConversionRepository unitConversionRepository;
 
   protected AppProjectService appProjectService;
   protected ICalendarService iCalendarService;
@@ -84,7 +93,9 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       TimesheetLineRepository timesheetLineRepository,
       AppProjectService appProjectService,
       ICalendarService iCalendarService,
-      ICalendarEventRepository iCalendarEventRepository) {
+      ICalendarEventRepository iCalendarEventRepository,
+      UnitConversionForProjectService unitConversionForProjectService,
+      UnitConversionRepository unitConversionRepository) {
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
@@ -97,6 +108,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.appProjectService = appProjectService;
     this.iCalendarService = iCalendarService;
     this.iCalendarEventRepository = iCalendarEventRepository;
+    this.unitConversionForProjectService = unitConversionForProjectService;
+    this.unitConversionRepository = unitConversionRepository;
   }
 
   @Override
@@ -396,5 +409,42 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         .filter("self.icalendarEvent = :icalendarEvent")
         .bind("icalendarEvent", event)
         .fetchOne();
+  }
+
+  @Override
+  public BigDecimal computePlannedTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    if (projectPlanningTime.getDisplayTimeUnit() == null
+        || projectPlanningTime.getTimeUnit() == null
+        || projectPlanningTime.getDisplayPlannedTime() == null) {
+      return BigDecimal.ZERO;
+    }
+    return unitConversionForProjectService.convert(
+        projectPlanningTime.getDisplayTimeUnit(),
+        projectPlanningTime.getTimeUnit(),
+        projectPlanningTime.getDisplayPlannedTime(),
+        projectPlanningTime.getDisplayPlannedTime().scale(),
+        projectPlanningTime.getProject());
+  }
+
+  @Override
+  public String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime) {
+    List<Unit> units = new ArrayList<>();
+    units.add(projectPlanningTime.getTimeUnit());
+    units.addAll(
+        unitConversionRepository.all()
+            .filter("self.entitySelect = :entitySelect AND self.startUnit = :startUnit")
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
+            .bind("startUnit", projectPlanningTime.getTimeUnit()).fetch().stream()
+            .map(UnitConversion::getEndUnit)
+            .collect(Collectors.toList()));
+    units.addAll(
+        unitConversionRepository.all()
+            .filter("self.entitySelect = :entitySelect AND self.endUnit = :endUnit")
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
+            .bind("endUnit", projectPlanningTime.getTimeUnit()).fetch().stream()
+            .map(UnitConversion::getStartUnit)
+            .collect(Collectors.toList()));
+    return "self.id IN (" + StringHelper.getIdListString(units) + ")";
   }
 }
