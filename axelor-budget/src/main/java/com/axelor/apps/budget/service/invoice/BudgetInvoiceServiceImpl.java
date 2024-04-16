@@ -34,6 +34,10 @@ import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
@@ -190,7 +194,9 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
     if (budgetDistributionList != null) {
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         if (invoiceLine.getInvoice().getPurchaseOrder() != null
-            || invoiceLine.getInvoice().getSaleOrder() != null) {
+            || invoiceLine.getInvoice().getSaleOrder() != null
+            || invoiceLine.getPurchaseOrderLine() != null
+            || invoiceLine.getSaleOrderLine() != null) {
           updateLineWithPO(budgetDistribution, invoice, invoiceLine);
         } else {
           updateLineWithNoPO(budgetDistribution, invoice);
@@ -245,14 +251,32 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
 
     if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
       LocalDate date = null;
-      if (invoiceLine.getInvoice().getPurchaseOrder() != null
-          && invoiceLine.getInvoice().getPurchaseOrder().getOrderDate() != null) {
-        date = invoiceLine.getInvoice().getPurchaseOrder().getOrderDate();
-      } else if (invoiceLine.getInvoice().getSaleOrder() != null) {
+      PurchaseOrder purchaseOrder =
+          Optional.of(invoiceLine)
+              .map(InvoiceLine::getInvoice)
+              .map(Invoice::getPurchaseOrder)
+              .orElse(
+                  Optional.of(invoiceLine)
+                      .map(InvoiceLine::getPurchaseOrderLine)
+                      .map(PurchaseOrderLine::getPurchaseOrder)
+                      .orElse(null));
+      SaleOrder saleOrder =
+          Optional.of(invoiceLine)
+              .map(InvoiceLine::getInvoice)
+              .map(Invoice::getSaleOrder)
+              .orElse(
+                  Optional.of(invoiceLine)
+                      .map(InvoiceLine::getSaleOrderLine)
+                      .map(SaleOrderLine::getSaleOrder)
+                      .orElse(null));
+
+      if (purchaseOrder != null && purchaseOrder.getOrderDate() != null) {
+        date = purchaseOrder.getOrderDate();
+      } else if (saleOrder != null) {
         date =
-            invoiceLine.getInvoice().getSaleOrder().getOrderDate() != null
-                ? invoiceLine.getInvoice().getSaleOrder().getOrderDate()
-                : invoiceLine.getInvoice().getSaleOrder().getCreationDate();
+            saleOrder.getOrderDate() != null
+                ? saleOrder.getOrderDate()
+                : saleOrder.getCreationDate();
       }
       budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
