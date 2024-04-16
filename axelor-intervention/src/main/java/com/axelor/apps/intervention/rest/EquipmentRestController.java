@@ -58,10 +58,13 @@ public class EquipmentRestController {
   @Path("/remove-picture/{equipmentId}")
   @PUT
   @HttpExceptionHandler
-  public Response removeEquipment(
+  public Response removeEquipmentPicture(
       @PathParam("equipmentId") Long equipmentId, EquipmentPicturePutRequest request)
       throws AxelorException {
-    new SecurityCheck().writeAccess(Equipment.class, equipmentId).check();
+    new SecurityCheck()
+        .writeAccess(Equipment.class, equipmentId)
+        .removeAccess(Picture.class, request.getPictureId())
+        .check();
     RequestValidator.validateBody(request);
 
     EquipmentRestService equipmentRestService = Beans.get(EquipmentRestService.class);
