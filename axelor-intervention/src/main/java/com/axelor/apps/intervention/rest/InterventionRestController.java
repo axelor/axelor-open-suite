@@ -37,7 +37,7 @@ public class InterventionRestController {
   public Response updateInterventionStatus(
       @PathParam("interventionId") Long interventionId, InterventionStatusPutRequest request)
       throws AxelorException {
-    new SecurityCheck().writeAccess(Intervention.class).createAccess(Intervention.class).check();
+    new SecurityCheck().writeAccess(Intervention.class, interventionId).check();
     RequestValidator.validateBody(request);
 
     InterventionRestService interventionRestService = Beans.get(InterventionRestService.class);
@@ -60,7 +60,7 @@ public class InterventionRestController {
   public Response addEquipment(
       @PathParam("interventionId") Long interventionId, InterventionEquipmentPutRequest request)
       throws AxelorException {
-    new SecurityCheck().writeAccess(Intervention.class).createAccess(Intervention.class).check();
+    new SecurityCheck().writeAccess(Intervention.class, interventionId).check();
     RequestValidator.validateBody(request);
 
     InterventionRestService interventionRestService = Beans.get(InterventionRestService.class);
@@ -84,7 +84,7 @@ public class InterventionRestController {
   public Response removeEquipment(
       @PathParam("interventionId") Long interventionId, InterventionEquipmentPutRequest request)
       throws AxelorException {
-    new SecurityCheck().writeAccess(Intervention.class).createAccess(Intervention.class).check();
+    new SecurityCheck().writeAccess(Intervention.class, interventionId).check();
     RequestValidator.validateBody(request);
 
     InterventionRestService interventionRestService = Beans.get(InterventionRestService.class);
