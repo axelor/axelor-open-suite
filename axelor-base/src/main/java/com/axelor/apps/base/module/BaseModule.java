@@ -152,6 +152,8 @@ import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.TradingNameServiceImpl;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.UnitConversionServiceImpl;
 import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.address.AddressAttrsService;
@@ -454,5 +456,6 @@ public class BaseModule extends AxelorModule {
     bind(PrintingTemplateMetaService.class).to(PrintingTemplateMetaServiceImpl.class);
     bind(PrintingTemplatePrintService.class).to(PrintingTemplatePrintServiceImpl.class);
     bind(PrintingGeneratorFactoryProvider.class).to(PrintingGeneratorFactoryProviderImpl.class);
+    bind(UnitConversionService.class).to(UnitConversionServiceImpl.class);
   }
 }
