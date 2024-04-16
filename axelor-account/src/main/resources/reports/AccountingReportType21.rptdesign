@@ -78,21 +78,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -416,7 +401,7 @@ WHERE AccountingReport.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -556,6 +541,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <text-property name="heading">fixed_asset_type</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">value_a</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">value_a</text-property>
@@ -596,41 +587,46 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                     <structure>
                         <property name="position">2</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
                         <property name="name">value_a</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">3</property>
+                        <property name="position">4</property>
                         <property name="name">value_b</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">5</property>
                         <property name="name">value_c</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">value_a_total</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">value_b_total</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">value_c_total</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">value_d</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">value_d_total</property>
                         <property name="dataType">float</property>
                     </structure>
@@ -647,20 +643,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
                 <structure>
                     <property name="position">2</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
                     <property name="name">value_a</property>
                     <property name="nativeName">value_a</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                     <property name="name">value_b</property>
                     <property name="nativeName">value_b</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                     <property name="name">value_c</property>
                     <property name="nativeName">value_c</property>
                     <property name="dataType">decimal</property>
@@ -669,6 +672,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	FixedAssetType.technical_type_select AS fixed_asset_type,
+	Currency.number_of_decimals,
 	SUM(CASE
 		WHEN 
 			FixedAsset.first_service_date < AccountingReport.date_from
@@ -710,14 +714,20 @@ ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
 
 LEFT JOIN account_fixed_asset_type AS FixedAssetType
 ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
-	
+
+LEFT JOIN base_company AS Company
+ON FixedAssetCategory.company = Company.id
+
+LEFT JOIN base_currency AS Currency
+ON Company.currency = Currency.id
+
 WHERE
     AccountingReport.id = ?
     AND (AccountingReport.company IS NULL OR AccountingReport.company = FixedAsset.company)
 	AND FixedAsset.status_select > 1
 	AND FixedAssetType.technical_type_select > 1
 	
-GROUP BY FixedAssetType.technical_type_select]]></xml-property>
+GROUP BY FixedAssetType.technical_type_select, Currency.number_of_decimals]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1529,7 +1539,7 @@ this.height=row["logo_height"];]]></method>
                 <cell id="4391">
                     <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
-                    <table id="4478">
+                    <table name="Table" id="4478">
                         <property name="dataSet">AccountingReportFixedAssetDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -1585,6 +1595,26 @@ this.height=row["logo_height"];]]></method>
                                 <text-property name="displayName">value_d_total</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["value_d_total"]</expression>
                                 <property name="dataType">float</property>
+                            </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+							</structure>
+                            <structure>
+                                <property name="name">PositiveValues</property>
+                                <text-property name="displayName">PositiveValues</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row.__rownum</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">row["value_a_total"] > 0 || row["value_b_total"] > 0 || row["value_c_total"] > 0 || row["value_d_total"] > 0</expression>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
@@ -1972,14 +2002,17 @@ this.height=row["logo_height"];]]></method>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="4494">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="4589">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">value_a</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["value_a"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4495">
                                     <property name="borderBottomStyle">solid</property>
@@ -1990,14 +2023,17 @@ this.height=row["logo_height"];]]></method>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="4496">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="4590">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">value_b</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["value_b"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4497">
                                     <property name="borderBottomStyle">solid</property>
@@ -2008,14 +2044,17 @@ this.height=row["logo_height"];]]></method>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="4498">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="4591">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">value_c</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["value_c"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4499">
                                     <property name="borderBottomStyle">solid</property>
@@ -2026,14 +2065,17 @@ this.height=row["logo_height"];]]></method>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="4500">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="4592">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">value_d</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["value_d"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </detail>
@@ -2092,14 +2134,17 @@ this.height=row["logo_height"];]]></method>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="4561">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="4593">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">value_a_total</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["value_a_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4557">
                                     <property name="borderBottomStyle">solid</property>
@@ -2111,13 +2156,17 @@ this.height=row["logo_height"];]]></method>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
-                                    <data id="4562">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
-                                        <property name="resultSetColumn">value_b_total</property>
-                                    </data>
+                                    <text id="4594">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["value_b_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4558">
                                     <property name="borderBottomStyle">solid</property>
@@ -2129,13 +2178,17 @@ this.height=row["logo_height"];]]></method>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
-                                    <data id="4563">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
-                                        <property name="resultSetColumn">value_c</property>
-                                    </data>
+                                    <text id="4595">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["value_c_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4559">
                                     <property name="borderBottomStyle">solid</property>
@@ -2147,13 +2200,17 @@ this.height=row["logo_height"];]]></method>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
-                                    <data id="4564">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
-                                        <property name="resultSetColumn">value_d_total</property>
-                                    </data>
+                                    <text id="4596">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["value_d_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </footer>
@@ -2190,6 +2247,42 @@ this.height=row["logo_height"];]]></method>
                 <cell id="4407">
                     <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
+                </cell>
+            </row>
+        </grid>
+        <grid id="4589">
+            <property name="dataBindingRef">Table</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row["PositiveValues"] > 0</expression>
+                </structure>
+            </list-property>
+            <column id="4590"/>
+            <row id="4591">
+                <cell id="4592">
+                    <text id="4593">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'
+</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
             </row>
         </grid>

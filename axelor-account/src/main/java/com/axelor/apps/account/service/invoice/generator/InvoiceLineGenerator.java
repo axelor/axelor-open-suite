@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -40,6 +39,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.CurrencyServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -72,7 +72,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected InvoiceLineService invoiceLineService;
   protected AccountManagementAccountService accountManagementService;
   protected ProductCompanyService productCompanyService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
 
   protected Invoice invoice;
@@ -110,7 +110,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.invoiceLineService = Beans.get(InvoiceLineService.class);
     this.accountManagementService = Beans.get(AccountManagementAccountService.class);
     this.productCompanyService = Beans.get(ProductCompanyService.class);
-    this.currencyScaleServiceAccount = Beans.get(CurrencyScaleServiceAccount.class);
+    this.currencyScaleService = Beans.get(CurrencyScaleService.class);
     this.taxService = Beans.get(TaxService.class);
   }
 
@@ -135,8 +135,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
     this.currencyService = new CurrencyServiceImpl(this.appBaseService, this.today);
-    this.currencyScale = this.currencyScaleServiceAccount.getScale(invoice);
-    this.companyCurrencyScale = this.currencyScaleServiceAccount.getCompanyScale(invoice);
+    this.currencyScale = this.currencyScaleService.getScale(invoice);
+    this.companyCurrencyScale = this.currencyScaleService.getCompanyScale(invoice);
   }
 
   protected InvoiceLineGenerator(
@@ -165,8 +165,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.taxLineSet = taxLineSet;
     this.discountTypeSelect = discountTypeSelect;
     this.discountAmount = discountAmount;
-    this.exTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, exTaxTotal);
-    this.inTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, inTaxTotal);
+    this.exTaxTotal = this.currencyScaleService.getScaledValue(invoice, exTaxTotal);
+    this.inTaxTotal = this.currencyScaleService.getScaledValue(invoice, inTaxTotal);
   }
 
   public Invoice getInvoice() {
@@ -228,11 +228,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     if (product != null) {
-      Set<TaxEquiv> taxEquivSet =
+      TaxEquiv taxEquiv =
           Beans.get(AccountManagementService.class)
-              .getProductTaxEquivSet(product, company, invoice.getFiscalPosition(), isPurchase);
+              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
 
-      invoiceLine.setTaxEquivSet(taxEquivSet);
+      invoiceLine.setTaxEquiv(taxEquiv);
     }
 
     invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));

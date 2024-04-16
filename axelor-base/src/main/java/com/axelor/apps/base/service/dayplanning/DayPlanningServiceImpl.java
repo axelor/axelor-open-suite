@@ -138,7 +138,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
     }
 
     LocalDateTime previousDay = dateT.minusDays(1).with(LocalTime.MAX);
-    return getAllowedStartDateTPeriodAt(
+    return getAllowedEndDateTPeriodAt(
         weeklyPlanningService.findDayPlanning(
             dayPlanning.getWeeklyPlanning(), previousDay.toLocalDate()),
         previousDay,
@@ -175,6 +175,9 @@ public class DayPlanningServiceImpl implements DayPlanningService {
   protected long computeVoidDurationBetween(
       DayPlanning dayPlanning, LocalTime startT, LocalTime endT) {
 
+    if (dayPlanning == null) {
+      return 0;
+    }
     LocalTime morningFromTime = dayPlanning.getMorningFrom();
     LocalTime morningToTime = dayPlanning.getMorningTo();
     LocalTime afternoonFromTime = dayPlanning.getAfternoonFrom();
@@ -296,7 +299,9 @@ public class DayPlanningServiceImpl implements DayPlanningService {
 
     long duration = 0;
 
-    if (dayPlanning.getWeeklyPlanning() == null || startDateT.compareTo(endDateT) >= 0) {
+    if (dayPlanning == null
+        || dayPlanning.getWeeklyPlanning() == null
+        || startDateT.compareTo(endDateT) >= 0) {
       return 0;
     }
 

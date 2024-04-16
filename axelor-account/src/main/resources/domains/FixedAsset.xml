@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAsset" cacheable="true">
+  <entity name="FixedAsset" cacheable="true"
+    implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <string name="reference" title="Reference" readonly="true"/>
     <string name="name" title="Name" required="true"/>
@@ -154,6 +155,22 @@
       ref="com.axelor.apps.account.db.AssetDisposalReason" title="Disposal Reason"/>
 
     <integer name="initialPeriodicityInMonth" title="Initial periodicity in month"/>
+
+    <integer name="moveGenerationException" title="Moves generation exception"
+      selection="account.fixed.asset.move.generation.exception" default="0"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return this.getCompanyCurrency();
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+
     <extra-code><![CDATA[
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
@@ -198,6 +215,11 @@
 		// Split type
 		public static final int SPLIT_TYPE_QUANTITY = 1;
 		public static final int SPLIT_TYPE_AMOUNT = 2;
+
+		// Moves generation exception
+		public static final int MOVE_GENERATION_EXCEPTION_NONE = 0;
+		public static final int MOVE_GENERATION_NO_DISPOSAL = 1;
+		public static final int MOVE_GENERATION_NO_MOVES = 2;
 
 	]]></extra-code>
 

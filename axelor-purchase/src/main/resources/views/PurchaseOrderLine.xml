@@ -200,7 +200,7 @@
           hidden="true"/>
         <field name="$currency.numberOfDecimals" hidden="true"/>
         <field name="fixedAssets" widget="boolean-switch"/>
-        <field name="taxEquivSet" hidden="true" grid-view="tax-equiv-grid"
+        <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
@@ -332,6 +332,7 @@
     <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
     <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
+    <action name="action-purchase-order-line-record-init-dummy-fields"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-onload">
@@ -613,5 +614,12 @@
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
       method="computeAnalyticDistribution" if="__config__.app.isApp('supplychain')"/>
   </action-method>
+
+  <action-record name="action-purchase-order-line-record-init-dummy-fields"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <field name="$nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-record>
 
 </object-views>

@@ -23,10 +23,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -43,12 +43,18 @@ import java.util.Set;
 public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDistributionService {
 
   protected PaymentMoveLineDistributionRepository paymentMvlDistributionRepository;
+  protected CurrencyService currencyService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public PaymentMoveLineDistributionServiceImpl(
-      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository) {
+      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository,
+      CurrencyService currencyService,
+      MoveLineToolService moveLineToolService) {
 
     this.paymentMvlDistributionRepository = paymentMvlDistributionRepository;
+    this.currencyService = currencyService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -75,18 +81,14 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       // ignore move lines related to taxes
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
+      if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
         continue;
       }
       Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
       if (ObjectUtils.notEmpty(taxLineSet)) {
         for (TaxLine taxLine : taxLineSet) {
           PaymentMoveLineDistribution paymentMvlD =
-              createPaymentMoveLineDistribution(
+              new PaymentMoveLineDistribution(
                   move.getPartner(), reconcile, moveLine, move, taxLine);
 
           paymentMvlD.setOperationDate(
@@ -149,9 +151,8 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
       TaxLine taxLine) {
 
     BigDecimal exTaxProratedAmount =
-        moveLineAmount
-            .multiply(paymentAmount)
-            .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
+        currencyService
+            .computeScaledExchangeRate(moveLineAmount.multiply(paymentAmount), invoiceTotalAmount)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     BigDecimal taxProratedAmount = BigDecimal.ZERO;
@@ -167,16 +168,5 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
     paymentMvlD.setExTaxProratedAmount(exTaxProratedAmount);
     paymentMvlD.setTaxProratedAmount(taxProratedAmount);
     paymentMvlD.setInTaxProratedAmount(exTaxProratedAmount.add(taxProratedAmount));
-  }
-
-  protected PaymentMoveLineDistribution createPaymentMoveLineDistribution(
-      Partner partner, Reconcile reconcile, MoveLine moveLine, Move move, TaxLine taxLine) {
-    PaymentMoveLineDistribution paymentMoveLineDistribution = new PaymentMoveLineDistribution();
-    paymentMoveLineDistribution.setPartner(partner);
-    paymentMoveLineDistribution.setReconcile(reconcile);
-    paymentMoveLineDistribution.setMove(move);
-    paymentMoveLineDistribution.setMoveLine(moveLine);
-    paymentMoveLineDistribution.setTaxLine(taxLine);
-    return paymentMoveLineDistribution;
   }
 }

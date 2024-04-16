@@ -186,4 +186,7 @@ public interface ITranslation {
       "BankReconciliationStatementNew.comment"; /*)*/
   public static final String BANK_RECONCILIATION_SELECT_A_LINE = /*$$(*/
       "Please select at least one bank reconciliation line (button on right side of table)."; /*)*/
+
+  public static final String BILL_OF_EXCHANGE_CANCELLATION = /*$$(*/
+      "Cancellation of Bill of Exchange for invoice %s"; /*)*/
 }

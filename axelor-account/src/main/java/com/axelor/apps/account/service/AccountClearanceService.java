@@ -33,9 +33,12 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -81,6 +84,7 @@ public class AccountClearanceService {
   protected BankDetailsService bankDetailsService;
   protected AccountingSituationService accountingSituationService;
   protected AccountingSituationRepository accountingSituationRepo;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public AccountClearanceService(
@@ -97,7 +101,8 @@ public class AccountClearanceService {
       MoveLineCreateService moveLineCreateService,
       BankDetailsService bankDetailsService,
       AccountingSituationService accountingSituationService,
-      AccountingSituationRepository accountingSituationRepo) {
+      AccountingSituationRepository accountingSituationRepo,
+      MoveLineToolService moveLineToolService) {
 
     this.appBaseService = appBaseService;
     this.user = userService.getUser();
@@ -113,6 +118,7 @@ public class AccountClearanceService {
     this.bankDetailsService = bankDetailsService;
     this.accountingSituationService = accountingSituationService;
     this.accountingSituationRepo = accountingSituationRepo;
+    this.moveLineToolService = moveLineToolService;
   }
 
   public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
@@ -184,7 +190,13 @@ public class AccountClearanceService {
 
       Account taxAccount =
           taxAccountService.getAccount(
-              tax, company, journal, vatSystemSelect, false, MoveRepository.FUNCTIONAL_ORIGIN_SALE);
+              tax,
+              company,
+              journal,
+              profitAccount,
+              vatSystemSelect,
+              false,
+              MoveRepository.FUNCTIONAL_ORIGIN_SALE);
       Move move =
           this.createAccountClearanceMove(
               moveLine,
@@ -293,6 +305,7 @@ public class AccountClearanceService {
             null,
             null);
     this.setTax(creditMoveLine2, tax, vatSystemSelect);
+    moveLineToolService.setIsNonDeductibleTax(creditMoveLine2, tax);
     move.getMoveLineList().add(creditMoveLine2);
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);

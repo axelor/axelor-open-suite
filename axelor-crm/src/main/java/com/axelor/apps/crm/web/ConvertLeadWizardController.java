@@ -25,8 +25,8 @@ import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
@@ -39,6 +39,7 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -226,7 +227,7 @@ public class ConvertLeadWizardController {
       partnerMap.put("isProspect", true);
     }
 
-    if (!isCompany) {
+    if (!isCompany || StringUtils.isEmpty(lead.getEnterpriseName())) {
       partnerMap.put("firstName", lead.getFirstName());
       partnerMap.put("name", lead.getName());
       partnerMap.put("titleSelect", lead.getTitleSelect());

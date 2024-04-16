@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
@@ -159,8 +159,8 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       return true;
     } else {
       return toAddress != null
-          && toAddress.getAddressL7Country() != null
-          && toAddress.getAddressL7Country().getIsIspmRequired();
+          && toAddress.getCountry() != null
+          && toAddress.getCountry().getIsIspmRequired();
     }
   }
 
@@ -235,7 +235,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
           I18n.get("Bad stock move type"));
     }
 
-    if (address.getAddressL7Country() == null) {
+    if (address.getCountry() == null) {
       throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
     }
 
@@ -258,7 +258,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
           I18n.get("Bad stock move type"));
     }
 
-    if (address.getAddressL7Country() == null) {
+    if (address.getCountry() == null) {
       throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
     }
 

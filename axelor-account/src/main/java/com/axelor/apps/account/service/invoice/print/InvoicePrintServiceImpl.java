@@ -28,11 +28,13 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.db.PfxCertificate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.pdf.PdfSignatureService;
 import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -67,6 +69,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected BirtTemplateService birtTemplateService;
+  protected PdfSignatureService pdfSignatureService;
 
   @Inject
   public InvoicePrintServiceImpl(
@@ -74,12 +77,14 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       AccountConfigRepository accountConfigRepo,
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
-      BirtTemplateService birtTemplateService) {
+      BirtTemplateService birtTemplateService,
+      PdfSignatureService pdfSignatureService) {
     this.invoiceRepo = invoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.birtTemplateService = birtTemplateService;
+    this.pdfSignatureService = pdfSignatureService;
   }
 
   @Override
@@ -154,14 +159,15 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     ReportSettings reportSettings = prepareReportSettings(invoice, reportType, format, locale);
     MetaFile metaFile;
 
-    reportSettings.toAttach(invoice);
     File file = reportSettings.generate().getFile();
 
     try {
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
       metaFile = metaFiles.upload(file);
       metaFile.setFileName(String.format("%s.%s", reportSettings.getOutputName(), format));
-      invoice.setPrintedPDF(metaFile);
+      MetaFile signedMetaFile = getSignedPdf(metaFile);
+      metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
+      invoice.setPrintedPDF(signedMetaFile);
       return MetaFiles.getPath(metaFile).toFile();
     } catch (IOException e) {
       throw new AxelorException(
@@ -170,6 +176,15 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               + " "
               + e.getLocalizedMessage());
     }
+  }
+
+  protected MetaFile getSignedPdf(MetaFile metaFile) throws AxelorException {
+    PfxCertificate pfxCertificate = appBaseService.getAppBase().getPfxCertificate();
+    if (pfxCertificate == null) {
+      return metaFile;
+    }
+    return pdfSignatureService.digitallySignPdf(
+        metaFile, pfxCertificate.getCertificate(), pfxCertificate.getPassword(), "Invoice");
   }
 
   @Override
@@ -248,7 +263,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     if (invoiceBirtTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String title =

@@ -23,13 +23,14 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -45,7 +46,8 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected FiscalPositionService fiscalPositionService;
   protected CurrencyService currencyService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
+  protected TaxService taxService;
 
   @Inject
   public MoveLineRecordServiceImpl(
@@ -53,12 +55,14 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       FiscalPositionService fiscalPositionService,
       CurrencyService currencyService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService,
+      TaxService taxService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
     this.currencyService = currencyService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -85,7 +89,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       BigDecimal currencyAmount =
           total.divide(
               moveLine.getCurrencyRate(),
-              currencyScaleServiceAccount.getScale(move),
+              currencyScaleService.getScale(move),
               RoundingMode.HALF_UP);
       if (isCredit) {
         currencyAmount = currencyAmount.negate();
@@ -118,28 +122,26 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
     if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
       moveLine.setTaxLineSet(Sets.newHashSet());
+      moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
       return;
     }
 
     Set<TaxLine> taxLineSet =
         moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount);
-    TaxEquiv taxEquiv = null;
     Set<TaxLine> taxLineBeforeReverseSet = moveLine.getTaxLineBeforeReverseSet();
-    moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
 
-    if (CollectionUtils.isNotEmpty(taxLineSet)) {
-      if (move.getFiscalPosition() != null) {
-        taxEquiv =
-            fiscalPositionService.getTaxEquiv(
-                move.getFiscalPosition(), taxLineSet.iterator().next().getTax());
-      }
-
-      moveLine.setTaxLineSet(taxLineSet);
-      moveLine.setTaxLineBeforeReverseSet(taxLineBeforeReverseSet);
+    TaxEquiv taxEquiv = null;
+    if (CollectionUtils.isNotEmpty(taxLineSet) && move.getFiscalPosition() != null) {
+      taxEquiv =
+          fiscalPositionService.getTaxEquivFromTaxLines(
+              move.getFiscalPosition(), taxLineBeforeReverseSet);
       if (taxEquiv != null) {
-        moveLine.setTaxEquiv(taxEquiv);
+        moveLine.setTaxLineBeforeReverseSet(taxLineBeforeReverseSet);
+        taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), moveLine.getDate());
       }
     }
+    moveLine.setTaxLineSet(taxLineSet);
+    moveLine.setTaxEquiv(taxEquiv);
 
     if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
       moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());

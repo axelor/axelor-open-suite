@@ -28,9 +28,9 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -73,6 +73,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected SaleOrderStockService saleOrderStockService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -86,7 +87,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderStockService saleOrderStockService,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      SaleConfigService saleConfigService) {
+      SaleConfigService saleConfigService,
+      AccountingSituationSupplychainService accountingSituationSupplychainService) {
     super(
         saleOrderLineService,
         appBaseService,
@@ -99,6 +101,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.saleOrderStockService = saleOrderStockService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.accountingSituationSupplychainService = accountingSituationSupplychainService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -251,6 +254,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
+    accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 
   public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder) {
@@ -421,19 +425,19 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     String stockLocationA2C = null;
     String companyA2C = null;
     if (saleOrder.getDeliveryAddress() != null
-        && saleOrder.getDeliveryAddress().getAddressL7Country() != null) {
-      saleOrderA2C = saleOrder.getDeliveryAddress().getAddressL7Country().getAlpha2Code();
+        && saleOrder.getDeliveryAddress().getCountry() != null) {
+      saleOrderA2C = saleOrder.getDeliveryAddress().getCountry().getAlpha2Code();
     }
     StockLocation stockLocation = saleOrder.getStockLocation();
     if (stockLocation != null
         && stockLocation.getAddress() != null
-        && stockLocation.getAddress().getAddressL7Country() != null) {
-      stockLocationA2C = stockLocation.getAddress().getAddressL7Country().getAlpha2Code();
+        && stockLocation.getAddress().getCountry() != null) {
+      stockLocationA2C = stockLocation.getAddress().getCountry().getAlpha2Code();
     }
     if (saleOrder.getCompany() != null
         && saleOrder.getCompany().getAddress() != null
-        && saleOrder.getCompany().getAddress().getAddressL7Country() != null) {
-      companyA2C = saleOrder.getCompany().getAddress().getAddressL7Country().getAlpha2Code();
+        && saleOrder.getCompany().getAddress().getCountry() != null) {
+      companyA2C = saleOrder.getCompany().getAddress().getCountry().getAlpha2Code();
     }
     return stockLocation != null && saleOrderA2C != null && !saleOrderA2C.equals(stockLocationA2C)
         || stockLocation == null && saleOrderA2C != null && !saleOrderA2C.equals(companyA2C);

@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -107,7 +108,11 @@ public class SaleOrderLineController {
 
         if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
-              pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
+              pricingService.getRandomPricing(
+                  saleOrder.getCompany(),
+                  saleOrderLine,
+                  null,
+                  PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
 
           if (defaultPricing.isPresent()
               && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {
@@ -152,9 +157,7 @@ public class SaleOrderLineController {
     response.setValue(
         "taxEquiv",
         Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(
-                saleOrder.getFiscalPosition(),
-                saleOrderLine.getTaxLineSet().iterator().next().getTax()));
+            .getTaxEquivFromTaxLines(saleOrder.getFiscalPosition(), saleOrderLine.getTaxLineSet()));
   }
 
   public void getDiscount(ActionRequest request, ActionResponse response) {

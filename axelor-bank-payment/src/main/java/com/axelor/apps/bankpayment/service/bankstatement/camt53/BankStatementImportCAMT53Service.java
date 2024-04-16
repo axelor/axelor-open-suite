@@ -6,7 +6,6 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineCAMT53Rep
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineCAMT53Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportAbstractService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
@@ -14,6 +13,7 @@ import com.axelor.apps.bankpayment.service.bankstatementline.camt53.BankStatemen
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -23,7 +23,7 @@ import java.util.List;
 
 public class BankStatementImportCAMT53Service extends BankStatementImportAbstractService {
 
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected CurrencyScaleService currencyScaleService;
 
   protected BankStatementLineCreateCAMT53Service bankStatementLineCreateCAMT53Service;
 
@@ -41,14 +41,14 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
       BankStatementLineFetchService bankStatementLineFetchService,
       BankPaymentBankStatementLineCAMT53Repository bankPaymentBankStatementLineCAMT53Repository,
       BankStatementLineDeleteService bankStatementLineDeleteService,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      CurrencyScaleService currencyScaleService) {
     super(bankStatementRepository);
     this.bankStatementLineCreateCAMT53Service = bankStatementLineCreateCAMT53Service;
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankPaymentBankStatementLineCAMT53Repository =
         bankPaymentBankStatementLineCAMT53Repository;
     this.bankStatementLineDeleteService = bankStatementLineDeleteService;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -175,20 +175,20 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
               .order("-sequence")
               .fetchOne();
       if (ObjectUtils.notEmpty(finalBankStatementLineCAMT53)
-          && (currencyScaleServiceBankPayment
+          && (currencyScaleService
                       .getScaledValue(
                           initialBankStatementLineCAMT53, initialBankStatementLineCAMT53.getDebit())
                       .compareTo(
-                          currencyScaleServiceBankPayment.getScaledValue(
+                          currencyScaleService.getScaledValue(
                               finalBankStatementLineCAMT53,
                               finalBankStatementLineCAMT53.getDebit()))
                   != 0
-              || currencyScaleServiceBankPayment
+              || currencyScaleService
                       .getScaledValue(
                           initialBankStatementLineCAMT53,
                           initialBankStatementLineCAMT53.getCredit())
                       .compareTo(
-                          currencyScaleServiceBankPayment.getScaledValue(
+                          currencyScaleService.getScaledValue(
                               finalBankStatementLineCAMT53,
                               finalBankStatementLineCAMT53.getCredit()))
                   != 0)) {
@@ -230,21 +230,21 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
         for (int i = 0; i < initialBankStatementLineCAMT53.size(); i++) {
           deleteLines =
               deleteLines
-                  || (currencyScaleServiceBankPayment
+                  || (currencyScaleService
                               .getScaledValue(
                                   initialBankStatementLineCAMT53.get(i),
                                   initialBankStatementLineCAMT53.get(i).getDebit())
                               .compareTo(
-                                  currencyScaleServiceBankPayment.getScaledValue(
+                                  currencyScaleService.getScaledValue(
                                       finalBankStatementLineCAMT53.get(i),
                                       finalBankStatementLineCAMT53.get(i).getDebit()))
                           != 0
-                      || currencyScaleServiceBankPayment
+                      || currencyScaleService
                               .getScaledValue(
                                   initialBankStatementLineCAMT53.get(i),
                                   initialBankStatementLineCAMT53.get(i).getCredit())
                               .compareTo(
-                                  currencyScaleServiceBankPayment.getScaledValue(
+                                  currencyScaleService.getScaledValue(
                                       finalBankStatementLineCAMT53.get(i),
                                       finalBankStatementLineCAMT53.get(i).getCredit()))
                           != 0);

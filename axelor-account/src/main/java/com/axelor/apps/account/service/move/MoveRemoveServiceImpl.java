@@ -26,8 +26,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -48,7 +48,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
 
   protected ArchivingService archivingService;
 
-  protected ReconcileService reconcileService;
+  protected UnreconcileService unReconcileService;
 
   protected AccountingSituationService accountingSituationService;
 
@@ -59,13 +59,13 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
       ArchivingService archivingService,
-      ReconcileService reconcileService,
+      UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService) {
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
     this.archivingService = archivingService;
-    this.reconcileService = reconcileService;
+    this.unReconcileService = unReconcileService;
     this.accountingSituationService = accountingSituationService;
     this.accountCustomerService = accountCustomerService;
   }
@@ -99,12 +99,12 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
         if (reconcile.getStatusSelect() != ReconcileRepository.STATUS_CANCELED) {
-          reconcileService.unreconcile(reconcile);
+          unReconcileService.unreconcile(reconcile);
         }
       }
       for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
         if (reconcile.getStatusSelect() != ReconcileRepository.STATUS_CANCELED) {
-          reconcileService.unreconcile(reconcile);
+          unReconcileService.unreconcile(reconcile);
         }
       }
     }

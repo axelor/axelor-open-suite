@@ -67,6 +67,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -107,6 +108,8 @@ public class InvoicingProjectService {
   @Inject protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
 
   @Inject protected SaleOrderLineRepository saleOrderLineRepository;
+
+  @Inject protected ProjectHoldBackLineService projectHoldBackLineService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -191,6 +194,7 @@ public class InvoicingProjectService {
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
+    invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
     Beans.get(InvoiceRepository.class).save(invoice);
 
     invoicingProject.setInvoice(invoice);
@@ -417,11 +421,12 @@ public class InvoicingProjectService {
     expenseLineQueryMap.put("statusReimbursed", ExpenseRepository.STATUS_REIMBURSED);
 
     StringBuilder taskQueryBuilder = new StringBuilder(commonQuery);
-    taskQueryBuilder.append(" AND self.invoicingType = :invoicingTypePackage");
-
+    taskQueryBuilder.append(
+        " AND (self.invoicingType = :invoicingTypePackage OR self.invoicingType = :invoicingTypeProgress)");
     Map<String, Object> taskQueryMap = new HashMap<>();
     taskQueryMap.put("project", project);
     taskQueryMap.put("invoicingTypePackage", ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+    taskQueryMap.put("invoicingTypeProgress", ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
 
     if (invoicingProject.getDeadlineDate() != null) {
       solQueryBuilder.append(" AND self.saleOrder.creationDate <= :deadlineDate");
@@ -529,7 +534,7 @@ public class InvoicingProjectService {
     if (invoicingProjectAnnexBirtTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String title =
@@ -582,6 +587,20 @@ public class InvoicingProjectService {
       return null;
     }
     InvoicingProject invoicingProject = new InvoicingProject();
+
+    clearLines(invoicingProject);
+    setLines(invoicingProject, project, 0);
+
+    if (invoicingProject.getSaleOrderLineSet().isEmpty()
+        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
+        && invoicingProject.getLogTimesSet().isEmpty()
+        && invoicingProject.getExpenseLineSet().isEmpty()
+        && invoicingProject.getProjectTaskSet().isEmpty()) {
+
+      return invoicingProject;
+    }
+
+    project = JPA.find(Project.class, project.getId());
     invoicingProject.setProject(project);
 
     if (consolidatePhaseSelect
@@ -594,19 +613,6 @@ public class InvoicingProjectService {
         == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
-    }
-    invoicingProject = invoicingProjectRepo.save(invoicingProject);
-
-    clearLines(invoicingProject);
-    setLines(invoicingProject, project, 0);
-
-    if (invoicingProject.getSaleOrderLineSet().isEmpty()
-        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
-        && invoicingProject.getLogTimesSet().isEmpty()
-        && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()) {
-
-      return invoicingProject;
     }
     return invoicingProjectRepo.save(invoicingProject);
   }

@@ -69,6 +69,7 @@
     <option value="1">From stock</option>
     <option value="2">Purchase</option>
     <option value="3">Produce</option>
+    <option value="4">Stock and produce</option>
   </selection>
 
   <selection name='iimport.type.select'>
@@ -171,6 +172,7 @@
   <selection name="base.price.list.line.anomaly.select">
     <option value="1">Product unavailable for sale</option>
     <option value="2">Product not renewed</option>
+    <option value="3">Product unavailable for purchase</option>
   </selection>
 
   <selection name="day.month.select">
@@ -328,6 +330,10 @@
     <option value="2">Formula</option>
   </selection>
 
+  <selection name="unit.conversion.entity.select">
+    <option value="0">All</option>
+  </selection>
+
   <selection name="i.calendar.user.status.select">
     <option value="1">Yes</option>
     <option value="2">No</option>
@@ -406,6 +412,16 @@
     <option value="integer">Integer</option>
     <option value="date">Date</option>
     <option value="time">Time</option>
+  </selection>
+
+  <selection name="base.printing.template.type.select">
+    <option value="1">File</option>
+    <option value="2">Birt</option>
+  </selection>
+
+  <selection name="base.printing.template.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Active</option>
   </selection>
 
   <selection name="base.blocking.select">
@@ -756,6 +772,15 @@
   <selection name="tax.type.type.select">
     <option value="1">VAT</option>
     <option value="2">Other</option>
+  </selection>
+
+  <selection name="base.site.type.select">
+    <option value="1">Internal</option>
+    <option value="2">External</option>
+  </selection>
+
+  <selection name="base.pricing.type.select">
+    <option value="Default">Default</option>
   </selection>
 
 </object-views>
