@@ -7,7 +7,6 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineCAMT53;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineCAMT53Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineCreateAbstractService;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.StructuredContentLine;
@@ -60,8 +59,6 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
   public static String BALANCE_TYPE_INITIAL_BALANCE = "OPBD";
   public static String BALANCE_TYPE_FINAL_BALANCE = "CLBD";
 
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
-
   protected BankStatementLineCAMT53Repository bankStatementLineCAMT53Repository;
 
   protected InterbankCodeLineRepository interbankCodeLineRepository;
@@ -74,13 +71,11 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
   protected BankStatementLineCreateCAMT53Service(
       BankStatementRepository bankStatementRepository,
       BankStatementImportService bankStatementService,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment,
       BankStatementLineCAMT53Repository bankStatementLineCAMT53Repository,
       InterbankCodeLineRepository interbankCodeLineRepository,
       BankDetailsRepository bankDetailsRepository,
       BankStatementLineCreationCAMT53Service bankStatementLineCreationCAMT53Service) {
     super(bankStatementRepository, bankStatementService);
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
     this.bankStatementLineCAMT53Repository = bankStatementLineCAMT53Repository;
     this.interbankCodeLineRepository = interbankCodeLineRepository;
     this.bankDetailsRepository = bankDetailsRepository;
@@ -101,12 +96,6 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
   @Override
   protected void process() throws IOException, AxelorException {
     try {
-      /*
-      1. find bank details
-      2. create bankstatement lines, including:
-          a. balance line
-          b. statement entry line
-       */
       JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
       Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
       Document document = (Document) jaxbUnmarshaller.unmarshal(file);
@@ -153,10 +142,9 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
         bankDetails = findBankDetailsByIban(ibanOrOthers);
 
         if (bankDetails == null) {
-          //        throw new AxelorException(
-          //            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Bank details is not
-          // found."));
-
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get("Error: The bank details doesn't exist."));
         }
       }
 
@@ -184,19 +172,11 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
         }
       }
 
-      changeStatusSelectToImported();
-
     } catch (jakarta.xml.bind.JAXBException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get("Error: File format unmarshalling process failed."));
     }
-  }
-
-  @Transactional
-  protected void changeStatusSelectToImported() {
-    bankStatement.setStatusSelect(2);
-    bankStatementRepository.save(bankStatement);
   }
 
   @Transactional
@@ -206,7 +186,8 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
             .map(ReportEntry2::getBookgDt)
             .map(DateAndDateTimeChoice::getDtTm)
             .orElse(null);
-    if (opDate == null) { // sometimes the DtTm is null, then check Dt.
+    // sometimes the DtTm is null, then check Dt.
+    if (opDate == null) {
       opDate =
           Optional.of(ntry)
               .map(ReportEntry2::getBookgDt)
@@ -223,7 +204,8 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
             .map(ReportEntry2::getValDt)
             .map(DateAndDateTimeChoice::getDtTm)
             .orElse(null);
-    if (valDate == null) { // sometimes the DtTm is null, then check Dt.
+    // sometimes the DtTm is null, then check Dt.
+    if (valDate == null) {
       valDate =
           Optional.of(ntry)
               .map(ReportEntry2::getValDt)
@@ -295,8 +277,10 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
       }
     }
 
-    // Possible type values: int TYPE_OPERATION_CODE = 1;
-    //                      int TYPE_REJECT_RETURN_CODE = 2;
+    /* Possible interbankCode type values:
+      int TYPE_OPERATION_CODE = 1;
+      int TYPE_REJECT_RETURN_CODE = 2;
+    */
     InterbankCodeLine interbankCodeLine = findInterBankCodeLineByCode(interBankCodeLineCode);
     InterbankCodeLine operationInterbankCodeLine = null;
     InterbankCodeLine rejectInterbankCodeLine = null;

@@ -41,11 +41,13 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineCAMT53Repository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineCAMT53Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementManagementRepository;
@@ -257,5 +259,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementLineRepository.class).to(BankStatementLineManagementRepository.class);
     bind(BankStatementLineCreationCAMT53Service.class)
         .to(BankStatementLineCreationCAMT53ServiceImpl.class);
+    bind(BankStatementLineCAMT53Repository.class)
+        .to(BankPaymentBankStatementLineCAMT53Repository.class);
   }
 }
