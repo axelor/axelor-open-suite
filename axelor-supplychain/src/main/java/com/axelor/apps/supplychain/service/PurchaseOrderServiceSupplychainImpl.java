@@ -48,7 +48,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.RefundService;
+import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -78,7 +78,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected CurrencyScaleService currencyScaleService;
-  protected RefundService refundService;
+  protected AdvancePaymentRefundService refundService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -92,7 +92,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       CurrencyScaleService currencyScaleService,
-      RefundService refundService) {
+      AdvancePaymentRefundService refundService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;

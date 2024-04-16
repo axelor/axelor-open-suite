@@ -57,21 +57,11 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 
     refund.setOperationTypeSelect(this.inverseOperationType(refund.getOperationTypeSelect()));
     Integer operationSubTypeSelect = InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT;
-    if (List.of(
-            InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
-            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
-        .contains(refund.getOperationTypeSelect())) {
+    if (InvoiceToolService.isRefund(refund)) {
       operationSubTypeSelect =
           invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
               ? InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND
               : InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND;
-    } else if (List.of(
-                InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
-                InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
-            .contains(invoice.getOperationTypeSelect())
-        && invoice.getOperationSubTypeSelect()
-            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
-      operationSubTypeSelect = InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE;
     }
 
     refund.setOperationSubTypeSelect(operationSubTypeSelect);

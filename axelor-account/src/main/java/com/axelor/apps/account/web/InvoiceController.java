@@ -405,16 +405,13 @@ public class InvoiceController {
               ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
               : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
 
-      String viewTitle = AccountExceptionMessage.INVOICE_4_INVOICE_REFUND;
+      String viewTitle = AccountExceptionMessage.INVOICE_GENERATED_INVOICE_REFUND;
       if (refund.getOperationSubTypeSelect()
           == InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND) {
-        viewTitle = AccountExceptionMessage.INVOICE_4_REFUND;
+        viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
       } else if (refund.getOperationSubTypeSelect()
           == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
-        viewTitle = AccountExceptionMessage.INVOICE_4_REFUND_ADVANCE_PAYMENT;
-      } else if (refund.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-        viewTitle = AccountExceptionMessage.INVOICE_4_ADVANCE_PAYMENT_REFUND;
+        viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
       }
 
       response.setView(

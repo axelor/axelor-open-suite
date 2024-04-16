@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -169,25 +170,23 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
   }
 
   @Override
-  public void updateBudgetLinesFromInvoice(Invoice invoice) {
+  public void updateBudgetLinesFromInvoice(Invoice invoice) throws AxelorException {
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
 
     if (CollectionUtils.isEmpty(invoiceLineList)) {
       return;
     }
 
-    invoiceLineList.stream()
-        .filter(invoiceLine -> !CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList()))
-        .forEach(
-            invoiceLine -> {
-              updateLinesFromInvoice(invoiceLine.getBudgetDistributionList(), invoice, invoiceLine);
-            });
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      updateLinesFromInvoice(invoiceLine.getBudgetDistributionList(), invoice, invoiceLine);
+    }
   }
 
   @Transactional
   protected void updateLinesFromInvoice(
-      List<BudgetDistribution> budgetDistributionList, Invoice invoice, InvoiceLine invoiceLine) {
-    if (budgetDistributionList != null) {
+      List<BudgetDistribution> budgetDistributionList, Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+    if (!ObjectUtils.isEmpty(budgetDistributionList)) {
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         if (invoiceLine.getInvoice().getPurchaseOrder() != null
             || invoiceLine.getInvoice().getSaleOrder() != null) {
@@ -241,7 +240,8 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
   @Override
   @Transactional
   public void updateLineWithPO(
-      BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine) {
+      BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
 
     if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
       LocalDate date = null;
@@ -261,9 +261,7 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
       if (optBudgetLine.isPresent()) {
         BudgetLine budgetLine = optBudgetLine.get();
         BigDecimal amount = budgetDistribution.getAmount();
-        if (((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-                    || invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        if ((InvoiceToolService.isRefund(invoice)
                 && invoice.getOperationSubTypeSelect()
                     == InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND)
             || invoice.getOperationSubTypeSelect()

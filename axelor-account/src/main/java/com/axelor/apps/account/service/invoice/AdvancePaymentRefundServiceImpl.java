@@ -18,8 +18,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundService {
@@ -137,17 +139,13 @@ public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundServ
     }
 
     String filter =
-        "self.operationSubTypeSelect = ?1 AND self.originalInvoice = ?2 AND self.amountRemaining > 0 AND self.statusSelect = ?3";
+        "self.operationSubTypeSelect = :operationSubTypeSelect AND self.originalInvoice = :originalInvoice AND self.amountRemaining > 0 AND self.statusSelect = :statusSelect";
+    Map<String, Object> params = new HashMap<>();
+    params.put("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+    params.put("originalInvoice", refund);
+    params.put("statusSelect", InvoiceRepository.STATUS_VALIDATED);
 
-    advancePaymentList.addAll(
-        invoiceRepository
-            .all()
-            .filter(
-                filter,
-                InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
-                refund,
-                InvoiceRepository.STATUS_VALIDATED)
-            .fetch());
+    advancePaymentList.addAll(invoiceRepository.all().filter(filter).bind(params).fetch());
 
     return advancePaymentList;
   }
@@ -175,7 +173,7 @@ public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundServ
     return imputationPayment;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void processInvoicePaymentImputation(
       BigDecimal paymentAmount, Invoice refund, Invoice advancePayment) throws AxelorException {
     InvoicePayment refundPayment =

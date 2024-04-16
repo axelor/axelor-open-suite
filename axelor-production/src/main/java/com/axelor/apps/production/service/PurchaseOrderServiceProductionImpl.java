@@ -40,7 +40,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.RefundService;
+import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       CurrencyScaleService currencyScaleService,
-      RefundService refundService) {
+      AdvancePaymentRefundService refundService) {
     super(
         appSupplychainService,
         accountConfigService,

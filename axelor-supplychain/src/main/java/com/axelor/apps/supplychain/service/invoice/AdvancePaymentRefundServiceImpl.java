@@ -6,14 +6,16 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class RefundServiceImpl implements RefundService {
+public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundService {
 
   protected InvoiceRepository invoiceRepository;
 
   @Inject
-  public RefundServiceImpl(InvoiceRepository invoiceRepository) {
+  public AdvancePaymentRefundServiceImpl(InvoiceRepository invoiceRepository) {
     this.invoiceRepository = invoiceRepository;
   }
 
@@ -38,18 +40,14 @@ public class RefundServiceImpl implements RefundService {
     }
 
     String filter =
-        "self.operationSubTypeSelect = ?1 AND (self.originalInvoice = ?2 OR ?3 MEMBER OF self.advancePaymentInvoiceSet) AND self.amountPaid > 0 AND self.statusSelect = ?4";
-
-    refundList =
-        invoiceRepository
-            .all()
-            .filter(
-                filter,
-                InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND,
-                advancePayment,
-                advancePayment.getId(),
-                InvoiceRepository.STATUS_VALIDATED)
-            .fetch();
+        "self.operationSubTypeSelect = :operationSubTypeSelect AND (self.originalInvoice = :originalInvoice OR :advancePaymentInvoice MEMBER OF self.advancePaymentInvoiceSet) AND self.amountPaid > 0 AND self.statusSelect = :statusSelect";
+    Map<String, Object> params = new HashMap<>();
+    params.put(
+        "operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND);
+    params.put("originalInvoice", advancePayment);
+    params.put("advancePaymentInvoice", advancePayment.getInvoiceId());
+    params.put("statusSelect", InvoiceRepository.STATUS_VALIDATED);
+    refundList = invoiceRepository.all().filter(filter).bind(params).fetch();
 
     return refundList;
   }

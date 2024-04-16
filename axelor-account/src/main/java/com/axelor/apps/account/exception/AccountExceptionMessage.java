@@ -1054,12 +1054,11 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_2 = /*$$(*/ "Credit note created" /*)*/;
   public static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
-  public static final String INVOICE_4_REFUND = /*$$(*/ "Credit notes from invoice %s" /*)*/;
-  public static final String INVOICE_4_REFUND_ADVANCE_PAYMENT = /*$$(*/
+  public static final String INVOICE_GENERATED_REFUND = /*$$(*/
+      "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT = /*$$(*/
       "Credit notes from advance payment %s" /*)*/;
-  public static final String INVOICE_4_ADVANCE_PAYMENT_REFUND = /*$$(*/
-      "Advance payment from credit note %s" /*)*/;
-  public static final String INVOICE_4_INVOICE_REFUND = /*$$(*/
+  public static final String INVOICE_GENERATED_INVOICE_REFUND = /*$$(*/
       "Invoice from credit notes %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;

@@ -29,7 +29,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.RefundService;
+import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -40,14 +40,14 @@ import org.slf4j.LoggerFactory;
 
 public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServiceImpl {
 
-  protected RefundService refundService;
+  protected AdvancePaymentRefundService refundService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public SaleOrderComputeServiceSupplychainImpl(
       SaleOrderLineService saleOrderLineService,
       SaleOrderLineTaxService saleOrderLineTaxService,
-      RefundService refundService) {
+      AdvancePaymentRefundService refundService) {
 
     super(saleOrderLineService, saleOrderLineTaxService);
     this.refundService = refundService;

@@ -214,13 +214,13 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesServiceImpl;
 import com.axelor.apps.supplychain.service.fixedasset.FixedAssetServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
+import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.invoice.RefundService;
-import com.axelor.apps.supplychain.service.invoice.RefundServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
@@ -359,6 +359,6 @@ public class SupplychainModule extends AxelorModule {
     bind(StockMoveMergingServiceImpl.class).to(StockMoveMergingServiceSupplychainImpl.class);
     bind(SaleOrderMergingServiceSupplyChain.class).to(SaleOrderMergingServiceSupplyChainImpl.class);
     bind(SaleOrderCreateSupplychainService.class).to(SaleOrderCreateServiceSupplychainImpl.class);
-    bind(RefundService.class).to(RefundServiceImpl.class);
+    bind(AdvancePaymentRefundService.class).to(AdvancePaymentRefundServiceImpl.class);
   }
 }
