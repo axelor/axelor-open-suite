@@ -10,7 +10,7 @@
       <insert position="after">
         <help showIf="entitySelect == 1">
                     <![CDATA[
-					<br/>Example:<br/>Start unit : day<br/>End unit : hour<br/><strong>$Project.numberHoursADay$</strong><br/>
+					<br/>Example:<br/>Start unit : day<br/>End unit : hour<br/><strong>Project.numberHoursADay$</strong><br/>
   					]]>
         </help>
         <spacer colSpan="6" name="formulaHelperForProjectSpacer" showIf="entitySelect == 1"/>
