@@ -34,6 +34,7 @@
     <view type="form" name="generate-contract-wizard-form"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <action-validate name="action-contract-validate-create-client">

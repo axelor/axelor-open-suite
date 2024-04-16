@@ -38,7 +38,7 @@ public class OpportunityContractController {
             .map(linkedHashMap -> ((Integer) linkedHashMap.get("id")).longValue())
             .orElse(null);
     Opportunity opportunity = Beans.get(OpportunityRepository.class).find(opportunityId);
-    if (opportunity.getContractGenerated()) {
+    if (!opportunity.getContractList().isEmpty()) {
       response.setError(I18n.get(ContractExceptionMessage.CONTRACT_ALREADY_GENERATED_FROM_OPP));
       return;
     }
@@ -71,7 +71,7 @@ public class OpportunityContractController {
                         I18n.get(CrmExceptionMessage.CRM_MISSING_OPPORTUNITY_ID)));
 
     Opportunity opportunity = Beans.get(OpportunityRepository.class).find(opportunityId);
-    if (opportunity.getContractGenerated()) {
+    if (!opportunity.getContractList().isEmpty()) {
       response.setError(I18n.get(ContractExceptionMessage.CONTRACT_ALREADY_GENERATED_FROM_OPP));
     }
   }

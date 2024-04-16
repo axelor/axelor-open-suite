@@ -938,7 +938,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
 
     contractRepository.save(contract);
-    opportunity.setContractGenerated(true);
     opportunity.addContractListItem(contract);
     opportunityRepository.save(opportunity);
     return contract;

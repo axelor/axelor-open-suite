@@ -7,7 +7,6 @@
 
   <entity name="Opportunity">
 
-    <boolean name="contractGenerated" title="Contract generated" default="false"/>
     <one-to-many name="contractList" ref="com.axelor.apps.contract.db.Contract"
       title="Contracts" mappedBy="opportunity"/>
   </entity>
