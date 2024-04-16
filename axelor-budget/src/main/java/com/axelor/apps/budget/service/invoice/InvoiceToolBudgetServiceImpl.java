@@ -1,13 +1,21 @@
 package com.axelor.apps.budget.service.invoice;
 
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceToolBudgetServiceImpl implements InvoiceToolBudgetService {
+
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public InvoiceToolBudgetServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
+  }
 
   @Override
   public void copyBudgetDistributionList(
@@ -23,7 +31,8 @@ public class InvoiceToolBudgetServiceImpl implements InvoiceToolBudgetService {
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(budgetDistributionIt.getBudget());
       budgetDistribution.setAmount(
-          budgetDistributionIt.getAmount().multiply(prorata).setScale(2, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              budgetDistributionIt, budgetDistributionIt.getAmount().multiply(prorata)));
       budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
