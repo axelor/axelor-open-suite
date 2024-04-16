@@ -52,6 +52,10 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
   @Transactional(rollbackOn = {Exception.class})
   public String finishProject(Project project) throws AxelorException {
     String errorMessage = super.finishProject(project);
+    if (!project.getIsBusinessProject()) {
+      return errorMessage;
+    }
+
     Integer closingProjectRuleSelect =
         appBusinessProjectService.getAppBusinessProject().getClosingProjectRuleSelect();
 
@@ -91,9 +95,12 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_BLOCKING_MESSAGE)
               + errorMessage);
-    } else {
+    } else if (closingProjectRuleSelect
+        == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NON_BLOCKING) {
       return I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_NON_BLOCKING_MESSAGE)
           + errorMessage;
+    } else {
+      return errorMessage;
     }
   }
 

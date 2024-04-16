@@ -113,7 +113,7 @@ public final class BusinessProjectExceptionMessage {
       "Quantity must be greater than 0 for task template %s." /*)*/;
 
   public static final String PROJECT_CLOSING_BLOCKING_MESSAGE = /*$$(*/
-      "You can not close this project : " /*)*/;
+      "You can not close this project :" /*)*/;
 
   public static final String PROJECT_CLOSING_NON_BLOCKING_MESSAGE = /*$$(*/ "WARNING: " /*)*/;
 
