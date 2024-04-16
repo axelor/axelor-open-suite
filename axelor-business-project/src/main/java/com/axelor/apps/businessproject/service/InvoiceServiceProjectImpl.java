@@ -39,25 +39,16 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectStatus;
-import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
-import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.Optional;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     implements InvoiceServiceProject {
-
-  protected AppBusinessProjectService appBusinessProjectService;
-  protected AppProjectService appProjectService;
 
   @Inject
   public InvoiceServiceProjectImpl(
@@ -79,9 +70,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       InvoiceTermFilterService invoiceTermFilterService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
-      StockMoveRepository stockMoveRepository,
-      AppBusinessProjectService appBusinessProjectService,
-      AppProjectService appProjectService) {
+      StockMoveRepository stockMoveRepository) {
     super(
         validateFactory,
         ventilateFactory,
@@ -102,8 +91,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         invoiceLineRepo,
         intercoService,
         stockMoveRepository);
-    this.appBusinessProjectService = appBusinessProjectService;
-    this.appProjectService = appProjectService;
   }
 
   @Override
@@ -129,33 +116,5 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       }
     }
     return invoice;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Invoice createRefund(Invoice invoice) throws AxelorException {
-    Invoice refund = super.createRefund(invoice);
-    Integer closingProjectRuleSelect =
-        appBusinessProjectService.getAppBusinessProject().getClosingProjectRuleSelect();
-    Project project = invoice.getProject();
-    if (project != null
-        && closingProjectRuleSelect == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_BLOCKING) {
-      checkAndUpdateProject(project);
-    }
-    return refund;
-  }
-
-  /**
-   * update linked project status to in progress
-   *
-   * @param project
-   */
-  public void checkAndUpdateProject(Project project) {
-    if (Optional.ofNullable(project.getProjectStatus())
-        .map(ProjectStatus::getIsDefaultCompleted)
-        .orElse(false)) {
-      project.setProjectStatus(
-          appProjectService.getAppProject().getProjectStatusInProgressStatus());
-    }
   }
 }

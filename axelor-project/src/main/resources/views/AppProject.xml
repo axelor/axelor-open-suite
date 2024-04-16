@@ -13,7 +13,6 @@
         showIf="resourceManagement"/>
       <field name="isEnableSignature" widget="boolean-switch"/>
       <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
-      <field name="projectStatusInProgressStatus"/>
       <field name="defaultTaskStatusSet" widget="TagSelect"/>
       <field name="defaultPrioritySet" widget="TagSelect"/>
       <field name="fullNameGroovyFormula"/>
