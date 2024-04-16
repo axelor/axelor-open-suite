@@ -173,9 +173,10 @@
     <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
   </grid>
 
-  <form title="Sale Order lines to invoice" name="sale-order-line-to-invoice-form"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <panel name="saleOrderInfoPanel">
+  <form title="Sale order line to invoice" name="sale-order-line-to-invoice-form"
+    model="com.axelor.apps.sale.db.SaleOrderLine" canEdit="false" canNew="false" canArchive="false"
+    canDelete="false" canCopy="false">
+    <panel name="saleOrderInfoPanel" readonly="true">
       <field name="saleOrder"/>
       <field name="saleOrder.clientPartner"/>
       <field name="saleOrder.company"/>
