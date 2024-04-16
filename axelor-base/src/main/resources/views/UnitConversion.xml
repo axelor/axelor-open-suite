@@ -30,6 +30,7 @@
           onSelect="action-unit-conversion-attrs-unit-domain"/>
       </panel>
       <panel name="formulaPanel" colSpan="12" showIf="typeSelect == 2">
+        <field name="entitySelect" colSpan="12" hidden="true"/>
         <help showIf="entitySelect == 0">
 					<![CDATA[
 					<br/>Example:<br/>Start unit : m3<br/>End unit : kg<br/><strong>$Product.netMass$ / $Product.articleVolume$</strong><br/>
