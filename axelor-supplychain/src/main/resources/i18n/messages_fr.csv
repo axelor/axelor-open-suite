@@ -525,6 +525,7 @@
 "Sale order","Commande client",,
 "Sale order date used for stock reservation","Date de la commande client utilisée pour la réservation des stocks",,
 "Sale order line","Ligne de Devis/Cmde client",,
+"Sale order line to invoice","Ligne de commande à facturer",,
 "Sale order lines to invoice","Lignes de commande à facturer",,
 "Sale order quantity","Quantité en commande client",,
 "Sale order without outgoing stock move","Commandes clients en attente de BL",,

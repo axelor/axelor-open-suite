@@ -525,6 +525,7 @@
 "Sale order",,,
 "Sale order date used for stock reservation",,,
 "Sale order line",,,
+"Sale order line to invoice",,,
 "Sale order lines to invoice",,,
 "Sale order quantity",,,
 "Sale order without outgoing stock move",,,
