@@ -28,6 +28,8 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService {
 
@@ -250,7 +252,6 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
 
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
     invoicePaymentRepository.save(invoicePayment);
-    invoicePaymentToolService.updateAmountPaid(invoice);
 
     return invoicePayment;
   }
@@ -263,5 +264,12 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     return isGain
         ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT
         : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT;
+  }
+
+  protected List<Integer> getForeignExchangeTypes() {
+    return new ArrayList<>(
+        List.of(
+            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
+            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
   }
 }

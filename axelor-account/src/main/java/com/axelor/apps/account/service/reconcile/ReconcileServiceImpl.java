@@ -736,7 +736,6 @@ public class ReconcileServiceImpl implements ReconcileService {
                 foreignExchangeGapMove.getMoveLineList().get(1));
         if (newReconcile != null) {
           newReconcile.setForeignExchangeMove(foreignExchangeGapMove);
-          reconcile.setAmount(reconcile.getAmount().subtract(newReconcile.getAmount()));
           this.confirmReconcileWithoutForeignExchange(newReconcile, false, false);
           foreignExchangeGapService.createForeignExchangeInvoicePayment(newReconcile, reconcile);
         }

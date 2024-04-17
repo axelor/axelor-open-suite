@@ -332,8 +332,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
         ratio =
             currencyService.getCurrencyConversionRate(
-                invoiceTerm.getCurrency(),
                 invoicePayment.getCurrency(),
+                invoiceTerm.getCurrency(),
                 invoicePayment.getPaymentDate());
       } else {
         ratio =

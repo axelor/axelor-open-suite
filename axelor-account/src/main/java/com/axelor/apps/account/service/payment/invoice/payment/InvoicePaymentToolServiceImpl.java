@@ -125,6 +125,21 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               .map(InvoiceTerm::getCompanyAmountRemaining)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
+
+      List<Integer> foreignTypes =
+          new ArrayList<>(
+              List.of(
+                  InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
+                  InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
+      BigDecimal foreignExchangeAmount =
+          invoice.getInvoicePaymentList().stream()
+              .filter(ip -> foreignTypes.contains(ip.getTypeSelect()))
+              .map(InvoicePayment::getAmount)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      currencyAmount = currencyAmount.subtract(foreignExchangeAmount);
+
       if (currencyAmount.signum() >= 0 || (currencyAmount.signum() == 0 && amount.signum() == 0)) {
         return currencyAmount;
       }
@@ -161,9 +176,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
 
       if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
-        if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
-          log.debug("DSDSDS", invoicePayment.getAmount());
-        } else {
+        if (!foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
           log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 
           BigDecimal paymentAmount = invoicePayment.getAmount();
