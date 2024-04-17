@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
@@ -38,7 +39,6 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
@@ -64,10 +64,10 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository) {
@@ -84,10 +84,10 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
-        taxService,
         invoiceProductStatementService,
         templateMessageService,
         invoiceTermFilterService,
+        invoiceTermPfpToolService,
         invoiceLineRepo,
         intercoService,
         stockMoveRepository);

@@ -11,6 +11,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -27,7 +28,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -160,9 +163,23 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
     List<InvoiceTermPayment> invoiceTermPaymentList = null;
     if (moveLine.getAccount().getUseForPartnerBalance() && updateInvoiceTerms) {
-      List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap = new HashMap<>();
+
+      List<InvoiceTerm> invoiceTermList =
+          this.getInvoiceTermsToPay(
+              invoice, otherMove, moveLine, invoiceTermPfpValidateStatusSelectMap);
       invoiceTermPaymentList =
-          invoiceTermService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+          invoiceTermService.updateInvoiceTerms(
+              invoiceTermList,
+              invoicePayment,
+              amount,
+              reconcile,
+              invoiceTermPfpValidateStatusSelectMap);
+
+      invoiceTermPfpValidateStatusSelectMap
+          .keySet()
+          .forEach(
+              it -> it.setPfpValidateStatusSelect(invoiceTermPfpValidateStatusSelectMap.get(it)));
     }
 
     if (invoicePayment != null) {
@@ -248,7 +265,11 @@ public class ReconcileInvoiceTermComputationServiceImpl
     return ratioPaid.multiply(percentage);
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
+  protected List<InvoiceTerm> getInvoiceTermsToPay(
+      Invoice invoice,
+      Move move,
+      MoveLine moveLine,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
     if (move != null
         && move.getPaymentVoucher() != null
@@ -259,8 +280,16 @@ public class ReconcileInvoiceTermComputationServiceImpl
           .map(PayVoucherElementToPay::getInvoiceTerm)
           .collect(Collectors.toList());
     } else {
-      List<InvoiceTerm> invoiceTermsToPay = null;
+      List<InvoiceTerm> invoiceTermsToPay;
       if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+        for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+          if (invoiceTerm.getPfpValidateStatusSelect()
+              != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
+            invoiceTermPfpValidateStatusSelectMap.put(
+                invoiceTerm, invoiceTerm.getPfpValidateStatusSelect());
+            invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+          }
+        }
         invoiceTermsToPay =
             invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 

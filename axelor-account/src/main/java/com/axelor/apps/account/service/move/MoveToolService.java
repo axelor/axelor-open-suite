@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -220,4 +221,6 @@ public interface MoveToolService {
   List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
 
   Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
+
+  List<InvoiceTerm> _getInvoiceTermList(Move move);
 }

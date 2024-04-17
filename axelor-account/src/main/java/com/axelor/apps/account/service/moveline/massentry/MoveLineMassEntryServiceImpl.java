@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -47,8 +47,8 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected MoveCounterPartService moveCounterPartService;
   protected MassEntryToolService massEntryToolService;
   protected CurrencyService currencyService;
-  protected InvoiceTermService invoiceTermService;
   protected AppAccountService appAccountService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public MoveLineMassEntryServiceImpl(
@@ -56,14 +56,14 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MoveCounterPartService moveCounterPartService,
       MassEntryToolService massEntryToolService,
       CurrencyService currencyService,
-      InvoiceTermService invoiceTermService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
     this.currencyService = currencyService;
-    this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -117,7 +117,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   public User getPfpValidatorUserForInTaxAccount(
       Account account, Company company, Partner partner) {
     if (ObjectUtils.notEmpty(account) && account.getUseForPartnerBalance()) {
-      return invoiceTermService.getPfpValidatorUser(partner, company);
+      return invoiceTermPfpToolService.getPfpValidatorUser(partner, company);
     }
     return null;
   }

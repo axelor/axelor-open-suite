@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MovePfpService;
+import com.axelor.apps.account.service.move.MovePfpValidateService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -822,7 +823,7 @@ public class MoveController {
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      Beans.get(MovePfpService.class).validatePfp(move.getId());
+      Beans.get(MovePfpValidateService.class).validatePfp(move.getId());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

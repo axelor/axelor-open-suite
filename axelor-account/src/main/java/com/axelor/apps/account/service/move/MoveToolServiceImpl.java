@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -58,6 +59,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -65,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -785,5 +788,19 @@ public class MoveToolServiceImpl implements MoveToolService {
           .map(Integer::valueOf)
           .orElse(null);
     }
+  }
+
+  @Override
+  public List<InvoiceTerm> _getInvoiceTermList(Move move) {
+    List<InvoiceTerm> invoiceTermList = new ArrayList<>();
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      invoiceTermList.addAll(
+          move.getMoveLineList().stream()
+              .map(MoveLine::getInvoiceTermList)
+              .filter(Objects::nonNull)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList()));
+    }
+    return invoiceTermList;
   }
 }

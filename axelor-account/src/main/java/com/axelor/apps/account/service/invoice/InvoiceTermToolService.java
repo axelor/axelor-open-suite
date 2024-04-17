@@ -19,4 +19,10 @@ public interface InvoiceTermToolService {
 
   boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
+
+  BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
+
+  BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
+
+  List<InvoiceTerm> getInvoiceTerms(List<Long> invoiceTermIds);
 }
