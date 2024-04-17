@@ -204,6 +204,8 @@
     <bind
       search="self.code = :purchaseTaxVatSystem1Account_code and self.company.importId = :company_id"
       to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
+    <bind search="self.code = :vatPendingAccount_code and self.company.importId = :company_id"
+      to="vatPendingAccount" update="true" if="vatPendingAccount_code"/>
     <bind search="self.code in :saleTaxSet" to="saleTaxSet" column="saleTaxSet"
       eval="saleTaxSet.split('\\|') as List"/>
     <bind search="self.code in :purchaseTaxSet" to="purchaseTaxSet" column="purchaseTaxSet"
