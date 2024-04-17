@@ -347,6 +347,8 @@
     <option value="6">Advance Payment Imputation</option>
     <option value="7">Irrecoverable Debt</option>
     <option value="8">Doubtful credit</option>
+    <option value="10">Foreign exchange gain payment</option>
+    <option value="11">Foreign exchange loss payment</option>
   </selection>
 
   <selection name="invoice.payment.status.select">

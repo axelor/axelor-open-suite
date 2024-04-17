@@ -146,6 +146,11 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException {
 
     BigDecimal amountPaid = BigDecimal.ZERO;
+    List<Integer> foreignExchangeTypes =
+        new ArrayList<>(
+            List.of(
+                InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
+                InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
 
     if (invoice.getInvoicePaymentList() == null) {
       return amountPaid;
@@ -156,49 +161,52 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
 
       if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
+        if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
+          log.debug("DSDSDS", invoicePayment.getAmount());
+        } else {
+          log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 
-        log.debug("Amount paid without move : {}", invoicePayment.getAmount());
+          BigDecimal paymentAmount = invoicePayment.getAmount();
+          if (invoicePayment.getApplyFinancialDiscount()) {
+            paymentAmount =
+                paymentAmount.add(
+                    invoicePayment
+                        .getFinancialDiscountAmount()
+                        .add(invoicePayment.getFinancialDiscountTaxAmount()));
+          }
 
-        BigDecimal paymentAmount = invoicePayment.getAmount();
-        if (invoicePayment.getApplyFinancialDiscount()) {
-          paymentAmount =
-              paymentAmount.add(
-                  invoicePayment
-                      .getFinancialDiscountAmount()
-                      .add(invoicePayment.getFinancialDiscountTaxAmount()));
-        }
-
-        if (currencyService.isSameCurrencyRate(
-            invoice.getInvoiceDate(),
-            invoicePayment.getPaymentDate(),
-            invoicePayment.getCurrency(),
-            invoiceCurrency)) {
-          BigDecimal computedPaidAmount = paymentAmount;
-          if (!Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)) {
-            BigDecimal currencyRate =
-                currencyService.computeScaledExchangeRate(
-                    invoice.getCompanyInTaxTotal(), invoice.getInTaxTotal());
-            computedPaidAmount =
-                Objects.equals(invoiceCurrency, invoice.getCompany().getCurrency())
-                    ? currencyService.getAmountCurrencyConvertedAtDate(
+          if (currencyService.isSameCurrencyRate(
+              invoice.getInvoiceDate(),
+              invoicePayment.getPaymentDate(),
+              invoicePayment.getCurrency(),
+              invoiceCurrency)) {
+            BigDecimal computedPaidAmount = paymentAmount;
+            if (!Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)) {
+              BigDecimal currencyRate =
+                  currencyService.computeScaledExchangeRate(
+                      invoice.getCompanyInTaxTotal(), invoice.getInTaxTotal());
+              computedPaidAmount =
+                  Objects.equals(invoiceCurrency, invoice.getCompany().getCurrency())
+                      ? currencyService.getAmountCurrencyConvertedAtDate(
+                          invoicePayment.getCurrency(),
+                          invoiceCurrency,
+                          paymentAmount,
+                          invoicePayment.getPaymentDate())
+                      : paymentAmount.divide(
+                          currencyRate,
+                          AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                          RoundingMode.HALF_UP);
+            }
+            amountPaid = amountPaid.add(computedPaidAmount);
+          } else {
+            amountPaid =
+                amountPaid.add(
+                    currencyService.getAmountCurrencyConvertedAtDate(
                         invoicePayment.getCurrency(),
                         invoiceCurrency,
                         paymentAmount,
-                        invoicePayment.getPaymentDate())
-                    : paymentAmount.divide(
-                        currencyRate,
-                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                        RoundingMode.HALF_UP);
+                        invoicePayment.getPaymentDate()));
           }
-          amountPaid = amountPaid.add(computedPaidAmount);
-        } else {
-          amountPaid =
-              amountPaid.add(
-                  currencyService.getAmountCurrencyConvertedAtDate(
-                      invoicePayment.getCurrency(),
-                      invoiceCurrency,
-                      paymentAmount,
-                      invoicePayment.getPaymentDate()));
         }
       }
     }

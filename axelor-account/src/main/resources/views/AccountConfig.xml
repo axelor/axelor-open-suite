@@ -211,6 +211,15 @@
             domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
             form-view="account-form" requiredIf="thresholdDistanceFromRegulation != 0"/>
         </panel>
+        <panel name="foreignExchangeGainsLossesPanel" title="Foreign exchange gains/losses"
+          colSpan="12">
+          <field name="foreignExchangeGainsAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
+          <field name="foreignExchangeLossesAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
+        </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
           colSpan="12">
           <field name="autoReconcileOnInvoice"/>

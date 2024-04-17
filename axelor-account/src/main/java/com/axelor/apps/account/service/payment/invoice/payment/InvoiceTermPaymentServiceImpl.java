@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
@@ -315,19 +316,34 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   protected BigDecimal computePaidAmount(
       BigDecimal companyPaidAmount, InvoicePayment invoicePayment, InvoiceTerm invoiceTerm)
       throws AxelorException {
+    List<Integer> foreignExchangeTypes =
+        new ArrayList<>(
+            List.of(
+                InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
+                InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
     Currency invoicePaymentCurrency = invoicePayment != null ? invoicePayment.getCurrency() : null;
     Currency companyCurrency = invoiceTerm.getCompanyCurrency();
 
-    if (companyCurrency.equals(invoicePaymentCurrency)) {
+    if (companyCurrency.equals(invoicePaymentCurrency)
+        && !foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
       return companyPaidAmount;
     } else if (invoicePayment != null) {
-      BigDecimal ratio =
-          invoiceTerm
-              .getAmount()
-              .divide(
-                  invoiceTerm.getCompanyAmount(),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP);
+      BigDecimal ratio;
+      if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
+        ratio =
+            currencyService.getCurrencyConversionRate(
+                invoiceTerm.getCurrency(),
+                invoicePayment.getCurrency(),
+                invoicePayment.getPaymentDate());
+      } else {
+        ratio =
+            invoiceTerm
+                .getAmount()
+                .divide(
+                    invoiceTerm.getCompanyAmount(),
+                    AppBaseService.COMPUTATION_SCALING,
+                    RoundingMode.HALF_UP);
+      }
 
       return currencyScaleService.getCompanyScaledValue(
           invoiceTerm, companyPaidAmount.multiply(ratio));

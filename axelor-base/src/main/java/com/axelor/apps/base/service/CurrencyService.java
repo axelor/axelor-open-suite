@@ -51,4 +51,12 @@ public interface CurrencyService {
   boolean isSameCurrencyRate(
       LocalDate invoiceDate, LocalDate paymentDate, Currency startCurrency, Currency endCurrency)
       throws AxelorException;
+
+  BigDecimal getCurrencyRate(
+      LocalDate invoiceDate,
+      LocalDate paymentDate,
+      Currency startCurrency,
+      Currency endCurrency,
+      BigDecimal currencyRate)
+      throws AxelorException;
 }

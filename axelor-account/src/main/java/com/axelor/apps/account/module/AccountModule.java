@@ -368,6 +368,8 @@ import com.axelor.apps.account.service.period.PeriodControlService;
 import com.axelor.apps.account.service.period.PeriodControlServiceImpl;
 import com.axelor.apps.account.service.period.PeriodServiceAccount;
 import com.axelor.apps.account.service.period.PeriodServiceAccountImpl;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapService;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckService;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
@@ -900,5 +902,7 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceJournalService.class).to(InvoiceJournalServiceImpl.class);
 
     bind(FiscalPositionRepository.class).to(FiscalPositionManagementRepository.class);
+
+    bind(ForeignExchangeGapService.class).to(ForeignExchangeGapServiceImpl.class);
   }
 }
