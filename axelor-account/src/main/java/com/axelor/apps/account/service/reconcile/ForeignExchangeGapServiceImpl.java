@@ -2,9 +2,6 @@ package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -23,9 +20,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService {
@@ -39,6 +34,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
+  protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
   protected InvoicePaymentRepository invoicePaymentRepository;
 
   @Inject
@@ -52,6 +48,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
       InvoicePaymentCreateService invoicePaymentCreateService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
+      ForeignExchangeGapToolsService foreignExchangeGapToolsService,
       InvoicePaymentRepository invoicePaymentRepository) {
     this.accountConfigService = accountConfigService;
     this.moveLineCreateService = moveLineCreateService;
@@ -62,6 +59,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
+    this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
     this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
@@ -74,12 +72,14 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     if (debitMoveLine != null
         && creditMoveLine != null
         && !debitMoveLine.getCurrencyRate().equals(creditMoveLine.getCurrencyRate())) {
-      boolean isDebit = this.isDebit(creditMoveLine, debitMoveLine);
+      boolean isDebit = foreignExchangeGapToolsService.isDebit(creditMoveLine, debitMoveLine);
       BigDecimal foreignExchangeGapAmount =
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
 
+      // We only create a foreign exchange move if foreignExchangeGapAmount is greater than 0.01
       if (foreignExchangeGapAmount.abs().compareTo(BigDecimal.valueOf(0.01)) > 0) {
-        boolean isGain = this.isGain(creditMoveLine, debitMoveLine, isDebit);
+        boolean isGain =
+            foreignExchangeGapToolsService.isGain(creditMoveLine, debitMoveLine, isDebit);
 
         return this.createForeignExchangeGapMove(
             reconcile, foreignExchangeGapAmount, isGain, isDebit);
@@ -168,18 +168,6 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     return move;
   }
 
-  @Override
-  public boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine, boolean isDebit) {
-    return isDebit
-        ? creditMoveLine.getCurrencyRate().compareTo(debitMoveLine.getCurrencyRate()) > 0
-        : debitMoveLine.getCurrencyRate().compareTo(creditMoveLine.getCurrencyRate()) < 0;
-  }
-
-  @Override
-  public boolean isDebit(MoveLine creditMoveLine, MoveLine debitMoveLine) {
-    return debitMoveLine.getDate().isAfter(creditMoveLine.getDate());
-  }
-
   protected void miscOperationMoveCreation(
       Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, int ref)
       throws AxelorException {
@@ -214,49 +202,5 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
           true,
           appBaseService.getTodayDate(reconcile.getCompany()));
     }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public InvoicePayment createForeignExchangeInvoicePayment(
-      Reconcile newReconcile, Reconcile reconcile) throws AxelorException {
-    Invoice invoice =
-        reconcile.getDebitMoveLine().getMove().getInvoice() != null
-            ? reconcile.getDebitMoveLine().getMove().getInvoice()
-            : reconcile.getCreditMoveLine().getMove().getInvoice();
-    InvoicePayment invoicePayment =
-        invoicePaymentCreateService.createInvoicePayment(
-            invoice,
-            newReconcile.getAmount(),
-            invoice.getDueDate(),
-            newReconcile.getForeignExchangeMove().getCurrency(),
-            invoice.getPaymentMode(),
-            this.getInvoicePaymentType(reconcile));
-
-    invoicePayment.setCompanyBankDetails(invoice.getCompanyBankDetails());
-    invoicePayment.setMove(newReconcile.getForeignExchangeMove());
-    invoice.addInvoicePaymentListItem(invoicePayment);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
-    if (!ObjectUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
-      for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
-        invoiceTermService.updateInvoiceTermsPaidAmount(
-            invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
-      }
-    }
-
-    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-    invoicePaymentRepository.save(invoicePayment);
-
-    return invoicePayment;
-  }
-
-  protected int getInvoicePaymentType(Reconcile reconcile) {
-    boolean isDebit = this.isDebit(reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine());
-    boolean isGain =
-        this.isGain(reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine(), isDebit);
-
-    return isGain
-        ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN
-        : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS;
   }
 }

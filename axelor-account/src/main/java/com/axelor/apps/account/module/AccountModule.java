@@ -342,6 +342,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentForeignExchangeCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentForeignExchangeCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -908,5 +910,8 @@ public class AccountModule extends AxelorModule {
     bind(ForeignExchangeGapService.class).to(ForeignExchangeGapServiceImpl.class);
 
     bind(ForeignExchangeGapToolsService.class).to(ForeignExchangeGapToolsServiceImpl.class);
+
+    bind(InvoicePaymentForeignExchangeCreateService.class)
+        .to(InvoicePaymentForeignExchangeCreateServiceImpl.class);
   }
 }
