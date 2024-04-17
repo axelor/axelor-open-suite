@@ -211,6 +211,12 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-open-sale-order-view" title="Open sale order"
+               model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-form"/>
+    <context name="_showRecord" expr="eval: __this__.saleOrder.id"/>
+  </action-view>
+
   <!-- ACTION GROUP -->
 
   <action-group name="supplychain-action-sale-order-line-group-onnew">
