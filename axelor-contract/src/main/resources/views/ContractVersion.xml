@@ -24,7 +24,7 @@
           <field name="nextContract.statusSelect"/>
           <field name="nextContract.targetTypeSelect"/>
         </panel>
-        <field name="statusSelect" hidden="true"/>
+        <field name="statusSelect" title="Amendment status" readonly="true" widget="NavSelect"/>
         <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
           <viewer
             depends="nextContract.targetTypeSelect,nextContract.statusSelect,nextContract.contractId"><![CDATA[
@@ -59,8 +59,6 @@
             showIf="nextContract.statusSelect == 3" colSpan="3"/>
         </panel>
         <panel name="currentVersionPanel" title="Amendment" colSpan="12">
-          <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
-            widget="NavSelect"/>
           <panel colSpan="6" name="datesPanel">
             <panel name="supposedDatesPanel" hideIf="statusSelect >= 3" colSpan="12">
               <field name="supposedActivationDate"/>
