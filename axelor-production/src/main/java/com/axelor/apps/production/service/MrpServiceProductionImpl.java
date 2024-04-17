@@ -574,14 +574,12 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       return super.getMrpLineTypeForProposal(stockRules, product, company);
     }
 
-    // the bellow condition is never true since the sent stockRules is always of type MRP
     if (mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MPS) {
       return mrpLineTypeService.getMrpLineType(
           MrpLineTypeRepository.ELEMENT_MASTER_PRODUCTION_SCHEDULING, mrp.getMrpTypeSelect());
     } else {
       if (stockRules != null) {
         if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
-          // this is what interests us for now.
           return mrpLineTypeService.getMrpLineType(
               MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL, mrp.getMrpTypeSelect());
         } else {

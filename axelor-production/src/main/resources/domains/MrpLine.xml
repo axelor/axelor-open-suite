@@ -8,7 +8,7 @@
   <entity name="MrpLine">
 
     <many-to-one name="billOfMaterial"
-      ref="com.axelor.apps.production.db.BillOfMaterial" title="Bill of material"/>
+      ref="com.axelor.apps.production.db.BillOfMaterial" title="Bill of materials"/>
 
   </entity>
 
