@@ -143,10 +143,15 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
     LocalDateTime plannedStartDateT = null;
     LocalDateTime plannedEndDateT = null;
+
+    BillOfMaterial billOfMaterial = mrpLine.getBillOfMaterial();
+    if (billOfMaterial == null) {
+      billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    }
+
     if (isAsapScheduling) {
       plannedStartDateT = maturityDate.atStartOfDay();
     } else {
-      BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
       // The +2 adds 2 minutes to the plannedEndDateT to avoid the overflowing of the calculated
       // plannedStartDateT on the current date time.
@@ -157,7 +162,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
               : maturityDate.atStartOfDay();
       plannedEndDateT =
           maturityDateTime.plusMinutes(
-              getTotalDurationInMinutes(defaultBillOfMaterial.getProdProcess(), qty));
+              getTotalDurationInMinutes(billOfMaterial.getProdProcess(), qty));
     }
 
     ManufOrder manufOrder =
@@ -166,7 +171,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             mrpLine.getQty(),
             ManufOrderService.DEFAULT_PRIORITY,
             ManufOrderService.IS_TO_INVOICE,
-            null,
+            billOfMaterial,
             plannedStartDateT,
             plannedEndDateT,
             ManufOrderOriginTypeProduction
