@@ -111,6 +111,7 @@ public class ProjectServiceImpl implements ProjectService {
         new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
+    project.setCompletedTaskStatus(appProjectService.getAppProject().getCompletedTaskStatus());
     // add default sites on new project
     if (appProjectService.getAppBase().getEnableSiteManagementForProject()) {
       for (Site site : appProjectService.getAppBase().getDefaultSitesSet()) {
@@ -267,6 +268,7 @@ public class ProjectServiceImpl implements ProjectService {
         new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
+    project.setCompletedTaskStatus(appProjectService.getAppProject().getCompletedTaskStatus());
     if (clientPartner != null && ObjectUtils.notEmpty(clientPartner.getContactPartnerSet())) {
       project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
     }

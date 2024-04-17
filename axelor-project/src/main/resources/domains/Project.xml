@@ -95,6 +95,8 @@
     <boolean name="isShowCalendarPerStatus" title="Enable calendar view per status"/>
     <boolean name="isShowCalendarPerSection" title="Enable calendar view per section"/>
     <boolean name="isShowCalendarPerUser" title="Enable calendar view per user"/>
+    <many-to-one name="completedTaskStatus" title="Completed task status"
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
   </entity>
