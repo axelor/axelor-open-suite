@@ -37,13 +37,13 @@ public class BudgetInvoiceRepository extends InvoiceProjectRepository {
 
     if (deep && Beans.get(AppBudgetService.class).isApp("budget")) {
       if (copy.getInvoiceLineList() != null && !copy.getInvoiceLineList().isEmpty()) {
+        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
         for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
           invoiceLine.setBudget(null);
           invoiceLine.clearBudgetDistributionList();
           invoiceLine.setBudgetRemainingAmountToAllocate(
-              Beans.get(BudgetToolsService.class)
-                  .getBudgetRemainingAmountToAllocate(
-                      invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
         }
       }
       copy.setBudgetDistributionGenerated(false);
