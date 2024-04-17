@@ -1,9 +1,9 @@
-package com.axelor.apps.businessproject.event;
+package com.axelor.apps.hr.event;
 
 import com.axelor.apps.base.db.ICalendarEvent;
-import com.axelor.apps.businessproject.service.ProjectPlanningTimeBusinessProjectServiceImpl;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Adapter;
 import com.axelor.event.Observes;
@@ -21,13 +21,13 @@ import javax.inject.Named;
 public class ICalendarEventObserver {
   void onSave(
       @Observes @Named(RequestEvent.SAVE) @EntityType(ICalendarEvent.class) PostRequest event) {
-    AppBusinessProjectService appBusinessProjectService =
-        Beans.get(AppBusinessProjectService.class);
-    if (!appBusinessProjectService.isApp("business-project")
-        || !appBusinessProjectService.getAppBusinessProject().getEnableEventCreation()) {
+    AppProjectService appProjectService = Beans.get(AppProjectService.class);
+    if (!appProjectService.isApp("project")
+        || !appProjectService.getAppProject().getEnableEventCreation()) {
       return;
     }
     Map<String, Object> data = event.getRequest().getData();
+
     Object id = data.getOrDefault("id", 0);
 
     ProjectPlanningTime projectPlanningTime =
@@ -47,7 +47,7 @@ public class ICalendarEventObserver {
             Adapter.adapt(data.get("endDateTime"), LocalDateTime.class, LocalDateTime.class, null);
     String description = String.valueOf(data.get("description"));
 
-    Beans.get(ProjectPlanningTimeBusinessProjectServiceImpl.class)
+    Beans.get(ProjectPlanningTimeServiceImpl.class)
         .updateProjectPlanningTime(projectPlanningTime, startDateTime, endDateTime, description);
   }
 
@@ -60,7 +60,6 @@ public class ICalendarEventObserver {
       ids.add(Long.parseLong(String.valueOf(map.getOrDefault("id", 0))));
     }
 
-    Beans.get(ProjectPlanningTimeBusinessProjectServiceImpl.class)
-        .deleteLinkedProjectPlanningTime(ids);
+    Beans.get(ProjectPlanningTimeServiceImpl.class).deleteLinkedProjectPlanningTime(ids);
   }
 }
