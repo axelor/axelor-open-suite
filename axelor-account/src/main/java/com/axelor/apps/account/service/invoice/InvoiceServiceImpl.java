@@ -84,7 +84,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -236,10 +235,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
-    if (Arrays.asList(
-            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
-            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
-        .contains(invoice.getOperationSubTypeSelect())) {
+    if (InvoiceToolService.isAdvancePayment(invoice)) {
       ventilate(invoice);
     }
   }
@@ -287,10 +283,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
-          && !Arrays.asList(
-                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
-                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
-              .contains(invoice.getOperationSubTypeSelect())) {
+          && !InvoiceToolService.isAdvancePayment(invoice)) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,

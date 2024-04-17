@@ -224,6 +224,23 @@ public class InvoiceToolService {
 
   /**
    * @param invoice
+   *     <p>OperationSubTypeSelect 2 : Advance payment 11 : Advance payment refund
+   * @return
+   * @throws AxelorException
+   */
+  public static boolean isAdvancePayment(Invoice invoice) {
+
+    switch (invoice.getOperationSubTypeSelect()) {
+      case InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE:
+      case InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * @param invoice
    * @return
    * @throws AxelorException
    */
