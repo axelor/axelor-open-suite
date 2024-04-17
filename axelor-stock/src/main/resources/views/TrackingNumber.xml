@@ -46,14 +46,34 @@
       <field name="origin"/>
       <field name="supplier" domain="self.isSupplier IS TRUE"
         grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
+      <field name="nbrOfPieces"/>
       <field name="note" colSpan="12"/>
     </panel>
-    <panel name="dimensionsPanel" title="Dimension"
+    <panel name="dimensionsPanel" title="Dimensions"
       showIf="product.trackingNumberConfiguration.isDimensional">
-      <field name="dimension0" colSpan="6"/>
-      <field name="dimension1" colSpan="6"/>
-      <field name="dimension2" colSpan="6"/>
-      <field name="dimension3" colSpan="6"/>
+      <field name="dimension0" colSpan="6"
+        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
+      <field name="dimension1" colSpan="6"
+        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"/>
+      <field name="dimension2" colSpan="6"
+        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"/>
+      <field name="dimension3" colSpan="6"
+        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"/>
+      <field name="product.trackingNumberConfiguration" hidden="true"/>
+      <field name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
+        hidden="true"/>
+      <field
+        name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"
+        hidden="true"/>
+      <field
+        name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"
+        hidden="true"/>
+      <field
+        name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"
+        hidden="true"/>
+      <field
+        name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
+        hidden="true"/>
     </panel>
     <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional">
       <field name="unitMass"/>
@@ -91,14 +111,34 @@
       <field name="origin"/>
       <field name="supplier" domain="self.isSupplier IS TRUE"
         grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
+      <field name="nbrOfPieces"/>
       <field name="note" colSpan="12"/>
 
-      <panel name="dimensionsPanel" title="Dimension"
+      <panel name="dimensionsPanel" title="Dimensions"
         showIf="product.trackingNumberConfiguration.isDimensional">
-        <field name="dimension0" colSpan="6"/>
-        <field name="dimension1" colSpan="6"/>
-        <field name="dimension2" colSpan="6"/>
-        <field name="dimension3" colSpan="6"/>
+        <field name="dimension0" colSpan="6"
+          showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
+        <field name="dimension1" colSpan="6"
+          showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"/>
+        <field name="dimension2" colSpan="6"
+          showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"/>
+        <field name="dimension3" colSpan="6"
+          showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"/>
+        <field name="product.trackingNumberConfiguration" hidden="true"/>
+        <field name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
+          hidden="true"/>
+        <field
+          name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"
+          hidden="true"/>
+        <field
+          name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"
+          hidden="true"/>
+        <field
+          name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"
+          hidden="true"/>
+        <field
+          name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
+          hidden="true"/>
       </panel>
       <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional">
         <field name="unitMass"/>
