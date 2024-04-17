@@ -53,10 +53,10 @@ public interface CurrencyService {
       throws AxelorException;
 
   BigDecimal getCurrencyRate(
-      LocalDate invoiceDate,
-      LocalDate paymentDate,
+      LocalDate oldDate,
+      LocalDate newDate,
       Currency startCurrency,
       Currency endCurrency,
-      BigDecimal currencyRate)
+      BigDecimal oldCurrencyRate)
       throws AxelorException;
 }
