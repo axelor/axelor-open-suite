@@ -18,7 +18,6 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -28,8 +27,6 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService {
 
@@ -42,7 +39,6 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
-  protected InvoicePaymentToolService invoicePaymentToolService;
   protected InvoicePaymentRepository invoicePaymentRepository;
 
   @Inject
@@ -56,7 +52,6 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
       InvoicePaymentCreateService invoicePaymentCreateService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
-      InvoicePaymentToolService invoicePaymentToolService,
       InvoicePaymentRepository invoicePaymentRepository) {
     this.accountConfigService = accountConfigService;
     this.moveLineCreateService = moveLineCreateService;
@@ -67,7 +62,6 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
-    this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
@@ -264,12 +258,5 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     return isGain
         ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT
         : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT;
-  }
-
-  protected List<Integer> getForeignExchangeTypes() {
-    return new ArrayList<>(
-        List.of(
-            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
-            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
   }
 }

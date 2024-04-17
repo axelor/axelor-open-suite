@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -75,6 +76,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermFilterService invoiceTermFilterService;
   protected InvoiceTermToolService invoiceTermToolService;
+  protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -89,7 +91,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
       InvoiceTermFilterService invoiceTermFilterService,
-      InvoiceTermToolService invoiceTermToolService) {
+      InvoiceTermToolService invoiceTermToolService,
+      ForeignExchangeGapToolsService foreignExchangeGapToolsService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
@@ -101,6 +104,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermFilterService = invoiceTermFilterService;
     this.invoiceTermToolService = invoiceTermToolService;
+    this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
   }
 
   @Override
@@ -126,14 +130,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
 
-      List<Integer> foreignTypes =
-          new ArrayList<>(
-              List.of(
-                  InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
-                  InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
       BigDecimal foreignExchangeAmount =
           invoice.getInvoicePaymentList().stream()
-              .filter(ip -> foreignTypes.contains(ip.getTypeSelect()))
+              .filter(
+                  ip ->
+                      foreignExchangeGapToolsService
+                          .getForeignExchangeTypes()
+                          .contains(ip.getTypeSelect()))
               .map(InvoicePayment::getAmount)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
@@ -161,11 +164,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException {
 
     BigDecimal amountPaid = BigDecimal.ZERO;
-    List<Integer> foreignExchangeTypes =
-        new ArrayList<>(
-            List.of(
-                InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
-                InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
 
     if (invoice.getInvoicePaymentList() == null) {
       return amountPaid;
@@ -176,7 +174,9 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
 
       if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
-        if (!foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
+        if (!foreignExchangeGapToolsService
+            .getForeignExchangeTypes()
+            .contains(invoicePayment.getTypeSelect())) {
           log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 
           BigDecimal paymentAmount = invoicePayment.getAmount();

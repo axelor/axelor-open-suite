@@ -25,11 +25,11 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
@@ -58,6 +58,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
   protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
 
   @Inject
   public InvoiceTermPaymentServiceImpl(
@@ -66,13 +67,15 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       CurrencyScaleService currencyScaleService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       InvoiceTermToolService invoiceTermToolService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      ForeignExchangeGapToolsService foreignExchangeGapToolsService) {
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
     this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
   }
 
   @Override
@@ -316,11 +319,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   protected BigDecimal computePaidAmount(
       BigDecimal companyPaidAmount, InvoicePayment invoicePayment, InvoiceTerm invoiceTerm)
       throws AxelorException {
-    List<Integer> foreignExchangeTypes =
-        new ArrayList<>(
-            List.of(
-                InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
-                InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
+    List<Integer> foreignExchangeTypes = foreignExchangeGapToolsService.getForeignExchangeTypes();
     Currency invoicePaymentCurrency = invoicePayment != null ? invoicePayment.getCurrency() : null;
     Currency companyCurrency = invoiceTerm.getCompanyCurrency();
 
