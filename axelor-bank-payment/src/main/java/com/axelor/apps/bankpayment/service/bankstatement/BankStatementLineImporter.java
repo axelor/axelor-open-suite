@@ -104,26 +104,29 @@ public class BankStatementLineImporter extends Importer {
     return addHistory(listener);
   }
 
-  @Transactional
   protected void linkLineToBankStatement(
       BankStatement bankStatement, List<BankStatementLine> bankStatementLineList) {
     if (bankStatement != null) {
       int i = 0;
       for (BankStatementLine bankStatementLine : bankStatementLineList) {
-        bankStatementLine = bankStatementLineRepository.find(bankStatementLine.getId());
-        bankStatement = bankStatementRepository.find(bankStatement.getId());
-        bankStatementLine.setBankStatement(bankStatement);
-        bankStatementDateService.updateBankStatementDate(
-            bankStatement,
-            bankStatementLine.getOperationDate(),
-            bankStatementLine.getLineTypeSelect());
-        bankStatementLineRepository.save(bankStatementLine);
+        linkLineToBankStatement(bankStatement, bankStatementLine);
         if (i % FETCH_LIMIT == 0) {
           JPA.clear();
         }
         i++;
       }
     }
+  }
+
+  @Transactional
+  protected void linkLineToBankStatement(
+      BankStatement bankStatement, BankStatementLine bankStatementLine) {
+    bankStatementLine = bankStatementLineRepository.find(bankStatementLine.getId());
+    bankStatement = bankStatementRepository.find(bankStatement.getId());
+    bankStatementLine.setBankStatement(bankStatement);
+    bankStatementDateService.updateBankStatementDate(
+        bankStatement, bankStatementLine.getOperationDate(), bankStatementLine.getLineTypeSelect());
+    bankStatementLineRepository.save(bankStatementLine);
   }
 
   @Override

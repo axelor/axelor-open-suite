@@ -61,21 +61,30 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
       alreadyImported = isAlreadyImported(bankStatement, bd, alreadyImported);
 
       BankStatementLine initialBankStatementLine =
-          this.getBankStatementBankDetailsAndLineType(
-              bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE, false);
+          orderBankStatementLineQuery(
+                  bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
+                      bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE),
+                  BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
+              .fetchOne();
       BankStatementLine finalBankStatementLine =
-          this.getBankStatementBankDetailsAndLineType(
-              bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE, false);
+          orderBankStatementLineQuery(
+                  bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
+                      bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE),
+                  BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
+              .fetchOne();
       BankStatementLine lastFinalBankStatementLine =
-          this.getBankStatementBankDetailsAndLineType(
-              bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE, true);
+          orderBankStatementLineQuery(
+                  bankStatementLineFetchService.findByBankDetailsLineTypeExcludeBankStatement(
+                      bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE),
+                  BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
+              .fetchOne();
 
       this.checkInitialAndFinalBankStatementLine(
           bankStatement, initialBankStatementLine, finalBankStatementLine);
-      this.checkBankStatementBalanceIncoherence(
-          bankStatement, bd, initialBankStatementLine, finalBankStatementLine);
       this.checkAmountWithPreviousBankStatement(
           bankStatement, initialBankStatementLine, lastFinalBankStatementLine);
+      this.checkBankStatementBalanceIncoherence(
+          bankStatement, bd, initialBankStatementLine, finalBankStatementLine);
       this.checkAmountWithinBankStatement(bankStatement, bd);
     }
 
@@ -110,11 +119,18 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
   protected boolean isAlreadyImported(
       BankStatement bankStatement, BankDetails bd, boolean alreadyImported) {
     List<BankStatementLine> initialLines =
-        this.getMultipleBankStatementBankDetailsAndLineType(
-            bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE, false);
+        orderBankStatementLineQuery(
+                bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
+                    bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE),
+                BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
+            .fetch();
+
     List<BankStatementLine> finalLines =
-        this.getMultipleBankStatementBankDetailsAndLineType(
-            bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE, false);
+        orderBankStatementLineQuery(
+                bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
+                    bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE),
+                BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
+            .fetch();
 
     return bankStatementLineAlreadyExists(initialLines)
         || bankStatementLineAlreadyExists(finalLines)
@@ -223,9 +239,11 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
         finalBankStatementLine.getDebit().max(finalBankStatementLine.getCredit());
 
     BigDecimal movementLineSum =
-        this.getMultipleBankStatementBankDetailsAndLineType(
-                bankStatement, bankDetails, BankStatementLineRepository.LINE_TYPE_MOVEMENT, false)
-            .stream()
+        orderBankStatementLineQuery(
+                bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
+                    bankStatement, bankDetails, BankStatementLineRepository.LINE_TYPE_MOVEMENT),
+                BankStatementLineRepository.LINE_TYPE_MOVEMENT)
+            .fetch().stream()
             .map(
                 bankStatementLine ->
                     bankStatementLine.getCredit().subtract(bankStatementLine.getDebit()))
@@ -240,22 +258,8 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
     }
   }
 
-  protected BankStatementLine getBankStatementBankDetailsAndLineType(
-      BankStatement bankStatement, BankDetails bd, int type, boolean excludeBankStatement) {
-    return this.getBankStatementBankDetailsAndLineTypeQuery(
-            bankStatement, bd, type, excludeBankStatement)
-        .fetchOne();
-  }
-
-  protected List<BankStatementLine> getMultipleBankStatementBankDetailsAndLineType(
-      BankStatement bankStatement, BankDetails bd, int type, boolean excludeBankStatement) {
-    return this.getBankStatementBankDetailsAndLineTypeQuery(
-            bankStatement, bd, type, excludeBankStatement)
-        .fetch();
-  }
-
-  protected Query<BankStatementLine> getBankStatementBankDetailsAndLineTypeQuery(
-      BankStatement bankStatement, BankDetails bd, int type, boolean excludeBankStatement) {
+  protected Query<BankStatementLine> orderBankStatementLineQuery(
+      Query<BankStatementLine> query, int type) {
     String order = "operationDate";
     String sequence = "sequence";
 
@@ -263,18 +267,6 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
       order = "-".concat(order);
       sequence = "-".concat(sequence);
     }
-    Query<BankStatementLine> query;
-
-    if (excludeBankStatement) {
-      query =
-          bankStatementLineFetchService.findByBankDetailsLineTypeExcludeBankStatement(
-              bankStatement, bd, type);
-    } else {
-      query =
-          bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
-              bankStatement, bd, type);
-    }
-
     return query.order(order).order(sequence);
   }
 }

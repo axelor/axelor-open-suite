@@ -33,6 +33,8 @@ public class BankStatementImportClassicService extends BankStatementImportAbstra
   protected BankStatementLineRepository bankStatementLineRepository;
   protected MetaFiles metaFiles;
 
+  public static final String BANK_STATEMENT_FILE_NAME = "bankstatementline.csv";
+
   @Inject
   public BankStatementImportClassicService(
       BankStatementRepository bankStatementRepository,
@@ -86,7 +88,7 @@ public class BankStatementImportClassicService extends BankStatementImportAbstra
     importConfiguration.setDataMetaFile(
         metaFiles.upload(
             new FileInputStream((MetaFiles.getPath(bankStatement.getBankStatementFile()).toFile())),
-            "bankstatementline.csv"));
+            BANK_STATEMENT_FILE_NAME));
     importConfiguration.setStartDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
 
     return importConfigurationRepository.save(importConfiguration);

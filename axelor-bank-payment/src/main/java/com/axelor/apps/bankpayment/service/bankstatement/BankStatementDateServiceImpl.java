@@ -16,8 +16,9 @@ public class BankStatementDateServiceImpl implements BankStatementDateService {
 
     if (ObjectUtils.notEmpty(bankStatement.getFromDate())
         && lineType == BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE) {
-      if (operationDate.isBefore(bankStatement.getFromDate()))
+      if (operationDate.isBefore(bankStatement.getFromDate())) {
         bankStatement.setFromDate(operationDate);
+      }
     } else if (lineType == BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE) {
       bankStatement.setFromDate(operationDate);
     }

@@ -87,15 +87,14 @@ public class BankStatementLineFetchServiceImpl implements BankStatementLineFetch
     if (bankDetails == null) {
       return null;
     }
-    String predicate =
-        "self.bankDetails is not null AND self.bankDetails.id = "
-            + bankDetails.getId()
-            + " AND self.lineTypeSelect = "
-            + BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE;
     Optional<BankStatementLine> id =
         bankStatementLineRepository
             .all()
-            .filter(predicate)
+            .filter(
+                "self.bankDetails is not null AND self.bankDetails.id = :bankDetailsId"
+                    + " AND self.lineTypeSelect = :lineTypeSelect")
+            .bind("bankDetailsId", bankDetails.getId())
+            .bind("lineTypeSelect", BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
             .fetchStream()
             .min(Comparator.comparing(BankStatementLine::getOperationDate));
     return id.map(line -> bankStatementLineRepository.find(line.getId())).orElse(null);
