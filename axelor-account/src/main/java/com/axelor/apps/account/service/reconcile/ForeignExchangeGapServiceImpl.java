@@ -256,7 +256,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
         this.isGain(reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine(), isDebit);
 
     return isGain
-        ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT
-        : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT;
+        ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN
+        : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS;
   }
 }

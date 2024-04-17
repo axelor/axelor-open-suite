@@ -10,7 +10,7 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
   public List<Integer> getForeignExchangeTypes() {
     return new ArrayList<>(
         List.of(
-            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN_PAYMENT,
-            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS_PAYMENT));
+            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN,
+            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS));
   }
 }
