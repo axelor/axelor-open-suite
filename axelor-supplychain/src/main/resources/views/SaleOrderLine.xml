@@ -177,6 +177,24 @@
     <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
   </grid>
 
+  <grid name="sale-order-line-to-invoice-popup-grid" title="Lines to invoice" edit-icon="false"
+    model="com.axelor.apps.sale.db.SaleOrderLine" editable="true">
+    <field name="saleOrder"/>
+    <field name="product.code" width="120"/>
+    <field name="productName" readonly="true"/>
+    <field name="qty" readonly="true" aggregate="sum"/>
+    <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="price" readonly="true"/>
+    <field name="exTaxTotal" readonly="true" aggregate="sum"
+      x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="amountInvoiced" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll"
+      min="0" x-scale="2"/>
+    <field name="invoiceAll" title="Invoice all" type="boolean"
+      onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
+  </grid>
+
   <form title="Sale order line to invoice" name="sale-order-line-to-invoice-form"
     model="com.axelor.apps.sale.db.SaleOrderLine" canEdit="false" canNew="false" canArchive="false"
     canDelete="false" canCopy="false">

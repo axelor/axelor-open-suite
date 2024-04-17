@@ -512,7 +512,7 @@ public class SaleOrderLineController {
           selectedSaleOrderLineList.stream().map(Mapper::toMap).collect(Collectors.toList());
       response.setView(
           ActionView.define(I18n.get("SOL to invoice"))
-              .model("com.axelor.apps.sale.db.SaleOrderLine")
+              .model(SaleOrderLine.class.getName())
               .add("form", "sale-order-line-multi-invoicing-form")
               .param("popup", "true")
               .param("popup-save", "false")

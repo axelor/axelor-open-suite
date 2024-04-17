@@ -198,7 +198,6 @@ public class SaleOrderController {
       if (supplierPartner != null
           && !purchaseOrderFromSaleOrderLinesService.isDirectOrderLocation(saleOrder)) {
         response.setCanClose(true);
-
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -361,10 +360,26 @@ public class SaleOrderController {
         priceMaps.put(saleOrder, priceMap);
       }
 
-      Beans.get(SaleOrderInvoiceService.class)
-          .generateInvoicesFromSOL(
-              priceMaps, qtyToInvoiceMaps, qtyMaps, amountToInvoiceMap, isPercent, operationSelect);
+      List<Invoice> invoiceList =
+          Beans.get(SaleOrderInvoiceService.class)
+              .generateInvoicesFromSOL(
+                  priceMaps,
+                  qtyToInvoiceMaps,
+                  qtyMaps,
+                  amountToInvoiceMap,
+                  isPercent,
+                  operationSelect);
       response.setCanClose(true);
+      List<Long> invoicesIds =
+          invoiceList.stream().map(Invoice::getId).collect(Collectors.toList());
+      response.setView(
+          ActionView.define(I18n.get("Invoices"))
+              .model(Invoice.class.getName())
+              .add("grid", "invoice-grid")
+              .add("form", "invoice-form")
+              .domain("self.id IN :invoicesIds")
+              .context("invoicesIds", invoicesIds)
+              .map());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
