@@ -14,7 +14,7 @@
     <view type="grid" name="contract-grid"/>
     <view type="form" name="contract-form"/>
     <view-param name="search-filters" value="contract-filters"/>
-    <domain>self.targetTypeSelect = 1 AND self.statusSelect != 3</domain>
+    <domain>self.targetTypeSelect = 1 AND self.contractTypeSelect = 1 AND self.statusSelect != 3</domain>
     <context name="_xTargetType" expr="eval: 1"/>
   </action-view>
 
@@ -26,7 +26,7 @@
     <view type="grid" name="contract-grid"/>
     <view type="form" name="contract-form"/>
     <view-param name="search-filters" value="contract-filters"/>
-    <domain>self.targetTypeSelect = 2 AND self.statusSelect != 3</domain>
+    <domain>self.targetTypeSelect = 2 AND self.contractTypeSelect = 1 AND self.statusSelect != 3</domain>
     <context name="_xTargetType" expr="eval: 2"/>
   </action-view>
 
@@ -39,7 +39,7 @@
     <view type="grid" name="contract-grid"/>
     <view type="form" name="contract-form"/>
     <view-param name="search-filters" value="contract-filters"/>
-    <domain>self.targetTypeSelect = 3 AND self.statusSelect != 3</domain>
+    <domain>self.targetTypeSelect = 3 AND self.contractTypeSelect = 1 AND self.statusSelect != 3</domain>
     <context name="_xTargetType" expr="eval: 3"/>
   </action-view>
 
@@ -52,8 +52,20 @@
     <view type="grid" name="contract-grid"/>
     <view type="form" name="contract-form"/>
     <view-param name="search-filters" value="contract-filters"/>
-    <domain>self.targetTypeSelect = 4 AND self.statusSelect != 3</domain>
+    <domain>self.targetTypeSelect = 4 AND self.contractTypeSelect = 1 AND self.statusSelect != 3</domain>
     <context name="_xTargetType" expr="eval: 4"/>
+  </action-view>
+
+  <menuitem title="Framework contracts" name="contracts-root-framework-contract-all"
+    action="contracts.root.framework.contract.all" parent="contracts-root" order="450"/>
+
+  <action-view name="contracts.root.framework.contract.all" title="Framework contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
+    <view-param name="search-filters" value="contract-filters"/>
+    <domain>self.contractTypeSelect = 2</domain>
+    <context name="_isFrameworkContract" expr="eval: true"/>
   </action-view>
 
   <menuitem title="Configuration" name="contracts-root-conf-all" parent="contracts-root"
