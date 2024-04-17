@@ -51,6 +51,9 @@
 					</>
                     ]]></viewer>
         </field>
+        <field name="contractTypeSelect"/>
+        <field name="targetTypeSelect" hidden="true" showIf="contractTypeSelect == 2"
+          selection-in="[1,2]"/>
         <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
         <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner"
           showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
@@ -62,7 +65,9 @@
           name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
         <field name="name" colSpan="12" css="highlight"
           hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
-        <field name="project" colSpan="8" domain="self.clientPartner=:partner"/>
+        <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
+          showIf="contractTypeSelect == 1"/>
+
         <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
           colSpan="12">
           <field name="createdOn" colSpan="3"/>
@@ -74,7 +79,7 @@
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false">
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-              <panel colSpan="6">
+              <panel colSpan="6" name="currentVersionEditorPanel">
                 <panel hideIf="statusSelect >= 3" colSpan="12">
                   <field name="supposedActivationDate"
                     onChange="action-method-contract-version-check-supposed-activation-date,save,action-method-contract-version-update-contract-lines"/>
@@ -138,6 +143,12 @@
             title="Renew" hidden="true"
             showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
             onClick="save,action-contract-method-renew"/>
+          <button name="generateSaleOrderBtn" title="Generate sale order"
+            onClick="action-contract-method-generate-sale-order" hidden="true"
+            showIf="targetTypeSelect == 1 &amp;&amp; currentContractVersion.statusSelect == 3 &amp;&amp; contractTypeSelect == 2"/>
+          <button name="generatePurchaseOrderBtn" title="Generate purchase order"
+            onClick="action-contract-method-generate-purchase-order" hidden="true"
+            showIf="targetTypeSelect == 2 &amp;&amp; currentContractVersion.statusSelect == 3 &amp;&amp; contractTypeSelect == 2"/>
         </panel>
         <panel title="Notes" stacked="true" name="notesPanel">
           <field name="note" showTitle="false"/>
@@ -204,7 +215,7 @@
         </panel>
       </panel>
       <panel name="invoicingPanel" title="Invoicing" hidden="true"
-        showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
+        showIf="contractTypeSelect == 1 &amp;&amp; isInvoicingManagement &amp;&amp; statusSelect >= 2">
         <field name="invoicePeriodStartDate"
           showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"
           requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"
@@ -279,34 +290,17 @@
       </panel>
       <panel if="__config__.app.getApp('contract')?.isConfigContract" title="Config."
         name="configPanel">
-        <panel name="configSubPanel" title="Invoicing"
+        <panel name="generalSubPanel" title="General"
           if="__config__.app.getApp('contract')?.isInvoicingManagement" colSpan="12">
           <field name="isInvoicingManagement"
             onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"
-            colSpan="12" widget="boolean-switch"/>
+            widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
             colSpan="12">
-            <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4"/>
             <field name="isAdditionaBenefitManagement"
               if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
               widget="boolean-switch" colSpan="4" hideIf="targetTypeSelect > 2"/>
-            <field name="isConsumptionManagement"
-              if="__config__.app.getApp('contract')?.isConsumptionManagement"
-              onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
-              colSpan="4" hideIf="targetTypeSelect > 2"/>
-            <field name="currentContractVersion"
-              if="__config__.app.getApp('contract')?.isConsumptionManagement" showTitle="false"
-              hidden="true" showIf="isConsumptionManagement" x-show-icons="false">
-              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"
-                  hideIf="targetTypeSelect > 2"/>
-              </editor>
-            </field>
-          </panel>
-
-          <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement"
-            colSpan="12">
-            <field name="currentContractVersion" showTitle="false" colSpan="12"
+            <field name="currentContractVersion" showTitle="false" colSpan="8"
               x-show-icons="false">
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                 <panel colSpan="6">
@@ -318,6 +312,34 @@
                     grid-view="payment-condition-grid"
                     onSelect="action-contract-attrs-payment-condition-set-domain"/>
                 </panel>
+              </editor>
+            </field>
+          </panel>
+
+        </panel>
+        <panel name="configSubPanel" title="Invoicing"
+          if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
+          showIf="contractTypeSelect == 1 &amp;&amp; isInvoicingManagement" colSpan="12">
+          <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4"/>
+          <spacer/>
+          <field name="isConsumptionManagement"
+            if="__config__.app.getApp('contract')?.isConsumptionManagement"
+            onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
+            colSpan="4" hideIf="targetTypeSelect > 2"/>
+          <field name="currentContractVersion"
+            if="__config__.app.getApp('contract')?.isConsumptionManagement" showTitle="false"
+            hidden="true" showIf="isConsumptionManagement" x-show-icons="false">
+            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+              <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"
+                hideIf="targetTypeSelect > 2"/>
+            </editor>
+          </field>
+
+          <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement"
+            colSpan="12">
+            <field name="currentContractVersion" showTitle="false" colSpan="12"
+              x-show-icons="false">
+              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                 <panel colSpan="6">
                   <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
                   <field name="invoicingMomentSelect" hidden="true"
@@ -330,7 +352,8 @@
             <field name="currentContractVersion" showTitle="false" colSpan="12"
               x-show-icons="false">
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
+                <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
+                  hidden="true" showIf="contractTypeSelect == 1"/>
                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
                   <field name="invoicingDuration" domain="self.applicationTypeSelect = 2"
                     colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
@@ -400,6 +423,14 @@
         <field name="endDateTime"/>
         <field name="statusSelect"/>
       </panel-related>
+
+      <panel-dashlet name="generatedSaleOrdersPanel" title="Sale orders"
+        action="action-contract-view-generated-sale-orders" hidden="true"
+        showIf="id &amp;&amp; targetTypeSelect == 1 &amp;&amp; contractTypeSelect == 2"/>
+
+      <panel-dashlet name="generatedPurchaseOrdersPanel" title="Purchase orders"
+        action="action-contract-view-generated-purchase-orders" hidden="true"
+        showIf="id &amp;&amp; targetTypeSelect == 2 &amp;&amp; contractTypeSelect == 2"/>
     </panel-tabs>
     <panel-mail name="mailsPanel">
       <mail-messages limit="4"/>
@@ -440,6 +471,7 @@
     <field name="statusSelect" expr="eval: 1"/>
     <field name="company" expr="eval: __user__.activeCompany"/>
     <field name="targetTypeSelect" expr="eval: _xTargetType" if="_xTargetType != null"/>
+    <field name="contractTypeSelect" expr="eval: _isFrameworkContract != true ? 1 : 2"/>
     <field name="currentContractVersion"
       expr="action:action-record-contract-version-default-record"/>
     <field name="partner" expr="eval: _clientPartner" if="_clientPartner != null"/>
@@ -516,7 +548,7 @@
     <context name="_showRecord" expr="eval: nextVersion.id"/>
   </action-view>
 
-  <action-view name="action-view-contract-add-version" title="Nouvelle version"
+  <action-view name="action-view-contract-add-version" title="New version"
     model="com.axelor.apps.contract.db.ContractVersion">
     <view type="form" name="contract-version-next-form"/>
     <view type="grid" name="contract-version-next-grid"/>
@@ -702,5 +734,29 @@
     <call class="com.axelor.apps.contract.web.ContractController"
       method="onChangeAdditionalContractLines"/>
   </action-method>
+
+  <action-method name="action-contract-method-generate-sale-order">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="generateSaleOrderFromContract"/>
+  </action-method>
+
+  <action-method name="action-contract-method-generate-purchase-order">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="generatePurchaseOrderFromContract"/>
+  </action-method>
+
+  <action-view name="action-contract-view-generated-sale-orders" title="Sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>self.contract.id = :id</domain>
+  </action-view>
+
+  <action-view name="action-contract-view-generated-purchase-orders"
+    title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <domain>self.contract.id = :id</domain>
+  </action-view>
 
 </object-views>

@@ -13,4 +13,5 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+
 </csv-inputs>

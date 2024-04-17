@@ -49,16 +49,16 @@
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
             hidden="false" x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="companyExTaxTotal,$currencySymbol">
+            <viewer depends="companyExTaxTotal">
               <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
             </viewer>
           </field>
-          <field name="budgetDistributionSumAmount" colSpan="6"
+          <field name="budgetRemainingAmountToAllocate" colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
             x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="budgetDistributionSumAmount">
+            <viewer depends="budgetRemainingAmountToAllocate">
               <![CDATA[
-				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
               ]]>
             </viewer>
           </field>
@@ -146,6 +146,7 @@
   <action-group
     name="action-group-budget-purchase-order-line-budget-distribution-onchange">
     <action name="action-method-purchase-order-line-budget-distribution-validate-amount"/>
+    <action name="action-purchase-order-method-compute-budget-remaining-amount-to-allocate"/>
     <action name="action-budget-purchase-order-line-method-fill-budget-str"/>
   </action-group>
 
@@ -170,9 +171,9 @@
   </action-method>
 
   <action-method
-    name="action-purchase-order-method-compute-budget-distribution-sum-amount">
+    name="action-purchase-order-method-compute-budget-remaining-amount-to-allocate">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="computeBudgetDistributionSumAmount"/>
+      method="computeBudgetRemainingAmountToAllocate"/>
   </action-method>
 
 </object-views>

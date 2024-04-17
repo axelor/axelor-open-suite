@@ -38,7 +38,6 @@ import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingComputer;
 import com.axelor.apps.base.service.pricing.PricingObserver;
 import com.axelor.apps.base.service.pricing.PricingService;
@@ -690,57 +689,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       response.setNotify(
           productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList));
     }
-  }
-
-  @Override
-  public SaleOrderLine createSaleOrderLine(
-      PackLine packLine,
-      SaleOrder saleOrder,
-      BigDecimal packQty,
-      BigDecimal conversionRate,
-      Integer sequence)
-      throws AxelorException {
-
-    if (packLine.getTypeSelect() == PackLineRepository.TYPE_START_OF_PACK
-        || packLine.getTypeSelect() == PackLineRepository.TYPE_END_OF_PACK) {
-      return createStartOfPackAndEndOfPackTypeSaleOrderLine(
-          packLine.getPack(), saleOrder, packQty, packLine, packLine.getTypeSelect(), sequence);
-    }
-
-    if (packLine.getProductName() != null) {
-      SaleOrderLine soLine = new SaleOrderLine();
-
-      Product product = packLine.getProduct();
-      soLine.setProduct(product);
-      soLine.setProductName(packLine.getProductName());
-      if (packLine.getQuantity() != null) {
-        soLine.setQty(
-            packLine
-                .getQuantity()
-                .multiply(packQty)
-                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-      }
-      soLine.setUnit(packLine.getUnit());
-      soLine.setTypeSelect(packLine.getTypeSelect());
-      soLine.setSequence(sequence);
-      if (packLine.getPrice() != null) {
-        soLine.setPrice(packLine.getPrice().multiply(conversionRate));
-      }
-
-      if (product != null) {
-        if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
-          soLine.setDescription(product.getDescription());
-        }
-        try {
-          this.fillPriceFromPackLine(soLine, saleOrder);
-          this.computeValues(saleOrder, soLine);
-        } catch (AxelorException e) {
-          TraceBackService.trace(e);
-        }
-      }
-      return soLine;
-    }
-    return null;
   }
 
   @Override

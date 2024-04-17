@@ -16,12 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service.bankstatementline.afb120;
+package com.axelor.apps.intervention.rest.dto;
 
-import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
-import com.axelor.apps.base.db.BankDetails;
+import com.axelor.utils.api.RequestStructure;
+import javax.validation.constraints.NotNull;
 
-public interface BankStatementLineFetchAFB120Service {
+public class EquipmentPicturePutRequest extends RequestStructure {
 
-  BankStatementLineAFB120 getLastBankStatementLineAFB120FromBankDetails(BankDetails bankDetails);
+  @NotNull private Long pictureId;
+
+  public Long getPictureId() {
+    return pictureId;
+  }
+
+  public void setPictureId(Long pictureId) {
+    this.pictureId = pictureId;
+  }
 }

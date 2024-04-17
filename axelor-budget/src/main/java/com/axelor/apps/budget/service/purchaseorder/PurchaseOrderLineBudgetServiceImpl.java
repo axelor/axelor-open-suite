@@ -187,26 +187,4 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       }
     }
   }
-
-  @Override
-  public void computeBudgetDistributionSumAmount(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
-    List<BudgetDistribution> budgetDistributionList = purchaseOrderLine.getBudgetDistributionList();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = purchaseOrder.getOrderDate();
-
-    if (CollectionUtils.isNotEmpty(budgetDistributionList)) {
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            currencyScaleService.getCompanyScaledValue(
-                budgetDistribution,
-                budgetDistributionSumAmount.add(budgetDistribution.getAmount()));
-
-        budgetDistributionService.computeBudgetDistributionSumAmount(
-            budgetDistribution, computeDate);
-      }
-    }
-
-    purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
-  }
 }

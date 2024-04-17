@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -334,8 +335,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && Objects.equals(ml.getVatSystemSelect(), vatSystem)
         && !Objects.equals(ml.getId(), id)
         && ml.getAccount().getAccountType() != null
-        && AccountTypeRepository.TYPE_TAX.equals(
-            ml.getAccount().getAccountType().getTechnicalTypeSelect())
+        && this.isMoveLineTaxAccount(ml)
         && ml.getAccount().equals(account);
   }
 
@@ -406,6 +406,21 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (currency != null && companyCurrency != null) {
       moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
       moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
+    }
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
+    return moveLine.getAccount() != null
+        && moveLine.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
+  }
+
+  @Override
+  public void setIsNonDeductibleTax(MoveLine moveLine, Tax tax) {
+    if (tax.getIsNonDeductibleTax()) {
+      moveLine.setIsNonDeductibleTax(true);
     }
   }
 }
