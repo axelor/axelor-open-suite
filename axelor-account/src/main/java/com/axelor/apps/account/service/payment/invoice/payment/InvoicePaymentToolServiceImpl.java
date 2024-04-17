@@ -55,6 +55,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -166,13 +167,39 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                       .getFinancialDiscountAmount()
                       .add(invoicePayment.getFinancialDiscountTaxAmount()));
         }
-        amountPaid =
-            amountPaid.add(
-                currencyService.getAmountCurrencyConvertedAtDate(
-                    invoicePayment.getCurrency(),
-                    invoiceCurrency,
-                    paymentAmount,
-                    invoicePayment.getPaymentDate()));
+
+        if (currencyService.isSameCurrencyRate(
+            invoice.getInvoiceDate(),
+            invoicePayment.getPaymentDate(),
+            invoicePayment.getCurrency(),
+            invoiceCurrency)) {
+          BigDecimal computedPaidAmount = paymentAmount;
+          if (!Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)) {
+            BigDecimal currencyRate =
+                currencyService.computeScaledExchangeRate(
+                    invoice.getCompanyInTaxTotal(), invoice.getInTaxTotal());
+            computedPaidAmount =
+                Objects.equals(invoiceCurrency, invoice.getCompany().getCurrency())
+                    ? currencyService.getAmountCurrencyConvertedAtDate(
+                        invoicePayment.getCurrency(),
+                        invoiceCurrency,
+                        paymentAmount,
+                        invoicePayment.getPaymentDate())
+                    : paymentAmount.divide(
+                        currencyRate,
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP);
+          }
+          amountPaid = amountPaid.add(computedPaidAmount);
+        } else {
+          amountPaid =
+              amountPaid.add(
+                  currencyService.getAmountCurrencyConvertedAtDate(
+                      invoicePayment.getCurrency(),
+                      invoiceCurrency,
+                      paymentAmount,
+                      invoicePayment.getPaymentDate()));
+        }
       }
     }
 
@@ -276,21 +303,37 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       List<InvoiceTerm> invoiceTermList,
       LocalDate date,
       boolean manualChange,
-      Currency paymentCurrency) {
+      Currency paymentCurrency)
+      throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceTermList)) {
       return BigDecimal.ZERO;
     }
 
-    boolean isCompanyCurrency =
-        paymentCurrency.equals(invoiceTermList.get(0).getCompany().getCurrency());
-    return invoiceTermList.stream()
-        .map(
-            it ->
-                manualChange
-                    ? invoiceTermToolService.getAmountRemaining(it, date, isCompanyCurrency)
-                    : isCompanyCurrency ? it.getCompanyAmountRemaining() : it.getAmountRemaining())
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+    Company company = invoiceTermList.get(0).getCompany();
+    Currency currency = invoiceTermList.get(0).getCurrency();
+
+    boolean isCompanyCurrency = company != null && paymentCurrency.equals(company.getCurrency());
+    boolean isTermMonoCurrency = company != null && Objects.equals(company.getCurrency(), currency);
+
+    BigDecimal amountRemaining =
+        invoiceTermList.stream()
+            .map(
+                it ->
+                    manualChange
+                        ? invoiceTermToolService.getAmountRemaining(it, date, isCompanyCurrency)
+                        : isCompanyCurrency
+                            ? it.getCompanyAmountRemaining()
+                            : it.getAmountRemaining())
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (isTermMonoCurrency && !isCompanyCurrency) {
+      amountRemaining =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              currency, paymentCurrency, amountRemaining, date);
+    }
+
+    return amountRemaining;
   }
 
   @Override
@@ -357,7 +400,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                 it -> it.setApplyFinancialDiscount(invoicePayment.getApplyFinancialDiscount()));
       }
 
-      BigDecimal payableAmount =
+      BigDecimal payableCurrencyAmount =
           this.getPayableAmount(
               invoiceTerms,
               invoicePayment.getPaymentDate(),
@@ -365,8 +408,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               invoicePayment.getCurrency());
 
       if (!invoicePayment.getManualChange()
-          || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
-        invoicePayment.setAmount(payableAmount);
+          || invoicePayment.getAmount().compareTo(payableCurrencyAmount) > 0) {
+        invoicePayment.setAmount(payableCurrencyAmount);
         amountError = !invoicePayment.getApplyFinancialDiscount();
       }
 
@@ -374,11 +417,12 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
       if (!CollectionUtils.isEmpty(invoiceTerms)) {
 
-        BigDecimal amount = invoicePayment.getAmount();
+        BigDecimal companyAmount =
+            this.computeCompanyAmount(invoicePayment.getAmount(), invoicePayment);
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-            invoicePayment, invoiceTerms, amount, amount);
+            invoicePayment, invoiceTerms, companyAmount, companyAmount);
 
         if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
           BigDecimal financialDiscountAmount =
@@ -387,7 +431,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                   .map(InvoiceTerm::getFinancialDiscountAmount)
                   .reduce(BigDecimal::add)
                   .orElse(BigDecimal.ZERO);
-          BigDecimal amountWithFinancialDiscount = amount.add(financialDiscountAmount);
+          BigDecimal amountWithFinancialDiscount = companyAmount.add(financialDiscountAmount);
 
           invoicePayment.clearInvoiceTermPaymentList();
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
@@ -398,7 +442,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         } else if (this.isPartialPayment(invoicePayment)) {
           invoicePayment.clearInvoiceTermPaymentList();
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTerms, amount, amount);
+              invoicePayment, invoiceTerms, companyAmount, companyAmount);
         }
 
         if (this.isPartialPayment(invoicePayment)) {
@@ -465,5 +509,18 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                         .add(it.getFinancialDiscountAmount())
                         .compareTo(it.getInvoiceTerm().getAmount())
                     != 0);
+  }
+
+  protected BigDecimal computeCompanyAmount(
+      BigDecimal amountInCurrency, InvoicePayment invoicePayment) throws AxelorException {
+    if (!invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())) {
+      return currencyService.getAmountCurrencyConvertedAtDate(
+          invoicePayment.getCurrency(),
+          invoicePayment.getCompanyCurrency(),
+          amountInCurrency,
+          invoicePayment.getPaymentDate());
+    }
+
+    return amountInCurrency;
   }
 }

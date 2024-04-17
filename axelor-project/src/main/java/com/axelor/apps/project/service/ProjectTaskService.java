@@ -56,6 +56,4 @@ public interface ProjectTaskService {
   public String getTaskLink(String value);
 
   public void fillSubtask(ProjectTask projectTask);
-
-  int computeProgressSelect(ProjectTask projectTask);
 }

@@ -5,10 +5,11 @@
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
-      </menu>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
@@ -45,10 +46,11 @@
 
   <grid name="sale-order-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder"
     orderBy="-creationDate">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
-      </menu>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
           action="action-view-open-sale-order-lines"/>
@@ -85,10 +87,11 @@
 
   <grid name="sale-order-partner-grid" title="Sale orders"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
-      </menu>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
           action="action-view-open-sale-order-lines"/>
@@ -242,9 +245,8 @@
     onNew="action-group-sale-saleorder-onnew"
     onSave="action-sale-order-line-tree-method-update-hasTree">
     <toolbar>
-      <button name="reportsBtn" title="Reports" icon="fa-print"
-        hideIf="clientPartner == null" readonlyIf="!id"
-        onClick="save,action-sale-order-view-reports-wizard"/>
+      <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
+        readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
         onClick="action-send-by-email-with-template"/>
     </toolbar>
@@ -571,6 +573,8 @@
       <panel name="businessProjectPanel" title="Business project"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         if-module="axelor-business-project">
+        <field name="contract" readonly="true" hidden="true" showIf="contract"
+          form-view="contract-form" grid-view="contract-grid"/>
         <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
           form-view="project-form" grid-view="project-grid" edit-window="blank"
           onChange="action-business-project-sale-order-method-update-lines"/>
@@ -1213,15 +1217,17 @@
     <panel name="mainPanel">
       <panel name="ReportTypePanel" colSpan="6">
         <field name="$reportType" title="Report type" type="integer"
-          selection="sale.order.report.type" required="true"
-          onChange="action-sale-order-reports-wizard-proforma-invoice-attrs" colSpan="12"/>
+          selection="sale.order.report.type" required="true" colSpan="12"/>
       </panel>
-      <panel name="formatPanel" colSpan="6">
-        <field name="$format" title="Format" selection="sale.order.report.format" colSpan="12"
-          required="true" readonlyIf="$reportType == 2"/>
+      <panel name="printingsPanel" colSpan="6">
+        <field name="$saleOrderPrintTemplate" title="Sale order template" type="many-to-one"
+          target="com.axelor.apps.base.db.PrintingTemplate" colSpan="12" required="true"
+          domain="self.metaModel.name = 'SaleOrder' AND self.statusSelect = 2"
+          grid-view="printing-template-grid" form-view="printing-template-form"/>
       </panel>
-      <button name="printBtn" title="Print" onClick="action-sale-order-group-report-print"
-        readonlyIf="$reportType==null || $format==null"/>
+      <button name="printBtn" title="Print"
+        onClick="action-sale-order-method-print-sale-order"
+        readonlyIf="$reportType == null || $saleOrderPrintTemplate == null"/>
     </panel>
   </form>
 
@@ -1238,23 +1244,7 @@
 
   <action-attrs name="action-sale-order-reports-wizard-attrs">
     <attribute name="value" for="$reportType" expr="eval: 1"/>
-    <attribute name="value" for="$format" expr="pdf"/>
   </action-attrs>
-
-  <action-attrs name="action-sale-order-reports-wizard-proforma-invoice-attrs">
-    <attribute name="value" for="$format" expr="pdf" if="reportType == 2"/>
-  </action-attrs>
-
-  <action-group name="action-sale-order-group-report-print">
-    <action name="action-sale-order-method-show-sale-order"
-      if="format == 'pdf' &amp;&amp; reportType == 1"/>
-    <action name="action-sale-order-method-export-sale-order-excel"
-      if="format == 'xls' &amp;&amp; reportType == 1"/>
-    <action name="action-sale-order-method-export-sale-order-word"
-      if="format == 'doc' &amp;&amp; reportType == 1"/>
-    <action name="action-sale-order-method-print-proforma-invoice"
-      if="format == 'pdf' &amp;&amp; reportType == 2"/>
-  </action-group>
 
   <cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     width="360px" css="rect-image" orderBy="-orderDate">
@@ -1328,10 +1318,11 @@
 
   <cards name="sale-order-quotation-cards" title="Sale order quotation"
     model="com.axelor.apps.sale.db.SaleOrder" width="360px" css="rect-image" orderBy="-orderDate">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
-      </menu>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-open-sale-quotation-merge-form"/>
@@ -1678,16 +1669,8 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="showSaleOrder"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-print-proforma-invoice">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="printProformaInvoice"/>
-  </action-method>
-
-  <action-method name="action-sale-order-method-export-sale-order-excel">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="exportSaleOrderExcel"/>
-  </action-method>
-
-  <action-method name="action-sale-order-method-export-sale-order-word">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="exportSaleOrderWord"/>
+  <action-method name="action-sale-order-method-print-sale-order">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="printSaleOrder"/>
   </action-method>
 
   <action-method name="action-sale-order-method-fill-price-list">

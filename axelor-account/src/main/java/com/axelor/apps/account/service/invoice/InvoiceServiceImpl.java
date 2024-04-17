@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -85,6 +84,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -157,40 +157,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   // WKF
 
-  public Journal getJournal(Invoice invoice) throws AxelorException {
-
-    Company company = invoice.getCompany();
-    if (company == null) return null;
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    // Taken from legacy JournalService but negative cases seem rather strange
-    switch (invoice.getOperationTypeSelect()) {
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getSupplierCreditNoteJournal(accountConfig)
-            : accountConfigService.getSupplierPurchaseJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getSupplierPurchaseJournal(accountConfig)
-            : accountConfigService.getSupplierCreditNoteJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getCustomerCreditNoteJournal(accountConfig)
-            : accountConfigService.getCustomerSalesJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getCustomerSalesJournal(accountConfig)
-            : accountConfigService.getCustomerCreditNoteJournal(accountConfig);
-      default:
-        throw new AxelorException(
-            invoice,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(AccountExceptionMessage.JOURNAL_1),
-            invoice.getInvoiceId());
-    }
-  }
-
   /**
    * Fonction permettant de calculer l'intégralité d'une facture :
    *
@@ -228,7 +194,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         };
 
     Invoice invoice1 = invoiceGenerator.generate();
-    invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    if (invoice.getOperationSubTypeSelect()
+        != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+      invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    }
+
     invoice1.setInvoiceProductStatement(
         invoiceProductStatementService.getInvoiceProductStatement(invoice1));
     return invoice1;
@@ -266,7 +236,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
-    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (Arrays.asList(
+            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
+        .contains(invoice.getOperationSubTypeSelect())) {
       ventilate(invoice);
     }
   }
@@ -314,7 +287,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
-          && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+          && !Arrays.asList(
+                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
+              .contains(invoice.getOperationSubTypeSelect())) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -422,7 +398,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(
-                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+                invoice.getPartner().getId(),
+                InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND,
+                invoice.getOperationSubTypeSelect());
 
         if (clientRefundsAmount > 0) {
           return I18n.get(AccountExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
@@ -432,7 +410,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
         long supplierRefundsAmount =
             getRefundsAmount(
-                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+                invoice.getPartner().getId(),
+                InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
+                invoice.getOperationSubTypeSelect());
 
         if (supplierRefundsAmount > 0) {
           return I18n.get(AccountExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
@@ -443,17 +423,21 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return null;
   }
 
-  protected long getRefundsAmount(Long partnerId, int refundType) {
+  protected long getRefundsAmount(Long partnerId, int refundType, int operationSubTypeSelect) {
     return invoiceRepo
         .all()
         .filter(
             "self.partner.id = ?"
                 + " AND self.operationTypeSelect = ?"
                 + " AND self.statusSelect = ?"
-                + " AND self.amountRemaining > 0",
+                + " AND self.amountRemaining > 0"
+                + " AND self.operationSubTypeSelect = ?",
             partnerId,
             refundType,
-            InvoiceRepository.STATUS_VENTILATED)
+            InvoiceRepository.STATUS_VENTILATED,
+            operationSubTypeSelect == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+                ? InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND
+                : InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND)
         .count();
   }
 
@@ -752,6 +736,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             + "AND self.currency = :_currency "
             + "AND self.operationTypeSelect = :_operationTypeSelect "
             + "AND self.internalReference IS NULL";
+
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo

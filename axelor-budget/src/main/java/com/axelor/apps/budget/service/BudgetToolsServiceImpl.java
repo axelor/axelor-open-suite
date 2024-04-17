@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetStructure;
@@ -370,5 +371,30 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
       }
     }
     return amountByField;
+  }
+
+  @Override
+  public BigDecimal getBudgetRemainingAmountToAllocate(
+      List<BudgetDistribution> budgetDistributionList, BigDecimal maxAmount) {
+    if (ObjectUtils.isEmpty(budgetDistributionList)) {
+      return maxAmount;
+    }
+
+    Company company =
+        budgetDistributionList.stream()
+            .map(BudgetDistribution::getBudget)
+            .map(Budget::getGlobalBudget)
+            .map(GlobalBudget::getCompany)
+            .findFirst()
+            .orElse(null);
+
+    BigDecimal imputedAmount =
+        budgetDistributionList.stream()
+            .map(BudgetDistribution::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    return BigDecimal.ZERO.max(
+        currencyScaleService.getCompanyScaledValue(
+            company, maxAmount.subtract(imputedAmount.abs())));
   }
 }

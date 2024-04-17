@@ -8,6 +8,9 @@
   <entity name="AppBase" cacheable="true">
     <boolean name="enableSiteManagementForProject"
       title="Enable site management for project"/>
+    <many-to-many name="defaultSitesSet" title="Default sites"
+      ref="com.axelor.apps.base.db.Site"/>
+
   </entity>
 
 </domain-models>

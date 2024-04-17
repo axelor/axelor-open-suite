@@ -30,6 +30,7 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.util.Arrays;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -158,7 +159,10 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected boolean _getStatusOperationSubTypeCondition(Invoice invoice) {
     return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         || (invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED
-            && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+            && (Arrays.asList(
+                    InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+                    InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
+                .contains(invoice.getOperationSubTypeSelect())));
   }
 
   protected boolean _getPfpValidateStatusCondition(Invoice invoice, boolean litigation) {
