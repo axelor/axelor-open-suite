@@ -381,7 +381,6 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
         currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
 
     if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
-      // TODO check to inverse paymentCurrency and companyCurrency
       BigDecimal newCurrencyRate =
           currencyService.getCurrencyRate(
               invoice.getInvoiceDate(),
