@@ -1054,7 +1054,12 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_2 = /*$$(*/ "Credit note created" /*)*/;
   public static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
-  public static final String INVOICE_4 = /*$$(*/ "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND = /*$$(*/
+      "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT = /*$$(*/
+      "Credit notes from advance payment %s" /*)*/;
+  public static final String INVOICE_GENERATED_INVOICE_REFUND = /*$$(*/
+      "Invoice from credit notes %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
 
@@ -1710,6 +1715,21 @@ public final class AccountExceptionMessage {
   public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
       "No partner involved, please look for your blocking configuration if necessary." /*)*/;
 
+  public static final String CREATE_REFUND_BTN_CLASSIC_REFUND = /*$$(*/
+      "Generate credit note" /*)*/;
+  public static final String CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Generate advance payment invoice" /*)*/;
+  public static final String CREATE_REFUND_BTN_INVOICE = /*$$(*/ "Generate invoice" /*)*/;
+
+  public static final String REFUND_INVOICE_LIST_CLASSIC_REFUND = /*$$(*/ "Credit notes" /*)*/;
+  public static final String REFUND_INVOICE_LIST_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Advance payments" /*)*/;
+  public static final String REFUND_INVOICE_LIST_INVOICE = /*$$(*/ "Invoices" /*)*/;
+
+  public static final String ORIGINAL_INVOICE_CLASSIC_REFUND = /*$$(*/ "Original credit note" /*)*/;
+  public static final String ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Original advance payment" /*)*/;
+  public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
   public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
       "Duplicate from tax found for this fiscal position." /*)*/;
 }
