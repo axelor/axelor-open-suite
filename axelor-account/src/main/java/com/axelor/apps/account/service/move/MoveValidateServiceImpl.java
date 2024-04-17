@@ -834,8 +834,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       if (CollectionUtils.isNotEmpty(moveline.getTaxLineSet())
           && moveline.getAccount() != null
           && moveline.getAccount().getAccountType() != null
-          && !AccountTypeRepository.TYPE_TAX.equals(
-              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && !moveLineToolService.isMoveLineTaxAccount(moveline)
           && moveline.getAccount().getIsTaxAuthorizedOnMoveLine()
           && moveline.getAccount().getVatSystemSelect() != null
           && moveline.getAccount().getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT) {
@@ -849,8 +848,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     for (MoveLine moveline : move.getMoveLineList()) {
       if (moveline.getAccount() != null
           && moveline.getAccount().getAccountType() != null
-          && AccountTypeRepository.TYPE_TAX.equals(
-              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && moveLineToolService.isMoveLineTaxAccount(moveline)
           && moveline.getVatSystemSelect() == MoveLineRepository.VAT_SYSTEM_DEFAULT) {
         return true;
       }
@@ -878,23 +876,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal linesTaxAmount =
         moveLineList.stream()
-            .filter(
-                moveLine ->
-                    moveLineTaxService.isGenerateMoveLineForAutoTax(
-                        moveLine.getAccount().getAccountType().getTechnicalTypeSelect()))
+            .filter(moveLineTaxService::isGenerateMoveLineForAutoTax)
             .map(this::getTaxAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
     BigDecimal taxLinesAmount =
         moveLineList.stream()
-            .filter(
-                moveLine ->
-                    moveLine
-                        .getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))
+            .filter(moveLineToolService::isMoveLineTaxAccount)
             .map(this::getMoveLineSignedValue)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -931,9 +920,13 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
+    Set<TaxLine> taxLineSet =
+        moveLine.getTaxLineSet().stream()
+            .filter(it -> !it.getTax().getIsNonDeductibleTax())
+            .collect(Collectors.toSet());
 
     return lineTotal
-        .multiply(taxService.getTotalTaxRateInPercentage(moveLine.getTaxLineSet()))
+        .multiply(taxService.getTotalTaxRateInPercentage(taxLineSet))
         .divide(
             BigDecimal.valueOf(100),
             currencyScaleService.getCompanyScale(moveLine),

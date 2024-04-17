@@ -97,4 +97,32 @@ public class ProjectPlanningTimeController {
           "site", Optional.ofNullable(projectTask).map(ProjectTask::getSite).orElse(null));
     }
   }
+
+  public void updateEvent(ActionRequest request, ActionResponse response) {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    Beans.get(ProjectPlanningTimeService.class).updateLinkedEvent(projectPlanningTime);
+  }
+
+  public void computePlannedTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setValue(
+        "plannedTime",
+        Beans.get(ProjectPlanningTimeService.class).computePlannedTime(projectPlanningTime));
+  }
+
+  public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response) {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setAttr(
+        "displayTimeUnit",
+        "domain",
+        Beans.get(ProjectPlanningTimeService.class)
+            .computeDisplayTimeUnitDomain(projectPlanningTime));
+  }
 }
