@@ -732,16 +732,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice)
             == PriceListRepository.TYPE_PURCHASE;
 
-    Set<TaxLine> taxLineSet =
-        Beans.get(AccountManagementService.class)
-            .getTaxLineSet(
-                appBaseService.getTodayDate(invoice.getCompany()),
-                invoiceLine.getProduct(),
-                invoice.getCompany(),
-                fiscalPosition,
-                isPurchase);
+    replaceTaxLineSet(invoice, invoiceLine, contract, fiscalPosition, isPurchase);
 
-    invoiceLine.setTaxLineSet(taxLineSet);
     invoiceLine.setAccount(replacedAccount);
 
     invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
@@ -755,6 +747,39 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoice.addInvoiceLineListItem(invoiceLine);
 
     return Beans.get(InvoiceLineRepository.class).save(invoiceLine);
+  }
+
+  protected void replaceTaxLineSet(
+      Invoice invoice,
+      InvoiceLine invoiceLine,
+      Contract contract,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(invoiceLine.getTaxLineSet())) {
+      Set<TaxLine> taxLineSet;
+      if (contractYearEndBonusService.isYebContract(contract)) {
+        Product product = contractYearEndBonusService.getYebProduct(contract);
+        taxLineSet =
+            Beans.get(AccountManagementService.class)
+                .getTaxLineSet(
+                    appBaseService.getTodayDate(invoice.getCompany()),
+                    product,
+                    invoice.getCompany(),
+                    fiscalPosition,
+                    isPurchase);
+      } else {
+        taxLineSet =
+            Beans.get(AccountManagementService.class)
+                .getTaxLineSet(
+                    appBaseService.getTodayDate(invoice.getCompany()),
+                    invoiceLine.getProduct(),
+                    invoice.getCompany(),
+                    fiscalPosition,
+                    isPurchase);
+      }
+      invoiceLine.setTaxLineSet(taxLineSet);
+    }
   }
 
   public void copyAnalyticMoveLines(
