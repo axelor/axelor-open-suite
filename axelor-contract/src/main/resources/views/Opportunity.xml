@@ -8,13 +8,15 @@
     <extend target="//item[@name='convertIntoQuotationItem']">
       <insert position="after">
         <item name="createContractMenuItem" title="Generate a contract"
-          action="save,action-contract-group-generate-contract"/>
+          action="save,action-contract-group-generate-contract"
+          if="__config__.app.isApp('contract')"/>
       </insert>
     </extend>
     <extend target="//panel-related[@name='saleOrderListPanel']">
       <insert position="after">
         <panel-related name="contractListPanel" title="Contracts" field="contractList"
-          grid-view="contract-grid" form-view="contract-form" readonly="true"/>
+          grid-view="contract-grid" form-view="contract-form" readonly="true"
+          if="__config__.app.isApp('contract')"/>
       </insert>
     </extend>
   </form>
