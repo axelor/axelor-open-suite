@@ -54,7 +54,7 @@
         readonlyIf="!sopSet || sopSet.length == 0"/>
       <button name="printBtn" title="Work in progress valuation"
         showIf="actionSelect == 1 &amp;&amp; batchList &amp;&amp; batchList.length &gt; 0"
-        onClick="save,action-method-print-birt"/>
+        onClick="save,action-method-print-template"/>
     </panel>
   </form>
 

@@ -492,7 +492,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           tmp.setFromDate(start);
           ratio =
               durationService.computeRatio(
-                  start, end, contract.getStartDate(), contract.getInvoicePeriodEndDate());
+                  start,
+                  end,
+                  contract.getStartDate(),
+                  contract.getInvoicePeriodEndDate(),
+                  contract.getCurrentContractVersion().getInvoicingDuration());
         }
         tmp.setQty(
             tmp.getQty()
@@ -810,6 +814,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
     }
 
+    contract.setContractTypeSelect(template.getContractTypeSelect());
     contract.setCompany(template.getCompany());
     contract.setCurrency(template.getCurrency());
     contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());

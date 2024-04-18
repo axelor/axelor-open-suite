@@ -34,12 +34,12 @@
               <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
             </viewer>
           </field>
-          <field name="budgetDistributionSumAmount" colSpan="6"
+          <field name="budgetRemainingAmountToAllocate" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true" x-scale="$companyCurrencyScale" x-currency="$currencySymbol">
-            <viewer depends="budgetDistributionSumAmount">
+            <viewer depends="budgetRemainingAmountToAllocate">
               <![CDATA[
-				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
               ]]>
             </viewer>
           </field>
@@ -61,7 +61,7 @@
 
   <action-group name="action-group-budget-invoice-line-budget-distribution-onchange">
     <action name="action-method-invoice-line-budget-distribution-validate-amount"/>
-    <action name="action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+    <action name="action-invoice-line-method-compute-budget-remaining-amount"/>
   </action-group>
 
   <action-group name="action-budget-group-account-invoice-line-product-onchange">
@@ -74,10 +74,9 @@
     <action name="action-reset-budget-method"/>
   </action-group>
 
-  <action-method
-    name="action-invoice-order-method-compute-budget-distribution-sum-amount">
+  <action-method name="action-invoice-line-method-compute-budget-remaining-amount">
     <call class="com.axelor.apps.budget.web.InvoiceLineController"
-      method="computeBudgetDistributionSumAmount"/>
+      method="computeBudgetRemainingAmountToAllocate"/>
   </action-method>
 
   <action-method name="action-method-invoice-line-budget-distribution-validate-amount">

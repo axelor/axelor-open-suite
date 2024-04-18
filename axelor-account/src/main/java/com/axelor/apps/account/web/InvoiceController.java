@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -39,6 +40,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -403,10 +405,17 @@ public class InvoiceController {
               ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
               : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
 
+      String viewTitle = AccountExceptionMessage.INVOICE_GENERATED_INVOICE_REFUND;
+      if (refund.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND) {
+        viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
+      } else if (refund.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+        viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
+      }
+
       response.setView(
-          ActionView.define(
-                  String.format(
-                      I18n.get(AccountExceptionMessage.INVOICE_4), invoice.getInvoiceId()))
+          ActionView.define(String.format(I18n.get(viewTitle), invoice.getInvoiceId()))
               .model(Invoice.class.getName())
               .add("form", "invoice-form")
               .add("grid", "invoice-grid")
@@ -669,7 +678,16 @@ public class InvoiceController {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      String domain = Beans.get(InvoiceService.class).createAdvancePaymentInvoiceSetDomain(invoice);
+      String domain = "";
+      if (invoice.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+        domain =
+            Beans.get(AdvancePaymentRefundService.class)
+                .createAdvancePaymentInvoiceSetDomain(invoice);
+      } else {
+        domain = Beans.get(InvoiceService.class).createAdvancePaymentInvoiceSetDomain(invoice);
+      }
+
       response.setAttr("advancePaymentInvoiceSet", "domain", domain);
 
     } catch (Exception e) {
@@ -690,9 +708,17 @@ public class InvoiceController {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      Set<Invoice> invoices =
-          Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice);
-      response.setValue("advancePaymentInvoiceSet", invoices);
+      if (invoice.getOperationSubTypeSelect()
+          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+        Set<Invoice> invoices =
+            Beans.get(AdvancePaymentRefundService.class).getDefaultAdvancePaymentInvoice(invoice);
+        response.setValue("advancePaymentInvoiceSet", invoices);
+      } else {
+        Set<Invoice> invoices =
+            Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice);
+        response.setValue("advancePaymentInvoiceSet", invoices);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1144,10 +1170,10 @@ public class InvoiceController {
   public void updateInvoiceTermPaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      InvoiceTermToolService invoiceTermToolService = Beans.get(InvoiceTermToolService.class);
 
       invoice.getInvoiceTermList().stream()
-          .filter(invoiceTermService::isNotReadonly)
+          .filter(invoiceTermToolService::isNotReadonly)
           .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
 
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
@@ -1162,7 +1188,7 @@ public class InvoiceController {
 
       if (Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms()
           || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || !Beans.get(InvoiceTermService.class)
+          || !Beans.get(InvoiceTermToolService.class)
               .isNotReadonly(invoice.getInvoiceTermList().get(0))) {
         return;
       }
@@ -1290,6 +1316,43 @@ public class InvoiceController {
           .setInvoiceLineTaxScale(invoice, attrsMap, "invoiceLineTaxList.");
 
       response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageRefundFields(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    if (invoice == null) {
+      return;
+    }
+
+    String createRefundBtn = "";
+    String refundInvoiceList = "";
+    String originalInvoice = "";
+
+    try {
+      switch (invoice.getOperationSubTypeSelect()) {
+        case InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND:
+          createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_INVOICE;
+          refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_INVOICE;
+          originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_INVOICE;
+          break;
+        case InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND:
+          createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND;
+          refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_ADVANCE_PAYMENT_REFUND;
+          originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND;
+          break;
+        default:
+          createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_CLASSIC_REFUND;
+          refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_CLASSIC_REFUND;
+          originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_CLASSIC_REFUND;
+      }
+
+      response.setAttr("createRefundBtn", "title", I18n.get(createRefundBtn));
+      response.setAttr("refundInvoiceList", "title", I18n.get(refundInvoiceList));
+      response.setAttr("originalInvoice", "title", I18n.get(originalInvoice));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

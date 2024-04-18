@@ -71,24 +71,25 @@
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
-      validIf="$qtyValid != false"/>
+      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" colSpan="3"
       readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
       onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
-      hidden="true"/>
+      hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
       onChange="action-sale-order-line-group-discount-type-select-onchange"/>
     <field name="discountAmount" colSpan="3"
       readonlyIf="$nonNegotiable || discountTypeSelect == 0"
       validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
-      onChange="action-sale-order-line-group-discount-amount-onchange"/>
-    <field name="taxLine" canEdit="false" colSpan="6"
+      onChange="action-sale-order-line-group-discount-amount-onchange"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="taxLineSet" canEdit="false" colSpan="6"
       readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
       onChange="action-group-sale-saleorderline-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-      form-view="tax-line-form"/>
-    <field name="inTaxPrice"/>
+      form-view="tax-line-form" widget="TagSelect"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="description"/>
@@ -98,6 +99,8 @@
     </field>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -415,8 +418,7 @@
         title="Business Project" readonlyIf="$isReadOnly !== false"
         if-module="axelor-business-project">
         <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-attrs-domain-project"
-          onChange="action-sale-order-line-record-progress" form-view="project-form"
+          onSelect="action-sale-order-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
         <field name="toInvoice" colSpan="3"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
@@ -522,8 +524,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
         title="Project/Task" if-module="axelor-business-project">
         <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-attrs-domain-project"
-          onChange="action-sale-order-line-record-progress" form-view="project-form"
+          onSelect="action-sale-order-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
         <field name="progress" readonly="true" widget="SelectProgress"/>
       </panel>
@@ -609,7 +610,7 @@
     <action name="action-sale-order-line-attrs-scale-and-precision"/>
     <action name="action-sale-order-line-record-new"/>
     <action name="action-sale-order-line-record-project"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"/>
     <action name="action-sale-order-line-attrs-set-company-currency"/>
     <action name="action-sale-order-line-attrs-set-currency"/>
     <action name="action-sale-order-attrs-hide-ati"/>
@@ -633,7 +634,7 @@
     <action name="action-sale-order-line-attrs-title-project"/>
     <action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     <action name="action-sale-order-line-attrs-scale-and-precision"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"/>
     <action name="action-sale-order-line-attrs-reserved-qty-visibility"/>
     <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     <action name="action-sale-order-line-attrs-set-company-currency"/>
@@ -653,7 +654,7 @@
   <action-group name="action-group-sale-saleorderline-product-onchange">
     <action name="action-sale-order-line-method-get-product-information"/>
     <action name="action-sale-order-line-method-compute"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"/>
     <action name="action-sale-order-line-get-production-information"/>
     <action name="action-sale-order-line-method-supplier-partner-default"
       if="__config__.app.isApp('supplychain')"/>
@@ -761,11 +762,6 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4"/>
   </action-record>
 
-  <action-record name="action-sale-order-line-record-progress"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="progress" expr="eval: project?.progress"/>
-  </action-record>
-
   <action-record name="action-sale-order-line-record-complementary-products-to-handle"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="isComplementaryProductsUnhandledYet" expr="eval: true"
@@ -867,7 +863,8 @@
 
   <!-- ACTION ATTRS -->
 
-  <action-attrs name="action-sale-order-line-attrs-hide-bill-of-material"
+  <action-attrs
+    name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
     if-module="axelor-production">
     <attribute name="hidden" for="billOfMaterial"
       expr="eval: (saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4) || product?.productTypeSelect == 'service' "
@@ -875,11 +872,22 @@
     <attribute name="hidden" for="customizeBOMBtn"
       expr="eval: (saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4) || product?.productTypeSelect == 'service' "
       if="__config__.app.isApp('production')"/>
+    <attribute name="hidden" for="prodProcess"
+      expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "
+      if="__config__.app.isApp('production')"/>
+    <attribute name="hidden" for="customizeProdProcessBtn"
+      expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "
+      if="__config__.app.isApp('production')"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-bill-of-material-domain">
     <attribute name="domain" for="billOfMaterial"
       expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = true &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-prod-process-domain">
+    <attribute name="domain" for="prodProcess"
+      expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-discountamount-title">
@@ -1050,6 +1058,7 @@
   </action-attrs>
 
   <action-group name="action-sale-order-line-group-editable-onnew">
+    <action name="action-sale-order-line-record-init-dummy-fields"/>
     <action name="action-sale-order-line-attrs-onnew-focus"/>
     <action name="action-sale-order-line-record-non-negotiable"/>
   </action-group>

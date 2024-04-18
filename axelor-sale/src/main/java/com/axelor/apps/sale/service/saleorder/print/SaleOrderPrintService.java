@@ -19,7 +19,7 @@
 package com.axelor.apps.sale.service.saleorder.print;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.sale.db.SaleOrder;
 import java.io.File;
 import java.io.IOException;
@@ -37,11 +37,17 @@ public interface SaleOrderPrintService {
    */
   String printSaleOrders(List<Long> ids) throws IOException, AxelorException;
 
-  ReportSettings prepareReportSettings(SaleOrder saleOrder, boolean proforma, String format)
+  File print(
+      SaleOrder saleOrder,
+      boolean proforma,
+      PrintingTemplate saleOrderPrintTemplate,
+      boolean toAttach)
       throws AxelorException;
 
-  File print(SaleOrder saleOrder, boolean proforma, String format) throws AxelorException;
+  File print(SaleOrder saleOrder, boolean proforma, PrintingTemplate saleOrderPrintTemplate)
+      throws AxelorException;
 
-  String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)
+  String printSaleOrder(
+      SaleOrder saleOrder, boolean proforma, PrintingTemplate saleOrderPrintTemplate)
       throws AxelorException, IOException;
 }

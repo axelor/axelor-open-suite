@@ -38,6 +38,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
@@ -73,6 +74,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected SaleOrderStockService saleOrderStockService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -82,11 +84,13 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderRepository saleOrderRepo,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
+      SaleConfigService saleConfigService,
+      SaleOrderLineCreateService saleOrderLineCreateService,
       AppSupplychainService appSupplychainService,
       SaleOrderStockService saleOrderStockService,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      SaleConfigService saleConfigService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService) {
     super(
         saleOrderLineService,
         appBaseService,
@@ -94,11 +98,13 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderRepo,
         saleOrderComputeService,
         saleOrderMarginService,
-        saleConfigService);
+        saleConfigService,
+        saleOrderLineCreateService);
     this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.accountingSituationSupplychainService = accountingSituationSupplychainService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -251,6 +257,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
+    accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 
   public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder) {

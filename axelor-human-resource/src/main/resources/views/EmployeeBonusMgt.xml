@@ -15,9 +15,6 @@
 
   <form name="employee-bonus-mgt-form" title="Employee bonus management"
     model="com.axelor.apps.hr.db.EmployeeBonusMgt" onNew="action-employee-bonus-mgt-record-default">
-    <toolbar>
-      <button name="printBtn" title="Print" onClick="save,action-method-print-birt"/>
-    </toolbar>
     <panel name="mainPanel" readonlyIf="statusSelect == 2">
       <field name="company" canEdit="false" required="true"/>
       <field name="employeeBonusType" required="true" form-view="employee-bonus-type-form"

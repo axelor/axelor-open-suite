@@ -330,6 +330,10 @@
     <option value="2">Formula</option>
   </selection>
 
+  <selection name="unit.conversion.entity.select">
+    <option value="0">All</option>
+  </selection>
+
   <selection name="i.calendar.user.status.select">
     <option value="1">Yes</option>
     <option value="2">No</option>
@@ -413,6 +417,11 @@
   <selection name="base.printing.template.type.select">
     <option value="1">File</option>
     <option value="2">Birt</option>
+  </selection>
+
+  <selection name="base.printing.template.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Active</option>
   </selection>
 
   <selection name="base.blocking.select">
@@ -768,6 +777,10 @@
   <selection name="base.site.type.select">
     <option value="1">Internal</option>
     <option value="2">External</option>
+  </selection>
+
+  <selection name="base.pricing.type.select">
+    <option value="Default">Default</option>
   </selection>
 
 </object-views>

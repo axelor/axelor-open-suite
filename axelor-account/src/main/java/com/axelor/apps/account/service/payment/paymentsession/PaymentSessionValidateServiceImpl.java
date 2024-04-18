@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -104,6 +105,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
   protected int counter = 0;
 
   @Inject
@@ -129,7 +131,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
-      FinancialDiscountService financialDiscountService) {
+      FinancialDiscountService financialDiscountService,
+      InvoiceTermFilterService invoiceTermFilterService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -152,6 +155,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   @Override
@@ -181,7 +185,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
           return 1;
         } else if (invoiceTerm.getIsPaid()
             || invoiceTerm.getPaymentAmount().compareTo(invoiceTerm.getAmountRemaining()) > 0
-            || !invoiceTermService.isNotAwaitingPayment(invoiceTerm)) {
+            || !invoiceTermFilterService.isNotAwaitingPayment(invoiceTerm)) {
           return 2;
         }
       }
@@ -308,7 +312,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTerm.getIsSelectedOnPaymentSession()
         && !invoiceTerm.getIsPaid()
         && invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getPaymentAmount()) >= 0
-        && invoiceTermService.isNotAwaitingPayment(invoiceTerm);
+        && invoiceTermFilterService.isNotAwaitingPayment(invoiceTerm);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1129,9 +1133,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
 
-    invoiceTermService.updateInvoiceTermsAmounts(
+    invoicePaymentCreateService.updateInvoiceTermsAmounts(
         invoiceTerm, pair.getRight(), invoiceTermsReconcile, pairMove, paymentSession, false);
-    invoiceTermService.updateInvoiceTermsAmounts(
+    invoicePaymentCreateService.updateInvoiceTermsAmounts(
         pairInvoiceTerm,
         pair.getRight(),
         invoiceTermsReconcile,

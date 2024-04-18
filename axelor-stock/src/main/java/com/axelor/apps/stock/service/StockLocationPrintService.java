@@ -19,24 +19,26 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.db.PrintingTemplate;
 import java.time.LocalDateTime;
 
 public interface StockLocationPrintService {
 
-  ReportSettings print(
+  String print(
       Integer printType,
-      String exportType,
+      PrintingTemplate stockLocationPrintTemplate,
       String financialDataDateTimeString,
       Boolean withoutDetailsByStockLocation,
       Long... stockLocationIds)
       throws AxelorException;
 
-  ReportSettings print(
+  String print(
       Integer printType,
-      String exportType,
+      PrintingTemplate stockLocationPrintTemplate,
       LocalDateTime financialDataDateTime,
       Boolean withoutDetailsByStockLocation,
       Long... stockLocationIds)
       throws AxelorException;
+
+  String getOutputFileName(Long[] stockLocationIds);
 }

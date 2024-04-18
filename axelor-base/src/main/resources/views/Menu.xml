@@ -125,7 +125,9 @@
     model="com.axelor.apps.base.db.UnitConversion">
     <view type="grid" name="unit-conversion-grid"/>
     <view type="form" name="unit-conversion-form"/>
+    <domain>self.entitySelect = 0</domain>
     <context name="_duplicateFinderFields" expr="startUnit;endUnit"/>
+    <context name="_entitySelect" expr="eval: 0"/>
   </action-view>
 
   <menuitem name="admin-root-general-year" parent="admin-root-general" title="Years"
@@ -1118,6 +1120,8 @@
     model="com.axelor.apps.base.db.Pricing">
     <view type="grid" name="pricing-grid"/>
     <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: PricingRepository.PRICING_TYPE_SELECT_DEFAULT"/>
   </action-view>
 
   <menuitem title="Pricing classification rules" name="base-pricing-classification-rule"

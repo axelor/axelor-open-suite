@@ -24,8 +24,8 @@
     <toolbar>
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="save,action-send-by-email-with-template"/>
-      <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
+      <button name="printBtn" title="Product sheet" icon="fa-print"
+        onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="name" required="true" showTitle="false" css="label-bold bold"
@@ -110,8 +110,8 @@
     <toolbar>
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="save,action-send-by-email-with-template"/>
-      <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
+      <button name="printBtn" title="Product sheet" icon="fa-print"
+        onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="productTypeSelect" required="true" hidden="true"/>

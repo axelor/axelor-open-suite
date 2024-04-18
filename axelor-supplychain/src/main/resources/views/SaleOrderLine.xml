@@ -69,7 +69,7 @@
       </insert>
 
       <insert position="after">
-        <panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration">
+        <panel name="settingsPanel" title="Configuration">
           <field name="saleSupplySelect"
             onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
           <field name="standardDelay" hidden="true"
@@ -79,13 +79,6 @@
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
             onSelect="action-sale-order-line-method-supplier-partner-domain"
             form-view="partner-form" grid-view="partner-grid"/>
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
-            if-module="axelor-production" form-view="bill-of-material-form"
-            grid-view="bill-of-material-grid" if="__config__.app.isApp('production')" canEdit="true"/>
-          <button name="customizeBOMBtn" title="Customize BOM"
-            onClick="action-production-method-customize-bill-of-material"
-            if-module="axelor-production" if="__config__.app.isApp('production')"/>
         </panel>
       </insert>
     </extend>
@@ -122,13 +115,6 @@
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
             onSelect="action-sale-order-line-method-supplier-partner-domain"
             form-view="partner-form" grid-view="partner-grid"/>
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
-            if-module="axelor-production" form-view="bill-of-material-form"
-            grid-view="bill-of-material-grid" if="__config__.app.isApp('production')"/>
-          <button name="customizeBOMBtn" title="Customize BOM"
-            onClick="action-production-method-customize-bill-of-material"
-            if-module="axelor-production" if="__config__.app.isApp('production')"/>
         </panel>
       </insert>
     </extend>
@@ -160,6 +146,47 @@
     </panel>
   </form>
 
+  <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
+    model="com.axelor.apps.sale.db.SaleOrderLine" edit-icon="false" groupBy="saleOrder"
+    canNew="false" canEdit="false">
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.clientPartner" width="200"/>
+    <field name="project" if-module="axelor-business-project"
+      if="__config__.app.isApp('business-project')" width="150"/>
+    <field name="saleOrder.company" width="200"/>
+    <field name="saleOrder.tradingName"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="product.code"/>
+    <field name="productName"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unit"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" title="Unit price"/>
+    <field name="saleOrder.currency"/>
+    <field name="exTaxTotal" x-scale="saleOrder.currency.numberOfDecimals" title="Total price"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
+    <field name="amountInvoiced" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="saleOrder.stockLocation"/>
+    <field name="deliveryState"/>
+    <field name="estimatedShippingDate"/>
+    <field name="estimatedDeliveryDate"/>
+    <field name="deliveredQty" x-scale="$nbDecimalDigitForQty"/>
+    <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
+  </grid>
+
+  <form title="Sale order line to invoice" name="sale-order-line-to-invoice-form"
+    model="com.axelor.apps.sale.db.SaleOrderLine" canEdit="false" canNew="false" canArchive="false"
+    canDelete="false" canCopy="false">
+    <panel name="saleOrderInfoPanel" readonly="true">
+      <field name="saleOrder"/>
+      <field name="saleOrder.clientPartner"/>
+      <field name="saleOrder.company"/>
+      <field name="saleOrder.tradingName"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+      <field name="saleOrder.currency"/>
+    </panel>
+    <panel-include view="sale-order-line-form"/>
+  </form>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-view-sale-order-line-allocated-qty-wizard"
@@ -182,6 +209,12 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-open-sale-order-view" title="Open sale order"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-form"/>
+    <context name="_showRecord" expr="eval: __this__.saleOrder.id"/>
   </action-view>
 
   <!-- ACTION GROUP -->
@@ -234,7 +267,7 @@
       if="__config__.app.isApp('production')"/>
     <action name="action-sale-order-line-method-supplier-partner-default"
       if="__config__.app.isApp('production')"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
       if="__config__.app.isApp('production')"/>
     <action name="action-sale-order-line-method-check-stock"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
