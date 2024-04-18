@@ -566,6 +566,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected Invoice toPositivePriceInvoice(Invoice invoice) throws AxelorException {
     if (invoice.getExTaxTotal().signum() < 0) {
       Invoice refund = transformToRefund(invoice);
+      invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
       invoiceRepository.remove(invoice);
       return refund;
     } else {
