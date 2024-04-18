@@ -1,0 +1,2 @@
+title: "Mass stock move invoicing: fixed an issue preventing to invoice customer returns."
+module: "axelor-supplychain"

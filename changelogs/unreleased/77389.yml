@@ -1,2 +1,2 @@
-title: "Mass stock move invoicing: fix wrong partner when the invoiced partner is not null"
+title: "Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead."
 module: "axelor-supplychain"
