@@ -110,6 +110,7 @@ import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetServi
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorder.SaleOrderGroupBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
@@ -123,6 +124,7 @@ import com.axelor.apps.businessproject.service.WorkflowVentilationProjectService
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.SaleOrderGroupSupplychainServiceImpl;
 
 public class BudgetModule extends AxelorModule {
 
@@ -188,5 +190,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetGroupService.class).to(BudgetGroupServiceImpl.class);
     bind(GlobalBudgetToolsService.class).to(GlobalBudgetToolsServiceImpl.class);
     bind(BudgetComputeHiddenDateService.class).to(BudgetComputeHiddenDateServiceImpl.class);
+    bind(SaleOrderGroupSupplychainServiceImpl.class).to(SaleOrderGroupBudgetServiceImpl.class);
   }
 }
