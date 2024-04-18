@@ -95,4 +95,11 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
     }
     return null;
   }
+
+  @Override
+  public Boolean getManageMultiBudget() {
+    return Optional.ofNullable(this.getAppBudget())
+        .map(AppBudget::getManageMultiBudget)
+        .orElse(false);
+  }
 }

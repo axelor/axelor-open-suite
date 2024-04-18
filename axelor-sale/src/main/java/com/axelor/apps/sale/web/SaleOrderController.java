@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -736,5 +737,13 @@ public class SaleOrderController {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
     }
     response.setReload(true);
+  }
+
+  @ErrorException
+  public void onSave(ActionRequest request, ActionResponse response) throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    Beans.get(SaleOrderGroupService.class).onSave(saleOrder);
+    response.setValues(saleOrder);
   }
 }

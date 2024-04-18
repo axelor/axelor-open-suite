@@ -18,10 +18,15 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.google.inject.persist.Transactional;
 import java.util.Map;
 
 public interface SaleOrderGroupService {
 
   Map<String, Map<String, Object>> onChangeSaleOrderLine(SaleOrder saleOrder);
+
+  @Transactional(rollbackOn = Exception.class)
+  void onSave(SaleOrder saleOrder) throws AxelorException;
 }

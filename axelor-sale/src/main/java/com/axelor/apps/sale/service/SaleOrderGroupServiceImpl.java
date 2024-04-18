@@ -18,7 +18,10 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
 import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -28,10 +31,17 @@ import java.util.Map;
 public class SaleOrderGroupServiceImpl implements SaleOrderGroupService {
 
   protected SaleOrderAttrsService saleOrderAttrsService;
+  protected SaleOrderRepository saleOrderRepository;
+  protected SaleOrderLineTreeService saleOrderLineTreeService;
 
   @Inject
-  public SaleOrderGroupServiceImpl(SaleOrderAttrsService saleOrderAttrsService) {
+  public SaleOrderGroupServiceImpl(
+      SaleOrderAttrsService saleOrderAttrsService,
+      SaleOrderRepository saleOrderRepository,
+      SaleOrderLineTreeService saleOrderLineTreeService) {
     this.saleOrderAttrsService = saleOrderAttrsService;
+    this.saleOrderRepository = saleOrderRepository;
+    this.saleOrderLineTreeService = saleOrderLineTreeService;
   }
 
   @Override
@@ -45,5 +55,11 @@ public class SaleOrderGroupServiceImpl implements SaleOrderGroupService {
     }
 
     return attrsMap;
+  }
+
+  @Override
+  public void onSave(SaleOrder saleOrder) throws AxelorException {
+
+    saleOrderLineTreeService.saveHasSubElement(saleOrder);
   }
 }

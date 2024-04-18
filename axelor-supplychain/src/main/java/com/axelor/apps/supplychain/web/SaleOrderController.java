@@ -42,7 +42,6 @@ import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesServic
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
-import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
@@ -310,27 +309,6 @@ public class SaleOrderController {
     Beans.get(SaleOrderSupplychainService.class).updateAmountToBeSpreadOverTheTimetable(saleOrder);
     response.setValue(
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
-  }
-
-  /**
-   * Called from sale order on save. Call {@link
-   * SaleOrderServiceSupplychainImpl#checkModifiedConfirmedOrder(SaleOrder, SaleOrder)}.
-   *
-   * @param request
-   * @param response
-   */
-  public void onSave(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
-      if (saleOrderView.getOrderBeingEdited()) {
-        SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderView.getId());
-        Beans.get(SaleOrderServiceSupplychainImpl.class)
-            .checkModifiedConfirmedOrder(saleOrder, saleOrderView);
-        response.setValues(saleOrderView);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
   }
 
   /**

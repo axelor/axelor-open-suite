@@ -234,8 +234,7 @@
 
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
-    onNew="action-group-sale-saleorder-onnew"
-    onSave="action-sale-order-line-tree-method-update-hasTree">
+    onNew="action-group-sale-saleorder-onnew" onSave="action-sale-order-group-onsave">
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print"
         hideIf="clientPartner == null" readonlyIf="!id"
@@ -1239,6 +1238,11 @@
   <action-attrs name="action-sale-order-reports-wizard-proforma-invoice-attrs">
     <attribute name="value" for="$format" expr="pdf" if="reportType == 2"/>
   </action-attrs>
+
+  <action-group name="action-sale-order-group-onsave">
+    <action name="action-sale-order-method-onsave"/>
+    <action name="save"/>
+  </action-group>
 
   <action-group name="action-sale-order-group-report-print">
     <action name="action-sale-order-method-show-sale-order"
@@ -2264,6 +2268,10 @@
 
   <action-method name="action-sale-order-method-update-sale-order-line-list">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateSaleOrderLineList"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-onsave">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="onSave"/>
   </action-method>
 
   <action-group name="action-sale-order-group-compute-pricing-scale-btn">

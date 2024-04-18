@@ -1,0 +1,3 @@
+---
+title: "SaleOrder : Fix save function to improve performance"
+module: axelor-sale

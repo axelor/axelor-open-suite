@@ -8,7 +8,6 @@
     <extend target="/">
       <attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
-      <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
     <extend target="//field[@name='versionNumber']">
       <insert position="after">
@@ -25,7 +24,7 @@
   <form name="sale-order-form-partner" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
     onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
-    onLoad="action-group-supplychain-saleorder-onload" onSave="action-supplychain-saleorder-onsave">
+    onLoad="action-group-supplychain-saleorder-onload" onSave="action-sale-order-method-onsave">
 
     <panel-include view="sale-order-form" from="axelor-sale"/>
   </form>
@@ -103,8 +102,7 @@
 
   <action-group id="action-group-supplychain-sale-order-validate-changes"
     name="action-group-sale-order-validate-changes">
-    <action name="action-supplychain-saleorder-onsave"/>
-    <action name="save"/>
+    <action name="action-sale-order-group-onsave"/>
     <action name="action-method-sale-order-validate-changes"/>
     <action name="action-sale-order-method-notify-stock-move-created"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
@@ -146,10 +144,6 @@
 
   <action-method name="action-supplychain-sale-order-method-get-stock-location">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
-  </action-method>
-
-  <action-method name="action-supplychain-saleorder-onsave">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave"/>
   </action-method>
 
   <action-method name="action-supplychain-sale-order-method-generate-invoice">

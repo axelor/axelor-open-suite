@@ -231,23 +231,28 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
             || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
             || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED)) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
-          saleOrderLine.getBudgetDistributionList().stream()
-              .forEach(
-                  budgetDistribution -> {
-                    LocalDate computeDate =
-                        saleOrder.getOrderDate() != null
-                            ? saleOrder.getOrderDate()
-                            : saleOrder.getCreationDate();
-                    budgetDistribution.setImputationDate(computeDate);
-                    Budget budget = budgetDistribution.getBudget();
-                    budgetService.updateLines(budget);
-                    budgetService.computeTotalAmountCommitted(budget);
-                    budgetService.computeTotalAmountPaid(budget);
-                    budgetService.computeToBeCommittedAmount(budget);
-                  });
-        }
+        updateBudgetLinesFromSaleOrderLine(saleOrder, saleOrderLine);
       }
+    }
+  }
+
+  @Override
+  public void updateBudgetLinesFromSaleOrderLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    if (CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
+      saleOrderLine.getBudgetDistributionList().stream()
+          .forEach(
+              budgetDistribution -> {
+                LocalDate computeDate =
+                    saleOrder.getOrderDate() != null
+                        ? saleOrder.getOrderDate()
+                        : saleOrder.getCreationDate();
+                budgetDistribution.setImputationDate(computeDate);
+                Budget budget = budgetDistribution.getBudget();
+                budgetService.updateLines(budget);
+                budgetService.computeTotalAmountCommitted(budget);
+                budgetService.computeTotalAmountPaid(budget);
+                budgetService.computeToBeCommittedAmount(budget);
+              });
     }
   }
 

@@ -28,4 +28,6 @@ public interface AppBudgetService extends AppBaseService {
   Boolean isMissingBudgetCheckError();
 
   Boolean isBudgetExceedValuesError(boolean isOrder);
+
+  Boolean getManageMultiBudget();
 }

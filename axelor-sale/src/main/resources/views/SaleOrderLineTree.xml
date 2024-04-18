@@ -263,9 +263,4 @@
     <attribute name="scale" for="unitPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
-
-  <action-method name="action-sale-order-line-tree-method-update-hasTree">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineTreeController"
-      method="saveHasSubElement"/>
-  </action-method>
 </object-views>
