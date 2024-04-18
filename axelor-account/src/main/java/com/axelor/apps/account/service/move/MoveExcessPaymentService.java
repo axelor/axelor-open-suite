@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.inject.Beans;
@@ -33,6 +32,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -48,7 +48,6 @@ public class MoveExcessPaymentService {
   @Inject
   public MoveExcessPaymentService(
       MoveLineRepository moveLineRepository, MoveToolService moveToolService) {
-
     this.moveLineRepository = moveLineRepository;
     this.moveToolService = moveToolService;
   }
@@ -65,13 +64,12 @@ public class MoveExcessPaymentService {
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
 
     // get advance payments
-    List<MoveLine> advancePaymentMoveLines =
-        Beans.get(InvoiceService.class).getMoveLinesFromAdvancePayments(invoice);
+    List<MoveLine> excessPaymentMoveLines = new ArrayList<>();
 
     MoveLine moveLine = getOrignalInvoiceMoveLine(invoice);
 
     if (moveLine != null) {
-      advancePaymentMoveLines.add(moveLine);
+      excessPaymentMoveLines.add(moveLine);
     }
 
     if (accountConfig.getAutoReconcileOnInvoice()) {
@@ -90,12 +88,12 @@ public class MoveExcessPaymentService {
               .fetch();
 
       log.debug("Number of overpayment to attribute to the invoice : {}", creditMoveLines.size());
-      advancePaymentMoveLines.addAll(creditMoveLines);
+      excessPaymentMoveLines.addAll(creditMoveLines);
     }
     // remove duplicates
-    advancePaymentMoveLines =
-        advancePaymentMoveLines.stream().distinct().collect(Collectors.toList());
-    return advancePaymentMoveLines;
+    excessPaymentMoveLines =
+        excessPaymentMoveLines.stream().distinct().collect(Collectors.toList());
+    return excessPaymentMoveLines;
   }
 
   protected MoveLine getOrignalInvoiceMoveLine(Invoice invoice) {

@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -34,7 +33,6 @@ import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -42,7 +40,6 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -58,13 +55,10 @@ import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
@@ -83,7 +77,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      MoveToolService moveToolService,
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
@@ -103,7 +96,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         partnerService,
         invoiceLineService,
         accountConfigService,
-        moveToolService,
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
@@ -185,43 +177,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     Set<Invoice> advancePaymentInvoices = new HashSet<>(query.fetch());
     filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
     return advancePaymentInvoices;
-  }
-
-  @Override
-  public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.getMoveLinesFromSOAdvancePayments(invoice);
-    }
-
-    // search sale order in the invoice
-    SaleOrder saleOrder = invoice.getSaleOrder();
-    // search sale order in invoice lines
-    List<SaleOrder> saleOrderList =
-        invoice.getInvoiceLineList().stream()
-            .map(invoiceLine -> invoice.getSaleOrder())
-            .collect(Collectors.toList());
-
-    saleOrderList.add(saleOrder);
-
-    // remove null value and duplicates
-    saleOrderList =
-        saleOrderList.stream().filter(Objects::nonNull).distinct().collect(Collectors.toList());
-
-    if (saleOrderList.isEmpty()) {
-      return new ArrayList<>();
-    } else {
-      // get move lines from sale order
-      return saleOrderList.stream()
-          .flatMap(saleOrder1 -> saleOrder1.getAdvancePaymentList().stream())
-          .filter(Objects::nonNull)
-          .distinct()
-          .map(AdvancePayment::getMove)
-          .filter(Objects::nonNull)
-          .distinct()
-          .flatMap(move -> moveToolService.getToReconcileCreditMoveLines(move).stream())
-          .collect(Collectors.toList());
-    }
   }
 
   @Override

@@ -322,6 +322,8 @@ import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineTaxToolService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxToolServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryAttrsService;
@@ -908,5 +910,7 @@ public class AccountModule extends AxelorModule {
     bind(FiscalPositionRepository.class).to(FiscalPositionManagementRepository.class);
 
     bind(InvoiceLineTaxToolService.class).to(InvoiceLineTaxToolServiceImpl.class);
+
+    bind(MoveLineTaxToolService.class).to(MoveLineTaxToolServiceImpl.class);
   }
 }

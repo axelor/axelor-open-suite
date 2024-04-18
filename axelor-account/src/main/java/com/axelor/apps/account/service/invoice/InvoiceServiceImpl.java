@@ -45,8 +45,6 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
-import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.BankDetails;
@@ -109,7 +107,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
-  protected MoveToolService moveToolService;
   protected AppBaseService appBaseService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
@@ -128,7 +125,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      MoveToolService moveToolService,
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
@@ -145,7 +141,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
-    this.moveToolService = moveToolService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
@@ -824,49 +819,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
     return true;
-  }
-
-  @Override
-  public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
-    if (appAccountService.getAppAccount().getManageAdvancePaymentInvoice()) {
-      return getMoveLinesFromInvoiceAdvancePayments(invoice);
-    } else {
-      return getMoveLinesFromSOAdvancePayments(invoice);
-    }
-  }
-
-  @Override
-  public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice)
-      throws AxelorException {
-    List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
-
-    Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
-    List<InvoicePayment> invoicePayments;
-    if (advancePayments == null || advancePayments.isEmpty()) {
-      return advancePaymentMoveLines;
-    }
-    InvoicePaymentToolService invoicePaymentToolService =
-        Beans.get(InvoicePaymentToolService.class);
-    for (Invoice advancePayment : advancePayments) {
-      invoicePayments = advancePayment.getInvoicePaymentList();
-      // Since purchase order can have advance payment we check if it is a purchase or not
-      // If it is a purchase, we must add debit lines from payment and not credit line.
-      if (moveToolService.isDebitCustomer(invoice, true)) {
-        List<MoveLine> creditMoveLines =
-            invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, true);
-        advancePaymentMoveLines.addAll(creditMoveLines);
-      } else {
-        List<MoveLine> debitMoveLines =
-            invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, false);
-        advancePaymentMoveLines.addAll(debitMoveLines);
-      }
-    }
-    return advancePaymentMoveLines;
-  }
-
-  @Override
-  public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
-    return new ArrayList<>();
   }
 
   protected String writeGeneralFilterForAdvancePayment() {
