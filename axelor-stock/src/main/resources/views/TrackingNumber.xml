@@ -59,7 +59,7 @@
       <field name="createdBy" colSpan="6"/>
       <field name="createdOn" colSpan="6"/>
       <field name="originStockMoveLine"/>
-      <field name="originInventory"/>
+      <field name="originInventoryLine"/>
     </panel>
   </form>
 
@@ -87,7 +87,7 @@
       <field name="createdBy" colSpan="6"/>
       <field name="createdOn" colSpan="6"/>
       <field name="originStockMoveLine"/>
-      <field name="originInventory"/>
+      <field name="originInventoryLine"/>
     </panel>
   </form>
 

@@ -480,7 +480,7 @@
 "Operations for custom work non return","Opérations en vue d'un travail à façon :biens non destinés à être réexpédiés vers état membre initial",,
 "Operations for custom work return","Opérations en vue d'un travail à façon :biens réexpédiés vers l'état membre d'expédition initial",,
 "Origin","Origine",,
-"Origin inventory","Inventaire d'origine",,
+"Origin inventory line","Ligne d'inventaire d'origine",,
 "Origin stock move","Mouvement de stock d'origine",,
 "Origin stock move line","Ligne de mouvement de stock d'origine",,
 "Other expeditions","Autres expéditions",,

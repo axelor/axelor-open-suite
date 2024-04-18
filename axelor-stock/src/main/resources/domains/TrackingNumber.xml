@@ -30,8 +30,8 @@
 
     <many-to-one name="originStockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"
       title="Origin stock move line"/>
-    <many-to-one name="originInventory" ref="com.axelor.apps.stock.db.Inventory"
-      title="Origin inventory"/>
+    <many-to-one name="originInventoryLine" ref="com.axelor.apps.stock.db.InventoryLine"
+      title="Origin inventory line"/>
 
     <unique-constraint columns="product,trackingNumberSeq"/>
 
