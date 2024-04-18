@@ -488,56 +488,21 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       Integer supplyMethodForManufOrdersSelect =
           manufProposalNeedMrpLineType.getSupplyMethodForManufacturingOrdersSelect();
 
-      if (prodProcess.getIsConsProOnOperation()
+      if (prodProcess != null
+          && prodProcess.getIsConsProOnOperation()
           && (supplyMethodForManufOrdersSelect != null
               && supplyMethodForManufOrdersSelect
                   == MrpLineTypeRepository.SUPPLY_METHOD_FOR_MANUF_ORDERS_ON_OPERATIONS_START)) {
 
-        Map<Integer, LocalDate> minMaturityDateByPriority = new HashMap<>();
-        LocalDate nextPriorityCalculatedMaturityDate = maturityDate;
-        LocalDate calculatedMaturityDate;
-        Integer nextPriority;
-
-        for (ProdProcessLine prodProcessLine :
-            prodProcess.getProdProcessLineList().stream()
-                .sorted(Comparator.comparingInt(ProdProcessLine::getPriority).reversed())
-                .collect(Collectors.toList())) {
-
-          int priority = prodProcessLine.getPriority();
-          nextPriority = prodProcessLineService.getNextPriority(prodProcess, priority);
-          if (nextPriority != null && minMaturityDateByPriority.get(nextPriority) != null) {
-            nextPriorityCalculatedMaturityDate = minMaturityDateByPriority.get(nextPriority);
-          }
-
-          long durationInDays =
-              TimeUnit.SECONDS.toDays(
-                  prodProcessLineService.computeEntireCycleDuration(
-                      null, prodProcessLine, reorderQty));
-          calculatedMaturityDate = nextPriorityCalculatedMaturityDate.minusDays(durationInDays);
-
-          LocalDate minMaturityDateOfPriority = minMaturityDateByPriority.get(priority);
-          if (minMaturityDateOfPriority == null
-              || minMaturityDateOfPriority.isAfter(calculatedMaturityDate)) {
-            minMaturityDateByPriority.put(priority, calculatedMaturityDate);
-          }
-
-          for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
-            Product toConsumeProduct = prodProduct.getProduct();
-            if (this.isMrpProduct(toConsumeProduct)) {
-              super.createProposalMrpLine(
-                  mrp,
-                  toConsumeProduct,
-                  manufProposalNeedMrpLineType,
-                  reorderQty
-                      .multiply(prodProduct.getQty())
-                      .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
-                  stockLocation,
-                  calculatedMaturityDate,
-                  mrpLineOriginList,
-                  relatedToSelectName);
-            }
-          }
-        }
+        computeMaturityDateWithOperations(
+            mrp,
+            reorderQty,
+            stockLocation,
+            maturityDate,
+            mrpLineOriginList,
+            relatedToSelectName,
+            prodProcess,
+            manufProposalNeedMrpLineType);
       } else {
         for (BillOfMaterialLine billOfMaterial :
             defaultBillOfMaterial.getBillOfMaterialLineList()) {
@@ -557,6 +522,62 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                 mrpLineOriginList,
                 relatedToSelectName);
           }
+        }
+      }
+    }
+  }
+
+  protected void computeMaturityDateWithOperations(
+      Mrp mrp,
+      BigDecimal reorderQty,
+      StockLocation stockLocation,
+      LocalDate maturityDate,
+      List<MrpLineOrigin> mrpLineOriginList,
+      String relatedToSelectName,
+      ProdProcess prodProcess,
+      MrpLineType manufProposalNeedMrpLineType)
+      throws AxelorException {
+    Map<Integer, LocalDate> minMaturityDateByPriority = new HashMap<>();
+    LocalDate nextPriorityCalculatedMaturityDate = maturityDate;
+    LocalDate calculatedMaturityDate;
+    Integer nextPriority;
+
+    for (ProdProcessLine prodProcessLine :
+        prodProcess.getProdProcessLineList().stream()
+            .sorted(Comparator.comparingInt(ProdProcessLine::getPriority).reversed())
+            .collect(Collectors.toList())) {
+
+      int priority = prodProcessLine.getPriority();
+      nextPriority = prodProcessLineService.getNextPriority(prodProcess, priority);
+      if (nextPriority != null && minMaturityDateByPriority.get(nextPriority) != null) {
+        nextPriorityCalculatedMaturityDate = minMaturityDateByPriority.get(nextPriority);
+      }
+
+      long durationInDays =
+          TimeUnit.SECONDS.toDays(
+              prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty));
+      calculatedMaturityDate = nextPriorityCalculatedMaturityDate.minusDays(durationInDays);
+
+      LocalDate minMaturityDateOfPriority = minMaturityDateByPriority.get(priority);
+      if (minMaturityDateOfPriority == null
+          || minMaturityDateOfPriority.isAfter(calculatedMaturityDate)) {
+        minMaturityDateByPriority.put(priority, calculatedMaturityDate);
+      }
+
+      for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
+        Product toConsumeProduct = prodProduct.getProduct();
+        if (this.isMrpProduct(toConsumeProduct)) {
+          super.createProposalMrpLine(
+              mrp,
+              toConsumeProduct,
+              manufProposalNeedMrpLineType,
+              reorderQty
+                  .multiply(prodProduct.getQty())
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+              stockLocation,
+              calculatedMaturityDate,
+              mrpLineOriginList,
+              relatedToSelectName);
         }
       }
     }
