@@ -29,8 +29,7 @@
   </grid>
 
   <form name="tracking-number-form" title="Tracking number"
-    model="com.axelor.apps.stock.db.TrackingNumber"
-    onNew="action-tracking-number-group-on-new"
+    model="com.axelor.apps.stock.db.TrackingNumber" onNew="action-tracking-number-group-on-new"
     onLoad="action-tracking-number-attrs-set-scale,action-tracking-number-attrs-set-product-readonly">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
@@ -150,10 +149,12 @@
   </action-record>
 
   <action-record name="action-tracking-number-record-set-origin"
-                 model="com.axelor.apps.stock.db.TrackingNumber">
+    model="com.axelor.apps.stock.db.TrackingNumber">
     <field name="originMoveTypeSelect" expr="eval: 1" if="__parent__ == null"/>
-    <field name="originMoveTypeSelect" expr="eval: 2" if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
-    <field name="originInventory" expr="eval: __parent__?.__parent__" if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originMoveTypeSelect" expr="eval: 2"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originInventoryLine" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
   </action-record>
 
 
