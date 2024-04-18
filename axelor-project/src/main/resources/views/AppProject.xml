@@ -24,6 +24,13 @@
       </panel>
     </panel>
 
+    <panel name="projectStatusMgtPanel" title="Project status management">
+      <field name="completedProjectStatus" grid-view="project-status-grid"
+        form-view="project-status-form" domain="self.isCompleted = true"/>
+      <field name="canceledProjectStatus" grid-view="project-status-grid"
+        form-view="project-status-form" domain="self.isCompleted = true"/>
+    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
