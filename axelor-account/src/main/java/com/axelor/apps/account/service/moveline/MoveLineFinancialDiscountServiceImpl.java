@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -39,6 +40,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -406,36 +408,46 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     moveLine.setAmountRemaining(signedAmount);
   }
 
-  @Override
   public Map<Tax, Account> getAccountTaxMap(Move move) {
-    Map<Tax, Account> vatSystemMap = new HashMap<>();
+    Map<Tax, Account> accountTaxMap = new HashMap<>();
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
-        vatSystemMap.put(moveLine.getTaxLine().getTax(), moveLine.getAccount());
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        Tax tax = Optional.of(moveLine).map(MoveLine::getTaxLine).map(TaxLine::getTax).orElse(null);
+
+        if (AccountTypeRepository.TYPE_TAX.equals(
+                Optional.of(moveLine)
+                    .map(MoveLine::getAccount)
+                    .map(Account::getAccountType)
+                    .map(AccountType::getTechnicalTypeSelect)
+                    .orElse(""))
+            && tax != null) {
+          accountTaxMap.put(tax, moveLine.getAccount());
+        }
       }
     }
 
-    return vatSystemMap;
+    return accountTaxMap;
   }
 
-  @Override
   public Map<Tax, Integer> getVatSystemTaxMap(Move move) {
     Map<Tax, Integer> vatSystemMap = new HashMap<>();
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
-        vatSystemMap.put(moveLine.getTaxLine().getTax(), moveLine.getVatSystemSelect());
-      } else if (moveLine.getTaxLine() != null) {
-        vatSystemMap.put(moveLine.getTaxLine().getTax(), MoveLineRepository.VAT_SYSTEM_DEFAULT);
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        Tax tax = Optional.of(moveLine).map(MoveLine::getTaxLine).map(TaxLine::getTax).orElse(null);
+
+        if (AccountTypeRepository.TYPE_TAX.equals(
+                Optional.of(moveLine)
+                    .map(MoveLine::getAccount)
+                    .map(Account::getAccountType)
+                    .map(AccountType::getTechnicalTypeSelect)
+                    .orElse(""))
+            && tax != null) {
+          vatSystemMap.put(tax, moveLine.getVatSystemSelect());
+        } else if (tax != null) {
+          vatSystemMap.put(tax, MoveLineRepository.VAT_SYSTEM_DEFAULT);
+        }
       }
     }
 

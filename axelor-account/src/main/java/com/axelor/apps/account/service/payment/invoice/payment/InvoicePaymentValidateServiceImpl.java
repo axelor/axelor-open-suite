@@ -220,6 +220,16 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               invoice.getDueDate().format(dateService.getDateFormat()));
     }
 
+    if (this.isFinancialDiscount(invoicePayment)
+        && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      throw new AxelorException(
+          invoicePayment,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              AccountExceptionMessage
+                  .FINANCIAL_DISCOUNT_NOT_COMPATIBLE_WITH_ADVANCE_PAYMENT_INVOICE));
+    }
+
     Account customerAccount;
 
     Journal journal =
