@@ -6,7 +6,7 @@
   <form name="tracking-number-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber" id="supplychain-tracking-number-form"
     extension="true">
-    <extend target="//panel[@name='originPanel']//field[@name='originInventory']">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventoryLine']">
       <insert position="after">
         <field name="originPurchaseOrderLine"/>
         <field name="originSaleOrderLine"/>
@@ -18,7 +18,7 @@
   <form name="tracking-number-stock-move-line-form" title="Tracking number"
     id="supplychain-tracking-number-stock-move-line-form"
     model="com.axelor.apps.stock.db.TrackingNumber" extension="true">
-    <extend target="//panel[@name='originPanel']//field[@name='originInventory']">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventoryLine']">
       <insert position="after">
         <field name="originPurchaseOrderLine"/>
         <field name="originSaleOrderLine"/>
