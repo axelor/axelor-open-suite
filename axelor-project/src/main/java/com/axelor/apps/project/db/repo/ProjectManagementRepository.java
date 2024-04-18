@@ -117,12 +117,12 @@ public class ProjectManagementRepository extends ProjectRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
-      final String canceledProjectStatusId = "$canceledProjectStatusId";
+      final String canceledProjectStatusIdStr = "$canceledProjectStatusId";
 
       AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
 
       if (appProject.getCanceledProjectStatus() != null) {
-        json.put(canceledProjectStatusId, appProject.getCanceledProjectStatus().getId());
+        json.put(canceledProjectStatusIdStr, appProject.getCanceledProjectStatus().getId());
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
