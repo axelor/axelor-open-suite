@@ -1,0 +1,2 @@
+title: "Mass stock move invoicing: fix wrong partner when the invoiced partner is not null"
+module: "axelor-supplychain"
