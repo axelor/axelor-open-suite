@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -34,6 +35,7 @@ import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class ProjectManagementRepository extends ProjectRepository {
@@ -110,5 +112,21 @@ public class ProjectManagementRepository extends ProjectRepository {
     Project project = super.copy(entity, false);
     project.setCode(null);
     return project;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      final String canceledProjectStatusIdStr = "$canceledProjectStatusId";
+
+      AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+
+      if (appProject.getCanceledProjectStatus() != null) {
+        json.put(canceledProjectStatusIdStr, appProject.getCanceledProjectStatus().getId());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return super.populate(json, context);
   }
 }
