@@ -114,7 +114,8 @@
             <field name="quantity" colSpan="3"
               onChange="action-project-task-group-qty-onchange" readonlyIf="saleOrderLine"/>
             <field name="unitPrice" colSpan="3"
-              onChange="action-project-task-group-unit-price-onchange" readonlyIf="saleOrderLine"/>
+              onChange="action-project-task-group-unit-price-onchange"
+              readonlyIf="saleOrderLine || frameworkCustomerContract"/>
             <field name="unitCost" colSpan="3" readonlyIf="saleOrderLine"/>
             <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
               form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"/>
