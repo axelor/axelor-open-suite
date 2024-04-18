@@ -30,7 +30,7 @@
 
   <form name="tracking-number-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber"
-    onNew="action-tracking-number-attrs-set-scale,action-tracking-number-record-product"
+    onNew="action-tracking-number-group-on-new"
     onLoad="action-tracking-number-attrs-set-scale,action-tracking-number-attrs-set-product-readonly">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
@@ -147,6 +147,18 @@
     model="com.axelor.apps.stock.db.TrackingNumber">
     <field name="product" expr="eval: __parent__?.product"/>
   </action-record>
+
+  <action-record name="action-tracking-number-record-set-default"
+                 model="com.axelor.apps.stock.db.TrackingNumber">
+    <field name="originMoveTypeSelect" expr="eval: 1"/>
+  </action-record>
+
+
+  <action-group name="action-tracking-number-group-on-new">
+    <action name="action-tracking-number-attrs-set-scale"/>
+    <action name="action-tracking-number-record-product"/>
+    <action name="action-tracking-number-record-set-default"/>
+  </action-group>
 
   <action-attrs name="action-tracking-number-attrs-product-stock-move-line">
     <attribute for="product" name="value" expr="eval: __parent__.product"
