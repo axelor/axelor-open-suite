@@ -199,15 +199,22 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException {
     this.manageForeignExchangeGap(reconcile);
-    return this.confirmReconcileWithoutForeignExchange(
+    return this.confirmReconcileWithAccountCheck(
         reconcile, updateInvoicePayments, updateInvoiceTerms);
   }
 
-  protected Reconcile confirmReconcileWithoutForeignExchange(
+  protected Reconcile confirmReconcileWithAccountCheck(
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException {
     checkDifferentAccounts(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
+    return this.confirmReconcileWithoutAccountCheck(
+        reconcile, updateInvoicePayments, updateInvoiceTerms);
+  }
+
+  protected Reconcile confirmReconcileWithoutAccountCheck(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
+      throws AxelorException {
     reconcile = initReconcileConfirmation(reconcile, updateInvoicePayments, updateInvoiceTerms);
 
     if (updateInvoicePayments) {
@@ -244,7 +251,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             I18n.get(BaseExceptionMessage.EXCEPTION));
       } else {
         Reconcile newReconcile = createReconcileForDifferentAccounts(reconcile);
-        confirmReconcile(newReconcile, updateInvoicePayments, updateInvoiceTerms);
+        confirmReconcileWithAccountCheck(newReconcile, updateInvoicePayments, updateInvoiceTerms);
       }
     }
   }
@@ -733,8 +740,9 @@ public class ReconcileServiceImpl implements ReconcileService {
                 foreignExchangeGapMove.getMoveLineList().get(0),
                 foreignExchangeGapMove.getMoveLineList().get(1));
         if (newReconcile != null) {
+          reconcile.setForeignExchangeMove(foreignExchangeGapMove);
           newReconcile.setForeignExchangeMove(foreignExchangeGapMove);
-          this.confirmReconcileWithoutForeignExchange(newReconcile, false, false);
+          this.confirmReconcileWithoutAccountCheck(newReconcile, false, false);
           invoicePaymentForeignExchangeCreateService.createForeignExchangeInvoicePayment(
               newReconcile, reconcile);
         }
