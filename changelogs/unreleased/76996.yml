@@ -1,2 +1,2 @@
-title: "Invoice : Remove possibility to add financial discount in advance payment invoice"
+title: "Invoice: improved UX to prevent the use of financial discount on advance payment invoice."
 module: axelor-account
