@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
@@ -74,4 +75,6 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   Map<String, Object> processRequestToDisplayFinancialReporting(Long id) throws AxelorException;
 
   boolean isTimeUnitValid(Unit unit);
+
+  Optional<BigDecimal> getUnitPriceFromProjectTask(ProjectTask projectTask) throws AxelorException;
 }

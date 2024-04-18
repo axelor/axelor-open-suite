@@ -41,6 +41,8 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -77,6 +79,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
@@ -183,7 +186,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask updateDiscount(ProjectTask projectTask) {
     PriceList priceList = projectTask.getProject().getPriceList();
-    if (priceList == null) {
+    Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
+    if (frameworkCustomerContract != null || priceList == null) {
       this.emptyDiscounts(projectTask);
       return projectTask;
     }
@@ -704,5 +708,52 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
     return Objects.equals(unit, appBusinessProject.getDaysUnit())
         || Objects.equals(unit, appBusinessProject.getHoursUnit());
+  }
+
+  /**
+   * get unit price if framework contract and product are set on task
+   *
+   * @param projectTask
+   * @return
+   * @throws AxelorException
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Optional<BigDecimal> getUnitPriceFromProjectTask(ProjectTask projectTask)
+      throws AxelorException {
+    Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
+    Product product = projectTask.getProduct();
+    if (product == null) {
+      return Optional.empty();
+    }
+
+    if (frameworkCustomerContract == null) {
+      return Optional.ofNullable(
+          (BigDecimal)
+              productCompanyService.get(
+                  product, "salePrice", projectTask.getProject().getCompany()));
+    }
+
+    List<ContractLine> contractLines =
+        frameworkCustomerContract.getCurrentContractVersion().getContractLineList().stream()
+            .filter(contractLine -> Objects.equals(product, contractLine.getProduct()))
+            .collect(Collectors.toList());
+
+    if (contractLines.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              BusinessProjectExceptionMessage.PROJECT_TASK_FRAMEWORK_CONTRACT_PRODUCT_NOT_FOUND),
+          projectTask.getName());
+    }
+    if (contractLines.size() > 1) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              BusinessProjectExceptionMessage.PROJECT_TASK_FRAMEWORK_CONTRACT_PRODUCT_NB_ERROR),
+          projectTask.getName());
+    }
+
+    return Optional.ofNullable(contractLines.get(0).getPrice());
   }
 }

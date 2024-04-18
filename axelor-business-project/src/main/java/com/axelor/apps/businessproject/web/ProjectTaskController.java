@@ -36,6 +36,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -190,5 +191,14 @@ public class ProjectTaskController {
           .setProjectAndProjectTask(purchaseOrderId, projectTask.getProject(), projectTask);
       response.setCanClose(true);
     }
+  }
+
+  public void getProductUnitPrice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Optional<BigDecimal> unitPriceFromProjectTask =
+        Beans.get(ProjectTaskBusinessProjectService.class).getUnitPriceFromProjectTask(projectTask);
+    unitPriceFromProjectTask.ifPresent(bigDecimal -> response.setValue("unitPrice", bigDecimal));
   }
 }
