@@ -414,6 +414,14 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Override
   public BigDecimal computePlannedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
+    if (appProjectService.getAppProject().getIsSelectionOnDisplayPlannedTime()) {
+      return computePlannedTimeFromDisplayRestricted(projectPlanningTime);
+    }
+    return computePlannedTimeFromDisplay(projectPlanningTime);
+  }
+
+  protected BigDecimal computePlannedTimeFromDisplay(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
     if (projectPlanningTime.getDisplayTimeUnit() == null
         || projectPlanningTime.getTimeUnit() == null
         || projectPlanningTime.getDisplayPlannedTime() == null) {
@@ -424,6 +432,22 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         projectPlanningTime.getTimeUnit(),
         projectPlanningTime.getDisplayPlannedTime(),
         projectPlanningTime.getDisplayPlannedTime().scale(),
+        projectPlanningTime.getProject());
+  }
+
+  protected BigDecimal computePlannedTimeFromDisplayRestricted(
+      ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    if (projectPlanningTime.getDisplayTimeUnit() == null
+        || projectPlanningTime.getTimeUnit() == null
+        || projectPlanningTime.getDisplayPlannedTimeRestricted() == null
+        || projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime() == null) {
+      return BigDecimal.ZERO;
+    }
+    return unitConversionForProjectService.convert(
+        projectPlanningTime.getDisplayTimeUnit(),
+        projectPlanningTime.getTimeUnit(),
+        projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime(),
+        projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime().scale(),
         projectPlanningTime.getProject());
   }
 
@@ -446,5 +470,12 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
             .map(UnitConversion::getStartUnit)
             .collect(Collectors.toList()));
     return "self.id IN (" + StringHelper.getIdListString(units) + ")";
+  }
+
+  @Override
+  public String computeDisplayPlannedTimeRestrictedDomain(ProjectPlanningTime projectPlanningTime) {
+    return "self.id IN ("
+        + StringHelper.getIdListString(appProjectService.getAppProject().getPlannedTimeValueList())
+        + ")";
   }
 }
