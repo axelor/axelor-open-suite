@@ -179,7 +179,7 @@
 
   <grid name="sale-order-line-to-invoice-popup-grid" title="Lines to invoice" edit-icon="false"
     model="com.axelor.apps.sale.db.SaleOrderLine" editable="true">
-    <field name="saleOrder"/>
+    <field name="saleOrder" readonly="true"/>
     <field name="product.code" width="120"/>
     <field name="productName" readonly="true"/>
     <field name="qty" readonly="true" aggregate="sum"/>
