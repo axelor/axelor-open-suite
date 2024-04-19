@@ -1,3 +1,26 @@
+## [7.1.20] (2024-04-19)
+
+### Fixes
+#### Account
+
+* Payment voucher: fixed required message at on new and fixed invoice refresh at confirm.
+* Invoice: fixed report when invoice is linked to more than one stock move.
+* Accounting report: fixed 'Fees declaration supporting file' report displaying records that should not appear.
+* Financial Discount: fixed french translations for 'discount'.
+
+#### Human Resource
+
+* Expense: fixed expense accounting moves generation when expense line dates are different and tax amount is zero.
+
+#### Sale
+
+* Sale order: removed french translation from english file.
+
+#### Supply Chain
+
+* Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead.
+* Mass stock move invoicing: fixed an issue preventing to invoice customer returns.
+
 ## [7.1.19] (2024-04-04)
 
 ### Fixes
@@ -1020,6 +1043,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.20]: https://github.com/axelor/axelor-open-suite/compare/v7.1.19...v7.1.20
 [7.1.19]: https://github.com/axelor/axelor-open-suite/compare/v7.1.18...v7.1.19
 [7.1.18]: https://github.com/axelor/axelor-open-suite/compare/v7.1.17...v7.1.18
 [7.1.17]: https://github.com/axelor/axelor-open-suite/compare/v7.1.16...v7.1.17
