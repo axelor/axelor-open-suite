@@ -65,9 +65,10 @@
       <panel name="trackingNumberParentsPanel" title="Related tracking numbers">
         <panel-dashlet action="action-tracking-number-view-show-origin-parents"
           colSpan="12"/>
-        <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
         <panel-related field="parentTrackingNumberSet"
-          form-view="tracking-number-form" grid-view="tracking-number-grid" colSpan="12"/>
+          form-view="tracking-number-form" grid-view="tracking-number-grid" colSpan="12"
+          title="Tracking number's direct parents"/>
+        <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
       </panel>
     </panel-tabs>
 
@@ -105,9 +106,9 @@
       <panel name="trackingNumberParentsPanel" title="Related tracking numbers">
         <panel-dashlet action="action-tracking-number-view-show-origin-parents"
           colSpan="12"/>
-        <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
         <panel-related field="parentTrackingNumberSet"
           form-view="tracking-number-form" grid-view="tracking-number-grid" colSpan="12"/>
+        <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
       </panel>
     </panel-tabs>
   </form>
