@@ -935,6 +935,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     if (contractTemplate != null) {
       contract.setAdditionalBenefitContractLineList(
           contractTemplate1.getAdditionalBenefitContractLineList());
+      contract.setContractTypeSelect(contractTemplate1.getContractTypeSelect());
     }
 
     contractRepository.save(contract);
