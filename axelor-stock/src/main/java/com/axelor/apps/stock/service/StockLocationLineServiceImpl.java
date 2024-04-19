@@ -524,17 +524,18 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  public List<StockLocationLine> getDetailLocationLines(Product product, TrackingNumber trackingNumber) {
+  public List<StockLocationLine> getDetailLocationLines(
+      Product product, TrackingNumber trackingNumber) {
     return stockLocationLineRepo
-            .all()
-            .filter(
-                    "self.product.id = :_productId "
-                            + "AND self.trackingNumber.id = :_trackingNumberId "
-                            + "AND self.detailsStockLocation.typeSelect = :internalType")
-            .bind("_productId", product.getId())
-            .bind("_trackingNumberId", trackingNumber.getId())
-            .bind("internalType", StockLocationRepository.TYPE_INTERNAL)
-            .fetch();
+        .all()
+        .filter(
+            "self.product.id = :_productId "
+                + "AND self.trackingNumber.id = :_trackingNumberId "
+                + "AND self.detailsStockLocation.typeSelect = :internalType")
+        .bind("_productId", product.getId())
+        .bind("_trackingNumberId", trackingNumber.getId())
+        .bind("internalType", StockLocationRepository.TYPE_INTERNAL)
+        .fetch();
   }
 
   @Override
@@ -614,12 +615,14 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   @Override
   public BigDecimal getTrackingNumberAvailableQty(TrackingNumber trackingNumber) {
     List<StockLocationLine> detailStockLocationLines =
-            getDetailLocationLines(trackingNumber.getProduct(), trackingNumber);
+        getDetailLocationLines(trackingNumber.getProduct(), trackingNumber);
 
     BigDecimal availableQty = BigDecimal.ZERO;
 
     if (detailStockLocationLines != null) {
-      availableQty = detailStockLocationLines.stream().map(StockLocationLine::getCurrentQty)
+      availableQty =
+          detailStockLocationLines.stream()
+              .map(StockLocationLine::getCurrentQty)
               .filter(Objects::nonNull)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
