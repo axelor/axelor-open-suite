@@ -307,6 +307,8 @@ public class PaymentServiceImpl implements PaymentService {
             payVoucherElementToPay.getMoveLine().getPaymentScheduleLine());
 
         payVoucherElementToPay.setMoveLineGenerated(creditMoveLine);
+      } else {
+        // manageAvancePaymentInvoiceTaxMoveLines();
       }
 
       moveLineNo2++;
@@ -446,6 +448,7 @@ public class PaymentServiceImpl implements PaymentService {
               }
 
               BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining().abs());
+              // manageAvancePaymentInvoiceTaxMoveLines()
 
               // Gestion du passage en 580
               if (i == 0) {

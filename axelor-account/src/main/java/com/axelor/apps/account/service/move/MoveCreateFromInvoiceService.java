@@ -62,6 +62,10 @@ public interface MoveCreateFromInvoiceService {
 
   void createMoveUseExcessPayment(Invoice invoice) throws AxelorException;
 
+  Move createMoveUseCredit(
+      Invoice invoice, List<MoveLine> creditMoveLineList, MoveLine invoiceCustomerMoveLine)
+      throws AxelorException;
+
   Move createMoveUseDebit(
       Invoice invoice, List<MoveLine> debitMoveLines, MoveLine invoiceCustomerMoveLine)
       throws AxelorException;

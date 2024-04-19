@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -132,5 +133,18 @@ public interface MoveLineCreateService {
       String accountType,
       Account newAccount,
       boolean percentMoveTemplate)
+      throws AxelorException;
+
+  MoveLine createTaxMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      boolean isDebitInvoice,
+      LocalDate paymentDate,
+      Integer counter,
+      String origin,
+      BigDecimal amount,
+      BigDecimal companyAmount,
+      TaxConfiguration taxConfiguration)
       throws AxelorException;
 }

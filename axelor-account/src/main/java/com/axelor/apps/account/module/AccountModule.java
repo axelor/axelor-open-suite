@@ -175,6 +175,8 @@ import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsServ
 import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundServiceImpl;
+import com.axelor.apps.account.service.invoice.AdvancePaymentToolService;
+import com.axelor.apps.account.service.invoice.AdvancePaymentToolServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
@@ -912,5 +914,7 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceLineTaxToolService.class).to(InvoiceLineTaxToolServiceImpl.class);
 
     bind(MoveLineTaxToolService.class).to(MoveLineTaxToolServiceImpl.class);
+
+    bind(AdvancePaymentToolService.class).to(AdvancePaymentToolServiceImpl.class);
   }
 }

@@ -305,16 +305,9 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   @Override
   public void createMoveUseExcessPayment(Invoice invoice) throws AxelorException {
 
-    Company company = invoice.getCompany();
-    String origin = invoice.getInvoiceId();
-
     // Recuperation of advance payment
     List<MoveLine> creditMoveLineList = moveExcessPaymentService.getAdvancePaymentMoveList(invoice);
     creditMoveLineList.addAll(advancePaymentToolService.getMoveLinesFromAdvancePayments(invoice));
-    Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> amountsByTaxConfigMap =
-        moveLineTaxToolService.getTaxMoveLineMapToRevert(creditMoveLineList);
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     // recuperation of excess payment
     creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice));
@@ -323,11 +316,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       return;
     }
 
-    Partner partner = invoice.getPartner();
     Account account = invoice.getPartnerAccount();
     MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
-
-    Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
     // We directly use excess if invoice and excessPayment share the same account
     if (moveToolService.isSameAccount(creditMoveLineList, account)) {
@@ -337,82 +327,96 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     }
     // Else we create a O.D
     else {
-
-      log.debug(
-          "Creation of a O.D. move specific to the use of overpayment {} (Company : {}, Journal : {})",
-          invoice.getInvoiceId(),
-          company.getName(),
-          journal.getCode());
-
-      Move move =
-          moveCreateService.createMove(
-              journal,
-              company,
-              invoice.getCurrency(),
-              partner,
-              invoice.getInvoiceDate(),
-              invoice.getInvoiceDate(),
-              null,
-              invoice.getFiscalPosition(),
-              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-              MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-              origin,
-              null,
-              invoice.getCompanyBankDetails());
-
-      if (move != null) {
-        BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
-        BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
-
-        BigDecimal moveLineAmount =
-            moveToolService
-                .getTotalCurrencyAmount(creditMoveLineList)
-                .min(invoiceCustomerMoveLine.getCurrencyAmount());
-        LocalDate date = invoice.getInvoiceDate();
-
-        // credit move line creation
-        MoveLine creditMoveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                partner,
-                account,
-                moveLineAmount,
-                amount,
-                currencyService.computeScaledExchangeRate(amount, moveLineAmount),
-                false,
-                date,
-                date,
-                date,
-                1,
-                origin,
-                null);
-        move.getMoveLineList().add(creditMoveLine);
-
-        // Use of excess payment
-        paymentService.useExcessPaymentWithAmountConsolidated(
-            creditMoveLineList,
-            amount,
-            move,
-            2,
-            partner,
-            company,
-            account,
-            invoice.getInvoiceDate(),
-            invoice.getDueDate());
-
-        moveValidateService.accounting(move);
-
-        // Reconciliation creation
-        Reconcile reconcile =
-            reconcileService.createReconcile(
-                invoiceCustomerMoveLine, creditMoveLine, amount, false);
-        if (reconcile != null) {
-          reconcileService.confirmReconcile(reconcile, true, true);
-        }
-      }
+      createMoveUseCredit(invoice, creditMoveLineList, invoiceCustomerMoveLine);
     }
 
     invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
+  }
+
+  @Override
+  public Move createMoveUseCredit(
+      Invoice invoice, List<MoveLine> creditMoveLineList, MoveLine invoiceCustomerMoveLine)
+      throws AxelorException {
+    Company company = invoice.getCompany();
+    Partner partner = invoice.getPartner();
+    Account account = invoice.getPartnerAccount();
+    String origin = invoice.getInvoiceId();
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
+
+    log.debug(
+        "Creation of a O.D. move specific to the use of overpayment {} (Company : {}, Journal : {})",
+        invoice.getInvoiceId(),
+        company.getName(),
+        journal.getCode());
+
+    Move move =
+        moveCreateService.createMove(
+            journal,
+            company,
+            invoice.getCurrency(),
+            partner,
+            invoice.getInvoiceDate(),
+            invoice.getInvoiceDate(),
+            null,
+            invoice.getFiscalPosition(),
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null,
+            invoice.getCompanyBankDetails());
+
+    if (move != null) {
+      BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
+      BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
+
+      BigDecimal moveLineAmount =
+          moveToolService
+              .getTotalCurrencyAmount(creditMoveLineList)
+              .min(invoiceCustomerMoveLine.getCurrencyAmount());
+      LocalDate date = invoice.getInvoiceDate();
+
+      // credit move line creation
+      MoveLine creditMoveLine =
+          moveLineCreateService.createMoveLine(
+              move,
+              partner,
+              account,
+              moveLineAmount,
+              amount,
+              currencyService.computeScaledExchangeRate(amount, moveLineAmount),
+              false,
+              date,
+              date,
+              date,
+              1,
+              origin,
+              null);
+      move.getMoveLineList().add(creditMoveLine);
+
+      // Use of excess payment
+      paymentService.useExcessPaymentWithAmountConsolidated(
+          creditMoveLineList,
+          amount,
+          move,
+          2,
+          partner,
+          company,
+          account,
+          invoice.getInvoiceDate(),
+          invoice.getDueDate());
+
+      moveValidateService.accounting(move);
+
+      // Reconciliation creation
+      Reconcile reconcile =
+          reconcileService.createReconcile(invoiceCustomerMoveLine, creditMoveLine, amount, false);
+      if (reconcile != null) {
+        reconcileService.confirmReconcile(reconcile, true, true);
+      }
+    }
+
+    return move;
   }
 
   @Override
@@ -503,5 +507,37 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
     }
     return oDmove;
+  }
+
+  protected void manageTaxMoveLineCreation(
+      Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> amountsByTaxConfigMap,
+      Move move,
+      Invoice invoice)
+      throws AxelorException {
+    if (ObjectUtils.isEmpty(amountsByTaxConfigMap)) {
+      return;
+    }
+
+    for (Map.Entry<TaxConfiguration, Pair<BigDecimal, BigDecimal>> entry :
+        amountsByTaxConfigMap.entrySet()) {
+      TaxConfiguration taxConfiguration = entry.getKey();
+      Pair<BigDecimal, BigDecimal> amountPair = entry.getValue();
+      if (amountPair.getLeft().compareTo(BigDecimal.ZERO) != 0
+          && amountPair.getRight().compareTo(BigDecimal.ZERO) != 0) {
+        MoveLine taxMoveLine =
+            moveLineCreateService.createTaxMoveLine(
+                move,
+                move.getPartner(),
+                taxConfiguration.getAccount(),
+                amountPair.getLeft().compareTo(BigDecimal.ZERO) > 0,
+                invoice.getInvoiceDate(),
+                move.getMoveLineList().size() + 1,
+                invoice.getInvoiceId(),
+                amountPair.getLeft(),
+                amountPair.getRight(),
+                taxConfiguration);
+        move.addMoveLineListItem(taxMoveLine);
+      }
+    }
   }
 }

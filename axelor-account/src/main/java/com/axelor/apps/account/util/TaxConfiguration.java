@@ -7,20 +7,32 @@ import java.util.Optional;
 
 public class TaxConfiguration {
 
-  protected TaxLine taxline;
+  protected TaxLine taxLine;
   protected Account account;
   protected int vatSystem;
 
-  public TaxConfiguration(TaxLine taxline, Account account, int vatSystem) {
-    this.taxline = taxline;
+  public TaxConfiguration(TaxLine taxLine, Account account, int vatSystem) {
+    this.taxLine = taxLine;
     this.account = account;
     this.vatSystem = vatSystem;
+  }
+
+  public TaxLine getTaxLine() {
+    return taxLine;
+  }
+
+  public Account getAccount() {
+    return account;
+  }
+
+  public int getVatSystem() {
+    return vatSystem;
   }
 
   public int hashCode() {
     long accountId = Optional.ofNullable(this.account).map(Account::getId).orElse(0L) * 10000;
 
-    return (int) (accountId + this.taxline.getId() * 10 + this.vatSystem);
+    return (int) (accountId + this.taxLine.getId() * 10 + this.vatSystem);
   }
 
   public boolean equals(Object o) {
@@ -35,7 +47,7 @@ public class TaxConfiguration {
     TaxConfiguration other = (TaxConfiguration) o;
 
     return this.vatSystem == other.vatSystem
-        && this.taxline.equals(other.taxline)
+        && this.taxLine.equals(other.taxLine)
         && Objects.equals(this.account, other.account);
   }
 }

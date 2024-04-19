@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationSe
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
+import com.axelor.apps.account.service.invoice.AdvancePaymentToolServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
@@ -102,6 +103,7 @@ import com.axelor.apps.supplychain.service.AccountingSituationInitSupplychainSer
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.AdvancePaymentToolSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
@@ -363,5 +365,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderMergingServiceSupplyChain.class).to(SaleOrderMergingServiceSupplyChainImpl.class);
     bind(SaleOrderCreateSupplychainService.class).to(SaleOrderCreateServiceSupplychainImpl.class);
     bind(AdvancePaymentRefundService.class).to(AdvancePaymentRefundServiceImpl.class);
+    bind(AdvancePaymentToolServiceImpl.class).to(AdvancePaymentToolSupplychainServiceImpl.class);
   }
 }

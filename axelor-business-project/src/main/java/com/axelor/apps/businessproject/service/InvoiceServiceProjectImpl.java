@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -60,7 +59,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      MoveToolService moveToolService,
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
@@ -80,7 +78,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         partnerService,
         invoiceLineService,
         accountConfigService,
-        moveToolService,
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
