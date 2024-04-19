@@ -1,4 +1,4 @@
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.partner.registrationnumber;
 
 import com.axelor.apps.base.db.RegistrationNumberTemplate;
 import com.axelor.i18n.I18n;

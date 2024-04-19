@@ -21,16 +21,13 @@ package com.axelor.apps.base.service;
 import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.RegistrationNumberTemplate;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -38,7 +35,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -63,9 +59,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -655,36 +649,6 @@ public class PartnerServiceImpl implements PartnerService {
     return actionName.substring(actionName.lastIndexOf('-') + 1);
   }
 
-  @Override
-  public String getTaxNbrFromRegistrationCode(Partner partner) {
-    String taxNbr = "";
-
-    if (partner.getMainAddress() != null && partner.getMainAddress().getCountry() != null) {
-      String countryCode = partner.getMainAddress().getCountry().getAlpha2Code();
-      String regCode = partner.getRegistrationCode();
-
-      if (regCode != null) {
-        regCode = regCode.replaceAll(" ", "");
-
-        if (regCode.length() == 14) {
-          String siren = regCode.substring(0, 9);
-          String taxKey = getTaxKeyFromSIREN(siren);
-
-          taxNbr = String.format("%s%s%s", countryCode, taxKey, siren);
-        }
-      }
-    }
-
-    return taxNbr;
-  }
-
-  protected String getTaxKeyFromSIREN(String sirenStr) {
-    int siren = Integer.parseInt(sirenStr);
-    int taxKey = Math.floorMod(siren, 97);
-    taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return String.format("%02d", taxKey);
-  }
-
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, true);
   }
@@ -717,104 +681,5 @@ public class PartnerServiceImpl implements PartnerService {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();
-  }
-
-  @Override
-  public String getNicFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String nic = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        nic = regCode.substring(9, 14);
-      }
-    }
-
-    return nic;
-  }
-
-  @Override
-  public String getSirenFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String siren = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        siren = regCode.substring(0, 9);
-      }
-    }
-
-    return siren;
-  }
-
-  @Override
-  public boolean isRegistrationCodeValid(Partner partner) {
-    List<PartnerAddress> addresses = partner.getPartnerAddressList();
-    String registrationCode = partner.getRegistrationCode();
-    if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
-        || Strings.isNullOrEmpty(registrationCode)
-        || CollectionUtils.isEmpty(addresses)
-        || addresses.stream()
-            .filter(
-                address ->
-                    address.getAddress() != null
-                        && address.getAddress().getCountry() != null
-                        && "FR".equals(address.getAddress().getCountry().getAlpha2Code()))
-            .collect(Collectors.toList())
-            .isEmpty()) {
-
-      return true;
-    }
-
-    registrationCode = registrationCode.replace(" ", "");
-    return validateRegistrationCode(registrationCode, partner);
-  }
-
-  protected boolean validateRegistrationCode(String registrationCode, Partner partner) {
-    try {
-      Class<? extends RegistrationNumberValidator> klass =
-          Beans.get(PartnerRegistrationCodeService.class)
-              .getRegistrationNumberValidatorClass(partner);
-      if (klass == null) {
-        return true;
-      }
-      RegistrationNumberTemplate registrationNumberTemplate =
-          Optional.ofNullable(partner)
-              .map(Partner::getMainAddress)
-              .map(Address::getCountry)
-              .map(Country::getRegistrationNumberTemplate)
-              .orElse(null);
-      if (registrationNumberTemplate == null) {
-        return true;
-      }
-      if (registrationNumberTemplate.getIsRequiredForCompanies()
-          && StringUtils.isBlank(registrationCode)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
-      }
-
-      if (registrationCode.length() != registrationNumberTemplate.getRequiredSize()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
-      }
-      boolean isValidRegistrationCode =
-          Beans.get(klass).computeRegistrationCodeValidity(registrationCode);
-      if (!isValidRegistrationCode) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
-      }
-    } catch (AxelorException e) {
-      TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));
-      return false;
-    }
-
-    return true;
   }
 }

@@ -1,11 +1,9 @@
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.partner.registrationnumber;
 
 import com.axelor.apps.base.db.Partner;
 
-public interface PartnerRegistrationCodeService {
+public interface PartnerRegistrationCodeViewService {
   String getRegistrationCodeTitleFromTemplate(Partner partner);
-
-  Class<? extends RegistrationNumberValidator> getRegistrationNumberValidatorClass(Partner partner);
 
   boolean isSirenHidden(Partner partner);
 

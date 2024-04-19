@@ -33,12 +33,13 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.PartnerRegistrationCodeService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.RegistrationNumberValidator;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
+import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
+import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.user.UserService;
@@ -389,20 +390,13 @@ public class PartnerController {
   public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
-      PartnerService partnerService = Beans.get(PartnerService.class);
-      PartnerRegistrationCodeService partnerRegistrationCodeService =
-          Beans.get(PartnerRegistrationCodeService.class);
-      if (!partnerService.isRegistrationCodeValid(partner)) {
-        response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      RegistrationNumberValidator validator =
+          Beans.get(PartnerRegistrationValidatorFactoryService.class)
+              .getRegistrationNumberValidator(partner);
+      if (validator == null) {
         return;
       }
-      Class<? extends RegistrationNumberValidator> klass =
-          partnerRegistrationCodeService.getRegistrationNumberValidatorClass(partner);
-      if (klass == null) {
-        return;
-      }
-      RegistrationNumberValidator registrationNumberValidator = Beans.get(klass);
-      registrationNumberValidator.setRegistrationCodeValidationValues(partner);
+      validator.setRegistrationCodeValidationValues(partner);
       response.setValues(partner);
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -413,14 +407,13 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       partner = Beans.get(PartnerRepository.class).find(partner.getId());
-      PartnerService partnerService = Beans.get(PartnerService.class);
-      PartnerRegistrationCodeService partnerRegistrationCodeService =
-          Beans.get(PartnerRegistrationCodeService.class);
+      PartnerRegistrationCodeViewService partnerRegistrationCodeViewService =
+          Beans.get(PartnerRegistrationCodeViewService.class);
       String registrationCodeTitle =
-          partnerRegistrationCodeService.getRegistrationCodeTitleFromTemplate(partner);
-      boolean isNicHidden = partnerRegistrationCodeService.isNicHidden(partner);
-      boolean isSirenHidden = partnerRegistrationCodeService.isSirenHidden(partner);
-      boolean isTaxNbrHidden = partnerRegistrationCodeService.isTaxNbrHidden(partner);
+          partnerRegistrationCodeViewService.getRegistrationCodeTitleFromTemplate(partner);
+      boolean isNicHidden = partnerRegistrationCodeViewService.isNicHidden(partner);
+      boolean isSirenHidden = partnerRegistrationCodeViewService.isSirenHidden(partner);
+      boolean isTaxNbrHidden = partnerRegistrationCodeViewService.isTaxNbrHidden(partner);
       response.setAttr(
           "registrationCode",
           "title",
@@ -435,10 +428,13 @@ public class PartnerController {
     }
   }
 
-  public void checkRegistrationCode(ActionRequest request, ActionResponse response) {
+  public void checkRegistrationCode(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
     Partner partner = request.getContext().asType(Partner.class);
-    PartnerService partnerService = Beans.get(PartnerService.class);
-    if (!partnerService.isRegistrationCodeValid(partner)) {
+    RegistrationNumberValidator validator =
+        Beans.get(PartnerRegistrationValidatorFactoryService.class)
+            .getRegistrationNumberValidator(partner);
+    if (validator != null && !validator.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
