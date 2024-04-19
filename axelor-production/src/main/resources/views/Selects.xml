@@ -182,4 +182,9 @@
     <option value="3">Validated</option>
   </selection>
 
+  <selection name="stock.tracking.number.origin.move.type.select"
+    id="production.stock.tracking.number.origin.move.type.select">
+    <option value="5">Manufacturing</option>
+  </selection>
+
 </object-views>
