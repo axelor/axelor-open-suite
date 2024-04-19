@@ -5,8 +5,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
 
 public interface ProjectTaskProgressUpdateService {
-  ProjectTask updateChildrenProgress(ProjectTask task, BigDecimal progress, int counter)
-      throws AxelorException;
+  ProjectTask updateChildrenProgress(ProjectTask task, BigDecimal progress) throws AxelorException;
 
-  ProjectTask updateParentsProgress(ProjectTask task, int counter) throws AxelorException;
+  ProjectTask updateParentsProgress(ProjectTask task) throws AxelorException;
 }

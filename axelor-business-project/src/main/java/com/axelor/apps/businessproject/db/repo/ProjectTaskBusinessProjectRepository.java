@@ -44,8 +44,8 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
     try {
       projectTask =
           projectTaskProgressUpdateService.updateChildrenProgress(
-              projectTask, projectTask.getProgress(), 0);
-      projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask, 0);
+              projectTask, projectTask.getProgress());
+      projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);

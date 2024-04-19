@@ -17,7 +17,12 @@ public class ProjectTaskProgressUpdateServiceImpl implements ProjectTaskProgress
   public static final int MAX_ITERATIONS = 100;
 
   @Override
-  public ProjectTask updateChildrenProgress(
+  public ProjectTask updateChildrenProgress(ProjectTask projectTask, BigDecimal progress)
+      throws AxelorException {
+    return updateChildrenProgress(projectTask, progress, 0);
+  }
+
+  protected ProjectTask updateChildrenProgress(
       ProjectTask projectTask, BigDecimal progress, int counter) throws AxelorException {
     checkCounter(counter);
     List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
@@ -32,7 +37,11 @@ public class ProjectTaskProgressUpdateServiceImpl implements ProjectTaskProgress
   }
 
   @Override
-  public ProjectTask updateParentsProgress(ProjectTask projectTask, int counter)
+  public ProjectTask updateParentsProgress(ProjectTask projectTask) throws AxelorException {
+    return updateParentsProgress(projectTask, 0);
+  }
+
+  protected ProjectTask updateParentsProgress(ProjectTask projectTask, int counter)
       throws AxelorException {
     checkCounter(counter);
     ProjectTask parentTask = projectTask.getParentTask();
