@@ -1,3 +1,22 @@
+## [7.0.25] (2024-04-19)
+
+### Fixes
+#### Account
+
+* Payment voucher: fixed required message at on new and fixed invoice refresh at confirm.
+* Invoice: fixed report when invoice is linked to more than one stock move.
+* Accounting report: fixed 'Fees declaration supporting file' report displaying records that should not appear.
+* Financial Discount: fixed french translations for 'discount'.
+
+#### Sale
+
+* Sale order: removed french translation from english file.
+
+#### Supply Chain
+
+* Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead.
+* Mass stock move invoicing: fixed an issue preventing to invoice customer returns.
+
 ## [7.0.24] (2024-04-04)
 
 ### Fixes
@@ -1011,6 +1030,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.25]: https://github.com/axelor/axelor-open-suite/compare/v7.0.24...v7.0.25
 [7.0.24]: https://github.com/axelor/axelor-open-suite/compare/v7.0.23...v7.0.24
 [7.0.23]: https://github.com/axelor/axelor-open-suite/compare/v7.0.22...v7.0.23
 [7.0.22]: https://github.com/axelor/axelor-open-suite/compare/v7.0.21...v7.0.22
