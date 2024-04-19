@@ -84,6 +84,8 @@
       if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
     <field name="originStockMoveLine" expr="eval: __parent__"
       if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine'"/>
+    <field name="originMoveTypeSelect" expr="eval: 1"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.stockMove?.typeSelect == 1)"/>
     <field name="originMoveTypeSelect" expr="eval: 3"
       if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.saleOrderLine != null || __parent__?.stockMove?.typeSelect == 2)"/>
     <field name="originSaleOrderLine" expr="eval: __parent__?.saleOrderLine"

@@ -155,6 +155,10 @@
       if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
     <field name="originInventoryLine" expr="eval: __parent__"
       if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originStockMoveLine" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine'"/>
+    <field name="originMoveTypeSelect" expr="eval: 1"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.stockMove?.typeSelect == 1)"/>
   </action-record>
 
 
