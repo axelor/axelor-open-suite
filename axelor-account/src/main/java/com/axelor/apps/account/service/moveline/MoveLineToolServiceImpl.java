@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -49,12 +50,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
-  protected static final int CURRENCY_RATE_SCALE = 5;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
@@ -289,22 +291,6 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
-  public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException {
-    TaxLine taxLine = null;
-    LocalDate date = moveLine.getDate();
-    if (date == null) {
-      throw new AxelorException(
-          moveLine,
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE));
-    }
-    if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
-      taxLine = taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
-    }
-    return taxLine;
-  }
-
-  @Override
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
     boolean isDebit = moveLine.getDebit().compareTo(moveLine.getCredit()) > 0;
@@ -313,10 +299,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (move.getMoveLineList().size() == 0 || moveLine.getCurrencyRate().signum() == 0) {
       try {
         moveLine.setCurrencyRate(
-            currencyService
-                .getCurrencyConversionRate(
-                    move.getCurrency(), move.getCompanyCurrency(), move.getDate())
-                .setScale(CURRENCY_RATE_SCALE, RoundingMode.HALF_UP));
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompanyCurrency(), move.getDate()));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);
       }
@@ -345,14 +329,13 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   public boolean isEqualTaxMoveLine(
-      Account account, TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml) {
-    return ml.getTaxLine() != null
-        && ml.getTaxLine().equals(taxLine)
+      Account account, Set<TaxLine> taxLineSet, Integer vatSystem, Long id, MoveLine ml) {
+    return CollectionUtils.isNotEmpty(ml.getTaxLineSet())
+        && ml.getTaxLineSet().equals(taxLineSet)
         && Objects.equals(ml.getVatSystemSelect(), vatSystem)
         && !Objects.equals(ml.getId(), id)
         && ml.getAccount().getAccountType() != null
-        && AccountTypeRepository.TYPE_TAX.equals(
-            ml.getAccount().getAccountType().getTechnicalTypeSelect())
+        && this.isMoveLineTaxAccount(ml)
         && ml.getAccount().equals(account);
   }
 
@@ -423,6 +406,21 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (currency != null && companyCurrency != null) {
       moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
       moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
+    }
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
+    return moveLine.getAccount() != null
+        && moveLine.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
+  }
+
+  @Override
+  public void setIsNonDeductibleTax(MoveLine moveLine, Tax tax) {
+    if (tax.getIsNonDeductibleTax()) {
+      moveLine.setIsNonDeductibleTax(true);
     }
   }
 }

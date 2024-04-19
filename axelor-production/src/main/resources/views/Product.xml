@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product"
     onNew="action-product-attrs-scale-and-precision-production"
     onLoad="action-product-attrs-scale-and-precision-production">
     <panel name="mainPanel" colSpan="12">
-      <field name="costSheetGroup" showIf="productSubTypeSelect == 3" canEdit="false"
-        form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
-        domain="self.costTypeSelect = 1"/>
-      <field name="economicManufOrderQty"/>
       <field name="defaultBillOfMaterial" canEdit="false"
         onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form"
         grid-view="bill-of-material-grid"

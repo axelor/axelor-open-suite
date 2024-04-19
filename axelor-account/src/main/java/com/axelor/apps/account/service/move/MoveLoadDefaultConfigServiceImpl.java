@@ -28,13 +28,16 @@ import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigService {
 
@@ -87,28 +90,28 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
   }
 
   @Override
-  public TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount)
+  public Set<TaxLine> getTaxLineSet(Move move, MoveLine moveLine, Account accountingAccount)
       throws AxelorException {
-    Tax tax;
-    TaxLine taxLine;
+
     Partner partner = move.getPartner();
-    if (accountingAccount == null || accountingAccount.getDefaultTax() == null) {
+    if (accountingAccount == null
+        || CollectionUtils.isEmpty(accountingAccount.getDefaultTaxSet())) {
       return null;
     }
 
-    tax = accountingAccount.getDefaultTax();
-    taxLine = taxService.getTaxLine(tax, moveLine.getDate());
+    Set<Tax> taxSet = accountingAccount.getDefaultTaxSet();
+    Set<TaxLine> taxLineSet = taxService.getTaxLineSet(taxSet, moveLine.getDate());
 
     if (!ObjectUtils.isEmpty(partner) && !ObjectUtils.isEmpty(partner.getFiscalPosition())) {
+      moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet(taxLineSet));
       TaxEquiv taxEquiv =
-          fiscalPositionAccountService.getTaxEquiv(partner.getFiscalPosition(), tax);
+          fiscalPositionAccountService.getTaxEquiv(partner.getFiscalPosition(), taxSet);
       if (taxEquiv != null) {
-        moveLine.setTaxLineBeforeReverse(taxLine);
         moveLine.setTaxEquiv(taxEquiv);
-        taxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+        taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), moveLine.getDate());
       }
     }
 
-    return taxLine;
+    return taxLineSet;
   }
 }

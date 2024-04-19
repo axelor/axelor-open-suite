@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -196,6 +196,8 @@
     <option value="1">Classic invoice</option>
     <option value="2">Advance payment invoice</option>
     <option value="3">Balance invoice</option>
+    <option value="10">Standard credit note</option>
+    <option value="11">Advance payment credit note</option>
   </selection>
 
   <selection name='iaccount.account.schedule.export.type.select'>
@@ -347,6 +349,7 @@
     <option value="6">Advance Payment Imputation</option>
     <option value="7">Irrecoverable Debt</option>
     <option value="8">Doubtful credit</option>
+    <option value="9">Credit note imputation</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -716,6 +719,12 @@
   <selection name="account.fixed.asset.split.type.select">
     <option value="1">Quantity</option>
     <option value="2">Amount</option>
+  </selection>
+
+  <selection name="account.fixed.asset.move.generation.exception">
+    <option value="0">None</option>
+    <option value="1">No disposal move</option>
+    <option value="2">No move</option>
   </selection>
 
   <selection name="iaccount.account.batch.bill.of.exchange.type.select">

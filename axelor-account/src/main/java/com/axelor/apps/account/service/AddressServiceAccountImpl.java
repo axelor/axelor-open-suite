@@ -22,11 +22,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
-import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.address.AddressAttrsService;
+import com.axelor.apps.base.service.address.AddressServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
-import com.axelor.text.GroovyTemplates;
 import com.axelor.utils.helpers.address.AddressHelper;
 import com.google.inject.Inject;
 
@@ -37,13 +37,13 @@ public class AddressServiceAccountImpl extends AddressServiceImpl {
 
   @Inject
   public AddressServiceAccountImpl(
-      GroovyTemplates groovyTemplates,
       AddressHelper ads,
       MapService mapService,
       CityRepository cityRepository,
       StreetRepository streetRepository,
-      AppBaseService appBaseService) {
-    super(groovyTemplates, ads, mapService, cityRepository, streetRepository, appBaseService);
+      AppBaseService appBaseService,
+      AddressAttrsService addressAttrsService) {
+    super(ads, mapService, cityRepository, streetRepository, appBaseService, addressAttrsService);
   }
 
   private static boolean checkAddressUsedAccount(Long addressId) {

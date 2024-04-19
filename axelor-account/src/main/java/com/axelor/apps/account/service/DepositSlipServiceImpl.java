@@ -142,13 +142,15 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     deleteExistingPublishDmsFile(depositSlip, filename);
 
     BirtTemplate chequeDepositSlipBirtTemplate = getChequeDepositSlipBirtTemplate(depositSlip);
-    birtTemplateService.generate(
-        chequeDepositSlipBirtTemplate,
-        depositSlip,
-        Map.of("BankDetailsId", bankDetails.getId(), "ChequeDate", chequeDate),
-        filename,
-        true,
-        chequeDepositSlipBirtTemplate.getFormat());
+    birtTemplateService
+        .generate(
+            chequeDepositSlipBirtTemplate,
+            depositSlip,
+            Map.of("BankDetailsId", bankDetails.getId(), "ChequeDate", chequeDate),
+            filename,
+            true,
+            chequeDepositSlipBirtTemplate.getFormat())
+        .generate();
   }
 
   protected void deleteExistingPublishDmsFile(DepositSlip depositSlip, String filename) {
@@ -191,7 +193,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     if (ObjectUtils.isEmpty(chequeDepositSlipBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return chequeDepositSlipBirtTemplate;
   }

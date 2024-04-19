@@ -29,4 +29,6 @@ public interface CompanyService {
    * @param company the company to check for multiple active bank details
    */
   void checkMultiBanks(Company company);
+
+  Company getDefaultCompany(Long companyId);
 }

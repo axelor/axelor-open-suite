@@ -31,6 +31,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SaleOrderLineTreeComputationServiceImpl
@@ -66,12 +67,12 @@ public class SaleOrderLineTreeComputationServiceImpl
 
   protected void setInTaxPrice(SaleOrderLine saleOrderLine) {
     BigDecimal exTaxPrice = saleOrderLine.getPrice();
-    TaxLine taxLine = saleOrderLine.getTaxLine();
+    Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
     BigDecimal intaxPrice =
         Beans.get(TaxService.class)
             .convertUnitPrice(
                 false,
-                taxLine,
+                taxLineSet,
                 exTaxPrice,
                 Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
     saleOrderLine.setInTaxPrice(intaxPrice);

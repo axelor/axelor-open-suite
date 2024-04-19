@@ -21,10 +21,9 @@ package com.axelor.apps.budget.service.move;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -35,16 +34,20 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
+
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public MoveLineCreateBudgetServiceImpl(
@@ -64,7 +67,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       TaxService taxService,
       AppBaseService appBaseService,
       AnalyticLineService analyticLineService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService,
+      BudgetToolsService budgetToolsService) {
     super(
         companyConfigService,
         currencyService,
@@ -82,7 +86,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
         taxService,
         appBaseService,
         analyticLineService,
-        currencyScaleServiceAccount);
+        currencyScaleService);
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -91,13 +96,16 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
     moveLine = super.fillMoveLineWithInvoiceLine(moveLine, invoiceLine, company);
 
     moveLine.setBudget(invoiceLine.getBudget());
-    moveLine.setBudgetDistributionSumAmount(invoiceLine.getBudgetDistributionSumAmount());
 
     if (!CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
         moveLine.addBudgetDistributionListItem(budgetDistribution);
       }
     }
+
+    moveLine.setBudgetRemainingAmountToAllocate(
+        budgetToolsService.getBudgetRemainingAmountToAllocate(
+            moveLine.getBudgetDistributionList(), moveLine.getCredit().max(moveLine.getDebit())));
 
     return moveLine;
   }

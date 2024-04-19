@@ -31,7 +31,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -153,7 +153,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         paymentModeService.getPaymentModeAccount(paymentMode, senderCompany, senderBankDetails);
 
     isMultiDate = bankOrder.getIsMultiDate();
-    isMultiCurrency = bankOrder.getIsMultiCurrency();
+    isMultiCurrency = BankOrderToolService.isMultiCurrency(bankOrder);
 
     isDebit =
         orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER

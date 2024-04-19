@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -35,25 +34,29 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.CurrencyServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Sets;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +72,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected InvoiceLineService invoiceLineService;
   protected AccountManagementAccountService accountManagementService;
   protected ProductCompanyService productCompanyService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
+  protected TaxService taxService;
 
   protected Invoice invoice;
   protected Product product;
@@ -80,7 +84,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected String description;
   protected BigDecimal qty;
   protected Unit unit;
-  protected TaxLine taxLine;
+  protected Set<TaxLine> taxLineSet;
   protected int sequence;
   protected LocalDate today;
   protected boolean isTaxInvoice;
@@ -106,7 +110,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.invoiceLineService = Beans.get(InvoiceLineService.class);
     this.accountManagementService = Beans.get(AccountManagementAccountService.class);
     this.productCompanyService = Beans.get(ProductCompanyService.class);
-    this.currencyScaleServiceAccount = Beans.get(CurrencyScaleServiceAccount.class);
+    this.currencyScaleService = Beans.get(CurrencyScaleService.class);
+    this.taxService = Beans.get(TaxService.class);
   }
 
   protected InvoiceLineGenerator(
@@ -130,8 +135,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
     this.currencyService = new CurrencyServiceImpl(this.appBaseService, this.today);
-    this.currencyScale = this.currencyScaleServiceAccount.getScale(invoice);
-    this.companyCurrencyScale = this.currencyScaleServiceAccount.getCompanyScale(invoice);
+    this.currencyScale = this.currencyScaleService.getScale(invoice);
+    this.companyCurrencyScale = this.currencyScaleService.getCompanyScale(invoice);
   }
 
   protected InvoiceLineGenerator(
@@ -144,7 +149,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       String description,
       BigDecimal qty,
       Unit unit,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       int sequence,
       BigDecimal discountAmount,
       int discountTypeSelect,
@@ -157,11 +162,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.price = price;
     this.inTaxPrice = inTaxPrice;
     this.priceDiscounted = priceDiscounted;
-    this.taxLine = taxLine;
+    this.taxLineSet = taxLineSet;
     this.discountTypeSelect = discountTypeSelect;
     this.discountAmount = discountAmount;
-    this.exTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, exTaxTotal);
-    this.inTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, inTaxTotal);
+    this.exTaxTotal = this.currencyScaleService.getScaledValue(invoice, exTaxTotal);
+    this.inTaxTotal = this.currencyScaleService.getScaledValue(invoice, inTaxTotal);
   }
 
   public Invoice getInvoice() {
@@ -183,7 +188,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     InvoiceLine invoiceLine = new InvoiceLine();
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    Partner partner = invoice.getPartner();
     Company company = invoice.getCompany();
 
     invoiceLine.setInvoice(invoice);
@@ -219,7 +223,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     invoiceLine.setTypeSelect(typeSelect);
 
-    if (taxLine == null) {
+    if (CollectionUtils.isEmpty(taxLineSet)) {
       this.determineTaxLine();
     }
 
@@ -231,11 +235,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       invoiceLine.setTaxEquiv(taxEquiv);
     }
 
-    invoiceLine.setTaxLine(taxLine);
+    invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
 
-    if (taxLine != null) {
-      invoiceLine.setTaxRate(taxLine.getValue());
-      invoiceLine.setTaxCode(taxLine.getTax().getCode());
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
+      invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
     }
 
     if ((exTaxTotal == null || inTaxTotal == null)) {
@@ -260,11 +264,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (product != null) {
 
       Company company = invoice.getCompany();
-      Partner partner = invoice.getPartner();
       FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
-      taxLine =
-          accountManagementService.getTaxLine(
+      taxLineSet =
+          accountManagementService.getTaxLineSet(
               today, product, company, fiscalPosition, InvoiceToolService.isPurchase(invoice));
     }
   }
@@ -276,8 +279,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     BigDecimal taxRate = BigDecimal.ZERO;
-    if (taxLine != null) {
-      taxRate = taxLine.getValue().divide(new BigDecimal(100));
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      taxRate = taxService.getTotalTaxRate(taxLineSet);
     }
 
     if (!invoice.getInAti()) {

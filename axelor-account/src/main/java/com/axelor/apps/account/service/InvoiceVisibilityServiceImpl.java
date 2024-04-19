@@ -30,6 +30,7 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.util.Arrays;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -62,7 +63,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
     boolean invoiceTermsCondition =
         invoiceTermPfpService.getInvoiceTermsCondition(invoice.getInvoiceTermList());
 
-    return this.getPfpCondition(invoice)
+    return pfpService.getPfpCondition(invoice)
         && validatorUserCondition
         && statusCondition
         && pfpValidateStatusCondition
@@ -90,7 +91,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
     boolean statusCondition = this._getStatusNotDraftCondition(invoice);
 
-    return this.getPfpCondition(invoice)
+    return pfpService.getPfpCondition(invoice)
         && (invoiceTermsCondition || decisionDateCondition)
         && statusCondition;
   }
@@ -99,7 +100,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   public boolean isDecisionPfpVisible(Invoice invoice) throws AxelorException {
     boolean decisionDateCondition = this._getDecisionDateCondition(invoice);
 
-    return this.getPfpCondition(invoice) && decisionDateCondition;
+    return pfpService.getPfpCondition(invoice) && decisionDateCondition;
   }
 
   @Override
@@ -114,18 +115,11 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
     boolean otherCondition = invoice.getPfpValidatorUser() != null;
 
-    return this.getPfpCondition(invoice)
+    return pfpService.getPfpCondition(invoice)
         && pfpValidateStatusCondition
         && statusCondition
         && validatorUserCondition
         && otherCondition;
-  }
-
-  @Override
-  public boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException {
-    return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-        || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            && pfpService.isManagePFPInRefund(invoice.getCompany()));
   }
 
   @Override
@@ -165,7 +159,10 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected boolean _getStatusOperationSubTypeCondition(Invoice invoice) {
     return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         || (invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED
-            && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+            && (Arrays.asList(
+                    InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+                    InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
+                .contains(invoice.getOperationSubTypeSelect())));
   }
 
   protected boolean _getPfpValidateStatusCondition(Invoice invoice, boolean litigation) {
@@ -188,11 +185,5 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   protected boolean _getDecisionDateCondition(Invoice invoice) {
     return invoice.getDecisionPfpTakenDateTime() != null;
-  }
-
-  @Override
-  public boolean getPfpCondition(Invoice invoice) throws AxelorException {
-    return pfpService.isManagePassedForPayment(invoice.getCompany())
-        && this.getOperationTypePurchaseCondition(invoice);
   }
 }
