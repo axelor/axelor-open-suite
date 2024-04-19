@@ -51,4 +51,7 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_GROOVY_FORMULA_SYNTAX_ERROR = /*$$(*/
       "Full name could not be computed, please check the groovy formula." /*)*/;
+
+  public static final String PROJECT_TASK_INFINITE_LOOP_ISSUE = /*$$(*/
+      "Task parent or children has not been configured correctly." /*)*/;
 }

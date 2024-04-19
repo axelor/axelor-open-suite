@@ -18,11 +18,13 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.ProjectTaskProgressUpdateService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.inject.Beans;
 import java.util.Collections;
+import javax.persistence.PersistenceException;
 
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
 
@@ -39,10 +41,15 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
     projectTask = super.save(projectTask);
     ProjectTaskProgressUpdateService projectTaskProgressUpdateService =
         Beans.get(ProjectTaskProgressUpdateService.class);
-    projectTask =
-        projectTaskProgressUpdateService.updateChildrenProgress(
-            projectTask, projectTask.getProgress());
-    projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask);
+    try {
+      projectTask =
+          projectTaskProgressUpdateService.updateChildrenProgress(
+              projectTask, projectTask.getProgress(), 0);
+      projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask, 0);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
     return projectTask;
   }
 }
