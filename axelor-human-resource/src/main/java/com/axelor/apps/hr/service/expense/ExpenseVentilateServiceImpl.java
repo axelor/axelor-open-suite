@@ -229,18 +229,8 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     Account productAccount = accountConfigHRService.getExpenseTaxAccount(accountConfig);
 
     if (taxTotal.signum() != 0) {
-      Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
-          expenseLineList.stream().collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
-
       Map<LocalDate, BigDecimal> expenseLinesTotalTax =
-          expenseLinesByExpenseDate.entrySet().stream()
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      entry ->
-                          entry.getValue().stream()
-                              .map(ExpenseLine::getTotalTax)
-                              .reduce(BigDecimal.ZERO, BigDecimal::add)));
+          this.computeExpenseLinesTotalTax(expenseLineList);
 
       for (Map.Entry<LocalDate, BigDecimal> entry : expenseLinesTotalTax.entrySet()) {
         Currency currency = move.getCurrency();
@@ -297,6 +287,23 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
     expense.setMove(move);
     return move;
+  }
+
+  protected Map<LocalDate, BigDecimal> computeExpenseLinesTotalTax(
+      List<ExpenseLine> expenseLineList) {
+    Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
+        expenseLineList.stream()
+            .filter(expenseLine -> expenseLine.getTotalTax().signum() != 0)
+            .collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
+
+    return expenseLinesByExpenseDate.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry ->
+                    entry.getValue().stream()
+                        .map(ExpenseLine::getTotalTax)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)));
   }
 
   /**
