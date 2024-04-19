@@ -14,18 +14,22 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TrackingNumberConfigurationProfileServiceImpl
     implements TrackingNumberConfigurationProfileService {
 
   protected final MetaFieldRepository metaFieldRepository;
   protected final MetaModelRepository metaModelRepository;
+  protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public TrackingNumberConfigurationProfileServiceImpl(
@@ -44,22 +48,29 @@ public class TrackingNumberConfigurationProfileServiceImpl
     Objects.requireNonNull(trackingNumberConfigurationProfile);
 
     boolean atLeastOneFieldComputed = false;
+    log.debug("Calculating dimension of {}", trackingNumberConfigurationProfile);
+    var profileFieldFormulaSet = trackingNumberConfigurationProfile.getProfileFieldFormulaSet();
+    if (profileFieldFormulaSet != null) {
+      // Will try to compute everything multiple times (max size of the set)
+      log.debug("{} loops planned to compute", profileFieldFormulaSet.size());
+      for (int i = 0; i < profileFieldFormulaSet.size(); i++) {
 
-    for (TrackingNumberConfigurationProfileFieldFormula fieldFormula :
-        trackingNumberConfigurationProfile.getProfileFieldFormulaSet().stream()
-            .sorted(
-                Comparator.comparingInt(
-                    TrackingNumberConfigurationProfileFieldFormula::getComputationPriority))
-            .collect(Collectors.toList())) {
-      Objects.requireNonNull(trackingNumber);
+        for (TrackingNumberConfigurationProfileFieldFormula fieldFormula :
+            profileFieldFormulaSet.stream()
+                .sorted(
+                    Comparator.comparingInt(
+                        TrackingNumberConfigurationProfileFieldFormula::getComputationPriority))
+                .collect(Collectors.toList())) {
+          log.debug("Loop {}, computing field formula {}", i, fieldFormula);
+          var optValueFieldFormula = calculateValue(trackingNumber, fieldFormula);
 
-      var optValueFieldFormula = calculateValue(trackingNumber, fieldFormula);
-
-      Mapper trackingNumberMapper = Mapper.of(EntityHelper.getEntityClass(trackingNumber));
-      if (optValueFieldFormula.isPresent()) {
-        trackingNumberMapper.set(
-            trackingNumber, fieldFormula.getMetaField().getName(), optValueFieldFormula.get());
-        atLeastOneFieldComputed = true;
+          Mapper trackingNumberMapper = Mapper.of(EntityHelper.getEntityClass(trackingNumber));
+          if (optValueFieldFormula.isPresent()) {
+            trackingNumberMapper.set(
+                trackingNumber, fieldFormula.getMetaField().getName(), optValueFieldFormula.get());
+            atLeastOneFieldComputed = true;
+          }
+        }
       }
     }
 
