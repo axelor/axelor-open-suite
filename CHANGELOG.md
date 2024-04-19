@@ -1,3 +1,29 @@
+## [7.2.12] (2024-04-19)
+
+### Fixes
+#### Base
+
+* Birt template: fixed duplicated printouts generated when attach boolean is set to true.
+
+#### Account
+
+* Payment voucher: fixed required message at on new and fixed invoice refresh at confirm.
+* Accounting report: fixed 'Fees declaration supporting file' report displaying records that should not appear.
+* Financial Discount: fixed french translations for 'discount'.
+
+#### Human Resource
+
+* Expense: fixed expense accounting moves generation when expense line dates are different and tax amount is zero.
+
+#### Sale
+
+* Sale order: removed french translation from english file.
+
+#### Supply Chain
+
+* Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead.
+* Mass stock move invoicing: fixed an issue preventing to invoice customer returns.
+
 ## [7.2.11] (2024-04-04)
 
 ### Fixes
@@ -745,6 +771,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.12]: https://github.com/axelor/axelor-open-suite/compare/v7.2.11...v7.2.12
 [7.2.11]: https://github.com/axelor/axelor-open-suite/compare/v7.2.10...v7.2.11
 [7.2.10]: https://github.com/axelor/axelor-open-suite/compare/v7.2.9...v7.2.10
 [7.2.9]: https://github.com/axelor/axelor-open-suite/compare/v7.2.8...v7.2.9
