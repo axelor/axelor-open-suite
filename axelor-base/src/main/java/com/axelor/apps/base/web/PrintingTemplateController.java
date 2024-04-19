@@ -40,6 +40,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.service.TranslationBaseService;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -202,7 +203,8 @@ public class PrintingTemplateController {
 
     ZonedDateTime todayDateTime = Beans.get(AppBaseService.class).getTodayDateTime();
     String title =
-        I18n.get(printingTemplate.getName())
+        Beans.get(TranslationBaseService.class)
+            .getValueTranslation(printingTemplate.getName())
             .replace("${date}", todayDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
             .replace("${time}", todayDateTime.format(DateTimeFormatter.ofPattern("HHmmss")));
     response.setView(ActionView.define(title).add("html", outputLink).map());
