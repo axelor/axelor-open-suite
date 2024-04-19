@@ -34,7 +34,8 @@
         <field name="currentContractVersion.statusSelect" showTitle="false" readonly="true"
           colSpan="6" widget="NavSelect"/>
         <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
-          <viewer depends="contractTypeSelect,targetTypeSelect,statusSelect,contractId,versionNumber"><![CDATA[
+          <viewer
+            depends="contractTypeSelect,targetTypeSelect,statusSelect,contractId,versionNumber"><![CDATA[
 					<>
 						<Box as="h4" d="flex" justifyContent="flex-end" gap="4" alignItems="center">
 							<Box as="span" me={2}><span>{_t('Contract')}</span> {contractId && <span> - {contractId} </span>} {versionNumber > 0 && <span> - {versionNumber}</span>}</Box>
@@ -120,7 +121,7 @@
     <panel name="contractTypePanel" title="Contract type" sidebar="true" showIf="!$readonly()">
       <field name="contractTypeSelect"/>
       <field name="targetTypeSelect" hidden="true" showIf="contractTypeSelect == 2"
-             selection-in="[1,2]"/>
+        selection-in="[1,2]"/>
     </panel>
     <panel name="amountsPanel" showTitle="false"
       showIf="currentContractVersion.isPeriodicInvoicing &amp;&amp; targetTypeSelect &lt;= 2"
@@ -230,7 +231,7 @@
 
       <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true"
         showIf="statusSelect == 1 &amp;&amp; isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing"
-        colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
+        colSpan="12" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
     </panel>
     <panel title="Notes" sidebar="true" name="notesPanel" canCollapse="true">
       <field name="note" showTitle="false"/>
