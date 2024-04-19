@@ -672,12 +672,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     if (needConvert) {
+      // Date is null to get amount converted with today currency rate.
       paidAmount =
           currencyService.getAmountCurrencyConvertedAtDate(
-              currency,
-              invoiceTerm.getCurrency(),
-              invoiceTermPayment.getCompanyPaidAmount(),
-              invoiceTerm.getDueDate());
+              currency, invoiceTerm.getCurrency(), invoiceTermPayment.getCompanyPaidAmount(), null);
     }
 
     return paidAmount;
