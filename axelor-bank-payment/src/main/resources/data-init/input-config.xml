@@ -16,7 +16,8 @@
     type="com.axelor.apps.bankpayment.db.BankOrderFileFormat" search="self.importId = :importId"/>
 
   <input file="bankpayment_bankStatementFileFormat.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankStatementFileFormat" search="self.importId = :importId"/>
+    type="com.axelor.apps.bankpayment.db.BankStatementFileFormat" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportBankStatementFileFormat:importBankStatementFileFormat"/>
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name" update="true"/>

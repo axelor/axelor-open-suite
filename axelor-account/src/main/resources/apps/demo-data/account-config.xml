@@ -22,7 +22,14 @@
     type="com.axelor.apps.account.db.AccountEquiv"/>
 
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
-    search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
+    search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTaxSet.code IN (:fromTaxSet) AND self.toTaxSet.code IN (:toTaxSet)">
+    <bind column="fromTaxSet" to="fromTaxSet" search="self.code in :fromTaxSet"
+      eval="fromTaxSet.split('\\|') as List"/>
+    <bind column="toTaxSet" to="toTaxSet" search="self.code in :toTaxSet"
+      eval="toTaxSet.split('\\|') as List"/>
+    <bind column="reverseChargeTaxSet" to="reverseChargeTaxSet"
+      search="self.code in :reverseChargeTaxSet" eval="reverseChargeTaxSet.split('\\|') as List"/>
+  </input>
 
   <input file="account_accountingBatch.csv" separator=";"
     type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code">
@@ -197,6 +204,8 @@
     <bind
       search="self.code = :purchaseTaxVatSystem1Account_code and self.company.importId = :company_id"
       to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
+    <bind search="self.code = :vatPendingAccount_code and self.company.importId = :company_id"
+      to="vatPendingAccount" update="true" if="vatPendingAccount_code"/>
     <bind search="self.code in :saleTaxSet" to="saleTaxSet" column="saleTaxSet"
       eval="saleTaxSet.split('\\|') as List"/>
     <bind search="self.code in :purchaseTaxSet" to="purchaseTaxSet" column="purchaseTaxSet"

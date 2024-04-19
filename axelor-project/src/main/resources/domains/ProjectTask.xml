@@ -41,8 +41,6 @@
       title="Parent task"/>
     <many-to-one name="projectTaskCategory"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Category"/>
-    <!-- progressSelect is now only used for React views -->
-    <integer name="progressSelect" title="Progress"/>
     <decimal name="progress" title="Progress"/>
     <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask"
       mappedBy="parentTask"/>
@@ -100,7 +98,6 @@
       <field name="taskDeadline"/>
       <field name="projectTaskCategory"/>
       <field name="progress"/>
-      <field name="progressSelect"/>
       <field name="assignedTo"/>
     </track>
 
