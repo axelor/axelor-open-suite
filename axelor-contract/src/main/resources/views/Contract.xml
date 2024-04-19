@@ -435,8 +435,8 @@
               <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
               <field name="renewalDuration" domain="self.applicationTypeSelect = 2"
                 hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
-              <field name="isAutoEnableVersionOnRenew" title="" hidden="true"
-                showIf="isTacitRenewal" colSpan="6" widget="boolean-switch"/>
+              <field name="isAutoEnableVersionOnRenew" hidden="true" showIf="isTacitRenewal"
+                colSpan="6" widget="boolean-switch"/>
             </editor>
           </field>
         </panel>
