@@ -82,7 +82,7 @@
     <action name="save"/>
     <action name="action-validate-budget-recompute-budget-distribution"/>
     <action name="action-method-budget-invoice-compute-budget-distribution"/>
-    <action name="action-method-budget-invoice-compute-budget-distribution-sum-amount"/>
+    <action name="action-method-budget-invoice-compute-budget-remaining-amount"/>
     <action name="save"/>
   </action-group>
 
@@ -91,10 +91,9 @@
       method="computeBudgetDistribution"/>
   </action-method>
 
-  <action-method
-    name="action-method-budget-invoice-compute-budget-distribution-sum-amount">
+  <action-method name="action-method-budget-invoice-compute-budget-remaining-amount">
     <call class="com.axelor.apps.budget.web.InvoiceController"
-      method="computeInvoiceBudgetDistributionSumAmount"/>
+      method="computeInvoiceBudgetRemainingAmountToAllocate"/>
   </action-method>
 
   <action-method name="action-method-invoice-budget-no-compute-budget-distribution">

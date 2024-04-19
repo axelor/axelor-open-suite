@@ -17,4 +17,6 @@ axelor {
 dependencies {
     api project(":modules:axelor-contract")
     api project(":modules:axelor-human-resource")
+
+    implementation libs.swagger_jaxrs
 }

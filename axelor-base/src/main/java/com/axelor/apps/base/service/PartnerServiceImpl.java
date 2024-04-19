@@ -59,9 +59,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -651,36 +649,6 @@ public class PartnerServiceImpl implements PartnerService {
     return actionName.substring(actionName.lastIndexOf('-') + 1);
   }
 
-  @Override
-  public String getTaxNbrFromRegistrationCode(Partner partner) {
-    String taxNbr = "";
-
-    if (partner.getMainAddress() != null && partner.getMainAddress().getCountry() != null) {
-      String countryCode = partner.getMainAddress().getCountry().getAlpha2Code();
-      String regCode = partner.getRegistrationCode();
-
-      if (regCode != null) {
-        regCode = regCode.replaceAll(" ", "");
-
-        if (regCode.length() == 14) {
-          String siren = regCode.substring(0, 9);
-          String taxKey = getTaxKeyFromSIREN(siren);
-
-          taxNbr = String.format("%s%s%s", countryCode, taxKey, siren);
-        }
-      }
-    }
-
-    return taxNbr;
-  }
-
-  protected String getTaxKeyFromSIREN(String sirenStr) {
-    int siren = Integer.parseInt(sirenStr);
-    int taxKey = Math.floorMod(siren, 97);
-    taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return String.format("%02d", taxKey);
-  }
-
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, true);
   }
@@ -713,88 +681,5 @@ public class PartnerServiceImpl implements PartnerService {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();
-  }
-
-  @Override
-  public String getNicFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String nic = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        nic = regCode.substring(9, 14);
-      }
-    }
-
-    return nic;
-  }
-
-  @Override
-  public String getSirenFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String siren = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        siren = regCode.substring(0, 9);
-      }
-    }
-
-    return siren;
-  }
-
-  @Override
-  public boolean isRegistrationCodeValid(Partner partner) {
-    List<PartnerAddress> addresses = partner.getPartnerAddressList();
-    String registrationCode = partner.getRegistrationCode();
-    if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
-        || Strings.isNullOrEmpty(registrationCode)
-        || CollectionUtils.isEmpty(addresses)
-        || addresses.stream()
-            .filter(
-                address ->
-                    address.getAddress() != null
-                        && address.getAddress().getCountry() != null
-                        && "FR".equals(address.getAddress().getCountry().getAlpha2Code()))
-            .collect(Collectors.toList())
-            .isEmpty()) {
-
-      return true;
-    }
-
-    return computeRegistrationCodeValidity(registrationCode);
-  }
-
-  protected boolean computeRegistrationCodeValidity(String registrationCode) {
-    int sum = 0;
-    boolean isOddNumber = true;
-    registrationCode = registrationCode.replace(" ", "");
-    if (registrationCode.length() != 14) {
-      return false;
-    }
-    int i = registrationCode.length() - 1;
-    while (i > -1) {
-      int number = Character.getNumericValue(registrationCode.charAt(i));
-      if (number < 0) {
-        i--;
-        continue;
-      }
-      if (!isOddNumber) {
-        number *= 2;
-      }
-      if (number < 10) {
-        sum += number;
-      } else {
-        number -= 10;
-        sum += number + 1;
-      }
-      i--;
-      isOddNumber = !isOddNumber;
-    }
-    return sum % 10 == 0;
   }
 }

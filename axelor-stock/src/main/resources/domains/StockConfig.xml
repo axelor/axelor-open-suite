@@ -44,6 +44,11 @@
     <many-to-one name="realStockMoveMessageTemplate" title="Message template"
       ref="com.axelor.message.db.Template"/>
 
+    <boolean name="supplierArrivalCancellationAutomaticMail"
+      title="Send email on supplier arrival cancellation" default="false"/>
+    <many-to-one name="supplierArrivalCancellationMessageTemplate"
+      title="Message template" ref="com.axelor.message.db.Template"/>
+
     <boolean name="logisticalFormAutomaticEmail"
       title="Send email when saving logistical form" default="false"/>
     <many-to-one name="logisticalFormMessageTemplate" title="Message template"

@@ -36,6 +36,8 @@ import com.axelor.apps.intervention.service.EquipmentLineService;
 import com.axelor.apps.intervention.service.EquipmentLineServiceImpl;
 import com.axelor.apps.intervention.service.EquipmentModelService;
 import com.axelor.apps.intervention.service.EquipmentModelServiceImpl;
+import com.axelor.apps.intervention.service.EquipmentRestService;
+import com.axelor.apps.intervention.service.EquipmentRestServiceImpl;
 import com.axelor.apps.intervention.service.EquipmentService;
 import com.axelor.apps.intervention.service.EquipmentServiceImpl;
 import com.axelor.apps.intervention.service.InterventionPartnerService;
@@ -44,6 +46,8 @@ import com.axelor.apps.intervention.service.InterventionQuestionService;
 import com.axelor.apps.intervention.service.InterventionQuestionServiceImpl;
 import com.axelor.apps.intervention.service.InterventionRangeService;
 import com.axelor.apps.intervention.service.InterventionRangeServiceImpl;
+import com.axelor.apps.intervention.service.InterventionRestService;
+import com.axelor.apps.intervention.service.InterventionRestServiceImpl;
 import com.axelor.apps.intervention.service.InterventionService;
 import com.axelor.apps.intervention.service.InterventionServiceImpl;
 import com.axelor.apps.intervention.service.InterventionSurveyGenerator;
@@ -83,5 +87,7 @@ public class InterventionModule extends AxelorModule {
     bind(PlanningDateTimeProcessor.class).to(PlanningDateTimeProcessorImpl.class);
 
     bind(InterventionObserver.class);
+    bind(InterventionRestService.class).to(InterventionRestServiceImpl.class);
+    bind(EquipmentRestService.class).to(EquipmentRestServiceImpl.class);
   }
 }

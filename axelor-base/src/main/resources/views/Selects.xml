@@ -330,6 +330,10 @@
     <option value="2">Formula</option>
   </selection>
 
+  <selection name="unit.conversion.entity.select">
+    <option value="0">All</option>
+  </selection>
+
   <selection name="i.calendar.user.status.select">
     <option value="1">Yes</option>
     <option value="2">No</option>
@@ -763,6 +767,11 @@
 
   <selection name="base.partner.link.type.type.select">
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
+  </selection>
+
+  <selection name="base.registration.number.template.validation.method.select">
+    <option
+      value="com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidatorFRA">French registration number validation</option>
   </selection>
 
   <selection name="tax.type.type.select">
