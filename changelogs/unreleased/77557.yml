@@ -1,2 +1,2 @@
-title: "Expense : Fix expense validation when expense line date are different and tax amount is zero"
+title: "Expense: fixed expense accounting moves generation when expense line dates are different and tax amount is zero."
 module: "axelor-human-resource"
