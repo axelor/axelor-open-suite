@@ -424,7 +424,6 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     moveLine.setAmountRemaining(signedAmount);
   }
 
-  @Override
   public Map<String, Account> getAccountTaxMap(Move move) {
     Map<String, Account> vatSystemMap = new HashMap<>();
 
@@ -438,7 +437,6 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     return vatSystemMap;
   }
 
-  @Override
   public Map<String, Integer> getVatSystemTaxMap(Move move) {
     Map<String, Integer> vatSystemMap = new HashMap<>();
 

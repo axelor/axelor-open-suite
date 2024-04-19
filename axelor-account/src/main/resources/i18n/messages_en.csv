@@ -1665,6 +1665,7 @@
 "Financial Discounts",,,
 "Financial asset",,,
 "Financial discount",,,
+"Financial discount is not compatible with the advance payment invoice. Please unselect financial discount in order to continue.",,,
 "Financial discount rate",,,
 "Financial discount total amount",,,
 "Financial discounts",,,

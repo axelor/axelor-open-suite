@@ -808,7 +808,8 @@ InvoiceSet.length > 0))"
           onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
       </panel>
       <panel name="financialDiscountPanel" colSpan="12" title="Financial discount"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()">
+        if="__config__.app.getApp('account').getManageFinancialDiscount()"
+        hideIf="operationSubTypeSelect == 2">
         <field name="financialDiscount" readonlyIf="[3,4].includes(statusSelect)"
           onChange="action-invoice-group-financial-discount"/>
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>

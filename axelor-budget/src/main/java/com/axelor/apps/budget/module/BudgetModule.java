@@ -92,6 +92,8 @@ import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceServiceImpl;
+import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
+import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.StockMoveInvoiceBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.WorkflowCancelBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.WorkflowVentilationBudgetServiceImpl;
@@ -167,6 +169,7 @@ public class BudgetModule extends AxelorModule {
         .to(PurchaseOrderLineGroupBudgetServiceImpl.class);
     bind(BudgetInvoiceLineService.class).to(BudgetInvoiceLineServiceImpl.class);
     bind(BudgetInvoiceService.class).to(BudgetInvoiceServiceImpl.class);
+    bind(InvoiceToolBudgetService.class).to(InvoiceToolBudgetServiceImpl.class);
     bind(InvoiceLineProjectServiceImpl.class).to(BudgetInvoiceLineComputeServiceImpl.class);
     bind(WorkflowCancelServiceProjectImpl.class).to(WorkflowCancelBudgetServiceImpl.class);
     bind(WorkflowVentilationProjectServiceImpl.class)
