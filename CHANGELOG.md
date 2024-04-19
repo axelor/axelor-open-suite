@@ -1,3 +1,22 @@
+## [6.5.32] (2024-04-19)
+
+### Fixes
+#### Account
+
+* Payment voucher: fixed required message at on new and fixed invoice refresh at confirm.
+* Invoice: fixed report when invoice is linked to more than one stock move.
+* Accounting report: fixed 'Fees declaration supporting file' report displaying records that should not appear.
+* Financial Discount: fixed french translations for 'discount'.
+
+#### Sale
+
+* Sale order: removed french translation from english file.
+
+#### Supply Chain
+
+* Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead.
+* Mass stock move invoicing: fixed an issue preventing to invoice customer returns.
+
 ## [6.5.31] (2024-04-04)
 
 ### Fixes
@@ -1262,6 +1281,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.32]: https://github.com/axelor/axelor-open-suite/compare/v6.5.31...v6.5.32
 [6.5.31]: https://github.com/axelor/axelor-open-suite/compare/v6.5.30...v6.5.31
 [6.5.30]: https://github.com/axelor/axelor-open-suite/compare/v6.5.29...v6.5.30
 [6.5.29]: https://github.com/axelor/axelor-open-suite/compare/v6.5.28...v6.5.29
