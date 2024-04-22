@@ -135,6 +135,30 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//panel[@name='salesPanel']">
+      <insert position="after">
+        <panel name="analyticPanel" title="Analytic" if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+          hidden="true" showIf="isBusinessProject" colSpan="12">
+          <panel name="analyticDistributionPanel" title="Analytics" colSpan="12">
+            <field name="analyticDistributionTemplate"
+              grid-view="analytic-distribution-template-grid"
+              form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
+              onChange="action-account-account-method-new-analytic-dist-template"
+              domain="self.company = :company AND self.isSpecific = false" colSpan="12"/>
+            <field name="analyticDistributionTemplate"
+              showIf="analyticDistributionTemplate &amp;&amp; !$readonly()" canNew="false"
+              canSelect="false" showTitle="false" colSpan="12">
+              <editor>
+                <field name="analyticDistributionLineList" editable="false" showTitle="false"
+                  grid-view="analytic-distribution-line-editable-grid" colSpan="12"
+                  form-view="analytic-distribution-line-form"/>
+              </editor>
+            </field>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-business-project-project-group-on-new">
@@ -360,13 +384,6 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-  </action-view>
-
-  <action-view name="action-project-dashlet-analytic-move-lines"
-    model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines">
-    <view name="analytic-move-line-grid" type="grid"/>
-    <view name="analytic-move-line-form" type="form"/>
-    <domain>self.project.id = :id</domain>
   </action-view>
 
   <action-view name="action-project-view-show-confirmed-purchase-order-lines"
@@ -713,6 +730,17 @@
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="computeProjectTotals"/>
+  </action-method>
+
+  <!-- Analytic -->
+  <action-group
+    name="action-business-project-group-analytic-distribution-template-onchange">
+    <action name="action-business-project-method-create-distribution"/>
+  </action-group>
+
+  <action-method name="action-business-project-method-create-distribution">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="createAnalyticDistributionWithTemplate"/>
   </action-method>
 
 </object-views>

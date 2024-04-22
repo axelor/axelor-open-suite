@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.businessproject.model;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
@@ -27,6 +29,8 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public class AnalyticLineProjectModel extends AnalyticLineContractModel {
@@ -56,6 +60,30 @@ public class AnalyticLineProjectModel extends AnalyticLineContractModel {
             .map(ContractVersion::getContract)
             .map(Contract::getProject)
             .orElse(null);
+  }
+
+  public AnalyticLineProjectModel(Project project) {
+    super();
+
+    this.project = project;
+    this.analyticDistributionTemplate = project.getAnalyticDistributionTemplate();
+  }
+
+  @Override
+  public <T extends AnalyticLineModel> T getExtension(Class<T> klass) throws AxelorException {
+    try {
+      if (project != null) {
+        return klass.getDeclaredConstructor(Project.class).newInstance(this.project);
+      } else {
+        return super.getExtension(klass);
+      }
+    } catch (IllegalAccessException
+        | InstantiationException
+        | NoSuchMethodException
+        | InvocationTargetException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+    }
   }
 
   public Project getProject() {
