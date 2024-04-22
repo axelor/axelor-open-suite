@@ -61,7 +61,8 @@ public class ConsumptionLineController {
               .checkConsumptionLineQuantity(
                   contract, consumptionLine, initQt.orElse(BigDecimal.ZERO));
       if (isSendAlert) {
-        response.setAlert(I18n.get(ContractExceptionMessage.CONTRACT_QUANTITIES_EXCEED_MAX));
+        response.setInfo(
+            I18n.get(ContractExceptionMessage.CONTRACT_QUANTITIES_EXCEED_MAX), I18n.get("Warning"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
