@@ -1,3 +1,3 @@
 ---
-title: "Invoice : Manage financial discount on copy"
+title: "Invoice: fixed default financial discount from partner not being computed after invoice copy."
 module: axelor-account
