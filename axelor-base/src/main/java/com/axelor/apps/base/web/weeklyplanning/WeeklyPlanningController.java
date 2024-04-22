@@ -25,7 +25,7 @@ import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.helpers.ContextHelper;
+import com.axelor.utils.ContextTool;
 
 public class WeeklyPlanningController {
 
@@ -33,7 +33,7 @@ public class WeeklyPlanningController {
     WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
     planning = Beans.get(WeeklyPlanningService.class).initPlanning(planning);
     Integer typeSelect =
-        ContextHelper.getFieldFromContextParent(request.getContext(), "_typeSelect", Integer.class);
+        ContextTool.getFieldFromContextParent(request.getContext(), "_typeSelect", Integer.class);
     if (typeSelect != null) {
       response.setValue("typeSelect", typeSelect);
     }
