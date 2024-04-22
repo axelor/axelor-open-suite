@@ -371,8 +371,8 @@
 370;400;"CL4";"Fournisseurs et comptes rattachés";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
 371;400000;400;"Fournisseurs et comptes rattachés ";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
 372;401;400;"Fournisseurs";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
-373;401100;401;"Fournisseurs - Achats de biens et prestations de services";"payable";"true";1;"411100|411700|416000";"true";;;1;"DAS2";;1;"false";"false";"true";0
-374;401700;401;"Fournisseurs - Retenues de garantie";"payable";"true";1;"411100|411700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+373;401100;401;"Fournisseurs - Achats de biens et prestations de services";"payable";"true";1;411100|411700|416000|766000;"true";;;1;"DAS2";;1;"false";"false";"true";0
+374;401700;401;"Fournisseurs - Retenues de garantie";"payable";"true";1;411100|411700|416000|766000;"true";;;2;"NDAS";;1;"false";"false";"true";0
 375;403000;400;"Fournisseurs - Effets à payer";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
 376;404000;400;"Fournisseurs d'immobilisations";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
 377;404100;404000;"Fournisseurs - Achats d'immobilisations";"payable";"true";1;;;;;1;"DAS2";;1;"false";"false";"false";0
@@ -392,8 +392,8 @@
 391;410;"CL4";"Clients et comptes rattachés";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
 392;410000;410;"Clients et comptes rattachés ";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
 393;411;410;"Clients";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
-394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
-395;411700;411;"Clients - Retenues de garantie";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;401100|401700|416000|666000;true;;;2;"NDAS";;1;"false";"false";"true";0
+395;411700;411;"Clients - Retenues de garantie";"receivable";"true";1;401100|401700|416000|666000;true;;;2;"NDAS";;1;"false";"false";"true";0
 396;413000;410;"Clients - Effets à recevoir";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
 397;416000;410;"Clients douteux ou litigieux";"receivable";"true";1;"401100|401700|411100|411700";"true";;;2;"NDAS";;1;"false";"false";"false";0
 398;418000;410;"Clients - Produits non encore facturés";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
@@ -789,7 +789,7 @@
 788;661880;661800;"Intérêts des dettes diverses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 789;664000;660;"Pertes sur créances liées à des participations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
 790;665000;660;"Escomptes accordés";"charge";;1;;;"true";;2;"NDAS";;1;"true";"false";"false";0
-791;666000;660;"Pertes de change";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+791;666000;660;"Pertes de change";"charge";true;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
 792;667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
 793;668000;660;"Autres charges financières";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 794;670;"CL6";"Charges exceptionnelles";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
@@ -926,7 +926,7 @@
 925;763800;763000;"Revenus des créances diverses";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 926;764000;760;"Revenus des valeurs mobilières de placement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 927;765000;760;"Escomptes obtenus";"income";;1;;;"true";;1;"NDAS";;1;"true";"false";"false";0
-928;766000;760;"Gains de change";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+928;766000;760;"Gains de change";"income";true;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 929;767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 930;768000;760;"Autres produits financiers";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 931;770;"CL7";"Produits exceptionnels";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0

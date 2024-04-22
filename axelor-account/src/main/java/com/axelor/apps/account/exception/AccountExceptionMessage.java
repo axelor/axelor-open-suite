@@ -1081,6 +1081,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK = /*$$(*/
       "Please make sure that the account %s being used can be reconciled and used for partner balance." /*)*/;
 
+  public static final String ACCOUNT_RECONCILE_OK_NOT_CONFIGURED = /*$$(*/
+      "Please make sure that the account %s being used can be reconciled." /*)*/;
+
   public static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
       "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/credit note" /*)*/;
 

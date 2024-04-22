@@ -385,8 +385,8 @@
 400;"CL4";"Fournisseurs et comptes rattachés";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
 400000;400;"Fournisseurs et comptes rattachés ";"FRA_PCG240";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 401;400;"Fournisseurs";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
-401100;401;"Fournisseurs - Achats de biens et prestations de services";"FRA_PCG240";"true";1;"true";"411100|411700|416000";"true";;;;0;"true";"DAS2";"false";1
-401700;401;"Fournisseurs - Retenues de garantie";"FRA_PCG240";"true";2;"true";"411100|411700|416000";"true";;;;0;"true";"NDAS";"false";1
+401100;401;"Fournisseurs - Achats de biens et prestations de services";"FRA_PCG240";"true";1;"true";411100|411700|416000|766000;true;;;;0;"true";"DAS2";"false";1
+401700;401;"Fournisseurs - Retenues de garantie";"FRA_PCG240";"true";2;"true";411100|411700|416000|766000;"true";;;;0;"true";"NDAS";"false";1
 403000;400;"Fournisseurs - Effets à payer";"FRA_PCG240";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 404000;400;"Fournisseurs d'immobilisations";"FRA_PCG240";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 404100;404000;"Fournisseurs - Achats d'immobilisations";"FRA_PCG240";"true";1;"true";;"true";;;;0;"false";"DAS2";"false";1
@@ -406,8 +406,8 @@
 410;"CL4";"Clients et comptes rattachés";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
 410000;410;"Clients et comptes rattachés ";"FRA_PCG140";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 411;410;"Clients";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
-411100;411;"Clients - Ventes de biens ou de prestations de services";"FRA_PCG140";"true";2;"true";"401100|401700|416000";"true";;;;0;"true";"NDAS";"false";1
-411700;411;"Clients - Retenues de garantie";"FRA_PCG140";"true";2;"true";"401100|401700|416000";"true";;;;0;"true";"NDAS";"false";1
+411100;411;"Clients - Ventes de biens ou de prestations de services";"FRA_PCG140";"true";2;"true";401100|401700|416000|666000;true;;;;0;"true";"NDAS";"false";1
+411700;411;"Clients - Retenues de garantie";"FRA_PCG140";"true";2;"true";401100|401700|416000|666000;true;;;;0;"true";"NDAS";"false";1
 413000;410;"Clients - Effets à recevoir";"FRA_PCG140";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 416000;410;"Clients douteux ou litigieux";"FRA_PCG140";"true";2;"true";"401100|401700|411100|411700";"true";;;;0;"false";"NDAS";"false";1
 418000;410;"Clients - Produits non encore facturés";"FRA_PCG140";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
@@ -824,7 +824,7 @@
 661880;661800;"Intérêts des dettes diverses";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";2;"false";"NDAS";"true";1
 664000;660;"Pertes sur créances liées à des participations";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";0;"false";"NDAS";"true";1
 665000;660;"Escomptes accordés";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";0;"false";"NDAS";"true";1
-666000;660;"Pertes de change financières";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";0;"false";"NDAS";"true";1
+666000;660;"Pertes de change financières";"FRA_PCG2000";"true";2;true;;;"true";"true";"N_D";0;"false";"NDAS";"true";1
 667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";0;"false";"NDAS";"true";1
 668000;660;"Autres charges financières";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";2;"false";"NDAS";"true";1
 670;"CL6";"Charges exceptionnelles";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
@@ -966,7 +966,7 @@
 763800;763000;"Revenus des créances diverses";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";1
 764000;760;"Revenus des valeurs mobilières de placement";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";1
 765000;760;"Escomptes obtenus";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";1
-766000;760;"Gains de change financiers";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";1
+766000;760;"Gains de change financiers";"FRA_PCG1000";"true";1;true;;;"true";;"N_C";0;"false";"NDAS";"true";1
 767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";1
 768000;760;"Autres produits financiers";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";1
 770;"CL7";"Produits exceptionnels";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
