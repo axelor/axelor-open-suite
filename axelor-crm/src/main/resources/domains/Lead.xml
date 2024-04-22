@@ -26,6 +26,8 @@
     <string name="fixedPhone" title="Phone number"/>
     <string name="department" title="Dep./Div."/>
     <string name="webSite" title="Website"/>
+    <string name="consuelFile" title="Consuel"/>
+    <string name="planningPermissionFile" title="Autorisation d'urbanisme"/>
 
     <!-- Primary address group -->
     <string name="primaryAddress" title="Address"/>
