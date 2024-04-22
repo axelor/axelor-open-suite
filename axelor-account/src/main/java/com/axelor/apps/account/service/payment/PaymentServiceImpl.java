@@ -614,7 +614,7 @@ public class PaymentServiceImpl implements PaymentService {
     int counter = move.getMoveLineList().size();
 
     for (MoveLine moveLine : taxMoveLineList) {
-      TaxLine taxLine = (TaxLine) moveLine.getTaxLineSet().toArray()[0];
+      TaxLine taxLine = moveLine.getTaxLineSet().iterator().next();
       TaxConfiguration taxConfiguration =
           new TaxConfiguration(taxLine, moveLine.getAccount(), moveLine.getVatSystemSelect());
       counter++;
