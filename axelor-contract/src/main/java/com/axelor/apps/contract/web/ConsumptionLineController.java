@@ -29,6 +29,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class ConsumptionLineController {
@@ -51,6 +52,11 @@ public class ConsumptionLineController {
             .map(context -> context.get("initQty"))
             .map(String::valueOf)
             .map(BigDecimal::new);
+    Optional<Integer> initProductId =
+        Optional.ofNullable(request.getContext())
+            .map(context -> (LinkedHashMap) context.get("initProduct"))
+            .map(linkedHashMap -> (Integer) linkedHashMap.get("id"));
+
     if (consumptionLine.getProduct() == null
         || contract.getCurrentContractVersion().getContractLineList().isEmpty()) {
       return;
@@ -59,7 +65,7 @@ public class ConsumptionLineController {
       boolean isSendAlert =
           Beans.get(ContractService.class)
               .checkConsumptionLineQuantity(
-                  contract, consumptionLine, initQt.orElse(BigDecimal.ZERO));
+                  contract, consumptionLine, initQt.orElse(BigDecimal.ZERO), initProductId);
       if (isSendAlert) {
         response.setInfo(
             I18n.get(ContractExceptionMessage.CONTRACT_QUANTITIES_EXCEED_MAX), I18n.get("Warning"));

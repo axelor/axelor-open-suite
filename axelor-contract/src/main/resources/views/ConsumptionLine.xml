@@ -24,7 +24,7 @@
   <form name="consumption-line-form" title="Consumption Line"
     model="com.axelor.apps.contract.db.ConsumptionLine"
     onNew="action-consumption-line-attrs-scale-and-precision"
-    onLoad="action-consumption-line-attrs-init-qty">
+    onLoad="action-consumption-line-attrs-init-qty-init-product">
     <panel readonlyIf="isInvoiced" name="mainPanel">
       <field name="product" required="true" canEdit="false"
         onChange="action-consumption-line-group-product-change" domain="self.dtype = 'Product'"/>
@@ -39,6 +39,7 @@
 
     <panel name="hiddenFields" hidden="true">
       <field name="$initQty" type="decimal" min="0" hidden="true"/>
+      <field name="$initProduct" type="many-to-one" hidden="true"/>
     </panel>
   </form>
 
@@ -56,8 +57,9 @@
       method="checkConsumptionLineQuantity"/>
   </action-method>
 
-  <action-attrs name="action-consumption-line-attrs-init-qty">
+  <action-attrs name="action-consumption-line-attrs-init-qty-init-product">
     <attribute for="$initQty" name="value" expr="eval: qty"/>
+    <attribute for="$initProduct" name="value" expr="eval: product"/>
   </action-attrs>
 
   <action-group name="action-consumption-line-group-product-change">

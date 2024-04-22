@@ -73,6 +73,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -955,7 +956,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   @Override
   public boolean checkConsumptionLineQuantity(
-      Contract contractCtx, ConsumptionLine consumptionLineCtx, BigDecimal initQty) {
+      Contract contractCtx,
+      ConsumptionLine consumptionLineCtx,
+      BigDecimal initQty,
+      Optional<Integer> initProductId) {
 
     BigDecimal max = BigDecimal.ZERO;
     if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
@@ -974,6 +978,12 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         return false;
       }
       max = contractLines.get(0).getConsumptionMaxQuantity();
+    }
+    if (initProductId.isPresent()) {
+      if (!Objects.equals(
+          Long.valueOf(initProductId.get()), consumptionLineCtx.getProduct().getId())) {
+        contractCtx.getConsumptionLineList().add(consumptionLineCtx);
+      }
     }
     BigDecimal sum =
         contractCtx.getConsumptionLineList().stream()

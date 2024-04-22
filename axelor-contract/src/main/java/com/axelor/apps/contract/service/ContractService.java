@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public interface ContractService {
 
@@ -172,6 +173,10 @@ public interface ContractService {
   void setInitialPriceOnContractLines(Contract contract);
 
   boolean checkConsumptionLineQuantity(
+      Contract contract,
+      ConsumptionLine consumptionLine,
+      BigDecimal initQty,
+      Optional<Integer> initProductId);
       Contract contract, ConsumptionLine consumptionLine, BigDecimal initQty);
       Contract contract, ConsumptionLine consumptionLine, BigDecimal initQt);
 
