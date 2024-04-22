@@ -11,7 +11,4 @@
   <input file="mobilesettings_mobileConfig.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.mobilesettings.db.MobileConfig"/>
 
-  <input file="mobilesettings_mobileMenu.csv" separator=";" search="self.importId = :importId"
-    type="com.axelor.apps.mobilesettings.db.MobileMenu"/>
-
 </csv-inputs>
