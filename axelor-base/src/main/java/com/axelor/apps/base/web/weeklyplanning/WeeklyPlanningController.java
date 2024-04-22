@@ -24,15 +24,14 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.helpers.ContextHelper;
+import com.axelor.rpc.Context;
 
 public class WeeklyPlanningController {
 
   public void initPlanning(ActionRequest request, ActionResponse response) {
     WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
     planning = Beans.get(WeeklyPlanningService.class).initPlanning(planning);
-    Integer typeSelect =
-        ContextHelper.getFieldFromContextParent(request.getContext(), "_typeSelect", Integer.class);
+    Integer typeSelect = getTypeSelectFromContext(request.getContext());
     if (typeSelect != null) {
       response.setValue("typeSelect", typeSelect);
     }
@@ -46,5 +45,16 @@ public class WeeklyPlanningController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected Integer getTypeSelectFromContext(Context context) {
+    final String typeSelectKey = "_typeSelect";
+    while (context != null) {
+      if (context.containsKey(typeSelectKey)) {
+        return (Integer) context.get(typeSelectKey);
+      }
+      context = context.getParent();
+    }
+    return null;
   }
 }
