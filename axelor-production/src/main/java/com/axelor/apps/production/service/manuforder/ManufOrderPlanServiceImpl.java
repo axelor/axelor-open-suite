@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
@@ -43,6 +61,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService;
+  protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
+  protected ManufOrderResidualProductService manufOrderResidualProductService;
 
   @Inject
   public ManufOrderPlanServiceImpl(
@@ -58,7 +78,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
-      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService) {
+      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderResidualProductService manufOrderResidualProductService) {
     this.manufOrderRepo = manufOrderRepo;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
@@ -72,6 +94,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.manufOrderCreatePurchaseOrderService = manufOrderCreatePurchaseOrderService;
+    this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
+    this.manufOrderResidualProductService = manufOrderResidualProductService;
   }
 
   @Override
@@ -154,7 +178,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
   protected void planStockMoves(ManufOrder manufOrder) throws AxelorException {
     if (!manufOrder.getIsConsProOnOperation()) {
-      manufOrderStockMoveService
+      manufOrderPlanStockMoveService
           .createAndPlanToConsumeStockMoveWithLines(manufOrder)
           .ifPresent(
               stockMove -> {
@@ -165,19 +189,37 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
               });
     }
 
-    manufOrderStockMoveService
+    manufOrderPlanStockMoveService
         .createAndPlanToProduceStockMoveWithLines(manufOrder)
         .ifPresent(
             sm -> {
               manufOrder.addOutStockMoveListItem(sm);
               addToProducedStockMoveLineList(manufOrder, sm);
             });
+
+    if (manufOrderResidualProductService.hasResidualProduct(manufOrder)) {
+      manufOrderPlanStockMoveService
+          .createAndPlanResidualStockMoveWithLines(manufOrder)
+          .ifPresent(
+              sm -> {
+                manufOrder.addOutStockMoveListItem(sm);
+                addToResidualStockMoveLineList(manufOrder, sm);
+              });
+    }
   }
 
   protected void addToProducedStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {
     if (stockMove.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+      }
+    }
+  }
+
+  protected void addToResidualStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        manufOrder.addResidualStockMoveLineListItem(stockMoveLine);
       }
     }
   }

@@ -21,6 +21,7 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -28,7 +29,6 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,21 +40,23 @@ public class BankReconciliationCreateService {
   protected BankReconciliationRepository bankReconciliationRepository;
   protected CompanyRepository companyRepository;
   protected BankReconciliationAccountService bankReconciliationAccountService;
+  protected BankStatementLineRepository bankStatementLineRepository;
 
   @Inject
   public BankReconciliationCreateService(
       BankReconciliationRepository bankReconciliationRepository,
       CompanyRepository companyRepository,
-      BankReconciliationAccountService bankReconciliationAccountService) {
+      BankReconciliationAccountService bankReconciliationAccountService,
+      BankStatementLineRepository bankStatementLineRepository) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.companyRepository = companyRepository;
     this.bankReconciliationAccountService = bankReconciliationAccountService;
+    this.bankStatementLineRepository = bankStatementLineRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement)
-      throws IOException {
+  public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement) {
 
     List<BankReconciliation> bankReconciliationList = new ArrayList<>();
 
@@ -113,8 +115,7 @@ public class BankReconciliationCreateService {
       LocalDate toDate,
       Currency currency,
       BankDetails bankDetails,
-      BankStatement bankStatement)
-      throws IOException {
+      BankStatement bankStatement) {
 
     BankReconciliation bankReconciliation = new BankReconciliation();
     bankReconciliation.setCompany(company);

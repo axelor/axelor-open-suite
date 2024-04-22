@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form name="app-project-config-form" title="App project"
     model="com.axelor.studio.db.AppProject" canDelete="false" canNew="false" width="large">
@@ -15,13 +15,20 @@
       <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
       <field name="defaultTaskStatusSet" widget="TagSelect"/>
       <field name="defaultPrioritySet" widget="TagSelect"/>
-
+      <field name="fullNameGroovyFormula"/>
       <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12">
         <panel-related field="taskCustomFieldsList" colSpan="6"
           form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
         <panel-related field="projectCustomFieldsList" colSpan="6"
           form-view="project-project-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
       </panel>
+    </panel>
+
+    <panel name="projectStatusMgtPanel" title="Project status management">
+      <field name="completedProjectStatus" grid-view="project-status-grid"
+        form-view="project-status-form" domain="self.isCompleted = true"/>
+      <field name="canceledProjectStatus" grid-view="project-status-grid"
+        form-view="project-status-form" domain="self.isCompleted = true"/>
     </panel>
 
     <panel-mail name="mailPanel">

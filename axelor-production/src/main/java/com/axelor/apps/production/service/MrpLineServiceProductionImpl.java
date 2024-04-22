@@ -143,15 +143,26 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
     LocalDateTime plannedStartDateT = null;
     LocalDateTime plannedEndDateT = null;
+
+    BillOfMaterial billOfMaterial = mrpLine.getBillOfMaterial();
+    if (billOfMaterial == null) {
+      billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    }
+
     if (isAsapScheduling) {
       plannedStartDateT = maturityDate.atStartOfDay();
     } else {
-      BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
+      // The +2 adds 2 minutes to the plannedEndDateT to avoid the overflowing of the calculated
+      // plannedStartDateT on the current date time.
+      LocalDateTime maturityDateTime =
+          maturityDate.isEqual(LocalDate.now())
+              ? maturityDate.atTime(
+                  appBaseService.getTodayDateTime(company).toLocalTime().plusMinutes(2))
+              : maturityDate.atStartOfDay();
       plannedEndDateT =
-          maturityDate
-              .plusDays(getTotalDurationInDays(defaultBillOfMaterial.getProdProcess(), qty) + 1)
-              .atStartOfDay();
+          maturityDateTime.plusMinutes(
+              getTotalDurationInMinutes(billOfMaterial.getProdProcess(), qty));
     }
 
     ManufOrder manufOrder =
@@ -160,7 +171,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             mrpLine.getQty(),
             ManufOrderService.DEFAULT_PRIORITY,
             ManufOrderService.IS_TO_INVOICE,
-            null,
+            billOfMaterial,
             plannedStartDateT,
             plannedEndDateT,
             ManufOrderOriginTypeProduction
@@ -170,13 +181,13 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     linkToOrder(mrpLine, manufOrder);
   }
 
-  protected long getTotalDurationInDays(ProdProcess prodProcess, BigDecimal qty)
+  protected long getTotalDurationInMinutes(ProdProcess prodProcess, BigDecimal qty)
       throws AxelorException {
     long totalDuration = 0;
     if (prodProcess != null) {
-      totalDuration = prodProcessLineService.computeEntireDuration(prodProcess, qty);
+      totalDuration = prodProcessLineService.computeLeadTimeDuration(prodProcess, qty);
     }
-    return TimeUnit.SECONDS.toDays(totalDuration);
+    return TimeUnit.SECONDS.toMinutes(totalDuration);
   }
 
   @Override

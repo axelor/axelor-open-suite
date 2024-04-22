@@ -30,6 +30,7 @@ import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
+import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.inject.Beans;
@@ -39,6 +40,7 @@ import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ContractLineController {
@@ -46,8 +48,15 @@ public class ContractLineController {
   protected Contract getContractFromContext(ActionRequest request) {
     Contract contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 2);
 
-    if (ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1) == null) {
+    ContractVersion contractVersion =
+        ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1);
+    if (contractVersion == null) {
       contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 1);
+    } else if (contract == null) {
+      contract =
+          Optional.of(contractVersion)
+              .map(ContractVersion::getContract)
+              .orElse(contractVersion.getNextContract());
     }
 
     return contract;
@@ -79,6 +88,8 @@ public class ContractLineController {
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
+      Beans.get(ContractLineRecordSetService.class)
+          .setCompanyExTaxTotal(analyticLineContractModel, contractLine);
 
       Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineContractModel);

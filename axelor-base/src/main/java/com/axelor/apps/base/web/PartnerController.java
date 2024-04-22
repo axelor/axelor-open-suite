@@ -21,9 +21,9 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -34,11 +34,14 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
+import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
+import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -53,6 +56,7 @@ import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
@@ -106,17 +110,17 @@ public class PartnerController {
   public void printContactPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    BirtTemplate contactPhoneBookBirtTemplate =
-        Beans.get(AppBaseService.class).getAppBase().getContactPhoneBookBirtTemplate();
-    if (ObjectUtils.isEmpty(contactPhoneBookBirtTemplate)) {
+    PrintingTemplate contactPhoneBookTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getContactPhoneBookPrintTemplate();
+    if (ObjectUtils.isEmpty(contactPhoneBookTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Phone Book");
     String fileLink =
-        Beans.get(PrintFromBirtTemplateService.class).print(contactPhoneBookBirtTemplate, null);
+        Beans.get(PrintingTemplatePrintService.class).getPrintLink(contactPhoneBookTemplate, null);
 
     LOG.debug("Printing " + name);
 
@@ -135,17 +139,17 @@ public class PartnerController {
   public void printCompanyPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    BirtTemplate companyPhoneBookBirtTemplate =
-        Beans.get(AppBaseService.class).getAppBase().getCompanyPhoneBookBirtTemplate();
-    if (ObjectUtils.isEmpty(companyPhoneBookBirtTemplate)) {
+    PrintingTemplate companyPhoneBookTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getCompanyPhoneBookPrintTemplate();
+    if (ObjectUtils.isEmpty(companyPhoneBookTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Company PhoneBook");
     String fileLink =
-        Beans.get(PrintFromBirtTemplateService.class).print(companyPhoneBookBirtTemplate, null);
+        Beans.get(PrintingTemplatePrintService.class).getPrintLink(companyPhoneBookTemplate, null);
 
     LOG.debug("Printing " + name);
 
@@ -165,24 +169,22 @@ public class PartnerController {
     Partner partner = context.asType(Partner.class);
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
 
-    BirtTemplate clientSituationBirtTemplate =
-        Beans.get(AppBaseService.class).getAppBase().getClientSituationBirtTemplate();
-    if (ObjectUtils.isEmpty(clientSituationBirtTemplate)) {
+    PrintingTemplate clientSituationPrintTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getClientSituationPrintTemplate();
+    if (ObjectUtils.isEmpty(clientSituationPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Customer Situation");
+
+    PrintingGenFactoryContext factoryContext = new PrintingGenFactoryContext(partner);
+    factoryContext.setContext(getParamsMap(context));
+
     String fileLink =
-        Beans.get(BirtTemplateService.class)
-            .generateBirtTemplateLink(
-                clientSituationBirtTemplate,
-                partner,
-                getParamsMap(context),
-                name + "-${date}",
-                false,
-                clientSituationBirtTemplate.getFormat());
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintLink(clientSituationPrintTemplate, factoryContext, name + "-${date}");
 
     LOG.debug("Printing " + name);
 
@@ -388,26 +390,51 @@ public class PartnerController {
   public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
-      PartnerService partnerService = Beans.get(PartnerService.class);
-      if (partnerService.isRegistrationCodeValid(partner)) {
-        String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
-        String nic = partnerService.getNicFromRegistrationCode(partner);
-        String siren = partnerService.getSirenFromRegistrationCode(partner);
-
-        response.setValue("taxNbr", taxNbr);
-        response.setValue("nic", nic);
-        response.setValue("siren", siren);
+      RegistrationNumberValidator validator =
+          Beans.get(PartnerRegistrationValidatorFactoryService.class)
+              .getRegistrationNumberValidator(partner);
+      if (validator == null) {
+        return;
       }
-
+      validator.setRegistrationCodeValidationValues(partner);
+      response.setValues(partner);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
   }
 
-  public void checkRegistrationCode(ActionRequest request, ActionResponse response) {
+  public void getHideFieldOnPartnerTypeSelect(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      PartnerRegistrationCodeViewService partnerRegistrationCodeViewService =
+          Beans.get(PartnerRegistrationCodeViewService.class);
+      String registrationCodeTitle =
+          partnerRegistrationCodeViewService.getRegistrationCodeTitleFromTemplate(partner);
+      boolean isNicHidden = partnerRegistrationCodeViewService.isNicHidden(partner);
+      boolean isSirenHidden = partnerRegistrationCodeViewService.isSirenHidden(partner);
+      boolean isTaxNbrHidden = partnerRegistrationCodeViewService.isTaxNbrHidden(partner);
+      response.setAttr(
+          "registrationCode",
+          "title",
+          !Strings.isNullOrEmpty(registrationCodeTitle)
+              ? registrationCodeTitle
+              : I18n.get("Registration number"));
+      response.setAttr("siren", "hidden", isSirenHidden);
+      response.setAttr("nic", "hidden", isNicHidden);
+      response.setAttr("taxNbr", "hidden", isTaxNbrHidden);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void checkRegistrationCode(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
     Partner partner = request.getContext().asType(Partner.class);
-    PartnerService partnerService = Beans.get(PartnerService.class);
-    if (!partnerService.isRegistrationCodeValid(partner)) {
+    RegistrationNumberValidator validator =
+        Beans.get(PartnerRegistrationValidatorFactoryService.class)
+            .getRegistrationNumberValidator(partner);
+    if (validator != null && !validator.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }

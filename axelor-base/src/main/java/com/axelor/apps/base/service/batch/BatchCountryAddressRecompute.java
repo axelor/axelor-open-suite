@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.Address;
@@ -6,8 +24,8 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
@@ -65,7 +83,7 @@ public class BatchCountryAddressRecompute extends BatchStrategy {
     while (!(addressList =
             addressRepository
                 .all()
-                .filter("self.addressL7Country.id IN :countryIds")
+                .filter("self.country.id IN :countryIds")
                 .bind("countryIds", countryIdList)
                 .order("id")
                 .fetch(AbstractBatch.FETCH_LIMIT, offset))
@@ -76,7 +94,7 @@ public class BatchCountryAddressRecompute extends BatchStrategy {
           recomputeAddress(address);
           incrementDone();
         } catch (Exception e) {
-          TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.ADDRESS_RECOMPUTE, batch.getId());
           incrementAnomaly();
         }
       }

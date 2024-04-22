@@ -27,19 +27,23 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBudget;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
@@ -47,18 +51,21 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   protected MoveLineRepository moveLineRepository;
   protected BudgetService budgetService;
   protected BudgetDistributionService budgetDistributionService;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected AppBudgetService appBudgetService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public MoveLineBudgetServiceImpl(
       MoveLineRepository moveLineRepository,
       BudgetService budgetService,
       BudgetDistributionService budgetDistributionService,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
+      AppBudgetService appBudgetService,
+      CurrencyScaleService currencyScaleService) {
     this.moveLineRepository = moveLineRepository;
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.appBudgetService = appBudgetService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -85,10 +92,10 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         && !moveLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
-        if (currencyScaleServiceBudget
+        if (currencyScaleService
                 .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount().abs())
                 .compareTo(
-                    currencyScaleServiceBudget.getCompanyScaledValue(
+                    currencyScaleService.getCompanyScaledValue(
                         budgetDistribution, moveLine.getCredit().add(moveLine.getDebit())))
             > 0) {
           throw new AxelorException(
@@ -109,7 +116,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   }
 
   @Override
-  public String getBudgetDomain(Move move, MoveLine moveLine) {
+  public String getBudgetDomain(Move move, MoveLine moveLine) throws AxelorException {
     Company company = null;
     LocalDate date = null;
     if (move != null) {
@@ -128,7 +135,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
             .orElse(null);
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, technicalTypeSelect, new HashSet<>());
+        company, date, technicalTypeSelect, moveLine.getAccount(), new HashSet<>());
   }
 
   @Override
@@ -149,6 +156,32 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         if (budgetDistribution.getAmount().compareTo(BigDecimal.ZERO) > 0) {
           budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
         }
+      }
+    }
+  }
+
+  @Override
+  public void manageMonoBudget(Move move) {
+    if (Optional.of(appBudgetService.getAppBudget())
+        .map(AppBudget::getManageMultiBudget)
+        .orElse(true)) {
+      return;
+    }
+
+    List<MoveLine> moveLineList =
+        move.getMoveLineList().stream()
+            .filter(
+                ml -> ml.getBudget() != null && ObjectUtils.isEmpty(ml.getBudgetDistributionList()))
+            .collect(Collectors.toList());
+    if (!ObjectUtils.isEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        BudgetDistribution budgetDistribution =
+            budgetDistributionService.createDistributionFromBudget(
+                moveLine.getBudget(),
+                moveLine.getCredit().add(moveLine.getDebit()),
+                move.getDate());
+        budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
+        moveLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
       }
     }
   }

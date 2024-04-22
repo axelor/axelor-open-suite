@@ -37,6 +37,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -44,19 +45,14 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class BankStatementController {
 
-  public void runImport(ActionRequest request, ActionResponse response) {
-    try {
-      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+  public void runImport(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
+    BankStatement bankStatement = request.getContext().asType(BankStatement.class);
 
-      BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
-      BankStatementImportService bankStatementService = Beans.get(BankStatementImportService.class);
-      bankStatement = bankStatementRepo.find(bankStatement.getId());
-      bankStatementService.runImport(bankStatement, true);
-
-    } catch (Exception e) {
-      TraceBackService.trace(
-          response, e, ExceptionOriginRepository.BANK_STATEMENT, ResponseMessageType.ERROR);
-    }
+    BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
+    BankStatementImportService bankStatementService = Beans.get(BankStatementImportService.class);
+    bankStatement = bankStatementRepo.find(bankStatement.getId());
+    bankStatementService.runImport(bankStatement, true);
     response.setReload(true);
   }
 
@@ -127,8 +123,7 @@ public class BankStatementController {
     }
   }
 
-  public void deleteStatement(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void deleteStatement(ActionRequest request, ActionResponse response) {
     try {
       BankStatement bankStatement = request.getContext().asType(BankStatement.class);
       bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());

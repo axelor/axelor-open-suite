@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
@@ -30,7 +31,6 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -40,6 +40,7 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -64,7 +66,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public PurchaseOrderBudgetServiceImpl(
@@ -83,7 +85,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       BudgetDistributionRepository budgetDistributionRepository,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
+      CurrencyScaleService currencyScaleService) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -100,7 +102,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -124,49 +126,25 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
               purchaseOrderLine.getBudgetDistributionList()) {
             Budget budget = budgetDistribution.getBudget();
 
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(
-                  budget,
-                  currencyScaleServiceBudget.getCompanyScaledValue(
-                      budget, budgetDistribution.getAmount()));
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.remove(budget);
-              amountPerBudgetMap.put(
-                  budget,
-                  currencyScaleServiceBudget.getCompanyScaledValue(
-                      budget, oldAmount.add(budgetDistribution.getAmount())));
-            }
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, budgetDistribution.getAmount(), amountPerBudgetMap);
           }
 
-          for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budgetEntry.getKey(), budgetEntry.getValue(), purchaseOrder.getOrderDate());
-          }
         } else {
           Budget budget = purchaseOrderLine.getBudget();
           if (budget == null && purchaseOrder.getBudget() != null) {
             budget = purchaseOrder.getBudget();
 
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(
-                  budget,
-                  currencyScaleServiceBudget.getCompanyScaledValue(
-                      budget, purchaseOrderLine.getExTaxTotal()));
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.put(
-                  budget,
-                  currencyScaleServiceBudget.getCompanyScaledValue(
-                      budget, oldAmount.add(purchaseOrderLine.getExTaxTotal())));
-            }
-
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budget, amountPerBudgetMap.get(budget), purchaseOrder.getOrderDate());
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, purchaseOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
           }
         }
+      }
+
+      for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
+        budgetExceedAlert +=
+            budgetDistributionService.getBudgetExceedAlert(
+                budgetEntry.getKey(), budgetEntry.getValue(), purchaseOrder.getOrderDate());
       }
     }
     return budgetExceedAlert;
@@ -203,17 +181,22 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
                         ? purchaseOrderLine.getPurchaseOrder().getOrderDate()
                         : null));
 
-            purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
+            budgetDistributionService.linkBudgetDistributionWithParent(
+                budgetDistribution, purchaseOrderLine);
           }
 
           budgetDistribution.setAmount(
-              currencyScaleServiceBudget.getCompanyScaledValue(
+              currencyScaleService.getCompanyScaledValue(
                   budgetDistribution, purchaseOrderLine.getCompanyExTaxTotal()));
         } else if (purchaseOrderLine.getBudget() == null
             && appBudget != null
             && !appBudget.getManageMultiBudget()) {
           purchaseOrderLine.clearBudgetDistributionList();
         }
+        purchaseOrderLine.setBudgetRemainingAmountToAllocate(
+            budgetToolsService.getBudgetRemainingAmountToAllocate(
+                purchaseOrderLine.getBudgetDistributionList(),
+                purchaseOrderLine.getCompanyExTaxTotal()));
       }
     }
   }
@@ -243,12 +226,14 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       throws AxelorException {
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
-        Product product = poLine.getProduct();
-        if (product != null || poLine.getProductName() != null) {
+        String productCode =
+            Optional.of(poLine)
+                .map(PurchaseOrderLine::getProduct)
+                .map(Product::getCode)
+                .orElse(poLine.getProductName());
+        if (StringUtils.notEmpty(productCode)) {
           budgetService.validateBudgetDistributionAmounts(
-              poLine.getBudgetDistributionList(),
-              poLine.getCompanyExTaxTotal(),
-              product != null ? product.getCode() : poLine.getProductName());
+              poLine.getBudgetDistributionList(), poLine.getCompanyExTaxTotal(), productCode);
         }
       }
     }
@@ -300,14 +285,13 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       BudgetDistribution newBudgetDistribution = new BudgetDistribution();
 
       newBudgetDistribution.setAmount(
-          currencyScaleServiceBudget.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               purchaseOrder.getBudget(), purchaseOrderLine.getCompanyExTaxTotal()));
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
 
       budgetDistributionRepository.save(newBudgetDistribution);
-      purchaseOrderLineBudgetService.computeBudgetDistributionSumAmount(
-          purchaseOrderLine, purchaseOrder);
+      purchaseOrderLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
     }
   }
 
@@ -316,13 +300,15 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 
-    updateBudgetLinesFromPurchaseOrder(purchaseOrder);
-
-    if (appBudgetService.getAppBudget() != null
-        && !appBudgetService.getAppBudget().getManageMultiBudget()) {
-      generateBudgetDistribution(purchaseOrder);
-      updateBudgetDistributionAmountAvailable(purchaseOrder);
+    if (!appBudgetService.isApp("budget")) {
+      return;
     }
+
+    if (!appBudgetService.getAppBudget().getManageMultiBudget()) {
+      generateBudgetDistribution(purchaseOrder);
+    }
+
+    updateBudgetLinesFromPurchaseOrder(purchaseOrder);
   }
 
   @Transactional
@@ -378,6 +364,10 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
           purchaseOrder.getOrderDate(),
           purchaseOrderLine.getCompanyExTaxTotal(),
           purchaseOrderLine);
+      purchaseOrderLine.setBudgetRemainingAmountToAllocate(
+          budgetToolsService.getBudgetRemainingAmountToAllocate(
+              purchaseOrderLine.getBudgetDistributionList(),
+              purchaseOrderLine.getCompanyExTaxTotal()));
       purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, true);
     }
   }

@@ -245,7 +245,8 @@ public final class StockExceptionMessage {
       "A cancel reason must be selected" /*)*/;
   public static final String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
-
+  public static final String STOCK_LOCATION_UNIT_NULL = /*$$(*/
+      "The unit is missing on a stock location line" /*)*/;;
   /*
    * Declaration of exchanges
    */
@@ -296,7 +297,6 @@ public final class StockExceptionMessage {
       "Same from stock location and to stock location" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_STATUS = /*$$(*/
       "Status must be planned or draft" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_SALE_ORDER = /*$$(*/ "Same sale order" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER = /*$$(*/
       "Same purchase order" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;

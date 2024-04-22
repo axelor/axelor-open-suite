@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice.factory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateAdvancePaymentRefundState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateAdvancePaymentState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.inject.Beans;
@@ -28,10 +29,15 @@ public class VentilateFactory {
 
   public VentilateState getVentilator(Invoice invoice) {
     VentilateState ventilateState;
-    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      ventilateState = Beans.get(VentilateAdvancePaymentState.class);
-    } else {
-      ventilateState = Beans.get(VentilateState.class);
+    switch (invoice.getOperationSubTypeSelect()) {
+      case InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE:
+        ventilateState = Beans.get(VentilateAdvancePaymentState.class);
+        break;
+      case InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND:
+        ventilateState = Beans.get(VentilateAdvancePaymentRefundState.class);
+        break;
+      default:
+        ventilateState = Beans.get(VentilateState.class);
     }
     ventilateState.init(invoice);
     return ventilateState;

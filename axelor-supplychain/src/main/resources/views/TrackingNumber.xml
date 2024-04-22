@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form name="tracking-number-form" title="Tracking number"
+    model="com.axelor.apps.stock.db.TrackingNumber" id="supplychain-tracking-number-form"
+    extension="true">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventoryLine']">
+      <insert position="after">
+        <field name="originPurchaseOrderLine"/>
+        <field name="originSaleOrderLine"/>
+      </insert>
+    </extend>
+  </form>
+
+
+  <form name="tracking-number-stock-move-line-form" title="Tracking number"
+    id="supplychain-tracking-number-stock-move-line-form"
+    model="com.axelor.apps.stock.db.TrackingNumber" extension="true">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventoryLine']">
+      <insert position="after">
+        <field name="originPurchaseOrderLine"/>
+        <field name="originSaleOrderLine"/>
+      </insert>
+    </extend>
+  </form>
 
   <search name="tracking-number-search" title="Tracking number search" limit="50"
     id="tracking-number-supplychain-search">

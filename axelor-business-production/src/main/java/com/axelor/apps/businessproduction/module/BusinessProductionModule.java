@@ -41,8 +41,12 @@ import com.axelor.apps.businessproduction.service.SaleOrderWorkflowServiceBusine
 import com.axelor.apps.businessproduction.service.TimesheetBusinessProductionWorkflowServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionService;
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionServiceImpl;
+import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessService;
+import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
+import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
-import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
@@ -53,6 +57,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
 
 public class BusinessProductionModule extends AxelorModule {
 
@@ -77,7 +82,7 @@ public class BusinessProductionModule extends AxelorModule {
         .to(ManufOrderBusinessProductionManagementRepository.class);
     bind(SaleOrderWorkflowServiceProductionImpl.class)
         .to(SaleOrderWorkflowServiceBusinessProductionImpl.class);
-    bind(SaleOrderLineProjectServiceImpl.class)
+    bind(SaleOrderLineCreateSupplychainServiceImpl.class)
         .to(SaleOrderLineBusinessProductionServiceImpl.class);
     bind(OperationOrderWorkflowServiceImpl.class)
         .to(OperationOrderWorkflowBusinessServiceImpl.class);
@@ -86,5 +91,8 @@ public class BusinessProductionModule extends AxelorModule {
 
     bind(OperationOrderBusinessProductionCheckService.class)
         .to(OperationOrderBusinessProductionCheckServiceImpl.class);
+    bind(TimesheetLineCreateBusinessService.class).to(TimesheetLineCreateBusinessServiceImpl.class);
+    bind(TimesheetLineUpdateBusinessService.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
+    bind(TimesheetLineUpdateServiceImpl.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
   }
 }

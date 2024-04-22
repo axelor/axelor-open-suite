@@ -1,0 +1,3 @@
+"importId";"name";"modelName";"statusSelect";"toAttach"
+"85";"InvoiceAnnex";"com.axelor.apps.account.db.Invoice";"1";"false"
+"86";"InvoicingProjectAnnex";"com.axelor.apps.businessproject.db.InvoicingProject";"1";"false"

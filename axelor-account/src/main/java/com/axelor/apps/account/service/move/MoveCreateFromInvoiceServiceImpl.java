@@ -29,18 +29,17 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -48,7 +47,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -354,7 +352,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               moveToolService
                   .getTotalCurrencyAmount(creditMoveLineList)
                   .min(invoiceCustomerMoveLine.getCurrencyAmount());
-          LocalDate date = appAccountService.getTodayDate(company);
+          LocalDate date = invoice.getInvoiceDate();
 
           // credit move line creation
           MoveLine creditMoveLine =
@@ -364,8 +362,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                   account,
                   moveLineAmount,
                   amount,
-                  amount.divide(
-                      moveLineAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
+                  currencyService.computeScaledExchangeRate(amount, moveLineAmount),
                   false,
                   date,
                   date,
@@ -449,7 +446,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           moveToolService
               .getTotalCurrencyAmount(debitMoveLines)
               .min(invoiceCustomerMoveLine.getCurrencyAmount().abs());
-      LocalDate date = appAccountService.getTodayDate(company);
+      LocalDate date = invoice.getInvoiceDate();
 
       // debit move line creation
       MoveLine debitMoveLine =
@@ -459,8 +456,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               account,
               moveLineAmount,
               amount,
-              amount.divide(
-                  moveLineAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
+              currencyService.computeScaledExchangeRate(amount, moveLineAmount),
               true,
               date,
               date,
@@ -480,7 +476,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           company,
           null,
           account,
-          appAccountService.getTodayDate(company));
+          invoice.getInvoiceDate());
 
       moveValidateService.accounting(oDmove);
 

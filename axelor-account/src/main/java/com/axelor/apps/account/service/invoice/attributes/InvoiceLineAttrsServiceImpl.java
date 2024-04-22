@@ -1,7 +1,25 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.invoice.attributes;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -9,13 +27,13 @@ import java.util.Map;
 
 public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected AppBaseService appBaseService;
 
   @Inject
   public InvoiceLineAttrsServiceImpl(
-      CurrencyScaleServiceAccount currencyScaleServiceAccount, AppBaseService appBaseService) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+      CurrencyScaleService currencyScaleService, AppBaseService appBaseService) {
+    this.currencyScaleService = currencyScaleService;
     this.appBaseService = appBaseService;
   }
 
@@ -38,7 +56,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("inTaxPrice", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -48,7 +66,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("exTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -58,7 +76,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("inTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -68,7 +86,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("companyExTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoice),
+        currencyScaleService.getCompanyScale(invoice),
         attrsMap);
   }
 
@@ -78,7 +96,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("companyInTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoice),
+        currencyScaleService.getCompanyScale(invoice),
         attrsMap);
   }
 

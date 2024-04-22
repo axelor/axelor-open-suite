@@ -116,34 +116,9 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     return budgetStr;
   }
 
-  @Transactional
   @Override
-  public List<BudgetDistribution> addBudgetDistribution(SaleOrderLine saleOrderLine) {
-    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
-    if (appBudgetService.getAppBudget() != null
-        && !appBudgetService.getAppBudget().getManageMultiBudget()
-        && saleOrderLine.getBudget() != null) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(saleOrderLine.getBudget());
-      LocalDate date = null;
-      if (saleOrderLine.getSaleOrder() != null) {
-        date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
-      }
-
-      budgetDistribution.setBudgetAmountAvailable(
-          budgetToolsService.getAvailableAmountOnBudget(saleOrderLine.getBudget(), date));
-      budgetDistribution.setAmount(saleOrderLine.getExTaxTotal());
-      budgetDistributionList.add(budgetDistribution);
-      saleOrderLine.setBudgetDistributionList(budgetDistributionList);
-    }
-    return budgetDistributionList;
-  }
-
-  @Override
-  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
     Company company = null;
     LocalDate date = null;
     Set<GlobalBudget> globalBudgetSet = new HashSet<>();
@@ -161,7 +136,11 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     }
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, AccountTypeRepository.TYPE_INCOME, globalBudgetSet);
+        company,
+        date,
+        AccountTypeRepository.TYPE_INCOME,
+        saleOrderLine.getAccount(),
+        globalBudgetSet);
   }
 
   @Override
@@ -187,24 +166,5 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
             saleOrderLine.getProductName());
       }
     }
-  }
-
-  @Override
-  public void computeBudgetDistributionSumAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    List<BudgetDistribution> budgetDistributionList = saleOrderLine.getBudgetDistributionList();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate =
-        saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
-
-    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
-
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        budgetDistributionService.computeBudgetDistributionSumAmount(
-            budgetDistribution, computeDate);
-      }
-    }
-    saleOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 }

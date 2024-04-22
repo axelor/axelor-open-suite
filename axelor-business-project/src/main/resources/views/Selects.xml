@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <selection name="business.project.task.invoicing.type.select">
     <option value="1">Time spent</option>
     <option value="2">ProjectTask.Package</option>
     <option value="3">No invoicing</option>
+    <option value="4">On progress</option>
   </selection>
 
   <selection name="business.project.invoicing.sequence.select">
@@ -84,4 +85,14 @@
     <option value="3">Employee</option>
   </selection>
 
+  <selection name="business.project.sale.order.line.invoicing.mode.select">
+    <option value="1">Directly</option>
+    <option value="2">On delivery</option>
+    <option value="3">On progress</option>
+  </selection>
+
+  <selection name='iinvoice.operation.sub.type.select'
+    id="business.project.iinvoice.operation.sub.type.select">
+    <option value='8'>In progress invoice</option>
+  </selection>
 </object-views>

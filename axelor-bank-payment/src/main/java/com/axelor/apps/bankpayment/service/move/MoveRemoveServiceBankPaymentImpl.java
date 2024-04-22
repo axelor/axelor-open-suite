@@ -22,9 +22,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -47,7 +47,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
       ArchivingService archivingService,
-      ReconcileService reconcileService,
+      UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
@@ -55,7 +55,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
         moveRepo,
         moveLineRepo,
         archivingService,
-        reconcileService,
+        unReconcileService,
         accountingSituationService,
         accountCustomerService);
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;

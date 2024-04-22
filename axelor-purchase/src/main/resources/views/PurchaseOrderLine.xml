@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -188,10 +188,10 @@
             hideIf="discountTypeSelect == 3"/>
           <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"/>
         </panel>
-        <field name="taxLine" canEdit="false"
+        <field name="taxLineSet" canEdit="false"
           onChange="action-group-purchase-purchase-orderline-taxline-onchange"
           domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-          form-view="tax-line-form"/>
+          form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"
           x-scale="$currency.numberOfDecimals"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"
@@ -308,7 +308,6 @@
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.purchaseOrderLine.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-purchase-order-line-view-show-order-line-history"
@@ -333,6 +332,7 @@
     <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
     <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
+    <action name="action-purchase-order-line-record-init-dummy-fields"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-onload">
@@ -614,5 +614,12 @@
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
       method="computeAnalyticDistribution" if="__config__.app.isApp('supplychain')"/>
   </action-method>
+
+  <action-record name="action-purchase-order-line-record-init-dummy-fields"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <field name="$nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-record>
 
 </object-views>
