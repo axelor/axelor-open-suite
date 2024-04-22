@@ -1068,7 +1068,7 @@
 
   <form name="sale-order-form-client" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form-client"
-    onLoad="action-group-sale-saleorder-onload" onSave="save,action-sale-order-method-compute,save"
+    onLoad="action-group-sale-saleorder-onload" onSave="action-group-sale-order-onsave"
     onNew="action-group-sale-saleorder-onnew" width="large">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
@@ -1224,6 +1224,12 @@
         readonlyIf="$reportType==null || $format==null"/>
     </panel>
   </form>
+
+  <action-group name="action-group-sale-order-onsave">
+    <action name="save"/>
+    <action name="action-sale-order-method-compute"/>
+    <action name="save"/>
+  </action-group>
 
   <action-view name="action-sale-order-view-reports-wizard" title="Reports"
     model="com.axelor.utils.db.Wizard">
@@ -2277,8 +2283,7 @@
 
   <action-group name="action-sale-order-group-recompute-prices-btn">
     <action name="action-sale-order-method-update-sale-order-line-list"/>
-    <action name="action-sale-order-method-compute"/>
-    <action name="save"/>
+    <action name="action-group-sale-order-onsave"/>
   </action-group>
 
   <action-attrs name="action-sale-order-attrs-template-deafult-currency">
