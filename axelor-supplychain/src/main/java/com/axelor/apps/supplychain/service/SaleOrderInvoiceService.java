@@ -304,7 +304,7 @@ public interface SaleOrderInvoiceService {
 
   void updateInvoicingState(SaleOrder saleOrder);
 
-  List<Invoice> generateInvoicesFromSOL(
+  List<Invoice> generateInvoicesFromSaleOrderLines(
       Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
       Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,
       Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps,

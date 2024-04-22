@@ -953,7 +953,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<Invoice> generateInvoicesFromSOL(
+  public List<Invoice> generateInvoicesFromSaleOrderLines(
       Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
       Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,
       Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps,

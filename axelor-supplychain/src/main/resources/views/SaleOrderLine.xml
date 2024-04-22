@@ -313,7 +313,7 @@
 
   <action-group name="action-sale-order-line-group-mass-invoicing">
     <action name="action-sale-order-line-validate-selected-lines"/>
-    <action name="action-sol-method-set-sale-order-line-list-to-invoice"/>
+    <action name="action-sale-order-line-method-set-sol-list-to-invoice"/>
   </action-group>
 
   <!-- ACTION RECORD -->
@@ -479,7 +479,7 @@
       method="setAnalyticDistributionPanelHidden"/>
   </action-method>
 
-  <action-method name="action-sol-method-set-sale-order-line-list-to-invoice">
+  <action-method name="action-sale-order-line-method-set-sol-list-to-invoice">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
       method="setSaleOrderLineListToInvoice"/>
   </action-method>

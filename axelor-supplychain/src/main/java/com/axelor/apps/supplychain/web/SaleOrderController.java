@@ -302,7 +302,7 @@ public class SaleOrderController {
       if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
         BigDecimal qtyToInvoiceItem =
             new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
-        if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
+        if (qtyToInvoiceItem.signum() != 0) {
           Long soLineId = Long.valueOf((Integer) map.get("id"));
           qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
           BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
@@ -362,7 +362,7 @@ public class SaleOrderController {
 
       List<Invoice> invoiceList =
           Beans.get(SaleOrderInvoiceService.class)
-              .generateInvoicesFromSOL(
+              .generateInvoicesFromSaleOrderLines(
                   priceMaps,
                   qtyToInvoiceMaps,
                   qtyMaps,
