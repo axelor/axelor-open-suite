@@ -26,12 +26,14 @@
   <action-view name="action-partner-view-customer-contracts" title="Customer contracts"
     model="com.axelor.apps.contract.db.Contract">
     <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
     <domain>self.partner.id = :id AND self.targetTypeSelect = 1</domain>
   </action-view>
 
   <action-view name="action-partner-view-supplier-contracts" title="Supplier contracts"
     model="com.axelor.apps.contract.db.Contract">
     <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
     <domain>self.partner.id = :id AND self.targetTypeSelect = 2</domain>
   </action-view>
 
