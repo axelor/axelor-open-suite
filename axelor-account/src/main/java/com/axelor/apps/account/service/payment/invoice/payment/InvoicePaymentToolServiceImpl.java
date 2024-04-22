@@ -376,6 +376,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return (invoicePayment != null
         && appAccountService.getAppAccount().getManageFinancialDiscount()
         && deadLineDate != null
+        && invoicePayment.getPaymentDate() != null
         && deadLineDate.compareTo(invoicePayment.getPaymentDate()) >= 0);
   }
 
