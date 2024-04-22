@@ -17,14 +17,22 @@
 
   <form title="Partner" name="incl-contracts-partner-form"
     model="com.axelor.apps.base.db.Partner">
-    <panel-dashlet name="partnerContractsPanel" action="action-partner-view-contracts"
-      colSpan="12" height="550"/>
+    <panel-dashlet name="partnerCustomerContractsPanel"
+      action="action-partner-view-customer-contracts" colSpan="12" height="550"/>
+    <panel-dashlet name="partnerSupplierContractsPanel"
+      action="action-partner-view-supplier-contracts" colSpan="12" height="550"/>
   </form>
 
-  <action-view name="action-partner-view-contracts" title="Contracts"
+  <action-view name="action-partner-view-customer-contracts" title="Customer contracts"
     model="com.axelor.apps.contract.db.Contract">
     <view type="grid" name="contract-grid"/>
-    <domain>self.partner.id = :id</domain>
+    <domain>self.partner.id = :id AND self.targetTypeSelect = 1</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-supplier-contracts" title="Supplier contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <domain>self.partner.id = :id AND self.targetTypeSelect = 2</domain>
   </action-view>
 
 </object-views>
