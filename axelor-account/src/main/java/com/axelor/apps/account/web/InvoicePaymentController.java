@@ -314,6 +314,7 @@ public class InvoicePaymentController {
       response.setValue(
           "applyFinancialDiscount",
           Beans.get(InvoicePaymentToolService.class).applyFinancialDiscount(invoicePayment));
+      response.setValue("manualChange", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
