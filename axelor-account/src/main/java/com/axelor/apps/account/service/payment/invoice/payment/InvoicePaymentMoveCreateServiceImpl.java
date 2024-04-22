@@ -11,7 +11,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -31,6 +30,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -42,7 +42,6 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
@@ -430,63 +429,45 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     for (Pair<InvoiceLineTax, Account> pair : invoiceLineTaxAccountPair) {
       InvoiceLineTax invoiceLineTax = pair.getLeft();
       Account vatPendingAccount = pair.getRight();
-      Tax tax = invoiceLineTax.getTaxLine().getTax();
+      TaxConfiguration taxConfiguration =
+          new TaxConfiguration(
+              invoiceLineTax.getTaxLine(),
+              invoiceLineTax.getImputedAccount(),
+              invoiceLineTax.getVatSystemSelect());
+      TaxConfiguration pendingTaxConfiguration =
+          new TaxConfiguration(
+              invoiceLineTax.getTaxLine(), vatPendingAccount, invoiceLineTax.getVatSystemSelect());
 
-      move.addMoveLineListItem(
-          createTaxMoveLine(
+      MoveLine taxMoveLine =
+          moveLineCreateService.createTaxMoveLine(
               move,
               partner,
-              invoiceLineTax.getImputedAccount(),
               !isDebitInvoice,
               paymentDate,
               counter,
               origin,
-              invoiceLineTax,
-              tax));
-      move.addMoveLineListItem(
-          createTaxMoveLine(
-              move,
-              partner,
-              vatPendingAccount,
-              isDebitInvoice,
-              paymentDate,
-              counter,
-              origin,
-              invoiceLineTax,
-              tax));
-    }
-  }
+              invoiceLineTax.getTaxTotal(),
+              invoiceLineTax.getCompanyTaxTotal(),
+              taxConfiguration);
+      if (taxMoveLine != null) {
+        move.addMoveLineListItem(taxMoveLine);
 
-  protected MoveLine createTaxMoveLine(
-      Move move,
-      Partner partner,
-      Account account,
-      boolean isDebitInvoice,
-      LocalDate paymentDate,
-      Integer counter,
-      String origin,
-      InvoiceLineTax invoiceLineTax,
-      Tax tax)
-      throws AxelorException {
-    MoveLine taxMoveLine =
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            account,
-            invoiceLineTax.getTaxTotal(),
-            invoiceLineTax.getCompanyTaxTotal(),
-            null,
-            isDebitInvoice,
-            paymentDate,
-            null,
-            paymentDate,
-            counter,
-            origin,
-            move.getDescription());
-    taxMoveLine.setTaxLineSet(Sets.newHashSet(invoiceLineTax.getTaxLine()));
-    taxMoveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
-    taxMoveLine.setTaxCode(tax.getCode());
-    taxMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
-    return taxMoveLine;
+        MoveLine reverseTaxMoveLine =
+            moveLineCreateService.createTaxMoveLine(
+                move,
+                partner,
+                isDebitInvoice,
+                paymentDate,
+                counter,
+                origin,
+                invoiceLineTax.getTaxTotal(),
+                invoiceLineTax.getCompanyTaxTotal(),
+                pendingTaxConfiguration);
+
+        if (reverseTaxMoveLine != null) {
+          move.addMoveLineListItem(reverseTaxMoveLine);
+        }
+      }
+    }
   }
 }
