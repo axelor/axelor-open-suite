@@ -407,7 +407,7 @@ public class InvoiceToolService {
 
   protected static void setFinancialDiscount(Invoice copy) {
     FinancialDiscount financialDiscount =
-        Optional.of(copy.getPartner()).map(Partner::getFinancialDiscount).orElse(null);
+        Optional.of(copy).map(Invoice::getPartner).map(Partner::getFinancialDiscount).orElse(null);
     BigDecimal discountRate = BigDecimal.ZERO;
     BigDecimal financialDiscountTotalAmount = BigDecimal.ZERO;
     BigDecimal remainingAmountAfterFinDiscount = BigDecimal.ZERO;
