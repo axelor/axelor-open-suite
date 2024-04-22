@@ -14,8 +14,8 @@
     </extend>
     <extend target="//panel-related[@name='saleOrderListPanel']">
       <insert position="after">
-        <panel-related name="contractListPanel" title="Contracts" field="contractList"
-          grid-view="contract-grid" form-view="contract-form" readonly="true"
+        <panel-dashlet name="contractListPanel" title="Contracts"
+          action="action-opportunity-view-contract-list" readonly="true"
           if="__config__.app.isApp('contract')"/>
       </insert>
     </extend>
@@ -37,6 +37,13 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-contract-list" title="Contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
+    <domain>self.opportunity.id = :_id</domain>
   </action-view>
 
   <action-validate name="action-contract-validate-create-client">

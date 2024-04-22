@@ -38,10 +38,6 @@ public class OpportunityContractController {
             .map(linkedHashMap -> ((Integer) linkedHashMap.get("id")).longValue())
             .orElse(null);
     Opportunity opportunity = Beans.get(OpportunityRepository.class).find(opportunityId);
-    if (!opportunity.getContractList().isEmpty()) {
-      response.setError(I18n.get(ContractExceptionMessage.CONTRACT_ALREADY_GENERATED_FROM_OPP));
-      return;
-    }
     ContractTemplate contractTemplate = null;
     if (contractTemplateId != null) {
       contractTemplate = Beans.get(ContractTemplateRepository.class).find(contractTemplateId);
@@ -70,8 +66,9 @@ public class OpportunityContractController {
                         TraceBackRepository.CATEGORY_INCONSISTENCY,
                         I18n.get(CrmExceptionMessage.CRM_MISSING_OPPORTUNITY_ID)));
 
-    Opportunity opportunity = Beans.get(OpportunityRepository.class).find(opportunityId);
-    if (!opportunity.getContractList().isEmpty()) {
+    boolean contractsGenerated =
+        Beans.get(ContractService.class).contractsFromOpportunityAreGenerated(opportunityId);
+    if (contractsGenerated) {
       response.setError(I18n.get(ContractExceptionMessage.CONTRACT_ALREADY_GENERATED_FROM_OPP));
     }
   }

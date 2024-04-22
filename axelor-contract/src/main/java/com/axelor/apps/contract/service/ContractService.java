@@ -172,4 +172,6 @@ public interface ContractService {
 
   Contract generateContractFromOpportunity(
       Opportunity opportunity, ContractTemplate contractTemplate);
+
+  Boolean contractsFromOpportunityAreGenerated(Long opportunityId);
 }

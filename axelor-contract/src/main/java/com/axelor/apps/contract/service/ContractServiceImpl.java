@@ -937,10 +937,18 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           contractTemplate1.getAdditionalBenefitContractLineList());
       contract.setContractTypeSelect(contractTemplate1.getContractTypeSelect());
     }
-
+    contract.setOpportunity(opportunity);
     contractRepository.save(contract);
-    opportunity.addContractListItem(contract);
-    opportunityRepository.save(opportunity);
+
     return contract;
+  }
+
+  public Boolean contractsFromOpportunityAreGenerated(Long opportunityId) {
+    return !contractRepository
+        .all()
+        .filter("self.opportunity.id =:opportunityId")
+        .bind("opportunityId", opportunityId)
+        .fetch()
+        .isEmpty();
   }
 }
