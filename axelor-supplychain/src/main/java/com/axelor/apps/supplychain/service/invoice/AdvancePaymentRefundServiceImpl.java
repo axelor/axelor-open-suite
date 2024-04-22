@@ -45,7 +45,7 @@ public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundServ
     params.put(
         "operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND);
     params.put("originalInvoice", advancePayment);
-    params.put("advancePaymentInvoice", advancePayment.getInvoiceId());
+    params.put("advancePaymentInvoice", advancePayment.getId());
     params.put("statusSelect", InvoiceRepository.STATUS_VALIDATED);
     refundList = invoiceRepository.all().filter(filter).bind(params).fetch();
 
