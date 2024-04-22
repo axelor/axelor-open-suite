@@ -24,14 +24,17 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.helpers.ContextHelper;
 
 public class WeeklyPlanningController {
 
   public void initPlanning(ActionRequest request, ActionResponse response) {
     WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
     planning = Beans.get(WeeklyPlanningService.class).initPlanning(planning);
-    if (request.getContext().containsKey("_typeSelect")) {
-      response.setValue("typeSelect", request.getContext().get("_typeSelect"));
+    Integer typeSelect =
+        ContextHelper.getFieldFromContextParent(request.getContext(), "_typeSelect", Integer.class);
+    if (typeSelect != null) {
+      response.setValue("typeSelect", typeSelect);
     }
     response.setValue("weekDays", planning.getWeekDays());
   }
