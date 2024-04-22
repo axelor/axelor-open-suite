@@ -944,11 +944,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   public Boolean contractsFromOpportunityAreGenerated(Long opportunityId) {
-    return !contractRepository
-        .all()
-        .filter("self.opportunity.id =:opportunityId")
-        .bind("opportunityId", opportunityId)
-        .fetch()
-        .isEmpty();
+    return contractRepository
+            .all()
+            .filter("self.opportunity.id =:opportunityId")
+            .bind("opportunityId", opportunityId)
+            .count()
+        > 0;
   }
 }
