@@ -149,6 +149,10 @@
   <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
     model="com.axelor.apps.sale.db.SaleOrderLine" edit-icon="false" groupBy="saleOrder"
     canNew="false" canEdit="false">
+    <toolbar>
+      <button name="openSolToInvoiceFormBtn" title="Invoice selected lines"
+        onClick="action-sale-order-line-group-mass-invoicing"/>
+    </toolbar>
     <field name="saleOrder" hidden="true"/>
     <field name="saleOrder.clientPartner" width="200"/>
     <field name="project" if-module="axelor-business-project"
@@ -173,6 +177,24 @@
     <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
   </grid>
 
+  <grid name="sale-order-line-to-invoice-popup-grid" title="Lines to invoice" edit-icon="false"
+    model="com.axelor.apps.sale.db.SaleOrderLine" editable="true">
+    <field name="saleOrder" readonly="true"/>
+    <field name="product.code" width="120"/>
+    <field name="productName" readonly="true"/>
+    <field name="qty" readonly="true" aggregate="sum"/>
+    <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="price" readonly="true"/>
+    <field name="exTaxTotal" readonly="true" aggregate="sum"
+      x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="amountInvoiced" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll"
+      min="0" x-scale="2"/>
+    <field name="invoiceAll" title="Invoice all" type="boolean"
+      onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
+  </grid>
+
   <form title="Sale order line to invoice" name="sale-order-line-to-invoice-form"
     model="com.axelor.apps.sale.db.SaleOrderLine" canEdit="false" canNew="false" canArchive="false"
     canDelete="false" canCopy="false">
@@ -185,6 +207,22 @@
       <field name="saleOrder.currency"/>
     </panel>
     <panel-include view="sale-order-line-form"/>
+  </form>
+
+  <form name="sale-order-line-multi-invoicing-form" model="com.axelor.utils.db.Wizard"
+    title="Mass sale order line invoicing" canSave="false" canNew="false"
+    onNew="action-sale-order-line-attrs-set-saleOrderLineListToInvoice">
+    <panel name="mainPanel" colSpan="12">
+      <panel-related name="saleOrderLineTListoInvoicePanel"
+        field="$saleOrderLineListToInvoice" title="Sale order lines to invoice" colSpan="12"
+        height="25" type="one-to-many" target="com.axelor.apps.sale.db.SaleOrderLine" canNew="false"
+        canEdit="true" grid-view="sale-order-line-to-invoice-popup-grid"
+        form-view="sale-order-line-form"/>
+      <panel name="actionsPanel" title="Actions">
+        <button name="generateInvoiceBtn" title="Generate invoices"
+          onClick="action-sale-order-line-method-generate-invoice"/>
+      </panel>
+    </panel>
   </form>
 
   <!-- ACTION VIEW -->
@@ -273,6 +311,11 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
   </action-group>
 
+  <action-group name="action-sale-order-line-group-mass-invoicing">
+    <action name="action-sale-order-line-validate-selected-lines"/>
+    <action name="action-sale-order-line-method-set-sol-list-to-invoice"/>
+  </action-group>
+
   <!-- ACTION RECORD -->
 
   <action-record
@@ -341,6 +384,17 @@
     <attribute name="domain" for="analyticDistributionTemplate"
       expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
   </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-set-saleOrderLineListToInvoice">
+    <attribute for="$saleOrderLineListToInvoice" name="value"
+      expr="eval: _saleOrderLineListToInvoice"/>
+  </action-attrs>
+
+  <!-- ACTION VALIDATE -->
+
+  <action-validate name="action-sale-order-line-validate-selected-lines">
+    <error message="No items have been selected." if="!_ids"/>
+  </action-validate>
 
   <!-- ACTION METHOD -->
 
@@ -423,6 +477,16 @@
     name="action-sale-order-line-method-set-analytic-distribution-panel-hidden">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
       method="setAnalyticDistributionPanelHidden"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-sol-list-to-invoice">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+      method="setSaleOrderLineListToInvoice"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-generate-invoice">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="generateInvoicesFromSelectedLines"/>
   </action-method>
 
 </object-views>
