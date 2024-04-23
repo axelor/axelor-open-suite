@@ -1,0 +1,3 @@
+---
+title: "Contract : fix prorata invoicing when invoicing a full period"
+module: axelor-contract
