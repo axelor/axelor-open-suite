@@ -50,19 +50,6 @@
       <field name="originParentTrackingNumberSet" x-dirty="false" hidden="true"
         type="many-to-many" target="com.axelor.apps.stock.db.TrackingNumber"/>
     </panel>
-    <panel name="barcodePanel" title="Barcode"
-      if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">
-      <field name="barCode" showTitle="false" widget="Image" colSpan="4"/>
-      <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
-      <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
-    </panel>
-    <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
-      <field name="originMoveTypeSelect" widget="single-select" colSpan="12"/>
-      <field name="createdBy" colSpan="6"/>
-      <field name="createdOn" colSpan="6"/>
-      <field name="originStockMoveLine"/>
-      <field name="originInventoryLine"/>
-    </panel>
     <panel-tabs name="trackingNumberPanelTabs">
       <panel name="stockLocationDashletPanel" title="Stock location line">
         <panel-dashlet action="action-tracking-number-view-show-details-available"
@@ -77,6 +64,19 @@
           form-view="tracking-number-form" grid-view="tracking-number-grid" colSpan="12"
           title="Tracking number's direct parents"/>
         <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
+      </panel>
+      <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
+        <field name="originMoveTypeSelect" widget="single-select" colSpan="12"/>
+        <field name="createdBy" colSpan="6"/>
+        <field name="createdOn" colSpan="6"/>
+        <field name="originStockMoveLine"/>
+        <field name="originInventoryLine"/>
+      </panel>
+      <panel name="barcodePanel" title="Barcode"
+        if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">
+        <field name="barCode" showTitle="false" widget="Image" colSpan="4"/>
+        <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
+        <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
       </panel>
     </panel-tabs>
 
