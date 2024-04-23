@@ -210,23 +210,37 @@ public class LeadServiceImpl implements LeadService {
       return false;
     }
     Long leadId = lead.getId();
+    String email = lead.getEmailAddress().getAddress();
     if (leadId == null) {
-      Lead existingLead =
+      Lead existingLeadWithName =
           leadRepo
               .all()
               .filter("lower(self.fullName) = lower(:newName) ")
               .bind("newName", newName)
               .fetchOne();
-      return existingLead != null;
+      Lead existingLeadWithMail =
+          leadRepo
+              .all()
+              .filter("self.emailAddress.address = :email ")
+              .bind("email", email)
+              .fetchOne();
+      return existingLeadWithMail != null || existingLeadWithName != null;
     } else {
-      Lead existingLead =
+      Lead existingLeadWithName =
           leadRepo
               .all()
               .filter("lower(self.fullName) = lower(:newName) " + "and self.id != :leadId ")
               .bind("newName", newName)
               .bind("leadId", leadId)
               .fetchOne();
-      return existingLead != null;
+      Lead existingLeadWithMail =
+          leadRepo
+              .all()
+              .filter("self.emailAddress.address = :email " + "and self.id != :leadId ")
+              .bind("email", email)
+              .bind("leadId", leadId)
+              .fetchOne();
+      return existingLeadWithMail != null || existingLeadWithName != null;
     }
   }
 
