@@ -20,6 +20,7 @@
   	<string name="webSite" title="Website"/>
     <string name="consuelFile" title="Consuel"/>
     <string name="planningPermissionFile" title="Autorisation d'urbanisme"/>
+    <boolean name="isDuplicated" title="Doublon"/>    
   	
 <!--   Primary address group -->
 	<string name="primaryAddress" title="Address"/>
