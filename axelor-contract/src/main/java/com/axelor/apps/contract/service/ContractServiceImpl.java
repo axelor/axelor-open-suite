@@ -73,7 +73,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -959,7 +958,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       Contract contractCtx,
       ConsumptionLine consumptionLineCtx,
       BigDecimal initQty,
-      Optional<Integer> initProductId) {
+      Integer initProductId) {
 
     BigDecimal max = BigDecimal.ZERO;
     if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
@@ -979,9 +978,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
       max = contractLines.get(0).getConsumptionMaxQuantity();
     }
-    if (initProductId.isPresent()) {
-      if (!Objects.equals(
-          Long.valueOf(initProductId.get()), consumptionLineCtx.getProduct().getId())) {
+    if (initProductId != null) {
+      if (!Objects.equals(Long.valueOf(initProductId), consumptionLineCtx.getProduct().getId())) {
         contractCtx.getConsumptionLineList().add(consumptionLineCtx);
       }
     }

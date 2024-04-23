@@ -65,7 +65,10 @@ public class ConsumptionLineController {
       boolean isSendAlert =
           Beans.get(ContractService.class)
               .checkConsumptionLineQuantity(
-                  contract, consumptionLine, initQt.orElse(BigDecimal.ZERO), initProductId);
+                  contract,
+                  consumptionLine,
+                  initQt.orElse(BigDecimal.ZERO),
+                  initProductId.orElse(null));
       if (isSendAlert) {
         response.setInfo(
             I18n.get(ContractExceptionMessage.CONTRACT_QUANTITIES_EXCEED_MAX), I18n.get("Warning"));
