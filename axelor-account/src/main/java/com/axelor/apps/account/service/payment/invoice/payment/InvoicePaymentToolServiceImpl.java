@@ -439,7 +439,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (!CollectionUtils.isEmpty(invoiceTerms)) {
 
         BigDecimal companyAmount =
-            this.computeCompanyAmount(invoicePayment.getAmount(), invoicePayment);
+            this.computeCompanyAmount(
+                invoicePayment.getAmount(), invoicePayment, invoicePayment.getInvoice());
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
@@ -533,13 +534,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   protected BigDecimal computeCompanyAmount(
-      BigDecimal amountInCurrency, InvoicePayment invoicePayment) throws AxelorException {
+      BigDecimal amountInCurrency, InvoicePayment invoicePayment, Invoice invoice)
+      throws AxelorException {
     if (!invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())) {
       return currencyService.getAmountCurrencyConvertedAtDate(
           invoicePayment.getCurrency(),
           invoicePayment.getCompanyCurrency(),
           amountInCurrency,
-          invoicePayment.getPaymentDate());
+          invoice.getInvoiceDate());
     }
 
     return amountInCurrency;

@@ -2,15 +2,21 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicePaymentForeignExchangeCreateServiceImpl
     implements InvoicePaymentForeignExchangeCreateService {
@@ -19,6 +25,7 @@ public class InvoicePaymentForeignExchangeCreateServiceImpl
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
   protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
+  protected InvoiceTermToolService invoiceTermToolService;
   protected InvoicePaymentRepository invoicePaymentRepository;
 
   @Inject
@@ -27,11 +34,13 @@ public class InvoicePaymentForeignExchangeCreateServiceImpl
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       ForeignExchangeGapToolsService foreignExchangeGapToolsService,
+      InvoiceTermToolService invoiceTermToolService,
       InvoicePaymentRepository invoicePaymentRepository) {
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
     this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
+    this.invoiceTermToolService = invoiceTermToolService;
     this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
@@ -55,7 +64,9 @@ public class InvoicePaymentForeignExchangeCreateServiceImpl
     invoicePayment.setCompanyBankDetails(invoice.getCompanyBankDetails());
     invoicePayment.setMove(newReconcile.getForeignExchangeMove());
     invoice.addInvoicePaymentListItem(invoicePayment);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
+
+    this.createInvoicePaymentTerms(invoicePayment);
+
     if (!ObjectUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
         invoiceTermService.updateInvoiceTermsPaidAmount(
@@ -80,5 +91,64 @@ public class InvoicePaymentForeignExchangeCreateServiceImpl
     return isGain
         ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN
         : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS;
+  }
+
+  protected void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException {
+
+    Invoice invoice = invoicePayment.getInvoice();
+    if (invoice == null
+        || CollectionUtils.isEmpty(invoicePayment.getInvoice().getInvoiceTermList())) {
+      return;
+    }
+
+    List<InvoiceTerm> invoiceTerms =
+        invoiceTermToolService.getPaymentVoucherInvoiceTerms(invoicePayment, invoice);
+
+    if (CollectionUtils.isNotEmpty(invoiceTerms)) {
+      this.initInvoiceTermPaymentsWithAmount(
+          invoicePayment, invoiceTerms, invoicePayment.getAmount());
+    }
+  }
+
+  protected void initInvoiceTermPaymentsWithAmount(
+      InvoicePayment invoicePayment,
+      List<InvoiceTerm> invoiceTermsToPay,
+      BigDecimal availableAmount) {
+
+    List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
+    InvoiceTerm invoiceTermToPay;
+    InvoiceTermPayment invoiceTermPayment;
+    int invoiceTermCount = invoiceTermsToPay.size();
+
+    if (invoicePayment != null) {
+      invoicePayment.clearInvoiceTermPaymentList();
+    }
+
+    int i = 0;
+    while (i < invoiceTermCount && availableAmount.signum() > 0) {
+      invoiceTermToPay =
+          invoiceTermToolService.getInvoiceTermToPay(
+              invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
+
+      BigDecimal invoiceTermCompanyAmount = invoiceTermToPay.getCompanyAmountRemaining();
+
+      if (invoiceTermCompanyAmount.compareTo(availableAmount) >= 0) {
+        invoiceTermPayment =
+            invoiceTermPaymentService.createInvoiceTermPayment(
+                invoicePayment, invoiceTermToPay, availableAmount);
+        availableAmount = BigDecimal.ZERO;
+      } else {
+        invoiceTermPayment =
+            invoiceTermPaymentService.createInvoiceTermPayment(
+                invoicePayment, invoiceTermToPay, invoiceTermCompanyAmount);
+        availableAmount = availableAmount.subtract(invoiceTermCompanyAmount);
+      }
+
+      invoiceTermPaymentList.add(invoiceTermPayment);
+
+      if (invoicePayment != null) {
+        invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
+      }
+    }
   }
 }
