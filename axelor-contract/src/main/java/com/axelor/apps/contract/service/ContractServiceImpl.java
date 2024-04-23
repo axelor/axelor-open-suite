@@ -72,6 +72,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -950,5 +951,63 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             .bind("opportunityId", opportunityId)
             .count()
         > 0;
+  }
+
+  @Override
+  public boolean checkConsumptionLineQuantity(
+      Contract contractCtx,
+      ConsumptionLine consumptionLineCtx,
+      BigDecimal initQty,
+      Integer initProductId) {
+
+    BigDecimal max = BigDecimal.ZERO;
+    if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
+      List<ContractLine> contractLines =
+          contractCtx.getCurrentContractVersion().getContractLineList().stream()
+              .filter(
+                  cl ->
+                      cl.getIsConsumptionLine()
+                          && Objects.equals(
+                              cl.getProduct().getId(), consumptionLineCtx.getProduct().getId()))
+              .collect(Collectors.toList());
+      if (contractLines.isEmpty()) {
+        return false;
+      }
+      if (contractLines.get(0).getConsumptionMaxQuantity() == null) {
+        return false;
+      }
+      max = contractLines.get(0).getConsumptionMaxQuantity();
+    }
+    if (initProductId != null) {
+      if (!Objects.equals(Long.valueOf(initProductId), consumptionLineCtx.getProduct().getId())) {
+        contractCtx.getConsumptionLineList().add(consumptionLineCtx);
+      }
+    }
+    BigDecimal sum =
+        contractCtx.getConsumptionLineList().stream()
+            .filter(
+                consumptionLine ->
+                    dateInPeriod(
+                            consumptionLine.getLineDate(),
+                            contractCtx.getInvoicePeriodStartDate(),
+                            contractCtx.getInvoicePeriodEndDate())
+                        && consumptionLine
+                            .getProduct()
+                            .getId()
+                            .equals(consumptionLineCtx.getProduct().getId())
+                        && !consumptionLine.getIsInvoiced())
+            .map(ConsumptionLine::getQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    sum = sum.subtract(initQty);
+    sum = sum.add(consumptionLineCtx.getQty());
+    return sum.compareTo(max) > 0;
+  }
+
+  private boolean dateInPeriod(LocalDate date, LocalDate startDate, LocalDate endDate) {
+    if (startDate == null || endDate == null) {
+      return true;
+    }
+    return !date.isBefore(startDate) && !date.isAfter(endDate);
   }
 }
