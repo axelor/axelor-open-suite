@@ -56,7 +56,7 @@
       <insert position="before">
         <field name="frameworkCustomerContract" domain="self.contractTypeSelect = 2"
           if="__config__.app.isApp('contract')"
-          onChange="action-project-task-group-on-contract-change"/>
+          onChange="action-project-task-group-set-price-from-contract"/>
       </insert>
     </extend>
     <extend target="//field[@name='assignedTo']">
@@ -108,7 +108,7 @@
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
           <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
             <field name="product" colSpan="3" canEdit="false"
-              onChange="action-project-task-group-product-onchange"
+              onChange="action-business-project-project-task-group-product-onchange"
               onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
               grid-view="product-grid" readonlyIf="saleOrderLine"/>
             <field name="quantity" colSpan="3"
@@ -307,7 +307,7 @@
       if="frameworkCustomerContract"/>
   </action-attrs>
 
-  <action-group name="action-project-task-group-on-contract-change">
+  <action-group name="action-project-task-group-set-price-from-contract">
     <action name="action-project-task-method-get-contract-price"/>
     <action name="action-project-task-method-update-discount"/>
     <action name="action-project-task-method-compute"/>
@@ -345,5 +345,10 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
   </action-record>
+
+  <action-group name="action-business-project-project-task-group-product-onchange">
+    <action name="action-project-task-group-product-onchange"/>
+    <action name="action-project-task-group-set-price-from-contract"/>
+  </action-group>
 
 </object-views>
