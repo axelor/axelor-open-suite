@@ -125,7 +125,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   public boolean getPaymentVouchersStatus(Invoice invoice) throws AxelorException {
     AppAccountService appAccount = Beans.get(AppAccountService.class);
 
-    if (InvoiceToolService.isAdvancePayment(invoice)) {
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       return false;
     }
 
@@ -158,7 +158,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected boolean _getStatusOperationSubTypeCondition(Invoice invoice) {
     return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         || (invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED
-            && (InvoiceToolService.isAdvancePayment(invoice)));
+            && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
   }
 
   protected boolean _getPfpValidateStatusCondition(Invoice invoice, boolean litigation) {

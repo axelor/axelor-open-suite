@@ -218,7 +218,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void validate(Invoice invoice) throws AxelorException {
     validateProcess(invoice);
-    if (!InvoiceToolService.isAdvancePayment(invoice)
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
         && invoice.getInvoiceAutomaticMailOnValidate()) {
       sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
     }
@@ -234,7 +234,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
-    if (InvoiceToolService.isAdvancePayment(invoice)) {
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       ventilate(invoice);
     }
   }
@@ -282,7 +282,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
-          && !InvoiceToolService.isAdvancePayment(invoice)) {
+          && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
