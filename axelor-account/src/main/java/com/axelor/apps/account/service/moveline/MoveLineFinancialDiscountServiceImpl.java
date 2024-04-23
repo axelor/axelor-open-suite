@@ -28,9 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.TaxRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
@@ -39,6 +37,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
@@ -65,7 +64,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
   protected MoveLineCreateService moveLineCreateService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected MoveLineToolService moveLineToolService;
   protected TaxService taxService;
   protected TaxRepository taxRepository;
@@ -77,7 +76,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
       MoveLineCreateService moveLineCreateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       MoveLineToolService moveLineToolService,
       TaxService taxService,
       TaxRepository taxRepository) {
@@ -86,7 +85,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
     this.moveLineCreateService = moveLineCreateService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.moveLineToolService = moveLineToolService;
     this.taxService = taxService;
     this.taxRepository = taxRepository;
@@ -123,7 +122,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
 
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               moveLine,
               this.computeFinancialDiscountTotalAmount(financialDiscount, moveLine, amount)));
       moveLine.setRemainingAmountAfterFinDiscount(
@@ -143,12 +142,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     BigDecimal taxAmount =
         Optional.of(moveLine).map(MoveLine::getMove).map(Move::getMoveLineList).stream()
             .flatMap(Collection::stream)
-            .filter(
-                it ->
-                    it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))
+            .filter(moveLineToolService::isMoveLineTaxAccount)
             .map(MoveLine::getCurrencyAmount)
             .map(BigDecimal::abs)
             .findFirst()
@@ -163,13 +157,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       moveLine.getInvoiceTermList().stream()
           .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
           .forEach(
-              it ->
-                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
-                      it,
-                      moveLine.getCredit().max(moveLine.getDebit()),
-                      moveLine.getFinancialDiscount(),
-                      moveLine.getFinancialDiscountTotalAmount(),
-                      moveLine.getRemainingAmountAfterFinDiscount()));
+              it -> invoiceTermFinancialDiscountService.computeFinancialDiscount(it, moveLine));
     }
   }
 
@@ -280,7 +268,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean isDebit,
       boolean financialDiscountVat)
       throws AxelorException {
-    int scale = currencyScaleServiceAccount.getScale(move);
+    int scale = currencyScaleService.getScale(move);
 
     financialDiscountAmount =
         financialDiscountAmount.multiply(prorata.getLeft()).setScale(scale, RoundingMode.HALF_UP);
@@ -436,36 +424,30 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     moveLine.setAmountRemaining(signedAmount);
   }
 
-  @Override
   public Map<String, Account> getAccountTaxMap(Move move) {
-    Map<String, Account> vatSystemMap = new HashMap<>();
+    Map<String, Account> accountTaxMap = new HashMap<>();
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
-        vatSystemMap.put(
-            taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getAccount());
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
+          accountTaxMap.put(
+              taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getAccount());
+        }
       }
     }
 
-    return vatSystemMap;
+    return accountTaxMap;
   }
 
-  @Override
   public Map<String, Integer> getVatSystemTaxMap(Move move) {
     Map<String, Integer> vatSystemMap = new HashMap<>();
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
-        vatSystemMap.put(
-            taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getVatSystemSelect());
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
+          vatSystemMap.put(
+              taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getVatSystemSelect());
+        }
       }
     }
 
@@ -484,11 +466,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       BigDecimal taxTotal = BigDecimal.ZERO;
 
       for (MoveLine moveLineIt : moveLine.getMove().getMoveLineList()) {
-        if (moveLineIt
-            .getAccount()
-            .getAccountType()
-            .getTechnicalTypeSelect()
-            .equals(AccountTypeRepository.TYPE_TAX)) {
+        if (moveLineToolService.isMoveLineTaxAccount(moveLineIt)) {
           BigDecimal baseAmount =
               moveLine.getMove().getMoveLineList().stream()
                   .filter(

@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PriceListService;
@@ -63,7 +64,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected DurationService durationService;
   protected AnalyticLineModelService analyticLineModelService;
   protected AppAccountService appAccountService;
-  protected CurrencyScaleServiceContract currencyScaleServiceContract;
+  protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
 
   @Inject
@@ -77,7 +78,7 @@ public class ContractLineServiceImpl implements ContractLineService {
       DurationService durationService,
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
-      CurrencyScaleServiceContract currencyScaleServiceContract,
+      CurrencyScaleService currencyScaleService,
       TaxService taxService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
@@ -88,7 +89,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.durationService = durationService;
     this.analyticLineModelService = analyticLineModelService;
     this.appAccountService = appAccountService;
-    this.currencyScaleServiceContract = currencyScaleServiceContract;
+    this.currencyScaleService = currencyScaleService;
     this.taxService = taxService;
   }
 
@@ -201,7 +202,6 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     if (contractLine.getContractVersion() != null) {
       contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
-      contract = contractLine.getContractVersion().getContract();
     }
 
     BigDecimal price =
@@ -211,12 +211,10 @@ public class ContractLineServiceImpl implements ContractLineService {
             contractLine.getDiscountAmount());
     contractLine.setPriceDiscounted(price);
     BigDecimal exTaxTotal =
-        currencyScaleServiceContract.getScaledValue(
-            contract, contractLine.getQty().multiply(price));
+        currencyScaleService.getScaledValue(contract, contractLine.getQty().multiply(price));
     contractLine.setExTaxTotal(exTaxTotal);
     BigDecimal inTaxTotal =
-        currencyScaleServiceContract.getScaledValue(
-            contract, exTaxTotal.add(exTaxTotal.multiply(taxRate)));
+        currencyScaleService.getScaledValue(contract, exTaxTotal.add(exTaxTotal.multiply(taxRate)));
     contractLine.setInTaxTotal(inTaxTotal);
 
     return contractLine;
@@ -253,12 +251,12 @@ public class ContractLineServiceImpl implements ContractLineService {
                   RoundingMode.HALF_UP);
       if (initialUnitPrice != null && qty != null) {
         contractLine.setInitialPricePerYear(
-            currencyScaleServiceContract.getScaledValue(
+            currencyScaleService.getScaledValue(
                 contractLine, initialUnitPrice.multiply(qty).multiply(ratio)));
       }
       if (exTaxTotal != null) {
         contractLine.setYearlyPriceRevalued(
-            currencyScaleServiceContract.getScaledValue(contractLine, exTaxTotal.multiply(ratio)));
+            currencyScaleService.getScaledValue(contractLine, exTaxTotal.multiply(ratio)));
       }
     }
 

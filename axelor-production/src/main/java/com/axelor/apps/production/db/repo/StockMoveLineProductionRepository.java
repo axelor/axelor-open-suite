@@ -30,6 +30,7 @@ public class StockMoveLineProductionRepository extends StockMoveLineSupplychainR
       copy.setProducedManufOrder(null);
       copy.setConsumedManufOrder(null);
       copy.setConsumedOperationOrder(null);
+      copy.setResidualManufOrder(null);
     }
     return copy;
   }

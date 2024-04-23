@@ -45,7 +45,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isEditionOfDateAllowed;
   protected final Boolean isTimesheetProjectInvoicingEnabled;
   protected final Boolean isStockLocationManagementEnabled;
+  protected final Boolean isOneLineShortcut;
+  protected final String minimalRequiredMobileAppVersion;
   protected final List<String> fieldsToShowOnTimesheet;
+  protected final List<Long> dashboardIdList;
+  protected final List<MobileShortcutResponse> mobileShortcutList;
 
   public MobileSettingsResponse(
       Integer version,
@@ -70,7 +74,11 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isEditionOfDateAllowed,
       Boolean isTimesheetProjectInvoicingEnabled,
       Boolean isStockLocationManagementEnabled,
-      List<String> fieldsToShowOnTimesheet) {
+      Boolean isOneLineShortcut,
+      String minimalRequiredMobileAppVersion,
+      List<String> fieldsToShowOnTimesheet,
+      List<Long> dashboardIdList,
+      List<MobileShortcutResponse> mobileShortcutList) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
@@ -93,7 +101,11 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isEditionOfDateAllowed = isEditionOfDateAllowed;
     this.isTimesheetProjectInvoicingEnabled = isTimesheetProjectInvoicingEnabled;
     this.isStockLocationManagementEnabled = isStockLocationManagementEnabled;
+    this.isOneLineShortcut = isOneLineShortcut;
+    this.minimalRequiredMobileAppVersion = minimalRequiredMobileAppVersion;
     this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
+    this.dashboardIdList = dashboardIdList;
+    this.mobileShortcutList = mobileShortcutList;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -200,8 +212,26 @@ public class MobileSettingsResponse extends ResponseStructure {
     return isStockLocationManagementEnabled;
   }
 
+  @JsonProperty(value = "isOneLineShortcut")
+  public Boolean getIsOneLineShortcut() {
+    return isOneLineShortcut;
+  }
+
+  @JsonProperty(value = "minimalRequiredMobileAppVersion")
+  public String getMinimalRequiredMobileAppVersion() {
+    return minimalRequiredMobileAppVersion;
+  }
+
   @JsonProperty(value = "fieldsToShowOnTimesheet")
   public List<String> getFieldsToShowOnTimesheet() {
     return fieldsToShowOnTimesheet;
+  }
+
+  public List<Long> getDashboardIdList() {
+    return dashboardIdList;
+  }
+
+  public List<MobileShortcutResponse> getMobileShortcutList() {
+    return mobileShortcutList;
   }
 }

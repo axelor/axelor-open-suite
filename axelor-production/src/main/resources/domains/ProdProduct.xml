@@ -14,7 +14,7 @@
       initParam="true"/>
 
     <!-- Contreparties - Non affiché -->
-    <!-- Operation order -->
+    <!-- Manufacturing operation -->
     <many-to-one name="toConsumeOperationOrder"
       ref="com.axelor.apps.production.db.OperationOrder"/>
     <many-to-one name="diffConsumeOperationOrder"

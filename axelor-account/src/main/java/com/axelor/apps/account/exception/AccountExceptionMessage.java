@@ -594,6 +594,9 @@ public final class AccountExceptionMessage {
   public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
       "%d accounts treated successfully," /*)*/;
 
+  public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_RESULT_MOVE = /*$$(*/
+      "One result move generated %s." /*)*/;
+
   /** Batch auto move lettering */
   public static final String BATCH_AUTO_MOVE_LETTERING_REPORT_TITLE = /*$$(*/
       "Report for auto move lettering batch:" /*)*/;
@@ -1051,7 +1054,12 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_2 = /*$$(*/ "Credit note created" /*)*/;
   public static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
-  public static final String INVOICE_4 = /*$$(*/ "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND = /*$$(*/
+      "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT = /*$$(*/
+      "Credit notes from advance payment %s" /*)*/;
+  public static final String INVOICE_GENERATED_INVOICE_REFUND = /*$$(*/
+      "Invoice from credit notes %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
 
@@ -1504,6 +1512,8 @@ public final class AccountExceptionMessage {
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
           "Please select a purchase account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String ACCOUNT_MANAGEMENT_PURCHASE_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a purchase account for non deductible Tax: %s (company: %s)" /*)*/;
 
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
@@ -1693,6 +1703,36 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS = /*$$(*/
       "The accounting configurations have been imported successfully for the company %s." /*)*/;
 
+  public static final String MOVE_USER_NOT_AUTHORIZED_ON_JOURNAL_ROLE_SET = /*$$(*/
+      "You are not authorized to save the move %s (check the %s journal's role config)." /*)*/;
+
   public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
       "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
+
+  public static final String PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES = /*$$(*/
+      "Warning, you have more than one configuration for company %s, so make sure you only have one." /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
+      "No partner involved, please look for your blocking configuration if necessary." /*)*/;
+
+  public static final String FINANCIAL_DISCOUNT_NOT_COMPATIBLE_WITH_ADVANCE_PAYMENT_INVOICE =
+      /*$$(*/ "Financial discount is not compatible with the advance payment invoice. Please unselect financial discount in order to continue." /*)*/;
+
+  public static final String CREATE_REFUND_BTN_CLASSIC_REFUND = /*$$(*/
+      "Generate credit note" /*)*/;
+  public static final String CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Generate advance payment invoice" /*)*/;
+  public static final String CREATE_REFUND_BTN_INVOICE = /*$$(*/ "Generate invoice" /*)*/;
+
+  public static final String REFUND_INVOICE_LIST_CLASSIC_REFUND = /*$$(*/ "Credit notes" /*)*/;
+  public static final String REFUND_INVOICE_LIST_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Advance payments" /*)*/;
+  public static final String REFUND_INVOICE_LIST_INVOICE = /*$$(*/ "Invoices" /*)*/;
+
+  public static final String ORIGINAL_INVOICE_CLASSIC_REFUND = /*$$(*/ "Original credit note" /*)*/;
+  public static final String ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Original advance payment" /*)*/;
+  public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
+  public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
+      "Duplicate from tax found for this fiscal position." /*)*/;
 }

@@ -12,6 +12,8 @@
       title="Tasks"/>
     <decimal name="previousProgress" title="Previous progress" nullable="true"/>
     <decimal name="newProgress" title="New progress" nullable="true"/>
+    <many-to-one name="expenseLine" title="Expense line"
+      ref="com.axelor.apps.hr.db.ExpenseLine"/>
 
   </entity>
 

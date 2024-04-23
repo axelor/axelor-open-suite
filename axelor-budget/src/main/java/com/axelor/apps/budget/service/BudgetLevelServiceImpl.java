@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
@@ -60,7 +61,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   protected AppBudgetService appBudgetService;
   protected BudgetLevelRepository budgetLevelRepository;
   protected BudgetToolsService budgetToolsService;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetLevelServiceImpl(
@@ -75,7 +76,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       AppBudgetService appBudgetService,
       BudgetLevelRepository budgetLevelRepository,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
+      CurrencyScaleService currencyScaleService) {
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
     this.advancedImportRepo = advancedImportRepo;
     this.advancedImportService = advancedImportService;
@@ -87,7 +88,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     this.appBudgetService = appBudgetService;
     this.budgetLevelRepository = budgetLevelRepository;
     this.budgetToolsService = budgetToolsService;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -102,7 +103,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setRealizedWithNoPo(amountByField.get("realizedWithNoPo"));
     budgetLevel.setRealizedWithPo(amountByField.get("realizedWithPo"));
     budgetLevel.setTotalAmountAvailable(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             budgetLevel,
             amountByField
                 .get("totalAmountExpected")
@@ -112,7 +113,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setTotalFirmGap(amountByField.get("totalFirmGap"));
     budgetLevel.setSimulatedAmount(amountByField.get("simulatedAmount"));
     budgetLevel.setAvailableAmountWithSimulated(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             budgetLevel,
             budgetLevel
                 .getTotalAmountAvailable()

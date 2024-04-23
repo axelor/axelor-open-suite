@@ -30,13 +30,14 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PricingRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingComputer;
 import com.axelor.apps.base.service.pricing.PricingObserver;
 import com.axelor.apps.base.service.pricing.PricingService;
@@ -52,7 +53,6 @@ import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.translation.ITranslation;
@@ -93,7 +93,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected PricingService pricingService;
   protected TaxService taxService;
   protected SaleOrderMarginService saleOrderMarginService;
-  protected CurrencyScaleServiceSale currencyScaleServiceSale;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -108,7 +108,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       PricingService pricingService,
       TaxService taxService,
       SaleOrderMarginService saleOrderMarginService,
-      CurrencyScaleServiceSale currencyScaleServiceSale) {
+      CurrencyScaleService currencyScaleService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -120,7 +120,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.pricingService = pricingService;
     this.taxService = taxService;
     this.saleOrderMarginService = saleOrderMarginService;
-    this.currencyScaleServiceSale = currencyScaleServiceSale;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
@@ -175,9 +175,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     // It is supposed that only one pricing match those criteria (because of the configuration)
     // Having more than one pricing matched may result on a unexpected result
     if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
-      return pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
+      return pricingService.getRandomPricing(
+          saleOrder.getCompany(),
+          saleOrderLine,
+          null,
+          PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
     } else {
-      return pricingService.getRootPricingForNextPricings(saleOrder.getCompany(), saleOrderLine);
+      return pricingService.getRootPricingForNextPricings(
+          saleOrder.getCompany(),
+          saleOrderLine,
+          PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
     }
   }
 
@@ -368,32 +375,28 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (!saleOrder.getInAti()) {
       exTaxTotal =
           this.computeAmount(
-              saleOrderLine.getQty(),
-              priceDiscounted,
-              currencyScaleServiceSale.getScale(saleOrder));
+              saleOrderLine.getQty(), priceDiscounted, currencyScaleService.getScale(saleOrder));
       inTaxTotal =
-          currencyScaleServiceSale.getScaledValue(
+          currencyScaleService.getScaledValue(
               saleOrder, exTaxTotal.add(exTaxTotal.multiply(taxRate)));
       companyExTaxTotal = this.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
       companyInTaxTotal =
-          currencyScaleServiceSale.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               saleOrder, companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate)));
     } else {
       inTaxTotal =
           this.computeAmount(
-              saleOrderLine.getQty(),
-              priceDiscounted,
-              currencyScaleServiceSale.getScale(saleOrder));
+              saleOrderLine.getQty(), priceDiscounted, currencyScaleService.getScale(saleOrder));
       exTaxTotal =
           inTaxTotal.divide(
               taxRate.add(BigDecimal.ONE),
-              currencyScaleServiceSale.getScale(saleOrder),
+              currencyScaleService.getScale(saleOrder),
               RoundingMode.HALF_UP);
       companyInTaxTotal = this.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
       companyExTaxTotal =
           companyInTaxTotal.divide(
               taxRate.add(BigDecimal.ONE),
-              currencyScaleServiceSale.getCompanyScale(saleOrder),
+              currencyScaleService.getCompanyScale(saleOrder),
               RoundingMode.HALF_UP);
     }
 
@@ -404,7 +407,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                 .compareTo(BigDecimal.ZERO)
             != 0) {
       subTotalCostPrice =
-          currencyScaleServiceSale.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               saleOrder,
               ((BigDecimal)
                       productCompanyService.get(
@@ -528,7 +531,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
       throws AxelorException {
 
-    return currencyScaleServiceSale.getCompanyScaledValue(
+    return currencyScaleService.getCompanyScaledValue(
         saleOrder,
         currencyService.getAmountCurrencyConvertedAtDate(
             saleOrder.getCurrency(),
@@ -543,7 +546,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     Product product = saleOrderLine.getProduct();
 
-    return currencyScaleServiceSale.getCompanyScaledValue(
+    return currencyScaleService.getCompanyScaledValue(
         saleOrder,
         currencyService.getAmountCurrencyConvertedAtDate(
             (Currency)
@@ -686,57 +689,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       response.setNotify(
           productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList));
     }
-  }
-
-  @Override
-  public SaleOrderLine createSaleOrderLine(
-      PackLine packLine,
-      SaleOrder saleOrder,
-      BigDecimal packQty,
-      BigDecimal conversionRate,
-      Integer sequence)
-      throws AxelorException {
-
-    if (packLine.getTypeSelect() == PackLineRepository.TYPE_START_OF_PACK
-        || packLine.getTypeSelect() == PackLineRepository.TYPE_END_OF_PACK) {
-      return createStartOfPackAndEndOfPackTypeSaleOrderLine(
-          packLine.getPack(), saleOrder, packQty, packLine, packLine.getTypeSelect(), sequence);
-    }
-
-    if (packLine.getProductName() != null) {
-      SaleOrderLine soLine = new SaleOrderLine();
-
-      Product product = packLine.getProduct();
-      soLine.setProduct(product);
-      soLine.setProductName(packLine.getProductName());
-      if (packLine.getQuantity() != null) {
-        soLine.setQty(
-            packLine
-                .getQuantity()
-                .multiply(packQty)
-                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-      }
-      soLine.setUnit(packLine.getUnit());
-      soLine.setTypeSelect(packLine.getTypeSelect());
-      soLine.setSequence(sequence);
-      if (packLine.getPrice() != null) {
-        soLine.setPrice(packLine.getPrice().multiply(conversionRate));
-      }
-
-      if (product != null) {
-        if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
-          soLine.setDescription(product.getDescription());
-        }
-        try {
-          this.fillPriceFromPackLine(soLine, saleOrder);
-          this.computeValues(saleOrder, soLine);
-        } catch (AxelorException e) {
-          TraceBackService.trace(e);
-        }
-      }
-      return soLine;
-    }
-    return null;
   }
 
   @Override

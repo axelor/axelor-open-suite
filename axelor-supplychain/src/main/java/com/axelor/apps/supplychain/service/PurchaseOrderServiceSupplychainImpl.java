@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -31,6 +30,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -48,6 +48,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -76,7 +77,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
+  protected AdvancePaymentRefundService refundService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -88,7 +90,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PurchaseOrderLineRepository purchaseOrderLineRepository,
       PurchaseOrderLineService purchaseOrderLineService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      CurrencyScaleService currencyScaleService,
+      AdvancePaymentRefundService refundService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -99,6 +103,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.currencyScaleService = currencyScaleService;
+    this.refundService = refundService;
   }
 
   @Override
@@ -187,7 +193,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return total;
     }
     for (Invoice advance : advancePaymentInvoiceList) {
-      total = total.add(advance.getAmountPaid());
+      BigDecimal advancePaymentAmount = advance.getAmountPaid();
+      advancePaymentAmount =
+          advancePaymentAmount.subtract(refundService.getRefundPaidAmount(advance));
+      total = total.add(advancePaymentAmount);
     }
     return total;
   }
@@ -257,9 +266,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
     }
     purchaseOrder.setAmountToBeSpreadOverTheTimetable(
-        currencyScaleServiceAccount.getScaledValue(
+        currencyScaleService.getScaledValue(
             totalHT.subtract(sumTimetableAmount),
-            currencyScaleServiceAccount.getScale(purchaseOrder.getCurrency())));
+            currencyScaleService.getCurrencyScale(purchaseOrder.getCurrency())));
   }
 
   @Override

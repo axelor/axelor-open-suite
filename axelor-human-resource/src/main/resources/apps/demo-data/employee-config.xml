@@ -23,7 +23,10 @@
   </input>
 
   <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"
-    search="self.importId  = :importId"/>
+    search="self.importId  = :importId">
+    <bind to="recoveryLeaveReason" column="recoveryLeaveReason_importId"
+      search="self.importId = :recoveryLeaveReason_importId" if="recoveryLeaveReason_importId"/>
+  </input>
 
   <input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";"
     search="self.importId = :importId"/>

@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity sequential="true" name="Invoice"
-    implements="com.axelor.apps.base.interfaces.PricedOrder">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
@@ -254,6 +254,13 @@
     <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
       mappedBy="invoice" title="Invoice terms"/>
 
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+
     <unique-constraint columns="invoiceId,company"/>
 
     <finder-method name="findByMove" using="move"/>
@@ -285,6 +292,8 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+   	    public static final int OPERATION_SUB_TYPE_STANDARD_REFUND = 10;
+   	    public static final int OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND = 11;
 
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;

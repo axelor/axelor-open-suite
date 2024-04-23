@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service.pricing;
 
 import com.axelor.apps.base.db.Pricing;
+import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.common.StringUtils;
@@ -55,8 +56,10 @@ public class PricingMetaServiceImpl implements PricingMetaService {
 
   protected boolean noPricingConfigured(String model) {
     return JPA.all(Pricing.class)
-            .filter("self.concernedModel.fullName = :modelFullName")
+            .filter(
+                "self.concernedModel.fullName = :modelFullName AND (self.typeSelect IS NULL OR self.typeSelect = :typeSelectDefault)")
             .bind("modelFullName", model)
+            .bind("typeSelectDefault", PricingRepository.PRICING_TYPE_SELECT_DEFAULT)
             .fetchOne()
         == null;
   }

@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -39,6 +40,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -61,7 +63,9 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       ManufOrderRepository manufOrderRepo,
       AppProductionService appProductionService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      CurrencyScaleService currencyScaleService,
+      AdvancePaymentRefundService refundService) {
     super(
         appSupplychainService,
         accountConfigService,
@@ -71,7 +75,9 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
         purchaseOrderLineRepository,
         purchaseOrderLineService,
         partnerStockSettingsService,
-        stockConfigService);
+        stockConfigService,
+        currencyScaleService,
+        refundService);
     this.manufOrderRepo = manufOrderRepo;
     this.appProductionService = appProductionService;
   }

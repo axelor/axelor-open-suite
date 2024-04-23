@@ -18,13 +18,15 @@
  */
 package com.axelor.apps.account.service.umr;
 
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.account.db.InvoicingPaymentSituation;
 import com.axelor.meta.CallMethod;
+import java.time.LocalDate;
 
 public interface UmrNumberService {
 
   @CallMethod
-  public String getUmrNumber(Partner partner);
+  public String getUmrNumber(InvoicingPaymentSituation invoicingPaymentSituation, LocalDate date);
 
-  public String getUmrNumber(Partner partner, boolean isRecovery);
+  public String getUmrNumber(
+      InvoicingPaymentSituation invoicingPaymentSituation, boolean isRecovery, LocalDate date);
 }

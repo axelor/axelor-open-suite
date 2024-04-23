@@ -23,7 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import java.util.Map;
 
 public interface BankReconciliationQueryService {
-  String getRequestMoveLines();
+  String getRequestMoveLines(BankReconciliation bankReconciliation);
 
   Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException;
