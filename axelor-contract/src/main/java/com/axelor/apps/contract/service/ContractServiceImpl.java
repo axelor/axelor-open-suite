@@ -688,6 +688,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             : line.getDescription();
 
     Contract contract = line.getContractVersion().getContract();
+
+    BigDecimal qty = line.getProduct() == null ? BigDecimal.ONE : line.getQty();
     Product product = getLineProduct(line, contract);
     String productName = (String) productCompanyService.get(product, "name", contract.getCompany());
 
@@ -700,7 +702,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             inTaxPriceComputed,
             line.getPriceDiscounted(),
             description,
-            line.getQty(),
+            qty,
             line.getUnit(),
             line.getTaxLineSet(),
             line.getSequence(),
