@@ -40,12 +40,10 @@
       <field name="hoursUnit" domain="self.unitTypeSelect = 3"/>
       <field name="defaultHoursADay"
         help="The days to hours conversion can be set for each project. This will determine the default value."/>
-      <spacer/>
-      <field name="enableEventCreation" widget="boolean-switch"/>
-      <field name="eventSubjectGroovyFormula" showIf="enableEventCreation"/>
     </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
-      <field name="invoicingProjectAnnexBirtTemplate"/>
+      <field name="invoicingProjectAnnexPrintTemplate"/>
+      <field name="invoicingAnnexPrintTemplate"/>
     </panel>
 
     <panel-mail name="mailPanel">

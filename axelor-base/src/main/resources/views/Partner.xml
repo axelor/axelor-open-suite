@@ -26,7 +26,8 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -58,7 +59,8 @@
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
     <field name="user"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -92,7 +94,8 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
@@ -329,6 +332,7 @@
           form-view="partner-category-form" grid-view="partner-category-grid"/>
         <field name="industrySector" colSpan="6" widget="SuggestBox"
           hideIf="partnerTypeSelect== 2"/>
+
         <field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
           form-view="source-form" grid-view="source-grid"/>
         <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
@@ -340,13 +344,13 @@
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
-          onChange="action-method-partner-registration-code-onChange"/>
-        <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
-        <field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
+          onChange="action-group-partner-registration-code-onChange"/>
+        <field name="siren" colSpan="4" readonly="true" hidden="true"/>
+        <field name="nic" colSpan="4" readonly="true" hidden="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
-        <field name="taxNbr" hideIf="partnerTypeSelect== 2"/>
+        <field name="taxNbr" hidden="true"/>
         <field name="paymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
         <field name="parentPartner" hideIf="partnerTypeSelect != 1"
@@ -1051,6 +1055,7 @@
     <action name="action-partner-attrs-partner-seq-editable"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
+    <action name="action-method-partner-siren-nic-onload"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1082,6 +1087,7 @@
     <action name="action-partner-method-set-social-network-url"
       if="!__config__.app.isApp('crm')"/>
     <action name="action-partner-record-employee"/>
+    <action name="action-method-partner-siren-nic-onload"/>
   </action-group>
 
   <action-group name="action-partner-group-check-can-change-factor"
@@ -1118,12 +1124,9 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
-    <action name="action-partner-validate-registration-code"
-      if="__config__.app.getApp('base')?.getCheckRegistrationCode()"/>
-    <action name="action-method-partner-check-registration-code"
-      if="__config__.app.getApp('base')?.getCheckRegistrationCode()"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
+    <action name="action-method-partner-check-registration-code"/>
   </action-group>
 
   <action-validate name="action-partner-validate-registration-code">
@@ -1168,6 +1171,11 @@
     <field name="isSupplier" expr="eval:true"/>
     <field name="supplierCantBeRemoved" expr="eval:false"/>
   </action-record>
+
+  <action-method name="action-method-partner-siren-nic-onload">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getHideFieldOnPartnerTypeSelect"/>
+  </action-method>
 
   <action-method name="action-partner-method-check-company-account-config">
     <call class="com.axelor.apps.account.web.PartnerController"
@@ -1275,6 +1283,10 @@
     <action name="action-partner-method-check-any-receivable-move-line-attached"
       if="__config__.app.isApp('account')"/>
     <action name="action-partner-attrs-set-customer"/>
+  </action-group>
+
+  <action-group name="action-group-partner-registration-code-onChange">
+    <action name="action-method-partner-registration-code-onChange"/>
   </action-group>
 
   <action-record name="action-partner-empty-first-name"
@@ -1565,7 +1577,7 @@
 
   <search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner"
     title="Partner filters">
-    <field name="companyStr" hidden="true"
+    <field name="companySet" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isFactor" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
@@ -1640,7 +1652,7 @@
 
   <search-filters name="contact-filters" model="com.axelor.apps.base.db.Partner"
     title="Contact filters">
-    <field name="companyStr" hidden="true"
+    <field name="companySet" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isFactor" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>

@@ -19,8 +19,10 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -28,6 +30,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ProjectPlanningTimeController {
@@ -78,5 +82,47 @@ public class ProjectPlanningTimeController {
     }
 
     response.setReload(true);
+  }
+
+  public void setDefaultSiteFromProjectTask(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    if (Beans.get(AppBaseService.class).getAppBase().getEnableSiteManagementForProject()) {
+      Map<String, Object> objMap = (Map) context.get("projectTask");
+      if (objMap == null) {
+        return;
+      }
+      ProjectTask projectTask =
+          JPA.find(ProjectTask.class, Long.parseLong(objMap.get("id").toString()));
+      response.setValue(
+          "site", Optional.ofNullable(projectTask).map(ProjectTask::getSite).orElse(null));
+    }
+  }
+
+  public void updateEvent(ActionRequest request, ActionResponse response) {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    Beans.get(ProjectPlanningTimeService.class).updateLinkedEvent(projectPlanningTime);
+  }
+
+  public void computePlannedTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setValue(
+        "plannedTime",
+        Beans.get(ProjectPlanningTimeService.class).computePlannedTime(projectPlanningTime));
+  }
+
+  public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response) {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setAttr(
+        "displayTimeUnit",
+        "domain",
+        Beans.get(ProjectPlanningTimeService.class)
+            .computeDisplayTimeUnitDomain(projectPlanningTime));
   }
 }

@@ -408,10 +408,12 @@
     <panel name="mainPanel">
       <field name="printedPDF" hidden="true"/><!-- Needed to be able to use it in menu -->
       <panel name="statusSelectPanel" colSpan="7" stacked="true">
-        <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect != 2"
+        <field name="statusSelect" widget="NavSelect"
+          showIf="operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
           showTitle="false"/>
-        <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect == 2"
-          showTitle="false" selection-in="[1,2,4]"/>
+        <field name="statusSelect" widget="NavSelect"
+          showIf="operationSubTypeSelect == 2 || operationSubTypeSelect == 11" showTitle="false"
+          selection-in="[1,2,4]"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="5">
         <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
@@ -432,6 +434,8 @@
 	                        		{operationSubTypeSelect == 5 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Contract closing invoice')}</Badge>}
 	                        		{operationSubTypeSelect == 6 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Subscription')}</Badge>}
 	                        		{operationSubTypeSelect == 7 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Periodic contract')}</Badge>}
+	                        		{operationSubTypeSelect == 10 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard credit note')}</Badge>}
+	                        		{operationSubTypeSelect == 11 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
 
 	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
 	                        	</Box>
@@ -474,7 +478,7 @@
           hideIf="statusSelect > 1 || partner != null || $readonly()" colSpan="4"
           onChange="action-group-account-invoice-operationtype-onchange"/>
         <field name="operationSubTypeSelect" colSpan="4"
-          hideIf="statusSelect &gt; 1 || $readonly() || operationTypeSelect == 2 || operationTypeSelect == 4"/>
+          hideIf="statusSelect &gt; 1 || $readonly()"/>
       </panel>
       <panel name="invoiceMainSecondPanel" colSpan="12">
         <field name="currency"
@@ -696,7 +700,7 @@
         <panel name="refundPanel" title="Credit note"
           showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
           <button name="createRefundBtn" title="Generate credit note" colSpan="3"
-            showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 2"
+            showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 11"
             onClick="save,action-invoice-method-create-refund"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
             form-view="invoice-form" grid-view="invoice-grid"/>
@@ -735,12 +739,13 @@
           readonly="true"/>
       </panel>
       <panel name="advancePaymentPanel" title="Advance payments"
-        showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
+        showIf="operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 10 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
 InvoiceSet.length > 0))"
         if="__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()">
         <field name="advancePaymentInvoiceSet" widget="TagSelect" canNew="false"
           canEdit="false" onSelect="action-invoice-method-create-advance-payment-domain"
-          readonlyIf="statusSelect == 3" form-view="invoice-form" grid-view="invoice-grid"/>
+          readonlyIf="statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 11)"
+          form-view="invoice-form" grid-view="invoice-grid"/>
       </panel>
       <panel title="Printing" name="printingPanel" colSpan="12">
         <field name="printingSettings" canEdit="false"/>
@@ -803,7 +808,8 @@ InvoiceSet.length > 0))"
           onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
       </panel>
       <panel name="financialDiscountPanel" colSpan="12" title="Financial discount"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()">
+        if="__config__.app.getApp('account').getManageFinancialDiscount()"
+        hideIf="operationSubTypeSelect == 2">
         <field name="financialDiscount" readonlyIf="[3,4].includes(statusSelect)"
           onChange="action-invoice-group-financial-discount"/>
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
@@ -890,7 +896,7 @@ InvoiceSet.length > 0))"
       <button name="validateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-on-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
-        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
+        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
@@ -974,6 +980,7 @@ InvoiceSet.length > 0))"
 								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
 							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
@@ -991,6 +998,7 @@ InvoiceSet.length > 0))"
 									{typeSelect == 5 && <span> {_t('On')} </span>}
 									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+									{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
 								</Box>
 								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
@@ -1242,7 +1250,8 @@ InvoiceSet.length > 0))"
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
         onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
-      <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
+      <button name="ventilateBtn" title="Ventilate"
+        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
@@ -1309,6 +1318,7 @@ InvoiceSet.length > 0))"
 								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
 							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
@@ -1527,7 +1537,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
-    <action name="action-invoice-attrs-change-create-refund-title"/>
+    <action name="action-invoice-method-manage-refund-titles"/>
     <action name="action-invoice-record-printing-fields"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
@@ -1552,7 +1562,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-printing-fields"/>
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
-    <action name="action-invoice-attrs-change-create-refund-title"/>
+    <action name="action-invoice-method-manage-refund-titles"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
@@ -1585,6 +1595,7 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-group-account-invoice-operationtype-onchange">
     <action name="action-invoice-attrs-operationsubtype-selection"/>
+    <action name="action-invoice-record-operationsubtype-reset"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-partner-change"/>
   </action-group>
@@ -1836,7 +1847,9 @@ InvoiceSet.length > 0))"
   <action-attrs name="action-invoice-attrs-operationsubtype-selection">
     <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2]"
       if="operationTypeSelect == 3"/>
-    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: null"
+    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [10,11]"
+      if="operationTypeSelect == 2 || operationTypeSelect == 4"/>
+    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2,3]"
       if="operationTypeSelect == 1"/>
   </action-attrs>
 
@@ -1846,6 +1859,16 @@ InvoiceSet.length > 0))"
   </action-attrs>
 
   <!-- ACTION RECORD -->
+
+  <action-record name="action-invoice-record-operationsubtype-reset"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="operationSubTypeSelect"
+      expr="eval: __repo__(Invoice).OPERATION_SUB_TYPE_DEFAULT"
+      if="operationTypeSelect == 3 || operationTypeSelect == 1"/>
+    <field name="operationSubTypeSelect"
+      expr="eval: __repo__(Invoice).OPERATION_SUB_TYPE_STANDARD_REFUND"
+      if="operationTypeSelect == 2 || operationTypeSelect == 4"/>
+  </action-record>
 
   <action-record name="action-invoice-record-hide-discount"
     model="com.axelor.apps.account.db.Invoice">
@@ -2008,7 +2031,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
     <attribute name="hidden" for="cancelBtn"
-      expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
+      expr="((operationSubTypeSelect == 2 || operationSubTypeSelect == 11) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-set-partner-domain">
@@ -2066,12 +2089,6 @@ InvoiceSet.length > 0))"
     <attribute name="hidden"
       expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || !__config__.app.getApp('invoice')?.getIsVentilationSkipped()"
       for="validateAndVentilateBtn"/>
-  </action-attrs>
-
-  <action-attrs name="action-invoice-attrs-change-create-refund-title">
-    <attribute name="title" for="createRefundBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Generate invoice')"
-      if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-invoice-other-reason">
@@ -2436,6 +2453,10 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-set-invoice-line-list-scale">
     <call class="com.axelor.apps.account.web.InvoiceController" method="setInvoiceLinesScale"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-manage-refund-titles">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="manageRefundFields"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

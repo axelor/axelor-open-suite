@@ -79,6 +79,12 @@
     <option value="com.axelor.apps.production.db.OperationOrder">Manufacturing operation</option>
   </selection>
 
+  <selection
+    name="production.supplychain.mrp.line.type.supply.method.for.manufacturing.orders.select">
+    <option value="0">On operations start</option>
+    <option value="1">On order start</option>
+  </selection>
+
   <selection name="production.cost.sheet.line.type.select">
     <option value="1" icon="img/32px/produceProduct.png">Produced product</option>
     <option value="2" icon="img/32px/consumeProduct.png">Consumed product</option>
@@ -174,6 +180,11 @@
     <option value="1">Draft</option>
     <option value="2">Imported</option>
     <option value="3">Validated</option>
+  </selection>
+
+  <selection name="stock.tracking.number.origin.move.type.select"
+    id="production.stock.tracking.number.origin.move.type.select">
+    <option value="5">Manufacturing</option>
   </selection>
 
 </object-views>

@@ -54,6 +54,9 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.event.ICalendarEventObserver;
+import com.axelor.apps.hr.service.BankCardService;
+import com.axelor.apps.hr.service.BankCardServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
 import com.axelor.apps.hr.service.EmployeeComputeStatusServiceImpl;
 import com.axelor.apps.hr.service.EmployeeFileDMSService;
@@ -66,6 +69,8 @@ import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
 import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
+import com.axelor.apps.hr.service.UnitConversionForProjectServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -188,6 +193,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
@@ -340,5 +347,9 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseLineToolService.class).to(ExpenseLineToolServiceImpl.class);
     bind(ExpenseLineUpdateService.class).to(ExpenseLineUpdateServiceImpl.class);
     bind(BankOrderValidationServiceImpl.class).to(BankOrderValidationServiceHRImpl.class);
+    bind(ICalendarEventObserver.class);
+    bind(BankCardService.class).to(BankCardServiceImpl.class);
+    bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
+    bind(TimesheetLeaveService.class).to(TimesheetLeaveServiceImpl.class);
   }
 }

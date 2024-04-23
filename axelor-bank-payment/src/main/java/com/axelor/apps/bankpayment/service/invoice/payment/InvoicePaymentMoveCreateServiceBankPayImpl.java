@@ -9,6 +9,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -24,6 +25,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,6 +54,8 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       MoveLineCreateService moveLineCreateService,
       AccountingSituationService accountingSituationService,
+      CurrencyService currencyService,
+      InvoiceLineTaxToolService invoiceLineTaxToolService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderValidationService bankOrderValidationService,
       InvoicePaymentRepository invoicePaymentRepository) {
@@ -69,7 +73,9 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
         moveLineFinancialDiscountService,
         moveLineCreateService,
         accountingSituationService,
-        invoicePaymentRepository);
+        currencyService,
+        invoicePaymentRepository,
+        invoiceLineTaxToolService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderValidationService = bankOrderValidationService;
   }

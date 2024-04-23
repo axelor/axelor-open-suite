@@ -24,9 +24,28 @@
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 
+    <integer name="originMoveTypeSelect" title="Move origin type"
+      selection="stock.tracking.number.origin.move.type.select" default="0"
+      help="This field can have one of the following values (Purchase, Manufacturing, Inventory, Sale, Manual). The value is fixed when the tracking number is created."/>
+
+    <many-to-one name="originStockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"
+      title="Origin stock move line"/>
+    <many-to-one name="originInventoryLine" ref="com.axelor.apps.stock.db.InventoryLine"
+      title="Origin inventory line"/>
+
     <unique-constraint columns="product,trackingNumberSeq"/>
 
     <finder-method name="findBySeq" using="trackingNumberSeq"/>
+
+    <extra-code>
+      <![CDATA[
+
+		// OPERATION TYPE SELECT
+		public static final int ORIGIN_MOVE_TYPE_MANUAL = 1;
+		public static final int ORIGIN_MOVE_TYPE_INVENTORY = 2;
+
+	]]>
+    </extra-code>
 
   </entity>
 

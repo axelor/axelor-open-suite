@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
@@ -71,6 +70,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,7 +276,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         currencyRate = BigDecimal.ONE;
       } else {
         currencyRate =
-            amountInCompanyCurrency.divide(amountInSpecificMoveCurrency, 5, RoundingMode.HALF_UP);
+            currencyService.computeScaledExchangeRate(
+                amountInCompanyCurrency, amountInSpecificMoveCurrency);
       }
     }
 
@@ -305,7 +306,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                         move.getJournal(), origin, description))
                 : move.getDescription(),
             origin,
-            currencyRate.setScale(5, RoundingMode.HALF_UP),
+            currencyRate,
             amountInSpecificMoveCurrency,
             originDate);
 
@@ -368,12 +369,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       boolean isPurchase,
       boolean isDebitCustomer)
       throws AxelorException {
-
     log.debug("Creation of move lines of the invoice : {}", invoice.getInvoiceId());
 
-    List<MoveLine> moveLines = new ArrayList<MoveLine>();
-
-    Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
+    List<MoveLine> moveLines = new ArrayList<>();
 
     if (partner == null) {
       throw new AxelorException(
@@ -382,6 +380,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_1),
           invoice.getInvoiceId());
     }
+
     if (partnerAccount == null) {
       throw new AxelorException(
           invoice,
@@ -389,22 +388,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_2),
           invoice.getInvoiceId());
     }
-    AccountingSituation accountingSituation = null;
-    Partner partnerAccountingSituation = null;
-    if (isPurchase) {
-      accountingSituation = accountingSituationRepository.findByCompanyAndPartner(company, partner);
-      partnerAccountingSituation = partner;
-    } else {
-      accountingSituation =
-          accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
-      partnerAccountingSituation = company.getPartner();
-    }
 
-    String origin = invoice.getInvoiceId();
-
-    if (InvoiceToolService.isPurchase(invoice)) {
-      origin = invoice.getSupplierInvoiceNb();
-    }
+    String origin =
+        InvoiceToolService.isPurchase(invoice)
+            ? invoice.getSupplierInvoiceNb()
+            : invoice.getInvoiceId();
 
     if (partnerAccount.getUseForPartnerBalance()) {
       moveLines.addAll(
@@ -432,13 +420,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     // Creation of product move lines for each invoice line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-
       BigDecimal companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
 
       if (companyExTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-
-        analyticAccounts.clear();
-
         Account account = invoiceLine.getAccount();
 
         if (account == null) {
@@ -486,130 +470,47 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 invoiceLine.getProductName());
 
         moveLine = fillMoveLineWithInvoiceLine(moveLine, invoiceLine, move.getCompany());
-
         moveLines.add(moveLine);
       }
     }
 
     // Creation of tax move lines for each invoice line tax
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-
-      BigDecimal companyTaxTotal = invoiceLineTax.getCompanyTaxTotal();
-
-      if (companyTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-
+      if (invoiceLineTax.getCompanyTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+        Account account = invoiceLineTax.getImputedAccount();
         Tax tax = invoiceLineTax.getTaxLine().getTax();
-        boolean hasFixedAssets = !invoiceLineTax.getSubTotalOfFixedAssets().equals(BigDecimal.ZERO);
-        boolean hasOtherAssets =
-            !invoiceLineTax.getSubTotalExcludingFixedAssets().equals(BigDecimal.ZERO);
-        Account account;
-        MoveLine moveLine;
-        if (hasFixedAssets
-            && invoiceLineTax.getCompanySubTotalOfFixedAssets().compareTo(BigDecimal.ZERO) != 0) {
-          if (accountingSituation == null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(
-                    AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
-                partnerAccountingSituation.getFullName(),
-                company.getCode());
-          }
-          int vatSystemSelect =
-              accountingSituationService.determineVatSystemSelect(
-                  accountingSituation, invoiceLineTax);
 
-          account =
-              taxAccountService.getAccount(
-                  tax,
-                  company,
-                  move.getJournal(),
-                  vatSystemSelect,
-                  true,
-                  move.getFunctionalOriginSelect());
-          if (account == null) {
-            throw new AxelorException(
-                move,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MOVE_LINE_6),
-                tax.getName(),
-                company.getName());
-          }
-
-          moveLine =
-              this.createMoveLine(
-                  move,
-                  partner,
-                  account,
-                  invoiceLineTax.getSubTotalOfFixedAssets(),
-                  invoiceLineTax.getCompanySubTotalOfFixedAssets(),
-                  null,
-                  !isDebitCustomer,
-                  invoice.getInvoiceDate(),
-                  null,
-                  invoice.getOriginDate(),
-                  moveLineId++,
-                  origin,
-                  null);
-
-          moveLine.setTaxLineSet(Sets.newHashSet(invoiceLineTax.getTaxLine()));
-          moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
-          moveLine.setTaxCode(tax.getCode());
-          moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
-          moveLines.add(moveLine);
+        if (account == null) {
+          throw new AxelorException(
+              move,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MOVE_LINE_6),
+              tax.getName(),
+              company.getName());
         }
 
-        if (hasOtherAssets
-            && invoiceLineTax.getCompanySubTotalExcludingFixedAssets().compareTo(BigDecimal.ZERO)
-                != 0) {
-          if (accountingSituation == null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(
-                    AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
-                partnerAccountingSituation.getFullName(),
-                company.getCode());
-          }
-          int vatSystemSelect =
-              accountingSituationService.determineVatSystemSelect(
-                  accountingSituation, invoiceLineTax);
-          account =
-              taxAccountService.getAccount(
-                  tax,
-                  company,
-                  move.getJournal(),
-                  vatSystemSelect,
-                  false,
-                  move.getFunctionalOriginSelect());
-          if (account == null) {
-            throw new AxelorException(
+        MoveLine moveLine =
+            this.createMoveLine(
                 move,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MOVE_LINE_6),
-                tax.getName(),
-                company.getName());
-          }
+                partner,
+                account,
+                invoiceLineTax.getTaxTotal(),
+                invoiceLineTax.getCompanyTaxTotal(),
+                null,
+                !isDebitCustomer,
+                invoice.getInvoiceDate(),
+                null,
+                invoice.getOriginDate(),
+                moveLineId++,
+                origin,
+                null);
 
-          moveLine =
-              this.createMoveLine(
-                  move,
-                  partner,
-                  account,
-                  invoiceLineTax.getSubTotalExcludingFixedAssets(),
-                  invoiceLineTax.getCompanySubTotalExcludingFixedAssets(),
-                  null,
-                  !isDebitCustomer,
-                  invoice.getInvoiceDate(),
-                  null,
-                  invoice.getOriginDate(),
-                  moveLineId++,
-                  origin,
-                  null);
-          moveLine.setTaxLineSet(Sets.newHashSet(invoiceLineTax.getTaxLine()));
-          moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
-          moveLine.setTaxCode(tax.getCode());
-          moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
-          moveLines.add(moveLine);
-        }
+        moveLine.setTaxLineSet(Sets.newHashSet(invoiceLineTax.getTaxLine()));
+        moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
+        moveLine.setTaxCode(tax.getCode());
+        moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
+        moveLineToolService.setIsNonDeductibleTax(moveLine, tax);
+        moveLines.add(moveLine);
       }
     }
 
@@ -780,34 +681,25 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     LocalDate date = moveLine.getDate();
     Company company = move.getCompany();
     Partner partner = move.getPartner();
-    TaxEquiv taxEquiv = null;
-    TaxLine taxLineRC = null;
-    TaxLine taxLineBeforeReverse = null;
-    Account newAccountRC = null;
-    String newSourceTaxLineRCKey = null;
-
     FiscalPosition fiscalPosition = move.getFiscalPosition();
+    Set<TaxLine> taxLineRCSet = new HashSet<>();
 
     if (newAccount == null && fiscalPosition != null) {
       newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
 
       LocalDate todayDate = appBaseService.getTodayDate(move.getCompany());
-      taxEquiv = getTaxEquiv(moveLine, taxLine, fiscalPosition, todayDate);
+      TaxEquiv taxEquiv = moveLine.getTaxEquiv();
       if (taxEquiv != null && taxEquiv.getReverseCharge()) {
-        if (ObjectUtils.isEmpty(taxEquiv.getReverseChargeTax())) {
+        if (ObjectUtils.isEmpty(taxEquiv.getReverseChargeTaxSet())) {
           throw new AxelorException(
               fiscalPosition,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(AccountExceptionMessage.REVERSE_CHARGE_TAX_MISSING_ON_FISCAL_POSITION),
               fiscalPosition.getName(),
-              taxEquiv.getFromTax().getName(),
-              taxEquiv.getToTax().getName());
+              taxEquiv.getFromTaxSet().stream().map(Tax::getName).collect(Collectors.joining(",")),
+              taxEquiv.getToTaxSet().stream().map(Tax::getName).collect(Collectors.joining(",")));
         }
-        taxLineBeforeReverse = taxService.getTaxLine(taxEquiv.getFromTax(), todayDate);
-        taxLineRC =
-            taxEquiv.getReverseChargeTax().getActiveTaxLine() != null
-                ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
-                : taxService.getTaxLine(taxEquiv.getReverseChargeTax(), todayDate);
+        taxLineRCSet = taxService.getTaxLineSet(taxEquiv.getReverseChargeTaxSet(), todayDate);
       }
     }
 
@@ -843,16 +735,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
-    if (taxLineRC != null) {
-      newAccountRC =
-          this.getTaxAccount(
-              taxLineRC, company, accountType, move.getJournal(), partner, moveLine, move);
-      if (newAccountRC != null) {
-        newSourceTaxLineRCKey = newAccountRC.getCode() + taxLineRC.getId() + " " + vatSystem;
-      }
-    }
     MoveLine newOrUpdatedMoveLine = new MoveLine();
-    MoveLine newOrUpdatedMoveLineRC = null;
 
     if (!map.containsKey(newSourceTaxLineKey) && !newMap.containsKey(newSourceTaxLineKey)) {
 
@@ -862,16 +745,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     } else {
       newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
     }
-    if (newSourceTaxLineRCKey != null) {
-      if (!map.containsKey(newSourceTaxLineRCKey) && !newMap.containsKey(newSourceTaxLineRCKey)) {
 
-        newOrUpdatedMoveLineRC = this.createMoveLine(date, taxLineRC, newAccountRC, move);
-      } else if (newMap.containsKey(newSourceTaxLineRCKey)) {
-        newOrUpdatedMoveLineRC = newMap.get(newSourceTaxLineRCKey);
-      } else {
-        newOrUpdatedMoveLineRC = map.get(newSourceTaxLineRCKey);
-      }
-    }
     newOrUpdatedMoveLine.setMove(move);
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
     newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
@@ -882,8 +756,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 move.getJournal(), move.getOrigin(), move.getDescription())));
     moveLineToolService.setDecimals(newOrUpdatedMoveLine, move);
 
-    BigDecimal taxLineValue =
-        taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
+    BigDecimal taxLineValue = taxLine.getValue();
 
     if (percentMoveTemplate) {
       debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
@@ -917,34 +790,88 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newMap.remove(newSourceTaxLineKey, newOrUpdatedMoveLine);
     }
 
-    if (newOrUpdatedMoveLineRC != null) {
-      newOrUpdatedMoveLineRC.setMove(move);
-      newOrUpdatedMoveLineRC.setVatSystemSelect(vatSystem);
-      newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
-      newOrUpdatedMoveLineRC.setDescription(
-          StringHelper.cutTooLongString(
-              moveLineToolService.determineDescriptionMoveLine(
-                  move.getJournal(), move.getOrigin(), move.getDescription())));
+    createMoveLineRCForAutoTax(
+        move,
+        map,
+        newMap,
+        moveLine,
+        accountType,
+        taxLineRCSet,
+        vatSystem,
+        newMoveLineDebit,
+        newMoveLineCredit);
 
-      newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
-      newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
-      newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
-      moveLineToolService.setDecimals(newOrUpdatedMoveLineRC, move);
-
-      newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
-
-      if (newOrUpdatedMoveLineRC.getPartner() == null) {
-        newOrUpdatedMoveLineRC.setPartner(move.getPartner());
-      }
-
-      if (newOrUpdatedMoveLineRC.getDebit().signum() != 0
-          || newOrUpdatedMoveLineRC.getCredit().signum() != 0) {
-        newMap.put(newSourceTaxLineRCKey, newOrUpdatedMoveLineRC);
-      }
-
-      moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
-    }
     return newOrUpdatedMoveLine;
+  }
+
+  protected void createMoveLineRCForAutoTax(
+      Move move,
+      Map<String, MoveLine> map,
+      Map<String, MoveLine> newMap,
+      MoveLine moveLine,
+      String accountType,
+      Set<TaxLine> taxLineRCSet,
+      Integer vatSystem,
+      BigDecimal newMoveLineDebit,
+      BigDecimal newMoveLineCredit)
+      throws AxelorException {
+    if (ObjectUtils.isEmpty(taxLineRCSet)) {
+      return;
+    }
+    for (TaxLine taxLineRC : taxLineRCSet) {
+      String newSourceTaxLineRCKey = null;
+      MoveLine newOrUpdatedMoveLineRC = null;
+      Account newAccountRC =
+          this.getTaxAccount(
+              taxLineRC,
+              move.getCompany(),
+              accountType,
+              move.getJournal(),
+              move.getPartner(),
+              moveLine,
+              move);
+      if (newAccountRC != null) {
+        newSourceTaxLineRCKey = newAccountRC.getCode() + taxLineRC.getId() + " " + vatSystem;
+      }
+      if (newSourceTaxLineRCKey != null) {
+        if (!map.containsKey(newSourceTaxLineRCKey) && !newMap.containsKey(newSourceTaxLineRCKey)) {
+
+          newOrUpdatedMoveLineRC =
+              this.createMoveLine(moveLine.getDate(), taxLineRC, newAccountRC, move);
+        } else if (newMap.containsKey(newSourceTaxLineRCKey)) {
+          newOrUpdatedMoveLineRC = newMap.get(newSourceTaxLineRCKey);
+        } else {
+          newOrUpdatedMoveLineRC = map.get(newSourceTaxLineRCKey);
+        }
+      }
+      if (newOrUpdatedMoveLineRC != null) {
+        newOrUpdatedMoveLineRC.setMove(move);
+        newOrUpdatedMoveLineRC.setVatSystemSelect(vatSystem);
+        newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
+        newOrUpdatedMoveLineRC.setDescription(
+            StringHelper.cutTooLongString(
+                moveLineToolService.determineDescriptionMoveLine(
+                    move.getJournal(), move.getOrigin(), move.getDescription())));
+
+        newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
+        newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
+        newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
+        moveLineToolService.setDecimals(newOrUpdatedMoveLineRC, move);
+
+        newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
+
+        if (newOrUpdatedMoveLineRC.getPartner() == null) {
+          newOrUpdatedMoveLineRC.setPartner(move.getPartner());
+        }
+
+        if (newOrUpdatedMoveLineRC.getDebit().signum() != 0
+            || newOrUpdatedMoveLineRC.getCredit().signum() != 0) {
+          newMap.put(newSourceTaxLineRCKey, newOrUpdatedMoveLineRC);
+        }
+
+        moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
+      }
+    }
   }
 
   protected void setTaxLineAmount(BigDecimal debit, BigDecimal credit, MoveLine moveLine) {
@@ -967,24 +894,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       moveLine.setDebit(moveLine.getDebit().add(debit));
       moveLine.setCredit(moveLine.getCredit().add(credit));
     }
-  }
-
-  protected TaxEquiv getTaxEquiv(
-      MoveLine moveLine, TaxLine taxLine, FiscalPosition fiscalPosition, LocalDate todayDate)
-      throws AxelorException {
-    Set<TaxLine> taxLineBeforeReverseSet = moveLine.getTaxLineBeforeReverseSet();
-    if (CollectionUtils.isEmpty(taxLineBeforeReverseSet)) {
-      return null;
-    }
-    for (TaxLine taxLineBeforeRev : taxLineBeforeReverseSet) {
-      TaxEquiv taxEquiv =
-          fiscalPositionService.getTaxEquiv(fiscalPosition, taxLineBeforeRev.getTax());
-      if (taxEquiv != null
-          && taxLine.equals(taxService.getTaxLine(taxEquiv.getToTax(), todayDate))) {
-        return taxEquiv;
-      }
-    }
-    return null;
   }
 
   protected BigDecimal sumMoveLinesByAccountType(List<MoveLine> moveLines, String accountType) {
@@ -1018,6 +927,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               move.getFunctionalOriginSelect());
@@ -1032,6 +942,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               move.getFunctionalOriginSelect());
@@ -1053,6 +964,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               true,
               move.getFunctionalOriginSelect());
@@ -1093,6 +1005,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     moveLine.setSourceTaxLineSet(Sets.newHashSet(taxLine));
     moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
     moveLine.setDescription(move.getDescription());
+    moveLineToolService.setIsNonDeductibleTax(moveLine, taxLine.getTax());
     return moveLine;
   }
 

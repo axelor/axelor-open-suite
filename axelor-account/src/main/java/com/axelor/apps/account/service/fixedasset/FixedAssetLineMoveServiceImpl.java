@@ -297,6 +297,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   protected Move generateImpairementAccountMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return null;
+    }
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -451,6 +454,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   public Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated, boolean isDisposal)
       throws AxelorException {
     FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return null;
+    }
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -592,6 +598,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       int transferredReason,
       LocalDate disposalDate)
       throws AxelorException {
+    if (fixedAsset.getMoveGenerationException()
+        != FixedAssetRepository.MOVE_GENERATION_EXCEPTION_NONE) {
+      return;
+    }
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
@@ -758,6 +768,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       BigDecimal disposalAmount,
       LocalDate disposalDate)
       throws AxelorException {
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return;
+    }
     Company company = fixedAsset.getCompany();
     Journal journal = company.getAccountConfig().getCustomerSalesJournal();
     Partner partner = fixedAsset.getPartner();

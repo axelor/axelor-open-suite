@@ -157,6 +157,9 @@
 
     <integer name="initialPeriodicityInMonth" title="Initial periodicity in month"/>
 
+    <integer name="moveGenerationException" title="Moves generation exception"
+      selection="account.fixed.asset.move.generation.exception" default="0"/>
+
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
       return this.getCompanyCurrency();
@@ -215,6 +218,11 @@
 		// Split type
 		public static final int SPLIT_TYPE_QUANTITY = 1;
 		public static final int SPLIT_TYPE_AMOUNT = 2;
+
+		// Moves generation exception
+		public static final int MOVE_GENERATION_EXCEPTION_NONE = 0;
+		public static final int MOVE_GENERATION_NO_DISPOSAL = 1;
+		public static final int MOVE_GENERATION_NO_MOVES = 2;
 
 	]]></extra-code>
 

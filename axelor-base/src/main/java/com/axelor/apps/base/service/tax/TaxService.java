@@ -185,4 +185,11 @@ public class TaxService {
         .sorted()
         .collect(Collectors.joining("/"));
   }
+
+  public Set<Tax> getTaxSet(Set<TaxLine> taxLineSet) {
+    if (CollectionUtils.isEmpty(taxLineSet)) {
+      return Sets.newHashSet();
+    }
+    return taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet());
+  }
 }
