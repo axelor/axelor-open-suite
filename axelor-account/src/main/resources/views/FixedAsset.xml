@@ -50,7 +50,7 @@
           showIf="fixedAssetCategory != null"
           onChange="action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"
           hidden="true"/>
-        <field name="isFromTransfer"
+        <field name="isFromImport" readonlyIf="statusSelect != 1"
           onChange="action-fixed-asset-record-is-from-transfer-onchange"/>
         <field name="qty" colSpan="3" required="true" min="0.01" title="Quantity"
           readonlyIf="statusSelect > 1" showIf="trackingNumber == null" hidden="true"/>
@@ -166,7 +166,7 @@
         <field name="fixedAssetCategory.isProrataTemporis"/>
         <field name="fixedAssetCategory.isUSProrataTemporis"
           showIf="fixedAssetCategory.isProrataTemporis" hidden="true"/>
-        <panel name="importValuesPanel" showIf="originSelect == 99 &amp;&amp; isFromTransfer"
+        <panel name="importValuesPanel" showIf="originSelect == 99 &amp;&amp; isFromImport"
           title="Import parameters" readonlyIf="statusSelect > 1" hidden="true">
           <field name="importNbrOfPastDepreciations" requiredIf="originSelect == 99" min="0"/>
           <field name="importAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"
@@ -282,7 +282,7 @@
     <panel name="importValuesPanel" showIf="originSelect == 99" title="Import parameters"
       sidebar="true" readonlyIf="statusSelect > 1" hidden="true">
       <field name="importDepreciationDate"
-        requiredIf="originSelect == 99 &amp;&amp; isFromTransfer"/>
+        requiredIf="originSelect == 99 &amp;&amp; isFromImport"/>
     </panel>
     <panel name="toUpdateValuesPanel" title="Update Depreciation parameters"
       showIf="statusSelect == 2"
@@ -441,7 +441,16 @@
   <action-record name="action-fixed-asset-record-is-from-transfer-onchange"
     model="com.axelor.apps.account.db.FixedAsset">
     <field name="originSelect" expr="eval: FixedAssetRepository.ORIGINAL_SELECT_IMPORT"
-      if="isFromTransfer"/>
+      if="isFromImport"/>
+    <field name="originSelect" expr="eval: FixedAssetRepository.ORIGINAL_SELECT_MANUAL"
+      if="!isFromImport"/>
+    <field name="importFiscalNbrOfPastDepreciations" expr="eval: 0" if="!isFromImport"/>
+    <field name="importFiscalAlreadyDepreciatedAmount" expr="eval: 0" if="!isFromImport"/>
+    <field name="importNbrOfPastDepreciations" expr="eval: 0" if="!isFromImport"/>
+    <field name="importAlreadyDepreciatedAmount" expr="eval: 0" if="!isFromImport"/>
+    <field name="importIfrsNbrOfPastDepreciations" expr="eval: 0" if="!isFromImport"/>
+    <field name="importIfrsAlreadyDepreciatedAmount" expr="eval: 0" if="!isFromImport"/>
+    <field name="importDepreciationDate" expr="eval: 0" if="!isFromImport"/>
   </action-record>
 
   <action-group name="action-fixed-asset-group-disposal-asset">

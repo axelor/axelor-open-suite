@@ -169,7 +169,7 @@
 	    ]]>
     </many-to-one>
 
-    <boolean name="isFromTransfer" title="Transferred/Imported ?"/>
+    <boolean name="isFromImport" title="Transferred/Imported ?"/>
 
     <extra-code><![CDATA[
 	   	// STATUS SELECT
