@@ -137,6 +137,49 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
   }
 
   @Override
+  public Map<String, Object> getDebitOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
+
+    Map<String, Object> valuesMap = super.getDebitOnChangeValuesMap(moveLine, move, dueDate);
+
+    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getCreditOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
+
+    Map<String, Object> valuesMap = super.getCreditOnChangeValuesMap(moveLine, move, dueDate);
+
+    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getCurrencyAmountRateOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
+    Map<String, Object> valuesMap =
+        super.getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate);
+
+    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getDebitCreditOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = super.getDebitCreditOnChangeValuesMap(moveLine, move);
+
+    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
   public Map<String, Object> getAccountOnChangeValuesMap(
       MoveLine moveLine,
       Move move,
@@ -151,6 +194,14 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     valuesMap.put("budgetDistributionList", new ArrayList<>());
 
     return valuesMap;
+  }
+
+  protected void addBudgetRemainingAmountToAllocate(
+      Map<String, Object> valuesMap, MoveLine moveLine) {
+    valuesMap.put(
+        "budgetRemainingAmountToAllocate",
+        budgetToolsService.getBudgetRemainingAmountToAllocate(
+            moveLine.getBudgetDistributionList(), moveLine.getDebit().max(moveLine.getCredit())));
   }
 
   protected void addAttr(

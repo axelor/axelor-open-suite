@@ -493,11 +493,6 @@
     <option value="4">Updated copy</option>
   </selection>
 
-  <selection name="invoice.report.format">
-    <option value="xls">Excel</option>
-    <option value="doc">Word</option>
-    <option value="pdf">PDF</option>
-  </selection>
   <selection name="invoice.pfp.validate.status.select">
     <option value="0">No PFP</option>
     <option value="1">Awaiting</option>

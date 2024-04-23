@@ -26,15 +26,18 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.PfxCertificate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pdf.PdfSignatureService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -52,13 +55,16 @@ import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.io.FilenameUtils;
 
 /** Implementation of the service printing invoices. */
 @Singleton
@@ -70,6 +76,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   protected AccountConfigService accountConfigService;
   protected BirtTemplateService birtTemplateService;
   protected PdfSignatureService pdfSignatureService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   @Inject
   public InvoicePrintServiceImpl(
@@ -78,27 +85,23 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       BirtTemplateService birtTemplateService,
-      PdfSignatureService pdfSignatureService) {
+      PdfSignatureService pdfSignatureService,
+      PrintingTemplatePrintService printingTemplatePrintService) {
     this.invoiceRepo = invoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.birtTemplateService = birtTemplateService;
     this.pdfSignatureService = pdfSignatureService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
   public String printInvoice(
       Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException {
-    String fileName =
-        I18n.get(InvoiceToolService.isRefund(invoice) ? "Credit note" : "Invoice").replace(" ", "")
-            + "-"
-            + invoice.getInvoiceId()
-            + "."
-            + format;
-    return PdfHelper.getFileLinkFromPdfFile(
-        printCopiesToFile(invoice, forceRefresh, reportType, format, locale), fileName);
+    return PrintingTemplateHelper.getFileLink(
+        printCopiesToFile(invoice, forceRefresh, reportType, format, locale));
   }
 
   @Override
@@ -108,9 +111,18 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     File file = getPrintedInvoice(invoice, forceRefresh, reportType, format, locale);
     int copyNumber = invoice.getInvoicesCopySelect();
     copyNumber = copyNumber == 0 ? 1 : copyNumber;
-    return format.equals(ReportSettings.FORMAT_PDF)
-        ? PdfHelper.printCopiesToFile(file, copyNumber)
-        : file;
+    File fileCopies = file;
+    if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))) {
+      Path path = PdfHelper.printCopiesToFile(file, copyNumber).toPath();
+      fileCopies =
+          Files.move(
+                  path,
+                  path.resolveSibling(
+                      getInvoiceReportTitle(invoice) + "." + ReportSettings.FORMAT_PDF),
+                  StandardCopyOption.REPLACE_EXISTING)
+              .toFile();
+    }
+    return fileCopies;
   }
 
   @Override
@@ -149,23 +161,83 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   public File print(Invoice invoice, Integer reportType, String format, String locale)
       throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(invoice, reportType, format, locale);
-    return reportSettings.generate().getFile();
+    if (invoice.getPrintingSettings() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          String.format(
+              I18n.get(AccountExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
+              invoice.getInvoiceId()),
+          invoice);
+    }
+    PrintingTemplate invoicePrintTemplate =
+        accountConfigService.getAccountConfig(invoice.getCompany()).getInvoicePrintTemplate();
+    if (invoicePrintTemplate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+
+    String title = getInvoiceReportTitle(invoice);
+
+    AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
+    if (Strings.isNullOrEmpty(locale)) {
+      String userLocalizationCode =
+          Optional.ofNullable(AuthUtils.getUser())
+              .map(User::getLocalization)
+              .map(Localization::getCode)
+              .orElse(null);
+      String companyLocalizationCode =
+          invoice.getCompany().getLocalization() != null
+              ? invoice.getCompany().getLocalization().getCode()
+              : userLocalizationCode;
+      String partnerLocalizationCode =
+          invoice.getPartner().getLocalization() != null
+              ? invoice.getPartner().getLocalization().getCode()
+              : userLocalizationCode;
+      locale =
+          accountConfig.getIsPrintInvoicesInCompanyLanguage()
+              ? companyLocalizationCode
+              : partnerLocalizationCode;
+    }
+    String watermark = null;
+    MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();
+    if (invoiceWatermark != null) {
+      watermark = MetaFiles.getPath(invoiceWatermark).toString();
+    }
+    Map<String, Object> paramMap = new HashedMap<>();
+    paramMap.put("ReportType", reportType == null ? 0 : reportType);
+    paramMap.put("locale", locale);
+    paramMap.put("Watermark", watermark);
+
+    PrintingGenFactoryContext factoryContext =
+        new PrintingGenFactoryContext(EntityHelper.getEntity(invoice));
+    factoryContext.setContext(paramMap);
+    return printingTemplatePrintService.getPrintFile(
+        invoicePrintTemplate, factoryContext, title + " - ${date}", false);
+  }
+
+  protected String getInvoiceReportTitle(Invoice invoice) throws AxelorException {
+    String title =
+        I18n.get(InvoiceToolService.isRefund(invoice) ? "Credit note" : "Invoice").replace(" ", "");
+    if (invoice.getInvoiceId() != null) {
+      title += " " + invoice.getInvoiceId();
+    }
+    return title;
   }
 
   public File printAndSave(Invoice invoice, Integer reportType, String format, String locale)
       throws AxelorException {
 
-    ReportSettings reportSettings = prepareReportSettings(invoice, reportType, format, locale);
+    File file = print(invoice, reportType, format, locale);
     MetaFile metaFile;
-
-    File file = reportSettings.generate().getFile();
 
     try {
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
       metaFile = metaFiles.upload(file);
-      metaFile.setFileName(String.format("%s.%s", reportSettings.getOutputName(), format));
-      MetaFile signedMetaFile = getSignedPdf(metaFile);
+      MetaFile signedMetaFile =
+          ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))
+              ? getSignedPdf(metaFile)
+              : metaFile;
       metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
       invoice.setPrintedPDF(signedMetaFile);
       return MetaFiles.getPath(metaFile).toFile();
@@ -229,9 +301,8 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
                     Optional.ofNullable(AuthUtils.getUser())
                         .map(User::getActiveCompany)
                         .orElse(null))
-                .format(DateTimeFormatter.BASIC_ISO_DATE)
-            + ".pdf";
-    return PdfHelper.mergePdfToFileLink(printedInvoices, fileName);
+                .format(DateTimeFormatter.BASIC_ISO_DATE);
+    return PrintingTemplateHelper.mergeToFileLink(printedInvoices, fileName);
   }
 
   public List<String> checkInvalidPrintSettingsInvoices(List<Long> ids) {
@@ -245,68 +316,5 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       }
     }
     return invalidPrintSettingsInvoiceIds;
-  }
-
-  @Override
-  public ReportSettings prepareReportSettings(
-      Invoice invoice, Integer reportType, String format, String locale) throws AxelorException {
-    if (invoice.getPrintingSettings() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(AccountExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
-              invoice.getInvoiceId()),
-          invoice);
-    }
-    BirtTemplate invoiceBirtTemplate =
-        accountConfigService.getAccountConfig(invoice.getCompany()).getInvoiceBirtTemplate();
-    if (invoiceBirtTemplate == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
-    }
-
-    String title =
-        I18n.get(InvoiceToolService.isRefund(invoice) ? "Credit note" : "Invoice").replace(" ", "");
-    if (invoice.getInvoiceId() != null) {
-      title += " " + invoice.getInvoiceId();
-    }
-
-    AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
-    if (Strings.isNullOrEmpty(locale)) {
-      String userLocalizationCode =
-          Optional.ofNullable(AuthUtils.getUser())
-              .map(User::getLocalization)
-              .map(Localization::getCode)
-              .orElse(null);
-      String companyLocalizationCode =
-          invoice.getCompany().getLocalization() != null
-              ? invoice.getCompany().getLocalization().getCode()
-              : userLocalizationCode;
-      String partnerLocalizationCode =
-          invoice.getPartner().getLocalization() != null
-              ? invoice.getPartner().getLocalization().getCode()
-              : userLocalizationCode;
-      locale =
-          accountConfig.getIsPrintInvoicesInCompanyLanguage()
-              ? companyLocalizationCode
-              : partnerLocalizationCode;
-    }
-    String watermark = null;
-    MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();
-    if (invoiceWatermark != null) {
-      watermark = MetaFiles.getPath(invoiceWatermark).toString();
-    }
-    Map<String, Object> paramMap = new HashedMap<>();
-    paramMap.put("ReportType", reportType == null ? 0 : reportType);
-    paramMap.put("locale", locale);
-    paramMap.put("Watermark", watermark);
-    return birtTemplateService.generate(
-        invoiceBirtTemplate,
-        EntityHelper.getEntity(invoice),
-        paramMap,
-        title + " - ${date}",
-        false,
-        format);
   }
 }

@@ -167,23 +167,4 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       }
     }
   }
-
-  @Override
-  public void computeBudgetDistributionSumAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    List<BudgetDistribution> budgetDistributionList = saleOrderLine.getBudgetDistributionList();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate =
-        saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
-
-    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
-
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        budgetDistributionService.computeBudgetDistributionSumAmount(
-            budgetDistribution, computeDate);
-      }
-    }
-    saleOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
-  }
 }

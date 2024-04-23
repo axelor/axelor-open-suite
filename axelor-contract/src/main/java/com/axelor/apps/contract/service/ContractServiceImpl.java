@@ -32,6 +32,8 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
@@ -50,8 +52,11 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.date.LocalDateHelper;
@@ -67,6 +72,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -80,6 +86,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   protected ContractLineRepository contractLineRepo;
   protected ContractRepository contractRepository;
+  protected OpportunityRepository opportunityRepository;
+
   protected TaxService taxService;
   protected ContractVersionRepository contractVersionRepository;
   protected InvoiceRepository invoiceRepository;
@@ -100,7 +108,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       InvoiceRepository invoiceRepository,
       InvoiceService invoiceService,
       AnalyticLineModelService analyticLineModelService,
-      ContractYearEndBonusService contractYearEndBonusService) {
+      ContractYearEndBonusService contractYearEndBonusService,
+      OpportunityRepository opportunityRepository) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -113,6 +122,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.invoiceService = invoiceService;
     this.analyticLineModelService = analyticLineModelService;
     this.contractYearEndBonusService = contractYearEndBonusService;
+    this.opportunityRepository = opportunityRepository;
   }
 
   @Override
@@ -898,5 +908,106 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
     }
     contractRepository.save(contract);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Contract generateContractFromOpportunity(
+      Opportunity opportunity, ContractTemplate contractTemplate) {
+    Contract contract = new Contract();
+    Currency currency = opportunity.getCurrency();
+    Company company = opportunity.getCompany();
+    if (currency == null && opportunity.getPartner() != null) {
+      currency = opportunity.getPartner().getCurrency();
+    }
+    if (currency == null && company != null) {
+      currency = company.getCurrency();
+    }
+
+    contract.setCompany(company);
+    contract.setCurrency(currency);
+    contract.setPartner(opportunity.getPartner());
+    contract.setTargetTypeSelect(ContractRepository.CUSTOMER_CONTRACT);
+    contract.setName(opportunity.getName());
+    contract.setStatusSelect(ContractRepository.DRAFT_CONTRACT);
+    contract.setCurrentContractVersion(new ContractVersion());
+
+    ContractTemplate contractTemplate1 = JPA.copy(contractTemplate, true);
+    if (contractTemplate != null) {
+      contract.setAdditionalBenefitContractLineList(
+          contractTemplate1.getAdditionalBenefitContractLineList());
+      contract.setContractTypeSelect(contractTemplate1.getContractTypeSelect());
+    }
+    contract.setOpportunity(opportunity);
+    contractRepository.save(contract);
+
+    return contract;
+  }
+
+  public Boolean contractsFromOpportunityAreGenerated(Long opportunityId) {
+    return contractRepository
+            .all()
+            .filter("self.opportunity.id =:opportunityId")
+            .bind("opportunityId", opportunityId)
+            .count()
+        > 0;
+  }
+
+  @Override
+  public boolean checkConsumptionLineQuantity(
+      Contract contractCtx,
+      ConsumptionLine consumptionLineCtx,
+      BigDecimal initQty,
+      Integer initProductId) {
+
+    BigDecimal max = BigDecimal.ZERO;
+    if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
+      List<ContractLine> contractLines =
+          contractCtx.getCurrentContractVersion().getContractLineList().stream()
+              .filter(
+                  cl ->
+                      cl.getIsConsumptionLine()
+                          && Objects.equals(
+                              cl.getProduct().getId(), consumptionLineCtx.getProduct().getId()))
+              .collect(Collectors.toList());
+      if (contractLines.isEmpty()) {
+        return false;
+      }
+      if (contractLines.get(0).getConsumptionMaxQuantity() == null) {
+        return false;
+      }
+      max = contractLines.get(0).getConsumptionMaxQuantity();
+    }
+    if (initProductId != null) {
+      if (!Objects.equals(Long.valueOf(initProductId), consumptionLineCtx.getProduct().getId())) {
+        contractCtx.getConsumptionLineList().add(consumptionLineCtx);
+      }
+    }
+    BigDecimal sum =
+        contractCtx.getConsumptionLineList().stream()
+            .filter(
+                consumptionLine ->
+                    dateInPeriod(
+                            consumptionLine.getLineDate(),
+                            contractCtx.getInvoicePeriodStartDate(),
+                            contractCtx.getInvoicePeriodEndDate())
+                        && consumptionLine
+                            .getProduct()
+                            .getId()
+                            .equals(consumptionLineCtx.getProduct().getId())
+                        && !consumptionLine.getIsInvoiced())
+            .map(ConsumptionLine::getQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    sum = sum.subtract(initQty);
+    sum = sum.add(consumptionLineCtx.getQty());
+    return sum.compareTo(max) > 0;
+  }
+
+  private boolean dateInPeriod(LocalDate date, LocalDate startDate, LocalDate endDate) {
+    if (startDate == null || endDate == null) {
+      return true;
+    }
+    return !date.isBefore(startDate) && !date.isAfter(endDate);
   }
 }

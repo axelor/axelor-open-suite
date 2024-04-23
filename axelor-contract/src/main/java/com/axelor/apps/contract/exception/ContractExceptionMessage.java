@@ -54,4 +54,10 @@ public final class ContractExceptionMessage {
 
   public static final String CONTRACT_MISSING_REVALUATION_PERIOD = /*$$(*/
       "Missing revaluation period for this contract." /*)*/;
+
+  public static final String CONTRACT_ALREADY_GENERATED_FROM_OPP = /*$$(*/
+      "Contract has already been generated for this opportunity." /*)*/;
+
+  public static final String CONTRACT_QUANTITIES_EXCEED_MAX = /*$$(*/
+      "Consumption line quantities exceed the max quantity defined in the contract line." /*)*/;
 }

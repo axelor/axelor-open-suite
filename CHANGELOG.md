@@ -1,3 +1,39 @@
+## [8.0.5] (2024-04-19)
+
+### Fixes
+#### Base
+
+* (Webapp) Updated Axelor Open Platform dependency to 7.0.7.
+* Birt template: fixed duplicated printouts generated when attach boolean is set to true.
+
+#### Account
+
+* Payment voucher: fixed required message at on new and fixed invoice refresh at confirm.
+* Accounting report: fixed 'Fees declaration supporting file' report displaying records that should not appear.
+* Invoice: improved UX to prevent the use of financial discount on advance payment invoice.
+* Financial Discount: fixed french translations for 'discount'.
+* Invoice payment: fixed anomalies when doing multi currency payments.
+* Invoice: fixed invoice term amount remaining on invoice payment move.
+
+#### Budget
+
+* Purchase order/Sale order/Stock move/Invoice: link order budget to invoice after stock move generation.
+* Global budget: fixed structure validation when the global budget have no budget.
+* Budget: fixed technical error when creating budget on a saved budget level.
+
+#### Human Resource
+
+* Expense: fixed expense accounting moves generation when expense line dates are different and tax amount is zero.
+
+#### Sale
+
+* Sale order: removed french translation from english file.
+
+#### Supply Chain
+
+* Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead.
+* Mass stock move invoicing: fixed an issue preventing to invoice customer returns.
+
 ## [8.0.4] (2024-04-04)
 
 ### Fixes
@@ -490,6 +526,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.5]: https://github.com/axelor/axelor-open-suite/compare/v8.0.4...v8.0.5
 [8.0.4]: https://github.com/axelor/axelor-open-suite/compare/v8.0.3...v8.0.4
 [8.0.3]: https://github.com/axelor/axelor-open-suite/compare/v8.0.2...v8.0.3
 [8.0.2]: https://github.com/axelor/axelor-open-suite/compare/v8.0.1...v8.0.2
