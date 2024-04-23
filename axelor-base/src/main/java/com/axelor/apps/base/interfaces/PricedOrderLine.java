@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.interfaces;
 
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import java.math.BigDecimal;
 import java.util.Set;
@@ -26,4 +27,6 @@ public interface PricedOrderLine {
   Set<TaxLine> getTaxLineSet();
 
   BigDecimal getExTaxTotal();
+
+  TaxEquiv getTaxEquiv();
 }

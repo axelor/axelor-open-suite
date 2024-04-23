@@ -280,7 +280,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams(
-          "(self.account.serviceType is null OR self.move.partner.das2Activity is null)");
+          "((self.account.serviceType IS NULL AND self.move.partner.das2Activity IS NOT NULL)"
+              + "  OR "
+              + "(self.account.serviceType IS NOT NULL AND self.move.partner.das2Activity IS NULL))");
       this.addParams("self.amountRemaining < self.debit + self.credit");
 
       JournalType journalType =

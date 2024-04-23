@@ -146,12 +146,4 @@ public interface PartnerService {
    * @return
    */
   String getPhoneNumberFieldName(String actionName);
-
-  String getTaxNbrFromRegistrationCode(Partner partner);
-
-  String getNicFromRegistrationCode(Partner partner);
-
-  String getSirenFromRegistrationCode(Partner partner);
-
-  boolean isRegistrationCodeValid(Partner partner);
 }

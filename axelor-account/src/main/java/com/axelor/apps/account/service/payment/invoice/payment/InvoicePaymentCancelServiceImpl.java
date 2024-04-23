@@ -22,11 +22,14 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +38,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected MoveCancelService moveCancelService;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected InvoiceTermService invoiceTermService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -42,11 +46,12 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   public InvoicePaymentCancelServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
-      InvoicePaymentToolService invoicePaymentToolService) {
-
+      InvoicePaymentToolService invoicePaymentToolService,
+      InvoiceTermService invoiceTermService) {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveCancelService = moveCancelService;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -67,6 +72,8 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
         invoicePayment.setMove(null);
       }
       moveCancelService.cancel(paymentMove);
+    } else {
+      cancelImputedInvoicePayment(invoicePayment);
     }
     updateCancelStatus(invoicePayment);
   }
@@ -79,5 +86,21 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
 
     invoicePaymentRepository.save(invoicePayment);
+  }
+
+  protected void cancelImputedInvoicePayment(InvoicePayment invoicePayment) throws AxelorException {
+    List<Integer> imputationType =
+        Arrays.asList(
+            InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION,
+            InvoicePaymentRepository.TYPE_REFUND_IMPUTATION);
+    InvoicePayment imputedBy = invoicePayment.getImputedBy();
+    if (imputationType.contains(invoicePayment.getTypeSelect())
+        && imputedBy != null
+        && imputationType.contains(imputedBy.getTypeSelect())) {
+      invoiceTermService.updateInvoiceTermsAmountRemaining(
+          invoicePayment.getInvoiceTermPaymentList());
+      invoiceTermService.updateInvoiceTermsAmountRemaining(imputedBy.getInvoiceTermPaymentList());
+      updateCancelStatus(imputedBy);
+    }
   }
 }

@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -248,9 +247,7 @@ public class StockMoveController {
         StockMove stockMove = context.asType(StockMove.class);
         stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
         title = pickingstockMovePrintService.getFileName(stockMove);
-        fileLink =
-            pickingstockMovePrintService.printStockMove(
-                stockMove, ReportSettings.FORMAT_PDF, userType);
+        fileLink = pickingstockMovePrintService.printStockMove(stockMove, userType);
         logger.debug("Printing " + title);
       } else {
         throw new AxelorException(
@@ -295,9 +292,7 @@ public class StockMoveController {
         StockMove stockMove = context.asType(StockMove.class);
         stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
         title = conformityCertificatePrintService.getFileName(stockMove);
-        fileLink =
-            conformityCertificatePrintService.printConformityCertificate(
-                stockMove, ReportSettings.FORMAT_PDF);
+        fileLink = conformityCertificatePrintService.printConformityCertificate(stockMove);
 
         logger.debug("Printing {}", title);
       } else {
