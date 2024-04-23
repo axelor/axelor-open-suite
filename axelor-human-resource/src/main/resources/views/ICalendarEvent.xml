@@ -12,7 +12,7 @@
       <insert position="before">
         <field name="$_linkedProjectPlanningTime" title="Linked project planning time"
           readonly="true" type="many-to-one" target="com.axelor.apps.project.db.ProjectPlanningTime"
-          hidden="true"
+          hidden="true" edit-window="blank"
           if="__config__.app.isApp('project') &amp;&amp; __config__.app.getApp('project')?.enableEventCreation"/>
       </insert>
     </extend>

@@ -769,6 +769,11 @@
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
   </selection>
 
+  <selection name="base.registration.number.template.validation.method.select">
+    <option
+      value="com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidatorFRA">French registration number validation</option>
+  </selection>
+
   <selection name="tax.type.type.select">
     <option value="1">VAT</option>
     <option value="2">Other</option>

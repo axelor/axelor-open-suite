@@ -285,7 +285,7 @@
   <action-view name="sc.root.sale.order.lines.to.invoice"
     title="Mass sale order line invoicing" model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-to-invoice-grid"/>
-    <view type="form" name="sale-order-line-form"/>
+    <view type="form" name="sale-order-line-to-invoice-form"/>
     <domain>
       (self.invoicingState = 1 OR self.invoicingState = 2) AND
       self.saleOrder.statusSelect = 3

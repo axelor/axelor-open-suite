@@ -6,7 +6,10 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineCAMT53Rep
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineCAMT53Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementBankDetailsService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportAbstractService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportCheckService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.bankpayment.service.bankstatementline.camt53.BankStatementLineCreateCAMT53Service;
@@ -41,8 +44,17 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
       BankStatementLineFetchService bankStatementLineFetchService,
       BankPaymentBankStatementLineCAMT53Repository bankPaymentBankStatementLineCAMT53Repository,
       BankStatementLineDeleteService bankStatementLineDeleteService,
+      BankStatementImportCheckService bankStatementImportCheckService,
+      BankStatementBankDetailsService bankStatementBankDetailsService,
+      BankStatementCreateService bankStatementCreateService,
       CurrencyScaleService currencyScaleService) {
-    super(bankStatementRepository);
+    super(
+        bankStatementRepository,
+        bankStatementImportCheckService,
+        bankStatementLineFetchService,
+        bankStatementBankDetailsService,
+        bankStatementCreateService);
+
     this.bankStatementLineCreateCAMT53Service = bankStatementLineCreateCAMT53Service;
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankPaymentBankStatementLineCAMT53Repository =
@@ -62,7 +74,7 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
   }
 
   @Override
-  protected void checkImport(BankStatement bankStatement) throws AxelorException, IOException {
+  protected void checkImport(BankStatement bankStatement) throws AxelorException {
     try {
       boolean alreadyImported = false;
 

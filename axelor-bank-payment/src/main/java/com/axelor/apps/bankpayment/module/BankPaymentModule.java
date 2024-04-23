@@ -103,6 +103,12 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationSelectedLineComputationServiceImpl;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementBankDetailsService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementBankDetailsServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementDateService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementDateServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportCheckService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportCheckServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateService;
@@ -117,8 +123,6 @@ import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFi
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineCreationAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineCreationAFB120ServiceImpl;
-import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineFetchAFB120Service;
-import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineFetchAFB120ServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineMapperAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineMapperAFB120ServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLinePrintAFB120Service;
@@ -243,8 +247,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(InvoiceBankPaymentService.class).to(InvoiceBankPaymentServiceImpl.class);
     bind(BankStatementLineMapperAFB120Service.class)
         .to(BankStatementLineMapperAFB120ServiceImpl.class);
-    bind(BankStatementLineFetchAFB120Service.class)
-        .to(BankStatementLineFetchAFB120ServiceImpl.class);
     bind(BankStatementLineCreationService.class).to(BankStatementLineCreationServiceImpl.class);
     bind(BankStatementLineCreationAFB120Service.class)
         .to(BankStatementLineCreationAFB120ServiceImpl.class);
@@ -278,5 +280,8 @@ public class BankPaymentModule extends AxelorModule {
         .to(BankStatementLineCreationCAMT53ServiceImpl.class);
     bind(BankStatementLineCAMT53Repository.class)
         .to(BankPaymentBankStatementLineCAMT53Repository.class);
+    bind(BankStatementImportCheckService.class).to(BankStatementImportCheckServiceImpl.class);
+    bind(BankStatementBankDetailsService.class).to(BankStatementBankDetailsServiceImpl.class);
+    bind(BankStatementDateService.class).to(BankStatementDateServiceImpl.class);
   }
 }
