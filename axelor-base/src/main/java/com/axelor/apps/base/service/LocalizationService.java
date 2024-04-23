@@ -4,7 +4,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Localization;
 
 public interface LocalizationService {
-  public void validateLocale(Localization localization) throws AxelorException;
+  void validateLocale(Localization localization) throws AxelorException;
 
-  public String getNumberFormat(String localizationCode);
+  String getNumberFormat(String localizationCode);
+
+  String getDateFormat(String localizationCode);
 }

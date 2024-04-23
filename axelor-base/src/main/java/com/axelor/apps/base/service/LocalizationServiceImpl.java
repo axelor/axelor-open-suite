@@ -6,7 +6,9 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.Locale;
 import org.apache.commons.lang3.LocaleUtils;
 
@@ -36,5 +38,30 @@ public class LocalizationServiceImpl implements LocalizationService {
     NumberFormat usNumberFormatter = NumberFormat.getNumberInstance(locale);
     // Get the pattern string for the number format
     return ((java.text.DecimalFormat) usNumberFormatter).toLocalizedPattern();
+  }
+
+  @Override
+  public String getDateFormat(String localizationCode) {
+    LocalDate date = LocalDate.of(2024, 4, 17);
+
+    // Format for en_CA: yyyy-MM-dd
+    String formattedDateCanada = formatDate(date, new Locale("en", "CA"));
+    System.out.println("Formatted Date (en_CA): " + formattedDateCanada);
+
+    // Format for en_US: MM/dd/yyyy
+    String formattedDateUS = formatDate(date, Locale.US);
+    System.out.println("Formatted Date (en_US): " + formattedDateUS);
+
+    // Format for fr_FR: dd/MM/yyyy
+    String formattedDateFrance = formatDate(date, Locale.FRANCE);
+    System.out.println("Formatted Date (fr_FR): " + formattedDateFrance);
+    return null;
+  }
+
+  public static String formatDate(LocalDate date, Locale locale) {
+    // Create a date formatter with the default date style for the given locale
+    DateFormat formatter = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+    // Format the date using the formatter
+    return formatter.format(java.sql.Date.valueOf(date));
   }
 }

@@ -22,6 +22,7 @@ public class LocalizationController {
     Localization localization = request.getContext().asType(Localization.class);
     String numberFormat =
         Beans.get(LocalizationService.class).getNumberFormat(localization.getCode());
+    Beans.get(LocalizationService.class).getDateFormat(localization.getCode());
     response.setValue("numbersFormat", numberFormat);
   }
 }
