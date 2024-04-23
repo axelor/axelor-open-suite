@@ -268,6 +268,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       invoicePayment.setApplyFinancialDiscount(
           invoiceTerm.getFinancialDiscountDeadlineDate() != null
               && invoiceTerm.getApplyFinancialDiscount()
+              && invoicePayment.getPaymentDate() != null
               && !invoicePayment
                   .getPaymentDate()
                   .isAfter(invoiceTerm.getFinancialDiscountDeadlineDate())

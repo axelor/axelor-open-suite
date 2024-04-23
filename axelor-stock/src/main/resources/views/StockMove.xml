@@ -222,7 +222,10 @@
     width="large" onLoad="action-group-stock-stockmove-onload"
     onNew="action-group-stock-stockmove-onnew"
     onSave="action-stock-move-group-save-and-update-stocks">
+
     <toolbar>
+      <button name="sendNotifBtn" title="Send notification" hidden="true"
+        showIf="statusSelect == 4" onClick="action-stock-move-view-open-notification-wizard"/>
       <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
     <menubar>
@@ -905,6 +908,7 @@
       if="partner?.partnerAddressList?.size() > 1"/>
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
+    <action name="action-stock-move-attrs-show-send-notif-button"/>
   </action-group>
 
   <action-group name="action-stock-move-line-change-group">
@@ -1404,6 +1408,10 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
     <context name="_xApplicationType" expr="eval: _model"/>
+    <context name="_supplierArrivalCancellationAutomaticMail"
+      expr="eval: supplierArrivalCancellationAutomaticMail"/>
+    <context name="_supplierArrivalCancellationMessageTemplate"
+      expr="eval: supplierArrivalCancellationMessageTemplate"/>
   </action-view>
 
   <form name="stock-move-cancel-wizard-form" model="com.axelor.apps.stock.db.StockMove"
@@ -1587,4 +1595,33 @@
   <action-method name="action-stock-move-method-merge">
     <call class="com.axelor.apps.stock.web.StockMoveMergingController" method="mergeStockMoves"/>
   </action-method>
+
+  <action-attrs name="action-stock-move-attrs-show-send-notif-button">
+    <attribute for="sendNotifBtn" name="hidden"
+      expr="eval: !(_typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !_isReversion &amp;&amp; statusSelect == 4)"/>
+  </action-attrs>
+
+  <form title="Choose a template" name="stock-move-send-notification-wizard-form"
+    model="com.axelor.utils.db.Wizard" canSave="false" canNew="false">
+    <panel name="mainPanel">
+      <field name="$supplierArrivalCancellationMessageTemplate" type="many-to-one"
+        target="com.axelor.message.db.Template" title="Message template" required="true" colSpan="6"
+        widget="SuggestBox" domain="self.metaModel.name = 'StockMove'"/>
+      <button name="sendNotifBtn" title="Send notification"
+        onClick="action-stock-move-method-send-notification" colSpan="6"/>
+    </panel>
+  </form>
+
+  <action-view name="action-stock-move-view-open-notification-wizard"
+    title="Choose a template" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="stock-move-send-notification-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+  </action-view>
+
+  <action-method name="action-stock-move-method-send-notification">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="sendSupplierArrivalCancellationMessage"/>
+  </action-method>
+
 </object-views>
