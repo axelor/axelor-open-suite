@@ -211,7 +211,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
 
       // fill default advance payment invoice
-      if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      if (InvoiceToolService.isRefund(invoice)
+          || invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
         invoice.setAdvancePaymentInvoiceSet(
             Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
       }

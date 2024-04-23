@@ -30,7 +30,6 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
-import java.util.Arrays;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -126,7 +125,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   public boolean getPaymentVouchersStatus(Invoice invoice) throws AxelorException {
     AppAccountService appAccount = Beans.get(AppAccountService.class);
 
-    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (InvoiceToolService.isAdvancePayment(invoice)) {
       return false;
     }
 
@@ -159,10 +158,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected boolean _getStatusOperationSubTypeCondition(Invoice invoice) {
     return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         || (invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED
-            && (Arrays.asList(
-                    InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
-                    InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
-                .contains(invoice.getOperationSubTypeSelect())));
+            && (InvoiceToolService.isAdvancePayment(invoice)));
   }
 
   protected boolean _getPfpValidateStatusCondition(Invoice invoice, boolean litigation) {
