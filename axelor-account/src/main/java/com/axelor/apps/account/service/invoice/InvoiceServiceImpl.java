@@ -84,7 +84,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -194,8 +193,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         };
 
     Invoice invoice1 = invoiceGenerator.generate();
-    if (invoice.getOperationSubTypeSelect()
-        != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
     }
 
@@ -236,10 +234,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
-    if (Arrays.asList(
-            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
-            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
-        .contains(invoice.getOperationSubTypeSelect())) {
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       ventilate(invoice);
     }
   }
@@ -287,10 +282,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
-          && !Arrays.asList(
-                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
-                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
-              .contains(invoice.getOperationSubTypeSelect())) {
+          && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -436,8 +428,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             refundType,
             InvoiceRepository.STATUS_VENTILATED,
             operationSubTypeSelect == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-                ? InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND
-                : InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND)
+                ? InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+                : InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
         .count();
   }
 
@@ -734,7 +726,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     filter +=
         " AND self.partner = :_partner "
             + "AND self.currency = :_currency "
-            + "AND self.operationTypeSelect = :_operationTypeSelect "
             + "AND self.internalReference IS NULL";
 
     advancePaymentInvoices =
@@ -744,7 +735,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 .filter(filter)
                 .bind("_status", InvoiceRepository.STATUS_VALIDATED)
                 .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-                .bind("_operationTypeSelect", invoice.getOperationTypeSelect())
+                .bind(
+                    "_operationType",
+                    InvoiceToolService.isPurchase(invoice)
+                        ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                        : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .bind("_partner", partner)
                 .bind("_currency", currency)
                 .fetch());
@@ -870,7 +865,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected String writeGeneralFilterForAdvancePayment() {
-    return "self.statusSelect = :_status" + " AND self.operationSubTypeSelect = :_operationSubType";
+    return "self.statusSelect = :_status AND self.operationSubTypeSelect = :_operationSubType AND self.operationTypeSelect = :_operationType";
   }
 
   @Override

@@ -406,12 +406,12 @@ public class InvoiceController {
               : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
 
       String viewTitle = AccountExceptionMessage.INVOICE_GENERATED_INVOICE_REFUND;
-      if (refund.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND) {
-        viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
-      } else if (refund.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
-        viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
+      if (InvoiceToolService.isRefund(refund)) {
+        if (refund.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
+          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
+        } else {
+          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
+        }
       }
 
       response.setView(
@@ -679,8 +679,8 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
       String domain = "";
-      if (invoice.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+      if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+          && InvoiceToolService.isRefund(invoice)) {
         domain =
             Beans.get(AdvancePaymentRefundService.class)
                 .createAdvancePaymentInvoiceSetDomain(invoice);
@@ -708,8 +708,8 @@ public class InvoiceController {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+      if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+          && InvoiceToolService.isRefund(invoice)) {
         Set<Invoice> invoices =
             Beans.get(AdvancePaymentRefundService.class).getDefaultAdvancePaymentInvoice(invoice);
         response.setValue("advancePaymentInvoiceSet", invoices);
@@ -1332,21 +1332,20 @@ public class InvoiceController {
     String originalInvoice = "";
 
     try {
-      switch (invoice.getOperationSubTypeSelect()) {
-        case InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND:
+      if (InvoiceToolService.isRefund(invoice)) {
+        if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
           createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_INVOICE;
           refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_INVOICE;
           originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_INVOICE;
-          break;
-        case InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND:
+        } else {
           createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND;
           refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_ADVANCE_PAYMENT_REFUND;
           originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND;
-          break;
-        default:
-          createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_CLASSIC_REFUND;
-          refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_CLASSIC_REFUND;
-          originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_CLASSIC_REFUND;
+        }
+      } else {
+        createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_CLASSIC_REFUND;
+        refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_CLASSIC_REFUND;
+        originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_CLASSIC_REFUND;
       }
 
       response.setAttr("createRefundBtn", "title", I18n.get(createRefundBtn));
