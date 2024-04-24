@@ -173,5 +173,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(TimesheetLineCreateServiceImpl.class).to(TimesheetLineCreateProjectServiceImpl.class);
     bind(InvoicingProjectStockMovesService.class).to(InvoicingProjectStockMovesServiceImpl.class);
     bind(ProjectHoldBackLineService.class).to(ProjectHoldBackLineServiceImpl.class);
+    bind(AppBusinessProjectService.class).to(AppBusinessProjectServiceImpl.class);
   }
 }

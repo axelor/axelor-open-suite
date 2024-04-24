@@ -137,7 +137,8 @@
     </extend>
     <extend target="//panel[@name='salesPanel']">
       <insert position="after">
-        <panel name="analyticPanel" title="Analytic" if-module="axelor-business-project"
+        <panel name="analyticDistributionPanel" title="Analytics"
+          if-module="axelor-business-project"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
           hidden="true" showIf="isBusinessProject" colSpan="12">
           <panel name="analyticDistributionPanel" title="Analytics" colSpan="12">
