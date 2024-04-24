@@ -31,6 +31,8 @@ public interface AnalyticToolService {
 
   boolean isFreeAnalyticDistribution(Company company) throws AxelorException;
 
+  boolean isPartnerAnalyticDistribution(Company company) throws AxelorException;
+
   boolean isPositionUnderAnalyticAxisSelect(Company company, int position) throws AxelorException;
 
   boolean isAxisAccountSumValidated(

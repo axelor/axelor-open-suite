@@ -744,4 +744,10 @@
       method="createAnalyticDistributionWithTemplate"/>
   </action-method>
 
+  <action-method
+    name="action-business-project-method-get-analytic-distribution-template">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="getAnalyticDistributionTemplate"/>
+  </action-method>
+
 </object-views>

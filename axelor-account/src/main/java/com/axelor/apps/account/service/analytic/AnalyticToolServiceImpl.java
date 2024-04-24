@@ -58,6 +58,13 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
   }
 
   @Override
+  public boolean isPartnerAnalyticDistribution(Company company) throws AxelorException {
+    return isManageAnalytic(company)
+        && accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER;
+  }
+
+  @Override
   public boolean isPositionUnderAnalyticAxisSelect(Company company, int position)
       throws AxelorException {
     return company != null

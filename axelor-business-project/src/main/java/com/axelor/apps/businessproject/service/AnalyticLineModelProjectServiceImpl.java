@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -75,6 +76,35 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
     }
 
     return analyticMoveLine;
+  }
+
+  @Override
+  public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    if (!isPartnerAnalyticDistribution(analyticLineModel)) {
+      return analyticLineModel;
+    }
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            analyticLineModel.getPartner(),
+            analyticLineModel.getProduct(),
+            analyticLineModel.getCompany(),
+            analyticLineModel.getTradingName(),
+            analyticLineModel.getAccount(),
+            analyticLineModel.getIsPurchase());
+
+    analyticLineModel.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    if (analyticLineModel.getAnalyticMoveLineList() != null) {
+      analyticLineModel.getAnalyticMoveLineList().clear();
+    }
+
+    this.computeAnalyticDistribution(analyticLineModel);
+
+    analyticLineModel.copyToModel();
+
+    return analyticLineModel;
   }
 
   @Override

@@ -112,11 +112,20 @@ public class ProjectController {
             .map());
   }
 
-  public void getPartnerData(ActionRequest request, ActionResponse response) {
+  public void getPartnerData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Project project = request.getContext().asType(Project.class);
     Partner partner = project.getClientPartner();
 
     if (partner != null) {
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+
+      Beans.get(AnalyticLineModelService.class)
+          .getAndComputeAnalyticDistribution(analyticLineProjectModel);
+
+      response.setValue(
+          "analyticDistributionTemplate",
+          analyticLineProjectModel.getAnalyticDistributionTemplate());
 
       response.setValue("currency", partner.getCurrency());
 
@@ -186,6 +195,7 @@ public class ProjectController {
 
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
+    // TODO Check if necessary
     try {
       Project project = request.getContext().asType(Project.class);
 
@@ -193,6 +203,23 @@ public class ProjectController {
 
       Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineProjectModel);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getAnalyticDistributionTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+
+      Beans.get(AnalyticLineModelService.class)
+          .getAndComputeAnalyticDistribution(analyticLineProjectModel);
+
+      response.setValue(
+          "analyticDistributionTemplate",
+          analyticLineProjectModel.getAnalyticDistributionTemplate());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

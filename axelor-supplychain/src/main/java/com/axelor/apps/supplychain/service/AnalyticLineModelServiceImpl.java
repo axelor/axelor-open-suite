@@ -166,6 +166,12 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   }
 
   @Override
+  public boolean isPartnerAnalyticDistribution(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    return analyticToolService.isPartnerAnalyticDistribution(analyticLineModel.getCompany());
+  }
+
+  @Override
   public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
       throws AxelorException {
     Product product = analyticLineModel.getProduct();

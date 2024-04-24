@@ -33,6 +33,8 @@ public interface AnalyticLineModelService {
 
   boolean isFreeAnalyticDistribution(AnalyticLineModel analyticLineModel) throws AxelorException;
 
+  boolean isPartnerAnalyticDistribution(AnalyticLineModel analyticLineModel) throws AxelorException;
+
   boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel) throws AxelorException;
 
   AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel)
