@@ -65,7 +65,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -326,7 +325,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           .printAndSave(
               invoice,
               InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
-              ReportSettings.FORMAT_PDF,
+              accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
               null);
     }
   }
