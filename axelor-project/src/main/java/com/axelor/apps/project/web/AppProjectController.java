@@ -16,14 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service.app;
+package com.axelor.apps.project.web;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppProject;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-public interface AppProjectService extends AppBaseService {
+@Singleton
+public class AppProjectController {
 
-  public AppProject getAppProject();
+  public void generateProjectConfigurations(ActionRequest request, ActionResponse response) {
+    Beans.get(AppProjectService.class).generateProjectConfigurations();
 
-  void generateProjectConfigurations();
+    response.setReload(true);
+  }
 }

@@ -24,7 +24,7 @@ import com.axelor.apps.hr.service.project.PlannedTimeValueService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -115,7 +115,9 @@ public class ProjectPlanningTimeController {
     response.setValue(
         "plannedTime",
         Beans.get(ProjectPlanningTimeService.class).computePlannedTime(projectPlanningTime));
-    if (Beans.get(AppProjectService.class).getAppProject().getIsSelectionOnDisplayPlannedTime()) {
+    if (Beans.get(ProjectConfigService.class)
+        .getProjectConfig(projectPlanningTime.getProject().getCompany())
+        .getIsSelectionOnDisplayPlannedTime()) {
       if (projectPlanningTime.getDisplayPlannedTimeRestricted() != null) {
         response.setValue(
             "displayPlannedTime",
@@ -150,5 +152,17 @@ public class ProjectPlanningTimeController {
         "domain",
         Beans.get(ProjectPlanningTimeService.class)
             .computeDisplayPlannedTimeRestrictedDomain(projectPlanningTime));
+  }
+
+  public void getCompanyConfig(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setValue(
+        "$isSelectionOnDisplayPlannedTime",
+        Beans.get(ProjectConfigService.class)
+            .getProjectConfig(projectPlanningTime.getProject().getCompany())
+            .getIsSelectionOnDisplayPlannedTime());
   }
 }

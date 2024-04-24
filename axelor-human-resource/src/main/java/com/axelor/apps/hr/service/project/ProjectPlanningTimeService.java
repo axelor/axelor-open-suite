@@ -60,5 +60,6 @@ public interface ProjectPlanningTimeService {
 
   String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime);
 
-  String computeDisplayPlannedTimeRestrictedDomain(ProjectPlanningTime projectPlanningTime);
+  String computeDisplayPlannedTimeRestrictedDomain(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException;
 }

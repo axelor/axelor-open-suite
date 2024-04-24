@@ -10,10 +10,6 @@
       <insert position="after">
         <field name="enableEventCreation" widget="boolean-switch"/>
         <field name="eventSubjectGroovyFormula" showIf="enableEventCreation"/>
-        <field name="isSelectionOnDisplayPlannedTime" widget="boolean-switch"/>
-        <field name="plannedTimeValueList" showIf="isSelectionOnDisplayPlannedTime"
-          widget="TagSelect" x-order="plannedTime">
-        </field>
       </insert>
     </extend>
 
