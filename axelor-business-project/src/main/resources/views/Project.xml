@@ -25,6 +25,10 @@
       <attribute name="onNew" value="action-business-project-project-group-on-new"/>
       <attribute name="onLoad" value="action-business-project-project-group-on-load"/>
     </extend>
+    <extend target="//field[@name='assignedTo']">
+      <attribute name="onChange"
+        value="action-business-project-group-assigned-to-onchange"/>
+    </extend>
     <extend target="//field[@name='projectFolderSet']">
       <insert position="after">
         <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
@@ -145,17 +149,38 @@
             <field name="analyticDistributionTemplate"
               grid-view="analytic-distribution-template-grid"
               form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
-              onChange="action-account-account-method-new-analytic-dist-template"
-              domain="self.company = :company AND self.isSpecific = false" colSpan="12"/>
-            <field name="analyticDistributionTemplate"
-              showIf="analyticDistributionTemplate &amp;&amp; !$readonly()" canNew="false"
-              canSelect="false" showTitle="false" colSpan="12">
-              <editor>
-                <field name="analyticDistributionLineList" editable="false" showTitle="false"
-                  grid-view="analytic-distribution-line-editable-grid" colSpan="12"
-                  form-view="analytic-distribution-line-form"/>
-              </editor>
-            </field>
+              onChange="action-business-project-group-analytic-distribution-template-onchange"
+              domain="self.company = :company AND self.isSpecific = false"
+              validIf="$isValidAnalyticMoveLineList"/>
+            <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+              form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+              onSelect="action-business-project-method-set-axis-domain"
+              onChange="action-business-project-group-axis-create-analytic-line"/>
+            <panel name="axisAnalyticAccountPanel" colSpan="12"
+              readonlyIf="analyticDistributionTemplate">
+              <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+                form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+                onSelect="action-business-project-method-set-axis-domain"
+                onChange="action-business-group-method-axis-create-analytic-line"/>
+              <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+                form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+                onSelect="action-business-project-method-set-axis-domain"
+                onChange="action-business-group-method-axis-create-analytic-line"/>
+              <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+                form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+                onSelect="action-business-project-method-set-axis-domain"
+                onChange="action-business-group-method-axis-create-analytic-line"/>
+              <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+                form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+                onSelect="action-business-project-method-set-axis-domain"
+                onChange="action-business-group-method-axis-create-analytic-line"/>
+            </panel>
+            <panel-related name="analyticMoveLineListPanel"
+              field="analyticMoveLineList"
+              grid-view="analytic-move-line-distribution-simplified-grid"
+              form-view="analytic-move-line-distribution-simplified-form" colSpan="12"
+              onChange="action-purchase-order-line-group-analytic-move-line-list-onchange"/>
+            <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
           </panel>
         </panel>
       </insert>
@@ -166,11 +191,13 @@
     <action name="action-project-group-on-new-project"/>
     <action name="action-business-project-project-attrs-defaults"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
+    <action name="action-business-project-group-manage-analytic"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
     <action name="action-project-on-load-group"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
+    <action name="action-business-project-group-manage-analytic"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">
@@ -734,15 +761,71 @@
   </action-method>
 
   <!-- Analytic -->
+  <!-- Action group -->
+  <action-group name="action-business-project-group-manage-analytic">
+    <action name="action-business-project-method-hide-axis-analytic-account"/>
+    <action name="action-business-project-method-print-analytic-account"/>
+    <action name="action-business-project-method-set-analytic-distribution-panel-hidden"/>
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+  </action-group>
+
+  <action-group name="action-business-project-group-assigned-to-onchange">
+    <action name="action-attrs-project-add-member"/>
+    <action name="action-business-project-method-get-analytic-distribution-template"/>
+  </action-group>
+
   <action-group
     name="action-business-project-group-analytic-distribution-template-onchange">
     <action name="action-business-project-method-create-distribution"/>
+    <action name="action-business-project-method-print-analytic-account"/>
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
   </action-group>
+
+  <action-group name="action-business-project-group-axis-create-analytic-line">
+    <action name="action-business-project-method-axis-create-analytic-line"/>
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+  </action-group>
+
+  <!-- Action method -->
+  <action-method name="action-business-project-method-hide-axis-analytic-account">
+    <call class="com.axelor.apps.businessproject.web.ProjectController" method="manageAxis"/>
+  </action-method>
+
+  <action-method name="action-business-project-method-print-analytic-account">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="printAnalyticAccounts"/>
+  </action-method>
+
+  <action-method
+    name="action-business-project-method-set-analytic-distribution-panel-hidden">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setAnalyticDistributionPanelHidden"/>
+  </action-method>
+
+  <action-method name="action-business-project-method-set-axis-domain">
+    <call class="com.axelor.apps.businessproject.web.ProjectController" method="setAxisDomains"/>
+  </action-method>
+
+  <action-method name="action-business-project-method-axis-create-analytic-line">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="createAnalyticAccountLines"/>
+  </action-method>
+
+  <action-method
+    name="action-business-project-method-set-analytic-distribution-template-required">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setAnalyticDistributionTemplateRequired"/>
+  </action-method>
 
   <action-method name="action-business-project-method-create-distribution">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="createAnalyticDistributionWithTemplate"/>
   </action-method>
+
+
+
+
+  <!-- TODO CHECK UTILITY -->
 
   <action-method
     name="action-business-project-method-get-analytic-distribution-template">

@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
@@ -28,6 +30,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
+import com.axelor.apps.businessproject.service.AnalyticLineModelProjectService;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
@@ -36,6 +39,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -44,6 +48,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -193,16 +198,125 @@ public class ProjectController {
     response.setData(List.of(data));
   }
 
-  public void createAnalyticDistributionWithTemplate(
-      ActionRequest request, ActionResponse response) {
-    // TODO Check if necessary
+  public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
       Project project = request.getContext().asType(Project.class);
 
+      if (project == null || project.getCompany() == null) {
+        return;
+      }
+
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Beans.get(AnalyticAttrsService.class)
+          .addAnalyticAxisAttrs(project.getCompany(), null, attrsMap);
+
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      if (project == null || project.getCompany() == null) {
+        return;
+      }
+
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+      response.setValues(
+          Beans.get(AnalyticGroupService.class)
+              .getAnalyticAccountValueMap(analyticLineProjectModel, project.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      if (project == null || project.getCompany() == null) {
+        return;
+      }
+
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      Beans.get(AnalyticAttrsSupplychainService.class)
+          .addAnalyticDistributionPanelHiddenAttrs(analyticLineProjectModel, attrsMap);
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setAxisDomains(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      if (project == null) {
+        return;
+      }
+
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+      response.setAttrs(
+          Beans.get(AnalyticGroupService.class)
+              .getAnalyticAxisDomainAttrsMap(analyticLineProjectModel, project.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      if (project == null) {
+        return;
+      }
+
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+
+      if (Beans.get(AnalyticLineModelService.class)
+          .analyzeAnalyticLineModel(analyticLineProjectModel, project.getCompany())) {
+        response.setValue(
+            "analyticMoveLineList", analyticLineProjectModel.getAnalyticMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAnalyticDistributionTemplateRequired(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      if (project == null || project.getCompany() == null) {
+        return;
+      }
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+      response.setValue(
+          "$isValidAnalyticMoveLineList",
+          !Beans.get(AnalyticLineModelProjectService.class)
+              .analyticDistributionTemplateRequired(analyticLineProjectModel));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
       AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
 
       Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineProjectModel);
+
+      response.setValue("analyticMoveLineList", analyticLineProjectModel.getAnalyticMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

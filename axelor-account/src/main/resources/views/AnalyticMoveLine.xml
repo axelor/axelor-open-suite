@@ -46,6 +46,16 @@
     <field name="typeSelect"/>
   </grid>
 
+  <grid name="analytic-move-line-distribution-simplified-grid" title="Analytic move lines"
+    model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis">
+    <field name="analyticJournal" grid-view="analytic-journal-grid"
+      form-view="analytic-journal-form"/>
+    <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+    <field name="analyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"/>
+    <field name="percentage"/>
+  </grid>
+
   <grid name="analytic-move-line-move-line-grid" title="Analytic move lines"
     model="com.axelor.apps.account.db.AnalyticMoveLine">
     <field name="analyticAxis"/>
@@ -152,6 +162,23 @@
       <field name="typeSelect"/>
       <field name="currency" hidden="true" grid-view="currency-grid" form-view="currency-form"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="analytic-move-line-distribution-simplified-form" title="Analytic move line"
+    model="com.axelor.apps.account.db.AnalyticMoveLine"
+    onLoad="action-analytic-move-line-attrs-hide-fields"
+    onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
+    <panel name="mainPanel">
+      <field name="analyticJournal" grid-view="analytic-journal-grid"
+        form-view="analytic-journal-form"
+        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
+      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-method-domain-onselect-axis-analytic-move-line"/>
+      <field name="analyticAccount" showIf="analyticAxis" grid-view="analytic-account-grid"
+        form-view="analytic-account-form" onSelect="action-group-domain-onselect-analytic-account"/>
+      <field name="percentage" colSpan="4" min="0" max="100"
+        onChange="action-analytic-move-line-method-compute-amount"/>
     </panel>
   </form>
 

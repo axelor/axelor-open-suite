@@ -111,4 +111,8 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_TASK_TEMPLATE_QUANTITY_ERROR = /*$$(*/
       "Quantity must be greater than 0 for task template %s." /*)*/;
+
+  /** Business Project Config Service */
+  public static final String BUSINESS_PROJECT_CONFIG_1 = /*$$(*/
+      "%s : You must configure Business project module for company %s" /*)*/;
 }

@@ -64,9 +64,14 @@ public class AnalyticLineProjectModel extends AnalyticLineContractModel {
   }
 
   public AnalyticLineProjectModel(Project project) {
-    super();
-
     this.project = project;
+
+    this.axis1AnalyticAccount = project.getAxis1AnalyticAccount();
+    this.axis2AnalyticAccount = project.getAxis2AnalyticAccount();
+    this.axis3AnalyticAccount = project.getAxis3AnalyticAccount();
+    this.axis4AnalyticAccount = project.getAxis4AnalyticAccount();
+    this.axis5AnalyticAccount = project.getAxis5AnalyticAccount();
+    this.analyticMoveLineList = project.getAnalyticMoveLineList();
     this.analyticDistributionTemplate = project.getAnalyticDistributionTemplate();
   }
 
