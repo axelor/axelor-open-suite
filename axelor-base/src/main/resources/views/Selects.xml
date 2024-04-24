@@ -788,4 +788,9 @@
     <option value="Default">Default</option>
   </selection>
 
+  <selection name="base.file.type.select">
+    <option value="1">ContractFile</option>
+    <option value="2">EmployeeFile</option>
+  </selection>
+
 </object-views>

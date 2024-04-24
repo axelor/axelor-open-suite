@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid id="hr-file-grid" title="Files" name="file-grid" model="com.axelor.apps.base.db.File"
+    extension="true">
+
+    <extend target="//field[@name='dmsFile']">
+      <insert position="after">
+        <field name="employee" if-module="axelor-human-resource"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="hr-file-form" title="File" name="file-form" model="com.axelor.apps.base.db.File"
+    extension="true">
+    <extend target="//field[@name='fileDescription']">
+      <insert position="before">
+        <field name="employee" if-module="axelor-human-resource" hidden="true"
+          showIf="_fileTypeSelect == 2"/>
+      </insert>
+    </extend>
+
+    <extend target="/">
+      <attribute name="onNew" value="action-hr-record-set-file-type-select"/>
+    </extend>
+  </form>
+
+  <action-record name="action-hr-record-set-file-type-select"
+    model="com.axelor.apps.base.db.File">
+    <field name="fileTypeSelect" expr="eval: _fileTypeSelect"/>
+  </action-record>
+
+</object-views>

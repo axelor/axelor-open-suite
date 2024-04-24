@@ -1,12 +1,12 @@
 package com.axelor.apps.contract.service;
 
-import com.axelor.apps.contract.db.ContractFile;
+import com.axelor.apps.base.db.File;
 import java.util.List;
 
 public interface ContractFileService {
-  void setDMSFile(ContractFile contractFile);
+  void setDMSFile(File contractFile);
 
-  String getInlineUrl(ContractFile contractFile);
+  String getInlineUrl(File contractFile);
 
   void remove(List<Integer> contractFileIds);
 }

@@ -18,11 +18,11 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.db.File;
+import com.axelor.apps.base.db.repo.FileRepository;
 import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EmployeeFile;
-import com.axelor.apps.hr.db.repo.EmployeeFileRepository;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.meta.MetaFiles;
@@ -31,7 +31,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class EmployeeFileDMSServiceImpl implements EmployeeFileDMSService {
-  protected EmployeeFileRepository employeeFileRepository;
+  protected FileRepository employeeFileRepository;
   protected DMSFileRepository dmsFileRepository;
   protected DMSService dmsService;
   protected MetaFiles metaFiles;
@@ -39,7 +39,7 @@ public class EmployeeFileDMSServiceImpl implements EmployeeFileDMSService {
 
   @Inject
   public EmployeeFileDMSServiceImpl(
-      EmployeeFileRepository employeeFileRepository,
+      FileRepository employeeFileRepository,
       DMSFileRepository dmsFileRepository,
       DMSService dmsService,
       MetaFiles metaFiles,
@@ -53,14 +53,14 @@ public class EmployeeFileDMSServiceImpl implements EmployeeFileDMSService {
 
   @Override
   @Transactional
-  public void setDMSFile(EmployeeFile employeeFile) {
+  public void setDMSFile(File employeeFile) {
     MetaFile metaFile = employeeFile.getMetaFile();
     dmsService.setDmsFile(metaFile, employeeFile);
     employeeFileRepository.save(employeeFile);
   }
 
   @Override
-  public String getInlineUrl(EmployeeFile employeeFile) {
+  public String getInlineUrl(File employeeFile) {
     MetaFile metaFile = employeeFile.getMetaFile();
     DMSFile dmsFile = employeeFile.getDmsFile();
     if (metaFile == null || dmsFile == null || !"application/pdf".equals(metaFile.getFileType())) {
@@ -71,12 +71,13 @@ public class EmployeeFileDMSServiceImpl implements EmployeeFileDMSService {
 
   @Override
   @Transactional
-  public EmployeeFile createEmployeeFile(DMSFile dmsFile, Employee employee) {
-    EmployeeFile employeeFile = new EmployeeFile();
+  public File createEmployeeFile(DMSFile dmsFile, Employee employee) {
+    File employeeFile = new File();
     employeeFile.setMetaFile(dmsFile.getMetaFile());
     employeeFile.setEmployee(employee);
     employeeFile.setFileDescription(dmsFile.getFileName());
     employeeFile.setRecordDate(appBaseService.getTodayDate(null));
+    employeeFile.setFileTypeSelect(FileRepository.EMPLOYEE_FILE_TYPE);
     employeeFileRepository.save(employeeFile);
     setDMSFile(employeeFile);
     return employeeFile;
