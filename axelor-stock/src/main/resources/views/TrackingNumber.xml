@@ -25,6 +25,7 @@
     <field name="origin"/>
     <field name="supplier" domain="self.isSupplier IS TRUE" grid-view="partner-supplier-grid"
       form-view="partner-supplier-form"/>
+    <field name="originMoveTypeSelect" widget="single-select"/>
   </grid>
 
   <form name="tracking-number-form" title="Tracking number"
@@ -91,6 +92,13 @@
       <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
       <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
     </panel>
+    <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
+      <field name="originMoveTypeSelect" widget="single-select" colSpan="12"/>
+      <field name="createdBy" colSpan="6"/>
+      <field name="createdOn" colSpan="6"/>
+      <field name="originStockMoveLine"/>
+      <field name="originInventoryLine"/>
+    </panel>
   </form>
 
   <form name="tracking-number-stock-move-line-form" title="Tracking number"
@@ -150,6 +158,13 @@
           onClick="action-tracking-number-method-calculate-volume"/>
         <field name="originalVolume" x-dirty="false" hidden="true" type="decimal"/>
       </panel>
+    </panel>
+    <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
+      <field name="originMoveTypeSelect" widget="single-select" colSpan="12"/>
+      <field name="createdBy" colSpan="6"/>
+      <field name="createdOn" colSpan="6"/>
+      <field name="originStockMoveLine"/>
+      <field name="originInventoryLine"/>
     </panel>
   </form>
 

@@ -73,7 +73,4 @@ public interface PurchaseOrderLineBudgetService {
    */
   public void checkAmountForPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;
-
-  public void computeBudgetDistributionSumAmount(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 }

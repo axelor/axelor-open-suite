@@ -19,10 +19,12 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -49,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
@@ -334,8 +337,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && Objects.equals(ml.getVatSystemSelect(), vatSystem)
         && !Objects.equals(ml.getId(), id)
         && ml.getAccount().getAccountType() != null
-        && AccountTypeRepository.TYPE_TAX.equals(
-            ml.getAccount().getAccountType().getTechnicalTypeSelect())
+        && this.isMoveLineTaxAccount(ml)
         && ml.getAccount().equals(account);
   }
 
@@ -406,6 +408,23 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (currency != null && companyCurrency != null) {
       moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
       moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
+    }
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_TAX.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
+
+  @Override
+  public void setIsNonDeductibleTax(MoveLine moveLine, Tax tax) {
+    if (tax.getIsNonDeductibleTax()) {
+      moveLine.setIsNonDeductibleTax(true);
     }
   }
 }

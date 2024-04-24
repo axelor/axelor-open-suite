@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.rpc.Context;
@@ -67,4 +68,8 @@ public interface MoveLineToolService {
   boolean isCutOffActive(MoveLine moveLine);
 
   void setDecimals(MoveLine moveLine, Move move);
+
+  boolean isMoveLineTaxAccount(MoveLine moveLine);
+
+  void setIsNonDeductibleTax(MoveLine moveLine, Tax tax);
 }

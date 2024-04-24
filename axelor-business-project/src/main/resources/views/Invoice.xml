@@ -5,9 +5,13 @@
 
   <action-group name="action-business-project-group-print-annex">
     <action name="action-business-project-validate-printing-settings"/>
-    <action name="action-method-print-birt"
+    <action name="action-invoice-business-project-method-print-annex"
       if="!__user__.activeCompany ||  __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting || __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
   </action-group>
+
+  <action-method name="action-invoice-business-project-method-print-annex">
+    <call class="com.axelor.apps.businessproject.web.InvoiceController" method="exportAnnex"/>
+  </action-method>
 
   <action-method name="action-invoice-business-project-method-update-lines">
     <call class="com.axelor.apps.businessproject.web.InvoiceController" method="updateLines"/>

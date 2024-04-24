@@ -43,7 +43,6 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -141,8 +140,7 @@ public class PurchaseOrderController {
             Beans.get(PurchaseOrderRepository.class)
                 .find(Long.parseLong(context.get("id").toString()));
         title = purchaseOrderPrintService.getFileName(purchaseOrder);
-        fileLink =
-            purchaseOrderPrintService.printPurchaseOrder(purchaseOrder, ReportSettings.FORMAT_PDF);
+        fileLink = purchaseOrderPrintService.printPurchaseOrder(purchaseOrder);
         logger.debug("Printing " + title);
       } else {
         throw new AxelorException(

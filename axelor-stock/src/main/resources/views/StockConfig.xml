@@ -104,6 +104,14 @@
         showIf="realStockMoveAutomaticMail" form-view="template-form" grid-view="template-grid"/>
     </panel>
 
+    <panel name="supplierArrivalCancellationPanel">
+      <field name="supplierArrivalCancellationAutomaticMail"/>
+      <field name="supplierArrivalCancellationMessageTemplate"
+        requiredIf="supplierArrivalCancellationAutomaticMail"
+        showIf="supplierArrivalCancellationAutomaticMail" form-view="template-form"
+        grid-view="template-grid"/>
+    </panel>
+
     <panel name="logisticalFormPanel">
       <field name="logisticalFormAutomaticEmail"/>
       <field name="logisticalFormMessageTemplate" requiredIf="logisticalFormAutomaticEmail"

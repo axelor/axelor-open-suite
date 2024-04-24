@@ -395,25 +395,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
-      LocalDate bankDepositDate,
-      String chequeNumber) {
-    return this.createInvoicePayment(
-        Collections.singletonList(invoiceTerm),
-        paymentMode,
-        companyBankDetails,
-        paymentDate,
-        bankDepositDate,
-        chequeNumber,
-        null);
-  }
-
-  @Override
-  public InvoicePayment createInvoicePayment(
-      Invoice invoice,
-      InvoiceTerm invoiceTerm,
-      PaymentMode paymentMode,
-      BankDetails companyBankDetails,
-      LocalDate paymentDate,
       PaymentSession paymentSession) {
     return this.createInvoicePayment(
         Collections.singletonList(invoiceTerm),
