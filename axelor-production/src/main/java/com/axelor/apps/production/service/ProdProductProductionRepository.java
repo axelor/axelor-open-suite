@@ -18,16 +18,22 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.UnitRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProdProductProductionRepository extends ProdProductRepository {
 
@@ -41,6 +47,7 @@ public class ProdProductProductionRepository extends ProdProductRepository {
 
     Object productFromView = json.get("product");
     Object qtyFromView = json.get("qty");
+    Unit unit = Mapper.toBean(Unit.class, (HashMap<String, Object>) json.get("unit"));
     Object toProduceManufOrderIdFromView;
     if (context == null || context.isEmpty()) {
       toProduceManufOrderIdFromView =
@@ -55,36 +62,60 @@ public class ProdProductProductionRepository extends ProdProductRepository {
     } else {
       Long productId = (Long) ((HashMap<String, Object>) productFromView).get("id");
       Long toProduceManufOrderId = (Long) toProduceManufOrderIdFromView;
-      json.put(
-          "$missingQty",
-          computeMissingQty(productId, (BigDecimal) qtyFromView, toProduceManufOrderId));
+      try {
+        json.put(
+            "$missingQty",
+            computeMissingQty(productId, (BigDecimal) qtyFromView, toProduceManufOrderId, unit));
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
     }
     return super.populate(json, context);
   }
 
-  public BigDecimal computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId) {
+  public BigDecimal computeMissingQty(
+      Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit) {
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForQty();
     if (productId == null || qty == null || toProduceManufOrderId == null) {
       return BigDecimal.ZERO;
     }
-    List<BigDecimal> queryResult =
+    List<Object[]> queryResult =
         JPA.em()
             .createQuery(
-                "SELECT locationLine.currentQty "
+                "SELECT locationLine.currentQty, locationLine.unit.id "
                     + "FROM ManufOrder manufOrder "
                     + "LEFT JOIN StockLocationLine locationLine "
                     + "ON locationLine.stockLocation.id = manufOrder.prodProcess.stockLocation.id "
                     + "WHERE locationLine.product.id = :productId "
-                    + "AND manufOrder.id = :manufOrderId",
-                BigDecimal.class)
+                    + "AND manufOrder.id = :manufOrderId")
             .setParameter("productId", productId)
             .setParameter("manufOrderId", toProduceManufOrderId)
             .getResultList();
-    BigDecimal availableQty;
-    if (queryResult.isEmpty()) {
-      availableQty = BigDecimal.ZERO;
-    } else {
-      availableQty = queryResult.get(0);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (!queryResult.isEmpty()) {
+      try {
+        Object[] resultTab = queryResult.get(0);
+        BigDecimal availableQtyInLocationUnit =
+            Optional.ofNullable(resultTab[0])
+                .map(currentQtyObj -> new BigDecimal(currentQtyObj.toString()))
+                .orElse(BigDecimal.ZERO);
+        Unit locationUnit =
+            Optional.ofNullable(resultTab[1])
+                .map(
+                    unitObj ->
+                        Beans.get(UnitRepository.class).find(Long.valueOf(unitObj.toString())))
+                .orElse(null);
+        if (locationUnit != null) {
+          availableQty =
+              Beans.get(UnitConversionService.class)
+                  .convert(locationUnit, targetUnit, availableQtyInLocationUnit, scale, null);
+        }
+
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
     }
     return BigDecimal.ZERO.max(qty.subtract(availableQty)).setScale(scale, RoundingMode.HALF_UP);
   }

@@ -569,7 +569,10 @@ public class ManufOrderController {
                       !showOnlyMissingQty
                           || prodProductProductionRepository
                                   .computeMissingQty(
-                                      prodProduct.getProduct().getId(), prodProduct.getQty(), moId)
+                                      prodProduct.getProduct().getId(),
+                                      prodProduct.getQty(),
+                                      moId,
+                                      prodProduct.getUnit())
                                   .compareTo(BigDecimal.ZERO)
                               > 0)
               .collect(Collectors.toList());
