@@ -380,4 +380,18 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_INVOICING_ERROR = /*$$(*/
       "This stock move needs to be invoiced manually, manual intervention is needed : %s" /*)*/;
+  public static final String ALLOCATION_QTY_BY_TRACKING_NUMBER_IS_NOT_AVAILABLE =
+      /*$$(*/ "Allocation quantity is not available for this tracking number at this location." /*)*/;
+
+  public static final String ALLOCATION_QTY_BY_PRODUCT_IS_NOT_AVAILABLE =
+      /*$$(*/ "Allocation quantity is not available for this product at this location." /*)*/;
+
+  public static final String RESERVED_QTY_IS_NOT_AVAILABLE =
+      /*$$(*/ "Reserved quantity is not available for this product." /*)*/;
+
+  public static final String QTY_TO_CONSUME_IS_NOT_AVAILABLE =
+      /*$$(*/ "The quantity to consume for this product is not available." /*)*/;
+
+  public static final String PRODUCT_RESERVATION_INVALID =
+      /*$$(*/ "Product reservation invalid" /*)*/;
 }
