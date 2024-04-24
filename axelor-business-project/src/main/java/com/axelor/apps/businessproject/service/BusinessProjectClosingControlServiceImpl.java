@@ -6,23 +6,25 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
-import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
-import com.axelor.apps.project.service.ProjectClosingControlServiceImpl;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.Arrays;
 
-public class BusinessProjectClosingControlServiceImpl extends ProjectClosingControlServiceImpl {
+public class BusinessProjectClosingControlServiceImpl
+    implements BusinessProjectClosingControlService {
 
+  protected AppProjectService appProjectService;
   protected AppBusinessProjectService appBusinessProjectService;
+  protected ProjectRepository projectRepository;
+  protected ProjectStatusRepository projectStatusRepository;
   protected SaleOrderRepository saleOrderRepository;
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected ContractRepository contractRepository;
@@ -31,16 +33,19 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
 
   @Inject
   public BusinessProjectClosingControlServiceImpl(
+      AppProjectService appProjectService,
+      AppBusinessProjectService appBusinessProjectService,
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      AppBusinessProjectService appBusinessProjectService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       ContractRepository contractRepository,
       TimesheetLineRepository timesheetLineRepository,
       ExpenseLineRepository expenseLineRepository) {
-    super(projectRepository, projectStatusRepository);
+    this.appProjectService = appProjectService;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.projectRepository = projectRepository;
+    this.projectStatusRepository = projectStatusRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.contractRepository = contractRepository;
@@ -50,8 +55,8 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public String finishProject(Project project) throws AxelorException {
-    String errorMessage = super.finishProject(project);
+  public String checkProjectState(Project project) throws AxelorException {
+    String errorMessage = "";
     if (!project.getIsBusinessProject()) {
       return errorMessage;
     }
@@ -66,14 +71,20 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
     if (!areSaleOrdersFinished(project)) {
       errorMessage +=
           "<br/>"
-              + I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_SALE_ORDER_IN_PROGRESS);
+              + I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_SALE_ORDER_NOT_INVOICED);
     }
 
-    if (!arePurchaseOrdersFinished(project)) {
+    if (!arePurchaseOrdersInvoiced(project)) {
       errorMessage +=
           "<br/>"
               + I18n.get(
-                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_IN_PROGRESS);
+                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_NOT_INVOICED);
+    }
+    if (!arePurchaseOrdersReceived(project)) {
+      errorMessage +=
+          "<br/>"
+              + I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_NOT_RECEIVED);
     }
 
     if (!areContractsFinished(project)) {
@@ -83,12 +94,15 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
 
     if (appBusinessProjectService.isApp("timesheet") && !areTimesheetLinesFinished(project)) {
       errorMessage +=
-          "<br/>" + I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_TIMESHEET_IN_PROGRESS);
+          "<br/>"
+              + I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CLOSING_TIMESHEET_LINE_NOT_INVOICED);
     }
 
     if (appBusinessProjectService.isApp("expense") && !areExpenseLinesFinished(project)) {
       errorMessage +=
-          "<br/>" + I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_EXPENSE_IN_PROGRESS);
+          "<br/>"
+              + I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_EXPENSE_LINE_NOT_INVOICED);
     }
     if (closingProjectRuleSelect == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_BLOCKING) {
       throw new AxelorException(
@@ -96,7 +110,8 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_BLOCKING_MESSAGE)
               + errorMessage);
     } else if (closingProjectRuleSelect
-        == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NON_BLOCKING) {
+            == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NON_BLOCKING
+        && !errorMessage.isEmpty()) {
       return I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_NON_BLOCKING_MESSAGE)
           + errorMessage;
     } else {
@@ -107,18 +122,25 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
   protected boolean areSaleOrdersFinished(Project project) {
     return saleOrderRepository
             .all()
-            .filter(
-                "self.project.id = :projectId AND EXISTS (SELECT sol FROM self.saleOrderLineList sol WHERE sol.invoiced = FALSE)")
+            .filter("self.project.id = :projectId AND self.amountInvoiced != self.exTaxTotal")
             .bind("projectId", project.getId())
             .count()
         == 0;
   }
 
-  protected boolean arePurchaseOrdersFinished(Project project) {
+  protected boolean arePurchaseOrdersInvoiced(Project project) {
     return purchaseOrderRepository
             .all()
-            .filter(
-                "self.project.id = :projectId AND (self.receiptState != :receiptState OR EXISTS (SELECT pol FROM self.purchaseOrderLineList pol WHERE pol.invoiced = FALSE))")
+            .filter("self.project.id = :projectId AND self.amountInvoiced != self.exTaxTotal")
+            .bind("projectId", project.getId())
+            .count()
+        == 0;
+  }
+
+  protected boolean arePurchaseOrdersReceived(Project project) {
+    return purchaseOrderRepository
+            .all()
+            .filter("self.project.id = :projectId AND self.receiptState != :receiptState")
             .bind("projectId", project.getId())
             .bind("receiptState", PurchaseOrderRepository.STATE_RECEIVED)
             .count()
@@ -149,12 +171,8 @@ public class BusinessProjectClosingControlServiceImpl extends ProjectClosingCont
     return expenseLineRepository
             .all()
             .filter(
-                "self.project.id = :projectId AND self.expense.statusSelect NOT IN :finishedStatusList")
+                "self.project.id = :projectId AND self.toInvoice = TRUE AND self.invoiced = FALSE")
             .bind("projectId", project.getId())
-            .bind(
-                "finishedStatusList",
-                Arrays.asList(
-                    ExpenseRepository.STATUS_REIMBURSED, ExpenseRepository.STATUS_CANCELED))
             .count()
         == 0;
   }

@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
@@ -34,6 +35,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -179,5 +181,16 @@ public class ProjectController {
         Beans.get(ProjectHistoryService.class)
             .processRequestToDisplayProjectHistory(Long.valueOf(id));
     response.setData(List.of(data));
+  }
+
+  public void checkProjectState(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Project project = request.getContext().asType(Project.class);
+    project = JPA.find(Project.class, project.getId());
+    String errorMessage =
+        Beans.get(BusinessProjectClosingControlService.class).checkProjectState(project);
+    if (!errorMessage.isEmpty()) {
+      response.setAlert(errorMessage, null, null, null, "action-refresh-record");
+    }
   }
 }

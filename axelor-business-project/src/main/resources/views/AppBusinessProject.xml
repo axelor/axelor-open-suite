@@ -52,7 +52,7 @@
                   {_t('- a linked purchase order is not totally invoiced or is not totally delivered')}<br/>
                   {_t('- a linked contract is not at finished status')}<br/>
                   {_t('- a linked timesheet line that must be invoiced has not been invoiced')}<br/>
-                  {_t('- a linked expense is not "Reimbursed" or "Canceled" information')}
+                  {_t('- a linked expense line is not invoiced')}
              </>
            ]]>
         </tooltip>

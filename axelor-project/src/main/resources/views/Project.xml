@@ -79,8 +79,7 @@
     <panel name="mainPanel">
       <panel name="detailsPanel" colSpan="12">
         <panel name="statusPanel" stacked="true" colSpan="8">
-          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
-            onChange="action-project-group-project-status-on-change"/>
+          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
         </panel>
         <field name="$viewerProjectTags" showTitle="false" colSpan="4" readonly="true">
           <viewer depends="isBusinessProject,$toInvoiceCounter,id">
@@ -950,19 +949,16 @@
     <call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
   </action-method>
 
+  <action-record name="action-project-record-status-finish"
+    model="com.axelor.apps.project.db.Project">
+    <field name="projectStatus"
+      expr="eval:__config__.app.getApp('project')?.completedProjectStatus"/>
+  </action-record>
+
   <action-group name="action-project-group-finish-project">
-    <action name="action-project-method-finish-project"/>
-    <action name="action-refresh-record"/>
+    <action name="action-project-record-status-finish"/>
+    <action name="save"/>
   </action-group>
-
-  <action-group name="action-project-group-project-status-on-change">
-    <action name="action-project-method-finish-project" if="projectStatus.isDefaultCompleted"/>
-    <action name="action-refresh-record" if="projectStatus.isDefaultCompleted"/>
-  </action-group>
-
-  <action-method name="action-project-method-finish-project">
-    <call class="com.axelor.apps.project.web.ProjectController" method="finishProject"/>
-  </action-method>
 
   <action-record name="action-project-record-status-canceled"
     model="com.axelor.apps.project.db.Project">

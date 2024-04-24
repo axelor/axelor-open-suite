@@ -25,6 +25,13 @@
       <attribute name="onNew" value="action-business-project-project-group-on-new"/>
       <attribute name="onLoad" value="action-business-project-project-group-on-load"/>
     </extend>
+    <extend target="//button[@name='finishBtn']">
+      <attribute name="onClick" value="action-business-project-group-finish-project"/>
+    </extend>
+    <extend target="//field[@name='projectStatus']">
+      <attribute name="onChange"
+        value="action-business-project-group-project-status-on-change"/>
+    </extend>
     <extend target="//field[@name='projectFolderSet']">
       <insert position="after">
         <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
@@ -713,6 +720,24 @@
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="computeProjectTotals"/>
+  </action-method>
+
+  <action-group name="action-business-project-group-finish-project">
+    <action name="action-business-project-method-check-project-state"
+      if="__config__.app.isApp('business-project') &amp;&amp; isBusinessProject"/>
+    <action name="action-project-group-finish-project"/>
+  </action-group>
+
+  <action-group name="action-business-project-group-project-status-on-change">
+    <action name="action-business-project-method-check-project-state"
+      if="__config__.app.isApp('business-project') &amp;&amp; isBusinessProject &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
+    <action name="action-project-group-finish-project"
+      if="__config__.app.isApp('business-project') &amp;&amp; isBusinessProject &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
+  </action-group>
+
+  <action-method name="action-business-project-method-check-project-state">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="checkProjectState"/>
   </action-method>
 
 </object-views>

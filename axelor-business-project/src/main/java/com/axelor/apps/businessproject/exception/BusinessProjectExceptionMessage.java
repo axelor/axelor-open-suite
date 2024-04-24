@@ -115,20 +115,23 @@ public final class BusinessProjectExceptionMessage {
   public static final String PROJECT_CLOSING_BLOCKING_MESSAGE = /*$$(*/
       "You can not close this project :" /*)*/;
 
-  public static final String PROJECT_CLOSING_NON_BLOCKING_MESSAGE = /*$$(*/ "WARNING: " /*)*/;
+  public static final String PROJECT_CLOSING_NON_BLOCKING_MESSAGE = /*$$(*/ "WARNING:" /*)*/;
 
-  public static final String PROJECT_CLOSING_SALE_ORDER_IN_PROGRESS = /*$$(*/
-      "- a linked sale order is still in progress." /*)*/;
+  public static final String PROJECT_CLOSING_SALE_ORDER_NOT_INVOICED = /*$$(*/
+      "- a linked sale order is not totally invoiced" /*)*/;
 
-  public static final String PROJECT_CLOSING_PURCHASE_ORDER_IN_PROGRESS = /*$$(*/
-      "- a linked purchase order is still in progress." /*)*/;
+  public static final String PROJECT_CLOSING_PURCHASE_ORDER_NOT_INVOICED = /*$$(*/
+      "- a linked purchase order is not totally invoiced" /*)*/;
+
+  public static final String PROJECT_CLOSING_PURCHASE_ORDER_NOT_RECEIVED = /*$$(*/
+      "- a linked purchase order is not totally received" /*)*/;
 
   public static final String PROJECT_CLOSING_CONTRACT_IN_PROGRESS = /*$$(*/
-      "- a linked contract is still in progress." /*)*/;
+      "- a linked contract is still in progress" /*)*/;
 
-  public static final String PROJECT_CLOSING_TIMESHEET_IN_PROGRESS = /*$$(*/
-      "- a linked timesheet is still in progress." /*)*/;
+  public static final String PROJECT_CLOSING_TIMESHEET_LINE_NOT_INVOICED = /*$$(*/
+      "- a linked timesheet line is not invoiced" /*)*/;
 
-  public static final String PROJECT_CLOSING_EXPENSE_IN_PROGRESS = /*$$(*/
-      "- a linked expense is still in progress." /*)*/;
+  public static final String PROJECT_CLOSING_EXPENSE_LINE_NOT_INVOICED = /*$$(*/
+      "- a linked expense line is not invoiced" /*)*/;
 }

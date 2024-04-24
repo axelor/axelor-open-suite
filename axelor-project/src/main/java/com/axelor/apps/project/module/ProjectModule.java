@@ -34,8 +34,6 @@ import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
-import com.axelor.apps.project.service.ProjectClosingControlService;
-import com.axelor.apps.project.service.ProjectClosingControlServiceImpl;
 import com.axelor.apps.project.service.ProjectDashboardService;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectMenuService;
@@ -77,6 +75,5 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectDashboardService.class).to(ProjectDashboardServiceImpl.class);
     bind(ProjectActivityDashboardService.class).to(ProjectActivityDashboardServiceImpl.class);
     bind(WikiRepository.class).to(WikiProjectRepository.class);
-    bind(ProjectClosingControlService.class).to(ProjectClosingControlServiceImpl.class);
   }
 }
