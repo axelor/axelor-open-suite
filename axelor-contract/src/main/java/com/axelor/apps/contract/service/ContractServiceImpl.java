@@ -934,14 +934,54 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     ContractTemplate contractTemplate1 = JPA.copy(contractTemplate, true);
     if (contractTemplate != null) {
-      contract.setAdditionalBenefitContractLineList(
-          contractTemplate1.getAdditionalBenefitContractLineList());
-      contract.setContractTypeSelect(contractTemplate1.getContractTypeSelect());
+      fillContractFromTemplate(contract, contractTemplate1);
     }
     contract.setOpportunity(opportunity);
     contractRepository.save(contract);
 
     return contract;
+  }
+
+  protected void fillContractFromTemplate(Contract contract, ContractTemplate contractTemplate1) {
+    ContractVersion contractVersion = contract.getCurrentContractVersion();
+
+    contractTemplate1
+        .getAdditionalBenefitContractLineList()
+        .forEach(contract::addAdditionalBenefitContractLineListItem);
+    contract.setContractTypeSelect(contractTemplate1.getContractTypeSelect());
+    contractTemplate1.getContractLineList().forEach(contractVersion::addContractLineListItem);
+
+    contract.setIsInvoicingManagement(contractTemplate1.getIsInvoicingManagement());
+    contract.setIsAdditionaBenefitManagement(contractTemplate1.getIsAdditionaBenefitManagement());
+    contractVersion.setPaymentMode(contractTemplate1.getPaymentMode());
+    contractVersion.setPaymentCondition(contractTemplate1.getPaymentCondition());
+
+    contract.setIsConsumptionManagement(contractTemplate1.getIsConsumptionManagement());
+    contractVersion.setIsConsumptionBeforeEndDate(
+        contractTemplate1.getIsConsumptionBeforeEndDate());
+
+    contract.setIsGroupedInvoicing(contractTemplate1.getIsGroupedInvoicing());
+
+    contractVersion.setIsPeriodicInvoicing(contractTemplate1.getIsPeriodicInvoicing());
+    contractVersion.setInvoicingDuration(contractTemplate1.getInvoicingDuration());
+    contractVersion.setIsProratedInvoice(contractTemplate1.getIsProratedInvoice());
+    contractVersion.setIsVersionProratedInvoice(contractTemplate1.getIsVersionProratedInvoice());
+
+    contractVersion.setAutomaticInvoicing(contractTemplate1.getAutomaticInvoicing());
+    contractVersion.setInvoicingMomentSelect(contractTemplate1.getInvoicingMomentSelect());
+
+    contractVersion.setIsTacitRenewal(contractTemplate1.getIsTacitRenewal());
+    contractVersion.setRenewalDuration(contractTemplate1.getRenewalDuration());
+    contractVersion.setIsAutoEnableVersionOnRenew(
+        contractTemplate1.getIsAutoEnableVersionOnRenew());
+
+    contractVersion.setIsWithEngagement(contractTemplate1.getIsWithEngagement());
+    contractVersion.setEngagementDuration(contractTemplate1.getEngagementDuration());
+    contractVersion.setEngagementStartFromVersion(
+        contractTemplate1.getEngagementStartFromVersion());
+
+    contractVersion.setIsWithPriorNotice(contractTemplate1.getIsWithPriorNotice());
+    contractVersion.setPriorNoticeDuration(contractTemplate1.getPriorNoticeDuration());
   }
 
   public Boolean contractsFromOpportunityAreGenerated(Long opportunityId) {
