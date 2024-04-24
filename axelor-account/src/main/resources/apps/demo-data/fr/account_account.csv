@@ -392,14 +392,14 @@
 391;410;"CL4";"Clients et comptes rattachés";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
 392;410000;410;"Clients et comptes rattachés ";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
 393;411;410;"Clients";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
-394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;"401100|401700|416000|419000";"true";;;2;"NDAS";;1;"false";"false";"true";0
 395;411700;411;"Clients - Retenues de garantie";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
 396;413000;410;"Clients - Effets à recevoir";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
 397;416000;410;"Clients douteux ou litigieux";"receivable";"true";1;"401100|401700|411100|411700";"true";;;2;"NDAS";;1;"false";"false";"false";0
 398;418000;410;"Clients - Produits non encore facturés";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
 399;418100;418000;"Clients - Factures à établir ";"receivable";"true";1;;;;;1;"NDAS";;1;"false";"false";"false";0
 400;418800;418000;"Clients - Intérêts courus";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
-401;419000;410;"Clients créditeurs";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+401;419000;410;"Clients créditeurs";"receivable";"true";1;411100;"true";;;2;"NDAS";;1;"false";"false";"false";0
 402;419100;419000;"Clients - Avances et acomptes reçus sur commandes";"debt";"true";1;;"true";;;1;"NDAS";;1;"false";"false";"false";0
 403;419600;419000;"Clients - Dettes pour emballages et matériels consignés ";"debt";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
 404;419700;419000;"Clients - Autres avoirs ";"debt";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
