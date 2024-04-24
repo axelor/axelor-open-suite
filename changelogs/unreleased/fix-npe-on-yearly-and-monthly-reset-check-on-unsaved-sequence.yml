@@ -1,3 +1,3 @@
 ---
-title: "Sequence : Fixed NPE while checking yearly reset or monthly reset on unsaved sequence."
+title: "Sequence: fixed NPE while checking yearly reset or monthly reset on unsaved sequence."
 module: axelor-base
