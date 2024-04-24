@@ -7,11 +7,11 @@
 
   <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -59,11 +59,11 @@
 
   <grid name="invoice-bill-of-exchange-batch-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -105,11 +105,11 @@
 
   <grid name="invoice-with-payment-delay-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -157,11 +157,11 @@
 
   <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -211,11 +211,11 @@
 
   <grid name="invoice-supplier-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -272,11 +272,11 @@
 
   <grid name="invoice-supplier-refund-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -328,11 +328,11 @@
 
   <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -394,7 +394,7 @@
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
+      <button name="printBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
         readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>
 
@@ -1092,7 +1092,7 @@
 
 
   <form name="invoice-reports-wizard-form" title="Reports" model="com.axelor.utils.db.Wizard"
-    onNew="action-invoice-reports-wizard-attrs-set-report-type-select">
+    onNew="action-invoice-reports-wizard-attrs-set-report-type-select,action-invoice-reports-wizard-method-set-invoice-print-template">
     <panel name="mainPanel">
       <panel name="invoiceTypePanel" colSpan="6">
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[1]"
@@ -1107,11 +1107,15 @@
           selection="invoice.report.type" colSpan="12" required="true"
           showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
       </panel>
-      <spacer/>
+      <field name="$invoicePrintTemplate" title="Invoice template" type="many-to-one"
+        target="com.axelor.apps.base.db.PrintingTemplate" required="true"
+        domain="self.metaModel.name = 'Invoice' AND self.statusSelect = 2"
+        grid-view="printing-template-grid" form-view="printing-template-form"
+        readonlyIf="$reportType != 1"/>
       <field name="$localization" title="Localization" type="many-to-one"
         target="com.axelor.apps.base.db.Localization" showIf="$reportType ==1 || $reportType==3"/>
       <button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close"
-        readonlyIf="$reportType==null"/>
+        readonlyIf="$reportType==null || $invoicePrintTemplate == null"/>
     </panel>
   </form>
 
@@ -1120,7 +1124,7 @@
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="showInvoiceBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-invoice-method-show-invoice"/>
       <button name="showAnnexBtn" title="Print annex" icon="fa-print"
         onClick="action-business-project-group-print-annex" if-module="axelor-business-project"
@@ -2102,6 +2106,12 @@
       if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
     <attribute name="value" expr="eval: _localization" for="$localization"/>
   </action-attrs>
+
+  <action-method
+    name="action-invoice-reports-wizard-method-set-invoice-print-template">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setInvoicePrintTemplate"/>
+  </action-method>
 
   <action-attrs name="action-invoice-attrs-selection-in-operation-type-select">
     <attribute name="selection-in" for="operationTypeSelect" expr="eval: [1,2,3,4]"/>
