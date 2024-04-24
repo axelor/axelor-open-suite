@@ -932,7 +932,7 @@ public class MoveController {
     ActionView.ActionViewBuilder actionViewBuilder =
         ActionView.define(I18n.get("Related fixed assets"));
     actionViewBuilder.model(FixedAsset.class.getName());
-    actionViewBuilder.add("grid", "fixed-asset-grid");
+    actionViewBuilder.add("grid", "fixed-asset-move-grid");
     actionViewBuilder.add("form", "fixed-asset-form");
     actionViewBuilder.domain("self.purchaseAccountMove.id = :_moveId");
     actionViewBuilder.context("_moveId", move.getId());

@@ -327,7 +327,7 @@
       <panel name="detailsPanel" title="Details">
         <panel name="relatedToPanel" title="Related to" readonly="true" colSpan="12"
           itemSpan="4" stacked="true"
-          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment">
+          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment &amp;&amp; !$isThereRelatedFixedAsset">
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
             readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher" readonlyIf="$validatePeriod"
@@ -347,6 +347,9 @@
             name="relatedCutOffMovesPanel" title="Related cut off moves"
             showIf="$isThereRelatedCutOffMoves" colSpan="12"
             action="action-move-view-related-cut-off-moves"/>
+          <panel-dashlet action="action-move-method-show-related-fixed-asset"
+            showIf="$isThereRelatedFixedAsset" name="fixedAssetPanel" title="Related fixed assets"
+            colSpan="12" height="300"/>
         </panel>
         <panel name="accountingExportPanel" colSpan="12" itemSpan="3"
           title="Accounting export" hidden="true" readonly="true" hideIf="statusSelect == 1">
@@ -389,8 +392,6 @@
           <field name="$mainPanelTabHidden" hidden="true"/>
           <field name="company.accountConfig.isDescriptionRequired" hidden="true"/>
         </panel>
-        <panel-dashlet action="action-move-method-show-related-fixed-asset"
-          name="fixedAssetPanel" title="Related fixed assets" colSpan="12" height="300"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

@@ -24,6 +24,19 @@
     <field name="statusSelect"/>
   </grid>
 
+  <grid name="fixed-asset-move-grid" title="Fixed assets"
+    model="com.axelor.apps.account.db.FixedAsset">
+    <field name="fixedAssetSeq"/>
+    <field name="name"/>
+    <field name="fixedAssetCategory" form-view="fixed-asset-category-form"
+      grid-view="fixed-asset-category-grid"/>
+    <field name="firstServiceDate"/>
+    <field name="grossValue"/>
+    <field name="firstDepreciationDate"/>
+    <field name="accountingValue"/>
+    <field name="statusSelect"/>
+  </grid>
+
   <form name="fixed-asset-form" title="Fixed asset"
     model="com.axelor.apps.account.db.FixedAsset" onSave="action-group-fixed-asset-onsave"
     onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload"
