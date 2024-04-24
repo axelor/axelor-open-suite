@@ -111,6 +111,8 @@ public interface StockLocationLineService {
       LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
+  BigDecimal getTrackingNumberAvailableQty(TrackingNumber trackingNumber);
+
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException;
 
@@ -169,6 +171,8 @@ public interface StockLocationLineService {
    */
   public StockLocationLine getDetailLocationLine(
       StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
+
+  List<StockLocationLine> getDetailLocationLines(Product product, TrackingNumber trackingNumber);
 
   /**
    * Allow the creation of a location line of a given product in a given location.

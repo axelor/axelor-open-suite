@@ -52,6 +52,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -549,6 +550,21 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
+  public List<StockLocationLine> getDetailLocationLines(
+      Product product, TrackingNumber trackingNumber) {
+    return stockLocationLineRepo
+        .all()
+        .filter(
+            "self.product.id = :_productId "
+                + "AND self.trackingNumber.id = :_trackingNumberId "
+                + "AND self.detailsStockLocation.typeSelect = :internalType")
+        .bind("_productId", product.getId())
+        .bind("_trackingNumberId", trackingNumber.getId())
+        .bind("internalType", StockLocationRepository.TYPE_INTERNAL)
+        .fetch();
+  }
+
+  @Override
   public StockLocationLine createLocationLine(StockLocation stockLocation, Product product) {
 
     LOG.debug(
@@ -618,6 +634,23 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     if (detailStockLocationLine != null) {
       availableQty = detailStockLocationLine.getCurrentQty();
+    }
+    return availableQty;
+  }
+
+  @Override
+  public BigDecimal getTrackingNumberAvailableQty(TrackingNumber trackingNumber) {
+    List<StockLocationLine> detailStockLocationLines =
+        getDetailLocationLines(trackingNumber.getProduct(), trackingNumber);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (detailStockLocationLines != null) {
+      availableQty =
+          detailStockLocationLines.stream()
+              .map(StockLocationLine::getCurrentQty)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
     return availableQty;
   }
