@@ -693,10 +693,10 @@
   </action-view>
 
   <action-view name="action-contract-view-contract-files"
-    model="com.axelor.apps.contract.db.ContractFile" title="Files">
+    model="com.axelor.apps.base.db.File" title="Files">
     <view type="grid" name="contract-file-grid"/>
     <view type="form" name="contract-file-form"/>
-    <domain>self.contractVersion.id = :_contractVersionId</domain>
+    <domain>self.contractVersion.id = :_contractVersionId AND self.fileTypeSelect = 1</domain>
     <context name="_contractVersionId" expr="eval: currentContractVersion.id"/>
   </action-view>
 

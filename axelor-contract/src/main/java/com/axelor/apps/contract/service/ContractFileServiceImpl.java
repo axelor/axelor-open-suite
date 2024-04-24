@@ -1,9 +1,9 @@
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.base.db.File;
+import com.axelor.apps.base.db.repo.FileRepository;
 import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.contract.db.ContractFile;
-import com.axelor.apps.contract.db.repo.ContractFileRepository;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.meta.MetaFiles;
@@ -13,7 +13,7 @@ import com.google.inject.persist.Transactional;
 import java.util.List;
 
 public class ContractFileServiceImpl implements ContractFileService {
-  protected ContractFileRepository contractFileRepository;
+  protected FileRepository contractFileRepository;
   protected DMSFileRepository dmsFileRepository;
   protected DMSService dmsService;
   protected MetaFiles metaFiles;
@@ -21,7 +21,7 @@ public class ContractFileServiceImpl implements ContractFileService {
 
   @Inject
   public ContractFileServiceImpl(
-      ContractFileRepository contractFileRepository,
+      FileRepository contractFileRepository,
       DMSFileRepository dmsFileRepository,
       DMSService dmsService,
       MetaFiles metaFiles,
@@ -35,14 +35,14 @@ public class ContractFileServiceImpl implements ContractFileService {
 
   @Override
   @Transactional
-  public void setDMSFile(ContractFile contractFile) {
+  public void setDMSFile(File contractFile) {
     MetaFile metaFile = contractFile.getMetaFile();
     dmsService.setDmsFile(metaFile, contractFile);
     contractFileRepository.save(contractFile);
   }
 
   @Override
-  public String getInlineUrl(ContractFile contractFile) {
+  public String getInlineUrl(File contractFile) {
     MetaFile metaFile = contractFile.getMetaFile();
     DMSFile dmsFile = contractFile.getDmsFile();
     if (metaFile == null || dmsFile == null || !"application/pdf".equals(metaFile.getFileType())) {
@@ -55,7 +55,7 @@ public class ContractFileServiceImpl implements ContractFileService {
   @Transactional(rollbackOn = {Exception.class})
   public void remove(List<Integer> contractFileIds) {
     for (Integer id : contractFileIds) {
-      ContractFile contractFile = contractFileRepository.find(Long.parseLong(String.valueOf(id)));
+      File contractFile = contractFileRepository.find(Long.parseLong(String.valueOf(id)));
       contractFileRepository.remove(contractFile);
     }
   }

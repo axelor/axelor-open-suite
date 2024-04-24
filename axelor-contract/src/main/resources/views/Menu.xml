@@ -121,6 +121,17 @@
     <view type="form" name="revaluation-formula-form"/>
   </action-view>
 
+  <menuitem name="contract-root-files" title="Files" parent="contracts-root-conf-all"
+    action="action.file.view.contract" order="550"/>
+
+  <action-view name="action.file.view.contract" title="Files"
+    model="com.axelor.apps.base.db.File">
+    <view type="grid" name="file-grid"/>
+    <view type="form" name="file-form"/>
+    <domain>self.fileTypeSelect = 1</domain>
+    <context name="_fileTypeSelect" expr="eval: 1"/>
+  </action-view>
+
   <menuitem title="Pricing" name="contracts-conf-pricing" parent="contracts-root-conf-all"
     order="600" action="contracts.conf.pricing"
     if="__config__.app.getApp('base')?.enablePricingScale"/>

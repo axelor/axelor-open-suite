@@ -3,8 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
-  <grid name="contract-file-grid" title="Files"
-    model="com.axelor.apps.contract.db.ContractFile">
+  <grid name="contract-file-grid" title="Files" model="com.axelor.apps.base.db.File">
     <toolbar>
       <button name="newLineBtn" title="New File" icon="fa-plus"
         onClick="action-contract-file-view-add-file"/>
@@ -18,9 +17,8 @@
     <field name="fileDescription"/>
   </grid>
 
-  <form name="contract-file-form" title="File" model="com.axelor.apps.contract.db.ContractFile"
-    onNew="action-contract-file-record-set-contract-version"
-    onLoad="action-contract-file-group-file-onload">
+  <form name="contract-file-form" title="File" model="com.axelor.apps.base.db.File"
+    onNew="action-contract-file-group-file-onnew" onLoad="action-contract-file-group-file-onload">
     <panel name="mainPanel">
       <field name="fileType" colSpan="3"
         onChange="action-contract-file-record-set-expiration-date"/>
@@ -30,6 +28,7 @@
       <field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>
       <field name="fileType.hasExpirationDate" hidden="true"/>
       <field name="fileDescription" colSpan="12" widget="html"/>
+      <field name="fileTypeSelect" hidden="true"/>
     </panel>
 
     <panel name="filePanel" title="File" height="500" showIf="$inlineUrl &amp;&amp; metaFile"
@@ -48,7 +47,7 @@
   </form>
 
   <action-view name="action-contract-file-view-add-file" title="New File"
-    model="com.axelor.apps.contract.db.ContractFile">
+    model="com.axelor.apps.base.db.File">
     <view type="form" name="contract-file-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
@@ -61,18 +60,23 @@
   </action-validate>
 
   <action-record name="action-contract-file-record-set-record-date"
-    model="com.axelor.apps.contract.db.ContractFile">
+    model="com.axelor.apps.base.db.File">
     <field name="recordDate" expr="eval: metaFile?__config__.date:null"/>
   </action-record>
 
   <action-record name="action-contract-file-record-set-expiration-date"
-    model="com.axelor.apps.contract.db.ContractFile">
+    model="com.axelor.apps.base.db.File">
     <field name="expirationDate" expr="eval: null" if="!fileType?.hasExpirationDate"/>
   </action-record>
 
   <action-record name="action-contract-file-record-set-contract-version"
-    model="com.axelor.apps.contract.db.ContractFile">
+    model="com.axelor.apps.base.db.File">
     <field name="contractVersion" expr="eval: _contractVersion"/>
+  </action-record>
+
+  <action-record name="action-contract-file-record-set-file-type-select"
+    model="com.axelor.apps.base.db.File">
+    <field name="fileTypeSelect" expr="eval: 1"/>
   </action-record>
 
   <action-method name="action-contract-file-method-set-dms-file">
@@ -98,6 +102,11 @@
     <action name="action-contract-file-method-set-dms-file"
       if="metaFile &amp;&amp; dmsFile == null"/>
     <action name="action-contract-file-method-set-inline-url"/>
+  </action-group>
+
+  <action-group name="action-contract-file-group-file-onnew">
+    <action name="action-contract-file-record-set-contract-version"/>
+    <action name="action-contract-file-record-set-file-type-select"/>
   </action-group>
 
 </object-views>
