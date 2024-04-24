@@ -566,17 +566,12 @@
 
   <action-group name="action-project-task-group-progress-onchange">
     <action name="action-project-task-update-planned-progress"/>
-    <action name="action-project-task-method-update-progress-select"/>
   </action-group>
 
   <action-record name="action-project-task-update-planned-progress"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="plannedProgress" expr="eval: progress"/>
   </action-record>
-
-  <action-method name="action-project-task-method-update-progress-select">
-    <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillProgressSelect"/>
-  </action-method>
 
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
     model="com.axelor.apps.project.db.ProjectTask">

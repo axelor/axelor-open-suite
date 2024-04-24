@@ -37,6 +37,9 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
+import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
+import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.user.UserService;
@@ -53,6 +56,7 @@ import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
@@ -386,26 +390,51 @@ public class PartnerController {
   public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
-      PartnerService partnerService = Beans.get(PartnerService.class);
-      if (partnerService.isRegistrationCodeValid(partner)) {
-        String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
-        String nic = partnerService.getNicFromRegistrationCode(partner);
-        String siren = partnerService.getSirenFromRegistrationCode(partner);
-
-        response.setValue("taxNbr", taxNbr);
-        response.setValue("nic", nic);
-        response.setValue("siren", siren);
+      RegistrationNumberValidator validator =
+          Beans.get(PartnerRegistrationValidatorFactoryService.class)
+              .getRegistrationNumberValidator(partner);
+      if (validator == null) {
+        return;
       }
-
+      validator.setRegistrationCodeValidationValues(partner);
+      response.setValues(partner);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
   }
 
-  public void checkRegistrationCode(ActionRequest request, ActionResponse response) {
+  public void getHideFieldOnPartnerTypeSelect(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      PartnerRegistrationCodeViewService partnerRegistrationCodeViewService =
+          Beans.get(PartnerRegistrationCodeViewService.class);
+      String registrationCodeTitle =
+          partnerRegistrationCodeViewService.getRegistrationCodeTitleFromTemplate(partner);
+      boolean isNicHidden = partnerRegistrationCodeViewService.isNicHidden(partner);
+      boolean isSirenHidden = partnerRegistrationCodeViewService.isSirenHidden(partner);
+      boolean isTaxNbrHidden = partnerRegistrationCodeViewService.isTaxNbrHidden(partner);
+      response.setAttr(
+          "registrationCode",
+          "title",
+          !Strings.isNullOrEmpty(registrationCodeTitle)
+              ? registrationCodeTitle
+              : I18n.get("Registration number"));
+      response.setAttr("siren", "hidden", isSirenHidden);
+      response.setAttr("nic", "hidden", isNicHidden);
+      response.setAttr("taxNbr", "hidden", isTaxNbrHidden);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void checkRegistrationCode(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
     Partner partner = request.getContext().asType(Partner.class);
-    PartnerService partnerService = Beans.get(PartnerService.class);
-    if (!partnerService.isRegistrationCodeValid(partner)) {
+    RegistrationNumberValidator validator =
+        Beans.get(PartnerRegistrationValidatorFactoryService.class)
+            .getRegistrationNumberValidator(partner);
+    if (validator != null && !validator.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }

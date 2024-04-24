@@ -951,4 +951,43 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
     return sumInvoices;
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public List<Invoice> generateInvoicesFromSaleOrderLines(
+      Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps,
+      Map<SaleOrder, BigDecimal> amountToInvoiceMap,
+      boolean isPercent,
+      int operationSelect)
+      throws AxelorException {
+
+    List<Invoice> invoiceList = new ArrayList<>();
+    for (Map.Entry<SaleOrder, BigDecimal> entry : amountToInvoiceMap.entrySet()) {
+      SaleOrder saleOrder = entry.getKey();
+      entry.setValue(
+          computeAmountToInvoice(
+              entry.getValue(),
+              operationSelect,
+              saleOrder,
+              qtyToInvoiceMaps.get(saleOrder),
+              priceMaps.get(saleOrder),
+              qtyMaps.get(saleOrder),
+              isPercent));
+
+      displayErrorMessageIfSaleOrderIsInvoiceable(saleOrder, entry.getValue(), isPercent);
+
+      Invoice invoice =
+          generateInvoice(
+              saleOrder,
+              operationSelect,
+              entry.getValue(),
+              isPercent,
+              qtyToInvoiceMaps.get(saleOrder),
+              new ArrayList<>());
+
+      invoiceList.add(invoice);
+    }
+    return invoiceList;
+  }
 }

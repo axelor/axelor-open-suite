@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.invoice.print;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.report.engine.ReportSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -115,17 +114,4 @@ public interface InvoicePrintService {
    * @throws AxelorException
    */
   String printInvoices(List<Long> ids) throws IOException, AxelorException;
-
-  /**
-   * Prepare report settings for one invoice.
-   *
-   * @param invoice an invoice
-   * @param reportType
-   * @param format
-   * @param locale
-   * @return the report settings to print the given invoice
-   * @throws AxelorException
-   */
-  ReportSettings prepareReportSettings(
-      Invoice invoice, Integer reportType, String format, String locale) throws AxelorException;
 }
