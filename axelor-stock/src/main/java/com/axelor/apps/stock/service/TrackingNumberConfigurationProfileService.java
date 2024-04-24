@@ -9,6 +9,4 @@ public interface TrackingNumberConfigurationProfileService {
       TrackingNumber trackingNumber,
       TrackingNumberConfigurationProfile trackingNumberConfigurationProfile)
       throws AxelorException;
-
-  void setDefaultsFieldFormula(TrackingNumberConfigurationProfile profile);
 }

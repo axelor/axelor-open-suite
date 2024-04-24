@@ -16,8 +16,7 @@
 
   <form name="tracking-number-configuration-profile-form"
     title="Tracking Number Configuration profile"
-    model="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile"
-    onNew="action-tracking-number-configuration-profile-set-defaults-field-formula">
+    model="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile">
     <panel name="namePanel" colSpan="12">
       <field name="name"/>
     </panel>
@@ -32,10 +31,5 @@
       form-view="tracking-number-configuration-profile-field-formula-form" colSpan="12"/>
   </form>
 
-  <action-method
-    name="action-tracking-number-configuration-profile-set-defaults-field-formula">
-    <call class="com.axelor.apps.stock.web.TrackingNumberConfigurationProfileController"
-      method="setDefaultsFieldFormula"/>
-  </action-method>
 
 </object-views>

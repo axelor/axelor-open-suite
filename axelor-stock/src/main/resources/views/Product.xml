@@ -137,15 +137,125 @@
               grid-view="tracking-number-configuration-grid"
               if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})"/>
           </panel>
-          <panel colSpan="12" name="massPanel">
-            <field name="unitMass"/>
-            <field name="metricMass"/>
-            <field name="productDensity"/>
-          </panel>
         </panel>
       </insert>
     </extend>
+    <extend target="//panel[@name='packingPanel']//panel[@name='massPanel']">
+      <replace>
+        <panel name="massPanel" title="Mass" colSpan="6">
+          <field name="massUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
+          <field name="grossMass"/>
+          <field name="netMass"
+            onChange="action-stock-product-record-compute-metric-mass,action-stock-product-record-compute-density"
+            requiredIf="usedInDEB"/>
+          <field name="metricMass"
+            onChange="action-stock-product-record-compute-net-mass,action-stock-product-record-compute-density"/>
+          <field name="productDensity"
+            onChange="action-stock-product-record-compute-net-mass-with-density,action-stock-product-record-compute-metric-mass"/>
+        </panel>
+      </replace>
+    </extend>
+    <extend
+      target="//panel[@name='packingPanel']//panel[@name='articleDimensionPanel']//field[@name='length']">
+      <replace>
+        <field name="length" readonlyIf="diameter > 0"
+          onChange="action-stock-product-group-compute-volume-masses-density"/>
+      </replace>
+    </extend>
+    <extend
+      target="//panel[@name='packingPanel']//panel[@name='articleDimensionPanel']//field[@name='width']">
+      <replace>
+        <field name="width" readonlyIf="diameter > 0"
+          onChange="action-stock-product-group-compute-volume-masses-density"/>
+      </replace>
+    </extend>
+    <extend
+      target="//panel[@name='packingPanel']//panel[@name='articleDimensionPanel']//field[@name='height']">
+      <replace>
+        <field name="height"
+          onChange="action-stock-product-group-compute-volume-masses-density,action-product-record-calculate-volume-diameter"/>
+      </replace>
+    </extend>
   </form>
+
+  <action-group name="action-stock-product-group-compute-volume-masses-density">
+    <action name="action-product-record-calculate-volume-length"/>
+    <action name="action-stock-product-record-compute-metric-mass"/>
+    <action name="action-stock-product-record-compute-net-mass"/>
+    <action name="action-stock-product-record-compute-density"/>
+  </action-group>
+
+  <action-group id="stock-action-group-product-onload"
+    name="action-group-product-onload">
+    <action name="action-product-attrs-scale-and-precision"/>
+    <action name="action-product-attrs-scale-and-precision-production"/>
+    <action name="action-product-attrs-scale-and-precision-stock"/>
+    <action name="action-product-attrs-title-unit"/>
+    <action name="action-product-attrs-in-ati"/>
+    <action name="action-product-attrs-change-title-based-on-inAti"/>
+    <action name="action-product-set-stock"/>
+    <action name="action-product-set-total-variants"/>
+    <action if="__context__?._fromSale" name="action-product-attrs-readonly-sellable"/>
+    <action name="action-product-attrs-set-required-productCategory"/>
+    <action name="action-product-attrs-enable-product-company-list"/>
+    <action name="action-product-attrs-set-cost-type-select"/>
+    <action name="action-product-attrs-set-required-procurement-method-select"/>
+    <action name="action-stock-product-attrs-set-scale-metric-mass-density"/>
+  </action-group>
+
+  <action-group id="stock-action-group-base-product-onnew"
+    name="action-group-base-product-onnew">
+    <action name="action-product-attrs-scale-and-precision"/>
+    <action name="action-product-attrs-scale-and-precision-production"/>
+    <action name="action-product-attrs-scale-and-precision-stock"/>
+    <action name="action-product-group-default-new"/>
+    <action name="action-product-record-sale-supply-select"/>
+    <action name="action-product-record-in-ati"/>
+    <action name="action-product-attrs-in-ati"/>
+    <action name="action-product-record-default-production"/>
+    <action name="action-product-record-sellable"/>
+    <action if="__context__?._fromSale" name="action-product-attrs-readonly-sellable"/>
+    <action if="__context__?._fromPurchase" name="action-product-attrs-readonly-purchasable"/>
+    <action name="action-product-record-set-barcode-type-config"/>
+    <action name="action-product-attrs-title-unit"/>
+    <action name="action-product-attrs-set-required-productCategory"/>
+    <action name="action-product-attrs-enable-product-company-list"/>
+    <action name="action-product-record-service-stock-managed"/>
+    <action name="action-product-attrs-set-cost-type-select"/>
+    <action name="action-product-attrs-set-required-procurement-method-select"/>
+    <action name="action-stock-product-attrs-set-scale-metric-mass-density"/>
+  </action-group>
+
+
+  <action-attrs name="action-stock-product-attrs-set-scale-metric-mass-density">
+    <attribute name="scale" expr=" eval: 3" for="metricMass"/>
+    <attribute name="scale" expr=" eval: 3" for="productDensity"/>
+  </action-attrs>
+
+  <action-record name="action-stock-product-record-compute-metric-mass"
+    model="com.axelor.apps.base.db.Product">
+    <field name="metricMass"
+      expr="eval: (netMass / length).setScale(3, java.math.RoundingMode.HALF_UP)" if="length > 0"/>
+  </action-record>
+
+  <action-record name="action-stock-product-record-compute-net-mass"
+    model="com.axelor.apps.base.db.Product">
+    <field name="netMass"
+      expr="eval: (metricMass * length).setScale(3, java.math.RoundingMode.HALF_UP)" if="length > 0"/>
+  </action-record>
+
+  <action-record name="action-stock-product-record-compute-density"
+    model="com.axelor.apps.base.db.Product">
+    <field name="productDensity"
+      expr="eval: (netMass / articleVolume).setScale(3, java.math.RoundingMode.HALF_UP)"
+      if="articleVolume > 0"/>
+  </action-record>
+
+  <action-record name="action-stock-product-record-compute-net-mass-with-density"
+    model="com.axelor.apps.base.db.Product">
+    <field name="netMass"
+      expr="eval: (productDensity * articleVolume).setScale(3, java.math.RoundingMode.HALF_UP)"/>
+  </action-record>
 
   <action-method name="action-stock-product-method-set-stock-per-day">
     <call class="com.axelor.apps.stock.web.ProductStockController" method="setStockPerDay"/>

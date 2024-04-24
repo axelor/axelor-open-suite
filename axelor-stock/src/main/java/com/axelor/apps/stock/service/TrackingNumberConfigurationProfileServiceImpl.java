@@ -81,46 +81,6 @@ public class TrackingNumberConfigurationProfileServiceImpl
     }
   }
 
-  @Override
-  public void setDefaultsFieldFormula(TrackingNumberConfigurationProfile profile) {
-
-    var volumeFormula =
-        "if (unitMass && product.productDensity) {\n"
-            + "return (unitMass / product.productDensity) * 1000000;\n"
-            + "} else {\n"
-            + "return null;}";
-    addDefaultField(profile, "volume", volumeFormula, 1);
-    var unitMassFormula =
-        "if (volume && product.productDensity) {\n"
-            + "return (volume * product.productDensity) / 1000000;\n"
-            + "} else {\n"
-            + "return null;}";
-
-    addDefaultField(profile, "unitMass", unitMassFormula, 2);
-
-    var massFormula =
-        "if (volume && metricMass) {\n"
-            + "return volume * metricMass;\n"
-            + "} else {\n"
-            + "return null;}";
-
-    addDefaultField(profile, "mass", massFormula, 3);
-
-    var metricMassFormula =
-        "if (volume && mass) {\n" + "return mass / volume;\n" + "} else {\n" + "return null;}";
-
-    addDefaultField(profile, "metricMass", metricMassFormula, 4);
-  }
-
-  protected void addDefaultField(
-      TrackingNumberConfigurationProfile profile, String fieldName, String formula, int priority) {
-    var metaModel = metaModelRepository.findByName("TrackingNumber");
-    var metricMassField = metaFieldRepository.findByModel(fieldName, metaModel);
-    var metricMassFieldFormula =
-        new TrackingNumberConfigurationProfileFieldFormula(metricMassField, formula, priority);
-    profile.addProfileFieldFormulaSetItem(metricMassFieldFormula);
-  }
-
   protected Optional<BigDecimal> calculateValue(
       TrackingNumber trackingNumber, TrackingNumberConfigurationProfileFieldFormula fieldFormula)
       throws AxelorException {

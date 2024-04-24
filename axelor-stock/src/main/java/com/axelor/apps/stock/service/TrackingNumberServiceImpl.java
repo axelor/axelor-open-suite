@@ -156,7 +156,7 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
 
     if (product.getTrackingNumberConfiguration() != null
         && product.getTrackingNumberConfiguration().getIsDimensional()) {
-      trackingNumber.setUnitMass(product.getUnitMass());
+      trackingNumber.setUnitMass(product.getNetMass());
       trackingNumber.setMetricMass(product.getMetricMass());
     }
 

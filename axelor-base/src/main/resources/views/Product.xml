@@ -645,7 +645,6 @@
     <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
 
-
   <action-method name="action-product-method-update-cost-price">
     <call class="com.axelor.apps.base.web.ProductController" method="updateCostPrice"/>
   </action-method>
