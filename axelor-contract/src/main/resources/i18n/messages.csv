@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "%d contract(s) treated and %d anomaly(ies) reported !",,,
+"<><Badge bg=""warning"">{_t('This pricing is already used by another contract line. Use the + button to create a new copy.')}</Badge></>",,,
 "A billing contract is used to generate invoices, whereas a framework contract is used to generate orders. Invoices from framework contracts are generated either from orders, stock move or business project.",,,
 "Account management",,,
 "Action",,,
@@ -250,6 +251,7 @@
 "Search",,,
 "Sequence",,,
 "Show contract",,,
+"Show lines",,,
 "Show next amendment",,,
 "Start date",,,
 "Start of next invoicing period",,,
