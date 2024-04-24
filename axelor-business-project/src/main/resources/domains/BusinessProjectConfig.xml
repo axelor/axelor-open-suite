@@ -11,6 +11,10 @@
 
     <boolean name="isAnalyticDistributionRequired"
       title="Analytic distribution required on project"/>
+    <boolean name="useAssignedToAnalyticDistribution"
+      title="Use Analytic distribution from assigned user on project"/>
+    <boolean name="usePartnerAnalyticDistribution"
+      title="Use Analytic distribution from partner on project"/>
 
     <track>
       <field name="company" on="UPDATE"/>
