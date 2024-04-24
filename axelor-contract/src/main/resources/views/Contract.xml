@@ -145,14 +145,14 @@
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false" readonly="true">
             <viewer
-              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals">
+              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals,contract.isToRevaluate">
               <![CDATA[
 					<>
 						<Box mt={2} fontWeight="bold">{_t('Initial ex tax total per year')}</Box>
 						<Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(initialExTaxTotalPerYear).toFixed(contract.currency.numberOfDecimals)}</Box>
-						<Box borderTop borderColor="inherit" m={1}/>
-						<Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>
-						<Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(yearlyExTaxTotalRevalued).toFixed(contract.currency.numberOfDecimals)}</Box>
+						{contract.isToRevaluate && <Box borderTop borderColor="inherit" m={1}/>}
+						{contract.isToRevaluate && <Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>}
+						{contract.isToRevaluate && <Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(yearlyExTaxTotalRevalued).toFixed(contract.currency.numberOfDecimals)}</Box>}
 					</>
               ]]>
             </viewer>
