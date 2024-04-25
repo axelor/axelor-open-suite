@@ -118,4 +118,22 @@ public class AnalyticLineProjectModel extends AnalyticLineContractModel {
 
     return this.partner;
   }
+
+  public void copyToModel() {
+    if (this.project != null) {
+      this.copyToProject();
+    } else {
+      super.copyToModel();
+    }
+  }
+
+  protected void copyToProject() {
+    this.project.setAnalyticDistributionTemplate(this.analyticDistributionTemplate);
+    this.project.setAxis1AnalyticAccount(this.axis1AnalyticAccount);
+    this.project.setAxis2AnalyticAccount(this.axis2AnalyticAccount);
+    this.project.setAxis3AnalyticAccount(this.axis3AnalyticAccount);
+    this.project.setAxis4AnalyticAccount(this.axis4AnalyticAccount);
+    this.project.setAxis5AnalyticAccount(this.axis5AnalyticAccount);
+    this.project.setAnalyticMoveLineList(this.analyticMoveLineList);
+  }
 }

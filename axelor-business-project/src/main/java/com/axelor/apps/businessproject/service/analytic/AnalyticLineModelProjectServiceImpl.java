@@ -37,6 +37,7 @@ import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServiceImpl
@@ -71,11 +72,34 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
   }
 
   @Override
+  public boolean analyzeAnalyticLineModel(
+      AnalyticLineProjectModel analyticLineProjectModel, Company company) throws AxelorException {
+    if (!analyticToolService.isManageAnalytic(company) || analyticLineProjectModel == null) {
+      return false;
+    }
+
+    if (analyticLineProjectModel.getAnalyticMoveLineList() == null) {
+      analyticLineProjectModel.setAnalyticMoveLineList(new ArrayList<>());
+    } else {
+      analyticLineProjectModel.getAnalyticMoveLineList().clear();
+    }
+
+    for (AnalyticAccount axisAnalyticAccount :
+        this.getAxisAnalyticAccountList(analyticLineProjectModel)) {
+      AnalyticMoveLine analyticMoveLine =
+          this.computeAnalyticMoveLine(analyticLineProjectModel, company, axisAnalyticAccount);
+
+      analyticLineProjectModel.addAnalyticMoveLineListItem(analyticMoveLine);
+    }
+
+    return true;
+  }
+
   protected AnalyticMoveLine computeAnalyticMoveLine(
-      AnalyticLineModel analyticLineModel, Company company, AnalyticAccount analyticAccount)
+      AnalyticLineProjectModel analyticLineProjectModel,
+      Company company,
+      AnalyticAccount analyticAccount)
       throws AxelorException {
-    AnalyticLineProjectModel analyticLineProjectModel =
-        this.getAnalyticLineProjectModel(analyticLineModel);
 
     AnalyticMoveLine analyticMoveLine =
         super.computeAnalyticMoveLine(analyticLineProjectModel, company, analyticAccount);
@@ -119,11 +143,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
 
   @Override
   public AnalyticLineModel createAnalyticDistributionWithTemplate(
-      AnalyticLineModel analyticLineModel) throws AxelorException {
-    AnalyticLineProjectModel analyticLineProjectModel =
-        this.getAnalyticLineProjectModel(analyticLineModel);
-
-    super.createAnalyticDistributionWithTemplate(analyticLineModel);
+      AnalyticLineProjectModel analyticLineProjectModel) throws AxelorException {
+    super.createAnalyticDistributionWithTemplate(analyticLineProjectModel);
 
     if (analyticLineProjectModel.getProject() != null
         && ObjectUtils.notEmpty(analyticLineProjectModel.getAnalyticMoveLineList())) {

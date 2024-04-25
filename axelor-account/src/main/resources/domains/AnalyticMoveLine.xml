@@ -14,6 +14,8 @@
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"/>
     <many-to-one name="moveLineMassEntry"
       ref="com.axelor.apps.account.db.MoveLineMassEntry"/>
+    <many-to-one name="accountingSituation"
+      ref="com.axelor.apps.account.db.AccountingSituation"/>
 
     <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis"
       title="Axis"/>

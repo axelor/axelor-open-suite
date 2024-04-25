@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form name="accounting-situation-partner-form" title="Accounting situation"
+    model="com.axelor.apps.account.db.AccountingSituation"
+    id="supplychain-accounting-situation-partner-form" extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-supplychain-accounting-situation-project-group-on-new"/>
+      <attribute name="onLoad"
+        value="action-supplychain-accounting-situation-project-group-on-load"/>
+    </extend>
+
+    <extend target="//field[@name='analyticDistributionTemplate']">
+      <attribute name="onChange"
+        value="action-supplychain-accounting-situation-group-analytic-distribution-template-onchange"/>
+    </extend>
+
+    <extend target="//field[@name='analyticDistributionTemplate']">
+      <insert position="after">
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+          onSelect="action-supplychain-accounting-situation-method-set-axis-domain"
+          onChange="action-supplychain-accounting-situation-group-axis-create-analytic-line"/>
+        <panel name="axisAnalyticAccountPanel" colSpan="12"
+          readonlyIf="analyticDistributionTemplate">
+          <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+            onSelect="action-supplychain-accounting-situation-method-set-axis-domain"
+            onChange="action-supplychain-accounting-situation-group-axis-create-analytic-line"/>
+          <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+            onSelect="action-supplychain-accounting-situation-method-set-axis-domain"
+            onChange="action-supplychain-accounting-situation-group-axis-create-analytic-line"/>
+          <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+            onSelect="action-supplychain-accounting-situation-method-set-axis-domain"
+            onChange="action-supplychain-accounting-situation-group-axis-create-analytic-line"/>
+          <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+            onSelect="action-supplychain-accounting-situation-method-set-axis-domain"
+            onChange="action-supplychain-accounting-situation-group-axis-create-analytic-line"/>
+        </panel>
+        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+          grid-view="analytic-move-line-distribution-simplified-grid"
+          form-view="analytic-move-line-distribution-simplified-form" colSpan="12"
+          onChange="action-supplychain-accounting-situation-group-analytic-move-line-list-onchange"/>
+      </insert>
+    </extend>
+  </form>
+
+  <!-- Analytic -->
+  <!-- Action group -->
+  <action-group name="action-supplychain-accounting-situation-project-group-on-new">
+    <action name="action-accounting-situation-method-onnew"/>
+    <action name="action-supplychain-accounting-situation-group-manage-analytic"/>
+  </action-group>
+
+  <action-group name="action-supplychain-accounting-situation-project-group-on-load">
+    <action name="action-accounting-situation-method-onload"/>
+    <action name="action-supplychain-accounting-situation-group-manage-analytic"/>
+  </action-group>
+
+  <action-group name="action-supplychain-accounting-situation-group-manage-analytic">
+    <action name="action-supplychain-accounting-situation-method-hide-axis-analytic-account"/>
+    <action name="action-supplychain-accounting-situation-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group
+    name="action-supplychain-accounting-situation-group-analytic-distribution-template-onchange">
+    <action name="action-supplychain-accounting-situation-method-create-distribution"/>
+    <action name="action-supplychain-accounting-situation-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group
+    name="action-supplychain-accounting-situation-group-axis-create-analytic-line">
+    <action name="action-supplychain-accounting-situation-method-axis-create-analytic-line"/>
+  </action-group>
+
+  <action-group
+    name="action-supplychain-accounting-situation-group-analytic-move-line-list-onchange">
+    <action name="action-supplychain-accounting-situation-method-print-analytic-account"/>
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+  </action-group>
+
+  <!-- Action method -->
+  <action-method
+    name="action-supplychain-accounting-situation-method-hide-axis-analytic-account">
+    <call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController"
+      method="manageAxis"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-accounting-situation-method-print-analytic-account">
+    <call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController"
+      method="printAnalyticAccounts"/>
+  </action-method>
+
+  <action-method name="action-supplychain-accounting-situation-method-set-axis-domain">
+    <call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController"
+      method="setAxisDomains"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-accounting-situation-method-axis-create-analytic-line">
+    <call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController"
+      method="createAnalyticAccountLines"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-accounting-situation-method-create-distribution">
+    <call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController"
+      method="createAnalyticDistributionWithTemplate"/>
+  </action-method>
+</object-views>

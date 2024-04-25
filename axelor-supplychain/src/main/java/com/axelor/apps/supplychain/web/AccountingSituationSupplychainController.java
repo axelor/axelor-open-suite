@@ -19,12 +19,19 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class AccountingSituationSupplychainController {
@@ -40,6 +47,97 @@ public class AccountingSituationSupplychainController {
     } catch (Exception e) {
       TraceBackService.trace(e);
       response.setError(e.getMessage());
+    }
+  }
+
+  public void manageAxis(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingSituation accountingSituation =
+          request.getContext().asType(AccountingSituation.class);
+
+      if (accountingSituation == null || accountingSituation.getCompany() == null) {
+        return;
+      }
+
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Beans.get(AnalyticAttrsService.class)
+          .addAnalyticAxisAttrs(accountingSituation.getCompany(), null, attrsMap);
+
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingSituation accountingSituation =
+          request.getContext().asType(AccountingSituation.class);
+
+      if (accountingSituation == null || accountingSituation.getCompany() == null) {
+        return;
+      }
+
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(accountingSituation);
+      response.setValues(
+          Beans.get(AnalyticGroupService.class)
+              .getAnalyticAccountValueMap(analyticLineModel, accountingSituation.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAxisDomains(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingSituation accountingSituation =
+          request.getContext().asType(AccountingSituation.class);
+
+      if (accountingSituation == null) {
+        return;
+      }
+
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(accountingSituation);
+      response.setAttrs(
+          Beans.get(AnalyticGroupService.class)
+              .getAnalyticAxisDomainAttrsMap(analyticLineModel, accountingSituation.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingSituation accountingSituation =
+          request.getContext().asType(AccountingSituation.class);
+
+      if (accountingSituation == null) {
+        return;
+      }
+
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(accountingSituation);
+
+      if (Beans.get(AnalyticLineModelService.class)
+          .analyzeAnalyticLineModel(analyticLineModel, accountingSituation.getCompany())) {
+        response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      AccountingSituation accountingSituation =
+          request.getContext().asType(AccountingSituation.class);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(accountingSituation);
+
+      Beans.get(AnalyticLineModelService.class)
+          .createAnalyticDistributionWithTemplate(analyticLineModel);
+
+      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

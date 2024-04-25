@@ -38,7 +38,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -276,7 +275,7 @@ public class ProjectController {
 
       AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
 
-      if (Beans.get(AnalyticLineModelService.class)
+      if (Beans.get(AnalyticLineModelProjectService.class)
           .analyzeAnalyticLineModel(analyticLineProjectModel, project.getCompany())) {
         response.setValue(
             "analyticMoveLineList", analyticLineProjectModel.getAnalyticMoveLineList());
@@ -310,7 +309,7 @@ public class ProjectController {
       Project project = request.getContext().asType(Project.class);
       AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
 
-      Beans.get(AnalyticLineModelService.class)
+      Beans.get(AnalyticLineModelProjectService.class)
           .createAnalyticDistributionWithTemplate(analyticLineProjectModel);
 
       response.setValue("analyticMoveLineList", analyticLineProjectModel.getAnalyticMoveLineList());
@@ -324,11 +323,11 @@ public class ProjectController {
       Project project = request.getContext().asType(Project.class);
 
       AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
-
-      Beans.get(AnalyticLineModelProjectService.class)
-          .getAndComputeAnalyticDistribution(analyticLineProjectModel);
-      Beans.get(AnalyticLineModelService.class)
-          .createAnalyticDistributionWithTemplate(analyticLineProjectModel);
+      AnalyticLineModelProjectService analyticLineModelProjectService =
+          Beans.get(AnalyticLineModelProjectService.class);
+      analyticLineModelProjectService.getAndComputeAnalyticDistribution(analyticLineProjectModel);
+      analyticLineModelProjectService.createAnalyticDistributionWithTemplate(
+          analyticLineProjectModel);
 
       response.setValue(
           "analyticDistributionTemplate",

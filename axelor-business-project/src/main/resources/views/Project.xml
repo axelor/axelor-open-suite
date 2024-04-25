@@ -161,25 +161,25 @@
               <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
                 form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
                 onSelect="action-business-project-method-set-axis-domain"
-                onChange="action-business-group-method-axis-create-analytic-line"/>
+                onChange="action-business-project-group-axis-create-analytic-line"/>
               <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
                 form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
                 onSelect="action-business-project-method-set-axis-domain"
-                onChange="action-business-group-method-axis-create-analytic-line"/>
+                onChange="action-business-project-group-axis-create-analytic-line"/>
               <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
                 form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
                 onSelect="action-business-project-method-set-axis-domain"
-                onChange="action-business-group-method-axis-create-analytic-line"/>
+                onChange="action-business-project-group-axis-create-analytic-line"/>
               <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
                 form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
                 onSelect="action-business-project-method-set-axis-domain"
-                onChange="action-business-group-method-axis-create-analytic-line"/>
+                onChange="action-business-project-group-axis-create-analytic-line"/>
             </panel>
             <panel-related name="analyticMoveLineListPanel"
               field="analyticMoveLineList"
               grid-view="analytic-move-line-distribution-simplified-grid"
               form-view="analytic-move-line-distribution-simplified-form" colSpan="12"
-              onChange="action-purchase-order-line-group-analytic-move-line-list-onchange"/>
+              onChange="action-business-project-group-analytic-move-line-list-onchange"/>
             <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
           </panel>
         </panel>
@@ -792,6 +792,11 @@
     <action name="action-project-method-get-partner-data"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
     <action name="action-business-project-group-manage-analytic"/>
+  </action-group>
+
+  <action-group name="action-business-project-group-analytic-move-line-list-onchange">
+    <action name="action-business-project-method-print-analytic-account"/>
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
   </action-group>
 
   <!-- Action method -->
