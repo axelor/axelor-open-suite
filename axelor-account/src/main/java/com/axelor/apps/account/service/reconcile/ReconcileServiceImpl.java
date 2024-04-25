@@ -759,9 +759,10 @@ public class ReconcileServiceImpl implements ReconcileService {
     BigDecimal reconciledAmount = newCreditMoveLine.getDebit().max(newCreditMoveLine.getCredit());
 
     if (creditMoveLine.getCredit().compareTo(creditMoveLine.getDebit()) < 0) {
-      newReconcile = this.createReconcile(newDebitMoveLine, creditMoveLine, reconciledAmount, true);
+      newReconcile =
+          this.createReconcile(newCreditMoveLine, creditMoveLine, reconciledAmount, true);
     } else {
-      newReconcile = this.createReconcile(debitMoveLine, newCreditMoveLine, reconciledAmount, true);
+      newReconcile = this.createReconcile(debitMoveLine, newDebitMoveLine, reconciledAmount, true);
     }
 
     log.debug(

@@ -758,13 +758,6 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
 
-    if (!account.getReconcileOk()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILE_OK_NOT_CONFIGURED),
-          account.getCode());
-    }
-
     return account;
   }
 }
