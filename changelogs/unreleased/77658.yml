@@ -1,0 +1,3 @@
+---
+title: "Invoice: force the format to PDF when the invoice is not proforma."
+module: axelor-account
