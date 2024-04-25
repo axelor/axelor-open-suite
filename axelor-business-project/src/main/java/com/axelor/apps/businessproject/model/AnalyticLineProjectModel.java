@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.model;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -105,5 +106,16 @@ public class AnalyticLineProjectModel extends AnalyticLineContractModel {
     }
 
     return this.company;
+  }
+
+  @Override
+  public Partner getPartner() {
+    if (this.project != null) {
+      this.partner = this.project.getClientPartner();
+    } else {
+      super.getPartner();
+    }
+
+    return this.partner;
   }
 }

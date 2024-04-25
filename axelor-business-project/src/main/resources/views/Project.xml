@@ -191,6 +191,7 @@
     <action name="action-project-group-on-new-project"/>
     <action name="action-business-project-project-attrs-defaults"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
+    <action name="action-business-project-method-get-analytic-distribution-template"/>
     <action name="action-business-project-group-manage-analytic"/>
   </action-group>
 
@@ -772,6 +773,7 @@
   <action-group name="action-business-project-group-assigned-to-onchange">
     <action name="action-attrs-project-add-member"/>
     <action name="action-business-project-method-get-analytic-distribution-template"/>
+    <action name="action-business-project-group-manage-analytic"/>
   </action-group>
 
   <action-group
@@ -784,6 +786,12 @@
   <action-group name="action-business-project-group-axis-create-analytic-line">
     <action name="action-business-project-method-axis-create-analytic-line"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+  </action-group>
+
+  <action-group name="action-project-group-get-partner-data">
+    <action name="action-project-method-get-partner-data"/>
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-business-project-group-manage-analytic"/>
   </action-group>
 
   <!-- Action method -->
@@ -821,11 +829,6 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="createAnalyticDistributionWithTemplate"/>
   </action-method>
-
-
-
-
-  <!-- TODO CHECK UTILITY -->
 
   <action-method
     name="action-business-project-method-get-analytic-distribution-template">

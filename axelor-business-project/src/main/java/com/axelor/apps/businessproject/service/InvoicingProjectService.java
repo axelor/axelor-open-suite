@@ -46,6 +46,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -67,6 +68,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -111,6 +113,8 @@ public class InvoicingProjectService {
   @Inject protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject protected ProjectHoldBackLineService projectHoldBackLineService;
+
+  @Inject protected InvoiceLineAnalyticSupplychainService invoiceLineAnalyticSupplychainService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -240,6 +244,7 @@ public class InvoicingProjectService {
       invoiceLine.setSequence(sequence);
       sequence++;
 
+      this.computeAnalytic(invoiceLine, invoice, folder.getProject());
       invoiceLineService.compute(invoice, invoiceLine);
     }
 
@@ -608,5 +613,13 @@ public class InvoicingProjectService {
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
     }
     return invoicingProjectRepo.save(invoicingProject);
+  }
+
+  protected void computeAnalytic(InvoiceLine invoiceLine, Invoice invoice, Project project)
+      throws AxelorException {
+    if (project != null) {
+      invoiceLineAnalyticSupplychainService.setInvoiceLineAnalyticInfo(
+          invoiceLine, invoice, new AnalyticLineProjectModel(project));
+    }
   }
 }

@@ -18,24 +18,67 @@
  */
 package com.axelor.apps.businessproject.service.analytic;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.db.BusinessProjectConfig;
+import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
-public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLineService {
+public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceImpl
+    implements ProjectAnalyticMoveLineService {
 
-  protected AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected BusinessProjectConfigService businessProjectConfigService;
 
   @Inject
-  public ProjectAnalyticMoveLineServiceImpl(AnalyticMoveLineRepository analyticMoveLineRepository) {
-    this.analyticMoveLineRepository = analyticMoveLineRepository;
+  public ProjectAnalyticMoveLineServiceImpl(
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      AppAccountService appAccountService,
+      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
+      AccountConfigService accountConfigService,
+      AccountConfigRepository accountConfigRepository,
+      AccountRepository accountRepository,
+      AppBaseService appBaseService,
+      AccountingSituationService accountingSituationService,
+      CurrencyScaleService currencyScaleService,
+      BusinessProjectConfigService businessProjectConfigService) {
+    super(
+        analyticMoveLineRepository,
+        appAccountService,
+        accountManagementServiceAccountImpl,
+        accountConfigService,
+        accountConfigRepository,
+        accountRepository,
+        appBaseService,
+        accountingSituationService,
+        currencyScaleService);
+    this.businessProjectConfigService = businessProjectConfigService;
   }
 
   @Override
@@ -65,5 +108,46 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
       }
     }
     return saleOrder;
+  }
+
+  @Override
+  public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
+      Project project,
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Account account,
+      boolean isPurchase)
+      throws AxelorException {
+    if (company == null || project == null) {
+      return null;
+    }
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    if (accountConfig.getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER) {
+      BusinessProjectConfig businessProjectConfig =
+          businessProjectConfigService.getBusinessProjectConfig(company);
+
+      if (businessProjectConfig.getUseAssignedToAnalyticDistribution()) {
+        User assignedToUser = project.getAssignedTo();
+        if (assignedToUser != null && assignedToUser.getEmployee() != null) {
+          return assignedToUser.getEmployee().getAnalyticDistributionTemplate();
+        }
+      }
+
+      AccountingSituation accountingSituation = null;
+      if (partner != null) {
+        accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
+      }
+
+      return accountingSituation != null
+          ? accountingSituation.getAnalyticDistributionTemplate()
+          : null;
+    } else {
+      return super.getAnalyticDistributionTemplate(
+          partner, product, company, tradingName, account, isPurchase);
+    }
   }
 }

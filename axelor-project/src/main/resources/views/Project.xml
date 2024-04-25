@@ -124,7 +124,7 @@
           canEdit="false" if-module="axelor-business-project"/>
         <field name="clientPartner"
           domain="self.isCustomer = true AND :company member of self.companySet"
-          onChange="action-project-method-get-partner-data" requiredIf="isBusinessProject"
+          onChange="action-project-group-get-partner-data" requiredIf="isBusinessProject"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
           showIf="isBusinessProject"/>

@@ -43,6 +43,7 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
     implements AnalyticLineModelProjectService {
 
   protected BusinessProjectConfigService businessProjectConfigService;
+  protected ProjectAnalyticMoveLineService projectAnalyticMoveLineService;
 
   @Inject
   public AnalyticLineModelProjectServiceImpl(
@@ -54,7 +55,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
       SaleConfigService saleConfigService,
       PurchaseConfigService purchaseConfigService,
       CurrencyScaleService currencyScaleService,
-      BusinessProjectConfigService businessProjectConfigService) {
+      BusinessProjectConfigService businessProjectConfigService,
+      ProjectAnalyticMoveLineService projectAnalyticMoveLineService) {
     super(
         appBaseService,
         appAccountService,
@@ -65,6 +67,7 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
         purchaseConfigService,
         currencyScaleService);
     this.businessProjectConfigService = businessProjectConfigService;
+    this.projectAnalyticMoveLineService = projectAnalyticMoveLineService;
   }
 
   @Override
@@ -72,7 +75,7 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
       AnalyticLineModel analyticLineModel, Company company, AnalyticAccount analyticAccount)
       throws AxelorException {
     AnalyticLineProjectModel analyticLineProjectModel =
-        analyticLineModel.getExtension(AnalyticLineProjectModel.class);
+        this.getAnalyticLineProjectModel(analyticLineModel);
 
     AnalyticMoveLine analyticMoveLine =
         super.computeAnalyticMoveLine(analyticLineProjectModel, company, analyticAccount);
@@ -85,39 +88,40 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
   }
 
   @Override
-  public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
-      throws AxelorException {
-    if (!isPartnerAnalyticDistribution(analyticLineModel)) {
-      return analyticLineModel;
+  public AnalyticLineProjectModel getAndComputeAnalyticDistribution(
+      AnalyticLineProjectModel analyticLineProjectModel) throws AxelorException {
+    if (!isPartnerAnalyticDistribution(analyticLineProjectModel)) {
+      return analyticLineProjectModel;
     }
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
-        analyticMoveLineService.getAnalyticDistributionTemplate(
-            analyticLineModel.getPartner(),
-            analyticLineModel.getProduct(),
-            analyticLineModel.getCompany(),
-            analyticLineModel.getTradingName(),
-            analyticLineModel.getAccount(),
-            analyticLineModel.getIsPurchase());
+        projectAnalyticMoveLineService.getAnalyticDistributionTemplate(
+            analyticLineProjectModel.getProject(),
+            analyticLineProjectModel.getPartner(),
+            analyticLineProjectModel.getProduct(),
+            analyticLineProjectModel.getCompany(),
+            analyticLineProjectModel.getTradingName(),
+            analyticLineProjectModel.getAccount(),
+            analyticLineProjectModel.getIsPurchase());
 
-    analyticLineModel.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+    analyticLineProjectModel.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 
-    if (analyticLineModel.getAnalyticMoveLineList() != null) {
-      analyticLineModel.getAnalyticMoveLineList().clear();
+    if (analyticLineProjectModel.getAnalyticMoveLineList() != null) {
+      analyticLineProjectModel.getAnalyticMoveLineList().clear();
     }
 
-    this.computeAnalyticDistribution(analyticLineModel);
+    this.computeAnalyticDistribution(analyticLineProjectModel);
 
-    analyticLineModel.copyToModel();
+    analyticLineProjectModel.copyToModel();
 
-    return analyticLineModel;
+    return analyticLineProjectModel;
   }
 
   @Override
   public AnalyticLineModel createAnalyticDistributionWithTemplate(
       AnalyticLineModel analyticLineModel) throws AxelorException {
     AnalyticLineProjectModel analyticLineProjectModel =
-        analyticLineModel.getExtension(AnalyticLineProjectModel.class);
+        this.getAnalyticLineProjectModel(analyticLineModel);
 
     super.createAnalyticDistributionWithTemplate(analyticLineModel);
 
@@ -141,5 +145,10 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
             .getBusinessProjectConfig(analyticLineModel.getCompany())
             .getIsAnalyticDistributionRequired()
         && ObjectUtils.isEmpty(analyticLineModel.getAnalyticMoveLineList());
+  }
+
+  protected AnalyticLineProjectModel getAnalyticLineProjectModel(
+      AnalyticLineModel analyticLineModel) throws AxelorException {
+    return analyticLineModel.getExtension(AnalyticLineProjectModel.class);
   }
 }

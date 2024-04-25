@@ -122,16 +122,13 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
     Partner partner = project.getClientPartner();
 
+    AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+    Beans.get(AnalyticLineModelProjectService.class)
+        .getAndComputeAnalyticDistribution(analyticLineProjectModel);
+    response.setValue(
+        "analyticDistributionTemplate", analyticLineProjectModel.getAnalyticDistributionTemplate());
+
     if (partner != null) {
-      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
-
-      Beans.get(AnalyticLineModelService.class)
-          .getAndComputeAnalyticDistribution(analyticLineProjectModel);
-
-      response.setValue(
-          "analyticDistributionTemplate",
-          analyticLineProjectModel.getAnalyticDistributionTemplate());
-
       response.setValue("currency", partner.getCurrency());
 
       response.setValue(
@@ -328,12 +325,15 @@ public class ProjectController {
 
       AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
 
-      Beans.get(AnalyticLineModelService.class)
+      Beans.get(AnalyticLineModelProjectService.class)
           .getAndComputeAnalyticDistribution(analyticLineProjectModel);
+      Beans.get(AnalyticLineModelService.class)
+          .createAnalyticDistributionWithTemplate(analyticLineProjectModel);
 
       response.setValue(
           "analyticDistributionTemplate",
           analyticLineProjectModel.getAnalyticDistributionTemplate());
+      response.setValue("analyticMoveLineList", analyticLineProjectModel.getAnalyticMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
