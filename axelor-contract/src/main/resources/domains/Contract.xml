@@ -93,6 +93,9 @@
 	    ]]>
     </many-to-one>
 
+    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"
+      title="Opportunity"/>
+
     <extra-code><![CDATA[
             static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
             static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";

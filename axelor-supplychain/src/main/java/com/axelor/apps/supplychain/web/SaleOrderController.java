@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.ResponseMessageType;
@@ -229,20 +231,7 @@ public class SaleOrderController {
       List<Map<String, Object>> saleOrderLineListContext;
       saleOrderLineListContext =
           (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineList");
-      for (Map<String, Object> map : saleOrderLineListContext) {
-        if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
-          BigDecimal qtyToInvoiceItem =
-              new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
-          if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
-            Long soLineId = Long.valueOf((Integer) map.get("id"));
-            qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
-            BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
-            priceMap.put(soLineId, priceItem);
-            BigDecimal qtyItem = new BigDecimal(map.get(SO_LINES_WIZARD_QTY_FIELD).toString());
-            qtyMap.put(soLineId, qtyItem);
-          }
-        }
-      }
+      fillMaps(saleOrderLineListContext, qtyToInvoiceMap, priceMap, qtyMap);
 
       // Re-compute amount to invoice if invoicing partially
       amountToInvoice =
@@ -299,6 +288,99 @@ public class SaleOrderController {
                     Beans.get(AppSupplychainService.class).getTodayDate(saleOrder.getCompany()))
                 .map());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  private void fillMaps(
+      List<Map<String, Object>> saleOrderLineListContext,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap) {
+    for (Map<String, Object> map : saleOrderLineListContext) {
+      if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
+        BigDecimal qtyToInvoiceItem =
+            new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
+        if (qtyToInvoiceItem.signum() != 0) {
+          Long soLineId = Long.valueOf((Integer) map.get("id"));
+          qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
+          BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
+          priceMap.put(soLineId, priceItem);
+          BigDecimal qtyItem = new BigDecimal(map.get(SO_LINES_WIZARD_QTY_FIELD).toString());
+          qtyMap.put(soLineId, qtyItem);
+        }
+      }
+    }
+  }
+
+  public void generateInvoicesFromSelectedLines(ActionRequest request, ActionResponse response) {
+
+    try {
+
+      SaleOrderRepository saleOrderRepository = Beans.get(SaleOrderRepository.class);
+      Context context = request.getContext();
+      List<Map<String, Object>> saleOrderLineListContext;
+      saleOrderLineListContext =
+          (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineListToInvoice");
+      if (saleOrderLineListContext.isEmpty()) {
+        response.setAlert(I18n.get("No items have been selected."));
+        return;
+      }
+      int operationSelect = SaleOrderRepository.INVOICE_LINES;
+      boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
+
+      Map<SaleOrder, List<Map<String, Object>>> saleOrderLineListContextMap =
+          saleOrderLineListContext.stream()
+              .collect(
+                  groupingBy(
+                      stringObjectMap ->
+                          saleOrderRepository.find(
+                              Long.valueOf(
+                                  (Integer)
+                                      ((LinkedHashMap<?, ?>) stringObjectMap.get("saleOrder"))
+                                          .get("id")))));
+
+      Map<SaleOrder, BigDecimal> amountToInvoiceMap = new HashMap<>();
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps = new HashMap<>();
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps = new HashMap<>();
+      Map<SaleOrder, Map<Long, BigDecimal>> priceMaps = new HashMap<>();
+      for (Map.Entry<SaleOrder, List<Map<String, Object>>> entry :
+          saleOrderLineListContextMap.entrySet()) {
+        SaleOrder saleOrder = entry.getKey();
+        BigDecimal amountToInvoice =
+            saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced());
+        amountToInvoiceMap.put(saleOrder, amountToInvoice);
+        Map<Long, BigDecimal> qtyMap = new HashMap<>();
+        Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
+        Map<Long, BigDecimal> priceMap = new HashMap<>();
+        fillMaps(entry.getValue(), qtyToInvoiceMap, priceMap, qtyMap);
+        qtyMaps.put(saleOrder, qtyMap);
+        qtyToInvoiceMaps.put(saleOrder, qtyToInvoiceMap);
+        priceMaps.put(saleOrder, priceMap);
+      }
+
+      List<Invoice> invoiceList =
+          Beans.get(SaleOrderInvoiceService.class)
+              .generateInvoicesFromSaleOrderLines(
+                  priceMaps,
+                  qtyToInvoiceMaps,
+                  qtyMaps,
+                  amountToInvoiceMap,
+                  isPercent,
+                  operationSelect);
+      response.setCanClose(true);
+      List<Long> invoicesIds =
+          invoiceList.stream().map(Invoice::getId).collect(Collectors.toList());
+      response.setView(
+          ActionView.define(I18n.get("Invoices"))
+              .model(Invoice.class.getName())
+              .add("grid", "invoice-grid")
+              .add("form", "invoice-form")
+              .domain("self.id IN :invoicesIds")
+              .context("invoicesIds", invoicesIds)
+              .map());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

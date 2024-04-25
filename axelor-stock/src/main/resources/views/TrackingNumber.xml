@@ -25,18 +25,20 @@
     <field name="origin"/>
     <field name="supplier" domain="self.isSupplier IS TRUE" grid-view="partner-supplier-grid"
       form-view="partner-supplier-form"/>
+    <field name="originMoveTypeSelect" widget="single-select"/>
   </grid>
 
   <form name="tracking-number-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber"
     onNew="action-tracking-number-attrs-set-scale,action-tracking-number-record-product"
-    onLoad="action-tracking-number-attrs-set-scale,action-tracking-number-attrs-set-product-readonly">
+    onLoad="action-tracking-number-group-on-load">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
-        domain="self.dtype = 'Product'"/>
+        domain="self.dtype = 'Product'" onChange="action-tracking-number-group-on-change-product"/>
       <field name="product.trackingNumberConfiguration.hasWarranty" hidden="true"/>
       <field name="product.trackingNumberConfiguration.isPerishable" hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isDimensional" hidden="true"/>
       <field name="hasWarranty" hideIf="!product.trackingNumberConfiguration.hasWarranty"/>
       <field name="warrantyExpirationDate" readonly="false" hideIf="!hasWarranty"/>
       <field name="isPerishable" hideIf="!product.trackingNumberConfiguration.isPerishable"/>
@@ -45,13 +47,57 @@
       <field name="origin"/>
       <field name="supplier" domain="self.isSupplier IS TRUE"
         grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
+      <field name="nbrOfPieces"/>
       <field name="note" colSpan="12"/>
+    </panel>
+    <panel name="dimensionsPanel" title="Dimensions"
+      showIf="product.trackingNumberConfiguration.isDimensional">
+      <field name="dimension0" colSpan="6"
+        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
+      <field name="dimension1" colSpan="6"
+        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"/>
+      <field name="dimension2" colSpan="6"
+        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"/>
+      <field name="dimension3" colSpan="6"
+        showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"/>
+      <field name="product.trackingNumberConfiguration" hidden="true"/>
+      <field name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
+        hidden="true"/>
+      <field
+        name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"
+        hidden="true"/>
+      <field
+        name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"
+        hidden="true"/>
+      <field
+        name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"
+        hidden="true"/>
+      <field
+        name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
+        hidden="true"/>
+    </panel>
+    <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional">
+      <field name="unitMass"/>
+      <field name="metricMass"/>
+      <field name="mass"/>
+      <field name="volume" requiredIf="product.trackingNumberConfiguration.isDimensional"
+        onChange="action-tracking-number-validate-volume-change"/>
+      <button name="calculateBtn" title="Calculate"
+        onClick="action-tracking-number-method-calculate-volume"/>
+      <field name="originalVolume" x-dirty="false" hidden="true" type="decimal"/>
     </panel>
     <panel name="barcodePanel" title="Barcode"
       if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">
       <field name="barCode" showTitle="false" widget="Image" colSpan="4"/>
       <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
       <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
+    </panel>
+    <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
+      <field name="originMoveTypeSelect" widget="single-select" colSpan="12"/>
+      <field name="createdBy" colSpan="6"/>
+      <field name="createdOn" colSpan="6"/>
+      <field name="originStockMoveLine"/>
+      <field name="originInventoryLine"/>
     </panel>
   </form>
 
@@ -64,6 +110,7 @@
         domain="self.dtype = 'Product'" readonlyIf="$popup() || id != null"/>
       <field name="product.trackingNumberConfiguration.hasWarranty" hidden="true"/>
       <field name="product.trackingNumberConfiguration.isPerishable" hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isDimensional" hidden="true"/>
       <field name="hasWarranty" hideIf="!product.trackingNumberConfiguration.hasWarranty"/>
       <field name="warrantyExpirationDate" readonly="false" hideIf="!hasWarranty"/>
       <field name="isPerishable" hideIf="!product.trackingNumberConfiguration.isPerishable"/>
@@ -72,7 +119,52 @@
       <field name="origin"/>
       <field name="supplier" domain="self.isSupplier IS TRUE"
         grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
+      <field name="nbrOfPieces"/>
       <field name="note" colSpan="12"/>
+
+      <panel name="dimensionsPanel" title="Dimensions"
+        showIf="product.trackingNumberConfiguration.isDimensional">
+        <field name="dimension0" colSpan="6"
+          showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
+        <field name="dimension1" colSpan="6"
+          showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"/>
+        <field name="dimension2" colSpan="6"
+          showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"/>
+        <field name="dimension3" colSpan="6"
+          showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"/>
+        <field name="product.trackingNumberConfiguration" hidden="true"/>
+        <field name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
+          hidden="true"/>
+        <field
+          name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"
+          hidden="true"/>
+        <field
+          name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"
+          hidden="true"/>
+        <field
+          name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"
+          hidden="true"/>
+        <field
+          name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
+          hidden="true"/>
+      </panel>
+      <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional">
+        <field name="unitMass"/>
+        <field name="metricMass"/>
+        <field name="mass"/>
+        <field name="volume" requiredIf="product.trackingNumberConfiguration.isDimensionale"
+          onChange="action-tracking-number-validate-volume-change"/>
+        <button name="calculateBtn" title="Calculate"
+          onClick="action-tracking-number-method-calculate-volume"/>
+        <field name="originalVolume" x-dirty="false" hidden="true" type="decimal"/>
+      </panel>
+    </panel>
+    <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
+      <field name="originMoveTypeSelect" widget="single-select" colSpan="12"/>
+      <field name="createdBy" colSpan="6"/>
+      <field name="createdOn" colSpan="6"/>
+      <field name="originStockMoveLine"/>
+      <field name="originInventoryLine"/>
     </panel>
   </form>
 
@@ -128,16 +220,64 @@
     <action name="action-tracking-number-record-set-supplier"/>
   </action-group>
 
+  <action-group name="action-tracking-number-group-on-change-product">
+    <action name="action-tracking-number-record-set-unit-mass"/>
+    <action name="action-tracking-number-attrs-set-dimensions-title"/>
+  </action-group>
+
+  <action-record name="action-tracking-number-record-set-unit-mass"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field name="unitMass" expr="eval: product?.unitMass"/>
+    <field name="metricMass" expr="eval: product?.metricMass"/>
+  </action-record>
+
+  <action-group name="action-tracking-number-group-on-load">
+    <action name="action-tracking-number-attrs-set-scale"/>
+    <action name="action-tracking-number-attrs-set-product-readonly"/>
+    <action name="action-tracking-number-attrs-set-dimensions-title"/>
+    <action name="action-tracking-number-record-set-original-volume-value"/>
+  </action-group>
+
+  <action-validate name="action-tracking-number-validate-volume-change">
+    <info
+      message="You will modify the volume and therefore the unit weight of your tracking number. This will not have an impact on any stock location lines linked to it. This could generate inconsistencies."
+      if="originalVolume != null"/>
+  </action-validate>
+
+  <action-record name="action-tracking-number-record-set-original-volume-value"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field name="originalVolume" expr="eval: volume"/>
+  </action-record>
+
   <action-record name="action-tracking-number-record-product"
     model="com.axelor.apps.stock.db.TrackingNumber">
     <field name="product" expr="eval: __parent__?.product"/>
   </action-record>
+
+  <action-method name="action-tracking-number-method-calculate-volume">
+    <call class="com.axelor.apps.stock.web.TrackingNumberController" method="calculateVolume"/>
+  </action-method>
+
 
   <action-attrs name="action-tracking-number-attrs-product-stock-move-line">
     <attribute for="product" name="value" expr="eval: __parent__.product"
       if="product == null"/>
   </action-attrs>
 
+  <action-attrs name="action-tracking-number-attrs-set-dimensions-title">
+    <attribute name="title" for="dimension0"
+      expr="eval: product?.trackingNumberConfiguration?.trackingNumberConfigurationProfile?.titleOfDimension0"
+      if="product?.trackingNumberConfiguration?.trackingNumberConfigurationProfile"/>
+    <attribute name="title" for="dimension1"
+      expr="eval: product?.trackingNumberConfiguration?.trackingNumberConfigurationProfile?.titleOfDimension1"
+      if="product?.trackingNumberConfiguration?.trackingNumberConfigurationProfile"/>
+    <attribute name="title" for="dimension2"
+      expr="eval: product?.trackingNumberConfiguration?.trackingNumberConfigurationProfile?.titleOfDimension2"
+      if="product?.trackingNumberConfiguration?.trackingNumberConfigurationProfile"/>
+    <attribute name="title" for="dimension3"
+      expr="eval: product?.trackingNumberConfiguration?.trackingNumberConfigurationProfile?.titleOfDimension3"
+      if="product?.trackingNumberConfiguration?.trackingNumberConfigurationProfile"/>
+  </action-attrs>
 
   <action-attrs name="action-tracking-number-attrs-set-product-readonly">
     <attribute name="readonly" for="product"

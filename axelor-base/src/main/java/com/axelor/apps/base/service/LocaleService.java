@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.common.StringUtils;
 import com.google.common.base.Strings;
 import java.util.Locale;
 
@@ -30,5 +31,12 @@ public class LocaleService {
     String languageCode = parts.length > 0 ? parts[0] : "";
     String country = parts.length > 1 ? parts[1] : "";
     return new Locale(languageCode, country);
+  }
+
+  public static String getLanguageFromLocaleCode(String localeCode) {
+    if (StringUtils.isEmpty(localeCode)) {
+      return null;
+    }
+    return localeCode.split("_")[0];
   }
 }

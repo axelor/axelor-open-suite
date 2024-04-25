@@ -19,22 +19,28 @@
 package com.axelor.apps.account.service.payment;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -47,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
   protected AppBaseService appBaseService;
   protected CurrencyService currencyService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected InvoicePaymentRepository invoicePaymentRepository;
 
   @Inject
   public PaymentServiceImpl(
@@ -71,7 +79,8 @@ public class PaymentServiceImpl implements PaymentService {
       ReconcileService reconcileService,
       MoveLineCreateService moveLineCreateService,
       CurrencyService currencyService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      InvoicePaymentRepository invoicePaymentRepository) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
@@ -79,6 +88,7 @@ public class PaymentServiceImpl implements PaymentService {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
   /**
@@ -268,6 +278,14 @@ public class PaymentServiceImpl implements PaymentService {
 
       BigDecimal currencyRate = debitMoveLine.getCurrencyRate();
       BigDecimal amountToPay = remainingPaidAmount2.abs().min(amountRemaining);
+
+      if (amountRemaining.signum() != 0) {
+        BigDecimal prorata =
+            amountToPay.divide(
+                amountRemaining, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        manageAdvancePaymentInvoiceTaxMoveLines(move, debitMoveLine, prorata, paymentDate);
+      }
+
       BigDecimal moveLineAmount = amountToPay;
       if (currencyRate.signum() > 0) {
         moveLineAmount =
@@ -446,6 +464,12 @@ public class PaymentServiceImpl implements PaymentService {
               }
 
               BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining().abs());
+              BigDecimal prorata =
+                  amountToPay.divide(
+                      creditMoveLine.getAmountRemaining().abs(),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP);
+              manageAdvancePaymentInvoiceTaxMoveLines(move, creditMoveLine, prorata, date);
 
               // Gestion du passage en 580
               if (i == 0) {
@@ -554,5 +578,58 @@ public class PaymentServiceImpl implements PaymentService {
       }
     }
     return false;
+  }
+
+  protected void manageAdvancePaymentInvoiceTaxMoveLines(
+      Move move, MoveLine defaultMoveLine, BigDecimal prorata, LocalDate paymentDate)
+      throws AxelorException {
+    if (defaultMoveLine.getMove() == null
+        || invoicePaymentRepository
+                .all()
+                .filter("self.typeSelect = :typeSelect AND self.move = :move")
+                .bind("typeSelect", InvoicePaymentRepository.TYPE_ADVANCEPAYMENT)
+                .bind("move", defaultMoveLine.getMove())
+                .count()
+            == 0) {
+      return;
+    }
+
+    List<MoveLine> taxMoveLineList =
+        defaultMoveLine.getMove().getMoveLineList().stream()
+            .filter(
+                ml ->
+                    AccountTypeRepository.TYPE_TAX.equals(
+                            Optional.of(ml)
+                                .map(MoveLine::getAccount)
+                                .map(Account::getAccountType)
+                                .map(AccountType::getTechnicalTypeSelect)
+                                .orElse(""))
+                        && !ObjectUtils.isEmpty(ml.getTaxLineSet())
+                        && ml.getTaxLineSet().size() == 1)
+            .collect(Collectors.toList());
+    if (ObjectUtils.isEmpty(taxMoveLineList)) {
+      return;
+    }
+
+    int counter = move.getMoveLineList().size();
+
+    for (MoveLine moveLine : taxMoveLineList) {
+      TaxLine taxLine = moveLine.getTaxLineSet().iterator().next();
+      TaxConfiguration taxConfiguration =
+          new TaxConfiguration(taxLine, moveLine.getAccount(), moveLine.getVatSystemSelect());
+      counter++;
+      MoveLine taxMoveLine =
+          moveLineCreateService.createTaxMoveLine(
+              move,
+              moveLine.getPartner(),
+              moveLine.getCredit().signum() > 0,
+              paymentDate,
+              counter,
+              moveLine.getMove().getOrigin(),
+              moveLine.getCurrencyAmount().negate().multiply(prorata),
+              moveLine.getDebit().max(moveLine.getCredit()).multiply(prorata),
+              taxConfiguration);
+      move.addMoveLineListItem(taxMoveLine);
+    }
   }
 }

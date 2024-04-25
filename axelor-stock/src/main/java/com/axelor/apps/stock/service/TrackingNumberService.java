@@ -45,4 +45,6 @@ public interface TrackingNumberService {
       Partner supplier,
       String notes)
       throws AxelorException;
+
+  void calculateDimension(TrackingNumber trackingNumber) throws AxelorException;
 }
