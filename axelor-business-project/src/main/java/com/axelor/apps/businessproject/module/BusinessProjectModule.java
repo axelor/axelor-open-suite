@@ -27,8 +27,6 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementReposit
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
-import com.axelor.apps.businessproject.service.AnalyticLineModelProjectService;
-import com.axelor.apps.businessproject.service.AnalyticLineModelProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ContractLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseInvoiceLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseLineCreateServiceProjectImpl;
@@ -45,8 +43,6 @@ import com.axelor.apps.businessproject.service.InvoicingProjectStockMovesService
 import com.axelor.apps.businessproject.service.InvoicingProjectStockMovesServiceImpl;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateServiceImpl;
-import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineService;
-import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectContractServiceImpl;
@@ -81,6 +77,10 @@ import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.businessproject.service.analytic.AnalyticAttrsBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.analytic.AnalyticLineModelProjectService;
+import com.axelor.apps.businessproject.service.analytic.AnalyticLineModelProjectServiceImpl;
+import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineService;
+import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;

@@ -2,7 +2,6 @@ package com.axelor.apps.businessproject.service.analytic;
 
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.businessproject.service.AnalyticLineModelProjectService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
