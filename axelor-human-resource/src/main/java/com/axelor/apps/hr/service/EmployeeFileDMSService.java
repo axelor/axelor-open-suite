@@ -24,9 +24,5 @@ import com.axelor.dms.db.DMSFile;
 
 public interface EmployeeFileDMSService {
 
-  void setDMSFile(File employeeFile);
-
-  String getInlineUrl(File employeeFile);
-
   File createEmployeeFile(DMSFile dmsFile, Employee employee);
 }
