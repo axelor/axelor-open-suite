@@ -103,8 +103,8 @@
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
         <panel name="contractLineListPanel" showIf="nextContract.isInvoicingManagement"
-          colSpan="12">
-          <field if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
+          colSpan="12" hidden="true">
+          <field if="__config__.app.getApp('contract')?.isInvoicingManagement"
             name="contractLineList" colSpan="12" form-view="contract-line-form"
             grid-view="contract-line-grid"
             onChange="action-contract-method-contract-line-list-on-change"/>

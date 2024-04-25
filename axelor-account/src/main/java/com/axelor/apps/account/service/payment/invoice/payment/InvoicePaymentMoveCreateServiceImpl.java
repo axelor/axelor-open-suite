@@ -154,7 +154,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
 
     List<MoveLine> invoiceMoveLines = moveToolService.getInvoiceCustomerMoveLines(invoicePayment);
 
-    if (InvoiceToolService.isAdvancePayment(invoice)) {
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
 
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
@@ -418,7 +418,8 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       Invoice invoice)
       throws AxelorException {
     AppAccount appAccount = appAccountService.getAppAccount();
-    if (!InvoiceToolService.isAdvancePayment(invoice)
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        || InvoiceToolService.isRefund(invoice)
         || appAccount == null
         || ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())
         || (InvoiceToolService.isPurchase(invoice)

@@ -40,10 +40,15 @@ public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundServ
     }
 
     String filter =
-        "self.operationSubTypeSelect = :operationSubTypeSelect AND (self.originalInvoice = :originalInvoice OR :advancePaymentInvoice MEMBER OF self.advancePaymentInvoiceSet) AND self.amountPaid > 0 AND self.statusSelect = :statusSelect";
+        "self.operationSubTypeSelect = :operationSubTypeSelect AND self.operationTypeSelect = :operationTypeSelect AND (self.originalInvoice = :originalInvoice OR :advancePaymentInvoice MEMBER OF self.advancePaymentInvoiceSet) AND self.amountPaid > 0 AND self.statusSelect = :statusSelect";
     Map<String, Object> params = new HashMap<>();
-    params.put(
-        "operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND);
+    Integer operationTypeSelect =
+        advancePayment.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+    params.put("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+    params.put("operationTypeSelect", operationTypeSelect);
     params.put("originalInvoice", advancePayment);
     params.put("advancePaymentInvoice", advancePayment.getId());
     params.put("statusSelect", InvoiceRepository.STATUS_VALIDATED);

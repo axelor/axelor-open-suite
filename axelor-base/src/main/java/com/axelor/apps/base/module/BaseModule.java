@@ -287,6 +287,8 @@ import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.studio.service.CustomMetaService;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
 import java.lang.reflect.Method;
@@ -467,5 +469,6 @@ public class BaseModule extends AxelorModule {
     bind(PrintingTemplatePrintService.class).to(PrintingTemplatePrintServiceImpl.class);
     bind(PrintingGeneratorFactoryProvider.class).to(PrintingGeneratorFactoryProviderImpl.class);
     bind(UnitConversionService.class).to(UnitConversionServiceImpl.class);
+    bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
   }
 }
