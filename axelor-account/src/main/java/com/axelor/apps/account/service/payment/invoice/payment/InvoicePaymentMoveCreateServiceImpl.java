@@ -419,7 +419,6 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       throws AxelorException {
     AppAccount appAccount = appAccountService.getAppAccount();
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-        || InvoiceToolService.isRefund(invoice)
         || appAccount == null
         || ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())
         || (InvoiceToolService.isPurchase(invoice)
