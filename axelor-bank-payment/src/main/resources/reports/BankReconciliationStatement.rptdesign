@@ -718,10 +718,11 @@ AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
-AND Move.status_select not in (1,4)
+AND Move.status_select not in (1,4,5)
 AND AccountType.technical_type_select like 'cash'
-AND MoveLine.bank_reconciled_amount != MoveLine.debit + MoveLine.credit
+AND MoveLine.bank_reconciled_amount != abs(MoveLine.currency_amount)
 AND Move.ignore_in_accounting_ok in (false,null)
+AND Move.functional_origin_select not in (1,2)
 
 
 UNION
@@ -755,10 +756,11 @@ AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
-AND Move.status_select not in (1,4)
+AND Move.status_select not in (1,4,5)
 AND AccountType.technical_type_select like 'cash'
-AND BankReconciliation.validate_date_time is not null
+AND MoveLine.bank_reconciled_amount != abs(MoveLine.currency_amount)
 AND Move.ignore_in_accounting_ok in (false,null)
+AND Move.functional_origin_select not in (1,2)
 group by MoveLine.id,
 MoveLine.name,
 MoveLine.description,
@@ -768,7 +770,7 @@ MoveLine.debit,
 MoveLine.credit,
 concatJournal,
 accountId
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < abs(MoveLine.currency_amount)
 
 order by accountCode,journalCode,move_line_name
 
@@ -998,7 +1000,7 @@ and AccountingReport.currency = BankStatementLine.currency
 AND BankStatementLine.operation_date <= AccountingReport.date_val
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
-AND BankReconciliation.validate_date_time is not null
+AND (BankReconciliation.validate_date_time is null OR (BankReconciliation.validate_date_time is not null AND BankReconciliationLine.move_line is null))
 AND BankStatementLine.amount_remain_to_reconcile > 0
 AND BankStatementLine.line_type_select = 2
 group by BankStatementLine.id,
@@ -1073,7 +1075,7 @@ AND Account.id is not null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company 
-AND Move.status_select not in (1,4)
+AND Move.status_select not in (1,4,5)
 AND Move.ignore_in_accounting_ok in (false,null)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InitialBankAccountBalance" id="6534">
