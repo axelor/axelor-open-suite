@@ -328,7 +328,7 @@
       </panel>
       <panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject"
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <help><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
+        <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
         <field name="toInvoice" colSpan="3"
           onChange="action-project-attrs-set-invoicing-sequence"/>
         <field name="isInvoicingTimesheet" colSpan="3" showIf="isShowTimeSpent"/>
