@@ -1,0 +1,5 @@
+"importId";"budgetLevel.importId";"globalBudget.importId";"code";"name";"totalAmountExpected";"availableAmount";"availableAmountWithSimulated";"fromDate";"toDate";"typeSelect";"statusSelect"
+11;14;11;"WEBSITE";"SITE WEB";400;400;400;"TODAY[1d]";"TODAY[30d]";"budget";1
+12;14;11;"RADIO";"RADIO";500;500;500;"TODAY[1d]";"TODAY[30d]";"budget";1
+13;15;11;"OFFICE";"OFFICE";1600;1600;1600;"TODAY[1d]";"TODAY[30d]";"budget";1
+14;15;11;"COMPUTER";"COMPUTER";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1

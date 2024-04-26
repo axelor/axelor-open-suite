@@ -1,0 +1,5 @@
+"importId";"code";"name";"globalBudget.importId";"parentBudgetLevel.importId";"totalAmountExpected";"totalAmountAvailable";"startDate";"endDate";"fromDate";"toDate";"typeSelect";"statusSelect"
+12;"EVENTS";"EVENTS";11;;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft"
+13;"PURCHASE";"PURCHASE";11;;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft"
+14;"CAMPAIGNS AND ADVERTISING";"CAMPAIGNS AND ADVERTISING";;12;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft"
+15;"EQUIPMENT";"EQUIPMENT";;13;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft"

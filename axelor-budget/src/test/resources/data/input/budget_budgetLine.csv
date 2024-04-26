@@ -1,0 +1,9 @@
+"importId";"budget.importId";"fromDate";"toDate";"amountExpected";"availableAmount";"toBeCommittedAmount"
+11;11;"TODAY[1d]";"TODAY[15d]";200;200;200
+12;11;"TODAY[16d]";"TODAY[30d]";200;200;200
+13;12;"TODAY[1d]";"TODAY[15d]";250;250;250
+14;12;"TODAY[16d]";"TODAY[30d]";250;250;250
+15;13;"TODAY[1d]";"TODAY[15d]";800;800;800
+16;13;"TODAY[16d]";"TODAY[30d]";800;800;800
+17;14;"TODAY[1d]";"TODAY[15d]";900;900;900
+18;14;"TODAY[16d]";"TODAY[30d]";900;900;900
