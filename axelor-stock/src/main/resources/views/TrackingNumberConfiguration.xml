@@ -17,6 +17,7 @@
     <field name="hasWarranty"/>
     <field name="warrantyNbrOfMonths"/>
     <field name="isPerishable"/>
+    <field name="isDimensional"/>
     <field name="perishableNbrOfDays"/>
     <field name="checkExpirationDateAtStockMoveRealization"/>
     <field name="saleQtyByTracking" x-scale="2"/>
@@ -32,14 +33,18 @@
     width="large">
     <panel name="namePanel">
       <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
+
     </panel>
-    <panel name="warrantyAndPerishabilityPanel" title="Warranty and perishability">
+    <panel name="trackingNumberTypesPanel" title="Tracking number's types">
       <field name="hasWarranty"/>
       <field name="warrantyNbrOfMonths" hideIf="!hasWarranty"/>
       <field name="isPerishable"
-        onChange="action-tracking-number-config-record-set-check-expiration-date-to-false-if-is-perishable-is-false"/>
+        onChange="action-tracking-number-config-record-set-check-expiration-date-to-false-if-is-perishable-is-false"
+        colSpan="12"/>
       <field name="perishableNbrOfDays" hideIf="!isPerishable"/>
       <field name="checkExpirationDateAtStockMoveRealization" hideIf="!isPerishable"/>
+      <field name="isDimensional"/>
+      <field name="trackingNumberConfigurationProfile" showIf="isDimensional"/>
     </panel>
     <panel name="barCodePanel" title="Barcode"
       if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">

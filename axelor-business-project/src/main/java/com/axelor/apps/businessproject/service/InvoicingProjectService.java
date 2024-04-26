@@ -62,7 +62,6 @@ import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -559,7 +558,12 @@ public class InvoicingProjectService {
       Invoice invoice = invoicingProject.getInvoice();
       fileList.add(
           Beans.get(InvoicePrintServiceImpl.class)
-              .print(invoice, null, ReportSettings.FORMAT_PDF, null));
+              .print(
+                  invoice,
+                  null,
+                  Beans.get(AccountConfigService.class)
+                      .getInvoicePrintTemplate(invoice.getCompany()),
+                  null));
       fileList.add(file);
       file = PrintingTemplateHelper.mergeToFile(fileList, title);
     }
