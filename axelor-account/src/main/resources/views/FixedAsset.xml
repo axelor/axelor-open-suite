@@ -52,6 +52,7 @@
           hidden="true"/>
         <field name="qty" required="true" min="0.01" title="Quantity"
           readonlyIf="statusSelect > 1"/>
+        <spacer/>
         <field if-module="axelor-supplychain" name="stockLocation" canNew="false"
           canEdit="false" domain="self.company = :company" form-view="stock-location-form"
           grid-view="stock-location-grid"/>
