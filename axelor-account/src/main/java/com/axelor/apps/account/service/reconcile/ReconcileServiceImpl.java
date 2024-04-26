@@ -90,6 +90,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected InvoiceTermToolService invoiceTermToolService;
   protected ForeignExchangeGapService foreignExchangeGapService;
   protected InvoicePaymentForeignExchangeCreateService invoicePaymentForeignExchangeCreateService;
+  protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -112,7 +113,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService,
       InvoiceTermToolService invoiceTermToolService,
       ForeignExchangeGapService foreignExchangeGapService,
-      InvoicePaymentForeignExchangeCreateService invoicePaymentForeignExchangeCreateService) {
+      InvoicePaymentForeignExchangeCreateService invoicePaymentForeignExchangeCreateService,
+      ForeignExchangeGapToolsService foreignExchangeGapToolsService) {
 
     this.moveToolService = moveToolService;
     this.accountConfigService = accountConfigService;
@@ -134,6 +136,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.invoiceTermToolService = invoiceTermToolService;
     this.foreignExchangeGapService = foreignExchangeGapService;
     this.invoicePaymentForeignExchangeCreateService = invoicePaymentForeignExchangeCreateService;
+    this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
   }
 
   /**
@@ -757,12 +760,19 @@ public class ReconcileServiceImpl implements ReconcileService {
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     BigDecimal reconciledAmount = newCreditMoveLine.getDebit().max(newCreditMoveLine.getCredit());
+    boolean isGain = foreignExchangeGapToolsService.isGain(creditMoveLine, debitMoveLine);
 
     if (creditMoveLine.getCredit().compareTo(creditMoveLine.getDebit()) < 0) {
       newReconcile =
-          this.createReconcile(newCreditMoveLine, creditMoveLine, reconciledAmount, true);
+          this.createReconcile(
+              isGain ? newCreditMoveLine : newDebitMoveLine,
+              creditMoveLine,
+              reconciledAmount,
+              true);
     } else {
-      newReconcile = this.createReconcile(debitMoveLine, newDebitMoveLine, reconciledAmount, true);
+      newReconcile =
+          this.createReconcile(
+              debitMoveLine, isGain ? newDebitMoveLine : newCreditMoveLine, reconciledAmount, true);
     }
 
     log.debug(

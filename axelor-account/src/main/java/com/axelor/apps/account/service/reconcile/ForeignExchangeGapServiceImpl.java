@@ -77,7 +77,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
 
       // We only create a foreign exchange move if foreignExchangeGapAmount is greater than 0.01
-      if (foreignExchangeGapAmount.abs().compareTo(BigDecimal.valueOf(0.01)) > 0) {
+      if (foreignExchangeGapAmount.compareTo(BigDecimal.valueOf(0.01)) > 0) {
         boolean isGain =
             foreignExchangeGapToolsService.isGain(creditMoveLine, debitMoveLine, isDebit);
 
@@ -102,7 +102,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
       moveLineRate = creditMoveLine.getCurrencyRate();
     }
 
-    return amountReconciled.subtract(currencyAmount.abs().multiply(moveLineRate));
+    return amountReconciled.subtract(currencyAmount.abs().multiply(moveLineRate)).abs();
   }
 
   protected Move createForeignExchangeGapMove(
@@ -158,10 +158,10 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
 
     // Credit move line creation
     this.miscOperationMoveCreation(
-        move, originMove.getPartner(), creditAccount, foreignExchangeAmount.abs(), false, 1);
+        move, originMove.getPartner(), creditAccount, foreignExchangeAmount, false, 1);
     // Debit move line creation
     this.miscOperationMoveCreation(
-        move, originMove.getPartner(), debitAccount, foreignExchangeAmount.abs(), true, 2);
+        move, originMove.getPartner(), debitAccount, foreignExchangeAmount, true, 2);
 
     moveValidateService.accounting(move);
 

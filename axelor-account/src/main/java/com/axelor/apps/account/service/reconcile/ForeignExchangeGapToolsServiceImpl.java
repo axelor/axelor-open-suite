@@ -23,6 +23,13 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
   }
 
   @Override
+  public boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+    return this.isDebit(creditMoveLine, debitMoveLine)
+        ? creditMoveLine.getCurrencyRate().compareTo(debitMoveLine.getCurrencyRate()) > 0
+        : debitMoveLine.getCurrencyRate().compareTo(creditMoveLine.getCurrencyRate()) < 0;
+  }
+
+  @Override
   public boolean isDebit(MoveLine creditMoveLine, MoveLine debitMoveLine) {
     return debitMoveLine.getDate().isAfter(creditMoveLine.getDate());
   }

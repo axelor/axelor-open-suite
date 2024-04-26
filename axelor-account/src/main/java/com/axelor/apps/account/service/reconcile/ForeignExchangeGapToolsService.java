@@ -9,5 +9,7 @@ public interface ForeignExchangeGapToolsService {
 
   boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine, boolean isDebit);
 
+  boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine);
+
   boolean isDebit(MoveLine creditMoveLine, MoveLine debitMoveLine);
 }
