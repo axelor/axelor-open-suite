@@ -1,0 +1,3 @@
+---
+title: "Sale order merge: Fixed impossible to select price list on conflict."
+module: axelor-sale
