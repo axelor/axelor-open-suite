@@ -30,6 +30,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.AccountManagementContractService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
@@ -56,7 +57,8 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
       AnalyticLineModelService analyticLineModelService,
       ContractYearEndBonusService contractYearEndBonusService,
       OpportunityRepository opportunityRepository,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      AccountManagementContractService accountManagementContractService) {
     super(
         appBaseService,
         versionService,
@@ -71,7 +73,8 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
         analyticLineModelService,
         contractYearEndBonusService,
         opportunityRepository,
-        productCompanyService);
+        productCompanyService,
+        accountManagementContractService);
   }
 
   @Override

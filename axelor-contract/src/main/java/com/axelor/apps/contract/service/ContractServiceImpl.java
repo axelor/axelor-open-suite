@@ -97,6 +97,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected AnalyticLineModelService analyticLineModelService;
   protected ContractYearEndBonusService contractYearEndBonusService;
   protected ProductCompanyService productCompanyService;
+  protected AccountManagementContractService accountManagementContractService;
 
   @Inject
   public ContractServiceImpl(
@@ -113,7 +114,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       AnalyticLineModelService analyticLineModelService,
       ContractYearEndBonusService contractYearEndBonusService,
       OpportunityRepository opportunityRepository,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      AccountManagementContractService accountManagementContractService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -128,6 +130,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.contractYearEndBonusService = contractYearEndBonusService;
     this.opportunityRepository = opportunityRepository;
     this.productCompanyService = productCompanyService;
+    this.accountManagementContractService = accountManagementContractService;
   }
 
   @Override
@@ -711,6 +714,24 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getExTaxTotal(),
             line.getInTaxTotal(),
             false) {
+
+          @Override
+          public void setProductAccount(
+              InvoiceLine invoiceLine, Company company, boolean isPurchase) throws AxelorException {
+            if (contractYearEndBonusService.isYebContract(contract)) {
+              if (product != null) {
+                invoiceLine.setProductCode(
+                    (String) productCompanyService.get(product, "code", company));
+                Account account =
+                    accountManagementContractService.getProductYebAccount(
+                        product, company, isPurchase);
+                invoiceLine.setAccount(account);
+              }
+            } else {
+              super.setProductAccount(invoiceLine, company, isPurchase);
+            }
+          }
+
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
             InvoiceLine invoiceLine = this.createInvoiceLine();

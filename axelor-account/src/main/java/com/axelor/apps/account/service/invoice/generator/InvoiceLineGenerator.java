@@ -180,6 +180,21 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   @Override
   public abstract List<InvoiceLine> creates() throws AxelorException;
 
+  public void setProductAccount(InvoiceLine invoiceLine, Company company, boolean isPurchase)
+      throws AxelorException {
+    if (product != null) {
+      invoiceLine.setProductCode((String) productCompanyService.get(product, "code", company));
+      Account account =
+          accountManagementService.getProductAccount(
+              product,
+              company,
+              invoice.getFiscalPosition(),
+              isPurchase,
+              invoiceLine.getFixedAssets());
+      invoiceLine.setAccount(account);
+    }
+  }
+
   /**
    * @return
    * @throws AxelorException
@@ -195,17 +210,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setProduct(product);
 
     invoiceLine.setProductName(productName);
-    if (product != null) {
-      invoiceLine.setProductCode((String) productCompanyService.get(product, "code", company));
-      Account account =
-          accountManagementService.getProductAccount(
-              product,
-              company,
-              invoice.getFiscalPosition(),
-              isPurchase,
-              invoiceLine.getFixedAssets());
-      invoiceLine.setAccount(account);
-    }
+
+    setProductAccount(invoiceLine, company, isPurchase);
 
     invoiceLine.setDescription(description);
     invoiceLine.setPrice(price);
