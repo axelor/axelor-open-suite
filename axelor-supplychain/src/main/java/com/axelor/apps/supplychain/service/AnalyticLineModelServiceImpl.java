@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -169,17 +170,20 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
       throws AxelorException {
     Product product = analyticLineModel.getProduct();
+    Account account = analyticLineModel.getAccount();
+    if (product != null && account == null) {
+      account =
+          accountManagementAccountService.getProductAccount(
+              product,
+              analyticLineModel.getCompany(),
+              analyticLineModel.getFiscalPosition(),
+              analyticLineModel.getIsPurchase(),
+              false);
+    }
     return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
         && product != null
         && product.getProductFamily() != null
-        && accountManagementAccountService
-            .getProductAccount(
-                product,
-                analyticLineModel.getCompany(),
-                analyticLineModel.getFiscalPosition(),
-                analyticLineModel.getIsPurchase(),
-                false)
-            .getAnalyticDistributionAuthorized();
+        && account.getAnalyticDistributionAuthorized();
   }
 
   @Override

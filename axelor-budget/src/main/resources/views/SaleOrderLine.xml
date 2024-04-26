@@ -89,9 +89,10 @@
   </action-group>
 
   <action-group name="budget-action-sale-order-line-group-product-onchange">
-    <action name="supplychain-action-sale-order-line-group-product-onchange"/>
+    <action name="action-group-sale-saleorderline-product-onchange"/>
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-sale-order-line-group-manage-analytic"/>
     <action name="action-reset-budget-method"/>
   </action-group>
 
@@ -136,6 +137,13 @@
     name="action-sale-order-method-compute-budget-remaining-amount-to-allocate">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController"
       method="computeBudgetRemainingAmountToAllocate"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-set-analytic-distribution-panel-hidden"
+    id="action-budget-sale-order-line-method-set-analytic-distribution-panel-hidden">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="setAnalyticDistributionPanelHidden"/>
   </action-method>
 
 </object-views>

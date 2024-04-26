@@ -82,9 +82,10 @@
   </form>
 
   <action-group name="action-budget-group-purchase-purchase-orderline-product-onchange">
-    <action name="supplychain-action-purchase-purchase-order-line-group-product-onchange"/>
+    <action name="action-group-purchase-purchase-orderline-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-purchase-order-line-group-manage-analytic"/>
     <action name="action-reset-budget-method"/>
   </action-group>
 
@@ -99,16 +100,9 @@
   </action-group>
 
   <action-group name="action-budget-purchase-orderline-group-account-onchange">
-    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+    <action name="action-purchase-order-line-method-set-analytic-distribution-panel-hidden"/>
     <action name="action-reset-budget-method"/>
   </action-group>
-
-  <action-attrs
-    name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"
-    id="action-budget-purchase-order-line-attrs-hidden-analytic-distribution-panel">
-    <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; account &amp;&amp; !account.analyticDistributionAuthorized)"/>
-  </action-attrs>
 
   <action-record name="action-budget-purchase-orderline-record-set-global-budget"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -174,6 +168,13 @@
     name="action-purchase-order-method-compute-budget-remaining-amount-to-allocate">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
       method="computeBudgetRemainingAmountToAllocate"/>
+  </action-method>
+
+  <action-method
+    name="action-purchase-order-line-method-set-analytic-distribution-panel-hidden"
+    id="action-budget-purchase-order-line-method-set-analytic-distribution-panel-hidden">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="setAnalyticDistributionPanelHidden"/>
   </action-method>
 
 </object-views>
