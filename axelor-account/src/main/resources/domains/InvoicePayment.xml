@@ -68,6 +68,7 @@
 
     <finder-method name="findByReconcile" using="reconcile" all="true"/>
     <finder-method name="findByReconcileAndInvoice" using="reconcile,invoice"/>
+    <finder-method name="findByMove" using="move" all="true"/>
 
     <extra-code>
    		<![CDATA[

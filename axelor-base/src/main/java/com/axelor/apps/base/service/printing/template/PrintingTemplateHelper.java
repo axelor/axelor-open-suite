@@ -29,6 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.StringHelper;
+import com.axelor.utils.service.TranslationBaseService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -66,6 +67,7 @@ public class PrintingTemplateHelper {
         return null;
       }
 
+      outputFileName = Beans.get(TranslationBaseService.class).getValueTranslation(outputFileName);
       outputFileName = formatOutputName(outputFileName);
 
       if (printFiles.size() == 1) {
@@ -91,6 +93,7 @@ public class PrintingTemplateHelper {
 
   public static String getFileLink(File file) throws AxelorException {
     String originalName = file.getName();
+    originalName = translateFileName(originalName);
     String safeName = FileUtils.safeFileName(originalName);
 
     try {
@@ -107,6 +110,14 @@ public class PrintingTemplateHelper {
     return PdfHelper.getFileLinkFromPdfFile(file, originalName);
   }
 
+  protected static String translateFileName(String originalName) {
+    return String.format(
+        "%s.%s",
+        Beans.get(TranslationBaseService.class)
+            .getValueTranslation(FileUtils.stripExtension(originalName)),
+        FileUtils.getExtension(originalName));
+  }
+
   private static Path createZip(String zipFileName, List<File> fileList) throws IOException {
     if (CollectionUtils.isEmpty(fileList)) {
       return null;
@@ -119,7 +130,8 @@ public class PrintingTemplateHelper {
         zout.write(IOUtils.toByteArray(Files.newInputStream(file.toPath())));
       }
     }
-    return zipFile;
+    String outFileName = String.format("%s.%s", zipFileName, "zip");
+    return renameFile(outFileName, zipFile);
   }
 
   private static Path renameFile(String newName, Path path) throws IOException {
