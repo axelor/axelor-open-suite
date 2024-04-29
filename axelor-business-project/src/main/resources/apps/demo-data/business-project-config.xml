@@ -151,5 +151,5 @@
   </input>
 
   <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId" update="true"/>
 </csv-inputs>
