@@ -35,6 +35,7 @@
   <form name="project-planning-time-form" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime"
     onNew="action-project-planning-time-group-default"
+    onLoad="action-project-planning-time-method-get-company-config"
     onSave="action-project-planning-time-method-update-event">
     <panel name="mainPanel">
       <field name="projectTask" domain="self.project = :project" canEdit="false"
