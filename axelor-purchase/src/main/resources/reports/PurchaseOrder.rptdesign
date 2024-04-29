@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -5231,11 +5231,6 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                         </list-property>
                         <structure name="toc"/>
                         <list-property name="sort">
-                            <structure>
-                                <expression name="key" type="javascript">row["producttype"]</expression>
-                                <property name="direction">desc</property>
-                                <property name="strength">-1</property>
-                            </structure>
                             <structure>
                                 <expression name="key" type="javascript">row["sequence"]</expression>
                                 <property name="direction">asc</property>
