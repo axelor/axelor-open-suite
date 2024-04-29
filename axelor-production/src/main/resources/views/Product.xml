@@ -120,7 +120,7 @@
   </action-method>
 
   <action-group name="action-product-group-production-onnew">
-    <action name="action-group-base-product-onnew"/>
+    <action name="action-stock-product-group-on-new"/>
     <action name="action-product-method-bom-import-line-product-onnew"/>
   </action-group>
 

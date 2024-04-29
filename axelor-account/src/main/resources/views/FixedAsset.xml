@@ -51,9 +51,8 @@
           onChange="action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"
           hidden="true"/>
         <field name="qty" required="true" min="0.01" title="Quantity"
-          readonlyIf="statusSelect > 1" showIf="trackingNumber == null" hidden="true"/>
-        <field if-module="axelor-supplychain" name="trackingNumber.counter" title="Quantity"
-          showIf="trackingNumber != null" hidden="true"/>
+          readonlyIf="statusSelect > 1"/>
+        <spacer/>
         <field if-module="axelor-supplychain" name="stockLocation" canNew="false"
           canEdit="false" domain="self.company = :company" form-view="stock-location-form"
           grid-view="stock-location-grid"/>

@@ -1241,7 +1241,10 @@ public final class AccountExceptionMessage {
       "%s : Error : You must configure a reported balance journal in the account configuration for the batch configurator %s" /*)*/;
 
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_4 = /*$$(*/
-      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please disable option \"Simulate generated moves\" in the closure batch or update the configuration of journal %s." /*)*/;
+      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please change the \"Generated moves status\" in the closure batch or update the configuration of journal %s." /*)*/;
+
+  public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_DAYBOOK = /*$$(*/
+      "In order to generate moves in daybook status, the configured reported balance journal must support daybook moves. To proceed, please change the \"Generated moves status\" in the closure batch or update the configuration of journal %s." /*)*/;
 
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_5 = /*$$(*/
       "%s : Error : You must configure a result profit account and a year opening account in the account configuration" /*)*/;

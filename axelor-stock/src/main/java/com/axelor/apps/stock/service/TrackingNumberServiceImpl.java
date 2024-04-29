@@ -10,6 +10,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.TrackingNumberConfigurationProfile;
 import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -22,6 +23,7 @@ import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,17 +34,20 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
   protected AppStockService appStockService;
 
   protected ProductCompanyService productCompanyService;
+  protected TrackingNumberConfigurationProfileService trackingNumberConfigurationProfileService;
 
   @Inject
   public TrackingNumberServiceImpl(
       SequenceService sequenceService,
       TrackingNumberRepository trackingNumberRepo,
       AppStockService appStockService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      TrackingNumberConfigurationProfileService trackingNumberConfigurationProfileService) {
     this.sequenceService = sequenceService;
     this.trackingNumberRepo = trackingNumberRepo;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
+    this.trackingNumberConfigurationProfileService = trackingNumberConfigurationProfileService;
   }
 
   @Override
@@ -152,6 +157,12 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
     }
     trackingNumber.setSupplier(supplier);
 
+    if (product.getTrackingNumberConfiguration() != null
+        && product.getTrackingNumberConfiguration().getIsDimensional()) {
+      trackingNumber.setUnitMass(product.getNetMass());
+      trackingNumber.setMetricMass(product.getMetricMass());
+    }
+
     return trackingNumber;
   }
 
@@ -172,6 +183,21 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
     trackingNumber.setNote(notes);
     trackingNumberRepo.save(trackingNumber);
     return trackingNumber;
+  }
+
+  @Override
+  public void calculateDimension(TrackingNumber trackingNumber) throws AxelorException {
+    Objects.requireNonNull(trackingNumber);
+
+    Optional<TrackingNumberConfigurationProfile> optTrackingNumberConfigurationProfile =
+        Optional.ofNullable(trackingNumber.getProduct())
+            .map(Product::getTrackingNumberConfiguration)
+            .map((TrackingNumberConfiguration::getTrackingNumberConfigurationProfile));
+
+    if (optTrackingNumberConfigurationProfile.isPresent()) {
+      trackingNumberConfigurationProfileService.calculateDimension(
+          trackingNumber, optTrackingNumberConfigurationProfile.get());
+    }
   }
 
   @Override

@@ -33,6 +33,26 @@
     <many-to-one name="originInventoryLine" ref="com.axelor.apps.stock.db.InventoryLine"
       title="Origin inventory line"/>
 
+    <decimal name="dimension0" title="Dimension 0" default="0" min="0" precision="20"
+      scale="3" nullable="true"/>
+    <decimal name="dimension1" title="Dimension 1" default="0" min="0" precision="20"
+      scale="3" nullable="true"/>
+    <decimal name="dimension2" title="Dimension 2" default="0" min="0" precision="20"
+      scale="3" nullable="true"/>
+    <decimal name="dimension3" title="Dimension 3" default="0" min="0" precision="20"
+      scale="3" nullable="true"/>
+
+    <decimal name="mass" title="Mass in kg" default="0" min="0" precision="20" scale="10"
+      nullable="true"/>
+    <decimal name="volume" title="Volume in m³" min="0" precision="20" scale="10"
+      nullable="true"/>
+    <decimal name="unitMass" title="Unit weight in kg" default="0" min="0" precision="20"
+      scale="10" nullable="true"/>
+    <decimal name="metricMass" title="Metric weight in kg/m" default="0" min="0"
+      precision="20" scale="10" nullable="true"/>
+    <decimal name="nbrOfPieces" title="Number of pieces" default="0" min="0" precision="20"
+      scale="3"/>
+
     <many-to-many name="parentTrackingNumberSet"
       ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking number's parents"/>
 
@@ -51,6 +71,17 @@
 	]]>
     </extra-code>
 
+
+    <track on="UPDATE">
+      <field name="dimension0"/>
+      <field name="dimension1"/>
+      <field name="dimension2"/>
+      <field name="dimension3"/>
+    </track>
+
+
   </entity>
+
+
 
 </domain-models>
