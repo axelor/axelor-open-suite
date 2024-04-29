@@ -55,27 +55,26 @@
 					</>
                     ]]></viewer>
         </field>
-        <field name="priceList"
-          readonlyIf="(currentContractVersion?.contractLineList &amp;&amp; currentContractVersion?.contractLineList.length > 0) || statusSelect >= 2"
-          onSelect="action-contract-method-price-list-domain" canEdit="false"
-          form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
-          colSpan="3"/>
         <field name="name" colSpan="12" css="highlight"
           hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
         <panel name="companyPanel" itemSpan="4" colSpan="12">
           <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
           <field if="__config__.app.getApp('contract')?.getIsInvoicingManagement()"
             name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
+          <field name="priceList"
+            readonlyIf="(currentContractVersion?.contractLineList &amp;&amp; currentContractVersion?.contractLineList.length > 0) || statusSelect >= 2"
+            onSelect="action-contract-method-price-list-domain" canEdit="false"
+            form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
+            colSpan="3"/>
         </panel>
-        <panel name="partnerPanel" itemSpan="4" colSpan="12">
-          <field name="partner" onSelect="action-contract-attrs-domains-partner"
-            showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
-            onChange="action-contract-group-partner-onchange" required="true"
-            form-view="partner-form"/>
-          <field name="invoicedPartner" showIf="targetTypeSelect == 1 &amp;&amp; partner"
-            canEdit="false" form-view="partner-form" readonlyIf="statusSelect >= 2" required="true"
-            onSelect="action-contract-method-set-invoiced-partner-domain"/>
-        </panel>
+      </panel>
+      <panel name="partnerPanel" itemSpan="4" colSpan="12">
+        <field name="partner" onSelect="action-contract-attrs-domains-partner"
+          showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
+          onChange="action-contract-group-partner-onchange" required="true" form-view="partner-form"/>
+        <field name="invoicedPartner" showIf="targetTypeSelect == 1 &amp;&amp; partner"
+          canEdit="false" form-view="partner-form" readonlyIf="statusSelect >= 2" required="true"
+          onSelect="action-contract-method-set-invoiced-partner-domain"/>
         <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
           showIf="contractTypeSelect == 1"/>
       </panel>
