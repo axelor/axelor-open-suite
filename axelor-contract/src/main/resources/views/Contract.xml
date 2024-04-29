@@ -812,7 +812,6 @@
   <action-group name="action-contract-group-partner-onchange">
     <action name="action-contract-attrs-partner-payment-config"/>
     <action name="action-contract-method-fill-invoiced-partner-if-only-one"/>
-    <action name="action-contract-method-fill-price-list"/>
   </action-group>
 
   <action-validate
@@ -873,10 +872,6 @@
   <action-method name="action-contract-method-price-list-domain">
     <call class="com.axelor.apps.contract.web.ContractController"
       method="changePriceListDomain"/>
-  </action-method>
-
-  <action-method name="action-contract-method-fill-price-list">
-    <call class="com.axelor.apps.contract.web.ContractController" method="fillPriceList"/>
   </action-method>
 
   <action-method name="action-contract-method-generate-sale-order">

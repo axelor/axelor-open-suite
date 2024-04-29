@@ -34,7 +34,7 @@
     <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
       title="Fiscal position"/>
 
-    <boolean name="isTitleLine" title="Title Line"/>
+    <integer name="typeSelect" selection="line.type.select" title="Type"/>
 
     <string name="description" title="Description" large="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -117,6 +117,14 @@
     <extra-imports>
       import java.util.Optional;
     </extra-imports>
+
+    <extra-code>
+      <![CDATA[
+			// TYPE SELECT
+			public static final int TYPE_NORMAL = 0;
+			public static final int TYPE_TITLE = 1;
+	  	]]>
+    </extra-code>
 
   </entity>
 

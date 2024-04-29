@@ -396,18 +396,4 @@ public class ContractController {
             .getPriceListDomain(contract.getPartner(), targetType);
     response.setAttr("priceList", "domain", domain);
   }
-
-  public void fillPriceList(ActionRequest request, ActionResponse response) {
-    Contract contract = request.getContext().asType(Contract.class);
-    int targetType;
-    if (contract.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT) {
-      targetType = PriceListRepository.TYPE_CUSTOMER_CONTRACT;
-    } else {
-      targetType = PriceListRepository.TYPE_SUPPLIER_CONTRACT;
-    }
-    response.setValue(
-        "priceList",
-        Beans.get(PartnerPriceListService.class)
-            .getDefaultPriceList(contract.getPartner(), targetType));
-  }
 }

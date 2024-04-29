@@ -502,7 +502,7 @@
         <field name="payerQuality" if-module="axelor-account"
           if="__config__.app.isApp('account')" hideIf="isEmployee"/>
         <field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1"
-          form-view="sale-partner-price-list-form" grid-view="partner-price-list-grid"/>
+          form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
           if="__config__.app.isApp('business-project')"/>
         <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3"
@@ -540,7 +540,7 @@
         showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
         <field name="purchaseOrderInformation"/>
         <field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2"
-          form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
+          form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="supplierCatalogList" colSpan="12" x-can-copy="true"
           form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
           if-module="axelor-purchase"

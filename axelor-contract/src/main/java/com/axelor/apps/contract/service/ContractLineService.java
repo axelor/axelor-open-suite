@@ -41,10 +41,12 @@ public interface ContractLineService {
    * Fill ContractLine with Product information.
    *
    * @param contractLine to fill.
+   * @param contract to give additional information like Company.
    * @param product to get information.
    * @return ContractLine filled with Product information.
    */
-  ContractLine fill(ContractLine contractLine, Product product) throws AxelorException;
+  ContractLine fill(ContractLine contractLine, Contract contract, Product product)
+      throws AxelorException;
 
   ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion);
 

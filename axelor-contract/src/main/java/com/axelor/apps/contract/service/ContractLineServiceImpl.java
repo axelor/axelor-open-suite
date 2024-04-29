@@ -113,11 +113,8 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
-    Contract contract =
-        contractLine.getContractVersion() != null
-            ? contractLine.getContractVersion().getContract()
-            : null;
+  public ContractLine fill(ContractLine contractLine, Contract contract, Product product)
+      throws AxelorException {
     Company company = contract != null ? contract.getCompany() : null;
 
     contractLine.setProductName((String) productCompanyService.get(product, "name", company));
@@ -192,7 +189,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   public ContractLine fillAndCompute(ContractLine contractLine, Contract contract, Product product)
       throws AxelorException {
     if (product != null) {
-      contractLine = fill(contractLine, product);
+      contractLine = fill(contractLine, contract, product);
       contractLine = compute(contractLine, contract, product);
     }
     computeAnalytic(contract, contractLine);
@@ -302,11 +299,13 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     Map<String, Object> discounts = null;
 
-    PriceList priceList = contract.getPriceList();
+    if (contract != null) {
+      PriceList priceList = contract.getPriceList();
 
-    if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(contractLine, priceList, price);
-      discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+      if (priceList != null) {
+        PriceListLine priceListLine = this.getPriceListLine(contractLine, priceList, price);
+        discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+      }
     }
 
     return discounts;

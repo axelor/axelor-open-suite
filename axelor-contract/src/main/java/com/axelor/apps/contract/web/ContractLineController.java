@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
@@ -256,12 +257,12 @@ public class ContractLineController {
 
   public void emptyLine(ActionRequest request, ActionResponse response) {
     ContractLine contractLine = request.getContext().asType(ContractLine.class);
-    if (contractLine.getIsTitleLine()) {
+    if (contractLine.getTypeSelect() != ContractLineRepository.TYPE_NORMAL) {
       Map<String, Object> newContractLine = Mapper.toMap(new ContractLine());
       newContractLine.put("qty", BigDecimal.ZERO);
       newContractLine.put("id", contractLine.getId());
       newContractLine.put("version", contractLine.getVersion());
-      newContractLine.put("isTitleLine", true);
+      newContractLine.put("typeSelect", contractLine.getTypeSelect());
       response.setValues(newContractLine);
     }
   }
