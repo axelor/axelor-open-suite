@@ -26,10 +26,10 @@ import com.axelor.apps.project.service.ProjectTaskService;
 import com.google.inject.Inject;
 import java.util.Set;
 
-public class ProjectBusinessSupportServiceImpl extends ProjectCreateTaskServiceImpl {
+public class ProjectCreateTaskServiceSupportImpl extends ProjectCreateTaskServiceImpl {
 
   @Inject
-  public ProjectBusinessSupportServiceImpl(ProjectTaskService projectTaskService) {
+  public ProjectCreateTaskServiceSupportImpl(ProjectTaskService projectTaskService) {
     super(projectTaskService);
   }
 
