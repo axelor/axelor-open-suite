@@ -67,9 +67,10 @@
           title="Tracking number's direct parents"/>
         <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
       </panel>
-      <panel name="dimensionsAndMassPanels" title="Dimensions and masses">
+      <panel name="dimensionsAndMassPanels" title="Dimensions and masses"
+        showIf="product.trackingNumberConfiguration.isDimensional">
         <panel name="dimensionsPanel" title="Dimensions"
-          showIf="product.trackingNumberConfiguration.isDimensional">
+          showIf="product.trackingNumberConfiguration.isDimensional" colSpan="12">
           <field name="dimension0" colSpan="6"
             showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
           <field name="dimension1" colSpan="6"
@@ -94,7 +95,8 @@
             name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
             hidden="true"/>
         </panel>
-        <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional">
+        <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional"
+          colSpan="12">
           <field name="unitMass"/>
           <field name="metricMass"/>
           <field name="mass"/>
@@ -153,9 +155,10 @@
         <panel-dashlet action="action-tracking-number-view-show-details-unavailable"
           colSpan="12"/>
       </panel>
-      <panel name="dimensionsAndMassPanels" title="Dimensions and masses">
+      <panel name="dimensionsAndMassPanels" title="Dimensions and masses"
+        showIf="product.trackingNumberConfiguration.isDimensional">
         <panel name="dimensionsPanel" title="Dimensions"
-          showIf="product.trackingNumberConfiguration.isDimensional">
+          showIf="product.trackingNumberConfiguration.isDimensional" colSpan="12">
           <field name="dimension0" colSpan="6"
             showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
           <field name="dimension1" colSpan="6"
@@ -180,7 +183,8 @@
             name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
             hidden="true"/>
         </panel>
-        <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional">
+        <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional"
+          colSpan="12">
           <field name="unitMass"/>
           <field name="metricMass"/>
           <field name="mass"/>
