@@ -41,6 +41,7 @@
     <extend target="/">
       <attribute name="onNew"
         value="action-contract-record-set-file-type-select,action-contract-file-group-file-onnew"/>
+      <attribute name="onLoad" value="action-contract-file-group-file-onload"/>
     </extend>
   </form>
 
@@ -85,6 +86,16 @@
   <action-record name="action-contract-file-record-set-file-type-select"
     model="com.axelor.apps.base.db.File">
     <field name="fileTypeSelect" expr="eval: 1"/>
+  </action-record>
+
+  <action-group name="action-contract-file-group-file-onload">
+    <action name="action-contract-record-set-contract-on-load"/>
+    <action name="action-base-file-group-file-onload"/>
+  </action-group>
+
+  <action-record name="action-contract-record-set-contract-on-load"
+    model="com.axelor.apps.base.db.File">
+    <field name="$contract" expr="eval: contractVersion.contract"/>
   </action-record>
 
 
