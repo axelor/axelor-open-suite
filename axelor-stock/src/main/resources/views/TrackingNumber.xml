@@ -165,13 +165,6 @@
       <field name="originStockMoveLine"/>
       <field name="originInventoryLine"/>
     </panel>
-    <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
-      <field name="originMoveTypeSelect" widget="single-select" colSpan="12"/>
-      <field name="createdBy" colSpan="6"/>
-      <field name="createdOn" colSpan="6"/>
-      <field name="originStockMoveLine"/>
-      <field name="originInventoryLine"/>
-    </panel>
   </form>
 
   <search name="tracking-number-search" title="Tracking number search" limit="50">

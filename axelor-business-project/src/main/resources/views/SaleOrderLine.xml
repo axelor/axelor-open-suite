@@ -12,7 +12,7 @@
 
   <form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line"
     name="sale-order-line-template-form" extension="true" id="project-sale-order-line-template-form">
-    <extend target="//field[@name='project']" if-module="">
+    <extend target="//field[@name='project']">
       <attribute name="onChange" value="action-sale-order-line-method-update-distribution"/>
     </extend>
   </form>
