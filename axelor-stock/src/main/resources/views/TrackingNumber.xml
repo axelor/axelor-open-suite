@@ -29,8 +29,7 @@
   </grid>
 
   <form name="tracking-number-form" title="Tracking number"
-    model="com.axelor.apps.stock.db.TrackingNumber"
-    onNew="action-tracking-number-attrs-set-scale,action-tracking-number-record-product"
+    model="com.axelor.apps.stock.db.TrackingNumber" onNew="action-tracking-number-group-on-new"
     onLoad="action-tracking-number-group-on-load">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
@@ -218,6 +217,7 @@
     <action name="action-tracking-number-record-from-stock-move-line"/>
     <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-record-set-supplier"/>
+    <action name="action-tracking-number-record-set-origin"/>
   </action-group>
 
   <action-group name="action-tracking-number-group-on-change-product">
@@ -258,6 +258,26 @@
     <call class="com.axelor.apps.stock.web.TrackingNumberController" method="calculateVolume"/>
   </action-method>
 
+
+  <action-record name="action-tracking-number-record-set-origin"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field name="originMoveTypeSelect" expr="eval: 1" if="__parent__ == null"/>
+    <field name="originMoveTypeSelect" expr="eval: 2"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originInventoryLine" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originStockMoveLine" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine'"/>
+    <field name="originMoveTypeSelect" expr="eval: 1"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.stockMove?.typeSelect == 1)"/>
+  </action-record>
+
+
+  <action-group name="action-tracking-number-group-on-new">
+    <action name="action-tracking-number-attrs-set-scale"/>
+    <action name="action-tracking-number-record-product"/>
+    <action name="action-tracking-number-record-set-origin"/>
+  </action-group>
 
   <action-attrs name="action-tracking-number-attrs-product-stock-move-line">
     <attribute for="product" name="value" expr="eval: __parent__.product"
