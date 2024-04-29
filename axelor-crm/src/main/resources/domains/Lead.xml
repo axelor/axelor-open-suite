@@ -20,6 +20,8 @@
   	<string name="webSite" title="Website"/>
     <string name="consuelFile" title="Consuel"/>
     <string name="planningPermissionFile" title="Autorisation d'urbanisme"/>
+    <string name="connectionProofFile" title="Demande de raccordement"/>
+    <string name="dinvdeFile" title="DINVDE"/>
     <boolean name="isDuplicated" title="Doublon"/>    
   	
 <!--   Primary address group -->
