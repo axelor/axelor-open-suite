@@ -20,7 +20,6 @@ package com.axelor.apps.businesssupport.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
-import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementBusinessSupportRepository;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementRepository;
@@ -32,6 +31,7 @@ import com.axelor.apps.businesssupport.service.ProjectDashboardBusinessSupportSe
 import com.axelor.apps.businesssupport.service.ProjectTaskBusinessSupportServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
+import com.axelor.apps.project.service.ProjectCreateTaskServiceImpl;
 
 public class BusinessSupportModule extends AxelorModule {
 
@@ -40,7 +40,7 @@ public class BusinessSupportModule extends AxelorModule {
     bind(ProjectTaskBusinessProjectServiceImpl.class)
         .to(ProjectTaskBusinessSupportServiceImpl.class);
     bind(ProjectTaskBusinessProjectRepository.class).to(ProjectTaskBusinessSupportRepository.class);
-    bind(ProjectBusinessServiceImpl.class).to(ProjectBusinessSupportServiceImpl.class);
+    bind(ProjectCreateTaskServiceImpl.class).to(ProjectBusinessSupportServiceImpl.class);
     bind(ProjectDashboardHRServiceImpl.class).to(ProjectDashboardBusinessSupportServiceImpl.class);
     bind(ProjectAnnouncementRepository.class)
         .to(ProjectAnnouncementBusinessSupportRepository.class);

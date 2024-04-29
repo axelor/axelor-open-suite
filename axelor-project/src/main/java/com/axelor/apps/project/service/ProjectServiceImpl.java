@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -169,7 +168,7 @@ public class ProjectServiceImpl implements ProjectService {
       return project;
     }
     List<TaskTemplate> taskTemplateList = new ArrayList<>(taskTemplateSet);
-
+    ProjectCreateTaskService projectCreateTaskService = Beans.get(ProjectCreateTaskService.class);
     Collections.sort(
         taskTemplateList,
         (taskTemplatet1, taskTemplate2) ->
@@ -177,7 +176,9 @@ public class ProjectServiceImpl implements ProjectService {
                 ? 1
                 : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1);
 
-    taskTemplateList.forEach(taskTemplate -> createTask(taskTemplate, project, taskTemplateSet));
+    taskTemplateList.forEach(
+        taskTemplate ->
+            projectCreateTaskService.createTask(taskTemplate, project, taskTemplateSet));
     return project;
   }
 
@@ -287,34 +288,6 @@ public class ProjectServiceImpl implements ProjectService {
       context.forEach(builder::context);
     }
     return builder.map();
-  }
-
-  public ProjectTask createTask(
-      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
-
-    if (!ObjectUtils.isEmpty(project.getProjectTaskList())) {
-      for (ProjectTask projectTask : project.getProjectTaskList()) {
-        if (projectTask.getName().equals(taskTemplate.getName())) {
-          return projectTask;
-        }
-      }
-    }
-    ProjectTask task =
-        projectTaskService.create(taskTemplate.getName(), project, taskTemplate.getAssignedTo());
-    task.setDescription(taskTemplate.getDescription());
-    ProjectTaskCategory projectTaskCategory = taskTemplate.getProjectTaskCategory();
-    if (projectTaskCategory != null) {
-      task.setProjectTaskCategory(projectTaskCategory);
-      project.addProjectTaskCategorySetItem(projectTaskCategory);
-    }
-
-    TaskTemplate parentTaskTemplate = taskTemplate.getParentTaskTemplate();
-
-    if (parentTaskTemplate != null && taskTemplateSet.contains(parentTaskTemplate)) {
-      task.setParentTask(this.createTask(parentTaskTemplate, project, taskTemplateSet));
-      return task;
-    }
-    return task;
   }
 
   @Override

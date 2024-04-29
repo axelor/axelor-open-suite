@@ -18,51 +18,19 @@
  */
 package com.axelor.apps.businesssupport.service;
 
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.address.AddressService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
-import com.axelor.apps.businessproject.service.ProjectTaskReportingValuesComputingService;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
-import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.db.repo.ProjectStatusRepository;
-import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
-import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.ProjectCreateTaskServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskService;
 import com.google.inject.Inject;
 import java.util.Set;
 
-public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImpl {
+public class ProjectBusinessSupportServiceImpl extends ProjectCreateTaskServiceImpl {
 
   @Inject
-  public ProjectBusinessSupportServiceImpl(
-      ProjectRepository projectRepository,
-      ProjectStatusRepository projectStatusRepository,
-      ProjectTemplateRepository projTemplateRepo,
-      AppProjectService appProjectService,
-      PartnerService partnerService,
-      AddressService addressService,
-      AppBusinessProjectService appBusinessProjectService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
-      ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
-      AppBaseService appBaseService,
-      InvoiceRepository invoiceRepository) {
-    super(
-        projectRepository,
-        projectStatusRepository,
-        projTemplateRepo,
-        appProjectService,
-        partnerService,
-        addressService,
-        appBusinessProjectService,
-        projectTaskBusinessProjectService,
-        projectTaskReportingValuesComputingService,
-        appBaseService,
-        invoiceRepository);
+  public ProjectBusinessSupportServiceImpl(ProjectTaskService projectTaskService) {
+    super(projectTaskService);
   }
 
   @Override
