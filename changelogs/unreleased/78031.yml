@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed refresh issue when saving a sale order"
+module: axelor-sale
