@@ -46,6 +46,9 @@ public final class ProjectExceptionMessage {
   public static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for Project" /*)*/;
 
+  public static final String PROJECT_CONFIG_1 = /*$$(*/
+      "%s : You must configure Project module for company %s" /*)*/;
+
   public static final String PROJECT_GROOVY_FORMULA_ERROR = /*$$(*/
       "Please check the compute full name groovy formula in project app configuration" /*)*/;
 

@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service.app;
+package com.axelor.apps.hr.service.project;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppProject;
+import com.axelor.apps.project.db.PlannedTimeValue;
+import java.math.BigDecimal;
 
-public interface AppProjectService extends AppBaseService {
+public interface PlannedTimeValueService {
 
-  public AppProject getAppProject();
+  boolean checkIfExists(PlannedTimeValue plannedTimeValue);
 
-  void generateProjectConfigurations();
+  PlannedTimeValue createPlannedTimeValue(BigDecimal plannedTime);
 }

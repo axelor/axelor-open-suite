@@ -52,6 +52,8 @@ import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.TimerProjectTaskServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
+import com.axelor.apps.project.service.config.ProjectConfigService;
+import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
 import com.axelor.team.db.repo.TeamRepository;
 
 public class ProjectModule extends AxelorModule {
@@ -75,5 +77,6 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectDashboardService.class).to(ProjectDashboardServiceImpl.class);
     bind(ProjectActivityDashboardService.class).to(ProjectActivityDashboardServiceImpl.class);
     bind(WikiRepository.class).to(WikiProjectRepository.class);
+    bind(ProjectConfigService.class).to(ProjectConfigServiceImpl.class);
   }
 }

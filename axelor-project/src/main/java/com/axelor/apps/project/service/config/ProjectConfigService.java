@@ -16,14 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service.app;
+package com.axelor.apps.project.service.config;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppProject;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.project.db.ProjectConfig;
 
-public interface AppProjectService extends AppBaseService {
+public interface ProjectConfigService {
 
-  public AppProject getAppProject();
-
-  void generateProjectConfigurations();
+  ProjectConfig getProjectConfig(Company company) throws AxelorException;
 }
