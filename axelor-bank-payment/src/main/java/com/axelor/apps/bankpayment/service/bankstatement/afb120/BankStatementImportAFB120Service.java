@@ -24,6 +24,7 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Rep
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportAbstractService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
@@ -51,12 +52,13 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
   @Inject
   public BankStatementImportAFB120Service(
       BankStatementRepository bankStatementRepository,
+      BankStatementCreateService bankStatementCreateService,
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
       BankStatementLineDeleteService bankStatementLineDeleteService,
       BankStatementLineFetchService bankStatementLineFetchService,
       BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service,
       CurrencyScaleService currencyScaleService) {
-    super(bankStatementRepository);
+    super(bankStatementRepository, bankStatementCreateService);
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
     this.bankStatementLineDeleteService = bankStatementLineDeleteService;

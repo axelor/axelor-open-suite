@@ -28,10 +28,14 @@ import java.io.IOException;
 public abstract class BankStatementImportAbstractService {
 
   protected BankStatementRepository bankStatementRepository;
+  protected BankStatementCreateService bankStatementCreateService;
 
   @Inject
-  protected BankStatementImportAbstractService(BankStatementRepository bankStatementRepository) {
+  protected BankStatementImportAbstractService(
+      BankStatementRepository bankStatementRepository,
+      BankStatementCreateService bankStatementCreateService) {
     this.bankStatementRepository = bankStatementRepository;
+    this.bankStatementCreateService = bankStatementCreateService;
   }
 
   public abstract void runImport(BankStatement bankStatement) throws AxelorException, IOException;
@@ -43,6 +47,7 @@ public abstract class BankStatementImportAbstractService {
 
   @Transactional
   public void setBankStatementImported(BankStatement bankStatement) {
+    bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
     bankStatementRepository.save(bankStatement);
   }

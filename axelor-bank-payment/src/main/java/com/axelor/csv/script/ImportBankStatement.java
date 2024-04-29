@@ -66,7 +66,6 @@ public class ImportBankStatement {
         if (stream != null) {
           final MetaFile metaFile = metaFiles.upload(stream, fileName);
           bankStatement.setBankStatementFile(metaFile);
-          bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
           bankStatementRepository.save(bankStatement);
           bankStatementImportService.runImport(bankStatement, true);
         }
