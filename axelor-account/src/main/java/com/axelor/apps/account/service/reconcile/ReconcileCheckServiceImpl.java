@@ -4,10 +4,10 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -29,15 +29,18 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected InvoiceTermToolService invoiceTermToolService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public ReconcileCheckServiceImpl(
       CurrencyScaleService currencyScaleService,
       InvoiceTermPfpService invoiceTermPfpService,
-      InvoiceTermToolService invoiceTermToolService) {
+      InvoiceTermToolService invoiceTermToolService,
+      MoveLineToolService moveLineToolService) {
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.invoiceTermToolService = invoiceTermToolService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -177,10 +180,7 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
         .anyMatch(
             it ->
                 ObjectUtils.isEmpty(it.getTaxLineSet())
-                    && it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))) {
+                    && moveLineToolService.isMoveLineTaxAccount(it))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,

@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
-  <grid name="contract-version-next-grid" title="Versions"
+  <grid name="contract-version-next-grid" title="Amendments"
     model="com.axelor.apps.contract.db.ContractVersion">
     <field name="contract.contractId"/>
     <field name="contract.name"/>
@@ -12,11 +12,11 @@
     <field name="statusSelect"/>
   </grid>
 
-  <form name="contract-version-next-form" title="Version"
+  <form name="contract-version-next-form" title="Amendment"
     model="com.axelor.apps.contract.db.ContractVersion" width="large"
     onLoad="action-contract-version-group-form-onload"
-    onSave="save,action-contract-version-method-save"
-    onNew="action-contract-version-method-new-draft,action-contract-version-attrs-load">
+    onSave="save,action-contract-version-method-save" onNew="action-contract-version-group-on-new"
+    canNew="false">
     <panel name="mainPanel">
       <panel name="generalInfoPanel" colSpan="9">
         <panel name="hiddenFieldsPanel" hidden="true" colSpan="12">
@@ -24,8 +24,7 @@
           <field name="nextContract.statusSelect"/>
           <field name="nextContract.targetTypeSelect"/>
         </panel>
-        <field name="statusSelect" showTitle="false" readonly="true" colSpan="6"
-          widget="NavSelect"/>
+        <field name="statusSelect" title="Amendment status" readonly="true" widget="NavSelect"/>
         <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
           <viewer
             depends="nextContract.targetTypeSelect,nextContract.statusSelect,nextContract.contractId"><![CDATA[
@@ -43,11 +42,13 @@
 					</>
                   ]]></viewer>
         </field>
-        <field name="nextContract.company" colSpan="4"/>
-        <field name="nextContract.partner" colSpan="4"/>
-        <field if="__config__.app.getApp('contract')?.isInvoicingManagement"
-          name="nextContract.currency" colSpan="4"/>
-        <field name="nextContract.name" css="highlight" colSpan="12"/>
+        <panel name="contractInfoPanel" title="Contract information" colSpan="12">
+          <field name="nextContract.name" css="highlight" colSpan="12"/>
+          <field name="nextContract.company" colSpan="4"/>
+          <field name="nextContract.partner" colSpan="4"/>
+          <field if="__config__.app.getApp('contract')?.isInvoicingManagement"
+            name="nextContract.currency" colSpan="4"/>
+        </panel>
         <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
           colSpan="12">
           <field name="nextContract.createdOn" colSpan="3"/>
@@ -57,7 +58,7 @@
           <field name="nextContract.endDate" hidden="true"
             showIf="nextContract.statusSelect == 3" colSpan="3"/>
         </panel>
-        <panel name="currentVersionPanel" title="Current version" colSpan="12">
+        <panel name="currentVersionPanel" title="Amendment" colSpan="12">
           <panel colSpan="6" name="datesPanel">
             <panel name="supposedDatesPanel" hideIf="statusSelect >= 3" colSpan="12">
               <field name="supposedActivationDate"/>
@@ -102,8 +103,8 @@
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
         <panel name="contractLineListPanel" showIf="nextContract.isInvoicingManagement"
-          colSpan="12">
-          <field if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
+          colSpan="12" hidden="true">
+          <field if="__config__.app.getApp('contract')?.isInvoicingManagement"
             name="contractLineList" colSpan="12" form-view="contract-line-form"
             grid-view="contract-line-grid"
             onChange="action-contract-method-contract-line-list-on-change"/>
@@ -145,12 +146,14 @@
               <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false"
                 form-view="payment-condition-form" grid-view="payment-condition-grid"
                 onSelect="action-contract-version-attrs-payment-condition-set-domain"/>
-              <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"/>
+              <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"
+                hidden="true" showIf="contract.contractTypeSelect == 1"/>
               <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
             </panel>
             <panel name="invoicingDetailsPanel" colSpan="12">
               <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
-                readonlyIf="!nextContract.currentContractVersion.isPeriodicInvoicing"/>
+                readonlyIf="!nextContract.currentContractVersion.isPeriodicInvoicing" hidden="true"
+                showIf="contract.contractTypeSelect == 1"/>
               <panel showIf="isPeriodicInvoicing" colSpan="9" name="subInvoicingDetailsPanel">
                 <field name="invoicingDuration" colSpan="4"/>
                 <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
@@ -194,6 +197,11 @@
       <mail-followers/>
     </panel-mail>
   </form>
+
+  <action-group name="action-contract-version-group-on-new">
+    <action name="action-contract-version-method-new-draft"/>
+    <action name="action-contract-version-attrs-load"/>
+  </action-group>
 
   <action-group name="action-contract-version-group-form-onload">
     <action name="action-contract-version-attrs-load"/>

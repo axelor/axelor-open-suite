@@ -52,7 +52,8 @@
         onChange="action-group-account-accounting-report-reporttype-onchange"
         onSelect="action-accounting-report-method-set-report-type-domain"
         domain="self.reportExportTypeSelect = 1"/>
-      <field name="exportTypeSelect" selection-in="['pdf','xlsx','ods']"/>
+      <field name="exportTypeSelect" selection-in="['pdf','xlsx','ods']"
+        hideIf="reportType.typeSelect == 18"/>
     </panel>
     <panel sidebar="true" name="infoPanel" title="Info">
       <button name="searchBtn" title="Search"

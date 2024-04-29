@@ -19,8 +19,10 @@
 package com.axelor.apps.businessproject.service.app;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -104,5 +106,17 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
     }
     return hoursUnit;
+  }
+
+  @Override
+  public PrintingTemplate getInvoicingAnnexPrintTemplate() throws AxelorException {
+    PrintingTemplate invoicingAnnexPrintTemplate =
+        getAppBusinessProject().getInvoicingAnnexPrintTemplate();
+    if (invoicingAnnexPrintTemplate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return invoicingAnnexPrintTemplate;
   }
 }

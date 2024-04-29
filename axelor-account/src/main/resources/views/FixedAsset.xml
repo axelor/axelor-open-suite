@@ -51,9 +51,8 @@
           onChange="action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"
           hidden="true"/>
         <field name="qty" required="true" min="0.01" title="Quantity"
-          readonlyIf="statusSelect > 1" showIf="trackingNumber == null" hidden="true"/>
-        <field if-module="axelor-supplychain" name="trackingNumber.counter" title="Quantity"
-          showIf="trackingNumber != null" hidden="true"/>
+          readonlyIf="statusSelect > 1"/>
+        <spacer/>
         <field if-module="axelor-supplychain" name="stockLocation" canNew="false"
           canEdit="false" domain="self.company = :company" form-view="stock-location-form"
           grid-view="stock-location-grid"/>
@@ -238,6 +237,7 @@
     </panel-tabs>
     <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true"
       hidden="true">
+      <field name="moveGenerationException"/>
       <button name="computeDepreciationBtn" title="Compute depreciation"
         hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || statusSelect > 1"
         onClick="action-group-account-fixed-asset-failover-control, action-fixed-asset-group-compute-depreciation-click"
@@ -335,7 +335,8 @@
         onClick="action-fixed-asset-group-disposal-asset"
         readonlyIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0 &amp;&amp; $generateSaleMove &amp;&amp; !saleTaxLineSet"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
-        showIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0" hidden="true"/>
+        showIf="_moveGenerationException != 2 &amp;&amp; disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0"
+        hidden="true"/>
       <field name="saleTaxLineSet" requiredIf="$generateSaleMove" title="Tax lines"
         type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
         showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"
@@ -343,6 +344,7 @@
       <field name="comments" colSpan="12" widget="html" x-lite="true"
         showIf="disposalTypeSelect == 2" hidden="true"/>
       <field name="$originalQty" type="decimal" hidden="true"/>
+      <field name="_moveGenerationException" hidden="true"/>
     </panel>
   </form>
 
@@ -418,6 +420,7 @@
     <field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
     <field name="qty" expr="eval:_fixedAsset?.qty"/>
     <field name="$originalQty" expr="eval: _fixedAsset?.qty"/>
+    <field name="_moveGenerationException" expr="eval: _fixedAsset?.moveGenerationException"/>
   </action-record>
 
   <action-record name="action-fixed-asset-record-default"

@@ -104,6 +104,10 @@
 	    ]]>
     </many-to-one>
 
+    <decimal name="consumptionMaxQuantity" title="Consumption max quantity" min="0"
+      nullable="true"
+      help="Display an alert if the consumption quantities exceed the defined max quantity"/>
+
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
 					   isConsumptionLine"/>

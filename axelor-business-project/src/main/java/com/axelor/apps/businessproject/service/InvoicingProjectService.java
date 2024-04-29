@@ -29,9 +29,9 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -39,8 +39,9 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
-import com.axelor.apps.base.utils.PdfHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -61,7 +62,6 @@ import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -71,11 +71,11 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBusinessProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -529,9 +529,9 @@ public class InvoicingProjectService {
   }
 
   public void generateAnnex(InvoicingProject invoicingProject) throws AxelorException, IOException {
-    BirtTemplate invoicingProjectAnnexBirtTemplate =
-        appBusinessProjectService.getAppBusinessProject().getInvoicingProjectAnnexBirtTemplate();
-    if (invoicingProjectAnnexBirtTemplate == null) {
+    PrintingTemplate invoicingProjectAnnexPrintTemplate =
+        appBusinessProjectService.getAppBusinessProject().getInvoicingProjectAnnexPrintTemplate();
+    if (invoicingProjectAnnexPrintTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
@@ -544,33 +544,30 @@ public class InvoicingProjectService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMM));
 
-    ReportSettings reportSettings =
-        Beans.get(BirtTemplateService.class)
-            .generate(
-                invoicingProjectAnnexBirtTemplate,
-                invoicingProject,
-                null,
+    File file =
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintFile(
+                invoicingProjectAnnexPrintTemplate,
+                new PrintingGenFactoryContext(invoicingProject),
                 title,
-                false,
-                ReportSettings.FORMAT_PDF);
+                false);
 
+    MetaFiles metaFiles = Beans.get(MetaFiles.class);
     if (invoicingProject.getAttachAnnexToInvoice()) {
       List<File> fileList = new ArrayList<>();
-      MetaFiles metaFiles = Beans.get(MetaFiles.class);
-
       Invoice invoice = invoicingProject.getInvoice();
-
       fileList.add(
           Beans.get(InvoicePrintServiceImpl.class)
-              .print(invoice, null, ReportSettings.FORMAT_PDF, null));
-      fileList.add(reportSettings.generate().getFile());
-
-      MetaFile metaFile = metaFiles.upload(PdfHelper.mergePdf(fileList));
-      metaFile.setFileName(title + ".pdf");
-      metaFiles.attach(metaFile, null, invoicingProject);
-      return;
+              .print(
+                  invoice,
+                  null,
+                  Beans.get(AccountConfigService.class)
+                      .getInvoicePrintTemplate(invoice.getCompany()),
+                  null));
+      fileList.add(file);
+      file = PrintingTemplateHelper.mergeToFile(fileList, title);
     }
-    reportSettings.toAttach(invoicingProject).generate();
+    metaFiles.attach(new FileInputStream(file), file.getName(), invoicingProject);
   }
 
   protected String getTimezone(InvoicingProject invoicingProject) {
