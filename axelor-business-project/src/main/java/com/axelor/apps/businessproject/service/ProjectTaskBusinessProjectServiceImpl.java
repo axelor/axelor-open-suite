@@ -43,6 +43,7 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -719,19 +720,25 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Optional<BigDecimal> getUnitPriceFromProjectTask(ProjectTask projectTask)
+  public Map<String, Object> getProductDataFromContract(ProjectTask projectTask)
       throws AxelorException {
     Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
     Product product = projectTask.getProduct();
+
+    Map<String, Object> productMap = new HashMap<>();
     if (product == null) {
-      return Optional.empty();
+      return productMap;
     }
 
     if (frameworkCustomerContract == null) {
-      return Optional.ofNullable(
-          (BigDecimal)
-              productCompanyService.get(
-                  product, "salePrice", projectTask.getProject().getCompany()));
+      productMap.put(
+          "unitPrice",
+          productCompanyService.get(product, "salePrice", projectTask.getProject().getCompany()));
+      productMap.put(
+          "currency",
+          productCompanyService.get(
+              product, "saleCurrency", projectTask.getProject().getCompany()));
+      return productMap;
     }
 
     List<ContractLine> contractLines =
@@ -754,6 +761,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
           projectTask.getName());
     }
 
-    return Optional.ofNullable(contractLines.get(0).getPrice());
+    ContractLine contractLine = contractLines.get(0);
+    productMap.put("unitPrice", contractLine.getPrice());
+    productMap.put(
+        "currency",
+        Optional.ofNullable(contractLine.getContractVersion())
+            .map(ContractVersion::getContract)
+            .map(Contract::getCurrency)
+            .orElse(product.getSaleCurrency()));
+
+    return productMap;
   }
 }

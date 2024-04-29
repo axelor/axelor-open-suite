@@ -287,9 +287,9 @@
       method="generatePurchaseOrder"/>
   </action-method>
 
-  <action-method name="action-project-task-method-get-contract-price">
+  <action-method name="action-project-task-method-get-contract-product">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
-      method="getProductUnitPrice"/>
+      method="getProductData"/>
   </action-method>
 
   <action-attrs name="action-project-task-attrs-scale-and-precision">
@@ -308,7 +308,7 @@
   </action-attrs>
 
   <action-group name="action-project-task-group-set-price-from-contract">
-    <action name="action-project-task-method-get-contract-price"/>
+    <action name="action-project-task-method-get-contract-product"/>
     <action name="action-project-task-method-update-discount"/>
     <action name="action-project-task-method-compute"/>
   </action-group>
