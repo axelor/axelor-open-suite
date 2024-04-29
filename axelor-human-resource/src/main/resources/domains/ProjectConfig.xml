@@ -11,7 +11,7 @@
       title="Selection on display planned time"
       help="By activating this option, the user will only be able to enter a planned time from this selection. Be careful to define the associated values. If the configuration is not activated, no constraints will be applied to the time."/>
     <one-to-many name="plannedTimeValueList" title="Planned time values"
-      ref="com.axelor.apps.project.db.PlannedTimeValue"/>
+      ref="com.axelor.apps.project.db.PlannedTimeValue" mappedBy="projectConfig"/>
 
     <track>
       <field name="isSelectionOnDisplayPlannedTime" on="UPDATE"/>

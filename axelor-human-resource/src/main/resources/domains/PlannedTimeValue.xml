@@ -8,12 +8,12 @@
   <entity name="PlannedTimeValue" cacheable="true">
     <string name="name" unique="true">
       <![CDATA[
-		        String name = "";
-	            if(plannedTime != null) name = plannedTime.toString();
-	            return name;
+		        return plannedTime != null ? plannedTime.toString() : "";
             ]]>
     </string>
     <decimal name="plannedTime" title="Planned time"/>
+    <many-to-one name="projectConfig" title="Project config."
+      ref="com.axelor.apps.project.db.ProjectConfig"/>
   </entity>
 
 </domain-models>
