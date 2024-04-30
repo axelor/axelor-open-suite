@@ -53,7 +53,8 @@
   <action-record name="action-contract-record-set-contract-version"
     model="com.axelor.apps.base.db.File">
     <field name="contractVersion"
-      expr="eval: __repo__(Contract).find(contract?.id).currentContractVersion"/>
+      expr="eval: __repo__(Contract).find(contract?.id)?.currentContractVersion"
+      if="contract != null"/>
   </action-record>
 
   <action-view name="action-contract-file-view-add-file" title="New File"
@@ -95,7 +96,7 @@
 
   <action-record name="action-contract-record-set-contract-on-load"
     model="com.axelor.apps.base.db.File">
-    <field name="$contract" expr="eval: contractVersion.contract"/>
+    <field name="$contract" expr="eval: contractVersion?.contract"/>
   </action-record>
 
 
