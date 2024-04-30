@@ -162,7 +162,7 @@
     <extend
       target="//panel[@name='packingPanel']//panel[@name='articleDimensionPanel']//field[@name='length']">
       <replace>
-        <field name="length" readonlyIf="diameter > 0"
+        <field name="length"
           onChange="action-stock-product-group-compute-volume-masses-density"/>
       </replace>
     </extend>
@@ -176,14 +176,15 @@
     <extend
       target="//panel[@name='packingPanel']//panel[@name='articleDimensionPanel']//field[@name='height']">
       <replace>
-        <field name="height"
-          onChange="action-stock-product-group-compute-volume-masses-density,action-product-record-calculate-volume-diameter"/>
+        <field name="height" readonlyIf="diameter > 0"
+          onChange="action-stock-product-group-compute-volume-masses-density"/>
       </replace>
     </extend>
   </form>
 
   <action-group name="action-stock-product-group-compute-volume-masses-density">
-    <action name="action-product-record-calculate-volume-length"/>
+    <action name="action-product-record-calculate-volume-width"/>
+    <action name="action-product-record-calculate-volume-diameter"/>
     <action name="action-stock-product-record-compute-metric-mass"/>
     <action name="action-stock-product-record-compute-net-mass"/>
     <action name="action-stock-product-record-compute-density"/>
