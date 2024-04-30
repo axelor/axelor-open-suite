@@ -100,7 +100,7 @@
     <one-to-many name="dpaeList" title="DPAEs" ref="com.axelor.apps.hr.db.DPAE"
       mappedBy="employee"/>
     <one-to-many name="employeeFileList" title="Files"
-      ref="com.axelor.apps.hr.db.EmployeeFile" mappedBy="employee"/>
+      ref="com.axelor.apps.base.db.File" mappedBy="employee"/>
 
     <string name="maidenName" title="Maiden name"/>
     <string name="maritalName" title="Marital name"/>
