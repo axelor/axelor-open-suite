@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form id="btp-project-task-form" name="project-task-form" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask" extension="true">
+
+    <extend target="//field[@name='targetVersion']">
+      <replace/>
+    </extend>
+
+    <extend target="//field[@name='budgetedTime']">
+      <attribute name="title" value="Planned time"/>
+    </extend>
+
+  </form>
+
+</object-views>
