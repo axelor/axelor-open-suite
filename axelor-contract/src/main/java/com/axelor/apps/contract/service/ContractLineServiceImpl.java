@@ -159,7 +159,10 @@ public class ContractLineServiceImpl implements ContractLineService {
             (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()),
             contract.getCurrency(),
             appBaseService.getTodayDate(contract.getCompany()));
-    contractLine.setPrice(price.multiply(convert));
+    contractLine.setPrice(
+        price
+            .multiply(convert)
+            .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 
     return contractLine;
   }
