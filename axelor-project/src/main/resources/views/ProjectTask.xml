@@ -5,8 +5,7 @@
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
-    <hilite if="$get('status.isCompleted') &amp;&amp; $get('status.isDefaultCompleted')"
-      color="success"/>
+    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
     <field name="ticketNumber"/>
@@ -20,8 +19,7 @@
       if="__config__.app.isApp('business-support')"/>
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <field name="status.isCompleted" hidden="true"/>
-    <field name="status.isDefaultCompleted" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
@@ -31,7 +29,8 @@
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check"
-        onClick="action-project-task-record-change-status,save" showIf="project.isShowStatus"/>
+        onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
+        showIf="project.isShowStatus"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -766,9 +765,7 @@
   <action-record name="action-project-task-record-change-status"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="statusBeforeComplete" expr="eval: status"/>
-    <field name="status"
-      expr="call:com.axelor.apps.project.service.ProjectTaskService:getDefaultCompletedStatus(project)"
-      if="project.isShowStatus"/>
+    <field name="status" expr="eval: project?.completedTaskStatus" if="project.isShowStatus"/>
   </action-record>
 
   <action-view name="action-project-view-per-section-kanban" title="Tasks"
@@ -824,6 +821,11 @@
     <attribute for="site" name="domain"
       expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
+
+  <action-validate name="action-project-task-validate-finish-status">
+    <error message="Please fill completed task status in Project configuration."
+      if="!project?.completedTaskStatus"/>
+  </action-validate>
 
   <search-filters name="project-task-filters"
     model="com.axelor.apps.project.db.ProjectTask" title="Project task filters">

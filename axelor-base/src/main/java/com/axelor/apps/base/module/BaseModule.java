@@ -101,6 +101,8 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FakerService;
 import com.axelor.apps.base.service.FakerServiceImpl;
+import com.axelor.apps.base.service.FileService;
+import com.axelor.apps.base.service.FileServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.ImportExportTranslationService;
@@ -287,6 +289,8 @@ import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.studio.service.CustomMetaService;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
 import java.lang.reflect.Method;
@@ -467,5 +471,7 @@ public class BaseModule extends AxelorModule {
     bind(PrintingTemplatePrintService.class).to(PrintingTemplatePrintServiceImpl.class);
     bind(PrintingGeneratorFactoryProvider.class).to(PrintingGeneratorFactoryProviderImpl.class);
     bind(UnitConversionService.class).to(UnitConversionServiceImpl.class);
+    bind(FileService.class).to(FileServiceImpl.class);
+    bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
   }
 }

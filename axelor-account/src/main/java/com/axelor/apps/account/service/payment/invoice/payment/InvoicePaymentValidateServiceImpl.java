@@ -89,11 +89,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     setInvoicePaymentStatus(invoicePayment);
     invoicePaymentMoveCreateService.createInvoicePaymentMove(invoicePayment);
-    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+    invoicePaymentToolService.updateAmountPaid(invoice);
 
-    if (invoicePayment.getInvoice() != null
-        && invoicePayment.getInvoice().getOperationSubTypeSelect()
-            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (invoice != null
+        && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && !InvoiceToolService.isRefund(invoice)) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);

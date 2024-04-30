@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,7 +32,16 @@ import java.util.Set;
 @Singleton
 public class TrackingNumberController {
 
-  public void fillOriginParents(ActionRequest request, ActionResponse response) {
+  public void calculateVolume(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    TrackingNumber trackingNumber = request.getContext().asType(TrackingNumber.class);
+    Beans.get(TrackingNumberService.class).calculateDimension(trackingNumber);
+    response.setValues(Mapper.toMap(trackingNumber));
+  }
+
+  public void fillOriginParents(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     TrackingNumber trackingNumber = request.getContext().asType(TrackingNumber.class);
     trackingNumber = Beans.get(TrackingNumberRepository.class).find(trackingNumber.getId());
 
