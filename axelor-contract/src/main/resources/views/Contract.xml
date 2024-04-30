@@ -268,8 +268,8 @@
         <panel name="configSubPanel" title="Invoicing"
           if="__config__.app.getApp('contract')?.isInvoicingManagement" colSpan="12">
           <field name="isInvoicingManagement"
-            onChange="action-contract-group-invoicing-management-change" colSpan="12"
-            widget="boolean-switch"/>
+            onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"
+            colSpan="12" widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
             colSpan="12">
             <field name="isAdditionaBenefitManagement"
@@ -415,18 +415,6 @@
     <action name="action-contract-method-additional-contract-line-list-on-change"/>
   </action-group>
 
-  <action-group name="action-contract-group-invoicing-management-change">
-    <action name="action-contract-group-reset-booleans-config-sub-panel"
-      if="isInvoicingManagement == false"/>
-    <action name="action-contract-attrs-required-payment-config"/>
-    <action name="action-contract-attrs-partner-payment-config"/>
-  </action-group>
-
-  <action-group name="action-contract-group-reset-booleans-config-sub-panel">
-    <action name="action-contract-record-reset-booleans-config-sub-panel"/>
-    <action name="action-contract-version-record-reset-booleans-config-sub-panel"/>
-  </action-group>
-
   <action-attrs name="action-contract-attrs-readonly-by-config">
     <attribute for="currentContractVersionDescriptionPanel" name="readonly"
       expr="eval: __config__.app.getApp('contract')?.isUnchangableContract &amp;&amp; statusSelect > 1"/>
@@ -447,22 +435,6 @@
   <action-record name="action-record-contract-version-default-record"
     model="com.axelor.apps.contract.db.ContractVersion">
     <field name="statusSelect" expr="eval: 1"/>
-  </action-record>
-
-  <action-record model="com.axelor.apps.contract.db.Contract"
-    name="action-contract-record-reset-booleans-config-sub-panel">
-    <field name="isAdditionaBenefitManagement" expr="eval: false"/>
-    <field name="isConsumptionManagement" expr="eval: false"/>
-    <field name="isGroupedInvoicing" expr="eval: false"/>
-  </action-record>
-
-  <action-record model="com.axelor.apps.contract.db.Contract"
-    name="action-contract-version-record-reset-booleans-config-sub-panel">
-    <field name="currentContractVersion.isConsumptionBeforeEndDate" expr="eval: false"/>
-    <field name="currentContractVersion.automaticInvoicing" expr="eval: false"/>
-    <field name="currentContractVersion.isTimeProratedInvoice" expr="eval: false"/>
-    <field name="currentContractVersion.isVersionProratedInvoice" expr="eval: false"/>
-    <field name="currentContractVersion.isPeriodicInvoicing" expr="eval: false"/>
   </action-record>
 
   <action-attrs name="action-attrs-contract-partner-domain">
