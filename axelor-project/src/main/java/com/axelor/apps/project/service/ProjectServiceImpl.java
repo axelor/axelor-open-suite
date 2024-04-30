@@ -64,17 +64,20 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectStatusRepository projectStatusRepository;
   protected AppProjectService appProjectService;
   protected ProjectTemplateRepository projTemplateRepo;
+  protected ProjectCreateTaskService projectCreateTaskService;
 
   @Inject
   public ProjectServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
       AppProjectService appProjectService,
-      ProjectTemplateRepository projTemplateRepo) {
+      ProjectTemplateRepository projTemplateRepo,
+      ProjectCreateTaskService projectCreateTaskService) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
     this.projTemplateRepo = projTemplateRepo;
+    this.projectCreateTaskService = projectCreateTaskService;
   }
 
   @Inject WikiRepository wikiRepo;
@@ -168,7 +171,6 @@ public class ProjectServiceImpl implements ProjectService {
       return project;
     }
     List<TaskTemplate> taskTemplateList = new ArrayList<>(taskTemplateSet);
-    ProjectCreateTaskService projectCreateTaskService = Beans.get(ProjectCreateTaskService.class);
     Collections.sort(
         taskTemplateList,
         (taskTemplatet1, taskTemplate2) ->
