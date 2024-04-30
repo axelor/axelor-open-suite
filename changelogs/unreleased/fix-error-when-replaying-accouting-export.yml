@@ -1,0 +1,3 @@
+---
+title: "Accounting export: Fixed error when replaying the accounting export."
+module: axelor-account

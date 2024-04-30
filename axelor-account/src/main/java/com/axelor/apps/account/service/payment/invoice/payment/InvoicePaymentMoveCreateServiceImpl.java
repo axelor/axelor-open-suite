@@ -421,9 +421,9 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
         || appAccount == null
         || ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())
-        || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || (InvoiceToolService.isPurchase(invoice)
             && appAccount.getPaymentVouchersOnSupplierInvoice())
-        || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || (!InvoiceToolService.isPurchase(invoice)
             && appAccount.getPaymentVouchersOnCustomerInvoice())) {
       return;
     }

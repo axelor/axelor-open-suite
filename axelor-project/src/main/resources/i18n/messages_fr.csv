@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "%",,,
+"%s : You must configure Project module for company %s","%s : Veuillez configurer le module Projet pour la société %s",,
 "%s project","Projet %s",,
 "0 %",,,
 "1 week","1 semaine",,
@@ -152,6 +153,7 @@
 "Gantt with project","Gantt par projet",,
 "Gantt with user","Gantt par utilisateur",,
 "Gen proj type per order line","Type d'élément généré par ligne de commande",,
+"Generate project configurations","Générer la configuration des projets",,
 "Generate quotation","Générer un devis",,
 "Generate sequence for project","Générer une séquence pour les projets",,
 "Generated project","Projet généré",,
@@ -267,6 +269,8 @@
 "Project Task Tree","Arborescence des tâches",,
 "Project Tasks","Tâches",,
 "Project alone","Projet seul",,
+"Project config","Config. Projet",,
+"Project configurations","Config. Projet",,
 "Project dashboard","Tblx de bord projet",,
 "Project fields","Champs projet",,
 "Project filters","Filtres projet",,

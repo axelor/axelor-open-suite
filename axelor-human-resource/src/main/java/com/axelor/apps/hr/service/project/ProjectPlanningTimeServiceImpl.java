@@ -42,6 +42,7 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -78,6 +79,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected UnitConversionRepository unitConversionRepository;
 
   protected AppProjectService appProjectService;
+  protected ProjectConfigService projectConfigService;
   protected ICalendarService iCalendarService;
   protected ICalendarEventRepository iCalendarEventRepository;
 
@@ -92,6 +94,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
       AppProjectService appProjectService,
+      ProjectConfigService projectConfigService,
       ICalendarService iCalendarService,
       ICalendarEventRepository iCalendarEventRepository,
       UnitConversionForProjectService unitConversionForProjectService,
@@ -106,6 +109,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.employeeRepo = employeeRepo;
     this.timesheetLineRepository = timesheetLineRepository;
     this.appProjectService = appProjectService;
+    this.projectConfigService = projectConfigService;
     this.iCalendarService = iCalendarService;
     this.iCalendarEventRepository = iCalendarEventRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
@@ -414,6 +418,16 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Override
   public BigDecimal computePlannedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
+    if (projectConfigService
+        .getProjectConfig(projectPlanningTime.getProject().getCompany())
+        .getIsSelectionOnDisplayPlannedTime()) {
+      return computePlannedTimeFromDisplayRestricted(projectPlanningTime);
+    }
+    return computePlannedTimeFromDisplay(projectPlanningTime);
+  }
+
+  protected BigDecimal computePlannedTimeFromDisplay(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
     if (projectPlanningTime.getDisplayTimeUnit() == null
         || projectPlanningTime.getTimeUnit() == null
         || projectPlanningTime.getDisplayPlannedTime() == null) {
@@ -424,6 +438,22 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         projectPlanningTime.getTimeUnit(),
         projectPlanningTime.getDisplayPlannedTime(),
         projectPlanningTime.getDisplayPlannedTime().scale(),
+        projectPlanningTime.getProject());
+  }
+
+  protected BigDecimal computePlannedTimeFromDisplayRestricted(
+      ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    if (projectPlanningTime.getDisplayTimeUnit() == null
+        || projectPlanningTime.getTimeUnit() == null
+        || projectPlanningTime.getDisplayPlannedTimeRestricted() == null
+        || projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime() == null) {
+      return BigDecimal.ZERO;
+    }
+    return unitConversionForProjectService.convert(
+        projectPlanningTime.getDisplayTimeUnit(),
+        projectPlanningTime.getTimeUnit(),
+        projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime(),
+        projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime().scale(),
         projectPlanningTime.getProject());
   }
 
@@ -446,5 +476,16 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
             .map(UnitConversion::getStartUnit)
             .collect(Collectors.toList()));
     return "self.id IN (" + StringHelper.getIdListString(units) + ")";
+  }
+
+  @Override
+  public String computeDisplayPlannedTimeRestrictedDomain(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    return "self.id IN ("
+        + StringHelper.getIdListString(
+            projectConfigService
+                .getProjectConfig(projectPlanningTime.getProject().getCompany())
+                .getPlannedTimeValueList())
+        + ")";
   }
 }
