@@ -234,6 +234,28 @@
     </panel>
   </form>
 
+  <form name="contract-line-yer-form-for-template" title="Contract line"
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-method-scale-and-precision"
+    onLoad="action-contract-line-method-scale-and-precision">
+    <panel-tabs name="mainPanelTab">
+      <panel name="informationsPanel" title="Information">
+        <panel name="infoPanel" title="Information" colSpan="12">
+          <field name="product" canEdit="false"
+            onChange="action-contract-template-method-change-product"
+            domain="self.dtype = 'Product'"/>
+          <field name="productName"/>
+          <field name="taxLineSet" canEdit="false" colSpan="12"/>
+        </panel>
+        <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
+          <field name="pricing" canNew="true" canEdit="true"
+            onChange="action-contract-line-group-pricing-onchange"
+            form-view="contract-line-pricing-form" grid-view="contract-line-grid"/>
+        </panel>
+      </panel>
+    </panel-tabs>
+  </form>
+
   <form name="contract-line-yer-form" title="Contract line"
     model="com.axelor.apps.contract.db.ContractLine"
     onNew="action-contract-line-group-pricing-onnew"
