@@ -30,6 +30,7 @@ import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServ
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -41,6 +42,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -187,9 +189,21 @@ public class ProjectController {
       throws AxelorException {
     Project project = request.getContext().asType(Project.class);
     project = JPA.find(Project.class, project.getId());
+
+    Integer closingProjectRuleSelect =
+        Beans.get(AppBusinessProjectService.class)
+            .getAppBusinessProject()
+            .getClosingProjectRuleSelect();
+
     String errorMessage =
         Beans.get(BusinessProjectClosingControlService.class).checkProjectState(project);
-    if (!errorMessage.isEmpty()) {
+    if (errorMessage.isEmpty()) {
+      return;
+    }
+    if (closingProjectRuleSelect == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_BLOCKING) {
+      response.setError(errorMessage, null, null, "action-refresh-record");
+    } else if (closingProjectRuleSelect
+        == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NON_BLOCKING) {
       response.setAlert(errorMessage, null, null, null, "action-refresh-record");
     }
   }

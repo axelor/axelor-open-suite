@@ -1,7 +1,6 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -56,66 +55,72 @@ public class BusinessProjectClosingControlServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public String checkProjectState(Project project) throws AxelorException {
-    String errorMessage = "";
-    if (!project.getIsBusinessProject()) {
-      return errorMessage;
-    }
-
+    StringBuilder errorMessage = new StringBuilder();
     Integer closingProjectRuleSelect =
         appBusinessProjectService.getAppBusinessProject().getClosingProjectRuleSelect();
-
-    if (closingProjectRuleSelect == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NONE) {
-      return errorMessage;
+    if (!project.getIsBusinessProject()
+        || closingProjectRuleSelect == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NONE) {
+      return errorMessage.toString();
     }
 
     if (!areSaleOrdersFinished(project)) {
-      errorMessage +=
-          "<br/>"
-              + I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_SALE_ORDER_NOT_INVOICED);
+      errorMessage
+          .append("<br/>")
+          .append(
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_SALE_ORDER_NOT_INVOICED));
     }
 
     if (!arePurchaseOrdersInvoiced(project)) {
-      errorMessage +=
-          "<br/>"
-              + I18n.get(
-                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_NOT_INVOICED);
+      errorMessage
+          .append("<br/>")
+          .append(
+              I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_NOT_INVOICED));
     }
     if (!arePurchaseOrdersReceived(project)) {
-      errorMessage +=
-          "<br/>"
-              + I18n.get(
-                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_NOT_RECEIVED);
+      errorMessage
+          .append("<br/>")
+          .append(
+              I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_NOT_RECEIVED));
     }
 
     if (!areContractsFinished(project)) {
-      errorMessage +=
-          "<br/>" + I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_CONTRACT_IN_PROGRESS);
+      errorMessage
+          .append("<br/>")
+          .append(I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_CONTRACT_IN_PROGRESS));
     }
 
     if (appBusinessProjectService.isApp("timesheet") && !areTimesheetLinesFinished(project)) {
-      errorMessage +=
-          "<br/>"
-              + I18n.get(
-                  BusinessProjectExceptionMessage.PROJECT_CLOSING_TIMESHEET_LINE_NOT_INVOICED);
+      errorMessage
+          .append("<br/>")
+          .append(
+              I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CLOSING_TIMESHEET_LINE_NOT_INVOICED));
     }
 
     if (appBusinessProjectService.isApp("expense") && !areExpenseLinesFinished(project)) {
-      errorMessage +=
-          "<br/>"
-              + I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_EXPENSE_LINE_NOT_INVOICED);
+      errorMessage
+          .append("<br/>")
+          .append(
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_EXPENSE_LINE_NOT_INVOICED));
     }
+
+    if (errorMessage.length() == 0) {
+      return errorMessage.toString();
+    }
+
     if (closingProjectRuleSelect == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_BLOCKING) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_BLOCKING_MESSAGE)
-              + errorMessage);
+      return errorMessage
+          .insert(0, I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_BLOCKING_MESSAGE))
+          .toString();
     } else if (closingProjectRuleSelect
-            == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NON_BLOCKING
-        && !errorMessage.isEmpty()) {
-      return I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_NON_BLOCKING_MESSAGE)
-          + errorMessage;
+        == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NON_BLOCKING) {
+      return errorMessage
+          .insert(0, I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_NON_BLOCKING_MESSAGE))
+          .toString();
     } else {
-      return errorMessage;
+      return errorMessage.toString();
     }
   }
 
