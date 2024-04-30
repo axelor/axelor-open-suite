@@ -41,6 +41,7 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -183,7 +184,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask updateDiscount(ProjectTask projectTask) {
     PriceList priceList = projectTask.getProject().getPriceList();
-    if (priceList == null) {
+    Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
+    if (frameworkCustomerContract != null || priceList == null) {
       this.emptyDiscounts(projectTask);
       return projectTask;
     }

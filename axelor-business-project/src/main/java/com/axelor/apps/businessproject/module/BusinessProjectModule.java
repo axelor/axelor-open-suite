@@ -49,6 +49,8 @@ import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineServiceImp
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectContractServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
+import com.axelor.apps.businessproject.service.ProjectFrameworkContractServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
 import com.axelor.apps.businessproject.service.ProjectHistoryServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectHoldBackLineService;
@@ -176,5 +178,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoicingProjectStockMovesService.class).to(InvoicingProjectStockMovesServiceImpl.class);
     bind(ProjectHoldBackLineService.class).to(ProjectHoldBackLineServiceImpl.class);
     bind(ProjectTaskProgressUpdateService.class).to(ProjectTaskProgressUpdateServiceImpl.class);
+    bind(ProjectFrameworkContractService.class).to(ProjectFrameworkContractServiceImpl.class);
   }
 }
