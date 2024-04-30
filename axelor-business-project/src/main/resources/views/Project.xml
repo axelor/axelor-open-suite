@@ -25,10 +25,9 @@
       <attribute name="onNew" value="action-business-project-project-group-on-new"/>
       <attribute name="onLoad" value="action-business-project-project-group-on-load"/>
     </extend>
-    <extend target="//field[@name='projectFolderSet']">
+    <extend target="//field[@name='projectTimeUnit']">
       <insert position="after">
         <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
-        <field name="projectTimeUnit" if="__config__.app.isApp('business-project')"/>
         <field name="spentTimeCostComputationMethod"
           if="__config__.app.isApp('business-project')"/>
       </insert>
