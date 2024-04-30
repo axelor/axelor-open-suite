@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -197,7 +198,7 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     Map<String, Object> productMap =
-        Beans.get(ProjectTaskBusinessProjectService.class).getProductDataFromContract(projectTask);
+        Beans.get(ProjectFrameworkContractService.class).getProductDataFromContract(projectTask);
     response.setValues(productMap);
   }
 }
