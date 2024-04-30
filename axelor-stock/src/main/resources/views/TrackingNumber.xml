@@ -64,7 +64,8 @@
           colSpan="12"/>
         <panel-related field="parentTrackingNumberSet"
           form-view="tracking-number-form" grid-view="tracking-number-grid" colSpan="12"
-          title="Tracking number's direct parents"/>
+          title="Tracking number's direct parents"
+          domain="self.product != :product OR (self.product = :product AND self.trackingNumberSeq != :trackingNumberSeq)"/>
         <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
       </panel>
       <panel name="dimensionsAndMassPanels" title="Dimensions and masses"
@@ -199,7 +200,8 @@
         <panel-dashlet action="action-tracking-number-view-show-origin-parents"
           colSpan="12"/>
         <panel-related field="parentTrackingNumberSet"
-          form-view="tracking-number-form" grid-view="tracking-number-grid" colSpan="12"/>
+          form-view="tracking-number-form" grid-view="tracking-number-grid" colSpan="12"
+          domain="self.product != :product OR (self.product = :product AND self.trackingNumberSeq != :trackingNumberSeq)"/>
         <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
       </panel>
       <panel name="originPanel" title="Origin" readonly="true" colSpan="12">
@@ -345,7 +347,6 @@
     <view type="grid" name="tracking-number-grid"/>
     <view type="form" name="tracking-number-form"/>
     <domain>:trackingNumberId MEMBER OF self.parentTrackingNumberSet </domain>
-    <!-- Domain to be tested, not sure that this `MEMBER OF` with a set dot id would work -->
     <context name="trackingNumberId" expr="eval: id"/>
   </action-view>
 
@@ -354,7 +355,6 @@
     <view type="grid" name="tracking-number-grid"/>
     <view type="form" name="tracking-number-form"/>
     <domain>self IN (:originParentsSet) </domain>
-    <!-- Domain to be tested, not sure that this `MEMBER OF` with a set dot id would work -->
     <context name="originParentsSet" expr="eval: originParentTrackingNumberSet"/>
   </action-view>
 

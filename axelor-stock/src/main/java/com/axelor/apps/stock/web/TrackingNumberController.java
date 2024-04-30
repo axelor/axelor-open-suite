@@ -40,7 +40,8 @@ public class TrackingNumberController {
     response.setValues(Mapper.toMap(trackingNumber));
   }
 
-  public void fillOriginParents(ActionRequest request, ActionResponse response) {
+  public void fillOriginParents(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     TrackingNumber trackingNumber = request.getContext().asType(TrackingNumber.class);
     trackingNumber = Beans.get(TrackingNumberRepository.class).find(trackingNumber.getId());
 

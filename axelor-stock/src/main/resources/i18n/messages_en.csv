@@ -450,6 +450,7 @@
 "Max stock",,,
 "Max stock date",,,
 "Max. Qty",,,
+"Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies.",,,
 "Merge stock moves",,,
 "Merged",,,
 "Message template",,,

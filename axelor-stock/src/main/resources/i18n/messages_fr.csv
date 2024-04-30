@@ -450,6 +450,7 @@
 "Max stock","Stock max.",,
 "Max stock date","Date de stock max.",,
 "Max. Qty","Qté max.",,
+"Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies.","L'itération maximale pour la recherche des numéros de suivi parent a été atteinte. Veuillez vérifier toutes les dépendances parentales circulaires.",,
 "Merge stock moves","Fusionner les mouvements de stock",,
 "Merged","Fusionné",,
 "Message template","Modèle de message",,

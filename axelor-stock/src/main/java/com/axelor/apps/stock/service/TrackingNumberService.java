@@ -49,5 +49,5 @@ public interface TrackingNumberService {
 
   void calculateDimension(TrackingNumber trackingNumber) throws AxelorException;
 
-  Set<TrackingNumber> getOriginParents(TrackingNumber trackingNumber);
+  Set<TrackingNumber> getOriginParents(TrackingNumber trackingNumber) throws AxelorException;
 }
