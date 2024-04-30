@@ -116,7 +116,8 @@ public class CurrencyService {
       }
 
       return isInverse
-          ? BigDecimal.ONE.divide(exchangeRate, 10, RoundingMode.HALF_UP)
+          ? BigDecimal.ONE.divide(
+              exchangeRate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
           : exchangeRate;
     }
 
