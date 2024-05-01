@@ -40,7 +40,7 @@ public class ProjectUnitConversionRestController {
   @GET
   @HttpExceptionHandler
   public Response filterUnits(@PathParam("projectId") Long projectId) {
-    new SecurityCheck().readAccess(Project.class).check();
+    new SecurityCheck().readAccess(Project.class).readAccess(Unit.class).check();
     Project project = ObjectFinder.find(Project.class, projectId, ObjectFinder.NO_VERSION);
 
     List<Long> unitIdList =
@@ -62,7 +62,7 @@ public class ProjectUnitConversionRestController {
       @PathParam("projectId") Long projectId, ProjectUnitConversionPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().readAccess(Unit.class).check();
+    new SecurityCheck().readAccess(Project.class).readAccess(Unit.class).check();
 
     Project project = ObjectFinder.find(Project.class, projectId, ObjectFinder.NO_VERSION);
     Unit startUnit = project.getProjectTimeUnit();
