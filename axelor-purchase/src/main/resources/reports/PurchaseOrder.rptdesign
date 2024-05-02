@@ -5169,11 +5169,6 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                         <structure name="toc"/>
                         <list-property name="sort">
                             <structure>
-                                <expression name="key" type="javascript">row["producttype"]</expression>
-                                <property name="direction">desc</property>
-                                <property name="strength">-1</property>
-                            </structure>
-                            <structure>
                                 <expression name="key" type="javascript">row["sequence"]</expression>
                                 <property name="direction">asc</property>
                                 <property name="strength">-1</property>
