@@ -24,9 +24,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
@@ -116,7 +116,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       stockHistoryLine.setCompany(company);
       stockHistoryLine.setLabel(periodBeginDate.toString());
       stockHistoryLine.setPeriod(
-          Beans.get(PeriodService.class)
+          Beans.get(PeriodUtilsService.class)
               .getActivePeriod(periodBeginDate, company, YearRepository.TYPE_CIVIL));
       if (!stockLocationIdList.isEmpty()) {
         fetchAndFillResultForStockHistoryQuery(

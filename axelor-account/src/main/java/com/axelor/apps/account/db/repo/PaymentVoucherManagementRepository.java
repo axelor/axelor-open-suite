@@ -26,10 +26,24 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class PaymentVoucherManagementRepository extends PaymentVoucherRepository {
+
+  protected AppBaseService appBaseService;
+  protected PaymentVoucherSequenceService paymentVoucherSequenceService;
+  protected MoveRepository moveRepository;
+
+  @Inject
+  public PaymentVoucherManagementRepository(
+      AppBaseService appBaseService,
+      PaymentVoucherSequenceService paymentVoucherSequenceService,
+      MoveRepository moveRepository) {
+    this.appBaseService = appBaseService;
+    this.paymentVoucherSequenceService = paymentVoucherSequenceService;
+    this.moveRepository = moveRepository;
+  }
 
   @Override
   public PaymentVoucher copy(PaymentVoucher entity, boolean deep) {
@@ -38,7 +52,7 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
 
     copy.setStatusSelect(STATUS_DRAFT);
     copy.setRef(null);
-    copy.setPaymentDate(Beans.get(AppBaseService.class).getTodayDate(copy.getCompany()));
+    copy.setPaymentDate(appBaseService.getTodayDate(copy.getCompany()));
     copy.clearPayVoucherDueElementList();
     copy.clearPayVoucherElementToPayList();
     copy.setGeneratedMove(null);
@@ -59,7 +73,7 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
   public PaymentVoucher save(PaymentVoucher paymentVoucher) {
     try {
 
-      Beans.get(PaymentVoucherSequenceService.class).setReference(paymentVoucher);
+      paymentVoucherSequenceService.setReference(paymentVoucher);
 
       return super.save(paymentVoucher);
     } catch (Exception e) {
@@ -70,7 +84,7 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
 
   @Override
   public void remove(PaymentVoucher entity) {
-    if (Beans.get(MoveRepository.class).findByPaymentVoucher(entity).count() > 0) {
+    if (moveRepository.findByPaymentVoucher(entity).count() > 0) {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

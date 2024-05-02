@@ -16,15 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service.move;
+package com.axelor.apps.bankpayment.utils;
 
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
-import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
-import com.axelor.apps.account.service.reconcile.UnreconcileService;
+import com.axelor.apps.account.util.MoveUtilsServiceImpl;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -38,26 +35,17 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
+public class MoveUtilsServiceBankPaymentImpl extends MoveUtilsServiceImpl {
 
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
 
   @Inject
-  public MoveRemoveServiceBankPaymentImpl(
-      MoveRepository moveRepo,
-      MoveLineRepository moveLineRepo,
+  public MoveUtilsServiceBankPaymentImpl(
       ArchivingService archivingService,
-      UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
-      AccountCustomerService accountCustomerService,
+      PfpService pfpService,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
-    super(
-        moveRepo,
-        moveLineRepo,
-        archivingService,
-        unReconcileService,
-        accountingSituationService,
-        accountCustomerService);
+    super(archivingService, accountingSituationService, pfpService);
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
   }
 

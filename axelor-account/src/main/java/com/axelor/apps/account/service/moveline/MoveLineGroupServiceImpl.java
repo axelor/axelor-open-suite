@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
+import com.axelor.apps.account.util.MoveLineUtilsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -62,6 +63,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected FiscalPositionService fiscalPositionService;
   protected TaxService taxService;
+  protected MoveLineUtilsService moveLineUtilsService;
 
   @Inject
   public MoveLineGroupServiceImpl(
@@ -80,8 +82,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveCutOffService moveCutOffService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FiscalPositionService fiscalPositionService,
-      TaxService taxService) {
-
+      TaxService taxService,
+      MoveLineUtilsService moveLineUtilsService) {
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
     this.moveLineRecordService = moveLineRecordService;
@@ -98,6 +100,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.fiscalPositionService = fiscalPositionService;
     this.taxService = taxService;
+    this.moveLineUtilsService = moveLineUtilsService;
   }
 
   @Override
@@ -500,7 +503,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
   @Override
   public Map<String, Object> getPartnerOnChangeValuesMap(MoveLine moveLine) {
-    moveLineInvoiceTermService.updateInvoiceTermsParentFields(moveLine);
+    moveLineUtilsService.updateInvoiceTermsParentFields(moveLine);
     moveLineRecordService.resetPartnerFields(moveLine);
 
     Map<String, Object> valuesMap = new HashMap<>();

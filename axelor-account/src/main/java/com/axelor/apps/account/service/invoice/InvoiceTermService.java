@@ -214,10 +214,6 @@ public interface InvoiceTermService {
       boolean isHoldBack)
       throws AxelorException;
 
-  void setPfpStatus(InvoiceTerm invoiceTerm, Move move) throws AxelorException;
-
-  void setParentFields(InvoiceTerm invoiceTerm, Move move, MoveLine moveLine, Invoice invoice);
-
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);

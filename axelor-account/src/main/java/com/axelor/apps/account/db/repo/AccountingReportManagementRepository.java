@@ -19,7 +19,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.service.AccountingReportService;
+import com.axelor.apps.account.service.AccountingReportSequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -27,7 +27,13 @@ import javax.persistence.PersistenceException;
 
 public class AccountingReportManagementRepository extends AccountingReportRepository {
 
-  @Inject protected AccountingReportService accountingReportService;
+  protected AccountingReportSequenceService accountingReportSequenceService;
+
+  @Inject
+  public AccountingReportManagementRepository(
+      AccountingReportSequenceService accountingReportSequenceService) {
+    this.accountingReportSequenceService = accountingReportSequenceService;
+  }
 
   @Override
   public AccountingReport save(AccountingReport accountingReport) {
@@ -35,8 +41,8 @@ public class AccountingReportManagementRepository extends AccountingReportReposi
 
       if (accountingReport.getRef() == null) {
 
-        String seq = accountingReportService.getSequence(accountingReport);
-        accountingReportService.setSequence(accountingReport, seq);
+        String seq = accountingReportSequenceService.getSequence(accountingReport);
+        accountingReportSequenceService.setSequence(accountingReport, seq);
       }
 
       return super.save(accountingReport);

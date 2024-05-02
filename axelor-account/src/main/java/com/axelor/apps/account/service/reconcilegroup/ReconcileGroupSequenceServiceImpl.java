@@ -26,9 +26,16 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class ReconcileGroupSequenceServiceImpl implements ReconcileGroupSequenceService {
+
+  protected SequenceService sequenceService;
+
+  @Inject
+  public ReconcileGroupSequenceServiceImpl(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public void fillCodeFromSequence(ReconcileGroup reconcileGroup) throws AxelorException {
@@ -42,13 +49,12 @@ public class ReconcileGroupSequenceServiceImpl implements ReconcileGroupSequence
       exceptionMessage = AccountExceptionMessage.RECONCILE_GROUP_NO_TEMP_SEQUENCE;
     }
     String code =
-        Beans.get(SequenceService.class)
-            .getSequenceNumber(
-                sequenceCode,
-                reconcileGroup.getCompany(),
-                ReconcileGroup.class,
-                "code",
-                reconcileGroup);
+        sequenceService.getSequenceNumber(
+            sequenceCode,
+            reconcileGroup.getCompany(),
+            ReconcileGroup.class,
+            "code",
+            reconcileGroup);
 
     if (code == null) {
       throw new AxelorException(

@@ -31,8 +31,6 @@ public interface MoveLineInvoiceTermService {
   void generateDefaultInvoiceTerm(Move move, MoveLine moveLine, boolean canCreateHolbackMoveLine)
       throws AxelorException;
 
-  void updateInvoiceTermsParentFields(MoveLine moveLine);
-
   void recreateInvoiceTerms(Move move, MoveLine moveLine) throws AxelorException;
 
   void setDueDateFromInvoiceTerms(MoveLine moveLine);

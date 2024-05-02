@@ -270,6 +270,8 @@ import com.axelor.apps.base.tracking.ExportObserver;
 import com.axelor.apps.base.tracking.GlobalAuditInterceptor;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
+import com.axelor.apps.base.utils.PeriodUtilsService;
+import com.axelor.apps.base.utils.PeriodUtilsServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
 import com.axelor.auth.service.PermissionService;
@@ -473,5 +475,6 @@ public class BaseModule extends AxelorModule {
     bind(UnitConversionService.class).to(UnitConversionServiceImpl.class);
     bind(FileService.class).to(FileServiceImpl.class);
     bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
+    bind(PeriodUtilsService.class).to(PeriodUtilsServiceImpl.class);
   }
 }

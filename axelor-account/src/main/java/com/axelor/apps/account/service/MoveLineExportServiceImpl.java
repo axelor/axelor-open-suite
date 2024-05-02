@@ -89,6 +89,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   protected MoveLineConsolidateService moveLineConsolidateService;
   protected PartnerService partnerService;
   protected CompanyRepository companyRepository;
+  protected AccountingReportSequenceService accountingReportSequenceService;
 
   protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
   protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
@@ -106,7 +107,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       AccountRepository accountRepo,
       MoveLineConsolidateService moveLineConsolidateService,
       PartnerService partnerService,
-      CompanyRepository companyRepository) {
+      CompanyRepository companyRepository,
+      AccountingReportSequenceService accountingReportSequenceService) {
     this.accountingReportService = accountingReportService;
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
@@ -119,6 +121,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     this.partnerService = partnerService;
     this.appAccountService = appAccountService;
     this.companyRepository = companyRepository;
+    this.accountingReportSequenceService = accountingReportSequenceService;
   }
 
   public void updateMoveList(
@@ -625,7 +628,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport.setDateTo(endDate);
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
     accountingReport.setDate(appAccountService.getTodayDateTime().toLocalDate());
-    accountingReport.setRef(accountingReportService.getSequence(accountingReport));
+    accountingReport.setRef(accountingReportSequenceService.getSequence(accountingReport));
 
     accountingReportService.buildQuery(accountingReport);
 

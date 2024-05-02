@@ -24,8 +24,8 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -73,7 +73,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
   protected ExpenseLineRepository expenseRepo;
   protected ExtraHoursLineRepository extraHoursRepo;
   protected TimesheetLineRepository timesheetLineRepo;
-  protected PeriodService periodService;
+  protected PeriodUtilsService periodUtilsService;
   protected EmployeeComputeDaysLeaveBonusService leaveBonusService;
   protected PartnerService partnerService;
 
@@ -86,7 +86,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
       ExpenseLineRepository expenseRepo,
       ExtraHoursLineRepository extraHoursRepo,
       TimesheetLineRepository timesheetLineRepo,
-      PeriodService periodService,
+      PeriodUtilsService periodUtilsService,
       EmployeeComputeDaysLeaveBonusService leaveBonusService,
       PartnerService partnerService,
       MedicalVisitRepository medicalVisitRepository) {
@@ -95,7 +95,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
     this.expenseRepo = expenseRepo;
     this.extraHoursRepo = extraHoursRepo;
     this.timesheetLineRepo = timesheetLineRepo;
-    this.periodService = periodService;
+    this.periodUtilsService = periodUtilsService;
     this.leaveBonusService = leaveBonusService;
     this.partnerService = partnerService;
     this.medicalVisitRepository = medicalVisitRepository;
@@ -343,7 +343,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
   @Override
   public Period getCurrentPeriod() throws AxelorException {
     Company company = AuthUtils.getUser().getActiveCompany();
-    return periodService.getActivePeriod(
+    return periodUtilsService.getActivePeriod(
         appBaseService.getTodayDate(company), company, YearRepository.TYPE_PAYROLL);
   }
 

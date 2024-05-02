@@ -34,6 +34,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -55,17 +56,20 @@ public class YearServiceAccountImpl extends YearServiceImpl {
   protected AdjustHistoryService adjustHistoryService;
   protected PartnerRepository partnerRepository;
   protected PeriodService periodService;
+  protected PeriodUtilsService periodUtilsService;
 
   @Inject
   public YearServiceAccountImpl(
       PartnerRepository partnerRepository,
       YearRepository yearRepository,
       AdjustHistoryService adjustHistoryService,
-      PeriodService periodService) {
+      PeriodService periodService,
+      PeriodUtilsService periodUtilsService) {
     super(yearRepository);
     this.partnerRepository = partnerRepository;
     this.adjustHistoryService = adjustHistoryService;
     this.periodService = periodService;
+    this.periodUtilsService = periodUtilsService;
   }
 
   /**
@@ -220,7 +224,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
   protected boolean allPeriodClosed(Year year) throws AxelorException {
     if (ObjectUtils.notEmpty(year.getPeriodList())) {
       for (Period period : year.getPeriodList()) {
-        if (!periodService.isClosedPeriod(period)) {
+        if (!periodUtilsService.isClosedPeriod(period)) {
           return false;
         }
       }

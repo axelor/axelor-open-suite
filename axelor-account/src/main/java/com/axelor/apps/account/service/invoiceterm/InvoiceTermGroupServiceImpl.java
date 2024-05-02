@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.util.InvoiceTermUtilsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.AuthUtils;
@@ -20,6 +21,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermRecordService invoiceTermRecordService;
+  protected InvoiceTermUtilsService invoiceTermUtilsService;
 
   @Inject
   public InvoiceTermGroupServiceImpl(
@@ -28,20 +30,22 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
       InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
-      InvoiceTermRecordService invoiceTermRecordService) {
+      InvoiceTermRecordService invoiceTermRecordService,
+      InvoiceTermUtilsService invoiceTermUtilsService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermAttrsService = invoiceTermAttrsService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermRecordService = invoiceTermRecordService;
+    this.invoiceTermUtilsService = invoiceTermUtilsService;
   }
 
   @Override
   public Map<String, Object> getOnNewValuesMap(InvoiceTerm invoiceTerm) throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
     invoiceTerm = invoiceTermService.initInvoiceTermWithParents(invoiceTerm);
-    invoiceTermService.setPfpStatus(invoiceTerm, null);
+    invoiceTermUtilsService.setPfpStatus(invoiceTerm, null);
     invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm);
 
     valuesMap.put("paymentMode", invoiceTerm.getPaymentMode());

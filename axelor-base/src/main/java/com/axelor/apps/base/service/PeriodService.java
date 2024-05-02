@@ -21,24 +21,10 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
-import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 public interface PeriodService {
-
-  /**
-   * Recupère la bonne période pour la date passée en paramètre
-   *
-   * @param date
-   * @param company
-   * @return
-   * @throws AxelorException
-   */
-  public Period getActivePeriod(LocalDate date, Company company, int typeSelect)
-      throws AxelorException;
-
-  public Period getPeriod(LocalDate date, Company company, int typeSelect);
 
   public Period getNextPeriod(Period period) throws AxelorException;
 
@@ -75,13 +61,6 @@ public interface PeriodService {
    * @throws AxelorException if the period is closed
    */
   public void checkPeriod(Period period) throws AxelorException;
-
-  /**
-   * @param period
-   * @throws AxelorException if the period is permanently or temporally closed
-   */
-  @CallMethod
-  boolean isClosedPeriod(Period period) throws AxelorException;
 
   public void validateTempClosure(Period period) throws AxelorException;
 

@@ -36,9 +36,9 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
@@ -57,7 +57,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected PeriodService periodService;
+  protected PeriodUtilsService periodUtilsService;
   protected MoveRepository moveRepository;
   protected CompanyConfigService companyConfigService;
 
@@ -67,12 +67,12 @@ public class MoveCreateServiceImpl implements MoveCreateService {
   @Inject
   public MoveCreateServiceImpl(
       AppAccountService appAccountService,
-      PeriodService periodService,
+      PeriodUtilsService periodUtilsService,
       MoveRepository moveRepository,
       CompanyConfigService companyConfigService,
       PaymentConditionService paymentConditionService) {
 
-    this.periodService = periodService;
+    this.periodUtilsService = periodUtilsService;
     this.moveRepository = moveRepository;
     this.companyConfigService = companyConfigService;
     this.appAccountService = appAccountService;
@@ -259,7 +259,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     move.setAutoYearClosureMove(autoYearClosureMove);
 
     if (autoYearClosureMove) {
-      move.setPeriod(periodService.getPeriod(date, company, YearRepository.TYPE_FISCAL));
+      move.setPeriod(periodUtilsService.getPeriod(date, company, YearRepository.TYPE_FISCAL));
       if (move.getPeriod() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -268,7 +268,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             L10n.getInstance().format(date));
       }
     } else {
-      move.setPeriod(periodService.getActivePeriod(date, company, YearRepository.TYPE_FISCAL));
+      move.setPeriod(periodUtilsService.getActivePeriod(date, company, YearRepository.TYPE_FISCAL));
     }
 
     move.setDate(date);

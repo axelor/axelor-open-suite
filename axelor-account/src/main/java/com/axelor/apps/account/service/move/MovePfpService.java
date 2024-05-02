@@ -30,7 +30,5 @@ public interface MovePfpService {
 
   boolean isPfpButtonVisible(Move move, User user, boolean litigation) throws AxelorException;
 
-  void setPfpStatus(Move move) throws AxelorException;
-
   boolean isValidatorUserVisible(Move move) throws AxelorException;
 }

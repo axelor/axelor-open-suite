@@ -22,10 +22,17 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class FixedAssetLineManagementRepository extends FixedAssetLineRepository {
+
+  protected FixedAssetLineToolService fixedAssetLineToolService;
+
+  @Inject
+  public FixedAssetLineManagementRepository(FixedAssetLineToolService fixedAssetLineToolService) {
+    this.fixedAssetLineToolService = fixedAssetLineToolService;
+  }
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
@@ -33,8 +40,7 @@ public class FixedAssetLineManagementRepository extends FixedAssetLineRepository
       FixedAssetLine fixedAssetLine = this.find((Long) json.get("id"));
       try {
         json.put(
-            "$currencyNumberOfDecimals",
-            Beans.get(FixedAssetLineToolService.class).getCompanyScale(fixedAssetLine));
+            "$currencyNumberOfDecimals", fixedAssetLineToolService.getCompanyScale(fixedAssetLine));
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }

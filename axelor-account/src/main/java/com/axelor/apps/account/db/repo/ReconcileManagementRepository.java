@@ -26,17 +26,24 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class ReconcileManagementRepository extends ReconcileRepository {
 
+  protected ReconcileSequenceService reconcileSequenceService;
+
+  @Inject
+  public ReconcileManagementRepository(ReconcileSequenceService reconcileSequenceService) {
+    this.reconcileSequenceService = reconcileSequenceService;
+  }
+
   @Override
   public Reconcile save(Reconcile reconcile) {
     try {
 
-      Beans.get(ReconcileSequenceService.class).setDraftSequence(reconcile);
+      reconcileSequenceService.setDraftSequence(reconcile);
 
       return super.save(reconcile);
     } catch (Exception e) {

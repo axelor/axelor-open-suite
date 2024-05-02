@@ -29,7 +29,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppAccount;
 import com.google.common.base.Strings;
@@ -40,12 +39,16 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
 
   protected AppAccountService appAcccountService;
   protected BarcodeGeneratorService barcodeGeneratorService;
+  protected SequenceService sequenceService;
 
   @Inject
   public FixedAssetManagementRepository(
-      AppAccountService appAcccountService, BarcodeGeneratorService barcodeGeneratorService) {
+      AppAccountService appAcccountService,
+      BarcodeGeneratorService barcodeGeneratorService,
+      SequenceService sequenceService) {
     this.appAcccountService = appAcccountService;
     this.barcodeGeneratorService = barcodeGeneratorService;
+    this.sequenceService = sequenceService;
   }
 
   @Override
@@ -116,8 +119,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     try {
 
       if (fixedAsset.getId() != null && Strings.isNullOrEmpty(fixedAsset.getReference())) {
-        fixedAsset.setReference(
-            Beans.get(SequenceService.class).getDraftSequenceNumber(fixedAsset));
+        fixedAsset.setReference(sequenceService.getDraftSequenceNumber(fixedAsset));
       }
     } catch (Exception e) {
       throw new PersistenceException(e.getMessage(), e);

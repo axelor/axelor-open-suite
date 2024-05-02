@@ -27,11 +27,18 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class DepositSlipAccountRepository extends DepositSlipRepository {
+
+  protected SequenceService sequenceService;
+
+  @Inject
+  public DepositSlipAccountRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public DepositSlip save(DepositSlip entity) {
@@ -49,7 +56,6 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
   }
 
   protected void setDepositNumber(DepositSlip entity) throws AxelorException {
-    SequenceService sequenceService = Beans.get(SequenceService.class);
     String depositNumber =
         sequenceService.getSequenceNumber(
             SequenceRepository.DEPOSIT_SLIP,

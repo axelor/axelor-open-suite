@@ -21,18 +21,26 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class ReconcileGroupAccountRepository extends ReconcileGroupRepository {
+
+  protected ReconcileGroupSequenceService reconcileGroupSequenceService;
+
+  @Inject
+  public ReconcileGroupAccountRepository(
+      ReconcileGroupSequenceService reconcileGroupSequenceService) {
+    this.reconcileGroupSequenceService = reconcileGroupSequenceService;
+  }
 
   /** On first reconcile group save (e.g. when the code is not filled), we fill the sequence. */
   @Override
   public ReconcileGroup save(ReconcileGroup reconcileGroup) {
     try {
       if (Strings.isNullOrEmpty(reconcileGroup.getCode())) {
-        Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
+        reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
       }
       return super.save(reconcileGroup);
     } catch (Exception e) {

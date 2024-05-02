@@ -23,23 +23,23 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
-import com.axelor.apps.account.service.move.MovePfpService;
-import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.util.InvoiceTermUtilsService;
+import com.axelor.apps.account.util.MoveLineUtilsService;
+import com.axelor.apps.account.util.MoveUtilsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -48,16 +48,42 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class MoveManagementRepository extends MoveRepository {
 
+  protected PeriodUtilsService periodUtilsService;
+  protected AppBaseService appBaseService;
+  protected MoveUtilsService moveUtilsService;
+  protected MoveSequenceService moveSequenceService;
+  protected InvoiceTermUtilsService invoiceTermUtilsService;
+  protected InvoiceTermToolService invoiceTermToolService;
+  protected MoveLineUtilsService moveLineUtilsService;
+
+  @Inject
+  public MoveManagementRepository(
+      PeriodUtilsService periodUtilsService,
+      AppBaseService appBaseService,
+      MoveUtilsService moveUtilsService,
+      MoveSequenceService moveSequenceService,
+      InvoiceTermUtilsService invoiceTermUtilsService,
+      InvoiceTermToolService invoiceTermToolService,
+      MoveLineUtilsService moveLineUtilsService) {
+    this.periodUtilsService = periodUtilsService;
+    this.appBaseService = appBaseService;
+    this.moveUtilsService = moveUtilsService;
+    this.moveSequenceService = moveSequenceService;
+    this.invoiceTermUtilsService = invoiceTermUtilsService;
+    this.invoiceTermToolService = invoiceTermToolService;
+    this.moveLineUtilsService = moveLineUtilsService;
+  }
+
   @Override
   public Move copy(Move entity, boolean deep) {
     Move copy = super.copy(entity, deep);
 
     try {
-      copy.setDate(Beans.get(AppBaseService.class).getTodayDate(copy.getCompany()));
+      copy.setDate(appBaseService.getTodayDate(copy.getCompany()));
 
       Period period =
-          Beans.get(PeriodService.class)
-              .getActivePeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
+          periodUtilsService.getActivePeriod(
+              copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
       String origin = entity.getOrigin();
       if (entity.getJournal().getHasDuplicateDetectionOnOrigin()
           && entity.getJournal().getPrefixOrigin() != null) {
@@ -81,18 +107,15 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setOrigin(origin);
       copy.setReasonOfRefusalToPay(null);
       copy.setReasonOfRefusalToPayStr(null);
-      Beans.get(MovePfpService.class).setPfpStatus(copy);
+      moveUtilsService.setPfpStatus(copy);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
 
       if (moveLineList != null) {
-        MoveLineInvoiceTermService moveLineInvoiceTermService =
-            Beans.get(MoveLineInvoiceTermService.class);
-        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
         for (MoveLine moveLine : moveLineList) {
-          resetMoveLine(moveLine, copy.getDate(), invoiceTermService, copy);
-          moveLineInvoiceTermService.updateInvoiceTermsParentFields(moveLine);
+          resetMoveLine(moveLine, copy.getDate(), copy);
+          moveLineUtilsService.updateInvoiceTermsParentFields(moveLine);
         }
       }
     } catch (AxelorException e) {
@@ -103,9 +126,7 @@ public class MoveManagementRepository extends MoveRepository {
     return copy;
   }
 
-  public void resetMoveLine(
-      MoveLine moveLine, LocalDate date, InvoiceTermService invoiceTermService, Move move)
-      throws AxelorException {
+  public void resetMoveLine(MoveLine moveLine, LocalDate date, Move move) throws AxelorException {
     moveLine.setInvoiceReject(null);
     moveLine.setDate(date);
     moveLine.setExportedDirectDebitOk(false);
@@ -128,13 +149,12 @@ public class MoveManagementRepository extends MoveRepository {
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
-        this.resetInvoiceTerm(invoiceTerm, invoiceTermService);
+        this.resetInvoiceTerm(invoiceTerm);
       }
     }
   }
 
-  public void resetInvoiceTerm(InvoiceTerm invoiceTerm, InvoiceTermService invoiceTermService)
-      throws AxelorException {
+  public void resetInvoiceTerm(InvoiceTerm invoiceTerm) throws AxelorException {
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setIsSelectedOnPaymentSession(false);
     invoiceTerm.setDebtRecoveryBlockingOk(false);
@@ -155,7 +175,7 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setDecisionPfpTakenDateTime(null);
     invoiceTerm.setInvoice(null);
 
-    invoiceTermService.setPfpStatus(invoiceTerm, null);
+    invoiceTermUtilsService.setPfpStatus(invoiceTerm, null);
   }
 
   @Override
@@ -175,9 +195,8 @@ public class MoveManagementRepository extends MoveRepository {
         move.setCurrencyCode(move.getCurrency().getCodeISO());
       }
 
-      Beans.get(MoveSequenceService.class).setDraftSequence(move);
+      moveSequenceService.setDraftSequence(move);
       MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
-      InvoiceTermToolService invoiceTermToolService = Beans.get(InvoiceTermToolService.class);
 
       List<MoveLine> moveLineList = move.getMoveLineList();
       if (moveLineList != null) {
@@ -229,7 +248,7 @@ public class MoveManagementRepository extends MoveRepository {
     } else {
       try {
         if (entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-          Beans.get(MoveRemoveService.class).checkMoveBeforeRemove(entity);
+          moveUtilsService.checkMoveBeforeRemove(entity);
         }
       } catch (Exception e) {
         TraceBackService.traceExceptionFromSaveMethod(e);

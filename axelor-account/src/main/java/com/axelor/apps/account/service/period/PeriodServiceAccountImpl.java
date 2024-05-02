@@ -32,7 +32,7 @@ import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserRoleToolService;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -53,12 +53,13 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   public PeriodServiceAccountImpl(
       PeriodRepository periodRepo,
       AdjustHistoryService adjustHistoryService,
+      PeriodUtilsService periodUtilsService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
       AccountConfigService accountConfigService,
       MoveRemoveService moveRemoveService,
       PeriodCheckService periodCheckService) {
-    super(periodRepo, adjustHistoryService);
+    super(periodRepo, adjustHistoryService, periodUtilsService);
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
@@ -131,13 +132,5 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
           user, accountConfig.getTemporaryClosureAuthorizedRoleList());
     }
     return false;
-  }
-
-  @Override
-  public boolean isClosedPeriod(Period period) throws AxelorException {
-    User user = AuthUtils.getUser();
-
-    return super.isClosedPeriod(period)
-        && !periodCheckService.isAuthorizedToAccountOnPeriod(period, user);
   }
 }

@@ -25,13 +25,9 @@ public interface MoveRemoveService {
 
   void archiveDaybookMove(Move move) throws Exception;
 
-  List<String> getModelsToIgnoreList();
-
   Move archiveMove(Move move);
 
   int deleteMultiple(List<? extends Move> moveList);
 
   void deleteMove(Move move) throws Exception;
-
-  void checkMoveBeforeRemove(Move move) throws Exception;
 }

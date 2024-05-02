@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.account.util.AccountingReportUtilsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -194,7 +195,7 @@ public class AccountingReportController {
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
       AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
-      accountingReportService.checkReportType(accountingReport);
+      Beans.get(AccountingReportUtilsService.class).checkReportType(accountingReport);
       int typeSelect = accountingReport.getReportType().getTypeSelect();
 
       if (accountingReport.getExportTypeSelect() == null

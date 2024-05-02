@@ -35,10 +35,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.google.common.base.Strings;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -427,5 +429,11 @@ public class InvoiceToolService {
     copy.setFinancialDiscountTotalAmount(financialDiscountTotalAmount);
     copy.setRemainingAmountAfterFinDiscount(remainingAmountAfterFinDiscount);
     copy.setLegalNotice(legalNotice);
+  }
+
+  public static void setDraftSequence(Invoice invoice) throws AxelorException {
+    if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId())) {
+      invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
+    }
   }
 }

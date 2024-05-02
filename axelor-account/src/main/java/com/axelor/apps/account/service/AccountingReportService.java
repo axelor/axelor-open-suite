@@ -41,10 +41,6 @@ public interface AccountingReportService {
 
   public String addParams(String paramQuery);
 
-  public void setSequence(AccountingReport accountingReport, String sequence);
-
-  public String getSequence(AccountingReport accountingReport) throws AxelorException;
-
   public Account getAccount(AccountingReport accountingReport);
 
   public void setStatus(AccountingReport accountingReport);
@@ -84,6 +80,4 @@ public interface AccountingReportService {
    */
   public Map<String, Object> getFieldsFromReportTypeModelAccountingReport(
       AccountingReport accountingReport) throws AxelorException;
-
-  void checkReportType(AccountingReport accountingReport) throws AxelorException;
 }

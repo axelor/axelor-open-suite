@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.account.util.InvoiceTermUtilsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -52,7 +53,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
@@ -92,6 +92,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected DMSFileRepository DMSFileRepo;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
+  protected InvoiceTermUtilsService invoiceTermUtilsService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -105,7 +106,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       CurrencyScaleService currencyScaleService,
       DMSFileRepository DMSFileRepo,
       InvoiceTermPaymentService invoiceTermPaymentService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      InvoiceTermUtilsService invoiceTermUtilsService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -117,6 +119,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.DMSFileRepo = DMSFileRepo;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.currencyService = currencyService;
+    this.invoiceTermUtilsService = invoiceTermUtilsService;
   }
 
   @Override
@@ -981,120 +984,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPercentage(percentage);
 
-    this.setParentFields(newInvoiceTerm, move, moveLine, invoice);
+    invoiceTermUtilsService.setParentFields(newInvoiceTerm, move, moveLine, invoice);
 
     if (moveLine != null) {
       moveLine.addInvoiceTermListItem(newInvoiceTerm);
     }
 
-    this.setPfpStatus(newInvoiceTerm, move);
+    invoiceTermUtilsService.setPfpStatus(newInvoiceTerm, move);
     this.computeCompanyAmounts(newInvoiceTerm, false, isHoldBack);
 
     return newInvoiceTerm;
-  }
-
-  @Override
-  public void setPfpStatus(InvoiceTerm invoiceTerm, Move move) throws AxelorException {
-    Company company;
-    boolean isSupplierPurchase, isSupplierRefund;
-
-    if (invoiceTerm.getInvoice() != null) {
-      Invoice invoice = invoiceTerm.getInvoice();
-
-      company = invoice.getCompany();
-      isSupplierPurchase =
-          invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
-      isSupplierRefund =
-          invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
-    } else {
-      if (move == null
-          && invoiceTerm.getMoveLine() != null
-          && invoiceTerm.getMoveLine().getMove() != null) {
-        move = invoiceTerm.getMoveLine().getMove();
-      }
-
-      if (move == null) {
-        invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_NO_PFP);
-        return;
-      }
-
-      company = move.getCompany();
-      isSupplierPurchase =
-          move.getJournal().getJournalType().getTechnicalTypeSelect()
-              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE;
-      isSupplierRefund =
-          move.getJournal().getJournalType().getTechnicalTypeSelect()
-              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE;
-    }
-
-    if (pfpService.isManagePassedForPayment(company)
-        && (isSupplierPurchase || (isSupplierRefund && pfpService.isManagePFPInRefund(company)))) {
-      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
-    } else {
-      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_NO_PFP);
-    }
-  }
-
-  @Override
-  public void setParentFields(
-      InvoiceTerm invoiceTerm, Move move, MoveLine moveLine, Invoice invoice) {
-    if (invoice != null) {
-      invoiceTerm.setCompany(invoice.getCompany());
-      invoiceTerm.setPartner(invoice.getPartner());
-      invoiceTerm.setCurrency(invoice.getCurrency());
-
-      this.setThirdPartyPayerPartner(invoiceTerm);
-
-      if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
-        invoiceTerm.setOrigin(invoice.getInvoiceId());
-      } else {
-        invoiceTerm.setOrigin(invoice.getSupplierInvoiceNb());
-      }
-
-      if (invoice.getOriginDate() != null) {
-        invoiceTerm.setOriginDate(invoice.getOriginDate());
-      }
-    } else if (moveLine != null) {
-      invoiceTerm.setOrigin(moveLine.getOrigin());
-
-      if (moveLine.getPartner() != null) {
-        invoiceTerm.setPartner(moveLine.getPartner());
-      }
-
-      if (move != null) {
-        invoiceTerm.setCompany(move.getCompany());
-        invoiceTerm.setCurrency(move.getCurrency());
-
-        if (invoiceTerm.getPartner() == null) {
-          invoiceTerm.setPartner(move.getPartner());
-        }
-
-        if (journalService.isThirdPartyPayerOk(move.getJournal())) {
-          this.setThirdPartyPayerPartner(invoiceTerm);
-        }
-      }
-    }
-
-    if (moveLine != null && move != null && invoiceTerm.getOriginDate() == null) {
-      invoiceTerm.setOriginDate(move.getOriginDate());
-    }
-  }
-
-  protected void setThirdPartyPayerPartner(InvoiceTerm invoiceTerm) {
-    if (invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
-      if (invoiceTerm.getInvoice() != null) {
-        invoiceTerm.setThirdPartyPayerPartner(invoiceTerm.getInvoice().getThirdPartyPayerPartner());
-      } else {
-        Partner thirdPartyPayerPartner =
-            Optional.of(invoiceTerm)
-                .map(InvoiceTerm::getMoveLine)
-                .map(MoveLine::getMove)
-                .map(Move::getThirdPartyPayerPartner)
-                .orElse(null);
-
-        invoiceTerm.setThirdPartyPayerPartner(thirdPartyPayerPartner);
-      }
-    }
   }
 
   public void setPaymentAmount(InvoiceTerm invoiceTerm) {
@@ -1598,7 +1497,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       this.initCustomizedInvoiceTerm(invoice, invoiceTerm);
     }
 
-    setParentFields(invoiceTerm, moveLine != null ? moveLine.getMove() : null, moveLine, invoice);
+    invoiceTermUtilsService.setParentFields(
+        invoiceTerm, moveLine != null ? moveLine.getMove() : null, moveLine, invoice);
     return invoiceTerm;
   }
 

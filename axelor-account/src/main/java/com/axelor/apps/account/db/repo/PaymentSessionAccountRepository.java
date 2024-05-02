@@ -20,7 +20,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionComputeNameService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -36,14 +36,24 @@ import javax.persistence.PersistenceException;
 
 public class PaymentSessionAccountRepository extends PaymentSessionRepository {
 
-  @Inject PaymentSessionService paymentSessionService;
-  @Inject SequenceService sequenceService;
-  @Inject AppBaseService appBaseService;
+  protected PaymentSessionComputeNameService paymentSessionComputeNameService;
+  protected SequenceService sequenceService;
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public PaymentSessionAccountRepository(
+      PaymentSessionComputeNameService paymentSessionComputeNameService,
+      SequenceService sequenceService,
+      AppBaseService appBaseService) {
+    this.paymentSessionComputeNameService = paymentSessionComputeNameService;
+    this.sequenceService = sequenceService;
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public PaymentSession save(PaymentSession paymentSession) {
     try {
-      paymentSession.setName(paymentSessionService.computeName(paymentSession));
+      paymentSession.setName(paymentSessionComputeNameService.computeName(paymentSession));
       if (StringUtils.isEmpty(paymentSession.getSequence())) {
         paymentSession.setSequence(getSequence(paymentSession));
       }

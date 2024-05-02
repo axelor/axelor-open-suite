@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
@@ -120,7 +121,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
     Invoice invoice = this.createInvoice(purchaseOrder);
     invoice = invoiceRepo.save(invoice);
-    invoiceService.setDraftSequence(invoice);
+    InvoiceToolService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
     return invoice;
   }
@@ -613,7 +614,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     invoice.setPurchaseOrder(purchaseOrder);
     invoice.setAddressStr(addressService.computeAddressStr(invoice.getAddress()));
-    invoiceService.setDraftSequence(invoice);
+    InvoiceToolService.setDraftSequence(invoice);
     invoice.setPartnerTaxNbr(purchaseOrder.getSupplierPartner().getTaxNbr());
 
     return invoiceRepo.save(invoice);
