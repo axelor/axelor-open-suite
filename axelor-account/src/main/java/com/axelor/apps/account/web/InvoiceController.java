@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
@@ -49,8 +50,10 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -63,6 +66,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -406,12 +410,12 @@ public class InvoiceController {
               : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
 
       String viewTitle = AccountExceptionMessage.INVOICE_GENERATED_INVOICE_REFUND;
-      if (refund.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND) {
-        viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
-      } else if (refund.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
-        viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
+      if (InvoiceToolService.isRefund(refund)) {
+        if (refund.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
+          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
+        } else {
+          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
+        }
       }
 
       response.setView(
@@ -476,7 +480,7 @@ public class InvoiceController {
     String title;
 
     try {
-      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
         List<Long> ids =
             (List)
                 (((List) context.get("_ids"))
@@ -489,17 +493,16 @@ public class InvoiceController {
       } else if ((context.get("_invoiceId") != null || context.get("id") != null)
           && (Wizard.class.equals(context.getContextClass())
               || Invoice.class.equals(context.getContextClass()))) {
-        String format = context.get("format") != null ? context.get("format").toString() : "pdf";
-        Integer reportType =
-            context.get("reportType") != null
-                ? Integer.parseInt(context.get("reportType").toString())
-                : null;
+
+        Map<String, Object> map = getParamsMap(request);
+        Invoice invoice = (Invoice) map.get("invoice");
+        Integer reportType = (Integer) map.get("reportType");
 
         Map localizationMap =
             reportType != null
                     && (reportType == 1 || reportType == 3)
                     && context.get("localization") != null
-                ? (Map<String, Object>) request.getContext().get("localization")
+                ? (Map<String, Object>) context.get("localization")
                 : null;
         String localizationCode =
             localizationMap != null && localizationMap.get("id") != null
@@ -508,20 +511,19 @@ public class InvoiceController {
                     .getCode()
                 : null;
 
-        Object exactInvoiceId = context.get("_invoiceId");
-        if (exactInvoiceId == null) {
-          exactInvoiceId = context.get("id");
+        PrintingTemplate invoicePrintTemplate = null;
+        if (context.get("invoicePrintTemplate") != null) {
+          invoicePrintTemplate =
+              Mapper.toBean(
+                  PrintingTemplate.class,
+                  (Map<String, Object>) context.get("invoicePrintTemplate"));
+          invoicePrintTemplate =
+              Beans.get(PrintingTemplateRepository.class).find(invoicePrintTemplate.getId());
         }
 
         fileLink =
             Beans.get(InvoicePrintService.class)
-                .printInvoice(
-                    Beans.get(InvoiceRepository.class)
-                        .find(Long.parseLong(exactInvoiceId.toString())),
-                    false,
-                    format,
-                    reportType,
-                    localizationCode);
+                .printInvoice(invoice, false, invoicePrintTemplate, reportType, localizationCode);
         title = I18n.get("Invoice");
       } else {
         throw new AxelorException(
@@ -535,14 +537,9 @@ public class InvoiceController {
   }
 
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    Invoice invoice =
-        Beans.get(InvoiceRepository.class)
-            .find(Long.parseLong(context.get("_invoiceId").toString()));
-    Integer reportType =
-        context.get("reportType") != null
-            ? Integer.parseInt(context.get("reportType").toString())
-            : null;
+    Map<String, Object> map = getParamsMap(request);
+    Invoice invoice = (Invoice) map.get("invoice");
+    Integer reportType = (Integer) map.get("reportType");
 
     try {
       response.setCanClose(true);
@@ -551,7 +548,13 @@ public class InvoiceController {
               .add(
                   "html",
                   Beans.get(InvoicePrintService.class)
-                      .printInvoice(invoice, true, "pdf", reportType, null))
+                      .printInvoice(
+                          invoice,
+                          true,
+                          Beans.get(AccountConfigService.class)
+                              .getInvoicePrintTemplate(invoice.getCompany()),
+                          reportType,
+                          null))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -679,8 +682,8 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
       String domain = "";
-      if (invoice.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+      if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+          && InvoiceToolService.isRefund(invoice)) {
         domain =
             Beans.get(AdvancePaymentRefundService.class)
                 .createAdvancePaymentInvoiceSetDomain(invoice);
@@ -708,8 +711,8 @@ public class InvoiceController {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getOperationSubTypeSelect()
-          == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+      if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+          && InvoiceToolService.isRefund(invoice)) {
         Set<Invoice> invoices =
             Beans.get(AdvancePaymentRefundService.class).getDefaultAdvancePaymentInvoice(invoice);
         response.setValue("advancePaymentInvoiceSet", invoices);
@@ -1332,21 +1335,20 @@ public class InvoiceController {
     String originalInvoice = "";
 
     try {
-      switch (invoice.getOperationSubTypeSelect()) {
-        case InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND:
+      if (InvoiceToolService.isRefund(invoice)) {
+        if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
           createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_INVOICE;
           refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_INVOICE;
           originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_INVOICE;
-          break;
-        case InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND:
+        } else {
           createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND;
           refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_ADVANCE_PAYMENT_REFUND;
           originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND;
-          break;
-        default:
-          createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_CLASSIC_REFUND;
-          refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_CLASSIC_REFUND;
-          originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_CLASSIC_REFUND;
+        }
+      } else {
+        createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_CLASSIC_REFUND;
+        refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_CLASSIC_REFUND;
+        originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_CLASSIC_REFUND;
       }
 
       response.setAttr("createRefundBtn", "title", I18n.get(createRefundBtn));
@@ -1355,6 +1357,37 @@ public class InvoiceController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  protected Map<String, Object> getParamsMap(ActionRequest request) {
+    Context context = request.getContext();
+    Map<String, Object> params = new HashMap<>();
+    Invoice invoice =
+        Beans.get(InvoiceRepository.class)
+            .find(Long.parseLong(context.get("_invoiceId").toString()));
+    Integer reportType =
+        context.get("reportType") != null
+            ? Integer.parseInt(context.get("reportType").toString())
+            : null;
+    params.put("reportType", reportType);
+    params.put("invoice", invoice);
+    return params;
+  }
+
+  public void setInvoicePrintTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Object> map = getParamsMap(request);
+      Invoice invoice = (Invoice) map.get("invoice");
+      Integer reportType = (Integer) map.get("reportType");
+      if (reportType != null && reportType == 1) {
+        return;
+      }
+      PrintingTemplate invoicePrintTemplate =
+          Beans.get(AccountConfigService.class).getInvoicePrintTemplate(invoice.getCompany());
+      response.setValue("$invoicePrintTemplate", invoicePrintTemplate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -27,6 +27,8 @@
       ref="com.axelor.apps.project.db.ProjectStatus"/>
     <many-to-one name="canceledProjectStatus" title="Canceled project status"
       ref="com.axelor.apps.project.db.ProjectStatus"/>
+    <many-to-one name="completedTaskStatus" title="Completed task status"
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <string name="fullNameGroovyFormula" title="Full name groovy formula"
       help="This formula allows you to define the composition of the fullName through a groovy formula"/>
 

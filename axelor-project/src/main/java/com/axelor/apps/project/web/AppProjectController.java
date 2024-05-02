@@ -16,26 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.web;
+package com.axelor.apps.project.web;
 
-import com.axelor.apps.hr.db.EmployeeFile;
-import com.axelor.apps.hr.db.repo.EmployeeFileRepository;
-import com.axelor.apps.hr.service.EmployeeFileDMSService;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-public class EmployeeFileController {
-  public void setDMSFile(ActionRequest request, ActionResponse response) {
-    EmployeeFile employeeFile = request.getContext().asType(EmployeeFile.class);
-    employeeFile = Beans.get(EmployeeFileRepository.class).find(employeeFile.getId());
-    Beans.get(EmployeeFileDMSService.class).setDMSFile(employeeFile);
+@Singleton
+public class AppProjectController {
+
+  public void generateProjectConfigurations(ActionRequest request, ActionResponse response) {
+    Beans.get(AppProjectService.class).generateProjectConfigurations();
+
     response.setReload(true);
-  }
-
-  public void setInlineUrl(ActionRequest request, ActionResponse response) {
-    EmployeeFile employeeFile = request.getContext().asType(EmployeeFile.class);
-    response.setValue(
-        "$inlineUrl", Beans.get(EmployeeFileDMSService.class).getInlineUrl(employeeFile));
   }
 }

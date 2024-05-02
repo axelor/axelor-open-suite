@@ -564,7 +564,7 @@
 
       <panel name="employeeFileListPanel" title="Files" colSpan="12">
         <panel-related field="employeeFileList" showTitle="false"
-          grid-view="employee-file-grid" form-view="employee-file-form" colSpan="12"/>
+          grid-view="employee-file-grid" form-view="file-form" colSpan="12"/>
       </panel>
 
       <panel name="medicalVisitPanel" title="Medical visit" colSpan="12"

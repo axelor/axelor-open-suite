@@ -34,7 +34,8 @@
 
   <form name="project-planning-time-form" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime"
-    onNew="action-project-planning-time-attrs-default"
+    onNew="action-project-planning-time-group-default"
+    onLoad="action-project-planning-time-method-get-company-config"
     onSave="action-project-planning-time-method-update-event">
     <panel name="mainPanel">
       <field name="projectTask" domain="self.project = :project" canEdit="false"
@@ -44,8 +45,14 @@
       <field name="timeUnit" colSpan="3" readonly="true"
         onSelect="action-project-task-attrs-set-time-unit-domain"
         if="__config__.app.isApp('business-project')"/>
-      <field name="displayPlannedTime" colSpan="3"
-        onChange="action-project-planning-time-method-compute-planned-time"/>
+      <panel stacked="true" colSpan="3" itemSpan="12">
+        <field name="displayPlannedTime" showIf="!$isSelectionOnDisplayPlannedTime"
+          onChange="action-project-planning-time-method-compute-planned-time"/>
+        <field name="displayPlannedTimeRestricted" showIf="$isSelectionOnDisplayPlannedTime"
+          onSelect="action-project-planning-time-method-compute-display-planned-time-restricted-domain"
+          onChange="action-project-planning-time-method-compute-planned-time"/>
+        <field name="$isSelectionOnDisplayPlannedTime" hidden="true"/>
+      </panel>
       <field name="displayTimeUnit" colSpan="3"
         onChange="action-project-planning-time-method-compute-planned-time"
         onSelect="action-project-planning-time-method-compute-display-time-unit-domain"/>
@@ -71,7 +78,7 @@
   </form>
 
   <form name="project-planning-time-wizard-form" model="com.axelor.utils.db.Wizard"
-    title="Project planning time" onNew="action-project-planning-time-attrs-default">
+    title="Project planning time" onNew="action-project-planning-time-group-default">
     <panel name="mainPanel">
       <field name="fromDate" required="true" type="datetime" title="From"/>
       <field name="toDate" required="true" type="datetime" title="To"/>
@@ -166,6 +173,11 @@
     <attribute name="value" for="product" expr="eval: employee?.product"/>
   </action-attrs>
 
+  <action-group name="action-project-planning-time-group-default">
+    <action name="action-project-planning-time-attrs-default"/>
+    <action name="action-project-planning-time-method-get-company-config"/>
+  </action-group>
+
   <action-attrs name="action-project-planning-time-attrs-default">
     <attribute name="value" for="projectTask" expr="eval:_projectTask"/>
     <attribute name="value" for="timeUnit" expr="eval:_timeUnit" if="_projectTask"/>
@@ -193,6 +205,11 @@
     <attribute name="value" for="timeUnit" expr="eval: _project.projectTimeUnit"/>
     <attribute name="value" for="displayTimeUnit" expr="eval: _project.projectTimeUnit"/>
   </action-attrs>
+
+  <action-method name="action-project-planning-time-method-get-company-config">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="getCompanyConfig"/>
+  </action-method>
 
   <action-method
     name="action-project-planning-time-method-add-multiple-project-planning-time">
@@ -268,6 +285,12 @@
     name="action-project-planning-time-method-compute-display-time-unit-domain">
     <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
       method="computeDisplayTimeUnitDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-project-planning-time-method-compute-display-planned-time-restricted-domain">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="computeDisplayPlannedTimeRestrictedDomain"/>
   </action-method>
 
 </object-views>

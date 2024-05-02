@@ -112,6 +112,12 @@ public final class BusinessProjectExceptionMessage {
   public static final String PROJECT_TASK_TEMPLATE_QUANTITY_ERROR = /*$$(*/
       "Quantity must be greater than 0 for task template %s." /*)*/;
 
+  public static final String PROJECT_TASK_FRAMEWORK_CONTRACT_PRODUCT_NOT_FOUND = /*$$(*/
+      "The product was not found on the linked framework contract." /*)*/;
+
+  public static final String PROJECT_TASK_FRAMEWORK_CONTRACT_PRODUCT_NB_ERROR = /*$$(*/
+      "Impossible to retrieve the price as several matching products were found. " /*)*/;
+
   public static final String PROJECT_CLOSING_BLOCKING_MESSAGE = /*$$(*/
       "You can not close this project :" /*)*/;
 

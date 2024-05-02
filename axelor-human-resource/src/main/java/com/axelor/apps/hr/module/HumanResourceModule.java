@@ -173,6 +173,8 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
+import com.axelor.apps.hr.service.project.PlannedTimeValueService;
+import com.axelor.apps.hr.service.project.PlannedTimeValueServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
@@ -351,5 +353,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(BankCardService.class).to(BankCardServiceImpl.class);
     bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
     bind(TimesheetLeaveService.class).to(TimesheetLeaveServiceImpl.class);
+    bind(PlannedTimeValueService.class).to(PlannedTimeValueServiceImpl.class);
   }
 }

@@ -96,6 +96,11 @@
     <option value='8'>In progress invoice</option>
   </selection>
 
+  <selection name="business.project.invoice.grouping.period.select">
+    <option value="month">Month</option>
+    <option value="week">Week</option>
+  </selection>
+
   <selection name="business.project.app.closing.project.rule.select">
     <option value="0">None</option>
     <option value="1">Non-blocking</option>
