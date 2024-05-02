@@ -1,0 +1,3 @@
+---
+title: "Purchase order report: fixed sequence order issue when title lines are present."
+module: axelor-purchase
