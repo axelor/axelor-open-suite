@@ -16,25 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.db.repo;
+package com.axelor.apps.base.utils;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
-import java.util.Map;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 
-public class ProductCompanyBaseRepository extends ProductCompanyRepository {
+public interface ProductUtilsService {
 
-  protected AppBaseService appBaseService;
+  String getSequence(Product product) throws AxelorException;
 
-  @Inject
-  public ProductCompanyBaseRepository(AppBaseService appBaseService) {
-    this.appBaseService = appBaseService;
-  }
-
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
-
-    return super.populate(json, context);
-  }
+  void copyProduct(Product product, Product copy);
 }

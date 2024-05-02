@@ -23,7 +23,6 @@ import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -31,7 +30,15 @@ import javax.persistence.PersistenceException;
 
 public class AddressBaseRepository extends AddressRepository {
 
-  @Inject protected AddressService addressService;
+  protected AddressService addressService;
+  protected AddressTemplateService addressTemplateService;
+
+  @Inject
+  public AddressBaseRepository(
+      AddressService addressService, AddressTemplateService addressTemplateService) {
+    this.addressService = addressService;
+    this.addressTemplateService = addressTemplateService;
+  }
 
   @Override
   public Address save(Address entity) {
@@ -45,7 +52,6 @@ public class AddressBaseRepository extends AddressRepository {
           || !oldAddressObject.getFullName().equals(entity.getFullName())) {
         addressService.updateLatLong(entity);
       }
-      AddressTemplateService addressTemplateService = Beans.get(AddressTemplateService.class);
       addressTemplateService.setFormattedFullName(entity);
       addressTemplateService.checkRequiredAddressFields(entity);
     } catch (Exception e) {

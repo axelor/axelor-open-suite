@@ -20,17 +20,21 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
-import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.ICalendarUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class ICalendarEventManagementRepository extends ICalendarEventRepository {
 
-  @Inject private ICalendarService calendarService;
+  protected ICalendarUserRepository iCalendarUserRepository;
+
+  @Inject
+  public ICalendarEventManagementRepository(ICalendarUserRepository iCalendarUserRepository) {
+    this.iCalendarUserRepository = iCalendarUserRepository;
+  }
 
   @Override
   public ICalendarEvent save(ICalendarEvent entity) {
@@ -44,7 +48,7 @@ public class ICalendarEventManagementRepository extends ICalendarEventRepository
         String email = creator.getPartner().getEmailAddress().getAddress();
         if (email != null) {
           ICalendarUser organizer =
-              Beans.get(ICalendarUserRepository.class)
+              iCalendarUserRepository
                   .all()
                   .filter("self.email = ?1 AND self.user.id = ?2", email, creator.getId())
                   .fetchOne();
@@ -78,7 +82,7 @@ public class ICalendarEventManagementRepository extends ICalendarEventRepository
   public void remove(ICalendarEvent entity, boolean removeRemote) {
     try {
       if (removeRemote) {
-        calendarService.removeEventFromIcal(entity);
+        ICalendarUtils.removeEventFromIcal(entity);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

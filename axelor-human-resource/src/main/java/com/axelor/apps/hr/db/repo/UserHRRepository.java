@@ -19,11 +19,18 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.db.repo.UserBaseRepository;
+import com.axelor.apps.base.utils.UserUtilsService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class UserHRRepository extends UserBaseRepository {
+
+  @Inject
+  public UserHRRepository(UserUtilsService userUtilsService) {
+    super(userUtilsService);
+  }
 
   @Override
   public void remove(User user) {

@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.PartnerComputeNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.db.JPA;
@@ -43,9 +44,10 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
   public PartnerSupplychainServiceImpl(
       PartnerRepository partnerRepo,
       AppBaseService appBaseService,
+      PartnerComputeNameService partnerComputeNameService,
       InvoiceRepository invoiceRepository,
       AccountConfigService accountConfigService) {
-    super(partnerRepo, appBaseService);
+    super(partnerRepo, appBaseService, partnerComputeNameService);
     this.invoiceRepository = invoiceRepository;
     this.accountConfigService = accountConfigService;
   }

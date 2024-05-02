@@ -32,7 +32,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerLink;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -107,7 +106,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
-      ProductRepository productRepository,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
@@ -129,7 +127,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         appBaseService,
         stockMoveRepository,
         partnerProductQualityRatingService,
-        productRepository,
         partnerStockSettingsService,
         stockConfigService,
         appStockService,

@@ -118,6 +118,8 @@ import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerComputeNameService;
+import com.axelor.apps.base.service.PartnerComputeNameServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -272,6 +274,12 @@ import com.axelor.apps.base.tracking.ExportObserver;
 import com.axelor.apps.base.tracking.GlobalAuditInterceptor;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
+import com.axelor.apps.base.utils.PartnerUtilsService;
+import com.axelor.apps.base.utils.PartnerUtilsServiceImpl;
+import com.axelor.apps.base.utils.ProductUtilsService;
+import com.axelor.apps.base.utils.ProductUtilsServiceImpl;
+import com.axelor.apps.base.utils.UserUtilsService;
+import com.axelor.apps.base.utils.UserUtilsServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
 import com.axelor.auth.service.PermissionService;
@@ -477,5 +485,9 @@ public class BaseModule extends AxelorModule {
     bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
+    bind(PartnerComputeNameService.class).to(PartnerComputeNameServiceImpl.class);
+    bind(ProductUtilsService.class).to(ProductUtilsServiceImpl.class);
+    bind(PartnerUtilsService.class).to(PartnerUtilsServiceImpl.class);
+    bind(UserUtilsService.class).to(UserUtilsServiceImpl.class);
   }
 }

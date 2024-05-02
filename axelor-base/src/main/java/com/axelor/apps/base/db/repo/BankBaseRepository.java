@@ -24,7 +24,12 @@ import com.google.inject.Inject;
 
 public class BankBaseRepository extends BankRepository {
 
-  @Inject BankService bankService;
+  protected BankService bankService;
+
+  @Inject
+  public BankBaseRepository(BankService bankService) {
+    this.bankService = bankService;
+  }
 
   @Override
   public Bank save(Bank bank) {

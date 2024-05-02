@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthService;
@@ -38,13 +37,10 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.db.Template;
-import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
-import com.axelor.studio.db.AppBase;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -69,7 +65,6 @@ import org.apache.commons.math3.exception.TooManyIterationsException;
 import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
 public class UserServiceImpl implements UserService {
@@ -338,35 +333,6 @@ public class UserServiceImpl implements UserService {
     user.setTransientPassword(newPassword);
 
     return user;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void processChangedPassword(User user)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
-    Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
-
-    try {
-      if (!user.getSendEmailUponPasswordChange()) {
-        return;
-      }
-
-      AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
-      Template template = appBase.getPasswordChangedTemplate();
-
-      if (template == null) {
-        throw new AxelorException(
-            appBase,
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get("Template for changed password is missing."));
-      }
-
-      TemplateMessageService templateMessageService = Beans.get(TemplateMessageService.class);
-      templateMessageService.generateAndSendMessage(user, template);
-
-    } finally {
-      user.setTransientPassword(null);
-    }
   }
 
   @Override

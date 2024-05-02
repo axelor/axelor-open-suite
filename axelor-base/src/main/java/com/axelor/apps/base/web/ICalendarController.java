@@ -34,6 +34,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.service.CipherService;
 import com.google.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
@@ -115,8 +116,8 @@ public class ICalendarController {
     if (request.getContext().get("newPassword") != null)
       response.setValue(
           "password",
-          Beans.get(ICalendarService.class)
-              .getCalendarEncryptPassword(request.getContext().get("newPassword").toString()));
+          Beans.get(CipherService.class)
+              .encrypt(request.getContext().get("newPassword").toString()));
   }
 
   public void showMyEvents(ActionRequest request, ActionResponse response) {

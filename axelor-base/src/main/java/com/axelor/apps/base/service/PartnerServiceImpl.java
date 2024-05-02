@@ -30,10 +30,8 @@ import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -44,7 +42,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.MessageRepository;
-import com.axelor.utils.helpers.ComputeNameHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -53,7 +50,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -70,11 +66,16 @@ public class PartnerServiceImpl implements PartnerService {
 
   protected PartnerRepository partnerRepo;
   protected AppBaseService appBaseService;
+  protected PartnerComputeNameService partnerComputeNameService;
 
   @Inject
-  public PartnerServiceImpl(PartnerRepository partnerRepo, AppBaseService appBaseService) {
+  public PartnerServiceImpl(
+      PartnerRepository partnerRepo,
+      AppBaseService appBaseService,
+      PartnerComputeNameService partnerComputeNameService) {
     this.partnerRepo = partnerRepo;
     this.appBaseService = appBaseService;
+    this.partnerComputeNameService = partnerComputeNameService;
   }
 
   private Pattern phoneNumberPattern =
@@ -100,7 +101,7 @@ public class PartnerServiceImpl implements PartnerService {
     partner.setMobilePhone(mobilePhone);
     partner.setEmailAddress(emailAddress);
     partner.setCurrency(currency);
-    this.setPartnerFullName(partner);
+    partnerComputeNameService.setPartnerFullName(partner);
 
     if (createContact) {
       Partner contact =
@@ -142,150 +143,9 @@ public class PartnerServiceImpl implements PartnerService {
     contact.setMainPartner(partner);
     contact.setEmailAddress(emailAddress);
     contact.setMainAddress(mainAddress);
-    this.setPartnerFullName(contact);
+    partnerComputeNameService.setPartnerFullName(contact);
 
     return partner;
-  }
-
-  @Override
-  public void onSave(Partner partner) throws AxelorException {
-
-    if (partner.getPartnerSeq() == null
-        && appBaseService.getAppBase().getGeneratePartnerSequence()) {
-      String seq =
-          Beans.get(SequenceService.class)
-              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.PARTNER_1));
-      }
-      partner.setPartnerSeq(seq);
-    }
-
-    if (partner.getEmailAddress() != null) {
-      long existEmailCount =
-          partnerRepo
-              .all()
-              .filter(
-                  "self.id != ?1 and self.emailAddress = ?2",
-                  partner.getId(),
-                  partner.getEmailAddress())
-              .count();
-
-      if (existEmailCount > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
-            I18n.get(BaseExceptionMessage.PARTNER_EMAIL_EXIST));
-      }
-    }
-
-    updatePartnerAddress(partner);
-
-    if (partner.getPartnerTypeSelect() == PARTNER_TYPE_INDIVIDUAL) {
-      partner.setContactPartnerSet(new HashSet<>());
-    }
-
-    if (!partner.getIsContact() && partner.getContactPartnerSet() != null) {
-      for (Partner contact : partner.getContactPartnerSet()) {
-        if (contact.getMainPartner() == null) {
-          contact.setMainPartner(partner);
-        }
-      }
-    }
-
-    this.setPartnerFullName(partner);
-  }
-
-  /**
-   * Updates M2O and O2M fields of partner that manage partner addresses. This method ensures
-   * consistency between these two fields.
-   *
-   * @param partner
-   * @throws AxelorException
-   */
-  protected void updatePartnerAddress(Partner partner) throws AxelorException {
-    Address address = partner.getMainAddress();
-
-    if (!partner.getIsContact() && !partner.getIsEmployee()) {
-      if (partner.getPartnerAddressList() != null) {
-        partner.setMainAddress(checkDefaultAddress(partner));
-      }
-    } else if (address == null) {
-      partner.removePartnerAddressListItem(
-          JPA.all(PartnerAddress.class)
-              .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
-              .bind("partnerId", partner.getId())
-              .fetchOne());
-
-    } else if (partner.getPartnerAddressList() != null
-        && partner.getPartnerAddressList().stream()
-            .map(PartnerAddress::getAddress)
-            .noneMatch(address::equals)) {
-      PartnerAddress mainAddress = new PartnerAddress();
-      mainAddress.setAddress(address);
-      mainAddress.setIsDefaultAddr(true);
-      mainAddress.setIsDeliveryAddr(true);
-      mainAddress.setIsInvoicingAddr(true);
-      partner.addPartnerAddressListItem(mainAddress);
-    }
-  }
-
-  /**
-   * Ensures that there is exactly one default invoicing address and no more than one default
-   * delivery address. If the partner address list is valid, returns the default invoicing address.
-   *
-   * @param partner
-   * @throws AxelorException
-   */
-  protected Address checkDefaultAddress(Partner partner) throws AxelorException {
-    List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
-    Address defaultInvoicingAddress = null;
-    Address defaultDeliveryAddress = null;
-
-    if (partnerAddressList != null) {
-      for (PartnerAddress partnerAddress : partnerAddressList) {
-        if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
-          if (defaultInvoicingAddress != null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(BaseExceptionMessage.ADDRESS_8));
-          }
-          defaultInvoicingAddress = partnerAddress.getAddress();
-        }
-
-        if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
-          if (defaultDeliveryAddress != null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(BaseExceptionMessage.ADDRESS_9));
-          }
-          defaultDeliveryAddress = partnerAddress.getAddress();
-        }
-      }
-    }
-    return defaultInvoicingAddress;
-  }
-
-  @Override
-  public void setPartnerFullName(Partner partner) {
-    partner.setSimpleFullName(this.computeSimpleFullName(partner));
-    partner.setFullName(this.computeFullName(partner));
-  }
-
-  @Override
-  public String computeFullName(Partner partner) {
-    return ComputeNameHelper.computeFullName(
-        partner.getFirstName(),
-        partner.getName(),
-        partner.getPartnerSeq(),
-        String.valueOf(partner.getId()));
-  }
-
-  @Override
-  public String computeSimpleFullName(Partner partner) {
-    return ComputeNameHelper.computeSimpleFullName(
-        partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
   }
 
   @Override
@@ -654,7 +514,7 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   protected Partner isThereDuplicatePartnerQuery(Partner partner, boolean isInArchived) {
-    String newName = this.computeSimpleFullName(partner);
+    String newName = partnerComputeNameService.computeSimpleFullName(partner);
     if (Strings.isNullOrEmpty(newName)) {
       return null;
     }

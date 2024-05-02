@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PartnerComputeNameService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -41,7 +41,7 @@ public class ImportPartner {
 
   @Inject protected MetaFiles metaFiles;
 
-  @Inject protected PartnerService partnerService;
+  @Inject protected PartnerComputeNameService partnerComputeNameService;
 
   @Inject protected SequenceService sequenceService;
 
@@ -54,7 +54,7 @@ public class ImportPartner {
         sequenceService.getSequenceNumber(
             SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner));
 
-    partnerService.setPartnerFullName(partner);
+    partnerComputeNameService.setPartnerFullName(partner);
 
     final Path path = (Path) values.get("__path__");
     String fileName = (String) values.get("picture_fileName");

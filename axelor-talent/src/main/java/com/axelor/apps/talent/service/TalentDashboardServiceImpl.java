@@ -20,6 +20,7 @@ package com.axelor.apps.talent.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.service.PartnerComputeNameService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContractType;
@@ -51,17 +52,20 @@ public class TalentDashboardServiceImpl implements TalentDashboardService {
   protected JobApplicationRepository jobApplicationRepository;
   protected MetaFiles metaFiles;
   protected PartnerService partnerService;
+  protected PartnerComputeNameService partnerComputeNameService;
 
   @Inject
   public TalentDashboardServiceImpl(
       TrainingRegisterRepository trainingRegisterRepo,
       JobApplicationRepository jobApplicationRepository,
       MetaFiles metaFiles,
-      PartnerService partnerService) {
+      PartnerService partnerService,
+      PartnerComputeNameService partnerComputeNameService) {
     this.trainingRegisterRepo = trainingRegisterRepo;
     this.jobApplicationRepository = jobApplicationRepository;
     this.metaFiles = metaFiles;
     this.partnerService = partnerService;
+    this.partnerComputeNameService = partnerComputeNameService;
   }
 
   @Override
@@ -110,7 +114,7 @@ public class TalentDashboardServiceImpl implements TalentDashboardService {
           "fullName",
           Optional.ofNullable(trainingRegister.getEmployee())
               .map(Employee::getContactPartner)
-              .map(partner -> partnerService.computeSimpleFullName(partner))
+              .map(partner -> partnerComputeNameService.computeSimpleFullName(partner))
               .orElse(null));
       trainingData.add(map);
     }

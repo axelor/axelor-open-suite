@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.PartnerComputeNameService;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -39,8 +40,11 @@ import java.util.Set;
 public class PartnerSaleServiceImpl extends PartnerServiceImpl implements PartnerSaleService {
 
   @Inject
-  public PartnerSaleServiceImpl(PartnerRepository partnerRepo, AppBaseService appBaseService) {
-    super(partnerRepo, appBaseService);
+  public PartnerSaleServiceImpl(
+      PartnerRepository partnerRepo,
+      AppBaseService appBaseService,
+      PartnerComputeNameService partnerComputeNameService) {
+    super(partnerRepo, appBaseService, partnerComputeNameService);
   }
 
   @Deprecated

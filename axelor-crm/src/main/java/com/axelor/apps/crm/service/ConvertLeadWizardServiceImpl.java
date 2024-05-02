@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.PartnerComputeNameService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressExportService;
 import com.axelor.apps.base.service.address.AddressService;
@@ -83,6 +84,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected AddressExportService addressExportService;
 
+  protected PartnerComputeNameService partnerComputeNameService;
+
   @Inject
   public ConvertLeadWizardServiceImpl(
       LeadService leadService,
@@ -96,7 +99,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       AppCrmService appCrmService,
       MultiRelatedRepository multiRelatedRepository,
       ConvertWizardOpportunityService convertWizardOpportunityService,
-      PartnerRepository partnerRepository) {
+      PartnerRepository partnerRepository,
+      PartnerComputeNameService partnerComputeNameService) {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
@@ -109,6 +113,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.convertWizardOpportunityService = convertWizardOpportunityService;
     this.partnerRepository = partnerRepository;
+    this.partnerComputeNameService = partnerComputeNameService;
   }
 
   /**
@@ -125,7 +130,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       partner.setPartnerSeq(leadService.getSequence(partner));
     }
 
-    partnerService.setPartnerFullName(partner);
+    partnerComputeNameService.setPartnerFullName(partner);
 
     this.setAddress(partner, primaryAddress);
 

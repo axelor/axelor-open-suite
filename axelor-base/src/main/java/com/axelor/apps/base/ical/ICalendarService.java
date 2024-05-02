@@ -29,13 +29,13 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.ICalendarUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.EmailAddressRepository;
-import com.axelor.message.service.MailAccountService;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -67,7 +67,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
-import net.fortuna.ical4j.connector.FailedOperationException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.PathResolver;
@@ -112,7 +111,6 @@ import net.fortuna.ical4j.validate.ValidationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 
 /** Provides calendars utilities. */
 public class ICalendarService {
@@ -125,8 +123,6 @@ public class ICalendarService {
   @Inject protected ICalendarUserRepository iCalendarUserRepository;
 
   @Inject protected ICalendarEventRepository iEventRepo;
-
-  @Inject private MailAccountService mailAccountService;
 
   public static class GenericPathResolver extends PathResolver {
 
@@ -187,24 +183,15 @@ public class ICalendarService {
   }
 
   public void testConnect(ICalendar cal) throws MalformedURLException, ObjectStoreException {
-    PathResolver RESOLVER = getPathResolver(cal.getTypeSelect());
-    Protocol protocol = getProtocol(cal.getIsSslConnection());
+    PathResolver resolver = ICalendarUtils.getPathResolver(cal.getTypeSelect());
+    Protocol protocol = ICalendarUtils.getProtocol(cal.getIsSslConnection());
     URL url = new URL(protocol.getScheme(), cal.getUrl(), cal.getPort(), "");
-    ICalendarStore store = new ICalendarStore(url, RESOLVER);
+    ICalendarStore store = new ICalendarStore(url, resolver);
 
     try {
-      store.connect(cal.getLogin(), getCalendarDecryptPassword(cal.getPassword()));
+      store.connect(cal.getLogin(), ICalendarUtils.getCalendarDecryptPassword(cal.getPassword()));
     } finally {
       store.disconnect();
-    }
-  }
-
-  public Protocol getProtocol(boolean isSslConnection) {
-
-    if (isSslConnection) {
-      return Protocol.getProtocol("https");
-    } else {
-      return Protocol.getProtocol("http");
     }
   }
 
@@ -628,12 +615,12 @@ public class ICalendarService {
   @Transactional(rollbackOn = {Exception.class})
   protected void sync(ICalendar calendar, LocalDateTime startDate, LocalDateTime endDate)
       throws ICalendarException, MalformedURLException {
-    PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
-    Protocol protocol = getProtocol(calendar.getIsSslConnection());
+    PathResolver resolver = ICalendarUtils.getPathResolver(calendar.getTypeSelect());
+    Protocol protocol = ICalendarUtils.getProtocol(calendar.getIsSslConnection());
     URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
-    ICalendarStore store = new ICalendarStore(url, RESOLVER);
+    ICalendarStore store = new ICalendarStore(url, resolver);
     try {
-      String password = getCalendarDecryptPassword(calendar.getPassword());
+      String password = ICalendarUtils.getCalendarDecryptPassword(calendar.getPassword());
 
       if (calendar.getLogin() != null
           && calendar.getPassword() != null
@@ -839,34 +826,6 @@ public class ICalendarService {
     return target;
   }
 
-  public PathResolver getPathResolver(int typeSelect) {
-    switch (typeSelect) {
-      case ICalendarRepository.ICAL_SERVER:
-        return PathResolver.ICAL_SERVER;
-
-      case ICalendarRepository.CALENDAR_SERVER:
-        return PathResolver.CALENDAR_SERVER;
-
-      case ICalendarRepository.GCAL:
-        return PathResolver.GCAL;
-
-      case ICalendarRepository.ZIMBRA:
-        return PathResolver.ZIMBRA;
-
-      case ICalendarRepository.KMS:
-        return PathResolver.KMS;
-
-      case ICalendarRepository.CGP:
-        return PathResolver.CGP;
-
-      case ICalendarRepository.CHANDLER:
-        return PathResolver.CHANDLER;
-
-      default:
-        return null;
-    }
-  }
-
   public ICalendarEvent createEvent(
       LocalDateTime fromDateTime,
       LocalDateTime toDateTime,
@@ -887,31 +846,13 @@ public class ICalendarService {
     return event;
   }
 
-  public net.fortuna.ical4j.model.Calendar removeCalendar(
-      CalDavCalendarCollection collection, String uid)
-      throws FailedOperationException, ObjectStoreException {
-    net.fortuna.ical4j.model.Calendar calendar = collection.getCalendar(uid);
-
-    DeleteMethod deleteMethod = new DeleteMethod(collection.getPath() + uid + ".ics");
-    try {
-      collection.getStore().getClient().execute(deleteMethod);
-    } catch (IOException e) {
-      throw new ObjectStoreException(e);
-    }
-    if (!deleteMethod.succeeded()) {
-      throw new FailedOperationException(deleteMethod.getStatusLine().toString());
-    }
-
-    return calendar;
-  }
-
   public net.fortuna.ical4j.model.Calendar getCalendar(String uid, ICalendar calendar)
       throws ICalendarException, MalformedURLException {
     net.fortuna.ical4j.model.Calendar cal = null;
-    PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
-    Protocol protocol = getProtocol(calendar.getIsSslConnection());
+    PathResolver resolver = ICalendarUtils.getPathResolver(calendar.getTypeSelect());
+    Protocol protocol = ICalendarUtils.getProtocol(calendar.getIsSslConnection());
     URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
-    ICalendarStore store = new ICalendarStore(url, RESOLVER);
+    ICalendarStore store = new ICalendarStore(url, resolver);
     try {
       if (store.connect(calendar.getLogin(), calendar.getPassword())) {
         List<CalDavCalendarCollection> colList = store.getCollections();
@@ -930,42 +871,6 @@ public class ICalendarService {
       store.disconnect();
     }
     return cal;
-  }
-
-  public void removeEventFromIcal(ICalendarEvent event)
-      throws MalformedURLException, ICalendarException {
-    if (event.getCalendar() != null && !Strings.isNullOrEmpty(event.getUid())) {
-      ICalendar calendar = event.getCalendar();
-      PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
-      Protocol protocol = getProtocol(calendar.getIsSslConnection());
-      URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
-      ICalendarStore store = new ICalendarStore(url, RESOLVER);
-      try {
-        if (store.connect(
-            calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))) {
-          List<CalDavCalendarCollection> colList = store.getCollections();
-          if (!colList.isEmpty()) {
-            CalDavCalendarCollection collection = colList.get(0);
-            final Map<String, VEvent> remoteEvents = new HashMap<>();
-
-            for (VEvent item : ICalendarStore.getEvents(collection)) {
-              remoteEvents.put(item.getUid().getValue(), item);
-            }
-
-            VEvent target = remoteEvents.get(event.getUid());
-            if (target != null) removeCalendar(collection, target.getUid().getValue());
-          }
-        } else {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.CALENDAR_NOT_VALID));
-        }
-      } catch (Exception e) {
-        throw new ICalendarException(e);
-      } finally {
-        store.disconnect();
-      }
-    }
   }
 
   @Transactional
@@ -991,15 +896,5 @@ public class ICalendarService {
         .all()
         .filter("COALESCE(self.archived, false) = false AND self.calendar = ?1", calendar)
         .fetch();
-  }
-
-  public String getCalendarEncryptPassword(String password) {
-
-    return mailAccountService.getEncryptPassword(password);
-  }
-
-  public String getCalendarDecryptPassword(String password) {
-
-    return mailAccountService.getDecryptPassword(password);
   }
 }

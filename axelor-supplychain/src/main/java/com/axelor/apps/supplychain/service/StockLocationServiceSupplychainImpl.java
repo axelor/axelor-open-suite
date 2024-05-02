@@ -19,7 +19,6 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -40,7 +39,6 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
   public StockLocationServiceSupplychainImpl(
       StockLocationRepository stockLocationRepo,
       StockLocationLineService stockLocationLineService,
-      ProductRepository productRepo,
       StockConfigService stockConfigService,
       AppBaseService appBaseService,
       UnitRepository unitRepository,
@@ -50,7 +48,6 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
     super(
         stockLocationRepo,
         stockLocationLineService,
-        productRepo,
         stockConfigService,
         appBaseService,
         unitRepository,

@@ -19,17 +19,23 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.base.utils.UserUtilsService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class UserBaseRepository extends UserRepository {
+
+  protected UserUtilsService userUtilsService;
+
+  @Inject
+  public UserBaseRepository(UserUtilsService userUtilsService) {
+    this.userUtilsService = userUtilsService;
+  }
 
   @Override
   public User save(User user) {
@@ -52,7 +58,7 @@ public class UserBaseRepository extends UserRepository {
       user = super.save(user);
 
       if (StringUtils.notBlank(user.getTransientPassword())) {
-        Beans.get(UserService.class).processChangedPassword(user);
+        userUtilsService.processChangedPassword(user);
       }
 
       return user;
@@ -83,14 +89,7 @@ public class UserBaseRepository extends UserRepository {
 
   @Override
   public void remove(User user) {
-    if (user.getPartner() != null) {
-      PartnerBaseRepository partnerRepo = Beans.get(PartnerBaseRepository.class);
-      Partner partner = partnerRepo.find(user.getPartner().getId());
-      if (partner != null) {
-        partner.setLinkedUser(null);
-        partnerRepo.save(partner);
-      }
-    }
+    userUtilsService.removeLinkedUser(user);
     super.remove(user);
   }
 

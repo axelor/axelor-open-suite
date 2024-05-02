@@ -24,7 +24,12 @@ import com.google.inject.Inject;
 
 public class BankAddressBaseRepository extends BankAddressRepository {
 
-  @Inject BankAddressService bankAddressService;
+  protected BankAddressService bankAddressService;
+
+  @Inject
+  public BankAddressBaseRepository(BankAddressService bankAddressService) {
+    this.bankAddressService = bankAddressService;
+  }
 
   @Override
   public BankAddress save(BankAddress bankAddress) {

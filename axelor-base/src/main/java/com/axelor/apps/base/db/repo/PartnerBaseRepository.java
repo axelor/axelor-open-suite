@@ -20,20 +20,29 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.auth.db.User;
-import com.axelor.inject.Beans;
+import com.axelor.apps.base.utils.PartnerUtilsService;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import java.util.List;
 import javax.persistence.PersistenceException;
 
 public class PartnerBaseRepository extends PartnerRepository {
 
+  protected PartnerAddressRepository partnerAddressRepository;
+  protected PartnerUtilsService partnerUtilsService;
+
+  @Inject
+  public PartnerBaseRepository(
+      PartnerAddressRepository partnerAddressRepository, PartnerUtilsService partnerUtilsService) {
+    this.partnerAddressRepository = partnerAddressRepository;
+    this.partnerUtilsService = partnerUtilsService;
+  }
+
   @Override
   public Partner save(Partner partner) {
     try {
-      Beans.get(PartnerService.class).onSave(partner);
+      partnerUtilsService.onSave(partner);
       return super.save(partner);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -48,8 +57,6 @@ public class PartnerBaseRepository extends PartnerRepository {
 
     copy.setPartnerSeq(null);
     copy.setEmailAddress(null);
-
-    PartnerAddressRepository partnerAddressRepository = Beans.get(PartnerAddressRepository.class);
 
     List<PartnerAddress> partnerAddressList = Lists.newArrayList();
 
@@ -68,15 +75,7 @@ public class PartnerBaseRepository extends PartnerRepository {
 
   @Override
   public void remove(Partner partner) {
-    if (partner.getLinkedUser() != null) {
-      UserBaseRepository userRepo = Beans.get(UserBaseRepository.class);
-      User user = userRepo.find(partner.getLinkedUser().getId());
-      if (user != null) {
-        user.setPartner(null);
-        userRepo.save(user);
-      }
-    }
-
+    partnerUtilsService.removeLinkedPartner(partner);
     super.remove(partner);
   }
 }

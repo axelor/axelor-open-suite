@@ -51,16 +51,6 @@ public interface PartnerService {
       EmailAddress emailAddress,
       Address mainAddress);
 
-  void onSave(Partner partner) throws AxelorException;
-
-  void setPartnerFullName(Partner partner);
-
-  @CallMethod
-  String computeFullName(Partner partner);
-
-  @CallMethod
-  String computeSimpleFullName(Partner partner);
-
   Map<String, String> getSocialNetworkUrl(String name, String firstName, Integer typeSelect);
 
   @Deprecated

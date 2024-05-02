@@ -23,28 +23,20 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
-import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -85,47 +77,6 @@ public class ProductServiceImpl implements ProductService {
     this.updateSalePrice(product, null);
 
     productRepo.save(product);
-  }
-
-  public String getSequence(Product product) throws AxelorException {
-    String seq = null;
-    if (appBaseService
-        .getAppBase()
-        .getProductSequenceTypeSelect()
-        .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT_CATEGORY)) {
-      ProductCategory productCategory = product.getProductCategory();
-      if (productCategory.getSequence() != null) {
-        seq =
-            sequenceService.getSequenceNumber(
-                productCategory.getSequence(), Product.class, "code", product);
-      }
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.CATEGORY_NO_SEQUENCE));
-      }
-    } else if (appBaseService
-        .getAppBase()
-        .getProductSequenceTypeSelect()
-        .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT)) {
-      Sequence productSequence = appBaseService.getAppBase().getProductSequence();
-      if (productSequence != null) {
-        seq = sequenceService.getSequenceNumber(productSequence, Product.class, "code", product);
-      }
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.APP_BASE_NO_SEQUENCE));
-      }
-    }
-
-    if (seq == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.PRODUCT_NO_SEQUENCE));
-    }
-
-    return seq;
   }
 
   @Override
@@ -545,24 +496,5 @@ public class ProductServiceImpl implements ProductService {
         productVariantValue4,
         productVariantValue5,
         false);
-  }
-
-  public void copyProduct(Product product, Product copy) {
-    copy.setBarCode(null);
-    try {
-      if (product.getPicture() != null) {
-        File file = MetaFiles.getPath(product.getPicture()).toFile();
-        copy.setPicture(metaFiles.upload(file));
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    copy.setStartDate(null);
-    copy.setEndDate(null);
-    copy.setCostPrice(BigDecimal.ZERO);
-    copy.setPurchasePrice(BigDecimal.ZERO);
-    copy.setProductCompanyList(null);
-    copy.setLastPurchaseDate(null);
-    copy.setCode(null);
   }
 }

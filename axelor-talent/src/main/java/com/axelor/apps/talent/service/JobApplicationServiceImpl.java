@@ -21,7 +21,7 @@ package com.axelor.apps.talent.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.DMSService;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PartnerComputeNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
@@ -30,7 +30,6 @@ import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -51,6 +50,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   protected AppTalentService appTalentService;
   protected DMSService dmsService;
   protected EmployeeFileDMSService employeeFileDMSService;
+  protected PartnerComputeNameService partnerComputeNameService;
 
   @Inject
   public JobApplicationServiceImpl(
@@ -60,7 +60,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
       DMSFileRepository dmsFileRepo,
       AppTalentService appTalentService,
       DMSService dmsService,
-      EmployeeFileDMSService employeeFileDMSService) {
+      EmployeeFileDMSService employeeFileDMSService,
+      PartnerComputeNameService partnerComputeNameService) {
     this.jobApplicationRepo = jobApplicationRepo;
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
@@ -68,6 +69,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     this.appTalentService = appTalentService;
     this.dmsService = dmsService;
     this.employeeFileDMSService = employeeFileDMSService;
+    this.partnerComputeNameService = partnerComputeNameService;
   }
 
   @Transactional
@@ -141,7 +143,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         TraceBackService.trace(e);
       }
     }
-    Beans.get(PartnerService.class).setPartnerFullName(contact);
+    partnerComputeNameService.setPartnerFullName(contact);
 
     return contact;
   }

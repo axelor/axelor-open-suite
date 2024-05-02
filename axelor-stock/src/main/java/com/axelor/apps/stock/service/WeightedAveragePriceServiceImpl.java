@@ -40,16 +40,12 @@ import java.util.Set;
 @RequestScoped
 public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceService {
 
-  protected ProductRepository productRepo;
   protected AppBaseService appBaseService;
   protected ProductCompanyService productCompanyService;
 
   @Inject
   public WeightedAveragePriceServiceImpl(
-      ProductRepository productRepo,
-      AppBaseService appBaseService,
-      ProductCompanyService productCompanyService) {
-    this.productRepo = productRepo;
+      AppBaseService appBaseService, ProductCompanyService productCompanyService) {
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
   }
@@ -101,7 +97,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
         }
       }
     }
-    productRepo.save(product);
+    Beans.get(ProductRepository.class).save(product);
   }
 
   @Override

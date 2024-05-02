@@ -16,35 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.purchase.utils;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.ProductVariantRepository;
-import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.base.service.ProductServiceImpl;
-import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.ProductUtilsServiceImpl;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 
-public class ProductServicePurchaseImpl extends ProductServiceImpl {
+public class ProductUtilsPurchaseServiceImpl extends ProductUtilsServiceImpl {
 
   @Inject
-  public ProductServicePurchaseImpl(
-      ProductVariantService productVariantService,
-      ProductVariantRepository productVariantRepo,
-      SequenceService sequenceService,
-      AppBaseService appBaseService,
-      ProductRepository productRepo,
-      ProductCompanyService productCompanyService) {
-    super(
-        productVariantService,
-        productVariantRepo,
-        sequenceService,
-        appBaseService,
-        productRepo,
-        productCompanyService);
+  public ProductUtilsPurchaseServiceImpl(
+      MetaFiles metaFiles, AppBaseService appBaseService, SequenceService sequenceService) {
+    super(metaFiles, appBaseService, sequenceService);
   }
 
   @Override

@@ -53,6 +53,7 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -85,7 +86,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected AppBaseService appBaseService;
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
-  protected ProductRepository productRepository;
   protected StockMoveToolService stockMoveToolService;
   protected StockMoveLineRepository stockMoveLineRepo;
   protected PartnerStockSettingsService partnerStockSettingsService;
@@ -101,7 +101,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
-      ProductRepository productRepository,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
@@ -112,7 +111,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.appBaseService = appBaseService;
     this.stockMoveRepo = stockMoveRepository;
     this.partnerProductQualityRatingService = partnerProductQualityRatingService;
-    this.productRepository = productRepository;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
@@ -1402,7 +1400,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMove.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         if (stockMoveLine.getProduct() != null) {
-          Product product = productRepository.find(stockMoveLine.getProduct().getId());
+          Product product = JPA.find(Product.class, stockMoveLine.getProduct().getId());
           stockMoveLine.setNetMass(product.getNetMass());
           stockMoveLineRepo.save(stockMoveLine);
         }

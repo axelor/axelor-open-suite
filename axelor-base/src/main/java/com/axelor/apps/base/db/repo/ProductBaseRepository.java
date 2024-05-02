@@ -21,10 +21,9 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
-import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.base.utils.ProductUtilsService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Strings;
@@ -33,20 +32,31 @@ import javax.persistence.PersistenceException;
 
 public class ProductBaseRepository extends ProductRepository {
 
-  @Inject protected AppBaseService appBaseService;
-
-  @Inject protected TranslationService translationService;
-
   protected static final String FULL_NAME_FORMAT = "[%s] %s";
 
-  @Inject protected BarcodeGeneratorService barcodeGeneratorService;
+  protected AppBaseService appBaseService;
+  protected TranslationService translationService;
+  protected BarcodeGeneratorService barcodeGeneratorService;
+  protected ProductUtilsService productUtilsService;
+
+  @Inject
+  public ProductBaseRepository(
+      AppBaseService appBaseService,
+      TranslationService translationService,
+      BarcodeGeneratorService barcodeGeneratorService,
+      ProductUtilsService productUtilsService) {
+    this.appBaseService = appBaseService;
+    this.translationService = translationService;
+    this.barcodeGeneratorService = barcodeGeneratorService;
+    this.productUtilsService = productUtilsService;
+  }
 
   @Override
   public Product save(Product product) {
     try {
       if (appBaseService.getAppBase().getGenerateProductSequence()
           && Strings.isNullOrEmpty(product.getCode())) {
-        product.setCode(Beans.get(ProductService.class).getSequence(product));
+        product.setCode(productUtilsService.getSequence(product));
       }
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -56,7 +66,7 @@ public class ProductBaseRepository extends ProductRepository {
     product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
 
     if (product.getId() != null) {
-      Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
+      Product oldProduct = super.find(product.getId());
       translationService.updateFormatedValueTranslations(
           oldProduct.getFullName(), FULL_NAME_FORMAT, product.getCode(), product.getName());
     } else {
@@ -91,7 +101,7 @@ public class ProductBaseRepository extends ProductRepository {
   @Override
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
-    Beans.get(ProductService.class).copyProduct(product, copy);
+    productUtilsService.copyProduct(product, copy);
     return copy;
   }
 }

@@ -1381,9 +1381,9 @@
   <action-record name="action-partner-record-simple-and-full-name"
     model="com.axelor.apps.base.db.Partner">
     <field name="simpleFullName"
-      expr="call:com.axelor.apps.base.service.PartnerService:computeSimpleFullName(__this__)"/>
+      expr="call:com.axelor.apps.base.service.PartnerComputeNameService:computeSimpleFullName(__this__)"/>
     <field name="fullName"
-      expr="call:com.axelor.apps.base.service.PartnerService:computeFullName(__this__)"/>
+      expr="call:com.axelor.apps.base.service.PartnerComputeNameService:computeFullName(__this__)"/>
   </action-record>
 
   <action-record name="action-partner-record-set-default"

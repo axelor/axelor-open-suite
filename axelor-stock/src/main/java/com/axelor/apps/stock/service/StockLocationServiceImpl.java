@@ -21,7 +21,6 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -65,8 +64,6 @@ public class StockLocationServiceImpl implements StockLocationService {
 
   protected StockLocationLineService stockLocationLineService;
 
-  protected ProductRepository productRepo;
-
   protected StockConfigService stockConfigService;
   protected AppBaseService appBaseService;
   protected UnitRepository unitRepository;
@@ -81,7 +78,6 @@ public class StockLocationServiceImpl implements StockLocationService {
   public StockLocationServiceImpl(
       StockLocationRepository stockLocationRepo,
       StockLocationLineService stockLocationLineService,
-      ProductRepository productRepo,
       StockConfigService stockConfigService,
       AppBaseService appBaseService,
       UnitRepository unitRepository,
@@ -90,7 +86,6 @@ public class StockLocationServiceImpl implements StockLocationService {
       StockLocationLineRepository stockLocationLineRepository) {
     this.stockLocationRepo = stockLocationRepo;
     this.stockLocationLineService = stockLocationLineService;
-    this.productRepo = productRepo;
     this.stockConfigService = stockConfigService;
     this.appBaseService = appBaseService;
     this.unitRepository = unitRepository;
@@ -115,7 +110,7 @@ public class StockLocationServiceImpl implements StockLocationService {
   protected BigDecimal getQtyOfProductInStockLocations(
       Long productId, List<Long> stockLocationIds, Long companyId, String qtyFieldName)
       throws AxelorException {
-    Product product = productRepo.find(productId);
+    Product product = JPA.find(Product.class, productId);
     Unit productUnit = product.getUnit();
 
     StringBuilder query = new StringBuilder();

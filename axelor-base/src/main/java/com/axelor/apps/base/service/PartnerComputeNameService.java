@@ -16,25 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.db.repo;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
-import java.util.Map;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.meta.CallMethod;
 
-public class ProductCompanyBaseRepository extends ProductCompanyRepository {
+public interface PartnerComputeNameService {
 
-  protected AppBaseService appBaseService;
+  void setPartnerFullName(Partner partner);
 
-  @Inject
-  public ProductCompanyBaseRepository(AppBaseService appBaseService) {
-    this.appBaseService = appBaseService;
-  }
+  @CallMethod
+  String computeFullName(Partner partner);
 
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
-
-    return super.populate(json, context);
-  }
+  @CallMethod
+  String computeSimpleFullName(Partner partner);
 }

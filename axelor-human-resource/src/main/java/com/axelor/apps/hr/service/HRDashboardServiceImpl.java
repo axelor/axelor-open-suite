@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.PartnerComputeNameService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -76,6 +77,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
   protected PeriodService periodService;
   protected EmployeeComputeDaysLeaveBonusService leaveBonusService;
   protected PartnerService partnerService;
+  protected PartnerComputeNameService partnerComputeNameService;
 
   protected MedicalVisitRepository medicalVisitRepository;
 
@@ -89,6 +91,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
       PeriodService periodService,
       EmployeeComputeDaysLeaveBonusService leaveBonusService,
       PartnerService partnerService,
+      PartnerComputeNameService partnerComputeNameService,
       MedicalVisitRepository medicalVisitRepository) {
     this.appBaseService = appBaseService;
     this.leaveRepo = leaveRepo;
@@ -98,6 +101,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
     this.periodService = periodService;
     this.leaveBonusService = leaveBonusService;
     this.partnerService = partnerService;
+    this.partnerComputeNameService = partnerComputeNameService;
     this.medicalVisitRepository = medicalVisitRepository;
   }
 
@@ -211,7 +215,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
           Optional.ofNullable(expenseLine.getExpense())
               .map(Expense::getEmployee)
               .map(Employee::getContactPartner)
-              .map(partner -> partnerService.computeSimpleFullName(partner))
+              .map(partner -> partnerComputeNameService.computeSimpleFullName(partner))
               .orElse(null));
       map.put(
           "statusSelect",
@@ -305,7 +309,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
           Optional.ofNullable(extraHrsLine.getExtraHours())
               .map(ExtraHours::getEmployee)
               .map(Employee::getContactPartner)
-              .map(partner -> partnerService.computeSimpleFullName(partner))
+              .map(partner -> partnerComputeNameService.computeSimpleFullName(partner))
               .orElse(null));
       extraHrsData.add(map);
     }
@@ -363,7 +367,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
           "fullName",
           Optional.ofNullable(leaveRequest.getEmployee())
               .map(Employee::getContactPartner)
-              .map(partner -> partnerService.computeSimpleFullName(partner))
+              .map(partner -> partnerComputeNameService.computeSimpleFullName(partner))
               .orElse(null));
       map.put(
           "fromDate",

@@ -21,7 +21,6 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -53,7 +52,6 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
-      ProductRepository productRepository,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
@@ -75,7 +73,6 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         appBaseService,
         stockMoveRepository,
         partnerProductQualityRatingService,
-        productRepository,
         partnerStockSettingsService,
         stockConfigService,
         appStockService,

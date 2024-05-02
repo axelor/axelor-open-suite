@@ -19,7 +19,7 @@
 package com.axelor.apps.purchase.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.base.service.ProductServiceImpl;
+import com.axelor.apps.base.utils.ProductUtilsServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -27,7 +27,6 @@ import com.axelor.apps.purchase.db.repo.PurchaseRequestManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogManagementRepository;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
-import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
 import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLinePurchaseRepository;
@@ -57,6 +56,7 @@ import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsServiceImpl;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
+import com.axelor.apps.purchase.utils.ProductUtilsPurchaseServiceImpl;
 
 public class PurchaseModule extends AxelorModule {
 
@@ -68,7 +68,7 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseRequestService.class).to(PurchaseRequestServiceImpl.class);
     bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
     bind(PurchaseOrderPrintService.class).to(PurchaseOrderPrintServiceImpl.class);
-    bind(ProductServiceImpl.class).to(ProductServicePurchaseImpl.class);
+    bind(ProductUtilsServiceImpl.class).to(ProductUtilsPurchaseServiceImpl.class);
     bind(PurchaseRequestRepository.class).to(PurchaseRequestManagementRepository.class);
     bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
     bind(SupplierCatalogService.class).to(SupplierCatalogServiceImpl.class);

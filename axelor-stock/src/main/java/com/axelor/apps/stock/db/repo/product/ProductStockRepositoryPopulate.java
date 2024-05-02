@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.db.repo.product;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -27,6 +26,7 @@ import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,7 +35,6 @@ import java.util.Map;
 
 public class ProductStockRepositoryPopulate {
 
-  protected ProductRepository productRepo;
   protected StockLocationRepository stockLocationRepo;
   protected StockLocationLineService stockLocationLineService;
   protected StockLocationService stockLocationService;
@@ -43,12 +42,10 @@ public class ProductStockRepositoryPopulate {
 
   @Inject
   public ProductStockRepositoryPopulate(
-      ProductRepository productRepo,
       StockLocationRepository stockLocationRepo,
       StockLocationLineService stockLocationLineService,
       StockLocationService stockLocationService,
       StockMoveService stockMoveService) {
-    this.productRepo = productRepo;
     this.stockLocationRepo = stockLocationRepo;
     this.stockLocationLineService = stockLocationLineService;
     this.stockLocationService = stockLocationService;
@@ -59,7 +56,7 @@ public class ProductStockRepositoryPopulate {
   public void setAvailableQty(Map<String, Object> json, Map<String, Object> context) {
     try {
       Long productId = (Long) json.get("id");
-      Product product = productRepo.find(productId);
+      Product product = JPA.find(Product.class, productId);
 
       if (context.get("_parent") != null) {
         Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
