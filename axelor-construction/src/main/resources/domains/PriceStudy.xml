@@ -5,11 +5,16 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" implements="com.axelor.apps.base.interfaces.PricedOrderLine">
+  <entity name="PriceStudy">
+    <many-to-one name="saleOrder" title="Sale order"
+      ref="com.axelor.apps.sale.db.SaleOrder"/>
     <decimal name="purchasePrice" title="Purchase price"/>
+    <decimal name="averageFG" title="Average FG"/>
     <decimal name="costPrice" title="Cost price"/>
-    <decimal name="generalExpenses" title="General expenses" default="1"/>
-    <decimal name="grossMarging" title="Gross margin" default="0"/>
+    <decimal name="averageGrossMarge" title="Average marge"/>
+    <decimal name="price" title="Selling price"/>
+    <many-to-one name="productType" title="Product Type"
+      ref="com.axelor.apps.base.db.ProductType"/>
   </entity>
 
 </domain-models>

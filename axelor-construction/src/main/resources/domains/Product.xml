@@ -3,10 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
-  <module name="sale" package="com.axelor.apps.sale.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="SaleConfig" cacheable="true">
-    <decimal name="defaultGrossMarging" default="0" title="Default gross margin"/>
+  <entity name="Product">
+    <many-to-one name="productType" title="Product type"
+      ref="com.axelor.apps.base.db.ProductType"/>
   </entity>
 
 </domain-models>

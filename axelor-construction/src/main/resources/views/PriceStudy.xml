@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid name="price-study-grid" title="Price study" model="com.axelor.apps.sale.db.PriceStudy">
+    <field name="productType"/>
+    <field name="purchasePrice"/>
+    <field name="averageFG"/>
+    <field name="costPrice"/>
+    <field name="averageGrossMarge"/>
+    <field name="price"/>
+    <field name="saleOrder" hidden="true"/>
+  </grid>
+  <form name="price-study-form" title="Price study" model="com.axelor.apps.sale.db.PriceStudy">
+    <panel name="mainPanel">
+      <field name="productType"/>
+      <field name="purchasePrice"/>
+      <field name="averageFG"/>
+      <field name="costPrice"/>
+      <field name="averageGrossMarge"/>
+      <field name="price"/>
+      <field name="saleOrder" hidden="true"/>
+    </panel>
+  </form>
+
+</object-views>
