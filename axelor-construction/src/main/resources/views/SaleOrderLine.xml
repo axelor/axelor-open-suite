@@ -53,14 +53,10 @@
       <attribute name="title" value="PR HT"/>
       <insert position="before">
         <field name="costPrice" title="Cost Pr"
-          if="__config__.app.getApp('sale')?.getIsUnitPriceCalculationEnabled()"
           onChange="action-sale-order-line-group-calculate-price" width="130"/>
         <field name="generalExpenses" title="GE"
-          if="__config__.app.getApp('sale')?.getIsUnitPriceCalculationEnabled()"
           onChange="action-sale-order-line-group-calculate-price" width="80"/>
-        <field name="grossMarging"
-          if="__config__.app.getApp('sale')?.getIsUnitPriceCalculationEnabled()"
-          onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="grossMarging" onChange="action-sale-order-line-group-calculate-price"/>
       </insert>
     </extend>
     <extend target="//field[@name='availableStatus']">
@@ -100,12 +96,9 @@
     onNew="action-group-sale-saleorderline-onnew" width="large" extension="true">
     <extend target="//field[@name='price']">
       <insert position="before">
-        <field name="costPrice" onChange="action-sale-order-line-group-calculate-price"
-          if="__config__.app.getApp('sale')?.getIsUnitPriceCalculationEnabled()"/>
-        <field name="generalExpenses" onChange="action-sale-order-line-group-calculate-price"
-          if="__config__.app.getApp('sale')?.getIsUnitPriceCalculationEnabled()"/>
-        <field name="grossMarging" onChange="action-sale-order-line-group-calculate-price"
-          if="__config__.app.getApp('sale')?.getIsUnitPriceCalculationEnabled()"/>
+        <field name="costPrice" onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="generalExpenses" onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="grossMarging" onChange="action-sale-order-line-group-calculate-price"/>
       </insert>
     </extend>
 
