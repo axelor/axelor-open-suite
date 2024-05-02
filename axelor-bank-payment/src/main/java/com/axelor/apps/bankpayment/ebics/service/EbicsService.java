@@ -623,7 +623,10 @@ public class EbicsService {
     Optional<ReturnCode> errorReturnCode =
         ebicsResponses.stream()
             .map(DefaultResponseElement::getReturnCode)
-            .filter(returnCode -> !returnCode.isOk())
+            .filter(
+                returnCode ->
+                    !returnCode.isOk()
+                        && !returnCode.equals(ReturnCode.EBICS_DOWNLOAD_POSTPROCESS_DONE))
             .findFirst();
     if (errorReturnCode.isPresent()) {
       AxelorException exception =
