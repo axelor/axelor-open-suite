@@ -25,6 +25,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
@@ -58,7 +59,8 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
       ContractYearEndBonusService contractYearEndBonusService,
       OpportunityRepository opportunityRepository,
       ProductCompanyService productCompanyService,
-      AccountManagementContractService accountManagementContractService) {
+      AccountManagementContractService accountManagementContractService,
+      FiscalPositionService fiscalPositionService) {
     super(
         appBaseService,
         versionService,
@@ -74,7 +76,8 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
         contractYearEndBonusService,
         opportunityRepository,
         productCompanyService,
-        accountManagementContractService);
+        accountManagementContractService,
+        fiscalPositionService);
   }
 
   @Override

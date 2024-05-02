@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -41,6 +43,7 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
@@ -98,6 +101,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected ContractYearEndBonusService contractYearEndBonusService;
   protected ProductCompanyService productCompanyService;
   protected AccountManagementContractService accountManagementContractService;
+  protected FiscalPositionService fiscalPositionService;
 
   @Inject
   public ContractServiceImpl(
@@ -115,7 +119,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractYearEndBonusService contractYearEndBonusService,
       OpportunityRepository opportunityRepository,
       ProductCompanyService productCompanyService,
-      AccountManagementContractService accountManagementContractService) {
+      AccountManagementContractService accountManagementContractService,
+      FiscalPositionService fiscalPositionService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -131,6 +136,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.opportunityRepository = opportunityRepository;
     this.productCompanyService = productCompanyService;
     this.accountManagementContractService = accountManagementContractService;
+    this.fiscalPositionService = fiscalPositionService;
   }
 
   @Override
@@ -729,6 +735,26 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
               }
             } else {
               super.setProductAccount(invoiceLine, company, isPurchase);
+            }
+          }
+
+          @Override
+          public void setTaxEquiv(InvoiceLine invoiceLine, Company company, boolean isPurchase)
+              throws AxelorException {
+            if (contractYearEndBonusService.isYebContract(contract)) {
+              if (CollectionUtils.isNotEmpty(taxLineSet)) {
+                Set<Tax> taxSet =
+                    taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet());
+                if (CollectionUtils.isNotEmpty(taxSet)) {
+                  TaxEquiv taxEquiv =
+                      fiscalPositionService.getTaxEquiv(invoice.getFiscalPosition(), taxSet);
+                  invoiceLine.setTaxEquiv(taxEquiv);
+                }
+              } else {
+                super.setTaxEquiv(invoiceLine, company, isPurchase);
+              }
+            } else {
+              super.setTaxEquiv(invoiceLine, company, isPurchase);
             }
           }
 

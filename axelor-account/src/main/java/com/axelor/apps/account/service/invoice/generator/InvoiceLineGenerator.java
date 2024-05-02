@@ -195,6 +195,17 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
   }
 
+  public void setTaxEquiv(InvoiceLine invoiceLine, Company company, boolean isPurchase)
+      throws AxelorException {
+    if (product != null) {
+      TaxEquiv taxEquiv =
+          Beans.get(AccountManagementService.class)
+              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
+
+      invoiceLine.setTaxEquiv(taxEquiv);
+    }
+  }
+
   /**
    * @return
    * @throws AxelorException
@@ -233,13 +244,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       this.determineTaxLine();
     }
 
-    if (product != null) {
-      TaxEquiv taxEquiv =
-          Beans.get(AccountManagementService.class)
-              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
-
-      invoiceLine.setTaxEquiv(taxEquiv);
-    }
+    setTaxEquiv(invoiceLine, company, isPurchase);
 
     invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
 

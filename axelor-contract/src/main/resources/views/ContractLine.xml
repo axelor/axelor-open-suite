@@ -312,7 +312,8 @@
     <action name="action-contract-line-method-hide-axis-analytic-account"/>
     <action name="action-contract-line-method-print-analytic-account"/>
     <action name="action-contract-line-attrs-read-only-distribution-lines"/>
-    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"/>
+    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"
+      if="eval: __parent__?.targetTypeSelect == 1 || __parent__?.targetTypeSelect == 2"/>
   </action-group>
 
   <action-group name="action-contract-line-group-product-onchange">
