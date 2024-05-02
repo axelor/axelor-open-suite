@@ -28,6 +28,8 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.AnalyticLineModelProjectServiceImpl;
+import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
+import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServiceImpl;
 import com.axelor.apps.businessproject.service.ContractLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseInvoiceLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseLineCreateServiceProjectImpl;
@@ -90,6 +92,7 @@ import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
+import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateServiceImpl;
@@ -179,5 +182,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectHoldBackLineService.class).to(ProjectHoldBackLineServiceImpl.class);
     bind(ProjectTaskProgressUpdateService.class).to(ProjectTaskProgressUpdateServiceImpl.class);
     bind(ProjectFrameworkContractService.class).to(ProjectFrameworkContractServiceImpl.class);
+    bind(ICalendarEventObserver.class);
+    bind(BusinessProjectClosingControlService.class)
+        .to(BusinessProjectClosingControlServiceImpl.class);
   }
 }
