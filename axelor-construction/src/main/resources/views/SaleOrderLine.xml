@@ -96,18 +96,16 @@
     onNew="action-group-sale-saleorderline-onnew" width="large" extension="true">
     <extend target="//field[@name='price']">
       <insert position="before">
-        <field name="costPrice" onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="purchasePrice" onChange="action-sale-order-line-group-calculate-price"/>
+        <field name="costPrice" readonly="true"/>
         <field name="generalExpenses" onChange="action-sale-order-line-group-calculate-price"/>
         <field name="grossMarging" onChange="action-sale-order-line-group-calculate-price"/>
-      </insert>
-    </extend>
-
-    <extend target="//button[@name='recalculateBtn']">
-      <insert position="after">
+        <field name="productType" hidden="true"/>
         <field name="$isEnabledForCalculation" hidden="true"/>
         <field name="$isUnitPriceCalculationEnabled" hidden="true"/>
       </insert>
     </extend>
+
   </form>
 
   <action-group name="action-sale-order-line-group-calculate-price">
@@ -120,7 +118,8 @@
 
   <action-record name="action-sale-order-line-record-calculate-price"
     model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="price" expr="eval: costPrice * (grossMarging + generalExpenses + 1)"/>
+    <field name="costPrice" expr="eval: purchasePrice * generalExpenses"/>
+    <field name="price" expr="eval: purchasePrice * generalExpenses * (grossMarging + 1)"/>
   </action-record>
 
   <action-record name="action-sale-order-line-record-set-default-type-select"

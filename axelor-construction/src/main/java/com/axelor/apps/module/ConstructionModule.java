@@ -20,14 +20,15 @@ package com.axelor.apps.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.budget.db.repo.SaleOrderBudgetRepository;
-import com.axelor.apps.businessproduction.service.SaleOrderLineBusinessProductionServiceImpl;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineGroupBudgetServiceImpl;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryTask;
 import com.axelor.apps.businesssupport.service.ProjectTaskBusinessSupportServiceImpl;
 import com.axelor.apps.repo.SaleOrderConstructionRepository;
 import com.axelor.apps.service.ConsructionProjectGeneratorFactoryTask;
 import com.axelor.apps.service.ConstructionSaleOrderLineServiceImpl;
+import com.axelor.apps.service.PriceStudyService;
+import com.axelor.apps.service.PriceStudyServiceImpl;
 import com.axelor.apps.service.ProjectTaskConstructionServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 
 public class ConstructionModule extends AxelorModule {
 
@@ -36,8 +37,8 @@ public class ConstructionModule extends AxelorModule {
 
     bind(ProjectTaskBusinessSupportServiceImpl.class).to(ProjectTaskConstructionServiceImpl.class);
     bind(ProjectGeneratorFactoryTask.class).to(ConsructionProjectGeneratorFactoryTask.class);
-    bind(SaleOrderLineServiceSupplyChainImpl.class)
-        .to(SaleOrderLineServiceSupplyChainImpl.class);
+    bind(SaleOrderLineGroupBudgetServiceImpl.class).to(ConstructionSaleOrderLineServiceImpl.class);
     bind(SaleOrderBudgetRepository.class).to(SaleOrderConstructionRepository.class);
+    bind(PriceStudyService.class).to(PriceStudyServiceImpl.class);
   }
 }
