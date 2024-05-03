@@ -1,3 +1,54 @@
+## [7.2.13] (2024-05-03)
+
+### Fixes
+#### Base
+
+* Sequence: fixed NPE while checking yearly reset or monthly reset on unsaved sequence.
+* Advanced export: Fixed export doesn't work when maximum export limit exceeds.
+
+#### Account
+
+* Invoice: fixed default financial discount from partner not being computed after invoice copy.
+* Accounting export: Fixed error when replaying the accounting export.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed tax move line generation when origin is payment.
+* EBICS: bank statements are now correctly created after a FDL request.
+
+#### Contract
+
+* Contract: fixed prorata invoicing when invoicing a full period.
+* Contract: correctly disable related configuration when disabling invoice management.
+* Contract: Fixed error when using contract template with contract line to generate a contract.
+
+#### Production
+
+* Manufacturing order: fixed conversion of missing quantity of consumed products.
+* Machine: fixed machine planning type when creating it from machine.
+
+#### Purchase
+
+* Purchase order report: fixed sequence order issue when title lines are present.
+
+#### Sale
+
+* Sale order: fixed refresh issue when saving a sale order.
+
+#### Stock
+
+* Tracking number: fixed available qty not displayed on grid view.
+* Stock move: fixed printing settings when creating stock move from sale order.
+* Stock configuration: fixed typo in french translation, 'incoterme' => 'incoterm'
+
+
+### Developer
+
+#### Production
+
+Changed signature of `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId)`
+to `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit)`
+
 ## [7.2.12] (2024-04-19)
 
 ### Fixes
@@ -771,6 +822,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.13]: https://github.com/axelor/axelor-open-suite/compare/v7.2.12...v7.2.13
 [7.2.12]: https://github.com/axelor/axelor-open-suite/compare/v7.2.11...v7.2.12
 [7.2.11]: https://github.com/axelor/axelor-open-suite/compare/v7.2.10...v7.2.11
 [7.2.10]: https://github.com/axelor/axelor-open-suite/compare/v7.2.9...v7.2.10
