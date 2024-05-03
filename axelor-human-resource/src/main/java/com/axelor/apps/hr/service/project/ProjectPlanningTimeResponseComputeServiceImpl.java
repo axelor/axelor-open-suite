@@ -2,7 +2,7 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.hr.rest.dto.ProjectPlanningTImeRestrictedValueResponse;
+import com.axelor.apps.hr.rest.dto.ProjectPlanningTimeRestrictedValueResponse;
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.ProjectConfig;
 import com.axelor.apps.project.service.config.ProjectConfigService;
@@ -21,7 +21,7 @@ public class ProjectPlanningTimeResponseComputeServiceImpl
   }
 
   @Override
-  public ProjectPlanningTImeRestrictedValueResponse computeProjectPlanningTimeResponse(
+  public ProjectPlanningTimeRestrictedValueResponse computeProjectPlanningTimeResponse(
       Company company) throws AxelorException {
     ProjectConfig projectConfig = projectConfigService.getProjectConfig(company);
     boolean isSelectionOnDisplayPlannedTime = projectConfig.getIsSelectionOnDisplayPlannedTime();
@@ -31,9 +31,9 @@ public class ProjectPlanningTimeResponseComputeServiceImpl
           projectConfig.getPlannedTimeValueList().stream()
               .map(PlannedTimeValue::getId)
               .collect(Collectors.toList());
-      return new ProjectPlanningTImeRestrictedValueResponse(
+      return new ProjectPlanningTimeRestrictedValueResponse(
           projectConfig.getVersion(), true, plannedTimeValueIdList);
     }
-    return new ProjectPlanningTImeRestrictedValueResponse(projectConfig.getVersion(), false, null);
+    return new ProjectPlanningTimeRestrictedValueResponse(projectConfig.getVersion(), false, null);
   }
 }

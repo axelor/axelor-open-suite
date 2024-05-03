@@ -3,11 +3,11 @@ package com.axelor.apps.hr.rest.dto;
 import com.axelor.utils.api.ResponseStructure;
 import java.util.List;
 
-public class ProjectPlanningTImeRestrictedValueResponse extends ResponseStructure {
+public class ProjectPlanningTimeRestrictedValueResponse extends ResponseStructure {
   protected boolean isSelectionOnDisplayPlannedTime;
   protected List<Long> plannedTimeValueIdList;
 
-  public ProjectPlanningTImeRestrictedValueResponse(
+  public ProjectPlanningTimeRestrictedValueResponse(
       int version, boolean isSelectionOnDisplayPlannedTime, List<Long> plannedTimeValueIdList) {
     super(version);
     this.isSelectionOnDisplayPlannedTime = isSelectionOnDisplayPlannedTime;
