@@ -24,14 +24,16 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.auth.db.User;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 public class AnalyticLineEmployeeModel extends AnalyticLineModel {
 
   protected Employee employee;
 
   public AnalyticLineEmployeeModel(Employee employee) {
-    this.employee = employee;
+    this.employee = Objects.requireNonNull(employee);
 
     this.axis1AnalyticAccount = employee.getAxis1AnalyticAccount();
     this.axis2AnalyticAccount = employee.getAxis2AnalyticAccount();
@@ -45,11 +47,7 @@ public class AnalyticLineEmployeeModel extends AnalyticLineModel {
   @Override
   public <T extends AnalyticLineModel> T getExtension(Class<T> klass) throws AxelorException {
     try {
-      if (employee != null) {
-        return klass.getDeclaredConstructor(Employee.class).newInstance(this.employee);
-      } else {
-        return super.getExtension(klass);
-      }
+      return klass.getDeclaredConstructor(Employee.class).newInstance(this.employee);
     } catch (IllegalAccessException
         | InstantiationException
         | NoSuchMethodException
@@ -65,8 +63,9 @@ public class AnalyticLineEmployeeModel extends AnalyticLineModel {
 
   @Override
   public Company getCompany() {
-    if (this.employee != null && this.employee.getUser() != null) {
-      this.company = this.employee.getUser().getActiveCompany();
+    User user = this.employee.getUser();
+    if (user != null) {
+      this.company = user.getActiveCompany();
     } else {
       super.getCompany();
     }
@@ -76,21 +75,12 @@ public class AnalyticLineEmployeeModel extends AnalyticLineModel {
 
   @Override
   public Partner getPartner() {
-    if (this.employee != null) {
-      this.partner = this.employee.getContactPartner();
-    } else {
-      super.getPartner();
-    }
-
+    this.partner = this.employee.getContactPartner();
     return this.partner;
   }
 
   public void copyToModel() {
-    if (this.employee != null) {
-      this.copyToEmployee();
-    } else {
-      super.copyToModel();
-    }
+    this.copyToEmployee();
   }
 
   protected void copyToEmployee() {
