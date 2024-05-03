@@ -132,25 +132,25 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     AnalyticDistributionTemplate analyticDistributionTemplate = null;
 
+    BusinessProjectConfig businessProjectConfig =
+        businessProjectConfigService.getBusinessProjectConfig(company);
+
+    if (businessProjectConfig.getUseAssignedToAnalyticDistribution()) {
+      User assignedToUser = project.getAssignedTo();
+      if (assignedToUser == null) {
+        clearAnalyticLineModel(analyticLineProjectModel);
+        return;
+      }
+      Employee employee = assignedToUser.getEmployee();
+      if (employee != null) {
+        analyticLineModelFromEmployeeService.copyAnalyticsDataFromEmployee(
+            employee, analyticLineProjectModel);
+        return;
+      }
+    }
+
     if (accountConfig.getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER) {
-      BusinessProjectConfig businessProjectConfig =
-          businessProjectConfigService.getBusinessProjectConfig(company);
-
-      if (businessProjectConfig.getUseAssignedToAnalyticDistribution()) {
-        User assignedToUser = project.getAssignedTo();
-        if (assignedToUser == null) {
-          clearAnalyticLineModel(analyticLineProjectModel);
-          return;
-        }
-        Employee employee = assignedToUser.getEmployee();
-        if (employee != null) {
-          analyticLineModelFromEmployeeService.copyAnalyticsDataFromEmployee(
-              employee, analyticLineProjectModel);
-          return;
-        }
-      }
-
       AccountingSituation accountingSituation = null;
       if (partner != null) {
         accountingSituation = accountingSituationService.getAccountingSituation(partner, company);

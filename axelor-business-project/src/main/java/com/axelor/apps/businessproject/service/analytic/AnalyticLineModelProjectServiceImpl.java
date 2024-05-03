@@ -113,14 +113,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
   @Override
   public AnalyticLineProjectModel getAndCopyAnalyticDistribution(
       AnalyticLineProjectModel analyticLineProjectModel) throws AxelorException {
-    if (!isPartnerAnalyticDistribution(analyticLineProjectModel)) {
-      return analyticLineProjectModel;
-    }
-
     projectAnalyticMoveLineService.fillAnalyticLineProjectModel(analyticLineProjectModel);
-
     analyticLineProjectModel.copyToModel();
-
     return analyticLineProjectModel;
   }
 
