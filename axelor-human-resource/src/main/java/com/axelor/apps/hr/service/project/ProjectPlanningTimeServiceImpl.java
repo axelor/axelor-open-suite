@@ -459,23 +459,37 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   @Override
   public String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime) {
+    return "self.id IN ("
+        + StringHelper.getIdListString(
+            computeAvailableDisplayTimeUnits(projectPlanningTime.getTimeUnit()))
+        + ")";
+  }
+
+  @Override
+  public List<Long> computeAvailableDisplayTimeUnitIds(Unit unit) {
+    return computeAvailableDisplayTimeUnits(unit).stream()
+        .map(Unit::getId)
+        .collect(Collectors.toList());
+  }
+
+  protected List<Unit> computeAvailableDisplayTimeUnits(Unit unit) {
     List<Unit> units = new ArrayList<>();
-    units.add(projectPlanningTime.getTimeUnit());
+    units.add(unit);
     units.addAll(
         unitConversionRepository.all()
             .filter("self.entitySelect = :entitySelect AND self.startUnit = :startUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
-            .bind("startUnit", projectPlanningTime.getTimeUnit()).fetch().stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("startUnit", unit)
+            .fetch().stream()
             .map(UnitConversion::getEndUnit)
             .collect(Collectors.toList()));
     units.addAll(
         unitConversionRepository.all()
             .filter("self.entitySelect = :entitySelect AND self.endUnit = :endUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
-            .bind("endUnit", projectPlanningTime.getTimeUnit()).fetch().stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("endUnit", unit)
+            .fetch().stream()
             .map(UnitConversion::getStartUnit)
             .collect(Collectors.toList()));
-    return "self.id IN (" + StringHelper.getIdListString(units) + ")";
+    return units;
   }
 
   @Override
