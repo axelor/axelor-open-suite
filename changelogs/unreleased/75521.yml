@@ -1,6 +1,0 @@
----
-title: "ControlEntry/ControlPlan: fixed duplication"
-module: axelor-quality
-developer: |
-  Created ControlEntryManagementRepository extending ControlEntryRepository, ControlPlanManagementRepository extending ControlPlanRepository
-  and ControlEntryPlanLineManagementRepository extending ControlEntryPlanLineManagementRepository
