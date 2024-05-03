@@ -123,9 +123,14 @@ public class ProjectController {
 
     AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
     Beans.get(AnalyticLineModelProjectService.class)
-        .getAndComputeAnalyticDistribution(analyticLineProjectModel);
+        .getAndCopyAnalyticDistribution(analyticLineProjectModel);
     response.setValue(
         "analyticDistributionTemplate", analyticLineProjectModel.getAnalyticDistributionTemplate());
+    response.setValue("axis1AnalyticAccount", analyticLineProjectModel.getAxis1AnalyticAccount());
+    response.setValue("axis2AnalyticAccount", analyticLineProjectModel.getAxis2AnalyticAccount());
+    response.setValue("axis3AnalyticAccount", analyticLineProjectModel.getAxis3AnalyticAccount());
+    response.setValue("axis4AnalyticAccount", analyticLineProjectModel.getAxis4AnalyticAccount());
+    response.setValue("axis5AnalyticAccount", analyticLineProjectModel.getAxis5AnalyticAccount());
 
     if (partner != null) {
       response.setValue("currency", partner.getCurrency());
@@ -325,13 +330,16 @@ public class ProjectController {
       AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
       AnalyticLineModelProjectService analyticLineModelProjectService =
           Beans.get(AnalyticLineModelProjectService.class);
-      analyticLineModelProjectService.getAndComputeAnalyticDistribution(analyticLineProjectModel);
-      analyticLineModelProjectService.createAnalyticDistributionWithTemplate(
-          analyticLineProjectModel);
+      analyticLineModelProjectService.getAndCopyAnalyticDistribution(analyticLineProjectModel);
 
       response.setValue(
           "analyticDistributionTemplate",
           analyticLineProjectModel.getAnalyticDistributionTemplate());
+      response.setValue("axis1AnalyticAccount", analyticLineProjectModel.getAxis1AnalyticAccount());
+      response.setValue("axis2AnalyticAccount", analyticLineProjectModel.getAxis2AnalyticAccount());
+      response.setValue("axis3AnalyticAccount", analyticLineProjectModel.getAxis3AnalyticAccount());
+      response.setValue("axis4AnalyticAccount", analyticLineProjectModel.getAxis4AnalyticAccount());
+      response.setValue("axis5AnalyticAccount", analyticLineProjectModel.getAxis5AnalyticAccount());
       response.setValue("analyticMoveLineList", analyticLineProjectModel.getAnalyticMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

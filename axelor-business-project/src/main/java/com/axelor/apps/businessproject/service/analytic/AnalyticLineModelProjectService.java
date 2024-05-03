@@ -13,7 +13,7 @@ public interface AnalyticLineModelProjectService {
   AnalyticLineModel createAnalyticDistributionWithTemplate(
       AnalyticLineProjectModel analyticLineProjectModel) throws AxelorException;
 
-  AnalyticLineProjectModel getAndComputeAnalyticDistribution(
+  AnalyticLineProjectModel getAndCopyAnalyticDistribution(
       AnalyticLineProjectModel analyticLineProjectModel) throws AxelorException;
 
   boolean analyticDistributionTemplateRequired(AnalyticLineModel analyticLineModel)

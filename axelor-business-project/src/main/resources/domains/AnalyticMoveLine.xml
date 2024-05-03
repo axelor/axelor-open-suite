@@ -10,6 +10,8 @@
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project"
       title="Business project"/>
 
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+
   </entity>
 
 </domain-models>

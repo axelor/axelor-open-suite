@@ -79,6 +79,8 @@ import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.businessproject.service.analytic.AnalyticAttrsBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.analytic.AnalyticLineModelFromEmployeeService;
+import com.axelor.apps.businessproject.service.analytic.AnalyticLineModelFromEmployeeServiceImpl;
 import com.axelor.apps.businessproject.service.analytic.AnalyticLineModelProjectService;
 import com.axelor.apps.businessproject.service.analytic.AnalyticLineModelProjectServiceImpl;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineService;
@@ -185,5 +187,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(AnalyticAttrsSupplychainServiceImpl.class)
         .to(AnalyticAttrsBusinessProjectServiceImpl.class);
     bind(BusinessProjectConfigService.class).to(BusinessProjectConfigServiceImpl.class);
+    bind(AnalyticLineModelFromEmployeeService.class)
+        .to(AnalyticLineModelFromEmployeeServiceImpl.class);
   }
 }

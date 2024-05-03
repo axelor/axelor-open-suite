@@ -39,7 +39,9 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.BusinessProjectConfig;
+import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -55,6 +57,7 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
     implements ProjectAnalyticMoveLineService {
 
   protected BusinessProjectConfigService businessProjectConfigService;
+  protected AnalyticLineModelFromEmployeeService analyticLineModelFromEmployeeService;
 
   @Inject
   public ProjectAnalyticMoveLineServiceImpl(
@@ -67,7 +70,8 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
       AppBaseService appBaseService,
       AccountingSituationService accountingSituationService,
       CurrencyScaleService currencyScaleService,
-      BusinessProjectConfigService businessProjectConfigService) {
+      BusinessProjectConfigService businessProjectConfigService,
+      AnalyticLineModelFromEmployeeService analyticLineModelFromEmployeeService) {
     super(
         analyticMoveLineRepository,
         appAccountService,
@@ -79,6 +83,7 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
         accountingSituationService,
         currencyScaleService);
     this.businessProjectConfigService = businessProjectConfigService;
+    this.analyticLineModelFromEmployeeService = analyticLineModelFromEmployeeService;
   }
 
   @Override
@@ -111,19 +116,21 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
   }
 
   @Override
-  public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Project project,
-      Partner partner,
-      Product product,
-      Company company,
-      TradingName tradingName,
-      Account account,
-      boolean isPurchase)
+  public void fillAnalyticLineProjectModel(AnalyticLineProjectModel analyticLineProjectModel)
       throws AxelorException {
+    Project project = analyticLineProjectModel.getProject();
+    Partner partner = analyticLineProjectModel.getPartner();
+    Product product = analyticLineProjectModel.getProduct();
+    Company company = analyticLineProjectModel.getCompany();
+    TradingName tradingName = analyticLineProjectModel.getTradingName();
+    Account account = analyticLineProjectModel.getAccount();
+    boolean isPurchase = analyticLineProjectModel.getIsPurchase();
+
     if (company == null || project == null) {
-      return null;
+      return;
     }
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    AnalyticDistributionTemplate analyticDistributionTemplate = null;
 
     if (accountConfig.getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER) {
@@ -132,8 +139,15 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
 
       if (businessProjectConfig.getUseAssignedToAnalyticDistribution()) {
         User assignedToUser = project.getAssignedTo();
-        if (assignedToUser != null && assignedToUser.getEmployee() != null) {
-          return assignedToUser.getEmployee().getAnalyticDistributionTemplate();
+        if (assignedToUser == null) {
+          clearAnalyticLineModel(analyticLineProjectModel);
+          return;
+        }
+        Employee employee = assignedToUser.getEmployee();
+        if (employee != null) {
+          analyticLineModelFromEmployeeService.copyAnalyticsDataFromEmployee(
+              employee, analyticLineProjectModel);
+          return;
         }
       }
 
@@ -141,13 +155,24 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
       if (partner != null) {
         accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
       }
-
-      return accountingSituation != null
-          ? accountingSituation.getAnalyticDistributionTemplate()
-          : null;
+      if (accountingSituation != null) {
+        analyticDistributionTemplate = accountingSituation.getAnalyticDistributionTemplate();
+      }
     } else {
-      return super.getAnalyticDistributionTemplate(
-          partner, product, company, tradingName, account, isPurchase);
+      analyticDistributionTemplate =
+          super.getAnalyticDistributionTemplate(
+              partner, product, company, tradingName, account, isPurchase);
     }
+    analyticLineProjectModel.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+  }
+
+  protected void clearAnalyticLineModel(AnalyticLineProjectModel analyticLineProjectModel) {
+    analyticLineProjectModel.setAnalyticDistributionTemplate(null);
+    analyticLineProjectModel.setAxis1AnalyticAccount(null);
+    analyticLineProjectModel.setAxis2AnalyticAccount(null);
+    analyticLineProjectModel.setAxis3AnalyticAccount(null);
+    analyticLineProjectModel.setAxis4AnalyticAccount(null);
+    analyticLineProjectModel.setAxis5AnalyticAccount(null);
+    analyticLineProjectModel.clearAnalyticMoveLineList();
   }
 }
