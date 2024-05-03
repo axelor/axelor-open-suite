@@ -65,7 +65,8 @@ public class ProjectUnitConversionRestController {
     new SecurityCheck().readAccess(Project.class).readAccess(Unit.class).check();
 
     Project project = ObjectFinder.find(Project.class, projectId, ObjectFinder.NO_VERSION);
-    Unit startUnit = project.getProjectTimeUnit();
+    Unit startUnit =
+        ObjectFinder.find(Unit.class, requestBody.getStartingUnitId(), ObjectFinder.NO_VERSION);
     Unit endUnit =
         ObjectFinder.find(Unit.class, requestBody.getDestinationUnitId(), ObjectFinder.NO_VERSION);
     BigDecimal value = BigDecimal.valueOf(requestBody.getStartingValue());

@@ -22,8 +22,17 @@ import com.axelor.utils.api.RequestPostStructure;
 import javax.validation.constraints.NotNull;
 
 public class ProjectUnitConversionPutRequest extends RequestPostStructure {
+  @NotNull protected Long startingUnitId;
   @NotNull protected Long startingValue;
   @NotNull protected Long destinationUnitId;
+
+  public Long getStartingUnitId() {
+    return startingUnitId;
+  }
+
+  public void setStartingUnitId(Long startingUnitId) {
+    this.startingUnitId = startingUnitId;
+  }
 
   public Long getStartingValue() {
     return startingValue;
