@@ -1444,7 +1444,7 @@ AND Account.id is not null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company
-AND Move.status_select not in (1,4)
+AND Move.status_select not in (1,4,5)
 AND Move.ignore_in_accounting_ok in (false,null)) as AccountAmountTable
 CROSS JOIN
 (SELECT BankStatementLine.credit - BankStatementLine.debit as bankAmount
@@ -1481,7 +1481,7 @@ AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
-AND Move.status_select not in (1,4)
+AND Move.status_select not in (1,4,5)
 AND AccountType.technical_type_select like 'cash'
 AND MoveLine.bank_reconciled_amount != MoveLine.debit + MoveLine.credit
 AND Move.ignore_in_accounting_ok in (false,null)
