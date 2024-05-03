@@ -18,8 +18,7 @@
  */
 package com.axelor.apps.web;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.PriceStudy;
 import com.axelor.apps.service.PriceStudyService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -27,12 +26,26 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 
 @Singleton
-public class SaleOrderController {
+public class PriceStudyController {
 
-  public void recalculatePrices(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(PriceStudyService.class).recalculatePrices(saleOrder);
-    response.setReload(true);
+  public void onPriceChange(ActionRequest request, ActionResponse response) {
+
+    PriceStudy priceStudy = request.getContext().asType(PriceStudy.class);
+    Beans.get(PriceStudyService.class).onPriceChange(priceStudy);
+    response.setValues(priceStudy);
+  }
+
+  public void onGeneralExpensesChange(ActionRequest request, ActionResponse response) {
+
+    PriceStudy priceStudy = request.getContext().asType(PriceStudy.class);
+    Beans.get(PriceStudyService.class).onGeneralExpensesChange(priceStudy);
+    response.setValues(priceStudy);
+  }
+
+  public void onMargeChange(ActionRequest request, ActionResponse response) {
+
+    PriceStudy priceStudy = request.getContext().asType(PriceStudy.class);
+    Beans.get(PriceStudyService.class).onMargeChange(priceStudy);
+    response.setValues(priceStudy);
   }
 }

@@ -10,6 +10,8 @@
     <decimal name="costPrice" title="Cost price"/>
     <decimal name="generalExpenses" title="General expenses" default="1"/>
     <decimal name="grossMarging" title="Gross margin" default="0"/>
+    <many-to-one name="productType" title="Product type"
+      ref="com.axelor.apps.base.db.ProductType"/>
   </entity>
 
 </domain-models>

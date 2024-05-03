@@ -12,31 +12,42 @@
           onClick="action-construction-sale-order-view-show-price-study" title="Prices study"/>
       </insert>
     </extend>
+    <extend target="//panel-related[@name='detailLinesPanel']">
+      <insert position="after">
+        <panel-related field="priceStudyList" colSpan="12" canNew="false"
+          hidden="true" canEdit="false" canMove="true" form-view="price-study-form"
+          grid-view="price-study-grid"/>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-study-prices-form" title="Prices study"
-    model="com.axelor.apps.sale.db.SaleOrder" onNew="test" onLoad="test">
+    model="com.axelor.apps.sale.db.SaleOrder">
     <panel>
-      <panel-related field="priceStudyList" colSpan="12" canNew="false"
-        canEdit="false" canMove="true" form-view="price-study-form" grid-view="price-study-grid"/>
-      <field name="saleOrderLineList"/>
+      <spacer colSpan="9"/>
+      <button name="recalculatePricesButton"
+        onClick="action-construction-sale-order-method-recalculate-prices" colSpan="3"
+        title="Recalculate prices"/>
+      <panel-related field="priceStudyList" colSpan="12" canNew="false" canEdit="true"
+        editable="true" canRemove="false" canMove="false" form-view="price-study-form"
+        grid-view="price-study-grid"/>
     </panel>
 
   </form>
 
+  <action-method name="action-construction-sale-order-method-recalculate-prices">
+    <call class="com.axelor.apps.web.SaleOrderController" method="recalculatePrices"/>
+  </action-method>
+
   <action-view name="action-construction-sale-order-view-show-price-study"
-    title="Prices study" model="com.axelor.utils.db.Wizard">
+    title="Prices study" model="com.axelor.apps.sale.db.SaleOrder">
     <view type="form" name="sale-order-study-prices-form"/>
-    <view-param name="popup" value="true"/>
-    <view-param name="forceEdit" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
-
-  <action-method name="test">
-    <call class="com.axelor.apps.web.SaleOrderController" method="populatePriceStudyList"/>
-  </action-method>
 
 </object-views>

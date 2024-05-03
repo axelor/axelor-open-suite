@@ -7,7 +7,7 @@
 
   <entity name="SaleOrder">
     <one-to-many name="priceStudyList" ref="com.axelor.apps.sale.db.PriceStudy"
-      title="Prices Study" mappedBy="saleOrder"/>
+      title="Prices study" mappedBy="saleOrder"/>
   </entity>
 
 </domain-models>
