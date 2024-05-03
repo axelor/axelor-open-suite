@@ -1,3 +1,49 @@
+## [7.1.21] (2024-05-03)
+
+### Fixes
+#### Base
+
+* Sequence: fixed NPE while checking yearly reset or monthly reset on unsaved sequence.
+* Advanced export: Fixed export doesn't work when maximum export limit exceeds.
+
+#### Account
+
+* Invoice: fixed default financial discount from partner not being computed after invoice copy.
+* Accounting export: Fixed error when replaying the accounting export.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed tax move line generation when origin is payment.
+
+#### Contract
+
+* Contract: fixed prorata invoicing when invoicing a full period.
+* Contract: correctly disable related configuration when disabling invoice management.
+* Contract: Fixed error when using contract template with contract line to generate a contract.
+
+#### Production
+
+* Manufacturing order: fixed conversion of missing quantity of consumed products.
+* Machine: fixed machine planning type when creating it from machine.
+
+#### Purchase
+
+* Purchase order report: fixed sequence order issue when title lines are present.
+
+#### Stock
+
+* Tracking number: fixed available qty not displayed on grid view.
+* Stock move: fixed printing settings when creating stock move from sale order.
+* Stock configuration: fixed typo in french translation, 'incoterme' => 'incoterm'
+
+
+### Developer
+
+#### Production
+
+Changed signature of `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId)`
+to `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit)`
+
 ## [7.1.20] (2024-04-19)
 
 ### Fixes
@@ -1043,6 +1089,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.21]: https://github.com/axelor/axelor-open-suite/compare/v7.1.20...v7.1.21
 [7.1.20]: https://github.com/axelor/axelor-open-suite/compare/v7.1.19...v7.1.20
 [7.1.19]: https://github.com/axelor/axelor-open-suite/compare/v7.1.18...v7.1.19
 [7.1.18]: https://github.com/axelor/axelor-open-suite/compare/v7.1.17...v7.1.18
