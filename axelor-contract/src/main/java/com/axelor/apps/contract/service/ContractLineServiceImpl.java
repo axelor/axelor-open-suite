@@ -24,6 +24,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Duration;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
@@ -51,6 +53,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -110,20 +113,23 @@ public class ContractLineServiceImpl implements ContractLineService {
     return contractLineMap;
   }
 
-  @Override
-  public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
-    Company company =
-        contractLine.getContractVersion() != null
-            ? contractLine.getContractVersion().getContract() != null
-                ? contractLine.getContractVersion().getContract().getCompany()
-                : null
-            : null;
+  public ContractLine fill(ContractLine contractLine, Contract contract, Product product)
+      throws AxelorException {
+    Company company = contract != null ? contract.getCompany() : null;
     contractLine.setProductName((String) productCompanyService.get(product, "name", company));
     Unit unit = (Unit) productCompanyService.get(product, "salesUnit", company);
     if (unit != null) {
       contractLine.setUnit(unit);
     } else {
       contractLine.setUnit((Unit) productCompanyService.get(product, "unit", company));
+    }
+
+    Map<String, Object> discounts =
+        getDiscountsFromPriceLists(contract, contractLine, contractLine.getPrice());
+
+    if (discounts != null) {
+      contractLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      contractLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
     }
     contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     contractLine.setDescription(
@@ -186,7 +192,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   public ContractLine fillAndCompute(ContractLine contractLine, Contract contract, Product product)
       throws AxelorException {
     if (product != null) {
-      contractLine = fill(contractLine, product);
+      contractLine = fill(contractLine, contract, product);
       contractLine = compute(contractLine, contract, product);
     }
     computeAnalytic(contract, contractLine);
@@ -207,12 +213,26 @@ public class ContractLineServiceImpl implements ContractLineService {
       contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
     }
 
+    Map<String, Object> discounts =
+        getDiscountsFromPriceLists(contract, contractLine, contractLine.getPrice());
     BigDecimal price =
-        priceListService.computeDiscount(
-            contractLine.getPrice(),
-            contractLine.getDiscountTypeSelect(),
-            contractLine.getDiscountAmount());
+        Optional.ofNullable(discounts)
+            .map(d -> (BigDecimal) d.get("price"))
+            .orElse(contractLine.getPrice());
+    Integer discountTypeSelect =
+        Optional.ofNullable(discounts)
+            .map(d -> (Integer) d.get("discountTypeSelect"))
+            .orElse(contractLine.getDiscountTypeSelect());
+    BigDecimal discountAmount =
+        Optional.ofNullable(discounts)
+            .map(d -> (BigDecimal) d.get("discountAmount"))
+            .orElse(contractLine.getDiscountAmount());
+
+    price = priceListService.computeDiscount(price, discountTypeSelect, discountAmount);
+
     contractLine.setPriceDiscounted(price);
+    contractLine.setDiscountTypeSelect(discountTypeSelect);
+    contractLine.setDiscountAmount(discountAmount);
     BigDecimal exTaxTotal =
         currencyScaleService.getScaledValue(contract, contractLine.getQty().multiply(price));
     contractLine.setExTaxTotal(exTaxTotal);
@@ -288,5 +308,31 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setDescription(null);
 
     return contractLine;
+  }
+
+  @Override
+  public Map<String, Object> getDiscountsFromPriceLists(
+      Contract contract, ContractLine contractLine, BigDecimal price) {
+
+    Map<String, Object> discounts = null;
+
+    if (contract != null) {
+      PriceList priceList = contract.getPriceList();
+
+      if (priceList != null) {
+        PriceListLine priceListLine = this.getPriceListLine(contractLine, priceList, price);
+        discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+      }
+    }
+
+    return discounts;
+  }
+
+  @Override
+  public PriceListLine getPriceListLine(
+      ContractLine contractLine, PriceList priceList, BigDecimal price) {
+
+    return priceListService.getPriceListLine(
+        contractLine.getProduct(), contractLine.getQty(), priceList, price);
   }
 }
