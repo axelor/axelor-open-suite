@@ -512,7 +512,7 @@ MoveLine.date_val, MoveLine.partner_full_name as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 MoveLine.debit, MoveLine.credit,
 
-CASE WHEN ReconcileGroup.lettering_date_time > AccountingReport.date_val
+CASE WHEN CAST(ReconcileGroup.lettering_date_time AS DATE) > AccountingReport.date_val
 THEN ''
 ELSE ReconcileGroup.code
 END as reconcile_group_code,
