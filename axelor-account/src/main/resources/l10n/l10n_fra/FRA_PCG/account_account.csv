@@ -469,10 +469,10 @@
 445620;445600;"TVA sur immobilisations";"FRA_PCG250";"true";0;;;;"true";;"N_D";0;"false";"NDAS";"false";;;;;;;1
 445630;445600;"TVA transférée par d'autres entreprises";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";;;;;;;1
 445660;445600;"TVA sur autres biens et services";"FRA_PCG250";"true";2;;;;"true";;"N_D";0;"false";"NDAS";"false";;;;;;;1
-445661;445660;"TVA N déductible taux normal";"FRA_PCG250";"true";2;;;;"true";;"N_D";0;"false";"NDAS";"false";;;;;;;1
-445662;445660;"TVA R1 déductible taux intermédiaire";"FRA_PCG250";"true";2;;;;"true";;"R1_D";0;"false";"NDAS";"false";;;;;;;1
-445662;445660;"TVA R2 déductible taux réduit";"FRA_PCG250";"true";2;;;;"true";;"R2_D";0;"false";"NDAS";"false";;;;;;;1
-445662;445660;"TVA déductible (autre taux : U...)";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";;;;;;;1
+445661;445660;"TVA N déductible taux normal";"FRA_PCG250";"false";2;;;;"true";;"N_D";0;"false";"NDAS";"false";;;;;;;1
+445662;445660;"TVA R1 déductible taux intermédiaire";"FRA_PCG250";"false";2;;;;"true";;"R1_D";0;"false";"NDAS";"false";;;;;;;1
+445663;445660;"TVA R2 déductible taux réduit";"FRA_PCG250";"false";2;;;;"true";;"R2_D";0;"false";"NDAS";"false";;;;;;;1
+445664;445660;"TVA déductible (autre taux : U...)";"FRA_PCG250";"false";2;;;;"true";;;0;"false";"NDAS";"false";;;;;;;1
 445670;445600;"Crédit de TVA à reporter";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";;;;;;;1
 445680;445600;"Taxes assimilées à la TVA";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";;;;;;;1
 445700;445000;"Taxes sur le chiffre d'affaires collectées par l'entreprise";"FRA_PCG250";"true";2;;;;"true";;;0;"false";"NDAS";"false";;;;;;;1
@@ -521,7 +521,7 @@
 464000;460;"Dettes sur acquisitions de valeurs mobilières de placement";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;;1
 465000;460;"Créances sur cessions de valeurs mobilières de placement";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;;1
 467;460;"Autres comptes débiteurs ou créditeurs";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;;1
-467000;467;"Factor 1";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;;1
+467000;467;"Factor 1";"FRA_PCG140";"false";2;;;;;;;0;"false";"NDAS";"false";;;;;;;1
 468000;460;"Divers - Charges à payer et produits à recevoir";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;;1
 468600;468000;"Charges à payer";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;;1
 468700;468000;"Produits à recevoir";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;;1
