@@ -4,7 +4,7 @@ import com.axelor.utils.api.ResponseStructure;
 
 public class MetaPermissionRuleResponse extends ResponseStructure {
 
-  protected final Long metaPermissionRuleId;
+  protected final Long id;
   protected final String field;
   protected final boolean canRead;
   protected final boolean canWrite;
@@ -13,14 +13,14 @@ public class MetaPermissionRuleResponse extends ResponseStructure {
 
   public MetaPermissionRuleResponse(
       int version,
-      Long metaPermissionRuleId,
+      Long id,
       String field,
       boolean canRead,
       boolean canWrite,
       String metaPermissionName,
       String metaPermissionObject) {
     super(version);
-    this.metaPermissionRuleId = metaPermissionRuleId;
+    this.id = id;
     this.field = field;
     this.canRead = canRead;
     this.canWrite = canWrite;
@@ -28,8 +28,8 @@ public class MetaPermissionRuleResponse extends ResponseStructure {
     this.metaPermissionObject = metaPermissionObject;
   }
 
-  public Long getMetaPermissionRuleId() {
-    return metaPermissionRuleId;
+  public Long getId() {
+    return id;
   }
 
   public String getField() {

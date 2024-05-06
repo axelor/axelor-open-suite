@@ -32,6 +32,7 @@ public class UserPermissionResponseComputeServiceImpl
                     new PermissionResponse(
                         permission.getId(),
                         permission.getName(),
+                        permission.getObject(),
                         permission.getCanRead(),
                         permission.getCanWrite(),
                         permission.getCanCreate(),
