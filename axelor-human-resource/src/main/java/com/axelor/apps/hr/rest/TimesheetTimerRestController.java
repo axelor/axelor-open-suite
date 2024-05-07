@@ -79,7 +79,7 @@ public class TimesheetTimerRestController {
   public Response updateTSTimer(@PathParam("timerId") Long timerId, TSTimerPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
+    new SecurityCheck().writeAccess(TSTimer.class, timerId).check();
 
     TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, requestBody.getVersion());
 
@@ -107,7 +107,7 @@ public class TimesheetTimerRestController {
   public Response updateStatusTSTimer(
       @PathParam("timerId") Long timerId, TSTimerPutRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
+    new SecurityCheck().writeAccess(TSTimer.class, timerId).check();
     TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, requestBody.getVersion());
     TimesheetTimerService timesheetTimerService = Beans.get(TimesheetTimerService.class);
 
