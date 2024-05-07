@@ -553,6 +553,7 @@
 525;481600;481000;"Frais d'émission des emprunts";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1;1
 526;486000;480;"Charges constatées d'avance";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1;1
 527;487000;480;"Produits constatés d'avance";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1;1
+"527-1";487100;487000;"Produits constatés d’avance sur jetons émis";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1;1
 528;488;480;"Comptes de répartition périodique des charges et des produits";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1;1
 529;488600;488;"Charges";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1;1
 530;488700;488;"Produits";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1;1
