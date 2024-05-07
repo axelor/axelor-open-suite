@@ -140,4 +140,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_CLOSING_EXPENSE_LINE_NOT_INVOICED = /*$$(*/
       "- a linked expense line is not invoiced" /*)*/;
+
+  public static final String PROJECT_EMPLOYEE_PRODUCT_NOT_IN_CONTRACT = /*$$(*/
+      "The timesheet product defined on the employee is not available on contracts linked to the task." /*)*/;
 }
