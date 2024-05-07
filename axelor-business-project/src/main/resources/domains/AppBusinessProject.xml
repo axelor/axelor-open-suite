@@ -62,6 +62,8 @@
       title="Invoicing project annex template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <many-to-one name="invoicingAnnexPrintTemplate" title="Invoicing annex template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="invoiceExpensePrintTemplate" title="Invoice expense template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <extra-code><![CDATA[
 		public static final int CLOSING_PROJECT_RULE_NONE = 0;
@@ -92,6 +94,7 @@
       <field name="excludeTaskInvoicing" on="UPDATE"/>
       <field name="invoicingProjectAnnexPrintTemplate" on="UPDATE"/>
       <field name="invoicingAnnexPrintTemplate" on="UPDATE"/>
+      <field name="invoiceExpensePrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>
