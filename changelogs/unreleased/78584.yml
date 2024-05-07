@@ -1,0 +1,3 @@
+---
+title: "Payment voucher: Fixed losing moveLine fields in list of invoice lines with remaining amount to pay after reset imputation."
+module: axelor-account
