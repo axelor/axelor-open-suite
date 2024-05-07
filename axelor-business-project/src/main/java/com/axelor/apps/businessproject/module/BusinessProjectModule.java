@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
@@ -94,6 +95,8 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServiceImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
+import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
+import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
@@ -194,5 +197,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectGenerateInvoiceService.class).to(ProjectGenerateInvoiceServiceImpl.class);
     bind(BusinessProjectConfigService.class).to(BusinessProjectConfigServiceImpl.class);
     bind(ProjectAnalyticTemplateService.class).to(ProjectAnalyticTemplateServiceImpl.class);
+    bind(InvoicePrintServiceImpl.class).to(InvoicePrintBusinessProjectServiceImpl.class);
+    bind(InvoicePrintBusinessProjectService.class).to(InvoicePrintBusinessProjectServiceImpl.class);
   }
 }
