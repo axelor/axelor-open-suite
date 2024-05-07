@@ -43,6 +43,9 @@
         onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 3"/>
       <button name="backupToProjectHistoryBtn" title="Backup project data to project history"
         onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 4"/>
+      <button name="transitionBetweenPaidStatus"
+        title="Transition the project between paid status"
+        onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 5"/>
     </panel>
   </form>
 
