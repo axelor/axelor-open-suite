@@ -1,0 +1,3 @@
+---
+title: "FixedAsset : FixedAsset boolean never propagate on invoiceLine when we check it on PurchaseOrderLine"
+module: axelor-supplychain
