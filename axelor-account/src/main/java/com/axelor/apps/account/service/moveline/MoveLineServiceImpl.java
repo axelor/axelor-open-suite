@@ -315,17 +315,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional
-  public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
-    String posted = moveLine.getPostedNbr();
-    List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
-    postedNbrs.remove(postedNbr);
-    posted = String.join(",", postedNbrs);
-    moveLine.setPostedNbr(posted);
-    return moveLine;
-  }
-
-  @Override
   public boolean checkManageCutOffDates(MoveLine moveLine) {
     return appAccountService.getAppAccount().getManageCutOffPeriod()
         && moveLine.getAccount() != null
