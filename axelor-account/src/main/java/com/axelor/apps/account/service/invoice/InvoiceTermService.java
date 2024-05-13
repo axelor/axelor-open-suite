@@ -35,7 +35,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.CallMethod;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
