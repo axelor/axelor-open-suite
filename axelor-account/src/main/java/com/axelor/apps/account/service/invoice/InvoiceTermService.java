@@ -276,7 +276,6 @@ public interface InvoiceTermService {
 
   boolean isPaymentConditionFree(InvoiceTerm invoiceTerm);
 
-  @Transactional(rollbackOn = {Exception.class})
   void payInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 
   List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm);
