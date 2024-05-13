@@ -18,8 +18,14 @@
  */
 package com.axelor.apps.businessproject.service.analytic;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 
@@ -29,6 +35,13 @@ public interface ProjectAnalyticMoveLineService {
 
   SaleOrder updateLines(SaleOrder saleOrder);
 
-  void fillAnalyticLineProjectModel(AnalyticLineProjectModel analyticLineProjectModel)
+  AnalyticDistributionTemplate getAnalyticDistributionTemplate(
+      Project project,
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Account account,
+      boolean isPurchase)
       throws AxelorException;
 }
