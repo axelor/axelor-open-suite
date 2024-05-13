@@ -18,25 +18,19 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
@@ -45,7 +39,6 @@ import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryCo
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -116,92 +109,6 @@ public class InvoicingProjectService {
   protected int sequence = 0;
 
   protected static final String DATE_FORMAT_YYYYMMDDHHMM = "YYYYMMddHHmm";
-
-  @Transactional(rollbackOn = {Exception.class})
-  public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
-    if (invoicingProject.getProject() == null) {
-      throw new AxelorException(
-          invoicingProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_PROJECT));
-    }
-
-    if (invoicingProject.getSaleOrderLineSet().isEmpty()
-        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
-        && invoicingProject.getLogTimesSet().isEmpty()
-        && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()
-        && invoicingProject.getStockMoveLineSet().isEmpty()) {
-      throw new AxelorException(
-          invoicingProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_EMPTY));
-    }
-
-    if (invoicingProject.getProject().getClientPartner() == null) {
-      throw new AxelorException(
-          invoicingProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
-    }
-
-    Project project = invoicingProject.getProject();
-    Partner customer = project.getClientPartner();
-    Partner customerContact = project.getContactPartner();
-
-    if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
-      customerContact = customer.getContactPartnerSet().iterator().next();
-    }
-    Company company = this.getRootCompany(project);
-    if (company == null) {
-      throw new AxelorException(
-          invoicingProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_PROJECT_COMPANY));
-    }
-    InvoiceGenerator invoiceGenerator =
-        new InvoiceGenerator(
-            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
-            company,
-            customer.getPaymentCondition(),
-            customer.getInPaymentMode(),
-            partnerService.getInvoicingAddress(customer),
-            customer,
-            customerContact,
-            customer.getCurrency(),
-            Beans.get(PartnerPriceListService.class)
-                .getDefaultPriceList(customer, PriceListRepository.TYPE_SALE),
-            null,
-            null,
-            null,
-            null,
-            null,
-            null) {
-
-          @Override
-          public Invoice generate() throws AxelorException {
-
-            Invoice invoice = super.createInvoiceHeader();
-            invoice.setProject(project);
-            invoice.setPriceList(project.getPriceList());
-            return invoice;
-          }
-        };
-    Invoice invoice = invoiceGenerator.generate();
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
-    invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
-
-    invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
-    invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
-    Beans.get(InvoiceRepository.class).save(invoice);
-
-    invoicingProject.setInvoice(invoice);
-    invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_GENERATED);
-    invoicingProjectRepo.save(invoicingProject);
-    return invoice;
-  }
 
   public List<InvoiceLine> populate(Invoice invoice, InvoicingProject folder)
       throws AxelorException {
