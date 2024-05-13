@@ -19,7 +19,6 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -46,7 +45,6 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 
   @Inject
   public OperationOrderServiceBusinessImpl(
-      BarcodeGeneratorService barcodeGeneratorService,
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
@@ -56,7 +54,6 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
       ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
     super(
-        barcodeGeneratorService,
         appProductionService,
         manufOrderStockMoveService,
         prodProcessLineService,

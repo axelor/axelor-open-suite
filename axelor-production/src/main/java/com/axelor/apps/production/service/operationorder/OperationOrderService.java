@@ -98,8 +98,6 @@ public interface OperationOrderService {
   void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException;
 
-  void createBarcode(OperationOrder operationOrder);
-
   long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException;
 
