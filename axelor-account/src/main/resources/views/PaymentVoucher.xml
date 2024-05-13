@@ -133,7 +133,7 @@
           onClick="action-method-payment-voucher-load-selected-lines,save"
           readonlyIf="paidAmount == 0 || payVoucherDueElementList.length == 0" colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="action-payment-voucher-method-reset-imputation"
+          onClick="action-payment-voucher-method-reset-imputation,save"
           readonlyIf="payVoucherElementToPayList.length == 0" colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
