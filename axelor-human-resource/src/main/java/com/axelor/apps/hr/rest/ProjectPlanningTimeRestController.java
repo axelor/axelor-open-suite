@@ -32,7 +32,7 @@ public class ProjectPlanningTimeRestController {
   @HttpExceptionHandler
   public Response getPlannedTimeValuesRestriction(@PathParam("companyId") Long companyId)
       throws AxelorException {
-    new SecurityCheck().readAccess(Company.class).check();
+    new SecurityCheck().readAccess(Company.class, companyId).check();
     Company company = ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(
