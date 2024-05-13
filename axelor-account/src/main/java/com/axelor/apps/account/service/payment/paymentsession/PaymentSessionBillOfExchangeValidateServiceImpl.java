@@ -9,7 +9,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
@@ -18,18 +17,14 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
-import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -58,17 +53,12 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
   protected MoveCutOffService moveCutOffService;
   protected PaymentSessionRepository paymentSessionRepo;
   protected MoveRepository moveRepo;
-  protected PartnerRepository partnerRepo;
-  protected InvoicePaymentRepository invoicePaymentRepo;
   protected AccountConfigService accountConfigService;
-  protected PartnerService partnerService;
   protected PaymentModeService paymentModeService;
-  protected MoveInvoiceTermService moveInvoiceTermService;
   protected ReconcileService reconcileService;
   protected ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermReplaceService invoiceTermReplaceService;
-  protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoicePaymentValidateService invoicePaymentValidateService;
 
   @Inject
@@ -79,17 +69,12 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       MoveCutOffService moveCutOffService,
       PaymentSessionRepository paymentSessionRepo,
       MoveRepository moveRepo,
-      PartnerRepository partnerRepo,
-      InvoicePaymentRepository invoicePaymentRepo,
       AccountConfigService accountConfigService,
-      PartnerService partnerService,
       PaymentModeService paymentModeService,
-      MoveInvoiceTermService moveInvoiceTermService,
       ReconcileService reconcileService,
       ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService,
       InvoiceTermService invoiceTermService,
       InvoiceTermReplaceService invoiceTermReplaceService,
-      InvoicePaymentCreateService invoicePaymentCreateService,
       InvoicePaymentValidateService invoicePaymentValidateService) {
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.invoiceTermRepo = invoiceTermRepo;
@@ -97,17 +82,12 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     this.moveCutOffService = moveCutOffService;
     this.paymentSessionRepo = paymentSessionRepo;
     this.moveRepo = moveRepo;
-    this.partnerRepo = partnerRepo;
-    this.invoicePaymentRepo = invoicePaymentRepo;
     this.accountConfigService = accountConfigService;
-    this.partnerService = partnerService;
     this.paymentModeService = paymentModeService;
-    this.moveInvoiceTermService = moveInvoiceTermService;
     this.reconcileService = reconcileService;
     this.reconcileInvoiceTermComputationService = reconcileInvoiceTermComputationService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermReplaceService = invoiceTermReplaceService;
-    this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.invoicePaymentValidateService = invoicePaymentValidateService;
   }
 
