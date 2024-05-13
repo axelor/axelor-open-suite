@@ -19,7 +19,6 @@
 package com.axelor.apps.mobilesettings.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
 import com.axelor.apps.mobilesettings.rest.dto.MobileDashboardResponse;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeService;
@@ -54,7 +53,7 @@ public class MobileDashboardRestController {
   @HttpExceptionHandler
   public Response getMobileDashboard(@PathParam("mobileDashboardId") Long mobileDashboardId)
       throws AxelorException, JSONException {
-    new SecurityCheck().writeAccess(MobileChart.class).createAccess(MobileChart.class).check();
+    new SecurityCheck().readAccess(MobileDashboard.class, mobileDashboardId).check();
     MobileDashboard mobileDashboard =
         ObjectFinder.find(MobileDashboard.class, mobileDashboardId, ObjectFinder.NO_VERSION);
 

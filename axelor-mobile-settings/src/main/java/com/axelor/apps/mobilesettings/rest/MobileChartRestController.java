@@ -50,7 +50,7 @@ public class MobileChartRestController {
   @HttpExceptionHandler
   public Response getMobileChart(@PathParam("mobileChartId") Long mobileChartId)
       throws AxelorException {
-    new SecurityCheck().writeAccess(MobileChart.class).createAccess(MobileChart.class).check();
+    new SecurityCheck().readAccess(MobileChart.class, mobileChartId).check();
     MobileChart mobileChart =
         ObjectFinder.find(MobileChart.class, mobileChartId, ObjectFinder.NO_VERSION);
 
