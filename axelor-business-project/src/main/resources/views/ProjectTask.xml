@@ -65,6 +65,11 @@
       </insert>
     </extend>
     <extend target="//field[@name='assignedTo']">
+      <insert position="after">
+        <field name="project.allowToGetPricesFromFrameworkContract" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='assignedTo']">
       <attribute name="onChange" value="action-project-task-group-assigned-to-on-change"/>
       <insert position="after">
         <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
