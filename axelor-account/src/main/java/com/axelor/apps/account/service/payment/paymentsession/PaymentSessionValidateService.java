@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -80,7 +79,6 @@ public interface PaymentSessionValidateService {
 
   boolean generatePaymentsFirst(PaymentSession paymentSession);
 
-  @Transactional
   InvoicePayment generatePendingPaymentFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm);
 
@@ -113,7 +111,6 @@ public interface PaymentSessionValidateService {
 
   String getMoveLineDescription(PaymentSession paymentSession);
 
-  @Transactional(rollbackOn = {Exception.class})
   MoveLine generateMoveLine(
       Move move,
       Partner partner,
@@ -124,10 +121,8 @@ public interface PaymentSessionValidateService {
       boolean isDebit)
       throws AxelorException;
 
-  @Transactional
   InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm);
 
-  @Transactional
   void updateStatus(PaymentSession paymentSession);
 
   public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);

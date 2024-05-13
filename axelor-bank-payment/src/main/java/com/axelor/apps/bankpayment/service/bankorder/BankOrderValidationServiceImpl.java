@@ -199,17 +199,14 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
           paymentSessionRepository.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
       if (paymentSession != null) {
-        boolean isLcr =
-            paymentSession.getPaymentMode() != null
-                && paymentSession.getPaymentMode().getTypeSelect()
-                    == PaymentModeRepository.TYPE_EXCHANGES;
-
         List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund =
             new ArrayList<>();
         paymentSessionValidateService.reconciledInvoiceTermMoves(
             paymentSession, invoiceTermLinkWithRefund);
 
-        if (isLcr) {
+        if (paymentSession.getPaymentMode() != null
+            && paymentSession.getPaymentMode().getTypeSelect()
+                == PaymentModeRepository.TYPE_EXCHANGES) {
           Beans.get(PaymentSessionBillOfExchangeValidateService.class)
               .processPaymentSession(paymentSession, invoiceTermLinkWithRefund);
         } else {

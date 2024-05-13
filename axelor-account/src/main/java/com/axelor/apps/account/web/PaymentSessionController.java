@@ -158,14 +158,11 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      boolean isLcr =
-          paymentSession.getPaymentMode() != null
-              && paymentSession.getPaymentMode().getTypeSelect()
-                  == PaymentModeRepository.TYPE_EXCHANGES;
+      StringBuilder flashMessage;
 
-      StringBuilder flashMessage = null;
-
-      if (isLcr) {
+      if (paymentSession.getPaymentMode() != null
+          && paymentSession.getPaymentMode().getTypeSelect()
+              == PaymentModeRepository.TYPE_EXCHANGES) {
         flashMessage =
             Beans.get(PaymentSessionBillOfExchangeValidateService.class)
                 .processInvoiceTerms(paymentSession);

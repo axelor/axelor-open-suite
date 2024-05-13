@@ -299,10 +299,10 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
   @Override
   @Transactional
   public void manageInvoicePayment(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BigDecimal reconciliedAmount) {
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BigDecimal reconciledAmount) {
     InvoicePayment invoicePayment = this.findInvoicePayment(paymentSession, invoiceTerm);
     if (invoicePayment != null) {
-      if (invoicePayment.getAmount().subtract(reconciliedAmount).signum() == 0) {
+      if (invoicePayment.getAmount().subtract(reconciledAmount).signum() == 0) {
         Invoice invoice = invoicePayment.getInvoice();
         if (invoice != null) {
           invoice.removeInvoicePaymentListItem(invoicePayment);
@@ -317,7 +317,7 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
           invoicePaymentRepo.remove(invoicePayment);
         }
       } else {
-        invoicePayment.setAmount(invoicePayment.getAmount().subtract(reconciliedAmount));
+        invoicePayment.setAmount(invoicePayment.getAmount().subtract(reconciledAmount));
       }
     }
   }
