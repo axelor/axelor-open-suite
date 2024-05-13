@@ -303,4 +303,13 @@ public interface SaleOrderInvoiceService {
   void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 
   void updateInvoicingState(SaleOrder saleOrder);
+
+  List<Invoice> generateInvoicesFromSaleOrderLines(
+      Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps,
+      Map<SaleOrder, BigDecimal> amountToInvoiceMap,
+      boolean isPercent,
+      int operationSelect)
+      throws AxelorException;
 }

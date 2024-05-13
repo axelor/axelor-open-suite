@@ -38,6 +38,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
@@ -45,6 +46,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -73,6 +75,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected SaleOrderStockService saleOrderStockService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected TrackingNumberSupplychainService trackingNumberSupplychainService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -82,11 +86,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderRepository saleOrderRepo,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
+      SaleConfigService saleConfigService,
+      SaleOrderLineCreateService saleOrderLineCreateService,
       AppSupplychainService appSupplychainService,
       SaleOrderStockService saleOrderStockService,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      SaleConfigService saleConfigService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      TrackingNumberSupplychainService trackingNumberSupplychainService) {
     super(
         saleOrderLineService,
         appBaseService,
@@ -94,11 +101,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderRepo,
         saleOrderComputeService,
         saleOrderMarginService,
-        saleConfigService);
+        saleConfigService,
+        saleOrderLineCreateService);
     this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.trackingNumberSupplychainService = trackingNumberSupplychainService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -152,6 +162,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             : allStockMoves;
     checkAvailabiltyRequest =
         stockMoves.size() != allStockMoves.size() ? true : checkAvailabiltyRequest;
+    saleOrder
+        .getSaleOrderLineList()
+        .forEach(trackingNumberSupplychainService::freeOriginSaleOrderLine);
     if (!stockMoves.isEmpty()) {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
       CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
@@ -165,11 +178,16 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         stockMoveService.cancel(stockMove, cancelReason);
         stockMove.setArchived(true);
         for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
+          TrackingNumber trackingNumber = stockMoveline.getTrackingNumber();
+          if (trackingNumber != null) {
+            trackingNumber.setOriginSaleOrderLine(null);
+          }
           stockMoveline.setSaleOrderLine(null);
           stockMoveline.setArchived(true);
         }
       }
     }
+
     return checkAvailabiltyRequest;
   }
 
@@ -251,6 +269,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
+    accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 
   public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder) {

@@ -50,18 +50,25 @@
     <string name="excludeTaskInvoicing" title="Exclude tasks for invoicing"
       help="Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria"/>
 
-    <boolean name="enableEventCreation" title="Enable event creation"
-      help="This will attach an event to a project planning time"/>
-    <string name="eventSubjectGroovyFormula" title="Event subject groovy formula"
-      help="This will customize the event subject."/>
+    <integer name="closingProjectRuleSelect"
+      selection="business.project.app.closing.project.rule.select"/>
 
     <!-- planification fields -->
     <many-to-one name="daysUnit" ref="com.axelor.apps.base.db.Unit" title="Days unit"/>
     <many-to-one name="hoursUnit" ref="com.axelor.apps.base.db.Unit" title="Hours unit"/>
     <decimal name="defaultHoursADay" title="Default hours in a day" min="0"/>
 
-    <many-to-one name="invoicingProjectAnnexBirtTemplate"
-      title="Invoicing project annex template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="invoicingProjectAnnexPrintTemplate"
+      title="Invoicing project annex template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="invoicingAnnexPrintTemplate" title="Invoicing annex template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+
+    <extra-code><![CDATA[
+		public static final int CLOSING_PROJECT_RULE_NONE = 0;
+		public static final int CLOSING_PROJECT_RULE_NON_BLOCKING = 1;
+		public static final int CLOSING_PROJECT_RULE_BLOCKING = 2;
+		]]>
+    </extra-code>
 
     <track>
       <field name="productInvoicingProject" on="UPDATE"/>
@@ -83,7 +90,8 @@
       <field name="enableTaskTemplatesByProduct" on="UPDATE"/>
       <field name="automaticInvoicing" on="UPDATE"/>
       <field name="excludeTaskInvoicing" on="UPDATE"/>
-      <field name="invoicingProjectAnnexBirtTemplate" on="UPDATE"/>
+      <field name="invoicingProjectAnnexPrintTemplate" on="UPDATE"/>
+      <field name="invoicingAnnexPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

@@ -55,7 +55,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -63,7 +62,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -815,10 +813,8 @@ public class PaymentVoucherConfirmService {
 
     InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
     BigDecimal ratio =
-        invoiceTerm
-            .getCompanyAmount()
-            .divide(
-                invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        currencyService.computeScaledExchangeRate(
+            invoiceTerm.getCompanyAmount(), invoiceTerm.getAmount());
     BigDecimal companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
             payVoucherElementToPay.getPaymentVoucher(),

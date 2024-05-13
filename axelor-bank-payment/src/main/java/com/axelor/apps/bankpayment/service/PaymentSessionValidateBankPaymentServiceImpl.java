@@ -49,6 +49,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -74,6 +75,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     extends PaymentSessionValidateServiceImpl {
   protected BankOrderService bankOrderService;
   protected BankOrderRepository bankOrderRepo;
+  protected BankOrderValidationService bankOrderValidationService;
   protected PaymentSessionBankOrderService paymentSessionBankOrderService;
 
   @Inject
@@ -104,6 +106,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       CurrencyScaleService currencyScaleService,
       BankOrderService bankOrderService,
       BankOrderRepository bankOrderRepo,
+      BankOrderValidationService bankOrderValidationService,
       PaymentSessionBankOrderService paymentSessionBankOrderService) {
     super(
         appBaseService,
@@ -132,6 +135,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         currencyScaleService);
     this.bankOrderService = bankOrderService;
     this.bankOrderRepo = bankOrderRepo;
+    this.bankOrderValidationService = bankOrderValidationService;
     this.paymentSessionBankOrderService = paymentSessionBankOrderService;
   }
 
@@ -166,7 +170,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
-          bankOrderService.confirm(bankOrder);
+          bankOrderValidationService.confirm(bankOrder);
         } catch (JAXBException | IOException | DatatypeConfigurationException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());

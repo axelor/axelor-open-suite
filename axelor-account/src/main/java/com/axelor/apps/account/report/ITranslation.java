@@ -1087,4 +1087,9 @@ public interface ITranslation {
   public static final String INVOICE_TAXES = /*$$(*/ "Invoice.taxes"; /*)*/
   public static final String INVOICE_TOTAL_TAXES = /*$$(*/ "Invoice.totalTaxes"; /*)*/
   public static final String INVOICE_TAX_CODE = /*$$(*/ "Invoice.taxCode"; /*)*/
+  public static final String INVOICE_EXPENSES_ON_RECEIPTS = /*$$(*/
+      "Invoice.expensesOnReceipts"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_NO_ACCOUTING_ENTRY = /*$$(*/
+      "AccountingReport.noEntry"; /*)*/
 }

@@ -52,7 +52,6 @@
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printExpenseItem" title="Print" action="save,action-method-print-birt"/>
         <item name="printAll" title="Print report and files"
           action="save,action-expense-method-print-report-and-proof-file"/>
       </menu>
@@ -315,6 +314,8 @@
     model="com.axelor.apps.hr.db.Expense">
     <field name="bankDetails"
       expr="eval: employee?.mainEmploymentContract?.payCompany ? employee?.mainEmploymentContract?.payCompany?.defaultBankDetails : employee?.user?.activeCompany?.defaultBankDetails"/>
+    <field name="currency"
+      expr="eval: employee?.mainEmploymentContract?.payCompany.currency ?: employee?.user?.activeCompany?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-company-onchange"
@@ -390,10 +391,8 @@
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="employee" expr="eval: true"
-      if="!__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="employee" expr="eval: statusSelect &gt; 2"
-      if="__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="employee"
+      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
   </action-attrs>
 
   <action-attrs name="action-expense-attrs-expense-company-cb">

@@ -239,6 +239,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     this.addValidatePeriod(move, valuesMap);
     valuesMap.put("$isThereRelatedCutOffMoves", moveCheckService.isRelatedCutoffMoves(move));
+    valuesMap.put("$isThereRelatedFixedAsset", moveCheckService.isRelatedToFixedAsset(move));
 
     this.addPeriodDummyFields(move, valuesMap);
     this.addValidateJournalRole(move, valuesMap);
@@ -436,6 +437,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     if (move.getStatusSelect() != MoveRepository.STATUS_NEW) {
       moveAttrsService.getPfpAttrs(move, AuthUtils.getUser(), attrsMap);
     }
+    moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
 
     return attrsMap;
   }

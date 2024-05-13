@@ -155,6 +155,8 @@
   <selection name="base.price.list.type.select">
     <option value="1">Sale</option>
     <option value="2">Purchase</option>
+    <option value="3">Customer contract</option>
+    <option value="4">Supplier contract</option>
   </selection>
 
   <selection name="base.price.list.line.type.select">
@@ -330,6 +332,10 @@
     <option value="2">Formula</option>
   </selection>
 
+  <selection name="unit.conversion.entity.select">
+    <option value="0">All</option>
+  </selection>
+
   <selection name="i.calendar.user.status.select">
     <option value="1">Yes</option>
     <option value="2">No</option>
@@ -413,6 +419,11 @@
   <selection name="base.printing.template.type.select">
     <option value="1">File</option>
     <option value="2">Birt</option>
+  </selection>
+
+  <selection name="base.printing.template.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Active</option>
   </selection>
 
   <selection name="base.blocking.select">
@@ -760,6 +771,11 @@
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
   </selection>
 
+  <selection name="base.registration.number.template.validation.method.select">
+    <option
+      value="com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidatorFRA">French registration number validation</option>
+  </selection>
+
   <selection name="tax.type.type.select">
     <option value="1">VAT</option>
     <option value="2">Other</option>
@@ -768,6 +784,15 @@
   <selection name="base.site.type.select">
     <option value="1">Internal</option>
     <option value="2">External</option>
+  </selection>
+
+  <selection name="base.pricing.type.select">
+    <option value="Default">Default</option>
+  </selection>
+
+  <selection name="base.file.type.select">
+    <option value="1">ContractFile</option>
+    <option value="2">EmployeeFile</option>
   </selection>
 
 </object-views>

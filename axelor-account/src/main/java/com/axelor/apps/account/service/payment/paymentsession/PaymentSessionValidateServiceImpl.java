@@ -1181,9 +1181,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
 
-    invoiceTermService.updateInvoiceTermsAmounts(
+    invoicePaymentCreateService.updateInvoiceTermsAmounts(
         invoiceTerm, pair.getRight(), invoiceTermsReconcile, pairMove, paymentSession, false);
-    invoiceTermService.updateInvoiceTermsAmounts(
+    invoicePaymentCreateService.updateInvoiceTermsAmounts(
         pairInvoiceTerm,
         pair.getRight(),
         invoiceTermsReconcile,

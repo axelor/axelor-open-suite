@@ -76,8 +76,8 @@
     onNew="action-account-group-onnew" onLoad="action-account-move-method-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
-      <button name="printBtn" title="Print Move" icon="fa-print"
-        onClick="save,action-method-print-birt"/>
+      <button name="viewEntriesBtn" title="View entry lines"
+        onClick="action-move-view-show-move-lines"/>
       <button name="reverseBtn" title="Reverse" icon="fa-exchange"
 
         onClick="save,action-move-view-open-generate-reverse-wizard"
@@ -325,7 +325,7 @@
       <panel name="detailsPanel" title="Details">
         <panel name="relatedToPanel" title="Related to" readonly="true" colSpan="12"
           itemSpan="4" stacked="true"
-          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment">
+          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment &amp;&amp; !$isThereRelatedFixedAsset">
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
             readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher" readonlyIf="$validatePeriod"
@@ -345,6 +345,9 @@
             name="relatedCutOffMovesPanel" title="Related cut off moves"
             showIf="$isThereRelatedCutOffMoves" colSpan="12"
             action="action-move-view-related-cut-off-moves"/>
+          <panel-dashlet action="action-move-method-show-related-fixed-asset"
+            showIf="$isThereRelatedFixedAsset" name="fixedAssetPanel" title="Related fixed assets"
+            colSpan="12" height="300"/>
         </panel>
         <panel name="accountingExportPanel" colSpan="12" itemSpan="3"
           title="Accounting export" hidden="true" readonly="true" hideIf="statusSelect == 1">
@@ -809,6 +812,10 @@
 
   <action-method name="action-move-method-company-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectCompany"/>
+  </action-method>
+
+  <action-method name="action-move-method-show-related-fixed-asset">
+    <call class="com.axelor.apps.account.web.MoveController" method="showRelatedFixedAsset"/>
   </action-method>
 
   <!-- ACTION VIEW -->

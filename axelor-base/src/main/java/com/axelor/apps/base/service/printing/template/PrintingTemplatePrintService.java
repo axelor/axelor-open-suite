@@ -35,7 +35,29 @@ public interface PrintingTemplatePrintService {
       PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
       throws AxelorException;
 
+  String getPrintLink(
+      PrintingTemplate template, PrintingGenFactoryContext context, boolean toAttach)
+      throws AxelorException;
+
+  String getPrintLink(
+      PrintingTemplate template,
+      PrintingGenFactoryContext context,
+      String outputFileName,
+      boolean toAttach)
+      throws AxelorException;
+
   File getPrintFile(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException;
+
+  File getPrintFile(
+      PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
+      throws AxelorException;
+
+  File getPrintFile(
+      PrintingTemplate template,
+      PrintingGenFactoryContext context,
+      String outputFileName,
+      Boolean toAttach)
       throws AxelorException;
 
   <T extends Model> String getPrintLinkForList(

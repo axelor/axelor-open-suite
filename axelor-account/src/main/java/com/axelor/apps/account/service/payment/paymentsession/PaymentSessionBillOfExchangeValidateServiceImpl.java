@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -64,12 +65,11 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
   protected PaymentModeService paymentModeService;
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected ReconcileService reconcileService;
+  protected ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermReplaceService invoiceTermReplaceService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoicePaymentValidateService invoicePaymentValidateService;
-
-  protected int counter = 0;
 
   @Inject
   public PaymentSessionBillOfExchangeValidateServiceImpl(
@@ -86,6 +86,7 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       PaymentModeService paymentModeService,
       MoveInvoiceTermService moveInvoiceTermService,
       ReconcileService reconcileService,
+      ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService,
       InvoiceTermService invoiceTermService,
       InvoiceTermReplaceService invoiceTermReplaceService,
       InvoicePaymentCreateService invoicePaymentCreateService,
@@ -103,6 +104,7 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     this.paymentModeService = paymentModeService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.reconcileService = reconcileService;
+    this.reconcileInvoiceTermComputationService = reconcileInvoiceTermComputationService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermReplaceService = invoiceTermReplaceService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
@@ -158,7 +160,6 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund,
       boolean out)
       throws AxelorException {
-    counter = 0;
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
@@ -477,7 +478,7 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       if (!ObjectUtils.isEmpty(placementMoveLine.getInvoiceTermList())
           && placementMoveLine.getInvoiceTermList().get(0).getInvoice() != null) {
         Invoice invoice = placementMoveLine.getInvoiceTermList().get(0).getInvoice();
-        reconcileService.updatePayment(
+        reconcileInvoiceTermComputationService.updatePayment(
             reconcile,
             moveLine,
             placementMoveLine,

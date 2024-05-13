@@ -18,10 +18,12 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -43,6 +45,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
 
   protected PaymentSessionBankOrderService paymentSessionBankOrderService;
   protected BankOrderService bankOrderService;
+  protected BankOrderValidationService bankOrderValidationService;
   protected BankOrderRepository bankOrderRepo;
 
   @Inject
@@ -60,12 +63,14 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       PaymentModeService paymentModeService,
       MoveInvoiceTermService moveInvoiceTermService,
       ReconcileService reconcileService,
+      ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService,
       InvoiceTermService invoiceTermService,
       InvoiceTermReplaceService invoiceTermReplaceService,
       InvoicePaymentCreateService invoicePaymentCreateService,
       InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentSessionBankOrderService paymentSessionBankOrderService,
       BankOrderService bankOrderService,
+      BankOrderValidationService bankOrderValidationService,
       BankOrderRepository bankOrderRepo) {
     super(
         paymentSessionValidateService,
@@ -81,12 +86,14 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
         paymentModeService,
         moveInvoiceTermService,
         reconcileService,
+        reconcileInvoiceTermComputationService,
         invoiceTermService,
         invoiceTermReplaceService,
         invoicePaymentCreateService,
         invoicePaymentValidateService);
     this.paymentSessionBankOrderService = paymentSessionBankOrderService;
     this.bankOrderService = bankOrderService;
+    this.bankOrderValidationService = bankOrderValidationService;
     this.bankOrderRepo = bankOrderRepo;
   }
 
@@ -120,7 +127,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
-          bankOrderService.confirm(bankOrder);
+          bankOrderValidationService.confirm(bankOrder);
         } catch (IOException | DatatypeConfigurationException | JAXBException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
