@@ -61,6 +61,11 @@
           <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
           <field if="__config__.app.getApp('contract')?.getIsInvoicingManagement()"
             name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
+          <field name="priceList"
+            readonlyIf="(currentContractVersion?.contractLineList &amp;&amp; currentContractVersion?.contractLineList.length > 0) || statusSelect >= 2"
+            onSelect="action-contract-method-price-list-domain" canEdit="false"
+            form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
+            colSpan="3"/>
         </panel>
         <panel name="partnerPanel" itemSpan="4" colSpan="12">
           <field name="partner" onSelect="action-contract-attrs-domains-partner"
@@ -889,6 +894,11 @@
   <action-method name="action-contract-method-additional-contract-line-list-on-change">
     <call class="com.axelor.apps.contract.web.ContractController"
       method="onChangeAdditionalContractLines"/>
+  </action-method>
+
+  <action-method name="action-contract-method-price-list-domain">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="changePriceListDomain"/>
   </action-method>
 
   <action-method name="action-contract-method-generate-sale-order">
