@@ -67,6 +67,9 @@
     <one-to-many name="consumptionLineList"
       ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
 
+    <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
+      title="Price list"/>
+
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
 
     <!-- Revaluation -->
@@ -92,6 +95,9 @@
       return company != null ? company.getCurrency() : null;
 	    ]]>
     </many-to-one>
+
+    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"
+      title="Opportunity"/>
 
     <extra-code><![CDATA[
             static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";

@@ -7,12 +7,19 @@
 
   <entity name="MrpLineType">
 
+    <integer name="supplyMethodForManufacturingOrdersSelect"
+      title="Supply method for manufacturing orders"
+      selection="production.supplychain.mrp.line.type.supply.method.for.manufacturing.orders.select"/>
+
     <extra-code><![CDATA[
 
 
 	   	// ELEMENT SELECT
 		public static final int ELEMENT_MASTER_PRODUCTION_SCHEDULING = 12;  // Master Production Scheduling
 
+        // Supply method for manufacturing orders select
+        public static final int SUPPLY_METHOD_FOR_MANUF_ORDERS_ON_OPERATIONS_START = 0;
+        public static final int SUPPLY_METHOD_FOR_MANUF_ORDERS_ON_ORDER_START = 1;
 
 	]]></extra-code>
 

@@ -173,6 +173,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateServiceImpl;
 import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsService;
 import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsServiceImpl;
+import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateService;
+import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
@@ -919,6 +921,9 @@ public class AccountModule extends AxelorModule {
     bind(FiscalPositionRepository.class).to(FiscalPositionManagementRepository.class);
 
     bind(InvoiceLineTaxToolService.class).to(InvoiceLineTaxToolServiceImpl.class);
+
+    bind(AdvancePaymentMoveLineCreateService.class)
+        .to(AdvancePaymentMoveLineCreateServiceImpl.class);
 
     bind(InvoiceTermPfpUpdateService.class).to(InvoiceTermPfpUpdateServiceImpl.class);
 

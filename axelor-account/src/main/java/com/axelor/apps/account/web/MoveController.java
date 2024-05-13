@@ -18,9 +18,13 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
@@ -44,6 +48,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
@@ -902,5 +907,37 @@ public class MoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void showRelatedFixedAsset(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+
+    if (move == null
+        || ObjectUtils.isEmpty(move.getMoveLineList())
+        || move.getId() == null
+        || move.getMoveLineList().stream()
+            .noneMatch(
+                ml ->
+                    Objects.equals(
+                        Optional.of(ml)
+                            .map(MoveLine::getAccount)
+                            .map(Account::getAccountType)
+                            .map(AccountType::getTechnicalTypeSelect)
+                            .orElse(""),
+                        AccountTypeRepository.TYPE_IMMOBILISATION))) {
+      return;
+    }
+
+    ActionView.ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get("Related fixed assets"));
+    actionViewBuilder.model(FixedAsset.class.getName());
+    actionViewBuilder.add("grid", "fixed-asset-move-grid");
+    actionViewBuilder.add("form", "fixed-asset-form");
+    actionViewBuilder.domain("self.purchaseAccountMove.id = :_moveId");
+    actionViewBuilder.context("_moveId", move.getId());
+
+    response.setView(actionViewBuilder.map());
   }
 }

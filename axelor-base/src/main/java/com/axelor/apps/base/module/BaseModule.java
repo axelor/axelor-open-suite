@@ -101,6 +101,8 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FakerService;
 import com.axelor.apps.base.service.FakerServiceImpl;
+import com.axelor.apps.base.service.FileService;
+import com.axelor.apps.base.service.FileServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.ImportExportTranslationService;
@@ -210,6 +212,12 @@ import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.meta.BaseMetaService;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
+import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
+import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberTemplateService;
+import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberTemplateServiceImpl;
+import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
+import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryServiceImpl;
 import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.base.service.pdf.PdfServiceImpl;
 import com.axelor.apps.base.service.pdf.PdfSignatureService;
@@ -281,6 +289,8 @@ import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.studio.service.CustomMetaService;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
 import java.lang.reflect.Method;
@@ -451,11 +461,17 @@ public class BaseModule extends AxelorModule {
     bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
     bind(PermissionService.class).to(PermissionServiceImpl.class);
+    bind(PartnerRegistrationCodeViewService.class).to(PartnerRegistrationCodeViewServiceImpl.class);
+    bind(PartnerRegistrationValidatorFactoryService.class)
+        .to(PartnerRegistrationValidatorFactoryServiceImpl.class);
+    bind(RegistrationNumberTemplateService.class).to(RegistrationNumberTemplateServiceImpl.class);
     bind(MetaBaseService.class).to(MetaServiceBaseImpl.class);
     bind(PrintingTemplateService.class).to(PrintingTemplateServiceImpl.class);
     bind(PrintingTemplateMetaService.class).to(PrintingTemplateMetaServiceImpl.class);
     bind(PrintingTemplatePrintService.class).to(PrintingTemplatePrintServiceImpl.class);
     bind(PrintingGeneratorFactoryProvider.class).to(PrintingGeneratorFactoryProviderImpl.class);
     bind(UnitConversionService.class).to(UnitConversionServiceImpl.class);
+    bind(FileService.class).to(FileServiceImpl.class);
+    bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
   }
 }

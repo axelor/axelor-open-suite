@@ -173,10 +173,14 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
+import com.axelor.apps.hr.service.project.PlannedTimeValueService;
+import com.axelor.apps.hr.service.project.PlannedTimeValueServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
@@ -193,6 +197,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
@@ -348,5 +354,9 @@ public class HumanResourceModule extends AxelorModule {
     bind(ICalendarEventObserver.class);
     bind(BankCardService.class).to(BankCardServiceImpl.class);
     bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
+    bind(TimesheetLeaveService.class).to(TimesheetLeaveServiceImpl.class);
+    bind(PlannedTimeValueService.class).to(PlannedTimeValueServiceImpl.class);
+    bind(ProjectPlanningTimeResponseComputeService.class)
+        .to(ProjectPlanningTimeResponseComputeServiceImpl.class);
   }
 }

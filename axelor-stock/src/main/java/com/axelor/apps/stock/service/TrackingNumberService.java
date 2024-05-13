@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import java.time.LocalDate;
+import java.util.Set;
 
 public interface TrackingNumberService {
   TrackingNumber getTrackingNumber(
@@ -45,4 +46,8 @@ public interface TrackingNumberService {
       Partner supplier,
       String notes)
       throws AxelorException;
+
+  void calculateDimension(TrackingNumber trackingNumber) throws AxelorException;
+
+  Set<TrackingNumber> getOriginParents(TrackingNumber trackingNumber) throws AxelorException;
 }

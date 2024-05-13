@@ -18,7 +18,8 @@
     <panel-tabs>
       <panel name="taxRateListPanel" title="Tax rate list">
         <field name="activeTaxLine" onSelect="action-base-attrs-domain-active-tax-line"
-          canNew="false" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
+          target-name="fullName" canNew="false" form-view="tax-line-tax-form"
+          grid-view="tax-line-tax-grid"/>
         <panel-related name="taxLineListPanel" field="taxLineList" colSpan="12"
           canNew="true" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
       </panel>

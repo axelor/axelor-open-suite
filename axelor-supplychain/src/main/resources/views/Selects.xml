@@ -186,4 +186,10 @@
     <option value="Delivered by">Delivered by</option>
   </selection>
 
+  <selection name="stock.tracking.number.origin.move.type.select"
+    id="supplychain.stock.tracking.number.origin.move.type.select">
+    <option value="3">Sale</option>
+    <option value="4">Purchase</option>
+  </selection>
+
 </object-views>

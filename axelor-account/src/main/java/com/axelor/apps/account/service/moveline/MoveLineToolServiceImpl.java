@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
@@ -411,10 +413,12 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   public boolean isMoveLineTaxAccount(MoveLine moveLine) {
-    return moveLine.getAccount() != null
-        && moveLine.getAccount().getAccountType() != null
-        && AccountTypeRepository.TYPE_TAX.equals(
-            moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
+    return AccountTypeRepository.TYPE_TAX.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
   }
 
   @Override

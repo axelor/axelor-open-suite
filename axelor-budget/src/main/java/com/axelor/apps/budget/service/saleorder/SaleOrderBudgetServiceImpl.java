@@ -32,6 +32,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -70,6 +71,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   protected SaleOrderLineBudgetService saleOrderLineBudgetService;
   protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
+  protected InvoiceToolBudgetService invoiceToolBudgetService;
 
   @Inject
   public SaleOrderBudgetServiceImpl(
@@ -92,7 +94,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       SaleOrderLineBudgetService saleOrderLineBudgetService,
       CurrencyScaleService currencyScaleService,
       BudgetService budgetService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      InvoiceToolBudgetService invoiceToolBudgetService) {
     super(
         appBaseService,
         appStockService,
@@ -114,6 +117,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
+    this.invoiceToolBudgetService = invoiceToolBudgetService;
   }
 
   @Override
@@ -147,7 +151,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         budgetDistributionService.linkBudgetDistributionWithParent(
             budgetDistribution, saleOrderLine);
       }
-      saleOrderLine.setBudgetDistributionSumAmount(saleOrderLine.getCompanyExTaxTotal());
+      saleOrderLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
     }
   }
 
@@ -210,32 +214,15 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     for (InvoiceLine invoiceLine : invoiceLines) {
       if (saleOrderLine != null && saleOrderLine.getQty().signum() > 0) {
         invoiceLine.setBudget(saleOrderLine.getBudget());
-        this.copyBudgetDistributionList(
+        invoiceLine.setBudgetRemainingAmountToAllocate(
+            saleOrderLine.getBudgetRemainingAmountToAllocate());
+        invoiceToolBudgetService.copyBudgetDistributionList(
             saleOrderLine.getBudgetDistributionList(),
             invoiceLine,
             qtyToInvoice.divide(saleOrderLine.getQty(), RoundingMode.HALF_UP));
       }
     }
     return invoiceLines;
-  }
-
-  public void copyBudgetDistributionList(
-      List<BudgetDistribution> originalBudgetDistributionList,
-      InvoiceLine invoiceLine,
-      BigDecimal prorata) {
-
-    if (CollectionUtils.isEmpty(originalBudgetDistributionList)) {
-      return;
-    }
-
-    for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(budgetDistributionIt.getBudget());
-      budgetDistribution.setAmount(
-          budgetDistributionIt.getAmount().multiply(prorata).setScale(2, RoundingMode.HALF_UP));
-      budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
-      invoiceLine.addBudgetDistributionListItem(budgetDistribution);
-    }
   }
 
   @Override
@@ -327,6 +314,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           date,
           saleOrderLine.getCompanyExTaxTotal(),
           saleOrderLine);
+      saleOrderLine.setBudgetRemainingAmountToAllocate(
+          budgetToolsService.getBudgetRemainingAmountToAllocate(
+              saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
     }
   }

@@ -41,6 +41,7 @@ import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
+import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -95,8 +96,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
-      InvoiceRepository invoiceRepository) {
-    super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
+      InvoiceRepository invoiceRepository,
+      ProjectCreateTaskService projectCreateTaskService) {
+    super(
+        projectRepository,
+        projectStatusRepository,
+        appProjectService,
+        projTemplateRepo,
+        projectCreateTaskService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
