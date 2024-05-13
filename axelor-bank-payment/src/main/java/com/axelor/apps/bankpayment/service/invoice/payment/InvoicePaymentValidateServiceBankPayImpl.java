@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -32,7 +31,6 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.DateService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -43,18 +41,11 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
-      MoveCreateService moveCreateService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
-      DateService dateService,
       InvoicePaymentMoveCreateService invoicePaymentMoveCreateService,
       PaymentModeService paymentModeService) {
-    super(
-        moveCreateService,
-        invoicePaymentRepository,
-        invoicePaymentToolService,
-        dateService,
-        invoicePaymentMoveCreateService);
+    super(invoicePaymentRepository, invoicePaymentToolService, invoicePaymentMoveCreateService);
     this.paymentModeService = paymentModeService;
   }
 

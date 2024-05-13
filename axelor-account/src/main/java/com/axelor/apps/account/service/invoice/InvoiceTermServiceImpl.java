@@ -1503,7 +1503,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null) {
       return Optional.of(invoiceTerm.getInvoice()).map(Invoice::getCurrency).orElse(null);
     } else {
-      return Optional.of(invoiceTerm.getMoveLine())
+      return Optional.of(invoiceTerm)
+          .map(InvoiceTerm::getMoveLine)
           .map(MoveLine::getMove)
           .map(Move::getCurrency)
           .orElse(null);
@@ -1517,7 +1518,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           .map(Company::getCurrency)
           .orElse(null);
     } else {
-      return Optional.of(invoiceTerm.getMoveLine())
+      return Optional.of(invoiceTerm)
+          .map(InvoiceTerm::getMoveLine)
           .map(MoveLine::getMove)
           .map(Move::getCompany)
           .map(Company::getCurrency)
@@ -1644,6 +1646,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void payInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
+    if (ObjectUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (invoiceTerm != null) {
+        invoiceTerm.setIsPaid(true);
+        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+        invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
+        invoiceTermFinancialDiscountService.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+      }
+    }
+  }
+
   public List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm) {
     Move move =
         Optional.of(invoiceTerm).map(InvoiceTerm::getMoveLine).map(MoveLine::getMove).orElse(null);
