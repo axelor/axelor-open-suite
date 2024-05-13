@@ -53,6 +53,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
     this.paymentCondition = contract.getCurrentContractVersion().getPaymentCondition();
     this.paymentMode = contract.getCurrentContractVersion().getPaymentMode();
     this.appBaseService = Beans.get(AppBaseService.class);
+    this.operationType = changeOperationType(contract);
   }
 
   @Override
@@ -79,8 +80,6 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
       invoice.setInvoiceDate(appBaseService.getTodayDate(company));
     }
 
-    changeOperationType(contract, invoice);
-
     return invoice;
   }
 
@@ -89,15 +88,16 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
     return createInvoiceHeader();
   }
 
-  protected void changeOperationType(Contract contract, Invoice invoice) {
+  protected int changeOperationType(Contract contract) {
     int targetTypeSelect = contract.getTargetTypeSelect();
 
     if (targetTypeSelect == ContractRepository.YEB_CUSTOMER_CONTRACT) {
-      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+      return InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
     }
 
     if (targetTypeSelect == ContractRepository.YEB_SUPPLIER_CONTRACT) {
-      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+      return InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
     }
+    return targetTypeSelect;
   }
 }
