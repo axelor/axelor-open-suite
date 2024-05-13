@@ -79,11 +79,25 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
       invoice.setInvoiceDate(appBaseService.getTodayDate(company));
     }
 
+    changeOperationType(contract, invoice);
+
     return invoice;
   }
 
   @Override
   public Invoice generate() throws AxelorException {
     return createInvoiceHeader();
+  }
+
+  protected void changeOperationType(Contract contract, Invoice invoice) {
+    int targetTypeSelect = contract.getTargetTypeSelect();
+
+    if (targetTypeSelect == ContractRepository.YEB_CUSTOMER_CONTRACT) {
+      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+    }
+
+    if (targetTypeSelect == ContractRepository.YEB_SUPPLIER_CONTRACT) {
+      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+    }
   }
 }

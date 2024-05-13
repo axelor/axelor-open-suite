@@ -33,7 +33,12 @@ public class AccountManagementContractServiceImpl extends AccountManagementServi
 
   @Override
   public Account getProductYebAccount(Product product, Company company, boolean isPurchase) {
-    return this.getProductYebAccount(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
+    Account account =
+        this.getProductYebAccount(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
+    if (account == null) {
+      return this.getProductYebAccount(product, company, isPurchase, CONFIG_OBJECT_PRODUCT_FAMILY);
+    }
+    return account;
   }
 
   protected Account getProductYebAccount(
@@ -49,10 +54,6 @@ public class AccountManagementContractServiceImpl extends AccountManagementServi
       } else {
         account = accountManagement.getYearEndBonusSaleAccount();
       }
-    }
-
-    if (account == null && configObject == CONFIG_OBJECT_PRODUCT) {
-      return getProductYebAccount(product, company, isPurchase, CONFIG_OBJECT_PRODUCT_FAMILY);
     }
 
     return account;

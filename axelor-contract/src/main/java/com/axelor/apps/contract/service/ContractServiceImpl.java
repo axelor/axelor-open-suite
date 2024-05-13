@@ -594,20 +594,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
     Invoice invoice = invoiceGenerator.generate();
     invoice.addContractSetItem(contract);
-    changeOperationType(contract, invoice);
     return invoice;
-  }
-
-  protected void changeOperationType(Contract contract, Invoice invoice) {
-    int targetTypeSelect = contract.getTargetTypeSelect();
-
-    if (targetTypeSelect == ContractRepository.YEB_CUSTOMER_CONTRACT) {
-      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
-    }
-
-    if (targetTypeSelect == ContractRepository.YEB_SUPPLIER_CONTRACT) {
-      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
-    }
   }
 
   public Invoice generateInvoice(List<Contract> contractList) throws AxelorException {
