@@ -7,11 +7,11 @@
 
   <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -59,11 +59,11 @@
 
   <grid name="invoice-bill-of-exchange-batch-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -105,11 +105,11 @@
 
   <grid name="invoice-with-payment-delay-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -157,11 +157,11 @@
 
   <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -211,11 +211,11 @@
 
   <grid name="invoice-supplier-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -272,11 +272,11 @@
 
   <grid name="invoice-supplier-refund-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -328,11 +328,11 @@
 
   <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -394,7 +394,7 @@
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
+      <button name="printBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
         readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>
 
@@ -408,12 +408,10 @@
     <panel name="mainPanel">
       <field name="printedPDF" hidden="true"/><!-- Needed to be able to use it in menu -->
       <panel name="statusSelectPanel" colSpan="7" stacked="true">
-        <field name="statusSelect" widget="NavSelect"
-          showIf="operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
+        <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect != 2"
           showTitle="false"/>
-        <field name="statusSelect" widget="NavSelect"
-          showIf="operationSubTypeSelect == 2 || operationSubTypeSelect == 11" showTitle="false"
-          selection-in="[1,2,4]"/>
+        <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect == 2"
+          showTitle="false" selection-in="[1,2,4]"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="5">
         <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
@@ -434,8 +432,8 @@
 	                        		{operationSubTypeSelect == 5 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Contract closing invoice')}</Badge>}
 	                        		{operationSubTypeSelect == 6 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Subscription')}</Badge>}
 	                        		{operationSubTypeSelect == 7 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Periodic contract')}</Badge>}
-	                        		{operationSubTypeSelect == 10 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard credit note')}</Badge>}
-	                        		{operationSubTypeSelect == 11 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
+	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard credit note')}</Badge>}
+	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
 
 	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
 	                        	</Box>
@@ -576,11 +574,11 @@
       <panel name="supplierInvoiceNbPanel" colSpan="6">
         <field name="supplierInvoiceNb" colSpan="6"
           showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-          requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+          requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
           onChange="action-invoice-group-supplier-invoice-nb-onchange"/>
         <field name="originDate" colSpan="6"
           showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-          requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+          requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
           onChange="action-invoice-group-payment-condition-onchange"/>
         <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12"
           showTitle="false" type="boolean" readonly="true">
@@ -638,7 +636,7 @@
           onChange="action-group-account-invoice-invoice-term-list-onchange" colSpan="12"
           form-view="invoice-term-related-form" grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
-      <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
+      <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()">
         <panel name="deliveryAddressPanel" colSpan="12" hidden="true"
           showIf="operationTypeSelect == 3">
@@ -700,7 +698,7 @@
         <panel name="refundPanel" title="Credit note"
           showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
           <button name="createRefundBtn" title="Generate credit note" colSpan="3"
-            showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 11"
+            showIf="statusSelect != 1 &amp;&amp; ($contains([1, 3], operationTypeSelect) || operationSubTypeSelect != 2)"
             onClick="save,action-invoice-method-create-refund"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
             form-view="invoice-form" grid-view="invoice-grid"/>
@@ -739,12 +737,12 @@
           readonly="true"/>
       </panel>
       <panel name="advancePaymentPanel" title="Advance payments"
-        showIf="operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 10 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
-InvoiceSet.length > 0))"
+        showIf="((operationSubTypeSelect != 2 &amp;&amp; $contains([1, 3], operationTypeSelect)) || (operationSubTypeSelect != 1 &amp;&amp; $contains([2, 4], operationTypeSelect)))
+        &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; InvoiceSet.length > 0))"
         if="__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()">
         <field name="advancePaymentInvoiceSet" widget="TagSelect" canNew="false"
           canEdit="false" onSelect="action-invoice-method-create-advance-payment-domain"
-          readonlyIf="statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 11)"
+          readonlyIf="statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)"
           form-view="invoice-form" grid-view="invoice-grid"/>
       </panel>
       <panel title="Printing" name="printingPanel" colSpan="12">
@@ -760,6 +758,12 @@ InvoiceSet.length > 0))"
           hidden="true"/>
         <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
           hidden="true"/>
+        <field name="isExpenseLineOnInvoiceGrouped" if-module="axelor-business-project"
+          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
+          showIf="displayExpenseOnPrinting"/>
+        <field name="groupingPeriodSelect" if-module="axelor-business-project"
+          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
+          showIf="isExpenseLineOnInvoiceGrouped &amp;&amp; displayExpenseOnPrinting"/>
         <field name="displayStockMoveOnInvoicePrinting" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$localization" title="Localization" type="many-to-one"
@@ -896,7 +900,7 @@ InvoiceSet.length > 0))"
       <button name="validateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-on-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
-        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
+        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
@@ -1098,7 +1102,7 @@ InvoiceSet.length > 0))"
 
 
   <form name="invoice-reports-wizard-form" title="Reports" model="com.axelor.utils.db.Wizard"
-    onNew="action-invoice-reports-wizard-attrs-set-report-type-select">
+    onNew="action-invoice-reports-wizard-attrs-set-report-type-select,action-invoice-reports-wizard-method-set-invoice-print-template">
     <panel name="mainPanel">
       <panel name="invoiceTypePanel" colSpan="6">
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[1]"
@@ -1113,11 +1117,15 @@ InvoiceSet.length > 0))"
           selection="invoice.report.type" colSpan="12" required="true"
           showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
       </panel>
-      <spacer/>
+      <field name="$invoicePrintTemplate" title="Invoice template" type="many-to-one"
+        target="com.axelor.apps.base.db.PrintingTemplate" required="true"
+        domain="self.metaModel.name = 'Invoice' AND self.statusSelect = 2"
+        grid-view="printing-template-grid" form-view="printing-template-form"
+        readonlyIf="$reportType != 1"/>
       <field name="$localization" title="Localization" type="many-to-one"
         target="com.axelor.apps.base.db.Localization" showIf="$reportType ==1 || $reportType==3"/>
       <button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close"
-        readonlyIf="$reportType==null"/>
+        readonlyIf="$reportType==null || $invoicePrintTemplate == null"/>
     </panel>
   </form>
 
@@ -1126,7 +1134,7 @@ InvoiceSet.length > 0))"
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="showInvoiceBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-invoice-method-show-invoice"/>
       <button name="showAnnexBtn" title="Print annex" icon="fa-print"
         onClick="action-business-project-group-print-annex" if-module="axelor-business-project"
@@ -1249,7 +1257,7 @@ InvoiceSet.length > 0))"
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
         onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate"
-        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2 &amp;&amp; operationSubTypeSelect != 11"
+        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
@@ -1846,10 +1854,7 @@ InvoiceSet.length > 0))"
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-operationsubtype-selection">
-    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2]"
-      if="operationTypeSelect == 3"/>
-    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [10,11]"
-      if="operationTypeSelect == 2 || operationTypeSelect == 4"/>
+    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2]"/>
     <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2,3]"
       if="operationTypeSelect == 1"/>
   </action-attrs>
@@ -1864,11 +1869,7 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-operationsubtype-reset"
     model="com.axelor.apps.account.db.Invoice">
     <field name="operationSubTypeSelect"
-      expr="eval: __repo__(Invoice).OPERATION_SUB_TYPE_DEFAULT"
-      if="operationTypeSelect == 3 || operationTypeSelect == 1"/>
-    <field name="operationSubTypeSelect"
-      expr="eval: __repo__(Invoice).OPERATION_SUB_TYPE_STANDARD_REFUND"
-      if="operationTypeSelect == 2 || operationTypeSelect == 4"/>
+      expr="eval: __repo__(Invoice).OPERATION_SUB_TYPE_DEFAULT"/>
   </action-record>
 
   <action-record name="action-invoice-record-hide-discount"
@@ -2032,7 +2033,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
     <attribute name="hidden" for="cancelBtn"
-      expr="((operationSubTypeSelect == 2 || operationSubTypeSelect == 11) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
+      expr="((operationSubTypeSelect == 2) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-set-partner-domain">
@@ -2118,6 +2119,12 @@ InvoiceSet.length > 0))"
       if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
     <attribute name="value" expr="eval: _localization" for="$localization"/>
   </action-attrs>
+
+  <action-method
+    name="action-invoice-reports-wizard-method-set-invoice-print-template">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setInvoicePrintTemplate"/>
+  </action-method>
 
   <action-attrs name="action-invoice-attrs-selection-in-operation-type-select">
     <attribute name="selection-in" for="operationTypeSelect" expr="eval: [1,2,3,4]"/>

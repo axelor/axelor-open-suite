@@ -24,4 +24,6 @@ import com.axelor.studio.db.AppProject;
 public interface AppProjectService extends AppBaseService {
 
   public AppProject getAppProject();
+
+  void generateProjectConfigurations();
 }

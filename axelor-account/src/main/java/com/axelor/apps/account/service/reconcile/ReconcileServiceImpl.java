@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -58,9 +59,12 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +92,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected ReconcileCheckService reconcileCheckService;
   protected ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService;
   protected InvoiceTermToolService invoiceTermToolService;
+  protected AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService;
   protected ForeignExchangeGapService foreignExchangeGapService;
   protected InvoicePaymentForeignExchangeCreateService invoicePaymentForeignExchangeCreateService;
   protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
@@ -112,6 +117,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       ReconcileCheckService reconcileCheckService,
       ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService,
       InvoiceTermToolService invoiceTermToolService,
+      AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService,
       ForeignExchangeGapService foreignExchangeGapService,
       InvoicePaymentForeignExchangeCreateService invoicePaymentForeignExchangeCreateService,
       ForeignExchangeGapToolsService foreignExchangeGapToolsService) {
@@ -134,6 +140,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.reconcileCheckService = reconcileCheckService;
     this.reconcileInvoiceTermComputationService = reconcileInvoiceTermComputationService;
     this.invoiceTermToolService = invoiceTermToolService;
+    this.advancePaymentMoveLineCreateService = advancePaymentMoveLineCreateService;
     this.foreignExchangeGapService = foreignExchangeGapService;
     this.invoicePaymentForeignExchangeCreateService = invoicePaymentForeignExchangeCreateService;
     this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
@@ -648,7 +655,9 @@ public class ReconcileServiceImpl implements ReconcileService {
   @Transactional(rollbackOn = {Exception.class})
   public Reconcile createReconcileForDifferentAccounts(Reconcile reconcile) throws AxelorException {
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+    Move debitMove = debitMoveLine.getMove();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    Move creditMove = creditMoveLine.getMove();
 
     BigDecimal reconciledAmount = reconcile.getAmount();
 
@@ -665,18 +674,23 @@ public class ReconcileServiceImpl implements ReconcileService {
     Partner partner = null;
     Reconcile newReconcile = null;
 
-    if (debitMoveLine.getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
-      originMove = debitMoveLine.getMove();
+    if (debitMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
+      originMove = debitMove;
     } else {
-      originMove = creditMoveLine.getMove();
+      originMove = creditMove;
       isDebit = true;
     }
 
-    if (debitMoveLine.getMove().getPartner() != null
-        && debitMoveLine.getMove().getPartner().equals(creditMoveLine.getMove().getPartner())) {
-      partner = debitMoveLine.getMove().getPartner();
+    if (debitMove.getPartner() != null && debitMove.getPartner().equals(creditMove.getPartner())) {
+      partner = debitMove.getPartner();
     }
+
+    StringJoiner origin = new StringJoiner(" - ");
+    Optional.of(debitMove).map(Move::getOrigin).ifPresent(origin::add);
+    Optional.of(creditMove).map(Move::getOrigin).ifPresent(origin::add);
+    StringJoiner description = new StringJoiner(" - ");
+    Optional.of(debitMove).map(Move::getDescription).ifPresent(description::add);
+    Optional.of(creditMove).map(Move::getDescription).ifPresent(description::add);
 
     Move move =
         moveCreateService.createMove(
@@ -688,8 +702,8 @@ public class ReconcileServiceImpl implements ReconcileService {
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             0,
-            null,
-            null,
+            origin.toString(),
+            description.toString(),
             originMove != null ? originMove.getCompanyBankDetails() : null);
 
     MoveLine newCreditMoveLine =
@@ -701,7 +715,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             false,
             move.getDate(),
             1,
-            null,
+            debitMoveLine.getName(),
             null);
 
     // Création de la ligne au débit
@@ -714,11 +728,26 @@ public class ReconcileServiceImpl implements ReconcileService {
             true,
             move.getDate(),
             2,
-            null,
+            creditMoveLine.getName(),
             null);
 
     move.addMoveLineListItem(newDebitMoveLine);
     move.addMoveLineListItem(newCreditMoveLine);
+
+    if (reconciledAmount.signum() > 0) {
+      advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
+          move,
+          creditMoveLine,
+          reconciledAmount.divide(
+              creditMoveLine.getCredit(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
+          creditMoveLine.getDate());
+      advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
+          move,
+          debitMoveLine,
+          reconciledAmount.divide(
+              debitMoveLine.getDebit(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
+          debitMoveLine.getDate());
+    }
 
     moveValidateService.accounting(move);
 

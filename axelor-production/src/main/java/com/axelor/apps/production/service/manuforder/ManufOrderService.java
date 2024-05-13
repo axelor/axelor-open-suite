@@ -233,4 +233,7 @@ public interface ManufOrderService {
   public void updatePlannedDates(ManufOrder manufOrder);
 
   void checkApplicableManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  public Map<Product, BigDecimal> getMissingComponents(ManufOrder manufOrder)
+      throws AxelorException;
 }

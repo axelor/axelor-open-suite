@@ -235,13 +235,13 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public BigDecimal getMinQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
-    return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
+    return supplierCatalog != null ? supplierCatalog.getMinQty() : null;
   }
 
   protected BigDecimal getMaxQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
-    return supplierCatalog != null ? supplierCatalog.getMaxQty() : BigDecimal.ONE;
+    return supplierCatalog != null ? supplierCatalog.getMaxQty() : null;
   }
 
   @Override
@@ -255,14 +255,13 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       throws AxelorException {
 
     BigDecimal minQty = this.getMinQty(product, supplierPartner, company);
-    boolean isBreakMinQtyLimit = qty.compareTo(minQty) < 0;
+    boolean isBreakMinQtyLimit = minQty != null && qty.compareTo(minQty) < 0;
     setQtyLimitMessage(
         isBreakMinQtyLimit,
         request,
         response,
         PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY,
         minQty);
-
     return isBreakMinQtyLimit;
   }
 
@@ -277,7 +276,8 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       throws AxelorException {
 
     BigDecimal maxQty = this.getMaxQty(product, supplierPartner, company);
-    boolean isBreakMaxQtyLimit = maxQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(maxQty) > 0;
+    boolean isBreakMaxQtyLimit =
+        maxQty != null && maxQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(maxQty) > 0;
     setQtyLimitMessage(
         isBreakMaxQtyLimit,
         request,

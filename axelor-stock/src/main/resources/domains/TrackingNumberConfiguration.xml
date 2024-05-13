@@ -50,6 +50,10 @@
     <boolean name="useTrackingNumberSeqAsSerialNbr"
       title="Use tracking number seq as serial number"/>
 
+    <many-to-one name="trackingNumberConfigurationProfile"
+      ref="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile" title="Profile"/>
+    <boolean name="isDimensional" title="Dimensional"/>
+
     <extra-code>
    		<![CDATA[
 
