@@ -1,3 +1,3 @@
 ---
-title: "Birt Template : Hot reload does not work on rptdesign"
-module: axelor-base  
+title: "Birt Template: for developers, added hot reload for .rptdesign files."
+module: axelor-base
