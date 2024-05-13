@@ -497,4 +497,5 @@
 "You must select a project/task",,,
 "com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService",,,
 "value:Canceled",,,
+"value:Done paid",,,
 "value:Job costing",,,
