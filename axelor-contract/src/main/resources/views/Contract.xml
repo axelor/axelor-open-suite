@@ -85,7 +85,8 @@
         showIf="!id &amp;&amp; (statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2)"
         stacked="true" readonlyIf="!partner">
         <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE"
-          canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
+          canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"
+          domain="self.contractTypeSelect = :contractTypeSelect"/>
         <button name="copyFromTemplateBtn" title="Use this template"
           readonlyIf="!$contractTemplate"
           prompt="Do you really wish to fill your contract based on this template ?"
