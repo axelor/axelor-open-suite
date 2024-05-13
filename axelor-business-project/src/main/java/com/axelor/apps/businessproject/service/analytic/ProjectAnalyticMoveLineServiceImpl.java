@@ -19,7 +19,6 @@
 package com.axelor.apps.businessproject.service.analytic;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -82,7 +81,7 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder updateLines(PurchaseOrder purchaseOrder) {
     for (PurchaseOrderLine orderLine : purchaseOrder.getPurchaseOrderLineList()) {
       orderLine.setProject(purchaseOrder.getProject());
@@ -95,7 +94,7 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder updateLines(SaleOrder saleOrder) {
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
       orderLine.setProject(saleOrder.getProject());
@@ -123,31 +122,24 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
     if (company == null || project == null) {
       return null;
     }
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    if (accountConfig.getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER) {
-      BusinessProjectConfig businessProjectConfig =
-          businessProjectConfigService.getBusinessProjectConfig(company);
+    BusinessProjectConfig businessProjectConfig =
+        businessProjectConfigService.getBusinessProjectConfig(company);
 
-      if (businessProjectConfig.getUseAssignedToAnalyticDistribution()) {
-        User assignedToUser = project.getAssignedTo();
-        if (assignedToUser != null && assignedToUser.getEmployee() != null) {
-          return assignedToUser.getEmployee().getAnalyticDistributionTemplate();
-        }
+    if (businessProjectConfig.getUseAssignedToAnalyticDistribution()) {
+      User assignedToUser = project.getAssignedTo();
+      if (assignedToUser != null && assignedToUser.getEmployee() != null) {
+        return assignedToUser.getEmployee().getAnalyticDistributionTemplate();
       }
-
-      AccountingSituation accountingSituation = null;
-      if (partner != null) {
-        accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
-      }
-
-      return accountingSituation != null
-          ? accountingSituation.getAnalyticDistributionTemplate()
-          : null;
-    } else {
-      return super.getAnalyticDistributionTemplate(
-          partner, product, company, tradingName, account, isPurchase);
     }
+
+    AccountingSituation accountingSituation = null;
+    if (partner != null) {
+      accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
+    }
+
+    return accountingSituation != null
+        ? accountingSituation.getAnalyticDistributionTemplate()
+        : null;
   }
 }

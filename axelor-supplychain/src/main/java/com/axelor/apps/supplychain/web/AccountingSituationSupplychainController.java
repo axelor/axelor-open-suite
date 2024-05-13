@@ -117,7 +117,7 @@ public class AccountingSituationSupplychainController {
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(accountingSituation);
 
       if (Beans.get(AnalyticLineModelService.class)
-          .analyzeAnalyticLineModel(analyticLineModel, accountingSituation.getCompany())) {
+          .computeAnalyticMoveLineList(analyticLineModel, accountingSituation.getCompany())) {
         response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }
     } catch (Exception e) {

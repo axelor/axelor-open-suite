@@ -72,7 +72,7 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
   }
 
   @Override
-  public boolean analyzeAnalyticLineModel(
+  public boolean computeAnalyticMoveLineList(
       AnalyticLineProjectModel analyticLineProjectModel, Company company) throws AxelorException {
     if (!analyticToolService.isManageAnalytic(company) || analyticLineProjectModel == null) {
       return false;
@@ -114,10 +114,6 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
   @Override
   public AnalyticLineProjectModel getAndComputeAnalyticDistribution(
       AnalyticLineProjectModel analyticLineProjectModel) throws AxelorException {
-    if (!isPartnerAnalyticDistribution(analyticLineProjectModel)) {
-      return analyticLineProjectModel;
-    }
-
     AnalyticDistributionTemplate analyticDistributionTemplate =
         projectAnalyticMoveLineService.getAnalyticDistributionTemplate(
             analyticLineProjectModel.getProject(),

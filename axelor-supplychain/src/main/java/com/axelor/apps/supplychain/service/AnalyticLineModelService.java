@@ -25,7 +25,7 @@ import com.axelor.apps.supplychain.model.AnalyticLineModel;
 
 public interface AnalyticLineModelService {
 
-  boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel, Company company)
+  boolean computeAnalyticMoveLineList(AnalyticLineModel analyticLineModel, Company company)
       throws AxelorException;
 
   AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)

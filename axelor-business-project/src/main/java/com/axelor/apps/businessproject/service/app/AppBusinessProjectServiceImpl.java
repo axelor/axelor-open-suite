@@ -133,7 +133,7 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateBusinessProjectConfigurations() {
 
     List<Company> companies =

@@ -303,7 +303,7 @@ public class ProjectController {
       AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
 
       if (Beans.get(AnalyticLineModelProjectService.class)
-          .analyzeAnalyticLineModel(analyticLineProjectModel, project.getCompany())) {
+          .computeAnalyticMoveLineList(analyticLineProjectModel, project.getCompany())) {
         response.setValue(
             "analyticMoveLineList", analyticLineProjectModel.getAnalyticMoveLineList());
       }
