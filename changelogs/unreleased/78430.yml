@@ -1,2 +1,2 @@
-title: "ManufOrder : Unable to change qty on consumed products"
+title: "Manufacturing order: fixed error preventing quantity change on consumed products."
 module: axelor-production
