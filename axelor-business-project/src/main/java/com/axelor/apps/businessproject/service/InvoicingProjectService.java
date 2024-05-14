@@ -19,19 +19,13 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
-import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingTemplate;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
@@ -45,8 +39,6 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -59,7 +51,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -72,7 +63,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -82,12 +72,6 @@ import java.util.stream.Collectors;
 
 public class InvoicingProjectService {
 
-  @Inject protected TimesheetInvoiceService timesheetInvoiceService;
-
-  @Inject protected ExpenseInvoiceLineService expenseInvoiceLineService;
-
-  @Inject protected PartnerService partnerService;
-
   @Inject protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
@@ -96,157 +80,11 @@ public class InvoicingProjectService {
 
   @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
 
-  @Inject protected InvoiceLineService invoiceLineService;
-
   @Inject protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
 
   @Inject protected SaleOrderLineRepository saleOrderLineRepository;
 
-  @Inject protected ProjectHoldBackLineService projectHoldBackLineService;
-
-  protected int MAX_LEVEL_OF_PROJECT = 10;
-
-  protected int sequence = 0;
-
   protected static final String DATE_FORMAT_YYYYMMDDHHMM = "YYYYMMddHHmm";
-
-  public List<InvoiceLine> populate(Invoice invoice, InvoicingProject folder)
-      throws AxelorException {
-    List<SaleOrderLine> saleOrderLineList =
-        new ArrayList<SaleOrderLine>(folder.getSaleOrderLineSet());
-    List<PurchaseOrderLine> purchaseOrderLineList =
-        new ArrayList<PurchaseOrderLine>(folder.getPurchaseOrderLineSet());
-    List<TimesheetLine> timesheetLineList = new ArrayList<TimesheetLine>(folder.getLogTimesSet());
-    List<ExpenseLine> expenseLineList = new ArrayList<ExpenseLine>(folder.getExpenseLineSet());
-    List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>(folder.getProjectTaskSet());
-
-    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-    invoiceLineList.addAll(
-        invoicingProjectStockMovesService.createStockMovesInvoiceLines(
-            invoice, folder.getStockMoveLineSet()));
-    invoiceLineList.addAll(
-        this.createSaleOrderInvoiceLines(
-            invoice, saleOrderLineList, folder.getSaleOrderLineSetPrioritySelect()));
-    invoiceLineList.addAll(
-        this.createPurchaseOrderInvoiceLines(
-            invoice, purchaseOrderLineList, folder.getPurchaseOrderLineSetPrioritySelect()));
-    invoiceLineList.addAll(
-        timesheetInvoiceService.createInvoiceLines(
-            invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
-    invoiceLineList.addAll(
-        expenseInvoiceLineService.createInvoiceLines(
-            invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
-    invoiceLineList.addAll(
-        projectTaskBusinessProjectService.createInvoiceLines(
-            invoice, projectTaskList, folder.getProjectTaskSetPrioritySelect()));
-
-    Collections.sort(invoiceLineList, new InvoiceLineComparator());
-
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      invoiceLine.setSequence(sequence);
-      sequence++;
-
-      invoiceLineService.compute(invoice, invoiceLine);
-    }
-
-    return invoiceLineList;
-  }
-
-  public List<InvoiceLine> createSaleOrderInvoiceLines(
-      Invoice invoice, List<SaleOrderLine> saleOrderLineList, int priority) throws AxelorException {
-
-    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-    int count = 1;
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-
-      invoiceLineList.addAll(
-          this.createInvoiceLine(invoice, saleOrderLine, priority * 100 + count));
-      count++;
-    }
-
-    return invoiceLineList;
-  }
-
-  public List<InvoiceLine> createInvoiceLine(
-      Invoice invoice, SaleOrderLine saleOrderLine, int priority) throws AxelorException {
-
-    Product product = saleOrderLine.getProduct();
-
-    InvoiceLineGenerator invoiceLineGenerator =
-        new InvoiceLineGeneratorSupplyChain(
-            invoice,
-            product,
-            saleOrderLine.getProductName(),
-            saleOrderLine.getDescription(),
-            saleOrderLine.getQty(),
-            saleOrderLine.getUnit(),
-            priority,
-            false,
-            saleOrderLine,
-            null,
-            null) {
-
-          @Override
-          public List<InvoiceLine> creates() throws AxelorException {
-
-            InvoiceLine invoiceLine = this.createInvoiceLine();
-            invoiceLine.setProject(saleOrderLine.getProject());
-            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-            invoiceLines.add(invoiceLine);
-
-            return invoiceLines;
-          }
-        };
-
-    return invoiceLineGenerator.creates();
-  }
-
-  public List<InvoiceLine> createPurchaseOrderInvoiceLines(
-      Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList, int priority)
-      throws AxelorException {
-
-    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-
-      invoiceLineList.addAll(
-          Beans.get(PurchaseOrderInvoiceProjectServiceImpl.class)
-              .createInvoiceLine(invoice, purchaseOrderLine));
-    }
-    return invoiceLineList;
-  }
-
-  public List<InvoiceLine> createInvoiceLine(
-      Invoice invoice, PurchaseOrderLine purchaseOrderLine, int priority) throws AxelorException {
-
-    Product product = purchaseOrderLine.getProduct();
-
-    InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
-        new InvoiceLineGeneratorSupplyChain(
-            invoice,
-            product,
-            purchaseOrderLine.getProductName(),
-            purchaseOrderLine.getDescription(),
-            purchaseOrderLine.getQty(),
-            purchaseOrderLine.getUnit(),
-            priority,
-            false,
-            null,
-            purchaseOrderLine,
-            null) {
-          @Override
-          public List<InvoiceLine> creates() throws AxelorException {
-
-            InvoiceLine invoiceLine = this.createInvoiceLine();
-
-            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-            invoiceLines.add(invoiceLine);
-
-            return invoiceLines;
-          }
-        };
-
-    return invoiceLineGenerator.creates();
-  }
 
   public void setLines(InvoicingProject invoicingProject, Project project, int counter) {
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
