@@ -56,7 +56,7 @@ public class TicketRestController {
   public Response updateTicket(@PathParam("id") long ticketId, TicketPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Ticket.class).check();
+    new SecurityCheck().writeAccess(Ticket.class, ticketId).check();
 
     Ticket ticket = ObjectFinder.find(Ticket.class, ticketId, requestBody.getVersion());
 
