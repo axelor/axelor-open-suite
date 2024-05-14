@@ -42,7 +42,7 @@ public class ContractTemplateController {
         response.setValues(contractLine);
         return;
       }
-      contractLine = contractLineService.fill(contractLine, product);
+      contractLine = contractLineService.fill(contractLine, null, product);
 
       response.setValues(contractLine);
     } catch (Exception e) {

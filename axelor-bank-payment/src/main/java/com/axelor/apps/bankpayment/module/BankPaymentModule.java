@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.web.InvoicePaymentController;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineManagementRepository;
@@ -60,6 +61,9 @@ import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderService;
+import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderServiceImpl;
+import com.axelor.apps.bankpayment.service.PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
@@ -212,6 +216,13 @@ public class BankPaymentModule extends AxelorModule {
         .to(BankPaymentBankStatementLineAFB120Repository.class);
     bind(BankStatementRuleService.class).to(BankStatementRuleServiceImpl.class);
     bind(BankStatementQueryService.class).to(BankStatementQueryServiceImpl.class);
+    bind(PaymentSessionValidateServiceImpl.class)
+        .to(PaymentSessionValidateBankPaymentServiceImpl.class);
+    bind(PaymentSessionBillOfExchangeValidateServiceImpl.class)
+        .to(PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl.class);
+
+    bind(PaymentSessionBankOrderService.class).to(PaymentSessionBankOrderServiceImpl.class);
+
     bind(PaymentSessionValidateServiceImpl.class)
         .to(PaymentSessionValidateBankPaymentServiceImpl.class);
     bind(PaymentSessionAccountRepository.class).to(PaymentSessionBankPaymentRepository.class);

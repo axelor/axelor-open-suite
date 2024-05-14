@@ -42,6 +42,8 @@ public interface TimesheetInvoiceService {
       String date,
       BigDecimal hoursDuration,
       int priority,
-      PriceList priceList)
+      PriceList priceList,
+      BigDecimal unitPrice,
+      BigDecimal priceDiscounted)
       throws AxelorException;
 }

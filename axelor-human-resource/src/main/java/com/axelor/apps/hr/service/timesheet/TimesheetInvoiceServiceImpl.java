@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
 
@@ -151,7 +152,9 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
               strDate,
               hoursDuration,
               priority * 100 + count,
-              priceList));
+              priceList,
+              null,
+              null));
       count++;
     }
 
@@ -167,7 +170,9 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
       String date,
       BigDecimal hoursDuration,
       int priority,
-      PriceList priceList)
+      PriceList priceList,
+      BigDecimal forcedUnitPrice,
+      BigDecimal forcedPriceDiscounted)
       throws AxelorException {
 
     int discountMethodTypeSelect = PriceListLineRepository.TYPE_DISCOUNT;
@@ -201,7 +206,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
               product);
     }
 
-    if (priceList != null) {
+    if (forcedUnitPrice == null && priceList != null) {
       PriceListLine priceListLine =
           priceListService.getPriceListLine(product, qtyConverted, priceList, price);
       if (priceListLine != null) {
@@ -234,14 +239,15 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
       productName += " " + "(" + date + ")";
     }
 
+    BigDecimal finalPrice = Optional.ofNullable(forcedUnitPrice).orElse(price);
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
             product,
             productName,
-            price,
-            price,
-            priceDiscounted,
+            finalPrice,
+            finalPrice,
+            Optional.ofNullable(forcedPriceDiscounted).orElse(priceDiscounted),
             description,
             qtyConverted,
             (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
@@ -249,7 +255,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
             priority,
             discountAmount,
             discountTypeSelect,
-            price.multiply(qtyConverted),
+            finalPrice.multiply(qtyConverted),
             null,
             false) {
 

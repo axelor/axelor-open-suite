@@ -35,7 +35,7 @@ import Card from './Card';
 import { updateTask, getDMSFiles } from '../../Services/api';
 import { ConfirmationDialog, DatePicker } from '../../Components';
 import { TaskProgress } from '../form/TaskComponents';
-import { getStatus, getCompletedStatus, translate } from '../../utils';
+import { getStatus, translate } from '../../utils';
 import { useTaskEditor } from './Context';
 import 'moment/min/locales';
 import './css/react-context-menu.css';
@@ -331,7 +331,7 @@ const CardItem = React.forwardRef(function CardItem(
       if (isCompleted) {
         status = record.statusBeforeComplete;
       } else {
-        status = getCompletedStatus(selectedProject);
+        status = selectedProject?.completedTaskStatus;
       }
       let res = await updateTask({
         ...record,
