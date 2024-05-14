@@ -116,4 +116,7 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_CANNOT_DELETE_COMFIRMED_ORDER = /*$$(*/
       "It is not possible to delete a confirmed order." /*)*/;
+
+  public static final String COEFFICIENT_ARE_BOT_ENABLED = /*$$(*/
+      "Coefficient on invoice line must be enabled for progress billing." /*)*/;
 }

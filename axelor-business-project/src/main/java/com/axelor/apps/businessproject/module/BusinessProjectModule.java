@@ -86,6 +86,8 @@ import com.axelor.apps.businessproject.service.WorkflowVentilationProjectService
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
+import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineGroupBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.saleorderline.XBusinessProjectServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
@@ -113,6 +115,8 @@ import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleOrderLine.SaleOrderLineSupplyChainGroupServiceImpl;
+import com.axelor.apps.supplychain.service.saleOrderLine.XSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 
@@ -179,5 +183,9 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectHoldBackLineService.class).to(ProjectHoldBackLineServiceImpl.class);
     bind(ProjectTaskProgressUpdateService.class).to(ProjectTaskProgressUpdateServiceImpl.class);
     bind(ProjectFrameworkContractService.class).to(ProjectFrameworkContractServiceImpl.class);
+
+    bind(XSupplychainServiceImpl.class).to(XBusinessProjectServiceImpl.class);
+    bind(SaleOrderLineSupplyChainGroupServiceImpl.class)
+        .to(SaleOrderLineGroupBusinessProjectServiceImpl.class);
   }
 }

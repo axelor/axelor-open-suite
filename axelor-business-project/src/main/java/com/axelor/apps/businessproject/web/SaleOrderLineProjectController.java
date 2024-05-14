@@ -18,17 +18,24 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
+import com.axelor.apps.businessproject.service.saleorderline.XBusinessProjectServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
@@ -126,6 +133,22 @@ public class SaleOrderLineProjectController {
       response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void resetInvoicingMode(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    if (!Beans.get(AccountConfigRepository.class)
+            .findByCompany(saleOrder.getCompany())
+            .getIsInvoiceCoefficientEnabled()
+        && saleOrderLine.getInvoicingModeSelect()
+            == Beans.get(SaleOrderLineRepository.class).INVOICING_MODE_PROGRESS_BILLING) {
+
+      Beans.get(XBusinessProjectServiceImpl.class).resetInvoicingMode(saleOrderLine);
+      response.setValues(saleOrderLine);
+      response.setError(I18n.get(SaleExceptionMessage.COEFFICIENT_ARE_BOT_ENABLED));
     }
   }
 }

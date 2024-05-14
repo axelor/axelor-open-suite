@@ -258,7 +258,7 @@
   <!-- ACTION GROUP -->
 
   <action-group name="supplychain-action-sale-order-line-group-onnew">
-    <action name="action-group-sale-saleorderline-onnew"/>
+    <action name="action-sale-order-line-group-onnew"/>
     <action name="action-record-sale-order-line-fill-request-qty"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
     <action name="action-sale-order-line-group-manage-analytic"/>
@@ -317,7 +317,7 @@
   </action-group>
 
   <!-- ACTION RECORD -->
-
+  <!--updateRequestedReservedQty -->
   <action-record
     name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -339,6 +339,7 @@
     <attribute name="value" for="$_xFillProductAvailableQty" expr="eval: true"/>
   </action-attrs>
 
+  <!--hideUpdateAllocatedQtyBtn -->
   <action-attrs name="action-supplychain-sale-order-line-attrs-hide-button">
     <attribute for="updateAllocatedQtyBtn" name="hidden"
       expr="eval: id == null || __parent__.statusSelect != 3 || product?.productTypeSelect == 'service'"
@@ -367,6 +368,7 @@
       if="saleOrder"/>
   </action-attrs>
 
+  <!--setRequestedReservedQtyTOReadOnly -->
   <action-attrs name="action-sale-order-line-attrs-is-requested-qty-readonly">
     <attribute for="requestedReservedQty" name="readonly"
       expr="eval: __parent__.statusSelect &gt; 2" if="__parent__"/>
