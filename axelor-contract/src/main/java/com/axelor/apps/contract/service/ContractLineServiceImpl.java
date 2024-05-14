@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
@@ -154,14 +155,21 @@ public class ContractLineServiceImpl implements ContractLineService {
     // TODO: maybe put tax computing in another method
     contractLine.setFiscalPosition(contract.getPartner().getFiscalPosition());
 
-    Set<TaxLine> taxLineSet =
-        accountManagementService.getTaxLineSet(
-            appBaseService.getTodayDate(contract.getCompany()),
-            product,
-            contract.getCompany(),
-            contractLine.getFiscalPosition(),
-            false);
-    contractLine.setTaxLineSet(taxLineSet);
+    int targetTypeSelect = contract.getTargetTypeSelect();
+
+    Set<TaxLine> taxLineSet = Sets.newHashSet();
+
+    if (targetTypeSelect == ContractRepository.CUSTOMER_CONTRACT
+        || targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT) {
+      taxLineSet =
+          accountManagementService.getTaxLineSet(
+              appBaseService.getTodayDate(contract.getCompany()),
+              product,
+              contract.getCompany(),
+              contractLine.getFiscalPosition(),
+              false);
+      contractLine.setTaxLineSet(taxLineSet);
+    }
 
     if (CollectionUtils.isNotEmpty(taxLineSet)
         && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
