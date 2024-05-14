@@ -35,9 +35,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
 
   public InvoiceGeneratorContract(Contract contract) throws AxelorException {
     super(
-        contract.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT
-            ? InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-            : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+        getOperationType(contract),
         contract.getCompany(),
         contract.getInvoicedPartner() != null
             ? contract.getInvoicedPartner()
@@ -53,7 +51,6 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
     this.paymentCondition = contract.getCurrentContractVersion().getPaymentCondition();
     this.paymentMode = contract.getCurrentContractVersion().getPaymentMode();
     this.appBaseService = Beans.get(AppBaseService.class);
-    this.operationType = changeOperationType(contract);
   }
 
   @Override
@@ -88,16 +85,26 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
     return createInvoiceHeader();
   }
 
-  protected int changeOperationType(Contract contract) {
+  protected static int getOperationType(Contract contract) {
     int targetTypeSelect = contract.getTargetTypeSelect();
+    int operationType = 0;
 
-    if (targetTypeSelect == ContractRepository.YEB_CUSTOMER_CONTRACT) {
-      return InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+    switch (targetTypeSelect) {
+      case ContractRepository.CUSTOMER_CONTRACT:
+        operationType = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+        break;
+      case ContractRepository.SUPPLIER_CONTRACT:
+        operationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+        break;
+      case ContractRepository.YEB_CUSTOMER_CONTRACT:
+        operationType = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+        break;
+      case ContractRepository.YEB_SUPPLIER_CONTRACT:
+        operationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+        break;
+      default:
+        break;
     }
-
-    if (targetTypeSelect == ContractRepository.YEB_SUPPLIER_CONTRACT) {
-      return InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
-    }
-    return targetTypeSelect;
+    return operationType;
   }
 }
