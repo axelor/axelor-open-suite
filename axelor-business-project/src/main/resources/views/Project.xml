@@ -141,6 +141,28 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//field[@name='imputable']">
+      <insert position="after">
+        <spacer colSpan="3"/>
+        <field name="allowToGetPricesFromFrameworkContract" hidden="true"
+          showIf="isBusinessProject"/>
+      </insert>
+    </extend>
+    <extend target="//button[@name='createNewCustomerContract']">
+      <insert position="before">
+        <panel name="frameworkContractPanel" hidden="true"
+          showIf="allowToGetPricesFromFrameworkContract" colSpan="12">
+          <field name="frameworkCustomerContractSet" colSpan="12"
+            domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 1"/>
+          <field name="defaultFrameworkCustomerContract"
+            onSelect="action-project-attrs-set-default-customer-contract-domain"/>
+          <field name="frameworkSupplierContractSet" colSpan="12"
+            domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
+          <field name="defaultFrameworkSupplierContract"
+            onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-business-project-project-group-on-new">
@@ -738,5 +760,15 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="checkProjectState"/>
   </action-method>
+
+  <action-attrs name="action-project-attrs-set-default-customer-contract-domain">
+    <attribute for="defaultFrameworkCustomerContract" name="domain"
+      expr="eval: &quot;self.id IN (${frameworkCustomerContractSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-set-default-supplier-contract-domain">
+    <attribute for="defaultFrameworkSupplierContract" name="domain"
+      expr="eval: &quot;self.id IN (${frameworkSupplierContractSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
 
 </object-views>
