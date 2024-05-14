@@ -53,6 +53,8 @@ import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectContractServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectGenerateInvoiceService;
+import com.axelor.apps.businessproject.service.ProjectGenerateInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
 import com.axelor.apps.businessproject.service.ProjectHistoryServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectHoldBackLineService;
@@ -185,5 +187,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ICalendarEventObserver.class);
     bind(BusinessProjectClosingControlService.class)
         .to(BusinessProjectClosingControlServiceImpl.class);
+    bind(ProjectGenerateInvoiceService.class).to(ProjectGenerateInvoiceServiceImpl.class);
   }
 }
