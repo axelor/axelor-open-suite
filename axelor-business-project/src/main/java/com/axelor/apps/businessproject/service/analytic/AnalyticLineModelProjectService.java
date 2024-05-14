@@ -1,4 +1,4 @@
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.businessproject.service.analytic;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
