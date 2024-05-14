@@ -1107,7 +1107,7 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="formatPanel" colSpan="6">
         <field name="$format" title="Format" type="string" selection="invoice.report.format"
-          colSpan="12" required="true"/>
+          colSpan="12" required="true" readonlyIf="$reportType != 1"/>
       </panel>
       <field name="$localization" title="Localization" type="many-to-one"
         target="com.axelor.apps.base.db.Localization" showIf="$reportType ==1 || $reportType==3"/>
@@ -2089,21 +2089,16 @@ InvoiceSet.length > 0))"
   </action-attrs>
 
   <action-attrs name="action-invoice-reports-wizard-attrs-set-format-select">
-    <attribute name="readonly" for="$format" expr="eval: true"
-      if="reportType != null &amp;&amp; reportType != 1"/>
-    <attribute name="readonly" for="$format" expr="eval: false"
-      if="reportType != null &amp;&amp; reportType == 1"/>
     <attribute name="value" for="$format" expr="eval: 'pdf'"
       if="reportType != null &amp;&amp; reportType != 1"/>
-    <attribute name="readonly" for="$format" expr="eval: false" if="reportType == null"/>
     <attribute name="value" for="$format" expr="eval: null" if="reportType == null"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-reports-wizard-attrs-set-report-type-select">
     <attribute name="value" for="$reportType" expr="eval: 1"
       if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
-    <attribute name="value" for="$format" expr="pdf" if="_statusSelect == 3"/>
-    <attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
+    <attribute name="value" for="$format" expr="pdf"
+      if="_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)"/>
     <attribute name="value" expr="eval: _localization" for="$localization"/>
   </action-attrs>
 
