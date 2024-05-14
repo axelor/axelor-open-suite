@@ -50,7 +50,7 @@ public class OperationOrderRestController {
       @PathParam("operationOrderId") Long operationOrderId, OperationOrderPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(OperationOrder.class).check();
+    new SecurityCheck().writeAccess(OperationOrder.class, operationOrderId).check();
 
     OperationOrder operationOrder =
         ObjectFinder.find(OperationOrder.class, operationOrderId, requestBody.getVersion());
