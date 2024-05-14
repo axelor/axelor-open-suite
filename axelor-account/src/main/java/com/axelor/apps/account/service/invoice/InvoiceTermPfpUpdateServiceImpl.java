@@ -4,13 +4,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MovePfpValidateService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.auth.AuthUtils;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +37,7 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void updatePfp(
       InvoiceTerm invoiceTerm, Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
@@ -49,14 +48,9 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
       pfpValidateStatusSelect = invoiceTermPfpValidateStatusSelectMap.get(invoiceTerm);
     }
 
-    if (invoiceTermPfpToolService
-        .getAlreadyValidatedStatusList()
-        .contains(pfpValidateStatusSelect)) {
+    if (invoiceTermPfpToolService.getAlreadyValidatedStatusList().contains(pfpValidateStatusSelect)
+        || pfpValidateStatusSelect == InvoiceTermRepository.PFP_STATUS_LITIGATION) {
       return;
-    } else if (pfpValidateStatusSelect == InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.INVOICE_TERM_PFP_REFUSED));
     }
 
     invoiceTermPfpValidateStatusSelectMap.remove(invoiceTerm);
@@ -78,7 +72,6 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
                 it ->
                     invoiceTermPfpToolService.getPfpValidateStatusSelect(it)
                         == InvoiceTermRepository.PFP_STATUS_VALIDATED)) {
-      // Beans.get to prevent circular injection
       invoicePfpValidateService.validatePfp(invoice.getId());
     }
 

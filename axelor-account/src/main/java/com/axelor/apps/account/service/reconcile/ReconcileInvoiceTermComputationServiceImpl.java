@@ -163,11 +163,10 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
     List<InvoiceTermPayment> invoiceTermPaymentList = null;
     if (moveLine.getAccount().getUseForPartnerBalance() && updateInvoiceTerms) {
-      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap = new HashMap<>();
+      List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap =
+          this.getInvoiceTermPfpStatus(invoice);
 
-      List<InvoiceTerm> invoiceTermList =
-          this.getInvoiceTermsToPay(
-              invoice, otherMove, moveLine, invoiceTermPfpValidateStatusSelectMap);
       invoiceTermPaymentList =
           invoiceTermService.updateInvoiceTerms(
               invoiceTermList,
@@ -196,6 +195,24 @@ public class ReconcileInvoiceTermComputationServiceImpl
             it -> (it.getMove() != null && it.getMove().equals(move) && it.getReconcile() == null))
         .findFirst()
         .orElse(null);
+  }
+
+  protected Map<InvoiceTerm, Integer> getInvoiceTermPfpStatus(Invoice invoice) {
+    Map<InvoiceTerm, Integer> map = new HashMap<>();
+
+    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        if (invoiceTerm.getPfpValidateStatusSelect()
+            != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
+          invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+        }
+        map.put(invoiceTerm, invoiceTerm.getPfpValidateStatusSelect());
+      }
+    }
+
+    return map;
   }
 
   protected BigDecimal getTotal(
@@ -265,11 +282,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
     return ratioPaid.multiply(percentage);
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsToPay(
-      Invoice invoice,
-      Move move,
-      MoveLine moveLine,
-      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
+  protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
       throws AxelorException {
     if (move != null
         && move.getPaymentVoucher() != null
@@ -282,14 +295,6 @@ public class ReconcileInvoiceTermComputationServiceImpl
     } else {
       List<InvoiceTerm> invoiceTermsToPay;
       if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-        for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-          if (invoiceTerm.getPfpValidateStatusSelect()
-              != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-            invoiceTermPfpValidateStatusSelectMap.put(
-                invoiceTerm, invoiceTerm.getPfpValidateStatusSelect());
-            invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
-          }
-        }
         invoiceTermsToPay =
             invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
