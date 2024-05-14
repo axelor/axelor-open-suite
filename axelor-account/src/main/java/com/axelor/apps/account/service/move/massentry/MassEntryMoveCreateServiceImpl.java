@@ -38,7 +38,7 @@ import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -58,7 +58,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected PeriodCheckService periodCheckService;
   protected MoveValidateService moveValidateService;
-  protected PeriodService periodService;
+  protected PeriodUtilsService periodUtilsService;
   protected MoveLineMassEntryRepository moveLineMassEntryRepository;
   protected MoveSimulateService moveSimulateService;
   protected MoveRepository moveRepository;
@@ -74,7 +74,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       PeriodCheckService periodCheckService,
       MoveValidateService moveValidateService,
-      PeriodService periodService,
+      PeriodUtilsService periodUtilsService,
       MoveLineMassEntryRepository moveLineMassEntryRepository,
       MoveSimulateService moveSimulateService,
       MoveRepository moveRepository,
@@ -87,7 +87,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.periodCheckService = periodCheckService;
     this.moveValidateService = moveValidateService;
-    this.periodService = periodService;
+    this.periodUtilsService = periodUtilsService;
     this.moveLineMassEntryRepository = moveLineMassEntryRepository;
     this.moveSimulateService = moveSimulateService;
     this.moveRepository = moveRepository;
@@ -240,7 +240,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
           if (massEntryLine.getDate() != null && move.getCompany() != null) {
 
             move.setPeriod(
-                periodService.getPeriod(
+                periodUtilsService.getPeriod(
                     massEntryLine.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
           }
           move.setReference(massEntryLine.getTemporaryMoveNumber().toString());

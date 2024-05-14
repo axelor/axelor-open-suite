@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.util.InvoiceTermUtilsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -70,7 +71,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       InvoiceTermFilterService invoiceTermFilterService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      InvoiceTermUtilsService invoiceTermUtilsService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -90,7 +92,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         invoiceTermFilterService,
         invoiceLineRepo,
         intercoService,
-        stockMoveRepository);
+        stockMoveRepository,
+        invoiceTermUtilsService);
   }
 
   @Override

@@ -205,17 +205,6 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     }
   }
 
-  public void updateInvoiceTermsParentFields(MoveLine moveLine) {
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      moveLine
-          .getInvoiceTermList()
-          .forEach(
-              it ->
-                  invoiceTermService.setParentFields(
-                      it, moveLine.getMove(), moveLine, it.getInvoice()));
-    }
-  }
-
   protected MoveLine computeInvoiceTermWithHoldback(
       Move move,
       MoveLine moveLine,

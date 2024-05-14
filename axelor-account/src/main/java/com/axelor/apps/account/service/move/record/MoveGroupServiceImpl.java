@@ -35,8 +35,8 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.user.UserRoleToolService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
@@ -60,7 +60,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveCounterPartService moveCounterPartService;
   protected MoveLineControlService moveLineControlService;
   protected MoveLineTaxService moveLineTaxService;
-  protected PeriodService periodService;
+  protected PeriodUtilsService periodUtilsService;
   protected MoveRepository moveRepository;
   protected MassEntryService massEntryService;
   protected MassEntryVerificationService massEntryVerificationService;
@@ -82,7 +82,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveCounterPartService moveCounterPartService,
       MoveLineControlService moveLineControlService,
       MoveLineTaxService moveLineTaxService,
-      PeriodService periodService,
+      PeriodUtilsService periodUtilsService,
       MoveRepository moveRepository,
       MassEntryService massEntryService,
       MassEntryVerificationService massEntryVerificationService,
@@ -101,7 +101,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveCounterPartService = moveCounterPartService;
     this.moveLineControlService = moveLineControlService;
     this.moveLineTaxService = moveLineTaxService;
-    this.periodService = periodService;
+    this.periodUtilsService = periodUtilsService;
     this.moveRepository = moveRepository;
     this.massEntryService = massEntryService;
     this.massEntryVerificationService = massEntryVerificationService;
@@ -113,7 +113,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
       throws AxelorException {
     valuesMap.put("$simulatedPeriodClosed", moveToolService.isSimulatedMovePeriodClosed(move));
-    valuesMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
+    valuesMap.put("$periodClosed", periodUtilsService.isClosedPeriod(move.getPeriod()));
   }
 
   protected void addValidatePeriod(Move move, Map<String, Object> valuesMap)

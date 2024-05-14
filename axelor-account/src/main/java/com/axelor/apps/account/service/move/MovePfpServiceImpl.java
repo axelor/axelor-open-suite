@@ -18,19 +18,16 @@
  */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.util.MoveUtilsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
@@ -47,18 +44,18 @@ public class MovePfpServiceImpl implements MovePfpService {
 
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected AccountingSituationService accountingSituationService;
-  protected PfpService pfpService;
+  protected MoveUtilsService moveUtilsService;
 
   @Inject
   public MovePfpServiceImpl(
       MoveRepository moveRepository,
       InvoiceTermPfpService invoiceTermPfpService,
       AccountingSituationService accountingSituationService,
-      PfpService pfpService) {
+      MoveUtilsService moveUtilsService) {
     this.moveRepository = moveRepository;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.accountingSituationService = accountingSituationService;
-    this.pfpService = pfpService;
+    this.moveUtilsService = moveUtilsService;
   }
 
   @Transactional
@@ -100,7 +97,7 @@ public class MovePfpServiceImpl implements MovePfpService {
   @Override
   public boolean isPfpButtonVisible(Move move, User user, boolean litigation)
       throws AxelorException {
-    boolean pfpCondition = this._getPfpCondition(move);
+    boolean pfpCondition = moveUtilsService._getPfpCondition(move);
 
     boolean validatorUserCondition =
         invoiceTermPfpService.getUserCondition(move.getPfpValidatorUser(), user);
@@ -123,22 +120,6 @@ public class MovePfpServiceImpl implements MovePfpService {
         && invoiceTermsCondition;
   }
 
-  @Override
-  public void setPfpStatus(Move move) throws AxelorException {
-    Company company = move.getCompany();
-
-    if (this._getPfpCondition(move)) {
-      AccountingSituation accountingSituation =
-          accountingSituationService.getAccountingSituation(move.getPartner(), company);
-      if (accountingSituation != null) {
-        move.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
-      }
-      move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
-    } else {
-      move.setPfpValidateStatusSelect(MoveRepository.PFP_NONE);
-    }
-  }
-
   protected boolean _getStatusCondition(Move move) {
     return move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
         || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED;
@@ -146,7 +127,7 @@ public class MovePfpServiceImpl implements MovePfpService {
 
   @Override
   public boolean isValidatorUserVisible(Move move) throws AxelorException {
-    boolean pfpCondition = this._getPfpCondition(move);
+    boolean pfpCondition = moveUtilsService._getPfpCondition(move);
 
     boolean statusCondition = this._getStatusNotNewCondition(move);
 
@@ -174,27 +155,5 @@ public class MovePfpServiceImpl implements MovePfpService {
 
   protected boolean _getStatusNotNewCondition(Move move) {
     return move.getStatusSelect() > MoveRepository.STATUS_NEW;
-  }
-
-  protected boolean _getPfpCondition(Move move) throws AxelorException {
-    return pfpService.isManagePassedForPayment(move.getCompany())
-        && this._getJournalTypePurchaseCondition(move);
-  }
-
-  protected boolean _getJournalTypePurchaseCondition(Move move) throws AxelorException {
-    Company company = move.getCompany();
-    if (move.getJournal() == null) {
-      return false;
-    }
-
-    boolean isSupplierPurchase =
-        move.getJournal().getJournalType().getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE;
-    boolean isSupplierRefund =
-        move.getJournal().getJournalType().getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE;
-
-    return pfpService.isManagePassedForPayment(company)
-        && (isSupplierPurchase || (isSupplierRefund && pfpService.isManagePFPInRefund(company)));
   }
 }

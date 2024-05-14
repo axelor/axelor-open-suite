@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountingReportSequenceService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -46,6 +47,7 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
   protected AccountConfigService accountConfigService;
   protected AccountRepository accountRepository;
   protected MoveToolService moveToolService;
+  protected AccountingReportSequenceService accountingReportSequenceService;
 
   @Inject
   public BatchPrintAccountingReportServiceImpl(
@@ -55,7 +57,8 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
       AccountingReportTypeRepository accountingReportTypeRepo,
       AccountConfigService accountConfigService,
       AccountRepository accountRepository,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      AccountingReportSequenceService accountingReportSequenceService) {
     this.appAccountService = appAccountService;
     this.accountingReportService = accountingReportService;
     this.accountingReportRepo = accountingReportRepo;
@@ -63,6 +66,7 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
     this.moveToolService = moveToolService;
+    this.accountingReportSequenceService = accountingReportSequenceService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -91,7 +95,7 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
         accountingReportTypeRepo.findByTypeSelect(
             AccountingReportRepository.REPORT_GENERAL_BALANCE));
     accountingReport.setExportTypeSelect("pdf");
-    accountingReport.setRef(accountingReportService.getSequence(accountingReport));
+    accountingReport.setRef(accountingReportSequenceService.getSequence(accountingReport));
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
 
     String availableMoveStatusSelect =

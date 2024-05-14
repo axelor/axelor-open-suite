@@ -40,8 +40,8 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -67,7 +67,7 @@ public class ImportMove {
   @Inject private MoveValidateService moveValidateService;
   @Inject private MoveLineToolService moveLineToolService;
   @Inject private AppAccountService appAccountService;
-  @Inject private PeriodService periodService;
+  @Inject private PeriodUtilsService periodUtilsService;
   @Inject private FECImportRepository fecImportRepository;
 
   private String lastImportDate;
@@ -118,7 +118,7 @@ public class ImportMove {
       }
 
       Period period =
-          periodService.getPeriod(moveLine.getDate(), company, YearRepository.TYPE_FISCAL);
+          periodUtilsService.getPeriod(moveLine.getDate(), company, YearRepository.TYPE_FISCAL);
 
       Move move = moveRepository.all().filter("self.reference = ?", importReference).fetchOne();
       if (move == null) {

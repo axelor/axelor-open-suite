@@ -20,8 +20,20 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionComputeNameService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.google.inject.Inject;
 
 public class PaymentSessionBankPaymentRepository extends PaymentSessionAccountRepository {
+
+  @Inject
+  public PaymentSessionBankPaymentRepository(
+      PaymentSessionComputeNameService paymentSessionComputeNameService,
+      SequenceService sequenceService,
+      AppBaseService appBaseService) {
+    super(paymentSessionComputeNameService, sequenceService, appBaseService);
+  }
 
   @Override
   public PaymentSession copy(PaymentSession entity, boolean deep) {

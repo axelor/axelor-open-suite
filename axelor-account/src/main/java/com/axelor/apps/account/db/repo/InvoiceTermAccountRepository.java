@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Query;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -32,6 +32,14 @@ import java.util.List;
 import java.util.Map;
 
 public class InvoiceTermAccountRepository extends InvoiceTermRepository {
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public InvoiceTermAccountRepository(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
+
   @Override
   public void remove(InvoiceTerm entity) {
     if (!entity.getIsPaid()) {
@@ -64,7 +72,7 @@ public class InvoiceTermAccountRepository extends InvoiceTermRepository {
     json.put("$originBasedPaymentDelay", 0);
     if (json.containsKey("amountRemaining")
         && ((BigDecimal) json.get("amountRemaining")).signum() > 0) {
-      LocalDate today = Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany());
+      LocalDate today = appBaseService.getTodayDate(invoiceTerm.getCompany());
       if (invoiceTerm.getDueDate() != null) {
         if (invoiceTerm.getDueDate().isBefore(today)) {
           json.put(

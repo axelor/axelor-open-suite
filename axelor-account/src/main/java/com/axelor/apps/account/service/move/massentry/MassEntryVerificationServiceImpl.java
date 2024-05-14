@@ -41,7 +41,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -60,7 +60,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected PeriodService periodService;
+  protected PeriodUtilsService periodUtilsService;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineControlService moveLineControlService;
   protected MoveValidateService moveValidateService;
@@ -71,7 +71,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   @Inject
   public MassEntryVerificationServiceImpl(
-      PeriodService periodService,
+      PeriodUtilsService periodUtilsService,
       MoveLineToolService moveLineToolService,
       MoveLineControlService moveLineControlService,
       MoveValidateService moveValidateService,
@@ -79,7 +79,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       AppAccountService appAccountService,
       PeriodCheckService periodCheckService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
-    this.periodService = periodService;
+    this.periodUtilsService = periodUtilsService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineControlService = moveLineControlService;
     this.moveValidateService = moveValidateService;
@@ -118,7 +118,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
       Period period;
       if (company != null) {
-        period = periodService.getActivePeriod(newDate, company, YearRepository.TYPE_FISCAL);
+        period = periodUtilsService.getActivePeriod(newDate, company, YearRepository.TYPE_FISCAL);
         parentMove.setPeriod(period);
       }
       moveLineToolService.checkDateInPeriod(parentMove, moveLine);

@@ -25,20 +25,20 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 
 public class FixedAssetDateServiceImpl implements FixedAssetDateService {
 
-  protected PeriodService periodService;
+  protected PeriodUtilsService periodUtilsService;
   protected YearService yearService;
 
   @Inject
-  public FixedAssetDateServiceImpl(PeriodService periodService, YearService yearService) {
-    this.periodService = periodService;
+  public FixedAssetDateServiceImpl(PeriodUtilsService periodUtilsService, YearService yearService) {
+    this.periodUtilsService = periodUtilsService;
     this.yearService = yearService;
   }
 
@@ -103,7 +103,7 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
   @Override
   public LocalDate computeLastDayOfFiscalPeriod(
       Company company, LocalDate date, Integer periodicityTypeSelect) {
-    Period period = periodService.getPeriod(date, company, YearRepository.TYPE_FISCAL);
+    Period period = periodUtilsService.getPeriod(date, company, YearRepository.TYPE_FISCAL);
     if (period == null) {
       // Last day of the month of date
       return computeLastDayOfPeriodicity(periodicityTypeSelect, date);

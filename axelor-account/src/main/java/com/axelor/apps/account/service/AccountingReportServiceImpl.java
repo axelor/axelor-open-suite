@@ -42,10 +42,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -449,75 +446,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.query += paramQuery;
     return this.query;
-  }
-
-  public void setSequence(AccountingReport accountingReport, String sequence) {
-    accountingReport.setRef(sequence);
-  }
-
-  public String getSequence(AccountingReport accountingReport) throws AxelorException {
-
-    SequenceService sequenceService = Beans.get(SequenceService.class);
-
-    this.checkReportType(accountingReport);
-
-    int accountingReportTypeSelect = accountingReport.getReportType().getTypeSelect();
-
-    if (accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000
-        || accountingReportTypeSelect == 3000) {
-      String seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.ACCOUNTING_REPORT,
-              accountingReport.getCompany(),
-              AccountingReport.class,
-              "ref",
-              accountingReport);
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_1),
-            I18n.get(BaseExceptionMessage.EXCEPTION),
-            accountingReport.getCompany().getName());
-      }
-      return seq;
-    } else if (accountingReportTypeSelect >= 1000 && accountingReportTypeSelect < 2000) {
-      String seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.MOVE_LINE_EXPORT,
-              accountingReport.getCompany(),
-              AccountingReport.class,
-              "ref",
-              accountingReport);
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_2),
-            I18n.get(BaseExceptionMessage.EXCEPTION),
-            accountingReport.getCompany().getName());
-      }
-      return seq;
-    } else if (accountingReportTypeSelect >= 2000 && accountingReportTypeSelect < 3000) {
-      String seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.ANALYTIC_REPORT,
-              accountingReport.getCompany(),
-              AccountingReport.class,
-              "ref",
-              accountingReport);
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT),
-            I18n.get(BaseExceptionMessage.EXCEPTION),
-            accountingReport.getCompany().getName());
-      }
-      return seq;
-    }
-    throw new AxelorException(
-        accountingReport,
-        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE),
-        accountingReport.getReportType().getTypeSelect());
   }
 
   public Account getAccount(AccountingReport accountingReport) {
@@ -959,15 +887,5 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       }
     }
     return null;
-  }
-
-  @Override
-  public void checkReportType(AccountingReport accountingReport) throws AxelorException {
-    if (accountingReport.getReportType() == null) {
-      throw new AxelorException(
-          accountingReport,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_NO_REPORT_TYPE));
-    }
   }
 }

@@ -38,7 +38,6 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Blocking;
@@ -47,11 +46,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -95,29 +91,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     this.dateService = dateService;
     this.paymentSessionCancelService = paymentSessionCancelService;
     this.pfpService = pfpService;
-  }
-
-  @Override
-  public String computeName(PaymentSession paymentSession) throws AxelorException {
-    StringBuilder name = new StringBuilder("Session");
-    User createdBy = paymentSession.getCreatedBy();
-    if (ObjectUtils.notEmpty(paymentSession.getPaymentMode())) {
-      name.append(" " + paymentSession.getPaymentMode().getName());
-    }
-    if (ObjectUtils.notEmpty(paymentSession.getCreatedOn())) {
-      name.append(
-          String.format(
-              " %s %s",
-              I18n.get(ITranslation.PAYMENT_SESSION_COMPUTE_NAME_ON_THE),
-              paymentSession.getCreatedOn().format(dateService.getDateTimeFormat())));
-    }
-    if (ObjectUtils.notEmpty(createdBy)) {
-      name.append(
-          String.format(
-              " %s %s",
-              I18n.get(ITranslation.PAYMENT_SESSION_COMPUTE_NAME_BY), createdBy.getName()));
-    }
-    return name.toString();
   }
 
   @Override

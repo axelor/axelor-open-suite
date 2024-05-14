@@ -42,8 +42,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   protected PartnerRepository partnerRepository;
   protected BankDetailsService bankDetailsService;
-  protected PeriodService periodService;
+  protected PeriodUtilsService periodUtilsService;
   protected PaymentConditionService paymentConditionService;
   protected InvoiceTermService invoiceTermService;
   protected AppBaseService appBaseService;
@@ -70,7 +70,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   public MoveRecordSetServiceImpl(
       PartnerRepository partnerRepository,
       BankDetailsService bankDetailsService,
-      PeriodService periodService,
+      PeriodUtilsService periodUtilsService,
       PaymentConditionService paymentConditionService,
       InvoiceTermService invoiceTermService,
       MoveLineService moveLineService,
@@ -81,7 +81,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       MoveToolService moveToolService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
-    this.periodService = periodService;
+    this.periodUtilsService = periodUtilsService;
     this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineService = moveLineService;
@@ -97,7 +97,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     try {
       if (move.getDate() != null && move.getCompany() != null) {
         move.setPeriod(
-            periodService.getActivePeriod(
+            periodUtilsService.getActivePeriod(
                 move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
       }
     } catch (AxelorException axelorException) {

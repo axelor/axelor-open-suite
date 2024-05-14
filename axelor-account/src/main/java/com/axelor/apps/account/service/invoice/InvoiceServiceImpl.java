@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.util.InvoiceTermUtilsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.BankDetails;
@@ -61,7 +62,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -76,7 +76,6 @@ import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -115,6 +114,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoiceTermUtilsService invoiceTermUtilsService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -133,7 +133,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoiceTermUtilsService invoiceTermUtilsService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -151,6 +152,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoiceTermUtilsService = invoiceTermUtilsService;
   }
 
   // WKF
@@ -450,14 +452,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceRepo.save(invoice);
 
     return refund;
-  }
-
-  @Override
-  public void setDraftSequence(Invoice invoice) throws AxelorException {
-
-    if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId())) {
-      invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
-    }
   }
 
   public Invoice mergeInvoiceProcess(
@@ -1173,7 +1167,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
     invoiceTermList.forEach(
         it ->
-            invoiceTermService.setParentFields(
+            invoiceTermUtilsService.setParentFields(
                 it,
                 Optional.ofNullable(it.getMoveLine()).map(MoveLine::getMove).orElse(null),
                 it.getMoveLine(),

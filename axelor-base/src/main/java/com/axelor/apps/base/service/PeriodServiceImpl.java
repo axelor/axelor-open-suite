@@ -25,15 +25,14 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.utils.PeriodUtilsService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.i18n.L10n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Singleton;
 import javax.persistence.Query;
@@ -47,48 +46,17 @@ public class PeriodServiceImpl implements PeriodService {
 
   protected PeriodRepository periodRepo;
   protected AdjustHistoryService adjustHistoryService;
+  protected PeriodUtilsService periodUtilsService;
   protected int oldPeriodStatusSelect;
 
   @Inject
-  public PeriodServiceImpl(PeriodRepository periodRepo, AdjustHistoryService adjustHistoryService) {
+  public PeriodServiceImpl(
+      PeriodRepository periodRepo,
+      AdjustHistoryService adjustHistoryService,
+      PeriodUtilsService periodUtilsService) {
     this.periodRepo = periodRepo;
     this.adjustHistoryService = adjustHistoryService;
-  }
-
-  /**
-   * Fetches the active period with the date, company and type in parameter
-   *
-   * @param date
-   * @param company
-   * @param typeSelect
-   * @return
-   * @throws AxelorException
-   */
-  public Period getActivePeriod(LocalDate date, Company company, int typeSelect)
-      throws AxelorException {
-
-    Period period = this.getPeriod(date, company, typeSelect);
-    if (period == null || this.isClosedPeriod(period)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.PERIOD_1),
-          company.getName(),
-          L10n.getInstance().format(date));
-    }
-    LOG.debug("Period : {}", period);
-    return period;
-  }
-
-  public Period getPeriod(LocalDate date, Company company, int typeSelect) {
-
-    return periodRepo
-        .all()
-        .filter(
-            "self.year.company = ?1 and self.fromDate <= ?2 and self.toDate >= ?2 and self.year.typeSelect = ?3",
-            company,
-            date,
-            typeSelect)
-        .fetchOne();
+    this.periodUtilsService = periodUtilsService;
   }
 
   public Period getNextPeriod(Period period) throws AxelorException {
@@ -103,7 +71,7 @@ public class PeriodServiceImpl implements PeriodService {
                 PeriodRepository.STATUS_OPENED)
             .fetchOne();
 
-    if (nextPeriod == null || this.isClosedPeriod(nextPeriod)) {
+    if (nextPeriod == null || periodUtilsService.isClosedPeriod(nextPeriod)) {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -115,7 +83,7 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   public void testOpenPeriod(Period period) throws AxelorException {
-    if (this.isClosedPeriod(period)) {
+    if (periodUtilsService.isClosedPeriod(period)) {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -211,21 +179,12 @@ public class PeriodServiceImpl implements PeriodService {
    * @throws AxelorException if the period is closed
    */
   public void checkPeriod(Period period) throws AxelorException {
-    if (this.isClosedPeriod(period)) {
+    if (periodUtilsService.isClosedPeriod(period)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.PAY_PERIOD_CLOSED),
           period.getName());
     }
-  }
-
-  @Override
-  public boolean isClosedPeriod(Period period) throws AxelorException {
-    List<Integer> unauthorizedStatus = new ArrayList<>();
-    unauthorizedStatus.add(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
-    unauthorizedStatus.add(PeriodRepository.STATUS_CLOSED);
-
-    return period != null && unauthorizedStatus.contains(period.getStatusSelect());
   }
 
   @Override

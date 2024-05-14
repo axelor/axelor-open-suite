@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.address.AddressService;
 import com.google.inject.persist.Transactional;
@@ -48,7 +49,7 @@ public class ImportInvoice {
     }
     invoiceRepo.save(invoice);
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT) {
-      invoiceService.setDraftSequence(invoice);
+      InvoiceToolService.setDraftSequence(invoice);
     }
     if (invoice.getStatusSelect() < InvoiceRepository.STATUS_VENTILATED
         && invoice.getPaymentMode() != null

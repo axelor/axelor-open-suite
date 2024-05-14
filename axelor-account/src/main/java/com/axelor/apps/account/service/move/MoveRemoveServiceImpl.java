@@ -28,17 +28,16 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
+import com.axelor.apps.account.util.MoveUtilsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.service.ArchivingService;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import java.util.Map;
 
 public class MoveRemoveServiceImpl implements MoveRemoveService {
 
@@ -54,6 +53,8 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
 
   protected AccountCustomerService accountCustomerService;
 
+  protected MoveUtilsService moveUtilsService;
+
   @Inject
   public MoveRemoveServiceImpl(
       MoveRepository moveRepo,
@@ -61,19 +62,21 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
       ArchivingService archivingService,
       UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
-      AccountCustomerService accountCustomerService) {
+      AccountCustomerService accountCustomerService,
+      MoveUtilsService moveUtilsService) {
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
     this.archivingService = archivingService;
     this.unReconcileService = unReconcileService;
     this.accountingSituationService = accountingSituationService;
     this.accountCustomerService = accountCustomerService;
+    this.moveUtilsService = moveUtilsService;
   }
 
   @Override
   public void archiveDaybookMove(Move move) throws Exception {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
-      this.checkMoveBeforeRemove(move);
+      moveUtilsService.checkMoveBeforeRemove(move);
       this.cleanMoveToArchived(move);
       move = this.updateMoveToArchived(move);
       this.archiveMove(move);
@@ -122,79 +125,6 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         accountingSituationService.updateCustomerCredit(moveLine.getPartner());
       }
     }
-  }
-
-  @Override
-  public void checkMoveBeforeRemove(Move move) throws Exception {
-    String errorMessage = "";
-    Map<String, String> objectsLinkToMoveMap = archivingService.getObjectLinkTo(move, move.getId());
-    String moveModelError = null;
-    for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
-      String modelName = I18n.get(archivingService.getModelTitle(entry.getKey()));
-      if (!entry.getKey().equals("MoveLine")) {
-        if (moveModelError == null) {
-          moveModelError = modelName;
-        } else {
-          moveModelError += ", " + modelName;
-        }
-      }
-    }
-    if (moveModelError != null && move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-      errorMessage +=
-          String.format(
-              I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-              move.getReference(),
-              moveModelError);
-    } else if (moveModelError != null
-        && (move.getStatusSelect() == MoveRepository.STATUS_NEW
-            || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
-      errorMessage +=
-          String.format(
-              I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-              move.getReference(),
-              moveModelError);
-    }
-
-    for (MoveLine moveLine : move.getMoveLineList()) {
-
-      errorMessage += checkMoveLineBeforeRemove(moveLine);
-    }
-    if (errorMessage != null && !errorMessage.isEmpty()) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
-    }
-  }
-
-  protected String checkMoveLineBeforeRemove(MoveLine moveLine) throws AxelorException {
-    String errorMessage = "";
-    Map<String, String> objectsLinkToMoveLineMap =
-        archivingService.getObjectLinkTo(moveLine, moveLine.getId());
-    for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
-      String modelName = entry.getKey();
-      List<String> modelsToIgnore = getModelsToIgnoreList();
-      if (!modelsToIgnore.contains(modelName)
-          && moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-        errorMessage +=
-            String.format(
-                I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                moveLine.getName(),
-                modelName);
-      } else if (!modelsToIgnore.contains(modelName)
-          && (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_NEW
-              || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
-        errorMessage +=
-            String.format(
-                I18n.get(AccountExceptionMessage.MOVE_LINE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                moveLine.getName(),
-                modelName);
-      }
-    }
-    return errorMessage;
-  }
-
-  @Override
-  public List<String> getModelsToIgnoreList() {
-    return Lists.newArrayList(
-        "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
   }
 
   @Override

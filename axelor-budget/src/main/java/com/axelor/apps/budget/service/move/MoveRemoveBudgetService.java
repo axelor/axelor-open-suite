@@ -23,17 +23,17 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
+import com.axelor.apps.account.util.MoveUtilsService;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
-import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.utils.service.ArchivingService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.List;
 
-public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
+public class MoveRemoveBudgetService extends MoveRemoveServiceImpl {
 
   protected BudgetService budgetService;
   protected AppBudgetService appBudgetService;
@@ -46,6 +46,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
       UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
+      MoveUtilsService moveUtilsService,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
       BudgetService budgetService,
       AppBudgetService appBudgetService) {
@@ -56,7 +57,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
         unReconcileService,
         accountingSituationService,
         accountCustomerService,
-        bankStatementLineAFB120Repository);
+        moveUtilsService);
     this.budgetService = budgetService;
     this.appBudgetService = appBudgetService;
   }
@@ -91,14 +92,5 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
       budgetService.updateBudgetLinesFromMove(move, false);
     }
     return move;
-  }
-
-  @Override
-  public List<String> getModelsToIgnoreList() {
-    List<String> modelsToIgnoreList = super.getModelsToIgnoreList();
-
-    modelsToIgnoreList.add("BudgetDistribution");
-
-    return modelsToIgnoreList;
   }
 }

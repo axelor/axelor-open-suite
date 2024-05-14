@@ -360,6 +360,8 @@ import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBill
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionComputeNameService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionComputeNameServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
@@ -406,6 +408,15 @@ import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.account.service.umr.UmrServiceImpl;
+import com.axelor.apps.account.util.AccountingReportUtilsService;
+import com.axelor.apps.account.util.AccountingReportUtilsServiceImpl;
+import com.axelor.apps.account.util.InvoiceTermUtilsService;
+import com.axelor.apps.account.util.InvoiceTermUtilsServiceImpl;
+import com.axelor.apps.account.util.MoveLineUtilsService;
+import com.axelor.apps.account.util.MoveLineUtilsServiceImpl;
+import com.axelor.apps.account.util.MoveUtilsService;
+import com.axelor.apps.account.util.MoveUtilsServiceImpl;
+import com.axelor.apps.account.util.PeriodUtilsServiceAccountImpl;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.account.util.TaxAccountToolServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
@@ -415,6 +426,7 @@ import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.base.utils.PeriodUtilsServiceImpl;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.message.service.TemplateMessageServiceImpl;
 
@@ -918,5 +930,19 @@ public class AccountModule extends AxelorModule {
 
     bind(AdvancePaymentMoveLineCreateService.class)
         .to(AdvancePaymentMoveLineCreateServiceImpl.class);
+
+    bind(AccountingReportSequenceService.class).to(AccountingReportSequenceServiceImpl.class);
+
+    bind(AccountingReportUtilsService.class).to(AccountingReportUtilsServiceImpl.class);
+
+    bind(PaymentSessionComputeNameService.class).to(PaymentSessionComputeNameServiceImpl.class);
+
+    bind(PeriodUtilsServiceImpl.class).to(PeriodUtilsServiceAccountImpl.class);
+
+    bind(MoveUtilsService.class).to(MoveUtilsServiceImpl.class);
+
+    bind(InvoiceTermUtilsService.class).to(InvoiceTermUtilsServiceImpl.class);
+
+    bind(MoveLineUtilsService.class).to(MoveLineUtilsServiceImpl.class);
   }
 }
