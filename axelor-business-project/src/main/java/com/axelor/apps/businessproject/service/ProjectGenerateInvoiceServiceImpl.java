@@ -17,7 +17,7 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoiceService {
@@ -26,6 +26,29 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected PartnerService partnerService;
   protected InvoicingProjectRepository invoicingProjectRepo;
   protected ProjectHoldBackLineService projectHoldBackLineService;
+
+  protected AccountConfigService accountConfigService;
+
+  protected PartnerPriceListService partnerPriceListService;
+  protected InvoiceRepository invoiceRepository;
+
+  @Inject
+  public ProjectGenerateInvoiceServiceImpl(
+      InvoicingProjectService invoicingProjectService,
+      PartnerService partnerService,
+      InvoicingProjectRepository invoicingProjectRepo,
+      ProjectHoldBackLineService projectHoldBackLineService,
+      AccountConfigService accountConfigService,
+      PartnerPriceListService partnerPriceListService,
+      InvoiceRepository invoiceRepository) {
+    this.invoicingProjectService = invoicingProjectService;
+    this.partnerService = partnerService;
+    this.invoicingProjectRepo = invoicingProjectRepo;
+    this.projectHoldBackLineService = projectHoldBackLineService;
+    this.accountConfigService = accountConfigService;
+    this.partnerPriceListService = partnerPriceListService;
+    this.invoiceRepository = invoiceRepository;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
@@ -60,14 +83,13 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       InvoicingProject invoicingProject, InvoiceGenerator invoiceGenerator, Company company)
       throws AxelorException {
     Invoice invoice = invoiceGenerator.generate();
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
 
     invoiceGenerator.populate(invoice, invoicingProjectService.populate(invoice, invoicingProject));
     invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
-    Beans.get(InvoiceRepository.class).save(invoice);
+    invoiceRepository.save(invoice);
 
     invoicingProject.setInvoice(invoice);
     invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_GENERATED);
@@ -92,8 +114,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         invoicedPartner,
         invoicedPartnerContact,
         invoicedPartner.getCurrency(),
-        Beans.get(PartnerPriceListService.class)
-            .getDefaultPriceList(invoicedPartner, PriceListRepository.TYPE_SALE),
+        partnerPriceListService.getDefaultPriceList(invoicedPartner, PriceListRepository.TYPE_SALE),
         null,
         null,
         null,
