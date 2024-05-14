@@ -26,11 +26,9 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected PartnerService partnerService;
   protected InvoicingProjectRepository invoicingProjectRepo;
   protected ProjectHoldBackLineService projectHoldBackLineService;
-
-  protected AccountConfigService accountConfigService;
-
   protected PartnerPriceListService partnerPriceListService;
   protected InvoiceRepository invoiceRepository;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public ProjectGenerateInvoiceServiceImpl(
