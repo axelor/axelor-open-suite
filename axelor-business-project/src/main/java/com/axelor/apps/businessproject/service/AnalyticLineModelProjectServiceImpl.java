@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -29,6 +30,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
+import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
@@ -37,7 +39,11 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.List;
 
-public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServiceImpl {
+public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServiceImpl
+    implements AnalyticLineModelProjectService {
+
+  protected BusinessProjectConfigService businessProjectConfigService;
+  protected ProjectAnalyticMoveLineService projectAnalyticMoveLineService;
 
   @Inject
   public AnalyticLineModelProjectServiceImpl(
@@ -48,7 +54,9 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
       AnalyticToolService analyticToolService,
       SaleConfigService saleConfigService,
       PurchaseConfigService purchaseConfigService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      BusinessProjectConfigService businessProjectConfigService,
+      ProjectAnalyticMoveLineService projectAnalyticMoveLineService) {
     super(
         appBaseService,
         appAccountService,
@@ -58,6 +66,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
         saleConfigService,
         purchaseConfigService,
         currencyScaleService);
+    this.businessProjectConfigService = businessProjectConfigService;
+    this.projectAnalyticMoveLineService = projectAnalyticMoveLineService;
   }
 
   @Override
@@ -96,5 +106,33 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
     }
 
     return analyticLineProjectModel;
+  }
+
+  @Override
+  public AnalyticLineProjectModel getAnalyticDistribution(
+      AnalyticLineProjectModel analyticLineProjectModel) throws AxelorException {
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        projectAnalyticMoveLineService.getAnalyticDistributionTemplate(
+            analyticLineProjectModel.getProject(),
+            analyticLineProjectModel.getPartner(),
+            analyticLineProjectModel.getProduct(),
+            analyticLineProjectModel.getCompany(),
+            analyticLineProjectModel.getTradingName(),
+            analyticLineProjectModel.getAccount(),
+            analyticLineProjectModel.getIsPurchase());
+
+    analyticLineProjectModel.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+    analyticLineProjectModel.copyToModel();
+
+    return analyticLineProjectModel;
+  }
+
+  public boolean analyticDistributionTemplateRequired(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
+        && businessProjectConfigService
+            .getBusinessProjectConfig(analyticLineModel.getCompany())
+            .getIsAnalyticDistributionRequired()
+        && ObjectUtils.isEmpty(analyticLineModel.getAnalyticMoveLineList());
   }
 }

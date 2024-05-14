@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -26,6 +27,8 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
+import com.axelor.apps.businessproject.service.AnalyticLineModelProjectService;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
@@ -35,6 +38,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -45,6 +49,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -113,10 +118,16 @@ public class ProjectController {
             .map());
   }
 
-  public void getPartnerData(ActionRequest request, ActionResponse response) {
+  public void getPartnerData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Project project = request.getContext().asType(Project.class);
     Partner partner = project.getClientPartner();
 
+    AnalyticLineProjectModel analyticLineProjectModel =
+        Beans.get(AnalyticLineModelProjectService.class)
+            .getAnalyticDistribution(new AnalyticLineProjectModel(project));
+    response.setValue(
+        "analyticDistributionTemplate", analyticLineProjectModel.getAnalyticDistributionTemplate());
     if (partner != null) {
 
       response.setValue("currency", partner.getCurrency());
@@ -205,6 +216,60 @@ public class ProjectController {
     } else if (closingProjectRuleSelect
         == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NON_BLOCKING) {
       response.setAlert(errorMessage, null, null, null, "action-refresh-record");
+    }
+  }
+
+  public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      if (project == null || project.getCompany() == null) {
+        return;
+      }
+
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      Beans.get(AnalyticAttrsSupplychainService.class)
+          .addAnalyticDistributionPanelHiddenAttrs(analyticLineProjectModel, attrsMap);
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setAnalyticDistributionTemplateRequired(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      if (project == null || project.getCompany() == null) {
+        return;
+      }
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+      response.setValue(
+          "$isValidAnalyticMoveLineList",
+          !Beans.get(AnalyticLineModelProjectService.class)
+              .analyticDistributionTemplateRequired(analyticLineProjectModel));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getAnalyticDistributionTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      AnalyticLineProjectModel analyticLineProjectModel = new AnalyticLineProjectModel(project);
+      AnalyticLineModelProjectService analyticLineModelProjectService =
+          Beans.get(AnalyticLineModelProjectService.class);
+      analyticLineModelProjectService.getAnalyticDistribution(analyticLineProjectModel);
+
+      response.setValue(
+          "analyticDistributionTemplate",
+          analyticLineProjectModel.getAnalyticDistributionTemplate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -113,6 +113,11 @@
     <many-to-one name="defaultFrameworkSupplierContract"
       title="Default framework supplier contract" ref="com.axelor.apps.contract.db.Contract"/>
 
+    <!-- Analytic fields -->
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+
     <extra-code><![CDATA[
 
 		   	// TYPE SELECT

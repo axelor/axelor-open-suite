@@ -124,7 +124,7 @@
           canEdit="false" if-module="axelor-business-project"/>
         <field name="clientPartner"
           domain="self.isCustomer = true AND :company member of self.companySet"
-          onChange="action-project-method-get-partner-data" requiredIf="isBusinessProject"
+          onChange="action-project-group-get-partner-data" requiredIf="isBusinessProject"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
           showIf="isBusinessProject"/>
@@ -415,11 +415,6 @@
           action="action-project-dashlet-advance-payment-invoices" colSpan="12"
           if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"
           canSearch="true"/>
-      </panel>
-      <panel title="Analytic" name="analyticPanel" showIf="isBusinessProject"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <panel-dashlet name="analyticDashletPanel"
-          action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
       </panel>
       <panel title="Wiki" name="wikiPanel">
         <panel-related name="wikiListPanel" field="wikiList" colSpan="12"

@@ -80,7 +80,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   }
 
   @Override
-  public boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel, Company company)
+  public boolean computeAnalyticMoveLineList(AnalyticLineModel analyticLineModel, Company company)
       throws AxelorException {
     if (!analyticToolService.isManageAnalytic(company) || analyticLineModel == null) {
       return false;

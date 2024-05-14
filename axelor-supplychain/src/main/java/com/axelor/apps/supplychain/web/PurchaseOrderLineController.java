@@ -109,7 +109,7 @@ public class PurchaseOrderLineController {
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
 
       if (Beans.get(AnalyticLineModelService.class)
-          .analyzeAnalyticLineModel(analyticLineModel, purchaseOrder.getCompany())) {
+          .computeAnalyticMoveLineList(analyticLineModel, purchaseOrder.getCompany())) {
         response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }
     } catch (Exception e) {

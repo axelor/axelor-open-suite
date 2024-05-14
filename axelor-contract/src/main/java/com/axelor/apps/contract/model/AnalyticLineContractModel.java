@@ -40,6 +40,8 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
   protected ContractVersion contractVersion;
   protected Contract contract;
 
+  public AnalyticLineContractModel() {}
+
   public AnalyticLineContractModel(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     super(saleOrderLine, saleOrder);
   }

@@ -20,6 +20,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
@@ -28,6 +29,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -53,6 +55,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
   protected InvoiceLineService invoiceLineService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected InvoiceLineAnalyticSupplychainService invoiceLineAnalyticSupplychainService;
 
   protected int sequence = 0;
 
@@ -69,7 +72,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       ExpenseInvoiceLineService expenseInvoiceLineService,
       InvoicingProjectStockMovesService invoicingProjectStockMovesService,
       InvoiceLineService invoiceLineService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      InvoiceLineAnalyticSupplychainService invoiceLineAnalyticSupplychainService) {
     this.invoicingProjectService = invoicingProjectService;
     this.partnerService = partnerService;
     this.invoicingProjectRepo = invoicingProjectRepo;
@@ -82,6 +86,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.invoicingProjectStockMovesService = invoicingProjectStockMovesService;
     this.invoiceLineService = invoiceLineService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.invoiceLineAnalyticSupplychainService = invoiceLineAnalyticSupplychainService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -230,6 +235,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       invoiceLine.setSequence(sequence);
       sequence++;
 
+      this.computeAnalytic(invoiceLine, invoice, folder.getProject());
       invoiceLineService.compute(invoice, invoiceLine);
     }
 
@@ -297,5 +303,13 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
               .createInvoiceLine(invoice, purchaseOrderLine));
     }
     return invoiceLineList;
+  }
+
+  protected void computeAnalytic(InvoiceLine invoiceLine, Invoice invoice, Project project)
+      throws AxelorException {
+    if (project != null) {
+      invoiceLineAnalyticSupplychainService.setInvoiceLineAnalyticInfo(
+          invoiceLine, invoice, new AnalyticLineProjectModel(project));
+    }
   }
 }
