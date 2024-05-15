@@ -145,8 +145,8 @@
         </panel>
       </insert>
     </extend>
-    <extend target="//panel[@name='salesPanel']">
-      <insert position="after">
+    <extend target="//panel[@name='fieldsToDisplay']">
+      <insert position="before">
         <panel name="analyticDistributionPanel" title="Analytics"
           if-module="axelor-business-project"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
