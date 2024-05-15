@@ -219,5 +219,7 @@ public interface MoveToolService {
 
   List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
 
+  List<Integer> getMoveStatusSelection(Company company, Journal journal) throws AxelorException;
+
   Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
 }

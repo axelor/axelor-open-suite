@@ -140,6 +140,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineS
 import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderTrackingNumberService;
+import com.axelor.apps.production.service.manuforder.ManufOrderTrackingNumberServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -284,5 +286,6 @@ public class ProductionModule extends AxelorModule {
     bind(BillOfMaterialMrpLineService.class).to(BillOfMaterialMrpLineServiceImpl.class);
     bind(StockMoveLineServiceSupplychainImpl.class).to(StockMoveLineProductionServiceImpl.class);
     bind(ProductReservationServiceImpl.class).to(ProductionProductReservationServiceImpl.class);
+    bind(ManufOrderTrackingNumberService.class).to(ManufOrderTrackingNumberServiceImpl.class);
   }
 }

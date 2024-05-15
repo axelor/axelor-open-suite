@@ -131,4 +131,19 @@
   <input file="stock_stockCorrectionReason.csv" separator=";"
     type="com.axelor.apps.stock.db.StockCorrectionReason" search="self.importId = :importId"/>
 
+  <input file="stock_trackingNumberConfigurationProfileFieldFormula.csv" separator=";"
+    type="com.axelor.apps.stock.db.TrackingNumberConfigurationProfileFieldFormula"
+    search="self.importId = :importId">
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+  </input>
+
+  <input file="stock_trackingNumberConfigurationProfile.csv" separator=";"
+    type="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile"
+    search="self.importId = :importId">
+    <bind to="profileFieldFormulaSet" column="profileFieldFormulaSet"
+      search="self.importId in :profileFieldFormulaSet"
+      eval="profileFieldFormulaSet.split('\\|') as List"/>
+  </input>
+
 </csv-inputs>

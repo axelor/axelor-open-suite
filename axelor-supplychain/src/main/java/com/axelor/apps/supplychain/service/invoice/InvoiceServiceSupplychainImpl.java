@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -169,7 +170,12 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
             .all()
             .filter(filter)
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)
-            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind(
+                "_operationType",
+                InvoiceToolService.isPurchase(invoice)
+                    ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                    : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
     if (saleOrder != null) {
       query.bind("_saleOrder", saleOrder);
     } else if (purchaseOrder != null) {

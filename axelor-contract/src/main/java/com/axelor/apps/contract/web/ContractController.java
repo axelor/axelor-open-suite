@@ -25,7 +25,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerLinkService;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
@@ -379,5 +381,19 @@ public class ContractController {
             .param("forceEdit", "true")
             .context("_showRecord", purchaseOrder.getId())
             .map());
+  }
+
+  public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+    Contract contract = request.getContext().asType(Contract.class);
+    int targetType;
+    if (contract.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT) {
+      targetType = PriceListRepository.TYPE_CUSTOMER_CONTRACT;
+    } else {
+      targetType = PriceListRepository.TYPE_SUPPLIER_CONTRACT;
+    }
+    String domain =
+        Beans.get(PartnerPriceListService.class)
+            .getPriceListDomain(contract.getPartner(), targetType);
+    response.setAttr("priceList", "domain", domain);
   }
 }

@@ -84,6 +84,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
   protected ProductService productService;
+  protected ManufOrderTrackingNumberService manufOrderTrackingNumberService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -101,7 +102,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       SequenceService sequenceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       OperationOrderOutsourceService operationOrderOutsourceService,
-      ProductService productService) {
+      ProductService productService,
+      ManufOrderTrackingNumberService manufOrderTrackingNumberService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
@@ -117,6 +119,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
     this.productService = productService;
+    this.manufOrderTrackingNumberService = manufOrderTrackingNumberService;
   }
 
   @Override
@@ -248,6 +251,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     updateProductCostPrice(manufOrder, product, company);
 
     manufOrderOutgoingStockMoveService.setManufOrderOnOutgoingMove(manufOrder);
+    manufOrderTrackingNumberService.setParentTrackingNumbers(manufOrder);
 
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }

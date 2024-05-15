@@ -84,8 +84,8 @@
       </panel>
     </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
-      <field name="bankStatementLinesBirtTemplate"/>
-      <field name="bankReconciliationStatementBirtTemplate"/>
+      <field name="bankStatementLinesPrintTemplate"/>
+      <field name="bankReconciliationStatementPrintTemplate"/>
     </panel>
 
     <panel-mail name="mailPanel">

@@ -193,11 +193,9 @@
   </selection>
 
   <selection name='iinvoice.operation.sub.type.select'>
-    <option value="1">Classic invoice</option>
-    <option value="2">Advance payment invoice</option>
+    <option value="1">Invoice.Standard</option>
+    <option value="2">Invoice.AdvancePayment</option>
     <option value="3">Balance invoice</option>
-    <option value="10">Standard credit note</option>
-    <option value="11">Advance payment credit note</option>
   </selection>
 
   <selection name='iaccount.account.schedule.export.type.select'>
@@ -491,11 +489,6 @@
     <option value="4">Updated copy</option>
   </selection>
 
-  <selection name="invoice.report.format">
-    <option value="xls">Excel</option>
-    <option value="doc">Word</option>
-    <option value="pdf">PDF</option>
-  </selection>
   <selection name="invoice.pfp.validate.status.select">
     <option value="0">No PFP</option>
     <option value="1">Awaiting</option>

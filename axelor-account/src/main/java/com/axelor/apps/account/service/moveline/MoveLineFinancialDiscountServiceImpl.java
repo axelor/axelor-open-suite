@@ -425,25 +425,29 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   }
 
   public Map<String, Account> getAccountTaxMap(Move move) {
-    Map<String, Account> vatSystemMap = new HashMap<>();
+    Map<String, Account> accountTaxMap = new HashMap<>();
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
-        vatSystemMap.put(
-            taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getAccount());
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
+          accountTaxMap.put(
+              taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getAccount());
+        }
       }
     }
 
-    return vatSystemMap;
+    return accountTaxMap;
   }
 
   public Map<String, Integer> getVatSystemTaxMap(Move move) {
     Map<String, Integer> vatSystemMap = new HashMap<>();
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
-        vatSystemMap.put(
-            taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getVatSystemSelect());
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
+          vatSystemMap.put(
+              taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getVatSystemSelect());
+        }
       }
     }
 

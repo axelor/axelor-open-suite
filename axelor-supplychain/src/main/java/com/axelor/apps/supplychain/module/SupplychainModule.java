@@ -207,6 +207,8 @@ import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigServiceImpl;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.TimetableServiceImpl;
+import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
+import com.axelor.apps.supplychain.service.TrackingNumberSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
@@ -368,5 +370,6 @@ public class SupplychainModule extends AxelorModule {
     bind(AdvancePaymentRefundService.class).to(AdvancePaymentRefundServiceImpl.class);
     bind(ProductReservationService.class).to(ProductReservationServiceImpl.class);
     bind(ProductReservationRepository.class).to(ProductReservationManagementRepository.class);
+    bind(TrackingNumberSupplychainService.class).to(TrackingNumberSupplychainServiceImpl.class);
   }
 }

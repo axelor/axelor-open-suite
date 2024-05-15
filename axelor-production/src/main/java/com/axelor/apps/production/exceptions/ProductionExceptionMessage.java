@@ -364,4 +364,7 @@ public final class ProductionExceptionMessage {
 
   public static final String TOO_MANY_CALL_GETTING_END_DATE = /*$$(*/
       "Max loop call reached when trying to compute end date." /*)*/;
+
+  public static final String MANUF_ORDER_MISSING_COMPONENTS = /*$$(*/
+      "<b>Missing components</b> :<br/>%s" /*)*/;
 }

@@ -11,7 +11,6 @@
       help="This will attach an event to a project planning time"/>
     <string name="eventSubjectGroovyFormula" title="Event subject groovy formula"
       help="This will customize the event subject."/>
-
   </entity>
 
 </domain-models>

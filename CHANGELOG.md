@@ -1,3 +1,66 @@
+## [8.0.6] (2024-05-03)
+
+### Fixes
+#### Base
+
+* Pricing: the formula panel is now collapsed by default.
+* Sequence: fixed NPE while checking yearly reset or monthly reset on unsaved sequence.
+* Advanced export: Fixed export which wasn't working when maximum export limit exceeded.
+
+#### Account
+
+* Invoice: fixed default financial discount from partner not being computed after invoice copy.
+* Accounting export: Fixed error when replaying the accounting export.
+* Invoice payment: fixed financial discount management when there is no payment date.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed tax move line generation when origin is payment.
+
+#### Contract
+
+* Contract: fixed prorata invoicing when invoicing a full period.
+* Contract: correctly disable related configuration when disabling invoice management.
+* Contract: Fixed error when using contract template with contract line to generate a contract.
+
+#### Production
+
+* Manufacturing order: fixed conversion of missing quantity of consumed products.
+* Machine: fixed machine planning type when creating it from machine.
+
+#### Purchase
+
+* Purchase order line: Fixed maximum and minimum order quantity error when partner doesn't have supplier catalog lines.
+* Purchase order report: fixed sequence order issue when title lines are present.
+
+#### Quality
+
+* ControlEntry/ControlPlan: fixed issues when dupplicating a control entry or control plan.
+
+#### Sale
+
+* Sale order: fixed refresh issue when saving a sale order.
+* Configurator : Fixed issues with the new configurator model in demo data.
+
+#### Stock
+
+* Tracking number: fixed available qty not displayed on grid view.
+* Stock move: fixed printing settings when creating stock move from sale order.
+* Stock configuration: fixed typo in french translation, 'incoterme' => 'incoterm'
+
+
+### Developer
+
+#### Production
+
+Changed signature of `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId)`
+to `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit)`
+
+#### Quality
+
+Created `ControlEntryManagementRepository` extending `ControlEntryRepository`, `ControlPlanManagementRepository` extending `ControlPlanRepository`
+and `ControlEntryPlanLineManagementRepository` extending `ControlEntryPlanLineManagementRepository`
+
 ## [8.0.5] (2024-04-19)
 
 ### Fixes
@@ -526,6 +589,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.6]: https://github.com/axelor/axelor-open-suite/compare/v8.0.5...v8.0.6
 [8.0.5]: https://github.com/axelor/axelor-open-suite/compare/v8.0.4...v8.0.5
 [8.0.4]: https://github.com/axelor/axelor-open-suite/compare/v8.0.3...v8.0.4
 [8.0.3]: https://github.com/axelor/axelor-open-suite/compare/v8.0.2...v8.0.3
