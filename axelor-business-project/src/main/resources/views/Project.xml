@@ -25,6 +25,10 @@
       <attribute name="onNew" value="action-business-project-project-group-on-new"/>
       <attribute name="onLoad" value="action-business-project-project-group-on-load"/>
     </extend>
+    <extend target="//field[@name='assignedTo']">
+      <attribute name="onChange"
+        value="action-business-project-group-assigned-to-onchange"/>
+    </extend>
     <extend target="//button[@name='finishBtn']">
       <attribute name="onClick" value="action-business-project-group-finish-project"/>
     </extend>
@@ -141,6 +145,19 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//panel[@name='fieldsToDisplay']">
+      <insert position="before">
+        <panel name="analyticDistributionPanel" title="Analytics"
+          if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+          hidden="true" showIf="isBusinessProject" colSpan="12">
+          <field name="analyticDistributionTemplate"
+            grid-view="analytic-distribution-template-grid"
+            form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
+            domain="self.company = :company AND self.isSpecific = false"/>
+        </panel>
+      </insert>
+    </extend>
     <extend target="//field[@name='imputable']">
       <insert position="after">
         <spacer colSpan="3"/>
@@ -169,11 +186,14 @@
     <action name="action-project-group-on-new-project"/>
     <action name="action-business-project-project-attrs-defaults"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
+    <action name="action-business-project-method-get-analytic-distribution-template"/>
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
     <action name="action-project-on-load-group"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">
@@ -770,5 +790,25 @@
     <attribute for="defaultFrameworkSupplierContract" name="domain"
       expr="eval: &quot;self.id IN (${frameworkSupplierContractSet?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
+
+  <!-- Analytic -->
+  <!-- Action group -->
+  <action-group name="action-business-project-group-assigned-to-onchange">
+    <action name="action-attrs-project-add-member"/>
+    <action name="action-business-project-method-get-analytic-distribution-template"/>
+  </action-group>
+
+  <!-- Action method -->
+  <action-method
+    name="action-business-project-method-set-analytic-distribution-template-required">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setAnalyticDistributionTemplateRequired"/>
+  </action-method>
+
+  <action-method
+    name="action-business-project-method-get-analytic-distribution-template">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="getAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

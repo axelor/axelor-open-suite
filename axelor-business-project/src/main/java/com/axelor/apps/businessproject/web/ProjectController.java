@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -30,6 +32,7 @@ import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServ
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
+import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -113,10 +116,15 @@ public class ProjectController {
             .map());
   }
 
-  public void getPartnerData(ActionRequest request, ActionResponse response) {
+  public void getPartnerData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Project project = request.getContext().asType(Project.class);
     Partner partner = project.getClientPartner();
 
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        Beans.get(ProjectAnalyticTemplateService.class)
+            .getDefaultAnalyticDistributionTemplate(project);
+    response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
     if (partner != null) {
 
       response.setValue("currency", partner.getCurrency());
@@ -205,6 +213,33 @@ public class ProjectController {
     } else if (closingProjectRuleSelect
         == AppBusinessProjectRepository.CLOSING_PROJECT_RULE_NON_BLOCKING) {
       response.setAlert(errorMessage, null, null, null, "action-refresh-record");
+    }
+  }
+
+  public void setAnalyticDistributionTemplateRequired(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      response.setAttr(
+          "analyticDistributionTemplate",
+          "required",
+          Beans.get(ProjectAnalyticTemplateService.class)
+              .isAnalyticDistributionTemplateRequired(project));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getAnalyticDistributionTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+      response.setValue(
+          "analyticDistributionTemplate",
+          Beans.get(ProjectAnalyticTemplateService.class)
+              .getDefaultAnalyticDistributionTemplate(project));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

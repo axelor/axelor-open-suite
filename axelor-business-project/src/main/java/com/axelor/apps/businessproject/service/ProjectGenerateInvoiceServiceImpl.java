@@ -230,6 +230,10 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       invoiceLine.setSequence(sequence);
       sequence++;
 
+      if (folder.getProject() != null) {
+        invoiceLine.setAnalyticDistributionTemplate(
+            folder.getProject().getAnalyticDistributionTemplate());
+      }
       invoiceLineService.compute(invoice, invoiceLine);
     }
 
