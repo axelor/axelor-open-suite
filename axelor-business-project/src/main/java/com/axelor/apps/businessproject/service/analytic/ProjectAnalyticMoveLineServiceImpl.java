@@ -46,6 +46,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceI
   protected BusinessProjectConfigService businessProjectConfigService;
   protected AccountingSituationService accountingSituationService;
 
+  @Inject
   public ProjectAnalyticMoveLineServiceImpl(
       AnalyticMoveLineRepository analyticMoveLineRepository,
       AppAccountService appAccountService,
