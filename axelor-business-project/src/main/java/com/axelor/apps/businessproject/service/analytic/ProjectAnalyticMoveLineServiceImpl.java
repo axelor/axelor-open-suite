@@ -35,7 +35,7 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
 
   @Inject
   public ProjectAnalyticMoveLineServiceImpl(AnalyticMoveLineRepository analyticMoveLineRepository) {
-        this.analyticMoveLineRepository = analyticMoveLineRepository;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
