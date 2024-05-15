@@ -19,16 +19,7 @@
 package com.axelor.apps.businessproject.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -38,30 +29,13 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
-public class ProjectAnalyticMoveLineServiceImpl extends AnalyticMoveLineServiceImpl
-    implements ProjectAnalyticMoveLineService {
+public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLineService {
+
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
-  public ProjectAnalyticMoveLineServiceImpl(
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      AppAccountService appAccountService,
-      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
-      AccountConfigService accountConfigService,
-      AccountConfigRepository accountConfigRepository,
-      AccountRepository accountRepository,
-      AppBaseService appBaseService,
-      AccountingSituationService accountingSituationService,
-      CurrencyScaleService currencyScaleService) {
-    super(
-        analyticMoveLineRepository,
-        appAccountService,
-        accountManagementServiceAccountImpl,
-        accountConfigService,
-        accountConfigRepository,
-        accountRepository,
-        appBaseService,
-        accountingSituationService,
-        currencyScaleService);
+  public ProjectAnalyticMoveLineServiceImpl(AnalyticMoveLineRepository analyticMoveLineRepository) {
+        this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
