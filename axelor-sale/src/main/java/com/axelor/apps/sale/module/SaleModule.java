@@ -110,10 +110,14 @@ import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsServiceIm
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineAttrsSetService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineAttrsSetServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainAttrSetService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainAttrSetServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGroupService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGroupServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.XService;
-import com.axelor.apps.sale.service.saleorderline.XServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineRecordUpdateService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineRecordUpdateServiceImpl;
 
 public class SaleModule extends AxelorModule {
 
@@ -169,7 +173,10 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderAttrsService.class).to(SaleOrderAttrsServiceImpl.class);
     bind(SaleOrderGroupService.class).to(SaleOrderGroupServiceImpl.class);
 
-    bind(XService.class).to(XServiceImpl.class);
+    bind(SaleOrderLineAttrsSetService.class).to(SaleOrderLineAttrsSetServiceImpl.class);
     bind(SaleOrderLineGroupService.class).to(SaleOrderLineGroupServiceImpl.class);
+
+    bind(SaleOrderLineDomainAttrSetService.class).to(SaleOrderLineDomainAttrSetServiceImpl.class);
+    bind(SaleOrderLineRecordUpdateService.class).to(SaleOrderLineRecordUpdateServiceImpl.class);
   }
 }

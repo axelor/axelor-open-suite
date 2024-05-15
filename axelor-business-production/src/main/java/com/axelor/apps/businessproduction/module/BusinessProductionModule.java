@@ -45,9 +45,12 @@ import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessSer
 import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessServiceImpl;
-import com.axelor.apps.businessproduction.service.XProductionServiceImpl;
+import com.axelor.apps.businessproduction.service.saleorderline.SaleOrderLineAttrsSetProductionService;
+import com.axelor.apps.businessproduction.service.saleorderline.SaleOrderLineAttrsSetProductionServiceImpl;
+import com.axelor.apps.businessproduction.service.saleorderline.SaleOrderLineGroupProductionServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
-import com.axelor.apps.businessproject.service.saleorderline.XBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineAttrsSetBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineGroupBusinessProjectServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
@@ -97,6 +100,12 @@ public class BusinessProductionModule extends AxelorModule {
     bind(TimesheetLineUpdateBusinessService.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateServiceImpl.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
 
-    bind(XBusinessProjectServiceImpl.class).to(XProductionServiceImpl.class);
+    bind(SaleOrderLineAttrsSetProductionService.class)
+        .to(SaleOrderLineAttrsSetProductionServiceImpl.class);
+    bind(SaleOrderLineGroupBusinessProjectServiceImpl.class)
+        .to(SaleOrderLineGroupProductionServiceImpl.class);
+
+    bind(SaleOrderLineAttrsSetBusinessProjectServiceImpl.class)
+        .to(SaleOrderLineAttrsSetProductionServiceImpl.class);
   }
 }

@@ -39,9 +39,9 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainAttrSetService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGroupService;
-import com.axelor.apps.sale.service.saleorderline.XService;
-import com.axelor.apps.sale.service.saleorderline.XServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineRecordUpdateService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
@@ -467,17 +467,19 @@ public class SaleOrderLineController {
   public void configProjectDomainOnSelect(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
-    String projectDomain = Beans.get(XServiceImpl.class).setProjectDomain(saleOrder);
+    String projectDomain =
+        Beans.get(SaleOrderLineDomainAttrSetService.class).setProjectDomain(saleOrder);
     response.setAttr("project", "domain", projectDomain);
   }
 
   public void onNewEditableLines(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    XService xService = Beans.get(XService.class);
+    SaleOrderLineRecordUpdateService saleOrderLineRecordUpdateService =
+        Beans.get(SaleOrderLineRecordUpdateService.class);
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
-    xService.initDummyFields(attrsMap);
-    xService.setNonNegotiableValue(saleOrder, attrsMap);
+    saleOrderLineRecordUpdateService.initDummyFields(attrsMap);
+    saleOrderLineRecordUpdateService.setNonNegotiableValue(saleOrder, attrsMap);
     response.setAttr("product", "focus", true);
     response.setAttrs(attrsMap);
   }
@@ -491,42 +493,4 @@ public class SaleOrderLineController {
         .getOnNewValuesMap(saleOrder, saleOrderLine, attrsMap);
     response.setAttrs(attrsMap);
   }
-
-  /*  public void onLoadSaleOrderLine(ActionRequest request, ActionResponse response){
-    Context context = request.getContext();
-    XService xService = Beans.get(XService.class);
-    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
-    response.setAttr("$nonNegotiable", "value", xService.setNonNegotiableValue(saleOrder));
-
-    response.setAttr("priceDiscounted", "hidden", xService.showPriceDiscounted(saleOrder,saleOrderLine));
-
-    Map<String, Integer> pricesScaleMap = xService.setScaleAttrs();
-    response.setAttr("price", "scale", pricesScaleMap.get("price"));
-    response.setAttr("inTaxPrice", "scale", pricesScaleMap.get("inTaxPrice"));
-    response.setAttr("priceDiscounted", "scale", pricesScaleMap.get("priceDiscounted"));
-    response.setAttr("discountAmount", "scale", pricesScaleMap.get("discountAmount"));
-
-    response.setAttr("$companyCurrency", "value", xService.setCompanyCurrencyValue(saleOrder,saleOrderLine));
-    response.setAttr("$currency", "value", xService.setCurrencyValue(saleOrder,saleOrderLine));
-
-    Map<String, Boolean> pricesHiddenAttrsMap = xService.manageHiddenAttrForPrices(saleOrder);
-    response.setAttr("exTaxTotal", "hidden", pricesHiddenAttrsMap.get("exTaxTotal"));
-    response.setAttr("inTaxTotal", "hidden", pricesHiddenAttrsMap.get("inTaxTotal"));
-    response.setAttr("price", "hidden", pricesHiddenAttrsMap.get("price"));
-    response.setAttr("inTaxPrice", "hidden", pricesHiddenAttrsMap.get("inTaxPrice"));
-
-    response.setAttr("typeSelect", "selection-in", xService.defineTypesToSelect());
-
-    response.setAttr("deliveredQty", "hidden", xService.setHiddenAttrForDeliveredQty(saleOrder));
-
-    boolean isHiddenLanguage = xService.displayLanguages(saleOrder);
-    String language = xService.setLanguageValue(saleOrder);
-    response.setAttr("$differentLanguageMessage", "hidden", isHiddenLanguage);
-    response.setAttr("$differentLanguageMessage", "value", language);
-    response.setAttr("$partnerLanguage", "hidden", isHiddenLanguage);
-    response.setAttr("$partnerLanguage", "value", language);
-  }*/
-
 }

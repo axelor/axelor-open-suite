@@ -7,27 +7,31 @@ import java.util.Map;
 
 public class SaleOrderLineGroupServiceImpl implements SaleOrderLineGroupService {
 
-  protected final XService xService;
+  protected final SaleOrderLineAttrsSetService saleOrderLineAttrsSetService;
+  protected final SaleOrderLineRecordUpdateService saleOrderLineRecordUpdateService;
 
   @Inject
-  public SaleOrderLineGroupServiceImpl(XService xService) {
-    this.xService = xService;
+  public SaleOrderLineGroupServiceImpl(
+      SaleOrderLineAttrsSetService saleOrderLineAttrsSetService,
+      SaleOrderLineRecordUpdateService saleOrderLineRecordUpdateService) {
+    this.saleOrderLineAttrsSetService = saleOrderLineAttrsSetService;
+    this.saleOrderLineRecordUpdateService = saleOrderLineRecordUpdateService;
   }
 
   @Override
   public void getOnNewValuesMap(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap) {
-    xService.setNonNegotiableValue(saleOrder, attrsMap);
-    xService.hideQtyWarningLabel(attrsMap);
-    xService.showPriceDiscounted(saleOrder, saleOrderLine, attrsMap);
-    xService.setScaleAttrs(attrsMap);
-    xService.setInitialQty(attrsMap);
-    xService.setCompanyCurrencyValue(saleOrder, saleOrderLine, attrsMap);
-    xService.setCurrencyValue(saleOrder, saleOrderLine, attrsMap);
-    xService.manageHiddenAttrForPrices(saleOrder, attrsMap);
-    xService.defineTypesToSelect(attrsMap);
-    xService.setHiddenAttrForDeliveredQty(saleOrder, attrsMap);
-    xService.displayAndSetLanguages(saleOrder, attrsMap);
-    xService.initDummyFields(attrsMap);
+    saleOrderLineRecordUpdateService.setNonNegotiableValue(saleOrder, attrsMap);
+    saleOrderLineAttrsSetService.hideQtyWarningLabel(attrsMap);
+    saleOrderLineAttrsSetService.showPriceDiscounted(saleOrder, saleOrderLine, attrsMap);
+    saleOrderLineAttrsSetService.setScaleAttrs(attrsMap);
+    saleOrderLineRecordUpdateService.setInitialQty(attrsMap);
+    saleOrderLineRecordUpdateService.setCompanyCurrencyValue(saleOrder, saleOrderLine, attrsMap);
+    saleOrderLineRecordUpdateService.setCurrencyValue(saleOrder, saleOrderLine, attrsMap);
+    saleOrderLineAttrsSetService.manageHiddenAttrForPrices(saleOrder, attrsMap);
+    saleOrderLineAttrsSetService.defineTypesToSelect(attrsMap);
+    saleOrderLineAttrsSetService.setHiddenAttrForDeliveredQty(saleOrder, attrsMap);
+    saleOrderLineAttrsSetService.displayAndSetLanguages(saleOrder, attrsMap);
+    saleOrderLineRecordUpdateService.initDummyFields(attrsMap);
   }
 }

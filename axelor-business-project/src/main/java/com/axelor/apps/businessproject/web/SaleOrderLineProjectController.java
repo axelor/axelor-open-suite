@@ -23,7 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
-import com.axelor.apps.businessproject.service.saleorderline.XBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineRecordUpdateBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -146,7 +146,8 @@ public class SaleOrderLineProjectController {
         && saleOrderLine.getInvoicingModeSelect()
             == Beans.get(SaleOrderLineRepository.class).INVOICING_MODE_PROGRESS_BILLING) {
 
-      Beans.get(XBusinessProjectServiceImpl.class).resetInvoicingMode(saleOrderLine);
+      Beans.get(SaleOrderLineRecordUpdateBusinessProjectService.class)
+          .resetInvoicingMode(saleOrderLine);
       response.setValues(saleOrderLine);
       response.setError(I18n.get(SaleExceptionMessage.COEFFICIENT_ARE_BOT_ENABLED));
     }

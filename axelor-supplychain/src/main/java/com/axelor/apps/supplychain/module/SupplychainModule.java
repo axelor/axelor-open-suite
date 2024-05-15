@@ -63,8 +63,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineAttrsSetServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGroupServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.XServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
@@ -231,8 +231,11 @@ import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderServiceImpl;
+import com.axelor.apps.supplychain.service.saleOrderLine.SaleOrderLineAttrsSetSupplychainService;
+import com.axelor.apps.supplychain.service.saleOrderLine.SaleOrderLineAttrsSetSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleOrderLine.SaleOrderLineRecordUpdateSupplyChainService;
+import com.axelor.apps.supplychain.service.saleOrderLine.SaleOrderLineRecordUpdateSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleOrderLine.SaleOrderLineSupplyChainGroupServiceImpl;
-import com.axelor.apps.supplychain.service.saleOrderLine.XSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
@@ -371,7 +374,12 @@ public class SupplychainModule extends AxelorModule {
     bind(AdvancePaymentRefundService.class).to(AdvancePaymentRefundServiceImpl.class);
     bind(TrackingNumberSupplychainService.class).to(TrackingNumberSupplychainServiceImpl.class);
 
-    bind(XServiceImpl.class).to(XSupplychainServiceImpl.class);
+    bind(SaleOrderLineAttrsSetServiceImpl.class)
+        .to(SaleOrderLineAttrsSetSupplychainServiceImpl.class);
+    bind(SaleOrderLineAttrsSetSupplychainService.class)
+        .to(SaleOrderLineAttrsSetSupplychainServiceImpl.class);
     bind(SaleOrderLineGroupServiceImpl.class).to(SaleOrderLineSupplyChainGroupServiceImpl.class);
+    bind(SaleOrderLineRecordUpdateSupplyChainService.class)
+        .to(SaleOrderLineRecordUpdateSupplyChainServiceImpl.class);
   }
 }
