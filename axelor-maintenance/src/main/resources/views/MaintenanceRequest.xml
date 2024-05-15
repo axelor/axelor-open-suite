@@ -56,8 +56,8 @@
   </form>
 
   <kanban name="maintenance-request-kanban" title="Maintenance Request"
-    columnBy="statusSelect" sequenceBy="sequence" onNew="action-maintenance-request-record-default"
-    limit="10" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+    columnBy="statusSelect" sequenceBy="sequence" limit="10"
+    model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     <field name="equipementMaintenance.name"/>
     <field name="equipementMaintenance.maintenanceCategory"/>
     <field name="statusSelect"/>
