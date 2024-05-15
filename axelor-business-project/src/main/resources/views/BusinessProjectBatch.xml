@@ -26,6 +26,7 @@
       <field name="consolidatePhaseSelect" showIf="actionSelect == 2"
         validIf="actionSelect != 2 || consolidatePhaseSelect"/>
       <field name="deadlineDate" showIf="actionSelect == 2"/>
+      <field name="fromDate" showIf="actionSelect == 5"/>
     </panel>
     <panel name="informationPanel" title="Information">
       <field name="createdOn" title="Created on"/>

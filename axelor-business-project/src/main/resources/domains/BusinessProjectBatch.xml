@@ -19,6 +19,7 @@
     <string name="description" title="Description" large="true"/>
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
       mappedBy="businessProjectBatch" title="Batches"/>
+    <date name="fromDate" title="From"/>
     <date name="deadlineDate" title="Deadline"/>
 
     <extra-code><![CDATA[

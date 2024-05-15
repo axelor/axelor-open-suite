@@ -786,11 +786,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         project.setProjectStatus(completedPaidStatus);
       }
     } else if (Objects.equals(project.getProjectStatus(), completedPaidStatus)) {
-      if (invoiceList.stream()
-          .allMatch(
-              invoice ->
-                  invoice.getRefundInvoiceList().stream()
-                      .noneMatch(refund -> refund.getAmountRemaining().signum() != 0))) {
+      if (invoiceList.stream().anyMatch(invoice -> invoice.getAmountRemaining().signum() != 0)) {
         project.setProjectStatus(completedStatus);
       }
     }

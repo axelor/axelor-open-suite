@@ -34,7 +34,9 @@ public class BatchTransitionBetweenPaidStatusService extends AbstractBatch {
         projectRepository
             .all()
             .order("id")
-            .filter("self.isBusinessProject = true AND self.projectStatus.isCompleted = true");
+            .filter(
+                "self.isBusinessProject = true AND self.projectStatus.isCompleted = true AND self.fromDate <= :fromDate")
+            .bind("fromDate", batch.getBusinessProjectBatch().getFromDate());
     while (!(projectList = projectQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
       for (Project project : projectList) {
