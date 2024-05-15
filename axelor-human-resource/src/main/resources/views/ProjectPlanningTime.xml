@@ -32,8 +32,7 @@
         onChange="action-project-planning-time-attrs-project-task-onChange"/>
       <field name="plannedTime" colSpan="3"/>
       <field name="timeUnit" colSpan="3"
-        onSelect="action-project-task-attrs-set-time-unit-domain"
-        if="__config__.app.isApp('business-project')"/>
+        onSelect="action-project-task-attrs-set-time-unit-domain"/>
 
       <field name="employee" onSelect="action-project-planning-time-attrs-project-domain"
         canEdit="false" onChange="action-project-planning-time-attrs-employee-change"
