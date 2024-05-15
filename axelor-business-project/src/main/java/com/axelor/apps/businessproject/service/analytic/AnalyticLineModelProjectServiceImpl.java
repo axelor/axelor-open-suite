@@ -133,6 +133,6 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
         && businessProjectConfigService
             .getBusinessProjectConfig(analyticLineModel.getCompany())
             .getIsAnalyticDistributionRequired()
-        && ObjectUtils.isEmpty(analyticLineModel.getAnalyticMoveLineList());
+        && analyticLineModel.getAnalyticDistributionTemplate() == null;
   }
 }

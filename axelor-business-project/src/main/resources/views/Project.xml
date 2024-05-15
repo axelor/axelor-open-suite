@@ -802,13 +802,11 @@
 
   <action-group
     name="action-business-project-group-analytic-distribution-template-onchange">
-    <action name="action-business-project-method-create-distribution"/><!-- check utility -->
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
   </action-group>
 
   <action-group name="action-project-group-get-partner-data">
     <action name="action-project-method-get-partner-data"/>
-    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
     <action name="action-business-project-group-manage-analytic"/>
   </action-group>
 
@@ -823,11 +821,6 @@
     name="action-business-project-method-set-analytic-distribution-template-required">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="setAnalyticDistributionTemplateRequired"/>
-  </action-method>
-
-  <action-method name="action-business-project-method-create-distribution">
-    <call class="com.axelor.apps.businessproject.web.ProjectController"
-      method="createAnalyticDistributionWithTemplate"/>
   </action-method>
 
   <action-method
