@@ -75,6 +75,7 @@ public class ContractRepository extends AbstractContractRepository {
     ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
     contract.setCurrentContractVersion(version);
     contract.setContractId(null);
+    contract.setVersionHistory(null);
     return contract;
   }
 }
