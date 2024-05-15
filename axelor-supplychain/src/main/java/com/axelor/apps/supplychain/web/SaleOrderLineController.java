@@ -429,7 +429,7 @@ public class SaleOrderLineController {
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
 
       if (Beans.get(AnalyticLineModelService.class)
-          .computeAnalyticMoveLineList(analyticLineModel, saleOrder.getCompany())) {
+          .analyzeAnalyticMoveLineList(analyticLineModel, saleOrder.getCompany())) {
         response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }
     } catch (Exception e) {

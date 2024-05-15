@@ -128,7 +128,7 @@ public class ContractLineController {
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
 
       if (Beans.get(AnalyticLineModelService.class)
-          .computeAnalyticMoveLineList(
+          .analyzeAnalyticMoveLineList(
               analyticLineContractModel, analyticLineContractModel.getCompany())) {
         response.setValue(
             "analyticMoveLineList", analyticLineContractModel.getAnalyticMoveLineList());

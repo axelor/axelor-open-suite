@@ -84,11 +84,11 @@ import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
-import com.axelor.apps.businessproject.service.analytic.AnalyticAttrsBusinessProjectServiceImpl;
-import com.axelor.apps.businessproject.service.analytic.AnalyticLineModelProjectService;
 import com.axelor.apps.businessproject.service.analytic.AnalyticLineModelProjectServiceImpl;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineService;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineServiceImpl;
+import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
+import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
@@ -120,7 +120,6 @@ import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplycha
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
@@ -180,7 +179,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ExpenseLineCreateServiceImpl.class).to(ExpenseLineCreateServiceProjectImpl.class);
     bind(ExpenseLineResponseComputeServiceImpl.class)
         .to(ExpenseLineResponseComputeServiceProjectImpl.class);
-    bind(AnalyticLineModelProjectService.class).to(AnalyticLineModelProjectServiceImpl.class);
     bind(AnalyticLineModelServiceImpl.class).to(AnalyticLineModelProjectServiceImpl.class);
     bind(TimesheetProjectPlanningTimeServiceImpl.class).to(TimesheetProjectPPTServiceImpl.class);
     bind(TimesheetInvoiceServiceImpl.class).to(TimesheetProjectInvoiceServiceImpl.class);
@@ -195,7 +193,6 @@ public class BusinessProjectModule extends AxelorModule {
         .to(BusinessProjectClosingControlServiceImpl.class);
     bind(ProjectGenerateInvoiceService.class).to(ProjectGenerateInvoiceServiceImpl.class);
     bind(BusinessProjectConfigService.class).to(BusinessProjectConfigServiceImpl.class);
-    bind(AnalyticAttrsSupplychainServiceImpl.class)
-        .to(AnalyticAttrsBusinessProjectServiceImpl.class);
+    bind(ProjectAnalyticTemplateService.class).to(ProjectAnalyticTemplateServiceImpl.class);
   }
 }
