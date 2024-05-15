@@ -86,9 +86,12 @@
   </selection>
 
   <selection name="business.project.sale.order.line.invoicing.mode.select">
-    <option value="1">Directly</option>
-    <option value="2">On delivery</option>
-    <option value="3">On progress</option>
+    <option value="1">Standard (via order)</option>
+    <option value="2">Business (via business proj)</option>
+    <option value="3">On delivery (via business proj)</option>
+    <option value="4">On progress (via task)</option>
+    <option value="5">On spent time (via task)</option>
+    <option value="6">On package (via task)</option>
   </selection>
 
   <selection name='iinvoice.operation.sub.type.select'
