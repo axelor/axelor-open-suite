@@ -1537,6 +1537,10 @@
       expr=" eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"
       if="company != null"/>
+    <attribute name="title" for="saleOrderLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+    <attribute name="title" for="saleOrderLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-set-contact-partner"
