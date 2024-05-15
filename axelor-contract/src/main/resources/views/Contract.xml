@@ -516,7 +516,7 @@
     <context name="_showRecord" expr="eval: nextVersion.id"/>
   </action-view>
 
-  <action-view name="action-view-contract-add-version" title="Nouvelle version"
+  <action-view name="action-view-contract-add-version" title="New version"
     model="com.axelor.apps.contract.db.ContractVersion">
     <view type="form" name="contract-version-next-form"/>
     <view type="grid" name="contract-version-next-grid"/>
