@@ -1,3 +1,3 @@
 ---
-title: "TSTimer: fix translation for mobile API when creating timer"
+title: "TSTimer: fixed french translation of errors message when creating timer from API."
 module: axelor-human-resource
