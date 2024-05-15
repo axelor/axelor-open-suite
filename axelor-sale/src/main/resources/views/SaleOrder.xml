@@ -598,8 +598,6 @@
           </panel>
           <field name="$_elementStartDate" title="Start date" widget="date-time"
             type="datetime" colSpan="3"/>
-          <field name="toInvoiceViaTask" hidden="true"
-            showIf="$_projectGeneratorType == 'TASK_BY_LINE'" colSpan="3"/>
         </panel>
       </panel>
 
@@ -1944,8 +1942,6 @@
     <field name="versionNumber" hidden="true"
       if="!__config__.app.getApp('sale')?.getManageSaleOrderVersion()"/>
     <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="toInvoiceViaTask" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="timetableTemplate" hidden="true"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
