@@ -1,3 +1,3 @@
 ---
-title: "Timesheet API: Fixed inconsistency issues on Timesheet APIs"
+title: "Timesheet API: added more checks on date to prevent inconsistency issues."
 module: axelor-human-resource
