@@ -1,3 +1,3 @@
 ---
-title: "Project: Task added via sub-task button of project task tree is not visible with 'All tasks' button"
+title: "Project: Fixed a issue where a task was not displayed when using the sub-task button"
 module: axelor-project
