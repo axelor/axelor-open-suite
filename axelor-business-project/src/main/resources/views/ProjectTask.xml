@@ -303,7 +303,7 @@
 
   <!-- set timeUnit domain -->
   <action-attrs name="action-project-task-attrs-set-time-unit-domain">
-    <attribute for="timeUnit" name="domain"
+    <attribute for="timeUnit" name="domain" if="__config__.app.isApp('business-project')"
       expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
   </action-attrs>
 
