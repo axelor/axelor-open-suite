@@ -26,8 +26,10 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.project.db.Project;
@@ -48,9 +50,16 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       PriceListService priceListService,
+      UnitConversionService unitConversionService,
+      UnitConversionForProjectService unitConversionForProjectService,
       TimesheetProjectService timesheetProjectService) {
     super(
-        appHumanResourceService, partnerPriceListService, productCompanyService, priceListService);
+        appHumanResourceService,
+        partnerPriceListService,
+        productCompanyService,
+        priceListService,
+        unitConversionService,
+        unitConversionForProjectService);
     this.timesheetProjectService = timesheetProjectService;
   }
 
@@ -164,6 +173,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
           this.createInvoiceLine(
               invoice,
               product,
+              project,
               employee,
               strDate,
               hoursDuration,

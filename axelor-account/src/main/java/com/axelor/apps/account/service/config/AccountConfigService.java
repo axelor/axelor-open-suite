@@ -749,6 +749,16 @@ public class AccountConfigService {
     return invoicePrintTemplate;
   }
 
+  public Account getBillOfExchReceivAccount(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getBillOfExchReceivAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_BILL_OF_EXCHANGE_RECEIV_ACCOUNT),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getBillOfExchReceivAccount();
+  }
+
   public Account getForeignExchangeAccount(AccountConfig accountConfig, boolean isGainAccount)
       throws AxelorException {
     Account account =

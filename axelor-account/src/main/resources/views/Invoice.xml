@@ -1826,7 +1826,10 @@
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"
       if="company != null"/>
     <attribute name="hidden" for="inAti" expr="eval: true" if="company == null"/>
-
+    <attribute name="title" for="invoiceLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+    <attribute name="title" for="invoiceLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-display-line-coefficient">

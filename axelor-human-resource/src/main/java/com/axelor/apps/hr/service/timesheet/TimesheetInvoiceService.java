@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.project.db.Project;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public interface TimesheetInvoiceService {
   List<InvoiceLine> createInvoiceLine(
       Invoice invoice,
       Product product,
+      Project project,
       Employee employee,
       String date,
       BigDecimal hoursDuration,

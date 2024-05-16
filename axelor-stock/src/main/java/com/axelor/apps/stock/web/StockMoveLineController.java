@@ -403,12 +403,12 @@ public class StockMoveLineController {
     Context context = request.getContext();
     StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
     StockMove stockMove =
-        context.getParent() != null
+        context.getParent() != null && context.getParent().getContextClass() == StockMove.class
             ? context.getParent().asType(StockMove.class)
             : stockMoveLine.getStockMove();
 
     try {
-      if (stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) {
+      if (stockMove == null || stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) {
         Beans.get(StockMoveLineService.class)
             .fillRealQuantities(stockMoveLine, stockMove, stockMoveLine.getQty());
         response.setValue("realQty", stockMoveLine.getRealQty());

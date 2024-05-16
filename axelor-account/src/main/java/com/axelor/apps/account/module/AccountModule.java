@@ -356,6 +356,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
@@ -698,6 +700,9 @@ public class AccountModule extends AxelorModule {
     bind(PaymentSessionService.class).to(PaymentSessionServiceImpl.class);
 
     bind(PaymentSessionValidateService.class).to(PaymentSessionValidateServiceImpl.class);
+
+    bind(PaymentSessionBillOfExchangeValidateService.class)
+        .to(PaymentSessionBillOfExchangeValidateServiceImpl.class);
 
     bind(PaymentSessionCancelService.class).to(PaymentSessionCancelServiceImpl.class);
 
