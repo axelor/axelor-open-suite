@@ -16,31 +16,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.db.repo;
+package com.axelor.apps.sale.utils;
 
-import com.axelor.apps.sale.db.AdvancePayment;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
 
-public class AdvancePaymentSaleRepository extends AdvancePaymentRepository {
+public class SaleOrderUtilsServiceImpl implements SaleOrderUtilsService {
 
-  protected SaleOrderComputeService saleOrderComputeService;
+  protected DurationService durationService;
 
   @Inject
-  public AdvancePaymentSaleRepository(SaleOrderComputeService saleOrderComputeService) {
-    this.saleOrderComputeService = saleOrderComputeService;
+  public SaleOrderUtilsServiceImpl(DurationService durationService) {
+    this.durationService = durationService;
   }
 
   @Override
-  public AdvancePayment save(AdvancePayment advancePayment) {
-    try {
-      SaleOrder saleOrder = advancePayment.getSaleOrder();
-      saleOrderComputeService._computeSaleOrder(saleOrder);
-      return super.save(advancePayment);
-    } catch (Exception e) {
-      throw new PersistenceException(e.getMessage(), e);
+  public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder) {
+    Company company = saleOrder.getCompany();
+    if (saleOrder.getDuration() == null && company != null && company.getSaleConfig() != null) {
+      saleOrder.setDuration(company.getSaleConfig().getDefaultValidityDuration());
     }
+    if (saleOrder.getCreationDate() != null) {
+      saleOrder.setEndOfValidityDate(
+          durationService.computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
+    }
+    return saleOrder;
   }
 }

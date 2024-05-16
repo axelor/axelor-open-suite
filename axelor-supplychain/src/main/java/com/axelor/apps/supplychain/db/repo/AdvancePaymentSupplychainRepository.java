@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
@@ -29,7 +30,14 @@ import javax.persistence.PersistenceException;
 
 public class AdvancePaymentSupplychainRepository extends AdvancePaymentSaleRepository {
 
-  @Inject private AppService appService;
+  protected AppService appService;
+
+  @Inject
+  public AdvancePaymentSupplychainRepository(
+      SaleOrderComputeService saleOrderComputeService, AppService appService) {
+    super(saleOrderComputeService);
+    this.appService = appService;
+  }
 
   @Override
   public AdvancePayment save(AdvancePayment advancePayment) {

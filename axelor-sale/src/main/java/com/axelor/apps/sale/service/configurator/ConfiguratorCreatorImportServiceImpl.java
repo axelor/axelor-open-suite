@@ -19,16 +19,12 @@
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
-import com.axelor.apps.sale.db.ConfiguratorFormula;
-import com.axelor.common.StringUtils;
+import com.axelor.apps.sale.utils.ConfiguratorCreatorImportUtilsService;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaJsonField;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -37,25 +33,22 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 
 public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreatorImportService {
 
   protected ConfiguratorCreatorService configuratorCreatorService;
+  protected ConfiguratorCreatorImportUtilsService configuratorCreatorImportUtilsService;
 
   @Inject
   public ConfiguratorCreatorImportServiceImpl(
-      ConfiguratorCreatorService configuratorCreatorService) {
+      ConfiguratorCreatorService configuratorCreatorService,
+      ConfiguratorCreatorImportUtilsService configuratorCreatorImportUtilsService) {
     this.configuratorCreatorService = configuratorCreatorService;
+    this.configuratorCreatorImportUtilsService = configuratorCreatorImportUtilsService;
   }
 
   private static final String CONFIG_FILE_PATH =
@@ -139,110 +132,9 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
   }
 
   protected void completeAfterImport(ConfiguratorCreator creator) throws AxelorException {
-    fixAttributesName(creator);
+    configuratorCreatorImportUtilsService.fixAttributesName(creator);
     configuratorCreatorService.updateAttributes(creator);
     configuratorCreatorService.removeTemporalAttributesAndIndicators(creator);
     configuratorCreatorService.updateIndicators(creator);
-  }
-
-  @Override
-  public void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
-    List<MetaJsonField> attributes = creator.getAttributes();
-    if (attributes == null) {
-      return;
-    }
-    for (MetaJsonField attribute : attributes) {
-      String name = attribute.getName();
-      if (name != null) {
-        name = name.replace("$AXELORTMP", "");
-        if (name.contains("_")) {
-          attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
-        }
-      }
-      updateOtherFieldsInAttribute(creator, attribute);
-      updateAttributeNameInFormulas(creator, name, attribute.getName());
-    }
-  }
-
-  /**
-   * Update the configurator id in other fields of the attribute.
-   *
-   * @param creator
-   * @param attribute attribute to update
-   */
-  protected void updateOtherFieldsInAttribute(
-      ConfiguratorCreator creator, MetaJsonField attribute) {
-    try {
-      List<Field> fieldsToUpdate =
-          Arrays.stream(attribute.getClass().getDeclaredFields())
-              .filter(field -> field.getType().equals(String.class))
-              .collect(Collectors.toList());
-      for (Field field : fieldsToUpdate) {
-        Mapper mapper = Mapper.of(attribute.getClass());
-        Method getter = mapper.getGetter(field.getName());
-        String fieldString = (String) getter.invoke(attribute);
-
-        if (fieldString != null && fieldString.contains("_")) {
-          String updatedFieldString = updateFieldIds(fieldString, creator.getId());
-          Method setter = mapper.getSetter(field.getName());
-          setter.invoke(attribute, updatedFieldString);
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
-  }
-
-  protected String updateFieldIds(String fieldString, Long id) {
-
-    Pattern attributePattern = Pattern.compile("\\w+_\\d+");
-    Matcher matcher = attributePattern.matcher(fieldString);
-    StringBuffer result = new StringBuffer();
-
-    while (matcher.find()) {
-      matcher.appendReplacement(result, matcher.group().replaceAll("_\\d+", "_" + id));
-    }
-
-    matcher.appendTail(result);
-
-    return result.toString();
-  }
-
-  /**
-   * Update the changed attribute in all formula O2M.
-   *
-   * @param creator
-   * @param oldName
-   * @param newName
-   */
-  protected void updateAttributeNameInFormulas(
-      ConfiguratorCreator creator, String oldName, String newName) throws AxelorException {
-    if (creator.getConfiguratorProductFormulaList() != null) {
-      updateAttributeNameInFormulas(creator.getConfiguratorProductFormulaList(), oldName, newName);
-    }
-    if (creator.getConfiguratorSOLineFormulaList() != null) {
-      updateAttributeNameInFormulas(creator.getConfiguratorSOLineFormulaList(), oldName, newName);
-    }
-  }
-
-  /**
-   * Update the changed attribute in formulas.
-   *
-   * @param formulas
-   * @param oldAttributeName
-   * @param newAttributeName
-   */
-  protected void updateAttributeNameInFormulas(
-      List<? extends ConfiguratorFormula> formulas,
-      String oldAttributeName,
-      String newAttributeName) {
-
-    formulas.forEach(
-        configuratorFormula -> {
-          if (!StringUtils.isEmpty(configuratorFormula.getFormula())) {
-            configuratorFormula.setFormula(
-                configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName));
-          }
-        });
   }
 }

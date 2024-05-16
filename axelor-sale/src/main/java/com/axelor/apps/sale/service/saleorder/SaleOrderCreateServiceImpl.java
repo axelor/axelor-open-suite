@@ -36,6 +36,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.utils.SaleOrderUtilsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -60,6 +61,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected SaleOrderComputeService saleOrderComputeService;
   protected DMSService dmsService;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected SaleOrderUtilsService saleOrderUtilsService;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -69,7 +71,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
       DMSService dmsService,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderUtilsService saleOrderUtilsService) {
 
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
@@ -78,6 +81,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     this.saleOrderComputeService = saleOrderComputeService;
     this.dmsService = dmsService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.saleOrderUtilsService = saleOrderUtilsService;
   }
 
   @Override
@@ -91,7 +95,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setSalespersonUser(AuthUtils.getUser());
     saleOrder.setTeam(saleOrder.getSalespersonUser().getActiveTeam());
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
-    saleOrderService.computeEndOfValidityDate(saleOrder);
+    saleOrderUtilsService.computeEndOfValidityDate(saleOrder);
     return saleOrder;
   }
 
@@ -198,7 +202,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
 
-    saleOrderService.computeEndOfValidityDate(saleOrder);
+    saleOrderUtilsService.computeEndOfValidityDate(saleOrder);
 
     return saleOrder;
   }
@@ -213,7 +217,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     copy.setCurrency(wizardCurrency);
     copy.setPriceList(wizardPriceList);
 
-    saleOrderService.computeEndOfValidityDate(copy);
+    saleOrderUtilsService.computeEndOfValidityDate(copy);
 
     this.updateSaleOrderLineList(copy);
 

@@ -94,7 +94,6 @@ import com.axelor.apps.production.service.bomimport.BillOfMaterialImportServiceI
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomServiceImpl;
-import com.axelor.apps.production.service.configurator.ConfiguratorCreatorImportServiceProductionImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineService;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineServiceImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessService;
@@ -169,8 +168,9 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateS
 import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
-import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
+import com.axelor.apps.production.utils.ConfiguratorCreatorImportUtilsServiceProductionImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.utils.ConfiguratorCreatorImportUtilsServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
@@ -226,8 +226,8 @@ public class ProductionModule extends AxelorModule {
     bind(UnitCostCalculationService.class).to(UnitCostCalculationServiceImpl.class);
     bind(UnitCostCalcLineService.class).to(UnitCostCalcLineServiceImpl.class);
     bind(ProductStockRepository.class).to(ProductProductionRepository.class);
-    bind(ConfiguratorCreatorImportServiceImpl.class)
-        .to(ConfiguratorCreatorImportServiceProductionImpl.class);
+    bind(ConfiguratorCreatorImportUtilsServiceImpl.class)
+        .to(ConfiguratorCreatorImportUtilsServiceProductionImpl.class);
     bind(ProductStockLocationServiceImpl.class).to(ProductionProductStockLocationServiceImpl.class);
     bind(StockMoveSupplychainRepository.class).to(StockMoveProductionRepository.class);
     bind(MrpForecastProductionService.class).to(MrpForecastProductionServiceImpl.class);

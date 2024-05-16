@@ -22,17 +22,25 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
 
+  protected AppBaseService appBaseService;
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public SaleOrderLineSaleRepository(
+      AppBaseService appBaseService, CurrencyScaleService currencyScaleService) {
+    this.appBaseService = appBaseService;
+    this.currencyScaleService = currencyScaleService;
+  }
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put(
-        "$nbDecimalDigitForUnitPrice",
-        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
-    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
+    json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
+    json.put("$nbDecimalDigitForQty", appBaseService.getNbDecimalDigitForQty());
 
     if (context.get("_model") != null
         && (context.get("_model").equals(SaleOrder.class.getName())
@@ -55,8 +63,7 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
             saleOrderLine.getSaleOrder() != null
                 ? saleOrderLine.getSaleOrder()
                 : saleOrderLine.getOldVersionSaleOrder();
-        json.put(
-            "$currencyNumberOfDecimals", Beans.get(CurrencyScaleService.class).getScale(saleOrder));
+        json.put("$currencyNumberOfDecimals", currencyScaleService.getScale(saleOrder));
       }
     }
     return super.populate(json, context);

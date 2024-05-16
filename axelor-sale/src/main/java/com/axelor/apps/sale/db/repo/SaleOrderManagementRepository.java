@@ -30,15 +30,37 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.utils.SaleOrderUtilsService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSale;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
+
+  protected AppBaseService appBaseService;
+  protected AppSaleService appSaleService;
+  protected SequenceService sequenceService;
+  protected SaleOrderMarginService saleOrderMarginService;
+  protected SaleOrderUtilsService saleOrderUtilsService;
+
+  @Inject
+  public SaleOrderManagementRepository(
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      SequenceService sequenceService,
+      SaleOrderMarginService saleOrderMarginService,
+      SaleOrderUtilsService saleOrderUtilsService) {
+    this.appBaseService = appBaseService;
+    this.appSaleService = appSaleService;
+    this.sequenceService = sequenceService;
+    this.saleOrderMarginService = saleOrderMarginService;
+    this.saleOrderUtilsService = saleOrderUtilsService;
+  }
 
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -49,7 +71,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setSaleOrderSeq(null);
     copy.clearBatchSet();
     copy.setImportId(null);
-    copy.setCreationDate(Beans.get(AppBaseService.class).getTodayDate(entity.getCompany()));
+    copy.setCreationDate(appBaseService.getTodayDate(entity.getCompany()));
     copy.setConfirmationDateTime(null);
     copy.setConfirmedByUser(null);
     copy.setOrderDate(null);
@@ -73,7 +95,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
         saleOrderLine.setDiscountDerogation(null);
       }
     }
-    Beans.get(SaleOrderService.class).computeEndOfValidityDate(copy);
+    saleOrderUtilsService.computeEndOfValidityDate(copy);
 
     return copy;
   }
@@ -81,7 +103,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   @Override
   public SaleOrder save(SaleOrder saleOrder) {
     try {
-      AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
+      AppSale appSale = appSaleService.getAppSale();
       SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
 
       if (appSale.getEnablePackManagement()) {
@@ -97,7 +119,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
 
       computeSubMargin(saleOrder);
-      Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -112,8 +134,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
       if (Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()) {
         if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
-          saleOrder.setSaleOrderSeq(
-              Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
+          saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
         }
       }
 
@@ -138,7 +159,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    SaleOrderMarginService saleOrderMarginService = Beans.get(SaleOrderMarginService.class);
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         saleOrderMarginService.computeSubMargin(saleOrder, saleOrderLine);

@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.ConfiguratorCreator;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -62,13 +60,4 @@ public interface ConfiguratorCreatorImportService {
    */
   String importConfiguratorCreators(InputStream xmlInputStream, String configFilePath)
       throws IOException;
-
-  /**
-   * When exported, attribute name finish with '_XX' where XX is the id of the creator. After
-   * importing or copying, we need to fix these values.
-   *
-   * @param creator a saved configurator creator
-   * @throws AxelorException
-   */
-  void fixAttributesName(ConfiguratorCreator creator) throws AxelorException;
 }

@@ -58,6 +58,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
+import com.axelor.apps.sale.utils.SaleOrderUtilsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -361,7 +362,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
     try {
-      saleOrder = Beans.get(SaleOrderService.class).computeEndOfValidityDate(saleOrder);
+      saleOrder = Beans.get(SaleOrderUtilsService.class).computeEndOfValidityDate(saleOrder);
       response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

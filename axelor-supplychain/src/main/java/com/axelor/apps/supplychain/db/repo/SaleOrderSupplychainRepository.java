@@ -20,15 +20,36 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.utils.SaleOrderUtilsService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
+
+  @Inject
+  public SaleOrderSupplychainRepository(
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      SequenceService sequenceService,
+      SaleOrderMarginService saleOrderMarginService,
+      SaleOrderUtilsService saleOrderUtilsService) {
+    super(
+        appBaseService,
+        appSaleService,
+        sequenceService,
+        saleOrderMarginService,
+        saleOrderUtilsService);
+  }
 
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {

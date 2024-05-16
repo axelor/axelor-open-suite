@@ -29,8 +29,6 @@ public interface SaleOrderService {
 
   public String getFileName(SaleOrder saleOrder);
 
-  public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
-
   /**
    * Fill {@link SaleOrder#mainInvoicingAddressStr} and {@link SaleOrder#deliveryAddressStr}
    *

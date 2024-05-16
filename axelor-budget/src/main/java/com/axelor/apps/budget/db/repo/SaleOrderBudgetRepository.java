@@ -19,6 +19,8 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -29,7 +31,11 @@ import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.utils.SaleOrderUtilsService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +44,21 @@ import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderBudgetRepository extends SaleOrderProjectRepository {
+
+  @Inject
+  public SaleOrderBudgetRepository(
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      SequenceService sequenceService,
+      SaleOrderMarginService saleOrderMarginService,
+      SaleOrderUtilsService saleOrderUtilsService) {
+    super(
+        appBaseService,
+        appSaleService,
+        sequenceService,
+        saleOrderMarginService,
+        saleOrderUtilsService);
+  }
 
   @Override
   public SaleOrder save(SaleOrder saleOrder) {

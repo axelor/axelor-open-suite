@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.configurator;
+package com.axelor.apps.production.utils;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -28,11 +28,9 @@ import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
-import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
-import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
+import com.axelor.apps.sale.utils.ConfiguratorCreatorImportUtilsServiceImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -42,16 +40,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class ConfiguratorCreatorImportServiceProductionImpl
-    extends ConfiguratorCreatorImportServiceImpl {
+public class ConfiguratorCreatorImportUtilsServiceProductionImpl
+    extends ConfiguratorCreatorImportUtilsServiceImpl {
 
   private static int MAX_DEPTH = 50;
-
-  @Inject
-  public ConfiguratorCreatorImportServiceProductionImpl(
-      ConfiguratorCreatorService configuratorCreatorService) {
-    super(configuratorCreatorService);
-  }
 
   /**
    * Update the changed attribute in all formula O2M. This implementation also update formulas in

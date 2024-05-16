@@ -19,6 +19,8 @@
 package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -27,10 +29,17 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 
 public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleRepository {
+
+  @Inject
+  public SaleOrderLineSupplychainRepository(
+      AppBaseService appBaseService, CurrencyScaleService currencyScaleService) {
+    super(appBaseService, currencyScaleService);
+  }
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {

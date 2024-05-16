@@ -21,11 +21,12 @@ package com.axelor.apps.sale.db.repo;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
+import com.axelor.apps.sale.utils.ConfiguratorCreatorImportUtilsService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +34,14 @@ import java.util.Optional;
 import javax.persistence.PersistenceException;
 
 public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorRepository {
+
+  protected ConfiguratorCreatorImportUtilsService configuratorCreatorImportUtilsService;
+
+  @Inject
+  public ConfiguratorCreatorSaleRepository(
+      ConfiguratorCreatorImportUtilsService configuratorCreatorImportUtilsService) {
+    this.configuratorCreatorImportUtilsService = configuratorCreatorImportUtilsService;
+  }
 
   @Override
   public ConfiguratorCreator copy(ConfiguratorCreator entity, boolean deep) {
@@ -51,7 +60,7 @@ public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorReposi
         entity.setCopyNeedingUpdate(false);
         ConfiguratorCreatorService configuratorCreatorService =
             Beans.get(ConfiguratorCreatorService.class);
-        Beans.get(ConfiguratorCreatorImportService.class).fixAttributesName(entity);
+        configuratorCreatorImportUtilsService.fixAttributesName(entity);
         configuratorCreatorService.updateAttributes(entity);
         configuratorCreatorService.removeTemporalAttributesAndIndicators(entity);
         configuratorCreatorService.updateIndicators(entity);
