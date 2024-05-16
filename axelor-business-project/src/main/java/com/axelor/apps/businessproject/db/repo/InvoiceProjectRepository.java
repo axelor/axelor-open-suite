@@ -43,7 +43,7 @@ public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
       List<ProjectTask> projectTaskList =
           Beans.get(ProjectTaskRepository.class)
               .all()
-              .filter("?1 IN self.invoiceLineList.invoice", entity)
+              .filter("?1 IN self.invoiceLineSet.invoice", entity)
               .fetch();
       if (ObjectUtils.notEmpty(projectTaskList)) {
         for (ProjectTask projectTask : projectTaskList) {
