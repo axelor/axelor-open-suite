@@ -316,10 +316,9 @@ public class VentilateState extends WorkflowInvoice {
 
     Sequence sequence = this.getSequence();
 
-    // TODO REMOVE COMMENTS
-    //    if (!InvoiceToolService.isPurchase(invoice)) {
-    //      this.checkInvoiceDate(sequence);
-    //    }
+    if (!InvoiceToolService.isPurchase(invoice)) {
+      this.checkInvoiceDate(sequence);
+    }
 
     invoice.setInvoiceId(
         sequenceService.getSequenceNumber(

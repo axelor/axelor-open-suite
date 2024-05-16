@@ -212,28 +212,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   public Reconcile confirmReconcile(
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException {
-
-    ForeignMoveToReconcile foreignExchangeGapMove =
-        foreignExchangeGapService.manageForeignExchangeGap(reconcile);
-    if (foreignExchangeGapMove != null) {
-      Reconcile foreignExchangeReconcile =
-          this.reconcile(
-              foreignExchangeGapMove.getDebitMoveLine(),
-              foreignExchangeGapMove.getCreditMoveLine(),
-              false,
-              true);
-      if (foreignExchangeReconcile != null) {
-        InvoicePayment invoicePayment =
-            invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
-        invoicePayment.setTypeSelect(
-            foreignExchangeGapToolsService.getInvoicePaymentType(reconcile));
-        invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-        invoicePaymentRepository.save(invoicePayment);
-
-        foreignExchangeReconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
-        reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
-      }
-    }
+    this.computeForeignExchange(reconcile);
 
     return this.initConfirmAndValidateReconcile(
         reconcile, updateInvoicePayments, updateInvoiceTerms);
@@ -779,5 +758,27 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     return newReconcile;
+  }
+
+  protected void computeForeignExchange(Reconcile reconcile) throws AxelorException {
+    ForeignMoveToReconcile foreignExchangeGapMove =
+        foreignExchangeGapService.manageForeignExchangeGap(reconcile);
+    if (foreignExchangeGapMove != null) {
+      Reconcile foreignExchangeReconcile =
+          this.reconcile(
+              foreignExchangeGapMove.getDebitMoveLine(),
+              foreignExchangeGapMove.getCreditMoveLine(),
+              false,
+              true);
+
+      if (foreignExchangeReconcile != null) {
+        InvoicePayment invoicePayment =
+            invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
+        invoicePayment.setTypeSelect(
+            foreignExchangeGapToolsService.getInvoicePaymentType(reconcile));
+        invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+        invoicePaymentRepository.save(invoicePayment);
+      }
+    }
   }
 }

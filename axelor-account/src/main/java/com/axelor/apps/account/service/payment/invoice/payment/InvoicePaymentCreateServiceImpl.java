@@ -36,7 +36,6 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -68,7 +67,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected InvoiceTermService invoiceTermService;
   protected InvoiceService invoiceService;
   protected PfpService pfpService;
-  protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
@@ -79,8 +77,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      PfpService pfpService,
-      ForeignExchangeGapToolsService foreignExchangeGapToolsService) {
+      PfpService pfpService) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
@@ -90,7 +87,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     this.invoiceTermService = invoiceTermService;
     this.invoiceService = invoiceService;
     this.pfpService = pfpService;
-    this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
   }
 
   /**
@@ -125,12 +121,10 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    * @param paymentMove
    * @return
    */
-  public InvoicePayment createInvoicePayment(
-      Invoice invoice, BigDecimal amount, Move paymentMove, Reconcile reconcile)
+  public InvoicePayment createInvoicePayment(Invoice invoice, BigDecimal amount, Move paymentMove)
       throws AxelorException {
     LocalDate paymentDate = paymentMove.getDate();
 
-    int yest = foreignExchangeGapToolsService.getInvoicePaymentType(reconcile);
     int typePaymentMove = this.determineType(paymentMove);
 
     Currency currency = paymentMove.getCurrency();
@@ -559,7 +553,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
     if (invoiceTerm.getInvoice() != null) {
       InvoicePayment invoicePayment =
-          this.createInvoicePayment(invoiceTerm.getInvoice(), amount, move, reconcile);
+          this.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
       invoicePayment.setReconcile(reconcile);
 
       List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();

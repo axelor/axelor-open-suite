@@ -6,16 +6,12 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -31,11 +27,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
   protected MoveValidateService moveValidateService;
   protected MoveReverseService moveReverseService;
   protected AppBaseService appBaseService;
-  protected InvoicePaymentCreateService invoicePaymentCreateService;
-  protected InvoiceTermPaymentService invoiceTermPaymentService;
-  protected InvoiceTermService invoiceTermService;
   protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
-  protected InvoicePaymentRepository invoicePaymentRepository;
 
   @Inject
   public ForeignExchangeGapServiceImpl(
@@ -45,22 +37,14 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
       MoveValidateService moveValidateService,
       MoveReverseService moveReverseService,
       AppBaseService appBaseService,
-      InvoicePaymentCreateService invoicePaymentCreateService,
-      InvoiceTermPaymentService invoiceTermPaymentService,
-      InvoiceTermService invoiceTermService,
-      ForeignExchangeGapToolsService foreignExchangeGapToolsService,
-      InvoicePaymentRepository invoicePaymentRepository) {
+      ForeignExchangeGapToolsService foreignExchangeGapToolsService) {
     this.accountConfigService = accountConfigService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveReverseService = moveReverseService;
     this.appBaseService = appBaseService;
-    this.invoicePaymentCreateService = invoicePaymentCreateService;
-    this.invoiceTermPaymentService = invoiceTermPaymentService;
-    this.invoiceTermService = invoiceTermService;
     this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
-    this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
   @Override
@@ -198,8 +182,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     move.addMoveLineListItem(newMoveLine);
   }
 
-  @Override
-  public boolean checkForeignExchangeAccounts(Company company) throws AxelorException {
+  protected boolean checkForeignExchangeAccounts(Company company) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Account gainsAccount = accountConfig.getForeignExchangeGainsAccount();
     Account lossesAccount = accountConfig.getForeignExchangeLossesAccount();

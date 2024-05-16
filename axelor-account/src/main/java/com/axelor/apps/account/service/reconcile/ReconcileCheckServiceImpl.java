@@ -88,16 +88,16 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
     }
 
     if ((currencyScaleService.isGreaterThan(
-                reconcile.getAmount(),
-                creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
-                creditMoveLine,
-                false)
-            || currencyScaleService.isGreaterThan(
-                reconcile.getAmount(),
-                debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
-                debitMoveLine,
-                false))
-        && reconcile.getForeignExchangeMove() == null) {
+            reconcile.getAmount(),
+            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
+            creditMoveLine,
+            false)
+        || currencyScaleService.isGreaterThan(
+            reconcile.getAmount(),
+            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
+            debitMoveLine,
+            false))) {
+
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)

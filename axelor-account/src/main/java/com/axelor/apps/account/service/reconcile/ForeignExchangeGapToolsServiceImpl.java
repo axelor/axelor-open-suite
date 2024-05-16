@@ -23,8 +23,7 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
         : debitMoveLine.getCurrencyRate().compareTo(creditMoveLine.getCurrencyRate()) < 0;
   }
 
-  @Override
-  public boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+  protected boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine) {
     return this.isGain(creditMoveLine, debitMoveLine, this.isDebit(creditMoveLine, debitMoveLine));
   }
 
@@ -35,9 +34,7 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
 
   @Override
   public int getInvoicePaymentType(Reconcile reconcile) {
-    boolean isGain = this.isGain(reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine());
-
-    return isGain
+    return this.isGain(reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine())
         ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN
         : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS;
   }

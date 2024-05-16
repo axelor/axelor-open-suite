@@ -147,7 +147,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
         invoicePayment =
             invoicePaymentCreateService.createInvoicePayment(
-                invoice, invoicePaymentAmount, otherMove, reconcile);
+                invoice, invoicePaymentAmount, otherMove);
         invoicePayment.setReconcile(reconcile);
       }
     } else if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
