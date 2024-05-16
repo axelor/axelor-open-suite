@@ -149,18 +149,64 @@ public class ContractLineServiceImpl implements ContractLineService {
       throws AxelorException {
     Preconditions.checkNotNull(
         contract, I18n.get("Contract can't be " + "empty for compute contract line price."));
-    Preconditions.checkNotNull(
-        product, "Product can't be " + "empty for compute contract line price.");
 
     // TODO: maybe put tax computing in another method
     contractLine.setFiscalPosition(contract.getPartner().getFiscalPosition());
 
+    Set<TaxLine> taxLineSet = getTaxLineSet(contractLine, contract, product);
+    contractLine.setTaxLineSet(taxLineSet);
+
+    setPrice(contractLine, contract, product, taxLineSet);
+    setPriceScale(contractLine, contract, product);
+
+    return contractLine;
+  }
+
+  protected void setPrice(
+      ContractLine contractLine, Contract contract, Product product, Set<TaxLine> taxLineSet)
+      throws AxelorException {
+    BigDecimal price = contractLine.getPrice();
+    if (product != null
+        && CollectionUtils.isNotEmpty(taxLineSet)
+        && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
+      price =
+          price.divide(
+              taxService.getTotalTaxRate(taxLineSet).add(BigDecimal.ONE),
+              2,
+              BigDecimal.ROUND_HALF_UP);
+    }
+    contractLine.setPrice(price);
+  }
+
+  protected void setPriceScale(ContractLine contractLine, Contract contract, Product product)
+      throws AxelorException {
+    BigDecimal price = contractLine.getPrice();
+    if (product != null) {
+      BigDecimal convert =
+          currencyService.getCurrencyConversionRate(
+              (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()),
+              contract.getCurrency(),
+              appBaseService.getTodayDate(contract.getCompany()));
+      contractLine.setPrice(
+          price
+              .multiply(convert)
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+    }
+  }
+
+  protected Set<TaxLine> getTaxLineSet(
+      ContractLine contractLine, Contract contract, Product product) throws AxelorException {
+    Set<TaxLine> taxLineSet = Set.of();
     int targetTypeSelect = contract.getTargetTypeSelect();
+    Set<TaxLine> contractTaxLineSet = contractLine.getTaxLineSet();
 
-    Set<TaxLine> taxLineSet = Sets.newHashSet();
+    if (CollectionUtils.isNotEmpty(contractTaxLineSet)) {
+      return contractTaxLineSet;
+    }
 
-    if (targetTypeSelect == ContractRepository.CUSTOMER_CONTRACT
-        || targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT) {
+    if (product != null
+        && (targetTypeSelect == ContractRepository.CUSTOMER_CONTRACT
+            || targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT)) {
       taxLineSet =
           accountManagementService.getTaxLineSet(
               appBaseService.getTodayDate(contract.getCompany()),
@@ -168,32 +214,9 @@ public class ContractLineServiceImpl implements ContractLineService {
               contract.getCompany(),
               contractLine.getFiscalPosition(),
               false);
-      contractLine.setTaxLineSet(taxLineSet);
     }
 
-    if (CollectionUtils.isNotEmpty(taxLineSet)
-        && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
-      BigDecimal price = contractLine.getPrice();
-      price =
-          price.divide(
-              taxService.getTotalTaxRate(taxLineSet).add(BigDecimal.ONE),
-              2,
-              BigDecimal.ROUND_HALF_UP);
-      contractLine.setPrice(price);
-    }
-
-    BigDecimal price = contractLine.getPrice();
-    BigDecimal convert =
-        currencyService.getCurrencyConversionRate(
-            (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()),
-            contract.getCurrency(),
-            appBaseService.getTodayDate(contract.getCompany()));
-    contractLine.setPrice(
-        price
-            .multiply(convert)
-            .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
-
-    return contractLine;
+    return taxLineSet;
   }
 
   @Override

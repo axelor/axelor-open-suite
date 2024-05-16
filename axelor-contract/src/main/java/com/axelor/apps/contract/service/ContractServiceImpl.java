@@ -682,11 +682,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 + line.getContractVersion().getContract().getInvoicePeriodEndDate()
             : line.getDescription();
 
-    Contract contract = line.getContractVersion().getContract();
+    ContractVersion contractVersion = line.getContractVersion();
+    Contract contract = null;
+    if (contractVersion != null) {
+      contract = line.getContractVersion().getContract();
+    }
 
     BigDecimal qty = line.getProduct() == null ? BigDecimal.ONE : line.getQty();
     Product product = getLineProduct(line, contract);
 
+    Contract finalContract = contract;
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
@@ -709,7 +714,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           @Override
           public void setProductAccount(
               InvoiceLine invoiceLine, Company company, boolean isPurchase) throws AxelorException {
-            if (contractYearEndBonusService.isYebContract(contract)) {
+            if (finalContract != null && contractYearEndBonusService.isYebContract(finalContract)) {
               if (product != null) {
                 invoiceLine.setProductCode(
                     (String) productCompanyService.get(product, "code", company));
@@ -726,7 +731,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           @Override
           public void setTaxEquiv(InvoiceLine invoiceLine, Company company, boolean isPurchase)
               throws AxelorException {
-            if (contractYearEndBonusService.isYebContract(contract)) {
+            if (finalContract != null && contractYearEndBonusService.isYebContract(finalContract)) {
               if (CollectionUtils.isNotEmpty(taxLineSet)) {
                 Set<Tax> taxSet =
                     taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet());
@@ -792,7 +797,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceLine.getTaxLineSet())) {
       Set<TaxLine> taxLineSet = Set.of();
-      if (contractYearEndBonusService.isYebContract(contract)) {
+      if (contract != null && contractYearEndBonusService.isYebContract(contract)) {
         Product product = contractYearEndBonusService.getYebProduct(contract);
         taxLineSet =
             accountManagementContractService.getTaxLineSet(
@@ -1096,7 +1101,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected Product getLineProduct(ContractLine line, Contract contract) throws AxelorException {
     Product product = line.getProduct();
 
-    if (contractYearEndBonusService.isYebContract(contract) && product == null) {
+    if (contract != null
+        && contractYearEndBonusService.isYebContract(contract)
+        && product == null) {
       product = contractYearEndBonusService.getYebProduct(contract);
     }
     return product;
