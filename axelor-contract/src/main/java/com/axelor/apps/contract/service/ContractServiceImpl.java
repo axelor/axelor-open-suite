@@ -42,7 +42,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.ConsumptionLine;
@@ -687,13 +686,12 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     BigDecimal qty = line.getProduct() == null ? BigDecimal.ONE : line.getQty();
     Product product = getLineProduct(line, contract);
-    String productName = (String) productCompanyService.get(product, "name", contract.getCompany());
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
             product,
-            productName,
+            line.getProductName(),
             line.getPrice(),
             inTaxPriceComputed,
             line.getPriceDiscounted(),
@@ -793,26 +791,27 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       boolean isPurchase)
       throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceLine.getTaxLineSet())) {
-      Set<TaxLine> taxLineSet;
+      Set<TaxLine> taxLineSet = Set.of();
       if (contractYearEndBonusService.isYebContract(contract)) {
         Product product = contractYearEndBonusService.getYebProduct(contract);
         taxLineSet =
-            Beans.get(AccountManagementService.class)
-                .getTaxLineSet(
-                    appBaseService.getTodayDate(invoice.getCompany()),
-                    product,
-                    invoice.getCompany(),
-                    fiscalPosition,
-                    isPurchase);
+            accountManagementContractService.getTaxLineSet(
+                appBaseService.getTodayDate(invoice.getCompany()),
+                product,
+                invoice.getCompany(),
+                fiscalPosition,
+                isPurchase);
       } else {
-        taxLineSet =
-            Beans.get(AccountManagementService.class)
-                .getTaxLineSet(
-                    appBaseService.getTodayDate(invoice.getCompany()),
-                    invoiceLine.getProduct(),
-                    invoice.getCompany(),
-                    fiscalPosition,
-                    isPurchase);
+        Product product = invoiceLine.getProduct();
+        if (product != null) {
+          taxLineSet =
+              accountManagementContractService.getTaxLineSet(
+                  appBaseService.getTodayDate(invoice.getCompany()),
+                  product,
+                  invoice.getCompany(),
+                  fiscalPosition,
+                  isPurchase);
+        }
       }
       invoiceLine.setTaxLineSet(taxLineSet);
     }
@@ -1099,12 +1098,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     if (contractYearEndBonusService.isYebContract(contract) && product == null) {
       product = contractYearEndBonusService.getYebProduct(contract);
-    }
-
-    if (product == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(ContractExceptionMessage.CONTRACT_LINE_PRODUCT_MISSING));
     }
     return product;
   }
