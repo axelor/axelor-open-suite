@@ -12,7 +12,9 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class BatchTransitionBetweenPaidStatusService extends AbstractBatch {
 
@@ -35,8 +37,11 @@ public class BatchTransitionBetweenPaidStatusService extends AbstractBatch {
             .all()
             .order("id")
             .filter(
-                "self.isBusinessProject = true AND self.projectStatus.isCompleted = true AND self.fromDate <= :fromDate")
-            .bind("fromDate", batch.getBusinessProjectBatch().getFromDate());
+                "self.isBusinessProject = true AND self.projectStatus.isCompleted = true AND self.fromDate >= :fromDate")
+            .bind(
+                "fromDate",
+                Optional.ofNullable(batch.getBusinessProjectBatch().getFromDate())
+                    .orElse(LocalDate.EPOCH));
     while (!(projectList = projectQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
       for (Project project : projectList) {
