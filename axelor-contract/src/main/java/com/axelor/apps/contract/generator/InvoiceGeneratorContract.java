@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,9 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
             ? InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
             : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
         contract.getCompany(),
-        contract.getPartner(),
+        contract.getInvoicedPartner() != null
+            ? contract.getInvoicedPartner()
+            : contract.getPartner(),
         null,
         null,
         contract.getContractId(),
@@ -71,7 +73,6 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
           InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
     }
 
-    invoice.setContract(contract);
     if (contract.getInvoicingDate() != null) {
       invoice.setInvoiceDate(contract.getInvoicingDate());
     } else {

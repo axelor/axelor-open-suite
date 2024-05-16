@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,22 +20,14 @@ package com.axelor.apps.bankpayment.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
+import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 
-public abstract class BatchDirectDebit extends com.axelor.apps.account.service.batch.BatchStrategy {
+public abstract class BatchDirectDebit extends BatchStrategy {
   protected boolean generateBankOrderFlag;
-
-  @Inject protected BankDetailsService bankDetailsService;
-
-  @Inject protected BatchBankPaymentService batchBankPaymentService;
-
-  @Inject PaymentScheduleLineRepository paymentScheduleLineRepo;
 
   @Override
   protected void start() throws IllegalAccessException {

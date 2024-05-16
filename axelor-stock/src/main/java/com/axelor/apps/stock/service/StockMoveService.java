@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -179,25 +179,13 @@ public interface StockMoveService {
   Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
 
   /**
-   * Print the given stock move.
-   *
-   * @param stockMove
-   * @param lstSelectedMove
-   * @param reportType true if we print a picking order
-   * @return the link to the PDF file
-   * @throws AxelorException
-   */
-  String printStockMove(StockMove stockMove, List<Integer> lstSelectedMove, String reportType)
-      throws AxelorException;
-
-  /**
    * Update fully spread over logistical forms flag on stock move.
    *
    * @param stockMove
    */
   void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
-  void setAvailableStatus(StockMove stockMove);
+  void setAvailableStatus(StockMove stockMove) throws AxelorException;
 
   /**
    * Update editDate of one Outgoing Stock Move
@@ -244,4 +232,14 @@ public interface StockMoveService {
   void changeLinesFromStockLocation(StockMove stockMove, StockLocation stockLocation);
 
   void changeLinesToStockLocation(StockMove stockMove, StockLocation stockLocation);
+
+  void checkPrintingSettings(StockMove stockMove) throws AxelorException;
+
+  public Optional<StockMove> generateNewStockMove(StockMove stockMove) throws AxelorException;
+
+  void setMergedStatus(StockMove stockMove);
+
+  StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException;
+
+  void planWithNoSplit(StockMove stockMove) throws AxelorException;
 }

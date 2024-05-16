@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,21 +20,21 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockMove;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestStockMoveUpdateService {
+class TestStockMoveUpdateService {
 
-  private StockMoveUpdateService stockMoveUpdateService;
+  private static StockMoveUpdateService stockMoveUpdateService;
 
-  @Before
-  public void prepare() {
+  @BeforeAll
+  static void prepare() {
     stockMoveUpdateService = new StockMoveUpdateServiceImpl(null, null, null, null, null, null);
   }
 
   @Test
-  public void testUpdateUnknownStatus() {
+  void testUpdateUnknownStatus() {
     StockMove stockMove = new StockMove();
     stockMove.setStatusSelect(5);
     int status = 6;
@@ -44,7 +44,7 @@ public class TestStockMoveUpdateService {
     } catch (AxelorException e) {
       errorMessage = e.getMessage();
     }
-    Assert.assertEquals(
+    Assertions.assertEquals(
         "Workflow to update status to value 6 is not supported for stock move.", errorMessage);
   }
 }

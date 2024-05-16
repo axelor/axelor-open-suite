@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -27,7 +27,6 @@
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <date name="moveDate" title="Move Date"/>
-    <many-to-one name="move" ref="com.axelor.apps.account.db.Move"/>
     <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
       readonly="true"/>
     <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By"

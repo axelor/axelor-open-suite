@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,10 +47,13 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Query;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -62,6 +65,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
@@ -86,6 +91,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected CurrencyService currencyService;
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLineRepository moveLineRepository;
+  protected CurrencyScaleService currencyScaleService;
   protected int counter = 0;
 
   @Inject
@@ -109,8 +115,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveLineService moveLineService,
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
-      MoveLineRepository moveLineRepository) {
-
+      MoveLineRepository moveLineRepository,
+      CurrencyScaleService currencyScaleService) {
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
     this.moveLineToolService = moveLineToolService;
@@ -131,18 +137,25 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.currencyService = currencyService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLineRepository = moveLineRepository;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
   public Query<Move> getMoves(
       Company company,
-      Journal researchJournal,
+      Set<Journal> journalSet,
       LocalDate moveDate,
       int accountingCutOffTypeSelect) {
-    String queryStr =
-        "((:researchJournal > 0 AND self.journal.id = :researchJournal) "
-            + "  OR (:researchJournal = 0 AND self.journal.journalType.technicalTypeSelect = :journalType))"
-            + "AND self.date <= :date "
+    List<Long> journalIdList = null;
+    String queryStr;
+    if (CollectionUtils.isNotEmpty(journalSet)) {
+      journalIdList = journalSet.stream().map(Journal::getId).collect(Collectors.toList());
+      queryStr = "self.journal.id IN (:journals)";
+    } else {
+      queryStr = "self.journal.journalType.technicalTypeSelect = :journalType";
+    }
+    queryStr +=
+        " AND self.date <= :date "
             + "AND self.statusSelect IN (2, 3, 5) "
             + "AND EXISTS(SELECT 1 FROM MoveLine ml "
             + " WHERE ml.move = self "
@@ -158,7 +171,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         moveRepository
             .all()
             .filter(queryStr)
-            .bind("researchJournal", researchJournal == null ? 0 : researchJournal.getId())
+            .bind("journals", journalIdList)
             .bind(
                 "journalType",
                 accountingCutOffTypeSelect
@@ -177,13 +190,19 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   @Override
   public Query<MoveLine> getMoveLines(
       Company company,
-      Journal researchJournal,
+      Set<Journal> journalSet,
       LocalDate moveDate,
       int accountingCutOffTypeSelect) {
-    String queryStr =
-        "((:researchJournal > 0 AND self.move.journal.id = :researchJournal) "
-            + "  OR (:researchJournal = 0 AND self.move.journal.journalType.technicalTypeSelect = :journalType))"
-            + "AND self.move.date <= :date "
+    List<Long> journalIdList = null;
+    String queryStr;
+    if (CollectionUtils.isNotEmpty(journalSet)) {
+      journalIdList = journalSet.stream().map(Journal::getId).collect(Collectors.toList());
+      queryStr = "self.move.journal.id IN (:journals)";
+    } else {
+      queryStr = "self.move.journal.journalType.technicalTypeSelect = :journalType";
+    }
+    queryStr +=
+        " AND self.move.date <= :date "
             + "AND self.move.statusSelect IN (2, 3, 5) "
             + "AND self.account.manageCutOffPeriod IS TRUE "
             + "AND self.cutOffStartDate != null AND self.cutOffEndDate != null "
@@ -197,7 +216,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         moveLineRepository
             .all()
             .filter(queryStr)
-            .bind("researchJournal", researchJournal == null ? 0 : researchJournal.getId())
+            .bind("journals", journalIdList)
             .bind(
                 "journalType",
                 accountingCutOffTypeSelect
@@ -373,10 +392,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal amountInCurrency;
     MoveLine cutOffMoveLine;
     Map<Account, MoveLine> cutOffMoveLineMap = new HashMap<>();
+    Currency companyCurrency = move.getCompanyCurrency();
 
     BigDecimal currencyRate =
-        currencyService.getCurrencyConversionRate(
-            move.getCurrency(), move.getCompanyCurrency(), moveDate);
+        currencyService.getCurrencyConversionRate(move.getCurrency(), companyCurrency, moveDate);
 
     // Sorting so that move lines with analytic move lines are computed first
     List<MoveLine> sortedMoveLineList = new ArrayList<>(move.getMoveLineList());
@@ -402,7 +421,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);
         BigDecimal convertedAmount =
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                amountInCurrency, currencyRate);
+                amountInCurrency, currencyRate, companyCurrency);
 
         // Check if move line already exists with that account
         if (cutOffMoveLineMap.containsKey(moveLineAccount)) {
@@ -555,10 +574,14 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal percentage =
         amount
             .multiply(BigDecimal.valueOf(100))
-            .divide(moveLine.getCurrencyAmount(), 2, RoundingMode.HALF_UP);
+            .divide(
+                moveLine.getCurrencyAmount(),
+                AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
 
     analyticMoveLine.setPercentage(percentage);
-    analyticMoveLine.setAmount(amount.setScale(2, RoundingMode.HALF_UP));
+    analyticMoveLine.setAmount(
+        amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
   }
 
   protected void generateTaxMoveLine(
@@ -578,7 +601,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     BigDecimal currencyTaxAmount =
         InvoiceLineManagement.computeAmount(
-            productMoveLine.getCurrencyAmount(), taxLine.getValue().divide(new BigDecimal(100)));
+            productMoveLine.getCurrencyAmount(),
+            taxLine.getValue().divide(new BigDecimal(100)),
+            currencyScaleService.getScale(move));
     boolean isDebit = productMoveLine.getDebit().signum() > 0;
 
     currencyTaxAmount = moveToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);
@@ -665,7 +690,12 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            move.getPartner(), product, move.getCompany(), move.getTradingName(), isPurchase);
+            move.getPartner(),
+            product,
+            move.getCompany(),
+            move.getTradingName(),
+            moveLine.getAccount(),
+            isPurchase);
 
     moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

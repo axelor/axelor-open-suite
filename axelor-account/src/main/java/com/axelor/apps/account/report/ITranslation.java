@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,7 +53,8 @@ public interface ITranslation {
       "Invoice.purchaseInvoiceAdvPaymentNo"; /*)*/
   public static final String INVOICE_PURCHASE_INVOICE_BALANCE_NO = /*$$(*/
       "Invoice.purchaseInvoiceBalanceNo"; /*)*/
-  public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/ "Invoice.purchaseRefundNo"; /*)*/
+  public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/
+      "Invoice.purchaseCreditNoteNo"; /*)*/
   public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
   public static final String INVOICE_INVOICE_ADV_PAYMENT_NO = /*$$(*/
       "Invoice.invoiceAdvPaymentNo"; /*)*/
@@ -123,6 +124,8 @@ public interface ITranslation {
       "Invoice.invoiceTermHoldBackFalse"; /*)*/
   public static final String INVOICE_REFUND_PART_1 = /*$$(*/ "Invoice.refundInvoicePart1"; /*)*/
   public static final String INVOICE_REFUND_PART_2 = /*$$(*/ "Invoice.refundInvoicePart2"; /*)*/
+  public static final String INVOICE_NO_DISCOUNT_EARLY_PAYMENT = /*$$(*/
+      "Invoice.noDiscountEarlyPayment"; /*)*/
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/

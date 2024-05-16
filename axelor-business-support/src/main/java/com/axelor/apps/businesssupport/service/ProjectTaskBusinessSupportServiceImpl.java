@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -94,5 +94,11 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
     task.setInternalDescription(template.getInternalDescription());
 
     return task;
+  }
+
+  @Override
+  public void fillSubtask(ProjectTask projectTask) {
+    super.fillSubtask(projectTask);
+    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
   }
 }

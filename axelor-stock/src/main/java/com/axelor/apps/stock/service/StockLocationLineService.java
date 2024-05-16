@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,14 +58,6 @@ public interface StockLocationLineService {
       boolean generateOrder)
       throws AxelorException;
 
-  public void minStockRules(
-      Product product,
-      BigDecimal qty,
-      StockLocationLine stockLocationLine,
-      boolean current,
-      boolean future)
-      throws AxelorException;
-
   public void maxStockRules(
       Product product,
       BigDecimal qty,
@@ -90,14 +82,15 @@ public interface StockLocationLineService {
       throws AxelorException;
 
   /**
-   * Check if the stock location has more than qty units of the product
+   * Check if the stock location has enough qty of the product in the given unit.
    *
    * @param stockLocation
    * @param product
+   * @param unit
    * @param qty
    * @throws AxelorException if there is not enough qty in stock
    */
-  public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
+  void checkIfEnoughStock(StockLocation stockLocation, Product product, Unit unit, BigDecimal qty)
       throws AxelorException;
 
   public StockLocationLine updateLocation(
@@ -110,6 +103,8 @@ public interface StockLocationLineService {
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate)
       throws AxelorException;
+
+  BigDecimal getTrackingNumberAvailableQty(TrackingNumber trackingNumber);
 
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException;
@@ -169,6 +164,8 @@ public interface StockLocationLineService {
    */
   public StockLocationLine getDetailLocationLine(
       StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
+
+  List<StockLocationLine> getDetailLocationLines(Product product, TrackingNumber trackingNumber);
 
   /**
    * Allow the creation of a location line of a given product in a given location.

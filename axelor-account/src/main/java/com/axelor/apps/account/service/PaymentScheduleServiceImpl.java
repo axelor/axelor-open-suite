@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -145,7 +145,8 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
     PaymentSchedule paymentSchedule = new PaymentSchedule();
 
     paymentSchedule.setCompany(company);
-    paymentSchedule.setPaymentScheduleSeq(this.getPaymentScheduleSequence(company));
+    paymentSchedule.setPaymentScheduleSeq(
+        this.getPaymentScheduleSequence(company, paymentSchedule));
     paymentSchedule.setCreationDate(date);
     paymentSchedule.setStartDate(startDate);
     paymentSchedule.setNbrTerm(nbrTerm);
@@ -175,13 +176,15 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * @throws AxelorException
    */
   @Override
-  public String getPaymentScheduleSequence(Company company) throws AxelorException {
+  public String getPaymentScheduleSequence(Company company, PaymentSchedule paymentSchedule)
+      throws AxelorException {
     String seq =
         sequenceService.getSequenceNumber(
             SequenceRepository.PAYMENT_SCHEDULE,
             company,
             PaymentSchedule.class,
-            "paymentScheduleSeq");
+            "paymentScheduleSeq",
+            paymentSchedule);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -317,7 +320,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
           && invoice.getMove().getMoveLineList() != null) {
         for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
           if (moveLine.getAccount().getUseForPartnerBalance()
-              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+              && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
               && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
             moveLines.add(moveLine);
           }

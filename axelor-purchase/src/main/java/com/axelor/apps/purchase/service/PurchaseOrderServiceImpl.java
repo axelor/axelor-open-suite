@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -43,17 +43,18 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
-import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -89,6 +90,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected PurchaseConfigService purchaseConfigService;
 
   @Inject protected ProductConversionService productConversionService;
+
+  @Inject protected BirtTemplateService birtTemplateService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -247,7 +250,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
-    purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
+    this.setDraftSequence(purchaseOrder);
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
     purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
@@ -257,10 +260,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  public String getSequence(Company company) throws AxelorException {
+  public String getSequence(Company company, PurchaseOrder purchaseOrder) throws AxelorException {
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.PURCHASE_ORDER, company, PurchaseOrder.class, "purchaseOrderSeq");
+            SequenceRepository.PURCHASE_ORDER,
+            company,
+            PurchaseOrder.class,
+            "purchaseOrderSeq",
+            purchaseOrder);
     if (seq == null) {
       throw new AxelorException(
           company,
@@ -283,15 +290,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Override
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException {
-    if (purchaseOrder.getPrintingSettings() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
-              purchaseOrder.getPurchaseOrderSeq()));
-    }
-
-    String language = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
+    checkPrintingSettings(purchaseOrder);
+    BirtTemplate purchaseOrderBirtTemplate =
+        purchaseConfigService.getPurchaseOrderBirtTemplate(purchaseOrder.getCompany());
 
     String title =
         I18n.get("Purchase order")
@@ -300,19 +301,24 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 ? "-V" + purchaseOrder.getVersionNumber()
                 : "");
 
-    ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
-        .addParam("PurchaseOrderId", purchaseOrder.getId())
-        .addParam("Locale", language)
-        .addParam(
-            "Timezone",
-            purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
-        .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
-        .addParam(
-            "AddressPositionSelect", purchaseOrder.getPrintingSettings().getAddressPositionSelect())
-        .toAttach(purchaseOrder)
-        .generate()
-        .getFileLink();
+    birtTemplateService.generateBirtTemplateLink(
+        purchaseOrderBirtTemplate,
+        EntityHelper.getEntity(purchaseOrder),
+        null,
+        title + "-${date}",
+        true,
+        ReportSettings.FORMAT_PDF);
+  }
+
+  @Override
+  public void checkPrintingSettings(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (purchaseOrder.getPrintingSettings() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          String.format(
+              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
+              purchaseOrder.getPurchaseOrderSeq()));
+    }
   }
 
   @Override
@@ -343,7 +349,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
     if (purchaseOrder.getVersionNumber() == 1
         && sequenceService.isEmptyOrDraftSequenceNumber(purchaseOrder.getPurchaseOrderSeq())) {
-      purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
+      purchaseOrder.setPurchaseOrderSeq(
+          this.getSequence(purchaseOrder.getCompany(), purchaseOrder));
     }
     purchaseOrderRepo.save(purchaseOrder);
     if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()) {

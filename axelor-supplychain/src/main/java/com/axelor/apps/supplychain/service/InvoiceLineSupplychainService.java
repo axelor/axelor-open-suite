@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,11 +27,13 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
@@ -66,7 +68,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       SupplierCatalogService supplierCatalogService,
       TaxService taxService,
-      InternationalService internationalService) {
+      InternationalService internationalService,
+      InvoiceLineAttrsService invoiceLineAttrsService,
+      CurrencyScaleService currencyScaleService) {
     super(
         currencyService,
         priceListService,
@@ -78,7 +82,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         accountConfigService,
         invoiceLineAnalyticService,
         taxService,
-        internationalService);
+        internationalService,
+        invoiceLineAttrsService,
+        currencyScaleService);
     this.supplierCatalogService = supplierCatalogService;
   }
 
@@ -143,13 +149,12 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.fillProductInformation(invoice, invoiceLine);
-    }
-
     Map<String, Object> productInformation =
         new HashMap<>(super.fillProductInformation(invoice, invoiceLine));
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return productInformation;
+    }
 
     computeSequence(invoice, invoiceLine);
 

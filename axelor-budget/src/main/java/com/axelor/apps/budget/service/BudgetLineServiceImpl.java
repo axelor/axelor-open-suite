@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -45,22 +44,5 @@ public class BudgetLineServiceImpl implements BudgetLineService {
                     && (budgetLine.getToDate().isAfter(date)
                         || budgetLine.getToDate().isEqual(date)))
         .findFirst();
-  }
-
-  @Override
-  public BudgetLine resetBudgetLine(BudgetLine entity) {
-
-    entity.setArchived(false);
-    entity.setAmountExpected(entity.getAmountExpected());
-    entity.setAmountCommitted(BigDecimal.ZERO);
-    entity.setRealizedWithNoPo(BigDecimal.ZERO);
-    entity.setRealizedWithPo(BigDecimal.ZERO);
-    entity.setAvailableAmount(entity.getAmountExpected());
-    entity.setAmountRealized(BigDecimal.ZERO);
-    entity.setFirmGap(BigDecimal.ZERO);
-    entity.setAmountPaid(BigDecimal.ZERO);
-    entity.setToBeCommittedAmount(BigDecimal.ZERO);
-
-    return entity;
   }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">ReportValues.ValuesDS.x</property>
@@ -16,6 +16,30 @@
     <property name="ReportValues.ValuesDS.x">135</property>
     <property name="ReportValues.ValuesDS.y">80</property>
     <list-property name="propertyBindings">
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">5439</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">5439</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">5439</property>
+        </structure>
         <structure>
             <property name="name">odaDriverClass</property>
             <property name="id">8</property>
@@ -35,18 +59,6 @@
             <property name="name">odaPassword</property>
             <property name="id">8</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">5994</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">5994</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">5994</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -179,6 +191,7 @@
     </data-sources>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ReportDS" id="5439">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">ref</property>
@@ -207,13 +220,6 @@
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_to</text-property>
                     <text-property name="heading">date_to</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <property name="alias">display_simulated_move</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <text-property name="heading">display_simulated_move</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">report_title</property>
@@ -273,18 +279,6 @@
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_delta_year</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_delta_year</text-property>
-                    <text-property name="heading">display_delta_year</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">display_delta_year_percentage</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_delta_year_percentage</text-property>
-                    <text-property name="heading">display_delta_year_percentage</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">reportyear</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">reportyear</text-property>
@@ -339,76 +333,61 @@
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
                         <property name="name">report_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">comparison</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">no_of_periods</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">company_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">journal</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">period</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
-                        <property name="name">display_delta_year</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
                         <property name="position">16</property>
-                        <property name="name">display_delta_year_percentage</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">17</property>
                         <property name="name">reportyear</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">reportn1year</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">18</property>
                         <property name="name">reportn2year</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -446,104 +425,83 @@
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
                     <property name="name">report_title</property>
                     <property name="nativeName">report_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">comparison</property>
                     <property name="nativeName">comparison</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">no_of_periods</property>
                     <property name="nativeName">no_of_periods</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">journal</property>
                     <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">period</property>
                     <property name="nativeName">period</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
-                    <property name="name">display_delta_year</property>
-                    <property name="nativeName">display_delta_year</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
                     <property name="position">16</property>
-                    <property name="name">display_delta_year_percentage</property>
-                    <property name="nativeName">display_delta_year_percentage</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">17</property>
                     <property name="name">reportyear</property>
                     <property name="nativeName">reportyear</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">17</property>
                     <property name="name">reportn1year</property>
                     <property name="nativeName">reportn1year</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">18</property>
                     <property name="name">reportn2year</property>
                     <property name="nativeName">reportn2year</property>
                     <property name="dataType">string</property>
@@ -555,7 +513,6 @@
 	Report.publication_date_time as report_date,
 	Report.date_from as date_from,
 	Report.date_to as date_to,
-	Report.display_simulated_move as display_simulated_move,
 	ReportType.report_title as report_title,
 	ReportType.comparison as comparison,
 	ReportType.no_of_periods as no_of_periods,
@@ -565,8 +522,6 @@
 	PaymentMode.name as payment_mode,
 	Period.name as period,
 	MetaFile.file_path as logo_path,
-	Report.display_delta_year,
-	Report.display_delta_year_percentage,
 	CONCAT(
 		TO_CHAR(Report.date_from, 'dd/mm/yyyy'),
 		' - ',
@@ -685,7 +640,7 @@ where Report.id = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -798,10 +753,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">columnNotCompute</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previousYear</property>
+                    <property name="columnName">otherYear</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">previousYear</text-property>
-                    <text-property name="heading">previousYear</text-property>
+                    <text-property name="displayName">otherYear</text-property>
+                    <text-property name="heading">otherYear</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">lineName</property>
@@ -941,7 +896,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">previousYear</property>
+                        <property name="name">otherYear</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -992,6 +947,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">23</property>
                         <property name="name">lineStyle</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1084,8 +1044,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">previousYear</property>
-                    <property name="nativeName">previousYear</property>
+                    <property name="name">otherYear</property>
+                    <property name="nativeName">otherYear</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -1157,7 +1117,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">lineStyle</property>
                     <property name="nativeName">lineStyle</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -1173,7 +1138,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ConfigColumn.rule_type_select AS "columnRuleType",
 	(ConfigColumn.hidden OR ConfigGroupColumn.hidden) AS "columnHidden",
 	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
-	ConfigColumn.compute_previous_year AS "previousYear",
+	ConfigColumn.compute_previous_year AS "otherYear",
 	ReportValue.line_title AS "lineName",
 	ReportValue.line_number AS "lineNb",
 	ConfigLine.hidden AS "lineHidden",
@@ -1186,7 +1151,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ReportValue.style_select AS "style",
 	ReportValue.group_style_select AS "groupStyle",
 	ReportValue.column_style_select AS "columnStyle",
-	ReportValue.line_style_select AS "lineStyle"
+	ReportValue.line_style_select AS "lineStyle",
+	Currency.number_of_decimals
 
 FROM account_accounting_report AS AccountingReport
 
@@ -1205,6 +1171,10 @@ ON AccountingReport.report_type = ReportType.id
 LEFT JOIN account_accounting_report_config_line AS ConfigGroupColumn
 ON ReportValue.group_number = ConfigGroupColumn.sequence
 	AND ConfigGroupColumn.report_type_column = ReportType.id
+	
+LEFT JOIN base_company as Company on (AccountingReport.company = Company.id)
+
+LEFT JOIN base_currency as Currency on (Currency.id = Company.currency)
 
 WHERE AccountingReport.id = ?
 
@@ -1453,8 +1423,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                             <expression name="measureExpression" type="javascript">dataSetRow["lineRuleType"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
-                        <tabular-measure name="previousYear" id="5975">
-                            <expression name="measureExpression" type="javascript">dataSetRow["previousYear"]</expression>
+                        <tabular-measure name="otherYear" id="5975">
+                            <expression name="measureExpression" type="javascript">dataSetRow["otherYear"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
                         <tabular-measure name="style" id="6055">
@@ -1462,6 +1432,13 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                             <property name="isCalculated">false</property>
                             <expression name="measureExpression" type="javascript">dataSetRow["style"]</expression>
                             <property name="dataType">float</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                        <tabular-measure name="number_of_decimals" id="6062">
+                            <property name="function">max</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                            <property name="dataType">integer</property>
                             <property name="isVisible">true</property>
                         </tabular-measure>
                     </property>
@@ -1661,19 +1638,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move_1</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
                     <property name="name">comparison</property>
                     <text-property name="displayName">comparison</text-property>
                     <expression name="expression" type="javascript">dataSetRow["comparison"]</expression>
@@ -1683,32 +1647,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <property name="name">no_of_periods</property>
                     <text-property name="displayName">no_of_periods</text-property>
                     <expression name="expression" type="javascript">dataSetRow["no_of_periods"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">display_delta_year</property>
-                    <text-property name="displayName">display_delta_year</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_delta_year"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_delta_year_percentage</property>
-                    <text-property name="displayName">display_delta_year_percentage</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_delta_year_1</property>
-                    <text-property name="displayName">display_delta_year</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_delta_year"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">display_delta_year_percentage_1</property>
-                    <text-property name="displayName">display_delta_year_percentage</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -2477,11 +2415,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                         <property name="aggregationOnRow">Line/line</property>
                                                         <property name="aggregationOnColumn">Column/column</property>
                                                         <property name="content">
-                                                            <data id="5853">
-                                                                <structure name="numberFormat">
-                                                                    <property name="category">Custom</property>
-                                                                    <property name="pattern">#,##0.00</property>
-                                                                </structure>
+                                                            <text id="6057">
                                                                 <property name="textAlign">right</property>
                                                                 <list-property name="highlightRules">
                                                                     <structure>
@@ -2547,8 +2481,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                         <expression name="valueExpr" type="javascript">(data["columnNotCompute"] &amp;&amp; data["lineNotCompute"]) || data["columnRuleType"] == 1 || data["lineRuleType"] == 1</expression>
                                                                     </structure>
                                                                 </list-property>
-                                                                <property name="resultSetColumn">result_Line/line_Column/column</property>
-                                                            </data>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(data["result_Line/line_Column/column"], data["nb_of_decimals"] == 0? "#,##0" : "#,##0." + Array((data["nb_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                            </text>
                                                         </property>
                                                     </extended-item>
                                                 </property>
@@ -3044,8 +2979,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 <property name="dataType">integer</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">previousYear</property>
-                                                <expression name="expression" type="javascript">measure["previousYear"]</expression>
+                                                <property name="name">otherYear</property>
+                                                <expression name="expression" type="javascript">measure["otherYear"]</expression>
                                                 <property name="dataType">boolean</property>
                                             </structure>
                                             <structure>
@@ -3090,6 +3025,12 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 <property name="name">groupStyle</property>
                                                 <text-property name="displayName">groupStyle</text-property>
                                                 <expression name="expression" type="javascript">dimension["Group"]["group"]["groupStyle"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">nb_of_decimals</property>
+                                                <text-property name="displayName">nb_of_decimals</text-property>
+                                                <expression name="expression" type="javascript">measure["number_of_decimals"]</expression>
                                                 <property name="dataType">integer</property>
                                             </structure>
                                         </list-property>

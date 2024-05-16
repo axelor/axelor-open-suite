@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,9 +21,12 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.db.Query;
+import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class BankPaymentBankStatementLineAFB120Repository
     extends BankStatementLineAFB120Repository {
@@ -97,5 +100,18 @@ public class BankPaymentBankStatementLineAFB120Repository
         .bind("bankStatement", bankStatement)
         .bind("bankDetails", bankDetails)
         .bind("lineTypeSelect", lineType);
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    Long bankStatementLineAFB120Id = (Long) json.get("id");
+    BankStatementLineAFB120 bankStatementLineAFB120 =
+        Beans.get(BankStatementLineAFB120Repository.class).find(bankStatementLineAFB120Id);
+
+    json.put(
+        "$currencyNumberOfDecimals",
+        Beans.get(CurrencyScaleService.class).getScale(bankStatementLineAFB120));
+
+    return super.populate(json, context);
   }
 }

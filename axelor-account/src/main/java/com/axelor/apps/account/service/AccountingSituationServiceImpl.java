@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,10 +35,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AccountingSituationServiceImpl implements AccountingSituationService {
 
@@ -101,7 +105,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
                 accountingSituation.getPartner().getOutPaymentMode(),
                 accountingSituation.getCompany());
       }
-      String idList = StringTool.getIdListString(authorizedBankDetails);
+      String idList = StringHelper.getIdListString(authorizedBankDetails);
       if (idList.equals("")) {
         return domain;
       }
@@ -331,5 +335,23 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
           ? this.getHoldBackCustomerAccount(invoice.getPartner(), invoice.getCompany())
           : this.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
     }
+  }
+
+  @Override
+  public List<Company> getDuplicatedCompanies(Partner partner) {
+    if (partner == null
+        || ObjectUtils.isEmpty(partner.getAccountingSituationList())
+        || partner.getAccountingSituationList().size() == 1) {
+      return new ArrayList<>();
+    }
+
+    List<Company> duplicatedCompaniesList =
+        partner.getAccountingSituationList().stream()
+            .map(AccountingSituation::getCompany)
+            .collect(Collectors.toList());
+    return duplicatedCompaniesList.stream()
+        .filter(i -> Collections.frequency(duplicatedCompaniesList, i) > 1)
+        .distinct()
+        .collect(Collectors.toList());
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,9 +26,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoicePaymentToolService {
 
@@ -67,11 +69,15 @@ public interface InvoicePaymentToolService {
       Currency paymentCurrency)
       throws AxelorException;
 
-  void computeFinancialDiscount(InvoicePayment invoicePayment);
-
   BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date);
 
   boolean applyFinancialDiscount(InvoicePayment invoicePayment);
 
-  void computeFromInvoiceTermPayments(InvoicePayment invoicePayment);
+  Pair<List<Long>, Boolean> changeAmount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException;
+
+  List<Long> loadInvoiceTerms(InvoicePayment invoicePayment, Long invoiceId) throws AxelorException;
+
+  @CallMethod
+  boolean isPartialPayment(InvoicePayment invoicePayment);
 }

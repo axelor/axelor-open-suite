@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -221,7 +221,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     setReservationDateTime(stockMove, saleOrder);
-    stockMoveService.plan(stockMove);
+    stockMoveService.planWithNoSplit(stockMove);
 
     return Optional.of(stockMove);
   }
@@ -322,6 +322,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setInvoicedPartner(saleOrder.getInvoicedPartner());
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
+    }
+    if (saleOrder.getPrintingSettings() != null) {
+      stockMove.setPrintingSettings(saleOrder.getPrintingSettings());
     }
     return stockMove;
   }
@@ -580,7 +583,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
    * client partner.
    */
   protected Partner computePartnerToUseForStockMove(SaleOrder saleOrder) {
-    if (appSupplychainService.getAppSupplychain().getActivatePartnerRelations()
+    if (appBaseService.getAppBase().getActivatePartnerRelations()
         && saleOrder.getDeliveredPartner() != null) {
       return saleOrder.getDeliveredPartner();
     } else {

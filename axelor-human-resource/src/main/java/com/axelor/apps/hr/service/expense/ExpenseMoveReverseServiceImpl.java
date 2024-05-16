@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,20 +29,19 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
 
-  protected ExpenseRepository expenseRepository;
   protected ExpensePaymentService expensePaymentService;
-
   protected AppService appService;
 
   @Inject
@@ -58,7 +57,8 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      ExpenseRepository expenseRepository,
+      BankReconciliationLineService bankReconciliationLineService,
+      CurrencyScaleService currencyScaleService,
       ExpensePaymentService expensePaymentService,
       AppService appService) {
     super(
@@ -72,8 +72,9 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         invoicePaymentCancelService,
         moveToolService,
         bankReconciliationService,
-        bankReconciliationLineRepository);
-    this.expenseRepository = expenseRepository;
+        bankReconciliationLineRepository,
+        bankReconciliationLineService,
+        currencyScaleService);
     this.expensePaymentService = expensePaymentService;
     this.appService = appService;
   }
@@ -97,20 +98,22 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       return reverseMove;
     }
 
-    Expense expense = getLinkedExpense(move);
-
-    if (expense != null) {
-      expensePaymentService.resetExpensePaymentAfterCancellation(expense);
-    }
+    cancelVentilation(move);
+    cancelPayment(move);
     return reverseMove;
   }
 
-  protected Expense getLinkedExpense(Move move) {
-    return expenseRepository
-        .all()
-        .filter("self.paymentMove.id = :paymentMove AND self.statusSelect = :statusSelect")
-        .bind("paymentMove", move.getId())
-        .bind("statusSelect", ExpenseRepository.STATUS_REIMBURSED)
-        .fetchOne();
+  protected void cancelPayment(Move move) {
+    Expense expensePayment = move.getExpensePayment();
+    if (expensePayment != null) {
+      expensePaymentService.resetExpensePaymentAfterCancellation(expensePayment);
+    }
+  }
+
+  protected void cancelVentilation(Move move) {
+    Expense expense = move.getExpense();
+    if (expense != null) {
+      expense.setVentilated(false);
+    }
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="accounting-situation-partner-grid" title="Accounting situations"
     model="com.axelor.apps.account.db.AccountingSituation">
@@ -35,7 +35,7 @@
     <panel name="mainPanel">
       <field name="company" widget="SuggestBox" canEdit="false"
         onChange="action-accounting-situation-group-company-onchange" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" required="true"/>
       <spacer/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
         onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
@@ -82,6 +82,14 @@
       showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )|| (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)">
       <field name="vatSystemSelect"
         showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)"/>
+    </panel>
+    <panel name="analyticsPanel" title="Analytics" colSpan="12"
+      showIf="__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; company.accountConfig.analyticDistributionTypeSelect == 2">
+      <field name="analyticDistributionTemplate"
+        grid-view="analytic-distribution-template-grid"
+        form-view="analytic-distribution-template-form" domain="self.company = :company"/>
+      <field name="company.accountConfig" hidden="true"/>
+      <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
@@ -145,7 +153,8 @@
     onLoad="action-accounting-situation-attrs-hidden-multi-banks">
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid" onChange="action-accounting-situation-method-set-holdback-accounts"/>
+        required="true" grid-view="company-grid"
+        onChange="action-accounting-situation-method-set-holdback-accounts"/>
       <field name="partner" domain=":company member of self.companySet"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="customerAccount"
@@ -233,9 +242,9 @@
 
   <action-attrs name="action-accounting-situation-attrs-hide-pfp-validator-user">
     <attribute name="hidden" for="pfpValidatorUser"
-      expr="eval: !__parent__?.isSupplier || !company?.accountConfig?.isManagePassedForPayment"/>
+      expr="eval: !__parent__?.isSupplier || !company?.accountConfig?.isManagePassedForPayment || !__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <attribute name="required" for="pfpValidatorUser"
-      expr="eval: __parent__?.isSupplier &amp;&amp; company?.accountConfig?.isManagePassedForPayment"/>
+      expr="eval: __parent__?.isSupplier &amp;&amp; company?.accountConfig?.isManagePassedForPayment &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment()"/>
   </action-attrs>
 
 

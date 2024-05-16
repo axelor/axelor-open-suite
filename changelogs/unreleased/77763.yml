@@ -1,0 +1,3 @@
+---
+title: "Project: fixed validation error missing timeUnit when creating a planned time planning while business-project module is not installed"
+module: axelor-business-project

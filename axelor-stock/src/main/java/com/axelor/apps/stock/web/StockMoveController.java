@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,7 +38,6 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
-import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -197,48 +196,6 @@ public class StockMoveController {
    * @param response
    */
   @SuppressWarnings("unchecked")
-  public void printStockMove(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      String fileLink;
-      String title;
-
-      StockMovePrintService stockMovePrintService = Beans.get(StockMovePrintService.class);
-
-      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
-        List<Long> ids =
-            (List)
-                (((List) context.get("_ids"))
-                    .stream()
-                        .filter(ObjectUtils::notEmpty)
-                        .map(input -> Long.parseLong(input.toString()))
-                        .collect(Collectors.toList()));
-        fileLink = stockMovePrintService.printStockMoves(ids);
-        title = I18n.get("Stock Moves");
-      } else if (context.get("id") != null) {
-        StockMove stockMove =
-            Beans.get(StockMoveRepository.class).find(Long.parseLong(context.get("id").toString()));
-        title = stockMovePrintService.getFileName(stockMove);
-        fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-        logger.debug("Printing " + title);
-      } else {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(StockExceptionMessage.STOCK_MOVE_PRINT));
-      }
-      response.setView(ActionView.define(title).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Method called from stock move form and grid view. Print one or more stock move as PDF
-   *
-   * @param request
-   * @param response
-   */
-  @SuppressWarnings("unchecked")
   public void printPickingStockMove(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
@@ -308,6 +265,7 @@ public class StockMoveController {
       } else if (context.get("id") != null) {
 
         StockMove stockMove = context.asType(StockMove.class);
+        stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
         title = conformityCertificatePrintService.getFileName(stockMove);
         fileLink =
             conformityCertificatePrintService.printConformityCertificate(
@@ -649,8 +607,18 @@ public class StockMoveController {
   public void getToStockLocation(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
     try {
-      StockLocation toStockLocation =
-          Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+
+      boolean fromOutsource =
+          Optional.ofNullable(request.getContext().get("_fromOutsource"))
+              .map(o -> (boolean) o)
+              .orElse(false);
+      StockLocation toStockLocation;
+      if (fromOutsource) {
+        toStockLocation = Beans.get(StockMoveService.class).getToStockLocationOutsource(stockMove);
+      } else {
+        toStockLocation = Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+      }
+
       response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -703,5 +671,37 @@ public class StockMoveController {
     StockLocation toStockLocation = stockMove.getToStockLocation();
     Beans.get(StockMoveService.class).changeLinesToStockLocation(stockMove, toStockLocation);
     response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  }
+
+  public void generateNewStockMove(ActionRequest request, ActionResponse response) {
+
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Optional<StockMove> newStockMove =
+          Beans.get(StockMoveService.class).generateNewStockMove(stockMove);
+      if (newStockMove.isPresent()) {
+        response.setView(
+            ActionView.define(I18n.get("Stock move"))
+                .model(StockMove.class.getName())
+                .add("grid", getGridViewName(newStockMove.get()))
+                .add("form", "stock-move-form")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(newStockMove.get().getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected String getGridViewName(StockMove stockMove) {
+    String gridViewName = "";
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      gridViewName = "stock-move-out-grid";
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      gridViewName = "stock-move-in-grid";
+    }
+    return gridViewName;
   }
 }

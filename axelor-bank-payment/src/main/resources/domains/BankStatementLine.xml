@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankStatementLine" persistable="true" strategy="CLASS">
+  <entity name="BankStatementLine" persistable="true" strategy="CLASS"
+    implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <date name="operationDate" title="Operation date"/>
     <date name="valueDate" title="Value date"/>
 
-    <decimal name="debit" title="Debit"/>
-    <decimal name="credit" title="Credit"/>
+    <decimal name="debit" title="Debit" precision="20" scale="3"/>
+    <decimal name="credit" title="Credit" precision="20" scale="3"/>
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       index="false"/>
@@ -39,7 +40,15 @@
     <integer name="sequence" title="Sequence"/>
 
     <!-- Used for Bank reconcile process -->
-    <decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"/>
+    <decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"
+      precision="20" scale="3"/>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return currency;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findByBankStatement" using="bankStatement" all="true"/>
   </entity>

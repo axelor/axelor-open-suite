@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -67,7 +67,7 @@ public class TaxService {
 
         for (TaxLine taxLine : tax.getTaxLineList()) {
 
-          if (DateTool.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
+          if (LocalDateHelper.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
             return taxLine;
           }
         }

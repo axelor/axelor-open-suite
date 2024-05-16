@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
 
   <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group"
     search="self.code = :code"/>
@@ -16,13 +16,33 @@
   </input>
 
   <input file="base_birtTemplate.csv" separator=";"
-    type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId"/>
+    type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
+    <bind to="metaModel" search="self.fullName = :modelName"/>
+  </input>
 
   <input file="base_birtTemplateParameter.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
 
+  <input file="base_birtTemplateConfigLine.csv"
+    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
+    search="self.importId = :importId">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+  </input>
+
   <input file="base_templateContext.csv" separator=";"
     type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
+
+  <input file="base_addressTemplate.csv" separator=";"
+    type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
+
+  <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
+    search="self.importId = :importId"/>
+
+  <input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language"
+    search="self.code = :code"/>
+
+  <input file="base_localization.csv" separator=";"
+    type="com.axelor.apps.base.db.Localization" search="self.code = :code"/>
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
@@ -44,8 +64,6 @@
     <bind to="appBase" column="appBase" search="self.app.code = :appBase" update="true"/>
   </input>
 
-  <input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language"
-    search="self.code = :code"/>
 
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'en'"/>
@@ -70,7 +88,7 @@
     search="self.name = :name and self.module = 'axelor-core'" update="true"/>
 
   <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"
-    search="self.code = :code"/>
+    search="self.code = :code" call="com.axelor.auth.AuthService:encrypt"/>
 
   <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
 

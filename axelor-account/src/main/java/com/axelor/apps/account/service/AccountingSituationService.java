@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.meta.CallMethod;
+import java.util.List;
 
 public interface AccountingSituationService {
 
@@ -112,4 +113,6 @@ public interface AccountingSituationService {
    * @throws AxelorException
    */
   Account getPartnerAccount(Invoice invoice, boolean isHoldback) throws AxelorException;
+
+  List<Company> getDuplicatedCompanies(Partner partner);
 }

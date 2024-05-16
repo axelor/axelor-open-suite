@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package com.axelor.apps.contract.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
+import com.axelor.apps.contract.db.repo.ConsumptionLineManagementRepository;
+import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractBatchContractRepository;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractLineManagementRepository;
@@ -42,6 +44,10 @@ import com.axelor.apps.contract.service.IndexRevaluationService;
 import com.axelor.apps.contract.service.IndexRevaluationServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
+import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
+import com.axelor.apps.contract.service.attributes.ContractLineAttrsServiceImpl;
+import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
+import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
@@ -65,5 +71,8 @@ public class ContractModule extends AxelorModule {
     bind(IndexRevaluationService.class).to(IndexRevaluationServiceImpl.class);
     bind(ContractRevaluationService.class).to(ContractRevaluationServiceImpl.class);
     bind(ContractLineViewService.class).to(ContractLineViewServiceImpl.class);
+    bind(ConsumptionLineRepository.class).to(ConsumptionLineManagementRepository.class);
+    bind(ContractLineAttrsService.class).to(ContractLineAttrsServiceImpl.class);
+    bind(ContractLineRecordSetService.class).to(ContractLineRecordSetServiceImpl.class);
   }
 }

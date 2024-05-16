@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,12 +42,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -68,17 +69,20 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final SaleOrderRepository saleOrderRepository;
   protected final PurchaseOrderRepository purchaseOrderRepository;
   protected final StockMoveInvoiceService stockMoveInvoiceService;
+  protected final AppStockService appStockService;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
       InvoiceRepository invoiceRepository,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
-      StockMoveInvoiceService stockMoveInvoiceService) {
+      StockMoveInvoiceService stockMoveInvoiceService,
+      AppStockService appStockService) {
     this.invoiceRepository = invoiceRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.stockMoveInvoiceService = stockMoveInvoiceService;
+    this.appStockService = appStockService;
   }
 
   @Override
@@ -211,7 +215,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
       }
 
-      if (firstDummyInvoice.getIncoterm() != null
+      if (appStockService.getAppStock().getIsIncotermEnabled()
+          && firstDummyInvoice.getIncoterm() != null
           && !firstDummyInvoice.getIncoterm().equals(dummyInvoice.getIncoterm())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -317,7 +322,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
       }
-      if (firstDummyInvoice.getIncoterm() != null
+      if (appStockService.getAppStock().getIsIncotermEnabled()
+          && firstDummyInvoice.getIncoterm() != null
           && !firstDummyInvoice.getIncoterm().equals(dummyInvoice.getIncoterm())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -412,7 +418,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
-    invoice.setIncoterm(dummyInvoice.getIncoterm());
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      invoice.setIncoterm(dummyInvoice.getIncoterm());
+    }
     invoice.setFiscalPosition(dummyInvoice.getFiscalPosition());
 
     StringBuilder deliveryAddressStr = new StringBuilder();
@@ -525,7 +533,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
-    invoice.setIncoterm(dummyInvoice.getIncoterm());
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      invoice.setIncoterm(dummyInvoice.getIncoterm());
+    }
     invoice.setFiscalPosition(dummyInvoice.getFiscalPosition());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
@@ -556,6 +566,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected Invoice toPositivePriceInvoice(Invoice invoice) throws AxelorException {
     if (invoice.getExTaxTotal().signum() < 0) {
       Invoice refund = transformToRefund(invoice);
+      invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
       invoiceRepository.remove(invoice);
       return refund;
     } else {
@@ -622,8 +633,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     if (stockMove.getSaleOrder() != null) {
       SaleOrder saleOrder = stockMove.getSaleOrder();
+      Partner invoicedPartner = saleOrder.getInvoicedPartner();
+      if (invoicedPartner == null) {
+        if (stockMove.getInvoicedPartner() != null) {
+          invoicedPartner = stockMove.getInvoicedPartner();
+        } else {
+          invoicedPartner = saleOrder.getClientPartner();
+        }
+      }
       dummyInvoice.setCurrency(saleOrder.getCurrency());
-      dummyInvoice.setPartner(saleOrder.getClientPartner());
+      dummyInvoice.setPartner(invoicedPartner);
       dummyInvoice.setCompany(saleOrder.getCompany());
       dummyInvoice.setTradingName(saleOrder.getTradingName());
       dummyInvoice.setPaymentCondition(saleOrder.getPaymentCondition());
@@ -634,17 +653,24 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setPriceList(saleOrder.getPriceList());
       dummyInvoice.setInAti(saleOrder.getInAti());
       dummyInvoice.setGroupProductsOnPrintings(saleOrder.getGroupProductsOnPrintings());
-      dummyInvoice.setIncoterm(saleOrder.getIncoterm());
+      if (appStockService.getAppStock().getIsIncotermEnabled()) {
+        dummyInvoice.setIncoterm(saleOrder.getIncoterm());
+      }
       dummyInvoice.setFiscalPosition(saleOrder.getFiscalPosition());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
-      dummyInvoice.setPartner(stockMove.getPartner());
+      dummyInvoice.setPartner(
+          stockMove.getInvoicedPartner() != null
+              ? stockMove.getInvoicedPartner()
+              : stockMove.getPartner());
       dummyInvoice.setCompany(stockMove.getCompany());
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getToAddress());
       dummyInvoice.setAddressStr(stockMove.getToAddressStr());
       dummyInvoice.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
-      dummyInvoice.setIncoterm(stockMove.getIncoterm());
+      if (appStockService.getAppStock().getIsIncotermEnabled()) {
+        dummyInvoice.setIncoterm(stockMove.getIncoterm());
+      }
     }
     return dummyInvoice;
   }
@@ -673,7 +699,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     } else {
       if (stockMove.getSaleOrder() != null) {
         SaleOrder saleOrder = stockMove.getSaleOrder();
-        dummyInvoice.setIncoterm(saleOrder.getIncoterm());
+        if (appStockService.getAppStock().getIsIncotermEnabled()) {
+          dummyInvoice.setIncoterm(saleOrder.getIncoterm());
+        }
         dummyInvoice.setFiscalPosition(saleOrder.getFiscalPosition());
       }
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
@@ -682,7 +710,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getFromAddress());
       dummyInvoice.setAddressStr(stockMove.getFromAddressStr());
-      dummyInvoice.setIncoterm(stockMove.getIncoterm());
+      if (appStockService.getAppStock().getIsIncotermEnabled()) {
+        dummyInvoice.setIncoterm(stockMove.getIncoterm());
+      }
     }
     return dummyInvoice;
   }
@@ -839,8 +869,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     String externalRef = String.join("|", externalRefList);
     String internalRef = String.join("|", internalRefList);
 
-    dummyInvoice.setExternalReference(StringTool.cutTooLongString(externalRef));
-    dummyInvoice.setInternalReference(StringTool.cutTooLongString(internalRef));
+    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef));
+    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef));
   }
 
   /**
@@ -868,8 +898,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     String externalRef = String.join("|", externalRefList);
     String internalRef = String.join("|", internalRefList);
 
-    dummyInvoice.setExternalReference(StringTool.cutTooLongString(externalRef));
-    dummyInvoice.setInternalReference(StringTool.cutTooLongString(internalRef));
+    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef));
+    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef));
   }
 
   /**

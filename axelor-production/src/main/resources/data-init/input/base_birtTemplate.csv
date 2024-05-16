@@ -1,0 +1,9 @@
+"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
+9;"ManufOrder";"ManufOrder.rptdesign";"com.axelor.apps.production.db.ManufOrder";2;"pdf";false
+19;"OperationOrder";"OperationOrder.rptdesign";"com.axelor.apps.production.db.OperationOrder";2;"pdf";false
+61;"ProdProcess";"ProdProcess.rptdesign";"com.axelor.apps.production.db.ProdProcess";2;"pdf";false
+62;"Bill of Material";"BillOfMaterial.rptdesign";"com.axelor.apps.production.db.BillOfMaterial";2;"pdf";false
+63;"Raw material requirement";"RawMaterialRequirement.rptdesign";"com.axelor.apps.production.db.RawMaterialRequirement";2;"pdf";false
+64;"Cost sheet";"CostSheet.rptdesign";"com.axelor.apps.production.db.CostSheet";2;"pdf";false
+65;"Work in progress valuation";"WorkInProgressValuation.rptdesign";"com.axelor.apps.production.db.ProductionBatch";2;"pdf";false
+66;"Mps Charge";"MpsCharge.rptdesign";"com.axelor.apps.production.db.MpsCharge";2;"pdf";false

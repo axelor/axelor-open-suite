@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <menuitem name="menu-products-dashboard-1" parent="referential-report"
@@ -33,7 +33,13 @@
 
   <!-- MRP -->
 
-  <menuitem name="stock-mrp" parent="sc-root-purchase" title="MRP"
+  <menuitem name="purchase-mrp" parent="sc-root-purchase" title="MRP"
+    if="__config__.app.isApp('supplychain')" order="1000"/>
+
+  <menuitem name="purchase-mrp-calculation" parent="purchase-mrp" title="MRP"
+    action="stock.mrp.calculation" order="100"/>
+
+  <menuitem name="stock-mrp" parent="stock-root" title="MRP"
     if="__config__.app.isApp('supplychain')" order="1000"/>
 
   <menuitem name="stock-mrp-calculation" parent="stock-mrp" title="MRP"
@@ -46,6 +52,9 @@
     <domain>self.mrpTypeSelect = 1</domain>
   </action-view>
 
+  <menuitem name="purchase-mrp-forecast" parent="purchase-mrp" title="Forecasts"
+    action="stock.mrp.forecast" order="200"/>
+
   <menuitem name="stock-mrp-forecast" parent="stock-mrp" title="Forecasts"
     action="stock.mrp.forecast" order="200"/>
 
@@ -56,6 +65,13 @@
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
+
+  <menuitem name="purchase-mrp-configuration" parent="purchase-mrp" title="Configuration"
+    icon="fa-cog" order="300"/>
+
+  <menuitem name="purchase-mrp-configuration-mrp-line-type"
+    parent="purchase-mrp-configuration" title="MRP move types"
+    action="stock.mrp.configuration.mrp.line.type" order="100"/>
 
   <menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration"
     icon="fa-cog" order="300"/>
@@ -157,11 +173,24 @@
     <view-param name="search-filters" value="sale-order-filters"/>
     <domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where
       s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged =
-      true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2)</domain>
+      true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2 AND
+      s.saleOrder IS NOT NULL)</domain>
+  </action-view>
+
+  <menuitem name="sc-root-sale-timetable" title="Timetables" parent="sc-root-sale"
+    action="sc.root.sale.timetable" order="700"
+    if="__config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
+
+  <action-view name="sc.root.sale.timetable" title="Timetables"
+    model="com.axelor.apps.supplychain.db.Timetable">
+    <view type="grid" name="timetable-grid"/>
+    <view type="form" name="timetable-form"/>
+    <view-param name="orderBy" value="estimatedDate"/>
   </action-view>
 
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"
-    parent="sc-root-sale-conf" action="sale.conf.timetable.template" order="100"/>
+    parent="sc-root-sale-conf" action="sale.conf.timetable.template" order="100"
+    if="__config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
 
   <action-view name="sale.conf.timetable.template" title="Timetable templates"
     model="com.axelor.apps.supplychain.db.TimetableTemplate">
@@ -218,18 +247,6 @@
     <view type="form" name="sale-batch-form"/>
     <view-param name="search-filters" value="sale-batch-filters"/>
   </action-view>
-
-  <menuitem name="referential-conf-partner" parent="referential-conf"
-    if="__config__.app.isApp('supplychain')" title="Partner relations type"
-    action="supplychain.referential.conf.partner" order="400"/>
-
-  <action-view name="supplychain.referential.conf.partner"
-    title="Partner relations types"
-    model="com.axelor.apps.supplychain.db.PartnerSupplychainLinkType">
-    <view type="grid" name="partner-supplychain-link-type-grid"/>
-    <view type="form" name="partner-supplychain-link-type-form"/>
-  </action-view>
-
 
   <menuitem name="stock-root-custdeliveries-invoicing-block" parent="stock-root-deliveries"
     tag-count="true" title="Invoicing blocked customer deliveries"

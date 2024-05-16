@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -29,14 +30,18 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -52,6 +57,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -66,6 +72,7 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -75,7 +82,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -96,7 +102,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -110,6 +116,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       AccountConfigService accountConfigService,
       PartnerService partnerService,
       PaymentModeService paymentModeService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      FinancialDiscountService financialDiscountService,
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
@@ -123,7 +133,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         appBaseService,
         moveCreateService,
         moveValidateService,
-        moveComputeService,
+        moveCutOffService,
         moveLineCreateService,
         reconcileService,
         invoiceTermService,
@@ -137,7 +147,11 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         invoicePaymentRepo,
         accountConfigService,
         partnerService,
-        paymentModeService);
+        paymentModeService,
+        moveLineInvoiceTermService,
+        invoiceTermFinancialDiscountService,
+        moveLineFinancialDiscountService,
+        financialDiscountService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
@@ -310,10 +324,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
                               || it.getBankOrderDate().equals(invoiceTerm.getDueDate()))
                           && it.getPartner().equals(invoiceTerm.getMoveLine().getPartner())
                           && ((it.getReceiverBankDetails() == null
-                                  && invoiceTerm.getBankDetails() == null)
+                                  && this.getBankDetails(invoiceTerm) == null)
                               || (it.getReceiverBankDetails() != null
                                   && it.getReceiverBankDetails()
-                                      .equals(invoiceTerm.getBankDetails()))))
+                                      .equals(this.getBankDetails(invoiceTerm)))))
               .findFirst()
               .orElse(null);
     }
@@ -365,7 +379,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             bankOrder.getBankOrderFileFormat(),
             null,
             invoiceTerm.getMoveLine().getPartner(),
-            invoiceTerm.getBankDetails(),
+            this.getBankDetails(invoiceTerm),
             invoiceTerm.getAmountPaid().subtract(reconciledAmount),
             paymentSession.getCurrency(),
             bankOrderDate,
@@ -441,7 +455,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderLine bankOrderLine,
       BigDecimal reconciledAmount)
       throws AxelorException {
-    return bankOrderLine.getBankOrder().getIsMultiCurrency()
+    return BankOrderToolService.isMultiCurrency(bankOrderLine.getBankOrder())
         ? currencyService
             .getAmountCurrencyConvertedAtDate(
                 paymentSession.getCurrency(),
@@ -501,16 +515,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void createAndReconcileMoveLineFromPair(
       PaymentSession paymentSession,
       Move move,
       InvoiceTerm invoiceTerm,
       Pair<InvoiceTerm, BigDecimal> pair,
+      AccountConfig accountConfig,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
     super.createAndReconcileMoveLineFromPair(
-        paymentSession, move, invoiceTerm, pair, out, paymentAmountMap);
+        paymentSession, move, invoiceTerm, pair, accountConfig, out, paymentAmountMap);
 
     manageInvoicePayment(paymentSession, invoiceTerm, pair.getRight());
   }

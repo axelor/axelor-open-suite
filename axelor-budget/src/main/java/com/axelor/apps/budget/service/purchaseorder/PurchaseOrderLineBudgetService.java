@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,8 @@
 package com.axelor.apps.budget.service.purchaseorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import java.util.List;
 
 public interface PurchaseOrderLineBudgetService {
 
@@ -38,7 +35,7 @@ public interface PurchaseOrderLineBudgetService {
    * @return String
    */
   public String computeBudgetDistribution(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   /**
    * If multi budget, compute budget distribution line's budget name to fill budget name string
@@ -47,15 +44,6 @@ public interface PurchaseOrderLineBudgetService {
    * @param purchaseOrderLine, multiBudget
    */
   public void fillBudgetStrOnLine(PurchaseOrderLine purchaseOrderLine, boolean multiBudget);
-
-  /**
-   * If mono budget and budget not null, create a budget distribution line with budget link and ex
-   * tax total as amount
-   *
-   * @param purchaseOrderLine
-   * @return List BudgetDistribution
-   */
-  public List<BudgetDistribution> addBudgetDistribution(PurchaseOrderLine purchaseOrderLine);
 
   /**
    * If multi budget, compute budget distribution line's budget name to fill budget name string
@@ -87,16 +75,4 @@ public interface PurchaseOrderLineBudgetService {
 
   public void computeBudgetDistributionSumAmount(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
-
-  String getGroupBudgetDomain(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BudgetLevel global);
-
-  String getSectionBudgetDomain(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BudgetLevel global);
-
-  String getLineBudgetDomain(
-      PurchaseOrderLine purchaseOrderLine,
-      PurchaseOrder purchaseOrder,
-      BudgetLevel global,
-      boolean isBudget);
 }

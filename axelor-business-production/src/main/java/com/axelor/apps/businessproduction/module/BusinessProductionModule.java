@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,21 +25,30 @@ import com.axelor.apps.businessproduction.service.InvoicingProjectServiceBusines
 import com.axelor.apps.businessproduction.service.ManufOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessService;
 import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckService;
+import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckServiceImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetService;
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetServiceImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessServiceImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderWorkflowServiceBusinessImpl;
+import com.axelor.apps.businessproduction.service.OperationOrderWorkflowBusinessServiceImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderWizardServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderWorkflowServiceBusinessProductionImpl;
-import com.axelor.apps.businessproduction.service.TimesheetBusinessProductionServiceImpl;
+import com.axelor.apps.businessproduction.service.TimesheetBusinessProductionWorkflowServiceImpl;
+import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionService;
+import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionServiceImpl;
+import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessService;
+import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
+import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
-import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
@@ -63,12 +72,11 @@ public class BusinessProductionModule extends AxelorModule {
     bind(ProductionOrderSaleOrderServiceImpl.class)
         .to(ProductionOrderSaleOrderServiceBusinessImpl.class);
     bind(InvoicingProjectService.class).to(InvoicingProjectServiceBusinessProdImpl.class);
-    bind(OperationOrderWorkflowServiceImpl.class)
-        .to(OperationOrderWorkflowServiceBusinessImpl.class);
     bind(ManufOrderValidateBusinessService.class).to(ManufOrderValidateBusinessServiceImpl.class);
     bind(OperationOrderValidateBusinessService.class)
         .to(OperationOrderValidateBusinessServiceImpl.class);
-    bind(TimesheetProjectServiceImpl.class).to(TimesheetBusinessProductionServiceImpl.class);
+    bind(TimesheetWorkflowServiceImpl.class)
+        .to(TimesheetBusinessProductionWorkflowServiceImpl.class);
     bind(OperationOrderTimesheetService.class).to(OperationOrderTimesheetServiceImpl.class);
     bind(ManufOrderManagementRepository.class)
         .to(ManufOrderBusinessProductionManagementRepository.class);
@@ -76,5 +84,15 @@ public class BusinessProductionModule extends AxelorModule {
         .to(SaleOrderWorkflowServiceBusinessProductionImpl.class);
     bind(SaleOrderLineProjectServiceImpl.class)
         .to(SaleOrderLineBusinessProductionServiceImpl.class);
+    bind(OperationOrderWorkflowServiceImpl.class)
+        .to(OperationOrderWorkflowBusinessServiceImpl.class);
+    bind(TimesheetLineBusinessProductionService.class)
+        .to(TimesheetLineBusinessProductionServiceImpl.class);
+
+    bind(OperationOrderBusinessProductionCheckService.class)
+        .to(OperationOrderBusinessProductionCheckServiceImpl.class);
+    bind(TimesheetLineCreateBusinessService.class).to(TimesheetLineCreateBusinessServiceImpl.class);
+    bind(TimesheetLineUpdateBusinessService.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
+    bind(TimesheetLineUpdateServiceImpl.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
   }
 }

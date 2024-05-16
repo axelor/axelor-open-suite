@@ -1,0 +1,10 @@
+"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
+"4";"Employee";"Employee.rptdesign";"com.axelor.apps.hr.db.Employee";2;"pdf";false
+"5";"Expense";"Expense.rptdesign";"com.axelor.apps.hr.db.Expense";2;"pdf";true
+"29";"Timesheet";"Timesheet.rptdesign";"com.axelor.apps.hr.db.Timesheet";2;"pdf";true
+"41";"EmployeeAnnualReport";"EmployeeAnnualReport.rptdesign";"com.axelor.apps.hr.db.Employee";2;"pdf";true
+"42";"EmployeeBonusMgt";"EmployeeBonusMgt.rptdesign";"com.axelor.apps.hr.db.EmployeeBonusMgt";2;"pdf";true
+"43";"EmployeePhoneBook";"EmployeePhoneBook.rptdesign";"com.axelor.apps.hr.db.Employee";2;"pdf";false
+"44";"EmployeeTimesheet";"EmployeeTimesheet.rptdesign";"com.axelor.apps.hr.db.TimesheetReport";2;"pdf";true
+"45";"LunchVoucherAdvance";"LunchVoucherAdvance.rptdesign";"com.axelor.apps.hr.db.LunchVoucherAdvance";2;"pdf";false
+"46";"LunchVoucherMgt_Monthly";"LunchVoucherMgt_Monthly.rptdesign";"com.axelor.apps.hr.db.LunchVoucherMgt";2;"pdf";false

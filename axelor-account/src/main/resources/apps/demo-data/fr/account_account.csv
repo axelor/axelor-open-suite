@@ -788,7 +788,7 @@
 787;661810;661800;"Intérêts des dettes commerciales";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";2
 788;661880;661800;"Intérêts des dettes diverses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 789;664000;660;"Pertes sur créances liées à des participations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
-790;665000;660;"Escomptes accordés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+790;665000;660;"Escomptes accordés";"charge";;1;;;"true";;2;"NDAS";;1;"true";"false";"false";0
 791;666000;660;"Pertes de change";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
 792;667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
 793;668000;660;"Autres charges financières";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
@@ -925,7 +925,7 @@
 924;763100;763000;"Revenus des créances commerciales ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 925;763800;763000;"Revenus des créances diverses";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 926;764000;760;"Revenus des valeurs mobilières de placement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
-927;765000;760;"Escomptes obtenus";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+927;765000;760;"Escomptes obtenus";"income";;1;;;"true";;1;"NDAS";;1;"true";"false";"false";0
 928;766000;760;"Gains de change";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 929;767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 930;768000;760;"Autres produits financiers";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0

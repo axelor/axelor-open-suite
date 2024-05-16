@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,9 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 
 @Singleton
 public class AnalyticDistributionLineController {
@@ -46,8 +47,16 @@ public class AnalyticDistributionLineController {
   public void computeAmount(ActionRequest request, ActionResponse response) {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      response.setValue(
-          "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class).getParentWithContext(request, analyticMoveLine);
+
+      AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
+
+      BigDecimal amount =
+          parent != null
+              ? analyticMoveLineService.computeAmount(analyticMoveLine, parent.getLineAmount())
+              : analyticMoveLineService.computeAmount(analyticMoveLine);
+      response.setValue("amount", amount);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -71,30 +80,16 @@ public class AnalyticDistributionLineController {
   public void manageNewAnalyticDistributionLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class).getParentWithContext(request, analyticMoveLine);
+
+      if (parent != null) {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
         response.setValue("analyticJournal", analyticMoveLineService.getAnalyticJournal(parent));
         response.setValue("date", analyticMoveLineService.getDate(parent));
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
-        response.setValue(
-            "amount",
-            Beans.get(AnalyticLineService.class)
-                .getAnalyticAmountFromParent(parent, analyticMoveLine));
+        response.setValue("currency", analyticMoveLineService.getCompanyCurrency(parent));
       }
 
     } catch (Exception e) {
@@ -113,7 +108,7 @@ public class AnalyticDistributionLineController {
       company = analyticDistributionTemplate.getCompany();
     } else {
       company =
-          ContextTool.getFieldFromContextParent(request.getContext(), "company", Company.class);
+          ContextHelper.getFieldFromContextParent(request.getContext(), "company", Company.class);
     }
     if (company != null) {
       response.setAttr(

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,8 @@ import com.axelor.apps.crm.db.repo.LeadManagementRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.TourManagementRepository;
+import com.axelor.apps.crm.db.repo.TourRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.CatalogService;
@@ -40,10 +42,14 @@ import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.ConvertLeadWizardServiceImpl;
 import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
 import com.axelor.apps.crm.service.ConvertWizardOpportunityServiceImpl;
+import com.axelor.apps.crm.service.CrmActivityService;
+import com.axelor.apps.crm.service.CrmActivityServiceImpl;
 import com.axelor.apps.crm.service.CrmReportingService;
 import com.axelor.apps.crm.service.CrmReportingServiceImpl;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.EventServiceImpl;
+import com.axelor.apps.crm.service.LeadDuplicateService;
+import com.axelor.apps.crm.service.LeadDuplicateServiceImpl;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.LeadServiceImpl;
 import com.axelor.apps.crm.service.OpportunityService;
@@ -52,6 +58,10 @@ import com.axelor.apps.crm.service.PartnerCrmService;
 import com.axelor.apps.crm.service.PartnerCrmServiceImpl;
 import com.axelor.apps.crm.service.PartnerEmailDomainToolService;
 import com.axelor.apps.crm.service.PartnerEmailDomainToolServiceImpl;
+import com.axelor.apps.crm.service.TourLineService;
+import com.axelor.apps.crm.service.TourLineServiceImpl;
+import com.axelor.apps.crm.service.TourService;
+import com.axelor.apps.crm.service.TourServiceImpl;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.service.app.AppCrmServiceImpl;
 
@@ -76,5 +86,10 @@ public class CrmModule extends AxelorModule {
     bind(PartnerCrmService.class).to(PartnerCrmServiceImpl.class);
     bind(CatalogService.class).to(CatalogServiceImpl.class);
     bind(PartnerEmailDomainToolService.class).to(PartnerEmailDomainToolServiceImpl.class);
+    bind(CrmActivityService.class).to(CrmActivityServiceImpl.class);
+    bind(LeadDuplicateService.class).to(LeadDuplicateServiceImpl.class);
+    bind(TourService.class).to(TourServiceImpl.class);
+    bind(TourLineService.class).to(TourLineServiceImpl.class);
+    bind(TourRepository.class).to(TourManagementRepository.class);
   }
 }

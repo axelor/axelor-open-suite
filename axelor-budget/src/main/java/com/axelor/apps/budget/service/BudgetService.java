@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,10 +28,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.BudgetScenarioVariable;
+import com.axelor.apps.budget.db.GlobalBudget;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface BudgetService {
 
@@ -57,8 +61,7 @@ public interface BudgetService {
    * @param budget, fromDate, toDate
    * @throws AxelorException
    */
-  public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException;
+  public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate);
 
   /**
    * Compute all firm gap in budget lines and set the total firm gap on budget then save it
@@ -91,15 +94,6 @@ public interface BudgetService {
    * @return BigDecimal
    */
   public BigDecimal computeFirmGap(Budget budget);
-
-  /**
-   * Check if budget key are enabled in account config of company
-   *
-   * @param company
-   * @return boolean
-   * @throws AxelorException
-   */
-  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException;
 
   /**
    * Check if budget key are filled in all budgets if needed, validate budget and save it Throw an
@@ -229,18 +223,18 @@ public interface BudgetService {
    * Compute all available with simulated amount in budget lines, set the total available with
    * simulated on budget and set on budget
    *
-   * @param move, budget
+   * @param budget
    */
-  public void computeTotalAvailableWithSimulatedAmount(Move move, Budget budget);
+  public void computeTotalAvailableWithSimulatedAmount(Budget budget);
 
   /**
    * If budget key is allowed (via config), check that analytic and account are filled then compute
    * key and check if unique. An error can be throwed at every stage of process.
    *
-   * @param budget
+   * @param budget, company
    * @throws AxelorException
    */
-  public void createBudgetKey(Budget budget) throws AxelorException;
+  public void createBudgetKey(Budget budget, Company company) throws AxelorException;
 
   /**
    * Get all accounts that are linked to this company and active from immobilisation, payable,
@@ -293,8 +287,6 @@ public interface BudgetService {
    * @param entity
    * @return Budget
    */
-  Budget resetBudget(Budget entity);
-
   void getUpdatedBudgetLineList(Budget budget, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
 
@@ -309,4 +301,18 @@ public interface BudgetService {
   public List<BudgetLine> updateLines(Budget budget);
 
   public BigDecimal computeTotalAmountRealized(Budget budget);
+
+  void computeAvailableFields(Budget budget);
+
+  void archiveBudget(Budget budget);
+
+  void generateLineFromGenerator(Budget budget, BudgetLevel parent, GlobalBudget globalBudget)
+      throws AxelorException;
+
+  void generateLineFromGenerator(
+      BudgetScenarioVariable budgetScenarioVariable,
+      BudgetLevel parent,
+      Map<String, Object> variableAmountMap,
+      GlobalBudget globalBudget)
+      throws AxelorException;
 }

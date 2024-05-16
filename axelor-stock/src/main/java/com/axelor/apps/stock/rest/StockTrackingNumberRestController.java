@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -67,11 +67,10 @@ public class StockTrackingNumberRestController {
                 requestBody.fetchCompany(),
                 Beans.get(AppBaseService.class).getTodayDate(requestBody.fetchCompany()),
                 requestBody.getOrigin(),
+                null,
                 requestBody.getNotes());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Resource successfully created",
-        new StockTrackingNumberResponse(trackingNumber));
+    return ResponseConstructor.buildCreateResponse(
+        trackingNumber, new StockTrackingNumberResponse(trackingNumber));
   }
 }

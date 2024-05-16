@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -156,7 +156,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
                 accountingSituation.getCompany(),
                 accountingSituation.getPartner(),
                 SaleOrderRepository.STATUS_DRAFT_QUOTATION,
-                SaleOrderRepository.STATUS_CANCELED)
+                SaleOrderRepository.STATUS_ORDER_COMPLETED)
             .fetch();
     for (SaleOrder saleOrder : saleOrderList) {
       sum = sum.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form name="incl-invoice-payment-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
@@ -28,7 +28,6 @@
         grid-view="fiscal-position-grid"
         onChange="action-partner-attrs-show-specific-tax-note,action-partner-method-get-default-specific-tax-note"/>
       <field name="specificTaxNote" colSpan="12" hidden="true"/>
-      <field name="analyticDistributionTemplate" canNew="true"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
         hidden="true" showIf="isSupplier"/>
       <panel name="showInvoicesPanel" colSpan="6" hideIf="isEmployee">
@@ -41,11 +40,12 @@
     <panel name="bankDetailsPanel" title="Bank details" colSpan="12">
       <field name="bankDetailsList" colSpan="12" showTitle="false">
         <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
-                    <dl>
-                      <dd ng-if="!record.isDefault" ng-style="!record.active && {'color':'orange'}"> {{record.fullName}} </dd>
-                      <dd ng-if="record.isDefault" ng-style="!record.active && {'color':'orange'}"> <b>{{record.fullName}}</b> </dd>
-                    </dl>
-                ]]></viewer>
+              <>
+                  <dl>
+                        {<Box as="dd" {...(!active && {color:"warning"})} {...(isDefault && {fontWeight:"bold"})}>{fullName}</Box>}
+                  </dl>
+              </>
+        ]]></viewer>
         <editor onNew="action-set-default-partner" x-show-on-new="false">
           <field name="ownerName"/>
           <field name="iban"/>
@@ -64,12 +64,14 @@
   </form>
 
   <form name="incl-customer-balance-partner-form" title="Partner"
-    model="com.axelor.apps.base.db.Partner">
+    model="com.axelor.apps.base.db.Partner"
+    onLoad="action-partner-account-method-accounting-situation-label">
     <panel name="accountingBalancePanel" title="Accounting balance" colSpan="12">
+      <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>
       <field name="accountingSituationList" colSpan="12" widget="MasterDetail"
         title="Customer balance" hideIf="isContact" grid-view="accounting-situation-partner-grid"
         form-view="accounting-situation-partner-form"
-        onSelect="action-account-accounting-situation-method-update-customer-account"/>
+        onChange="action-partner-account-method-accounting-situation-label"/>
     </panel>
   </form>
 
@@ -82,8 +84,7 @@
           <field name="companySet" colSpan="3" widget="TagSelect"/>
           <field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
           <field name="blockingToDate" colSpan="2">
-            <hilite if="$moment(blockingToDate) &gt; $moment(__config__.date)" color="danger"
-              strong="true"/>
+            <hilite if="$moment(blockingToDate) &gt; $moment()" color="danger" strong="true"/>
           </field>
           <field name="blockingReason" colSpan="3" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
@@ -117,13 +118,18 @@
 
   <form name="partner-form" id="account-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" extension="true">
-    <extend target="//field[@name='isSupplier']">
-      <insert position="after">
-        <field name="isCompensation" colSpan="2" widget="InlineCheckbox"
-          showIf="isCustomer &amp;&amp; !$readonly() &amp;&amp; isSupplier"/>
+    <extend target="//panel[@name='rightPanel']">
+      <insert position="inside">
+        <field name="isThirdPartyPayer" widget="InlineCheckbox"
+          showIf="(isCustomer || isSupplier) &amp;&amp; !isFactor"
+          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       </insert>
     </extend>
 
+    <extend target="//panel[@name='accountingSituationPanel']">
+      <attribute name="onTabSelect"
+        value="action-partner-account-method-accounting-situation-label"/>
+    </extend>
   </form>
 
 
@@ -177,6 +183,11 @@
   <action-method name="action-partner-method-get-default-specific-tax-note">
     <call class="com.axelor.apps.account.web.PartnerController"
       method="getDefaultSpecificTaxNote"/>
+  </action-method>
+
+  <action-method name="action-partner-account-method-accounting-situation-label">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="computeAccountingSituationLabel"/>
   </action-method>
 
   <action-attrs name="action-partner-account-attrs-hide-supplier-account">

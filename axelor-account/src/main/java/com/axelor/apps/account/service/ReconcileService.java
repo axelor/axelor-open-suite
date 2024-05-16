@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,13 +34,16 @@ public interface ReconcileService {
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal amount,
-      boolean canBeZeroBalanceOk);
+      boolean canBeZeroBalanceOk)
+      throws AxelorException;
 
   public Reconcile confirmReconcile(
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException;
 
-  public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;
+  public void reconcilePreconditions(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerm)
+      throws AxelorException;
 
   public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException;
 
@@ -70,8 +73,6 @@ public interface ReconcileService {
       throws AxelorException;
 
   public void unreconcile(Reconcile reconcile) throws AxelorException;
-
-  // public void canBeZeroBalance(Reconcile reconcile) throws AxelorException;
 
   /**
    * Procédure permettant de gérer les écarts de règlement, check sur la case à cocher 'Peut être

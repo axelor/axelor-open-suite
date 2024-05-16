@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,8 +27,10 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCategoryService;
@@ -90,6 +92,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected PricingService pricingService;
   protected TaxService taxService;
   protected SaleOrderMarginService saleOrderMarginService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -103,7 +106,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       SaleOrderService saleOrderService,
       PricingService pricingService,
       TaxService taxService,
-      SaleOrderMarginService saleOrderMarginService) {
+      SaleOrderMarginService saleOrderMarginService,
+      CurrencyScaleService currencyScaleService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -115,6 +119,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.pricingService = pricingService;
     this.taxService = taxService;
     this.saleOrderMarginService = saleOrderMarginService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
@@ -143,7 +148,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Override
   public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
     if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
       PricingComputer pricingComputer =
@@ -163,19 +167,17 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected PricingComputer getPricingComputer(Pricing pricing, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
-    return PricingComputer.of(
-        pricing, saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class);
+    return PricingComputer.of(pricing, saleOrderLine);
   }
 
   protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     // It is supposed that only one pricing match those criteria (because of the configuration)
     // Having more than one pricing matched may result on a unexpected result
-    return pricingService.getRandomPricing(
-        saleOrder.getCompany(),
-        saleOrderLine.getProduct(),
-        saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
-        SaleOrderLine.class.getSimpleName(),
-        null);
+    if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
+      return pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
+    } else {
+      return pricingService.getRootPricingForNextPricings(saleOrder.getCompany(), saleOrderLine);
+    }
   }
 
   @Override
@@ -197,7 +199,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
     // Populate fields from pricing scale before starting process of fillPrice
-    if (appSaleService.getAppSale().getEnablePricingScale()) {
+    if (appBaseService.getAppBase().getEnablePricingScale()) {
       computePricingScale(saleOrderLine, saleOrder);
     }
 
@@ -363,16 +365,31 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     if (!saleOrder.getInAti()) {
-      exTaxTotal = this.computeAmount(saleOrderLine.getQty(), priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+      exTaxTotal =
+          this.computeAmount(
+              saleOrderLine.getQty(), priceDiscounted, currencyScaleService.getScale(saleOrder));
+      inTaxTotal =
+          currencyScaleService.getScaledValue(
+              saleOrder, exTaxTotal.add(exTaxTotal.multiply(taxRate)));
       companyExTaxTotal = this.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
-      companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
+      companyInTaxTotal =
+          currencyScaleService.getCompanyScaledValue(
+              saleOrder, companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate)));
     } else {
-      inTaxTotal = this.computeAmount(saleOrderLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      inTaxTotal =
+          this.computeAmount(
+              saleOrderLine.getQty(), priceDiscounted, currencyScaleService.getScale(saleOrder));
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE),
+              currencyScaleService.getScale(saleOrder),
+              RoundingMode.HALF_UP);
       companyInTaxTotal = this.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
       companyExTaxTotal =
-          companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+          companyInTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE),
+              currencyScaleService.getCompanyScale(saleOrder),
+              RoundingMode.HALF_UP);
     }
 
     if (saleOrderLine.getProduct() != null
@@ -382,10 +399,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                 .compareTo(BigDecimal.ZERO)
             != 0) {
       subTotalCostPrice =
-          ((BigDecimal)
-                  productCompanyService.get(
-                      saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-              .multiply(saleOrderLine.getQty());
+          currencyScaleService.getCompanyScaledValue(
+              saleOrder,
+              ((BigDecimal)
+                      productCompanyService.get(
+                          saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
+                  .multiply(saleOrderLine.getQty()));
     }
 
     saleOrderLine.setInTaxTotal(inTaxTotal);
@@ -416,20 +435,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     BigDecimal price = this.computeDiscount(saleOrderLine, false);
 
-    return computeAmount(saleOrderLine.getQty(), price);
+    return computeAmount(saleOrderLine.getQty(), price, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS);
   }
 
   @Override
-  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
+  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {
 
-    BigDecimal amount =
-        quantity
-            .multiply(price)
-            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal amount = quantity.multiply(price).setScale(scale, RoundingMode.HALF_UP);
 
     logger.debug(
-        "Computation of W.T. amount with a quantity of {} for {} : {}",
-        new Object[] {quantity, price, amount});
+        "Computation of W.T. amount with a quantity of {} for {} : {}", quantity, price, amount);
 
     return amount;
   }
@@ -503,13 +518,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
       throws AxelorException {
 
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
+    return currencyScaleService.getCompanyScaledValue(
+        saleOrder,
+        currencyService.getAmountCurrencyConvertedAtDate(
             saleOrder.getCurrency(),
             saleOrder.getCompany().getCurrency(),
             exTaxTotal,
-            saleOrder.getCreationDate())
-        .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            saleOrder.getCreationDate()));
   }
 
   @Override
@@ -518,14 +533,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     Product product = saleOrderLine.getProduct();
 
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
+    return currencyScaleService.getCompanyScaledValue(
+        saleOrder,
+        currencyService.getAmountCurrencyConvertedAtDate(
             (Currency)
                 productCompanyService.get(product, "purchaseCurrency", saleOrder.getCompany()),
             saleOrder.getCompany().getCurrency(),
             (BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()),
-            saleOrder.getCreationDate())
-        .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            saleOrder.getCreationDate()));
   }
 
   @Override
@@ -650,11 +665,17 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       return;
     }
 
-    productMultipleQtyService.checkMultipleQty(
-        saleOrderLine.getQty(),
-        product.getSaleProductMultipleQtyList(),
-        product.getAllowToForceSaleQty(),
-        response);
+    BigDecimal qty = saleOrderLine.getQty();
+    List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
+    boolean allowToForce = product.getAllowToForceSaleQty();
+
+    productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList, allowToForce, response);
+
+    if (appSaleService.getAppSale().getIsEditableGridEnabled()
+        && !productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList)) {
+      response.setNotify(
+          productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList));
+    }
   }
 
   @Override
@@ -984,7 +1005,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     // But here, we have to do this because overriding a sale service in hr module will prevent the
     // override in supplychain, business-project, and business production module.
     if (ModuleManager.isInstalled("axelor-human-resource")) {
-      domain += " AND self.expense = false ";
+      domain += " AND self.expense = false OR self.expense IS NULL";
     }
 
     return domain;

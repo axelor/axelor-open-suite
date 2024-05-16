@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,30 +18,33 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -49,7 +52,7 @@ import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -63,12 +66,12 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.utils.file.PdfTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -83,7 +86,7 @@ import java.util.Map;
 
 public class InvoicingProjectService {
 
-  @Inject protected TimesheetService timesheetService;
+  @Inject protected TimesheetInvoiceService timesheetInvoiceService;
 
   @Inject protected ExpenseInvoiceLineService expenseInvoiceLineService;
 
@@ -96,6 +99,8 @@ public class InvoicingProjectService {
   @Inject protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
+
+  @Inject protected InvoiceLineService invoiceLineService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -205,7 +210,7 @@ public class InvoicingProjectService {
         this.createPurchaseOrderInvoiceLines(
             invoice, purchaseOrderLineList, folder.getPurchaseOrderLineSetPrioritySelect()));
     invoiceLineList.addAll(
-        timesheetService.createInvoiceLines(
+        timesheetInvoiceService.createInvoiceLines(
             invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
     invoiceLineList.addAll(
         expenseInvoiceLineService.createInvoiceLines(
@@ -219,6 +224,8 @@ public class InvoicingProjectService {
     for (InvoiceLine invoiceLine : invoiceLineList) {
       invoiceLine.setSequence(sequence);
       sequence++;
+
+      invoiceLineService.compute(invoice, invoiceLine);
     }
 
     return invoiceLineList;
@@ -326,7 +333,6 @@ public class InvoicingProjectService {
       projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
       timesheetLineBusinessService.timsheetLineInvoicing(project);
     }
-    invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
       return;
@@ -499,6 +505,14 @@ public class InvoicingProjectService {
   }
 
   public void generateAnnex(InvoicingProject invoicingProject) throws AxelorException, IOException {
+    BirtTemplate invoicingProjectAnnexBirtTemplate =
+        appBusinessProjectService.getAppBusinessProject().getInvoicingProjectAnnexBirtTemplate();
+    if (invoicingProjectAnnexBirtTemplate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+
     String title =
         I18n.get("InvoicingProjectAnnex")
             + "-"
@@ -507,10 +521,14 @@ public class InvoicingProjectService {
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMM));
 
     ReportSettings reportSettings =
-        ReportFactory.createReport(IReport.INVOICING_PROJECT_ANNEX, title)
-            .addParam("InvProjectId", invoicingProject.getId())
-            .addParam("Timezone", getTimezone(invoicingProject))
-            .addParam("Locale", ReportSettings.getPrintingLocale(null));
+        Beans.get(BirtTemplateService.class)
+            .generate(
+                invoicingProjectAnnexBirtTemplate,
+                invoicingProject,
+                null,
+                title,
+                false,
+                ReportSettings.FORMAT_PDF);
 
     if (invoicingProject.getAttachAnnexToInvoice()) {
       List<File> fileList = new ArrayList<>();
@@ -523,7 +541,7 @@ public class InvoicingProjectService {
               .print(invoice, null, ReportSettings.FORMAT_PDF, null));
       fileList.add(reportSettings.generate().getFile());
 
-      MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));
+      MetaFile metaFile = metaFiles.upload(PdfHelper.mergePdf(fileList));
       metaFile.setFileName(title + ".pdf");
       metaFiles.attach(metaFile, null, invoicingProject);
       return;
@@ -545,6 +563,20 @@ public class InvoicingProjectService {
       return null;
     }
     InvoicingProject invoicingProject = new InvoicingProject();
+
+    clearLines(invoicingProject);
+    setLines(invoicingProject, project, 0);
+
+    if (invoicingProject.getSaleOrderLineSet().isEmpty()
+        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
+        && invoicingProject.getLogTimesSet().isEmpty()
+        && invoicingProject.getExpenseLineSet().isEmpty()
+        && invoicingProject.getProjectTaskSet().isEmpty()) {
+
+      return invoicingProject;
+    }
+
+    project = JPA.find(Project.class, project.getId());
     invoicingProject.setProject(project);
 
     if (consolidatePhaseSelect
@@ -557,19 +589,6 @@ public class InvoicingProjectService {
         == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
-    }
-    invoicingProject = invoicingProjectRepo.save(invoicingProject);
-
-    clearLines(invoicingProject);
-    setLines(invoicingProject, project, 0);
-
-    if (invoicingProject.getSaleOrderLineSet().isEmpty()
-        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
-        && invoicingProject.getLogTimesSet().isEmpty()
-        && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()) {
-
-      return invoicingProject;
     }
     return invoicingProjectRepo.save(invoicingProject);
   }

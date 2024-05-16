@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -48,6 +49,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -81,6 +83,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected AppBaseService appBaseService;
 
+  protected AppStockService appStockService;
+
   protected AppSupplychainService appSupplychainService;
 
   protected SaleOrderRepository saleOrderRepo;
@@ -99,10 +103,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected CommonInvoiceService commonInvoiceService;
   protected InvoiceLineOrderService invoiceLineOrderService;
   protected SaleInvoicingStateService saleInvoicingStateService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppBaseService appBaseService,
+      AppStockService appStockService,
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
@@ -113,9 +119,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrderWorkflowService saleOrderWorkflowService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
-      SaleInvoicingStateService saleInvoicingStateService) {
+      SaleInvoicingStateService saleInvoicingStateService,
+      CurrencyScaleService currencyScaleService) {
 
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
@@ -127,6 +135,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.commonInvoiceService = commonInvoiceService;
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.saleInvoicingStateService = saleInvoicingStateService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -206,7 +215,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 
     invoiceTermService.computeInvoiceTerms(invoice);
-    invoice.setIncoterm(saleOrder.getIncoterm());
+
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      invoice.setIncoterm(saleOrder.getIncoterm());
+    }
     invoice = invoiceRepo.save(invoice);
 
     return invoice;
@@ -325,6 +337,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoiceGenerator.populate(invoice, invoiceLinesList);
 
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
@@ -543,7 +556,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     // do not use invoiced partner if the option is disabled
-    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
       saleOrder.setInvoicedPartner(null);
     }
 
@@ -680,17 +693,20 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
 
     if (saleAmount != null) {
-      invoicedAmount = invoicedAmount.add(saleAmount);
+      invoicedAmount =
+          currencyScaleService.getScaledValue(saleOrder, invoicedAmount.add(saleAmount));
     }
     if (refundAmount != null) {
-      invoicedAmount = invoicedAmount.subtract(refundAmount);
+      invoicedAmount =
+          currencyScaleService.getScaledValue(saleOrder, invoicedAmount.subtract(refundAmount));
     }
 
     if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())
         && saleOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal rate =
           invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-      invoicedAmount = saleOrder.getExTaxTotal().multiply(rate);
+      invoicedAmount =
+          currencyScaleService.getScaledValue(saleOrder, saleOrder.getExTaxTotal().multiply(rate));
     }
 
     log.debug(

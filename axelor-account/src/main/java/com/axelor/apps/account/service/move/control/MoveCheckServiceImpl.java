@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -216,13 +216,18 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
     } else if (move.getMoveLineList().stream()
         .anyMatch(
-            ml ->
-                ml.getMove() != null
+            ml -> {
+              try {
+                return ml.getMove() != null
                     && invoiceTermService.getPfpValidatorUserCondition(
                         ml.getMove().getInvoice(), ml)
                     && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
                     && ml.getInvoiceTermList().stream()
-                        .anyMatch(it -> it.getPfpValidatorUser() == null))) {
+                        .anyMatch(it -> it.getPfpValidatorUser() == null);
+              } catch (AxelorException e) {
+                throw new RuntimeException(e);
+              }
+            })) {
       return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
     }
 

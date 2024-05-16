@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,11 +26,13 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 
 public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
 
@@ -54,19 +56,19 @@ public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
     }
   }
 
-  protected MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
+  @Override
+  public MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
     MetaFile standardTemplateFile = null;
-    InputStream templateFileInputStream =
-        this.getClass().getResourceAsStream("/reports/" + templateFileName);
+    List<URL> urls = MetaScanner.findAll(templateFileName);
 
-    if (ObjectUtils.isEmpty(templateFileInputStream)) {
+    if (ObjectUtils.isEmpty(urls)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_MESSAGE_STANDARD_TEMPLATE_NOT_FOUND),
+              I18n.get(BaseExceptionMessage.FILE_NOT_FOUND_IN_STANDARD_APPLICATION),
               templateFileName));
     }
-    standardTemplateFile = metaFiles.upload(templateFileInputStream, templateFileName);
+    standardTemplateFile = metaFiles.upload(urls.get(0).openStream(), templateFileName);
 
     return standardTemplateFile;
   }

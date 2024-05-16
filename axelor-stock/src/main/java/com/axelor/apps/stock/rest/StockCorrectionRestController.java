@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -67,16 +67,15 @@ public class StockCorrectionRestController {
                 requestBody.fetchProduct(),
                 requestBody.fetchTrackingNumber(),
                 requestBody.getRealQty(),
-                requestBody.fetchReason());
+                requestBody.fetchReason(),
+                requestBody.getComments());
 
     if (requestBody.getStatus() == StockCorrectionRepository.STATUS_VALIDATED) {
       Beans.get(StockCorrectionService.class).validate(stockCorrection);
     }
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Resource successfully created",
-        new StockCorrectionResponse(stockCorrection));
+    return ResponseConstructor.buildCreateResponse(
+        stockCorrection, new StockCorrectionResponse(stockCorrection));
   }
 
   @Operation(
@@ -117,6 +116,12 @@ public class StockCorrectionRestController {
           message += "Status updated; ";
         }
       }
+    }
+
+    final String comments = requestBody.getComments();
+    if (comments != null) {
+      Beans.get(StockCorrectionService.class).updateComments(stockCorrection, comments);
+      message += "Comments updated; ";
     }
 
     StockCorrectionResponse objectBody = new StockCorrectionResponse(stockCorrection);

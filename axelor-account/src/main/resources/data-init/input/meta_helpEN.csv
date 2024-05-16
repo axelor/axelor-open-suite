@@ -11,7 +11,7 @@
 "axelor-account";"Invoice";"invoice-form";"externalReference";"This field is used to indicate an external reference number (such as a customer or supplier reference)."
 "axelor-account";"AppAccount";"app-account-config-form";"manageCustomerCredit";"This option makes it possible to manage the level of customer credit and to set a maximum amount. A maximum default amount that is accepted by default for all customers can be set by default in the sales configurations by company.
 The amount of customer credit accepted can also be configured per customer, in the accounting information of customer forms. You will also be able to see the customer credit amount currently used by each customer."
-"axelor-account";"AccountConfig";"account-config-form";"accountChart";"Default account chart used for this company."
+"axelor-account";"AccountConfig";"account-config-form";"accountingConfigTemplate";"Default account chart used for this company."
 "axelor-account";"AppInvoice";"app-invoice-config-form";"isInvoiceMoveConsolidated";"This option can be activated on accounting journal entries.
 It allows you to group the invoice movelines into accounting accounts and analytical axes."
 "axelor-account";"AppInvoice";"app-invoice-config-form";"isVentilationSkipped";"Removes the invoice ventilation step to keep only the validation step. Once an invoice has been validated, it can then be processed in accounting without having to go through a ventilation step."

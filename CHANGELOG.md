@@ -1,315 +1,598 @@
-## [7.1.2] (2023-08-08)
+## [8.0.6] (2024-05-03)
 
-#### Fixed
-
-* Invoice : fix the way we check the awaiting payment
-* Accounting batch : Improve user feedback on move consistency control when there are no anomalies
-* PLANNING: Planning is now correctly filtered on employee and machine form
-* SaleOrderLine: Description is now copied only if the configuration allows it
-* PARTNER: Fixed a bug where button 'create sale quotation' was always displayed
-* Custom accounting report : Excel sheets are now named after the analytic account
-* Move : Fix automatic move line tax generation with reverse charge and multiple vat systems.
-* Stock move: reversed stock move now correctly reverses stock locations
-* Mass entry : Fix fill of payment condition when journal isn't type 'other'
-* Move : Fix invoice terms amount at percentage change with negative currency amount
-* PurchaseOrder and Invoice: Added widget boolean switch for interco field 
-* Employee dashboard: added condition on app
-* Invoice : Fix tax being empty on invoice line when it's required on account
-* ManufOrder: Planning a cancelled MO now clears the real dates on operations orders and MO
-* Move : Fix display of analytic axis accounts when we change it on analytic move lines
-* Product/ProductFamily : set analytic distribution template readonly if the config analytic type is not by product
-* Move : Fix currency amount of automatically generated reverse charge move line not being computed
-* Invoice: Fixed french translations
-* INVOICE : fix form view - added blank spaces before the company field and move the originDate field
-* SOP/MPS: Fixed a bug where real datas were never increased
-* Supplychain batch : Fixed bugs that prevented display of processed stock moves
-* SOP/MPS: Fixed SOP/MPS Wrong message on forecast generation
-* MOVE/INVOICE/ORDERS : Compute budget distribution when object are not saved
-* PAYMENT SESSION : corrected accounting trigger from payment mode overriding accounting trigger from payment session on bank order generated from payment session.
-* Move : Fix tax computation when we have two financial accounts with the same VAT system
-* Debt Recovery: Fix error message on debt recovery batch to display correctly trading name
-* Move : Fixed a bug that was opening a move in edit mode instead of read only
-* Period : Fixed an issue where a false warning was displayed preventing the user for re-opening a closed period
-* Invoice: Fixed a bug where subscription invoice was linked to unrelated advance payment invoice
-
-When creating an invoice auto complete advance payement invoice with no internal reference to an already existing sale order.
-
-* Move/MoveLine : empty taxLine when changing the account of a moveLine to an account without tax authorized
-* Invoice : Remove payment voucher access on an advance payment invoice
-* Payment session : Fix session total amount computation
-
-The following script can be executed to clean old actions
-```sql
-DELETE FROM meta_action
-WHERE name IN (
-  'action-invoice-term-method-compute-total-payment-session',
-  'action-payment-session-record-set-session-total-amount-btn',
-  'action-method-payment-session-compute-total'
-);
-```
-
-* Move : Fix invoice term amount at percentage change with unsaved move
-* Project: fix real costs computing in tasks and subtasks
-* Accounting report: Fixed a bug where unreconcilied move lines were not displayed
-* Product: When changing costTypeSelect to 'last purchase price', the cost price will now be correctly converted.
-* Move : Set readonly move form when period is closed or doesn't exist
-* Bank order: Fixed a bug where bank order date was always overridden. Now bank order date is overridden only when it is before the current date and the user is warned.
-* PaymentSession : Fix compensation invoice terms amount when select using buttons
-* BUSINESS PROJECT BATCH: Fixed invoicing project batch
-
-## [7.1.1] (2023-07-20)
-
-#### Fixed
-
-* App builder: updated axelor-studio dependency from 1.2.0 to 1.2.1.
-* Account/Move/Invoice: fixed analytic check when required on move line, invoice line.
-* Manufacturing order: fixed JNPE error when merging manufacturing orders missing units.
-* Cost sheet: fixed wrong bill of materials used for cost calculation.
-* Move: set description required on move line when it is enabled in company account configuration.
-* Stock move line: fixed display issues with the button used to generate tracking numbers in stock move lines.
-* Custom accounting report: added a tab listing anomalies that are preventing generation.
-* Operation order: correctly filter work center field on work center group (when the feature is activated).
-* Payment condition: improved warning message when modifying an existing payment condition.
-* Stock move: fixed issue preventing the display of invoicing button.
-* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves.
-* Invoice: fixed unwanted financial discount on advance payment invoice.
-* Bank payment printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
-* Accounting report: fixed error on N4DS export when the partner address has no city filled.
-* Payment session/Bank order: fix of compensation in payment session process with bank order.
-* Sale order: fixed missing actions on loading sale order form views.
-* Fixed asset: improved the error message shown when an exception occurs during a mass validation.
-* Analytic distribution template: fixed error when creating a new analytic distribution template.
-* Product: fixed wrong filter on analytic on product accounting panel.
-* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves without sale order.
-* Faker API: update documentation in help message.
-* Interco: fixed generated sale order/purchase order missing a fiscal position.
-
-## [7.1.0] (2023-07-12)
-
-### Features/Changes
-
+### Fixes
 #### Base
 
-* Faker API Field: 
-- Add the possibility to use the api faker method parameters
-- Add data type to filter API fields in the anonymizer lines
+* Pricing: the formula panel is now collapsed by default.
+* Sequence: fixed NPE while checking yearly reset or monthly reset on unsaved sequence.
+* Advanced export: Fixed export which wasn't working when maximum export limit exceeded.
 
-* Base Batch: New batch to force users password change
-* BirtTemplate: It is now possible to choose the .rptdesign file used to generate the attached file when sending a generated email. Parameters sent to the BIRT engine can also now be computed using groovy scripting.
+#### Account
 
-#### Accounting
+* Invoice: fixed default financial discount from partner not being computed after invoice copy.
+* Accounting export: Fixed error when replaying the accounting export.
+* Invoice payment: fixed financial discount management when there is no payment date.
 
-* Move: 
-    - New mass entry feature
-    - Add management of currency amount negative value for credit
-    - Add PFP process like on Invoices
-    - Extend automatic cut off dates process to move confirmation
-    - On move creation or generation, originDate is filled with onChange of moveDate.
-    - Add an allowed tax gap on company account config and check consistency of tax values on daybooking, simulating or accounting.
-    - Add new technical origin for move generated from mass entry process
+#### Bank Payment
 
-* Move, Move line: 
+* Bank reconciliation: fixed tax move line generation when origin is payment.
 
-Cut off dates are no longer required for functional origin: closure, opening, cut off
+#### Contract
 
-* Cut off batches: Add three new columns displaying the number of days considered in the calculation for Cut-Off processing of Advance Accrued Expenses (CCA) and Advance Accrued Revenues (PCA), allowing users to verify the consistency of the days used in the calculation.
-* Move, Move Template: Set partner as required when journal is sale or expense
-* Reconcile: Add an effective date to the reconcile which will be used instead of reconciliation date for generated payment and moves. This effective date is computed from information in reconciled moves.
-* Reconcile: reconciliation of different accounts and payment differences management
-    - Added new fields in account config, one account for debit difference, one account for credit difference.
-    - When you pay an invoice term and the remaining amount is less than the threshold distance, a new payment will be made of the remaining amount.
-    - Reconciliation of different accounts are now managed, using a new payment move which reconciles both invoice terms.
-
-* Custom accounting report: 
-    - Fetch parent account when higher level analytic accounts are detailed
-    - Add previous start balance
-    - Can now filter result with accounts and analytic accounts from the report
-    - Allow to display debit or credit values instead of only the difference between them
-
-* Debt recovery: improve debt recovery and debt recovery history attachments management
-
-* Deposit slip: handle bank details and deposit date in deposit slip.
-
-* Payment session: 
-    - Show buttons to select all / unselect all.
-    - add compensation field on partner to compensate customer invoices on supplier payment or supplier invoices on customer payment.
-    - add partner set field to filter partners linked to these invoice terms.
-
-* Analytic distribution template: trading name now has an analytic distribution template field:
-
-In Account configuration, if the Analytic distribution type is 'Per trading name', 
-Analytic distribution template will be retrieved from the trading name when creating Purchase order, Sale order and invoice lines.
-
-#### Budget
-
-* Budget: integrate new budget module
-
-#### Stock
-
-* Stock location: Stock location can be now configured from the stock move line
-* Stock Move: Canceling a stock move will now set the wap price to its former value if nothing happened since the realization.
-* Stock moves: Change origin architecture from refSelect to M2O
-
-#### Supply Chain
-* Sale order: Sale orders and sale order lines can now be filtered with invoicing state.
-
+* Contract: fixed prorata invoicing when invoicing a full period.
+* Contract: correctly disable related configuration when disabling invoice management.
+* Contract: Fixed error when using contract template with contract line to generate a contract.
 
 #### Production
 
-* Manufacturing order: 
+* Manufacturing order: fixed conversion of missing quantity of consumed products.
+* Machine: fixed machine planning type when creating it from machine.
 
-When planning a manufacturing order, operation orders dates now take into account available dates of the machine. 
+#### Purchase
 
-* Operation order: 
+* Purchase order line: Fixed maximum and minimum order quantity error when partner doesn't have supplier catalog lines.
+* Purchase order report: fixed sequence order issue when title lines are present.
 
-New fields to distinguish human and machine planned times on operations.
-In the calendar view, the operation orders will now be updated (if needed) on change of another operation order.
+#### Quality
 
-* Work Center & Prod process Line : 
+* ControlEntry/ControlPlan: fixed issues when dupplicating a control entry or control plan.
 
-Moved starting, setup and ending duration from Machine to Work Center.
-Human resources panel refactoring
+#### Sale
 
-* Machine : 
-
-Machine form view refactoring
-
-#### CRM
-
-* CRM: Redesign of the CRM menus architecture and multiple menus domains.
-* CRM Search: Added a powerful searching tool in multiple object type (opportunities, leads, event, etc …). Using keywords and configurable mapping. 
-* Opportunities: 
-Added a control on opportunities winning process that displays on-going opportunities for selected clients. With multiple closing functions. 
-Add controls on decimal and integer values in opportunities for process maintainability.
-* Partner, Leads, Opportunities: 
-Refactor on last event and next event on partner, leads, opportunities (to make it work properly). 
-Added back a drag and drop function on lead/opportunities/prospect status grid view.
-* Lead conversion: Added a new conversion process for leads.
-* Lead, Prospect: Added a Kanban view.
-* Improve emails display in all CRM views.
-* Added an automatic conversion function for similar leads (name, email, etc…) when converting one. 
-* Added a catalog email sending function in catalog grid view. 
-* Opportunity: added a panel in opportunity view displaying events related to the opportunity.
-* Partner: added partner status to the app. This feature permits the user to follow a prospect using a custom process. It follows the leads process before converting the prospect to customer. 
-* Partner: added related contacts in contact view (contacts with the same email address domain).
-
-
-#### Project
-
-* Project: Allowed deletion of planned times from the dashlet in Project.
-* Project: Added Time follow-up and Financial follow-up on Tasks, aggregated on Project level.
-* ProjectTask: Changed planning UX and constraints to fit with the new flow of project management.
-* Project: Added a batch to compute project and task’s time and financial reporting. Action can also be triggered from Project’s Tools menu. Invoicing Project Batches were renamed to Business Project Batches
-* Project: Removed obsolete time fields on Project and Tasks.
-* Project: Added demo data for Business Project (Task by line & Task by line using subtasks models) to allow demonstration of the new reporting.
-* Project: Added a batch to historize project reporting, as well as visual indicators to compare current values to last historized values.
-* Business Project: Improved App configuration UX
-* Project: Manage project time units (Hours, Days) and conversions to allow to manage a project in Hours or in Days, as well as to manage individual tasks in both units. Planning has also been changed to reflect these features.
-* Contract: invoicing pro rata per line
-* Contract: reevaluating contract yearly prices based on index values
-* Contract: added discount on contract lines.
-
-#### Sales
-
-* Sale Order: Improve UX and help for project generation.
-* Sale Order: Generating task with subtask models has been fixed and improved
-
-#### Helpdesk
-
-* Helpdesk: 
-
-Added a new field fullName to the ticket which will be used as namecolumn
-Add API to update ticket status
-
-#### GDPR
-
-* Processing register: option to not archive
-
-In GDPR Processing Register, add a boolean to enable/disable archiving data during the data processing.
-
-* App GDPR: New config to exclude fields from the access request.
-* Erasure Request: Add the possibility to break links in an anonymised object.
-
-#### HR
-
-* New employee and manager dashboard with custom views
-* Reorganize HR menu items and add new HR menu with a new dashboard
-* Files :
-
-Panel review
-Linked to skills
-
-* Lunch voucher: Process improvement (links with expenses, refacto, form review)
-* Employee: 
-
-New titles
-Dependent children
-
-* Recruitment: Application form review
-* Expense:
-
-Multi-currency expenses
-Analytic distribution template on employee form
-Add justication to expense line grid view
-
-#### Cash management
-
-* Forecast generator: add fortnightly and weekly periodicity in forecast generator.
-
-#### Mobile
-
-* Mobile Settings: add Helpdesk config for the mobile app
-
-### Fixed
-
-#### Sale/Purchase
-
-* Sale and Purchase order: Change default view for historic menu, from card view to grid view
+* Sale order: fixed refresh issue when saving a sale order.
+* Configurator : Fixed issues with the new configurator model in demo data.
 
 #### Stock
 
-* Stock move: the field “filter on available products” is now stored in database.
+* Tracking number: fixed available qty not displayed on grid view.
+* Stock move: fixed printing settings when creating stock move from sale order.
+* Stock configuration: fixed typo in french translation, 'incoterme' => 'incoterm'
 
-#### Project
 
-* Project and Task: Split ProjectStatus between ProjectStatus for project and TaskStatus for task.
+### Developer
 
-#### Base/HR
+#### Production
 
-* User, Employee: Improved behavior to avoid links errors and inconsistencies and for more coherence.
-* Partner: change companyStr length
-* Company: Add all java timezone in timezone selection in Company.
-* Training skill: graduation date and end of validity date are not required anymore.
+Changed signature of `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId)`
+to `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit)`
+
+#### Quality
+
+Created `ControlEntryManagementRepository` extending `ControlEntryRepository`, `ControlPlanManagementRepository` extending `ControlPlanRepository`
+and `ControlEntryPlanLineManagementRepository` extending `ControlEntryPlanLineManagementRepository`
+
+## [8.0.5] (2024-04-19)
+
+### Fixes
+#### Base
+
+* (Webapp) Updated Axelor Open Platform dependency to 7.0.7.
+* Birt template: fixed duplicated printouts generated when attach boolean is set to true.
+
+#### Account
+
+* Payment voucher: fixed required message at on new and fixed invoice refresh at confirm.
+* Accounting report: fixed 'Fees declaration supporting file' report displaying records that should not appear.
+* Invoice: improved UX to prevent the use of financial discount on advance payment invoice.
+* Financial Discount: fixed french translations for 'discount'.
+* Invoice payment: fixed anomalies when doing multi currency payments.
+* Invoice: fixed invoice term amount remaining on invoice payment move.
+
+#### Budget
+
+* Purchase order/Sale order/Stock move/Invoice: link order budget to invoice after stock move generation.
+* Global budget: fixed structure validation when the global budget have no budget.
+* Budget: fixed technical error when creating budget on a saved budget level.
+
+#### Human Resource
+
+* Expense: fixed expense accounting moves generation when expense line dates are different and tax amount is zero.
+
+#### Sale
+
+* Sale order: removed french translation from english file.
+
+#### Supply Chain
+
+* Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead.
+* Mass stock move invoicing: fixed an issue preventing to invoice customer returns.
+
+## [8.0.4] (2024-04-04)
+
+### Fixes
+#### Base
+
+* Pricing: fixed the parent product filter in computed pricing formula.
+* Company: fixed missing info in the demo data import.
+
+#### Account
+
+* Invoice: fixed printing of advance payment invoice in invoice report.
+* Analytic axis by company: fixed analytic axis display error.
+* Invoice: fixed report when invoice is linked to more than one stock move.
+* Move: fixed error when selecting a third party payer partner.
+* Move template line: added missing tax in demo data.
+* Payment Session: fixed error when selecting bank details where payment mode have empty accounting setting.
+* Accounting Situation: fixed used credit calculation not taking in account completed sale orders.
+* Analytic: fixed amount computation when we change the analytic line percentage.
+* Accounting Batch: in closing account batch, prevented result move generation when no accounts are treated.
+* Accounting batch: fixed move generation on account closing/opening batch.
+
+#### Bank Payment
+
+* Bank reconciliation: move lines to reconcile in other currencies are now displayed.
+* AccountingBatch: fixed direct debit batch.
+
+#### Business Project
+
+* Invoicing project: fixed batch to prevent the generation of invoicing business project when there is nothing to invoice.
+
+#### Contract
+
+* Contract template/Contract version: fixed 'Additional Benefit Management' field display.
+* Contract template: fixed an error occuring in the server logs on opening a contract template.
+* Contract: fixed issue on change of contract line fields on a new version.
+
+#### Human Resource
+
+* Expense: fixed expenses creation for subordinates.
+* Expense line: fixed project filter to use user related to employee instead of current user.
+
+#### Production
+
+* Manufacturing order: fixed unable to select a tracking number on a consumed product.
+* Bill of materials import: fixed creation of a new product from bill of materials import form view.
+* Outsourcing: fixed setting outsourced in a new prod process line.
+
+#### Quality
+
+* Quality: fixed formula of dimension in control type demo data.
+
+#### Sale
+
+* Sale order line: fixed an error that occured when changing project of a line.
+* Sale order: fixed scale for quantity and price fields in editable grid.
+
+#### Talent
+
+* App config: fixed demo data in the recruitment app config.
+
+
+### Developer
+
+#### Account
+
+- Updated Invoice.rptdesign file with some fixes.
+- On an advance invoice payment, 'Imputed by' field is now correctly filled with the reference to the payment on the invoice.
+
+---
+
+In accounting configuration, the field `analyticAxisByCompanyList` had previously a sequence starting with 0. However, since the upgrade of the framework to v7, the sequence of this list now starts with 1. 
+The processes that previously assumed a starting sequence of 0 will now be adjusted to start from 1 in order to align with the behavior of AOP.
+
+If you use this configuration, after this patch please make sure that this sequence is starting with 1 in your database.
+
+---
+
+- Removed getAnalyticAmountFromParent method from AnalyticLineService.
+- Removed calculateAmountWithPercentage method from AnalyticDistributionController.
+- Removed action-method : `action-method-calculate-amount-with-percentage-analytic-move-line` and replaced by existing action-method : `action-analytic-move-line-method-compute-amount`.
+- Added computeAmount method in AnalyticMoveLineService.
+- Updated parameters on getParentWithContext method from AnalyticControllerUtils.
+
+#### Sale
+
+Removed `action action-sale-order-line-record-progress`
+
+## [8.0.3] (2024-03-21)
+
+### Fixes
+#### Base
+
+* Webapp: Updated Axelor Open Platform dependency to 7.0.4.
+* App: removed warning during app installation.
+* Sale order/Purchase order: fixed number of decimals display in price and totals.
+* Fixed wrong french translation of 'Application' (was 'Domaine d'applicabilité').
+* Language: fixed an issue where getting default language did not use the configuration 'application.locale'.
+* App Base: fixed wrong currency conversion line in demo data.
+* Price list: check that the product is purchasable on purchase price lists.
+
+#### Account
+
+* Accounting batch : fix result move functional origin in closure/open batch.
+* Move: fixed mass entry technical origin missing in Move printing.
+* Payment voucher: fixed paid amount selecting overdue move line.
+* Accounting batch: fixed the block customer message when no result.
+* Partner/AccountingSituation: added error label when multiple accounting situation for a company and a partner.
+* Reconcile manager: fixed move lines selection.
+* Accounting batch: fixed currency amounts on result moves in opening/closure.
+* Invoice payment: fixed technical error when setting currency to null.
+* Financial discount: fixed technical error linked to invoice terms.
+* FEC Export: fixed technical error when journal is missing.
+
+#### Budget
+
+* Budget template: fixed database error related to scaling.
+* Purchase order line: fixed wrong budget distribution when invoicing multiple purchase order lines.
+
+#### Contract
+
+* Contract template: fixed error when opening an existing contract template or saving a new one.
+* Contract: fixed technical error when creating lines without saving.
+* Contract line: fixed analytic lines creation using amount in company currency.
+* Contract: fixed prorata invoicing when invoicing period is smaller than the invoicing frequency.
+
+#### CRM
+
+* Event: fixed an error preventing the computation of the event duration.
+* Tour: hide validate button when everything is validated.
 
 #### Helpdesk
 
-* Ticket: Renamed the customer field into customerPartner
+* SLA: added missing translations inside 'reach in' in readonly.
+* Ticket dashboard: fixed an issue preventing ticket dashboard loading.
 
-#### Accounting
+#### Human Resource
 
-* Accounting report analytic config line : Rule level maximum value is now the highest existing analytic level.
-* Custom accounting report: fixed comparison period order.
-* Move: origin date is now always filled in automatic creation.
-* Invoice term: rework partial pfp validation in invoice terms to be more user friendly and fix financial discount in second invoice term generation.
-* Journal type: field technicalTypeSelect is now compulsory.
+* Expense: fixed internal error preventing employee selection.
 
-### Removed
+#### Production
 
-* App base configuration: remove OSM Routing API selection
+* Manufacturing order: fixed a bug where missing quantities were not displayed.
+* Prod process line: added missing filter on type for work centers.
+* Manufacturing order: fixed error on change of client partner for manuf orders without related sale orders.
+* MPS: fixed quantity not editable on MPS proposal.
+* Product: fixed an issue where 'economic manuf order qty' field was displayed twice.
+* Product: fixed cost sheet group display on product form on semi-finished products.
 
-Now, when computing distance for Kilometric Allowances, if using the Open Street Map mapping service provider, 
-it will use the OSRM API by default.
+#### Stock
 
-* Leave management: remove unused 'user' column in data model.
-* Alarms: removed everything related to alarms.
-* CRM : Leads : Remove 'Import Leads' feature.
-* [EXPENSE] Remove multi user expense.
-* Object data config: removed unused domain object data config.
-* WAP History: removed WAP history  (replaced by a new table “StockLocationLineHistory” with more information.
-* Skills : experienceSkillSet and skillSet are now removed from employee form.
-* Simplified moves: removed in favor of mass entry.
+* Inventory: fixed type in inventory demo data.
+
+#### Supplier Management
+
+* Supplier request: fixed 'JNPE' error on partner selection in Supplier request form.
 
 
-[7.1.2]: https://github.com/axelor/axelor-open-suite/compare/v7.1.1...v7.1.2
-[7.1.1]: https://github.com/axelor/axelor-open-suite/compare/v7.1.0...v7.1.1
-[7.1.0]: https://github.com/axelor/axelor-open-suite/compare/v7.0.5...v7.1.0
+### Developer
+
+#### Contract
+
+A new transient field `companyCurrency` was added in `ContractTemplate` so the model can implement the `Currenciable` interface.
+
+#### Production
+
+Moved `com.axelor.apps.production.service.ProdProductProductionRepository` to `com.axelor.apps.production.db.repo.ProdProductProductionRepository`
+
+## [8.0.2] (2024-03-07)
+
+### Fixes
+
+* The format of this file has been updated: the fixes are now separated by modules to improve readability, and a new `developer` section was added with technical information that could be useful for developers working on modules on top of Axelor Open Suite.
+
+#### Base
+
+* Import configuration: fixed issue preventing from using zip file to import.
+* Studio Apps: fixed regression where some apps name were not translated.
+* Translation import/export: fixed display issue when an error occurs during import.
+* ABC class: fixed a bug where everything was classed in the first class.
+
+#### Account
+
+* Account clearance: fixed issue when opening a generated move line from account clearance.
+* Doubtful batch: fixed NPE errors on doubtful customer batch.
+* Invoice payment: added missing french translation for error message.
+* Invoice payment: fixed financial discount management when VAT is exempted.
+* Move: fixed technical error in move reverse on original move unreconcile.
+* Period: fixed an issue when checking user permission where the roles in user's group were not checked.
+* Account: manage dynamically decimals depending on the currency in Accounting reports.
+* Reconcile: fixed passed for payment check at reconcile confirmation.
+* Reconcile: fixed selected amount with negative values.
+* Fixed asset: fixed disposal wizard view and disposal sale move.
+* Move: fixed missing label in accounting move printing.
+* Reconcile generator: fixed scale management.
+
+#### CRM
+
+* CRM App: fixed small typos in english titles.
+* Tour: reset 'validated' status on lines after copying a tour.
+* Lead: fixed anomaly which was forcing a lead to have a company.
+
+#### Human Resource
+
+* Timesheet line: improved timesheet line creation process.
+* Leave request: fixed Payroll input display so it is visible for HR manager only.
+* Leave reason: fixed demo data.
+* Payroll preparation: fixed 'the exported file is not found' error on payroll generation when the export dir is different from upload dir.
+
+#### Mobile Settings
+
+* Mobile dashboard: deleting a mobile dashboard will now correctly delete related mobile dashboard lines.
+
+#### Production
+
+* Sale order: fixed a NPE that occured at the manuf order generation.
+* Bill of materials: fixed a bug where imported BOMs were linked to components.
+* Manufacturing order: fixed an issue when the products to consume are by operation where the product list to consume was not filled when planning.
+* Manufacturing order: real process are now correctly computed in cost sheet.
+* Manufacturing order: fixed a bug a producible quantity was not correctly computed when a component was not available.
+
+#### Sale
+
+* Sale order: improve performance on sale order save.
+
+#### Stock
+
+* Stock move: fixed 'concurrent modification' error preventing from planning a stock move.
+
+#### Supply Chain
+
+* Stock move: fixed a bug that prevented to totally invoice a stock move when partial invoicing for out stock move was activated.
+* Supplychain configuration: fixed default value for "Generation of out stock move for products".
+* Sale order: fixed a bug where sale orders waiting for stock move were not displayed.
+
+
+### Developer
+
+#### Base
+
+* CurrencyScale : Technical rework for CurrencyScale services
+
+Created an interface called "Currenciable" with the following public methods who take as parameter in most of cases a Currenciable object :
+
+- getScaledValue
+- getCompanyScaledValue
+- getScale
+- getCompanyScale
+- getCurrencyScale
+- getCompanyCurrencyScale
+- isGreaterThan
+- equals
+
+Removed CurrencyScaleServiceAccount, CurrencyScaleServiceBankPayment, CurrencyScaleServiceBudget, CurrencyScaleServiceContract, CurrencyScaleServicePurchase, CurrencyScaleServiceSale.
+And replace those services by CurrencyService call.
+
+Implement Currenciable interface into those models:
+
+- axelor-account -> AnalyticMoveLine, FixedAsset, FixedAssetLine, Invoice, InvoiceLine, InvoicePayment, InvoiceTerm, Move, MoveLine, PaymentVoucher
+- axelor-bank-payment -> BankReconciliation, BankReconciliationLine, BankStatementLine
+- axelor-budget -> Budget, BudgetDistribution, BudgetLevel, BudgetScenario, GlobalBudget
+- axelor-contract -> Contract, ContractLine
+- axelor-purchase -> PurchaseOrder, PurchaseOrderLine
+- axelor-sale -> SaleOrder, SaleOrderLine
+
+#### Account
+
+- Removal of `action-method-account-clearance-show-move-lines` and creation of `action-account-clearance-view-move-lines` for its replacement
+- `showAccountClearanceMoveLines` has been removed from `AccountClearanceController`
+
+---
+
+- Changed FixedAssetGroupService.getDisposalWizardValuesMap parameters: fixedAsset,disposalTypeSelect -> disposal, fixedAsset, disposalTypeSelect
+
+#### CRM
+
+- In `lead-form-view`, removed `required` from `enterpriseName`
+
+#### Human Resource
+
+- Moved every timesheet line creation methods into TimesheetLineCreationService. This service was added in the constructor of several other services.
+- Create TimesheetLineCreationProjectServiceImpl to override a creation method.
+
+## [8.0.1] (2024-02-22)
+
+#### Fixed
+
+* Updated Axelor Open Platform dependency to 7.0.3.
+* App builder: update axelor-studio dependency to 2.0.1
+
+Please see the corresponding [CHANGELOG](https://github.com/axelor/axelor-studio/blob/2.0.1/CHANGELOG.md).
+
+* Stock location: fixed wrong QR Code on copied stock location.
+* Move: fixed currency rate errors in move line view.
+* Invoice: fixed an issue when returning to the refund list after creating a refund from an invoice.
+* Bank order: fixed multi currency management.
+* Purchase order: fixed JNPE error on purchase order historic opening.
+* Cost calculation: fixed JNPE error on select of product.
+* Product: replaced stock history panel which is showing empty records by a panel to stock location line history.
+* Employee: fixed error happening while deleting employee.
+* Invoice: fixed an error on invoice ventilation when the invoice had an advance payment in previous period.
+* Sale order: removed the possibility to mass update fields on sale order, as it caused inconsistencies.
+* Fixed asset: fixed purchase account move domain in fixed asset form view.
+* Expense: added new API request to update expense line.
+* Import: display an error when mapping or data file do not have the expected extension.
+* Operation order: fixed duplication of operation order that could happen on some cases during planification.
+* PurchaseOrder/SaleOrder: fixed analytic distribution lines creation with company amount.
+* Invoice: fixed display of delivery address on advance payment invoices generated from a sale order.
+* Budget: remove all dependencies with other modules when the app budget is disabled.
+* Accounting batch: take in account accounted moves in accounting report setting move status field.
+* Invoice: fixed wrong scale at ventilation in the move.
+* Computing amounts in employee bonus management now alert user if employee does not have a birth date or seniority date.
+* Expense: added an helper and improved the title on orphan expense line config.
+* Project: fixed opening gantt view per user.
+* Accounting report: set readonly export button and add report type check to provide critical error.
+* Leave type: hide allowInjection if exceptionnal leave.
+* Invoice: fixed an issue with a partial multi currency payment computing the wrong amount remaining to pay.
+* Operation order: finishing a manuf order from the operations correctly computes the cost sheet quantities.
+* Sale order: fixed technical error preventing pack creation.
+* Contract: reset sequence when duplicating contracts.
+* Reconciliation: fixed invoice term imputation when PFP not validated.
+* Manufacturing order: finishing a manufacturing order now correctly updates the cost price of a product.
+* Stock move: fixed error when spliting in two a stock move.
+* Inventory line: forbid negative values in inventories.
+* Accounting export: fixed FEC export not taking journal into account.
+* Project: fixed critical error when we change purchase order line quantity on purchase order generated by project task.
+* Medical visit: fixed JNPE error when saving a new medical visit.
+
+## [8.0.0] (2024-02-07)
+
+### Features
+
+#### Upgrade to Axelor Open Platform version 7.0
+
+* Axelor Open Platform version 7 is a full rewrite of our front-end. The previous version was written on top of AngularJs, it is now on top of React.
+* See corresponding [Migration guide](https://docs.axelor.com/adk/7.0/migrations/migration-7.0.html) for information on breaking changes.
+
+#### Base
+
+* Management of prices scale per currency: now currency with no scale or with a scale of 3 are managed.
+* Pricings: the "pricing" feature which was available for sale order line, can now be used for any model.
+* Address: a new configuration is now available for addresses, and is used to have different address format per country.
+* Localization: a new configuration "Localization" was added to manage language and country information for the user and the company.
+The resulting locale will be used for translation, date and currency formats.
+* Translation: add a new import/export feature to update translations more easily on a running instance.
+
+#### CRM
+
+* Tour: add a new model to plan tour for salespersons.
+
+#### Purchase
+
+* Purchase order: improve purchase order merge process.
+
+#### Sale
+
+* Sale order line: add a new configuration to enable editable grid on sale order line.
+* Sale order: improve sale order merge process.
+
+#### Account
+
+* Invoice: improve invoice merge process.
+* Invoice: it is now possible to invoice multiple sale orders with a single invoice.
+* Financial discount: reworked financial discount feature.
+
+#### Budget
+
+* Improve budget structure to allow as many as budget level as wanted.
+* Improve budget validation so each section can be validated.
+* Add a budget generator that will help to build budgets, preview the result and generate a budget with all sub levels.
+* Add a new reporting for a budget scenario.
+* Add the possibility to link projects with budgets.
+
+#### Stock
+
+* Stock move: a new stock move can be generated from a return.
+* Stock move: a new button has been added to split lines into a fulfilled line and a line with the remaining quantity.
+* Stock location: stock location valuation can now be retrieved at a given date in the report.
+
+#### Supply Chain
+
+* MRP: add a new delay on purchase and manufacturing order proposal.
+* Stock move: merging stock moves is now possible.
+
+#### Production
+
+* Bill of materials: add a new menu allowing to import bill of materials.
+* Subcontracting: the subconctracting feature was reworked.
+* Manufacturing order: add a new configuration to complete stock moves from manufacturing order. Produced products quantities are retrieved on the stock move when the manufacturing order is done.
+
+#### Quality
+
+* Quality control: this new feature allows to define controls, make them periodically, and visualize the result.
+
+#### HR
+
+* Expense: manage expense lines without parent expense to see lines created from the mobile app.
+
+#### Mobile Settings
+
+* Dashboard: a new menu is added to allow to create dashboards available on the mobile application.
+
+### Change
+
+#### Base
+
+* Sequence: add alphanumeric pattern for sequence, allowing to create sequence like this: `320BMF -> 320BMG -> ... -> 320BMZ -> 320BNA -> ...`
+* Sequence: allow to configure prefix/suffix with a groovy script.
+* Tax number: add a configuration allowing to enable or disable this feature.
+
+#### CRM
+
+* Opportunity: the type of opportunity is now a selection instead of a simple string.
+
+#### Purchase
+
+* Supplier catalog: manage maximum quantity.
+
+#### Sale
+
+* Configurator: add demo data.
+
+#### Account
+
+* Accounting move: improve form view.
+* FEC Import: add a new button to retrieve a default FEC import configuration.
+* Accounting configuration: improve import for company accounting configuration.
+* Journal: display a debit/credit indicator.
+* Doubtful customer: add a preview to see accounting moves to shift to doubtful.
+* Accounting custom report: add a new config to to hide empty lines.
+* Accounting custom report: line detail now works with accounting account codes.
+* Accounting custom report: remove characters limitation for accounting account codes.
+* Accounting custom report: removed unused fields.
+* Fixed assets: technical change to prefix fields related to import with `import`.
+
+#### Budget
+
+* Improve budget distribution.
+* Add a new option to update the budget automatically on order/invoices/moves validation.
+* Global budget: do not show indicators while budget is not saved.
+
+#### Bank Payment
+
+* Bank order: add a new configuration to switch the lines display, editable or list.
+* EBICS: removed fields related to EBICS T.
+
+#### Business project
+
+* Rework menus order.
+
+#### Stock
+
+* Stock location valuation: add an option to see the valuation details per sub stock location.
+* Stock rules: stock rules are now computed using a batch to avoid performance issues when realizing large stock moves.
+* Tracking number: improve wizard to split lines per tracking number on a manual stock move.
+* Tracking number: on a product, it is now possible to manage tracking number per company.
+* Tracking number: add supplier on tracking number.
+* Tracking number: improve the tracking number wizard on stock move to allow tracking number selection.
+* Incoterm: add a configuration to activate or deactivate.
+
+#### Supply Chain
+
+* Add a new "Timetables" menu entry to see timetable invoicing for sale orders.
+
+#### Production
+
+* ProductionConfig: the configurations per company form view was reworked.
+* Work center: if configured, the work center group is now used for the planification.
+* Work center: add a chart and a calendar view on work center group to visualize related work centers planning.
+* Work center: improve employee management on work centers.
+* Work center: improve production process line configuration.
+* Employee: add a new calendar view for employee.
+* Machine: add a chart to visualize machine planning.
+
+#### Helpdesk
+
+* Ticket: make ticket status configurable.
+* Ticket: remove unused fields `mailSubject` and `ticketLead`.
+* SLA: improve SLA feature.
+
+#### HR
+
+* Leave request: improve leave configuration.
+* Timesheet: rework timer feature and add a new configuration to manage multiple timers in parallel.
+* Add a new API to create an expense.
+
+#### Mobile Settings
+
+* Stock: add new configurations to select which roles have access to which feature on the mobile application.
+* Stock: add a new configuration to disable stock location management on the mobile application.
+* Authentication: add a new API to fetch user permissions.
+* HR: add new configuration to manage timesheets from the mobile application.
+
+[8.0.6]: https://github.com/axelor/axelor-open-suite/compare/v8.0.5...v8.0.6
+[8.0.5]: https://github.com/axelor/axelor-open-suite/compare/v8.0.4...v8.0.5
+[8.0.4]: https://github.com/axelor/axelor-open-suite/compare/v8.0.3...v8.0.4
+[8.0.3]: https://github.com/axelor/axelor-open-suite/compare/v8.0.2...v8.0.3
+[8.0.2]: https://github.com/axelor/axelor-open-suite/compare/v8.0.1...v8.0.2
+[8.0.1]: https://github.com/axelor/axelor-open-suite/compare/v8.0.0...v8.0.1
+[8.0.0]: https://github.com/axelor/axelor-open-suite/compare/v7.2.7...v8.0.0

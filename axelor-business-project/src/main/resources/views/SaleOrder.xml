@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="business-project-sale-order-form" extension="true">
@@ -18,6 +18,26 @@
         value="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"/>
     </extend>
   </form>
+
+  <form name="sale-order-generate-po-select-supplierpartner-form"
+    id="business-project-sale-order-generate-po-select-supplierpartner-form"
+    model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation"
+    onLoad="action-record-load-dummy-supplier-partner" extension="true">
+    <extend target="//button[@name='generatePOConfirmBtn']">
+      <attribute name="onClick"
+        value="action-sale-order-group-generate-po-select-supplierpartner-from-project-task"/>
+    </extend>
+  </form>
+
+  <action-group
+    name="action-sale-order-group-generate-po-select-supplierpartner-from-project-task">
+    <action name="action-supplychain-so-generate-po-check-supplier-partner"/>
+    <action
+      name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"
+      if="eval: !_projectTaskId"/>
+    <action name="action-project-task-method-generate-purchase-order"
+      if="eval: _projectTaskId"/>
+  </action-group>
 
   <action-method
     name="action-business-project-sale-order-method-generate-invoicing-project">

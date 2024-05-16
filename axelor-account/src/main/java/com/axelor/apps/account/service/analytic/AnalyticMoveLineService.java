@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
@@ -42,6 +43,8 @@ public interface AnalyticMoveLineService {
 
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine);
 
+  BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine, BigDecimal analyticLineAmount);
+
   public List<AnalyticMoveLine> generateLines(
       AnalyticDistributionTemplate analyticDistributionTemplate,
       BigDecimal total,
@@ -53,6 +56,7 @@ public interface AnalyticMoveLineService {
       Product product,
       Company company,
       TradingName tradingName,
+      Account account,
       boolean isPurchase)
       throws AxelorException;
 
@@ -71,6 +75,9 @@ public interface AnalyticMoveLineService {
       InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
       throws AxelorException;
 
+  AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
+      throws AxelorException;
+
   AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
   AnalyticMoveLine reverseAndPersist(
@@ -80,4 +87,6 @@ public interface AnalyticMoveLineService {
       AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
   String getAnalyticAxisDomain(Company company) throws AxelorException;
+
+  void setAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine);
 }

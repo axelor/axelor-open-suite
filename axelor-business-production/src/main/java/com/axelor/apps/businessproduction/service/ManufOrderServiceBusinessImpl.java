@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
@@ -33,10 +34,13 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
-import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
@@ -57,22 +61,27 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
   public ManufOrderServiceBusinessImpl(
       SequenceService sequenceService,
       OperationOrderService operationOrderService,
-      ManufOrderWorkflowService manufOrderWorkflowService,
+      ManufOrderPlanService manufOrderPlanService,
+      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
       ProductVariantService productVariantService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
-      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl,
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      PartnerRepository partnerRepository,
+      BillOfMaterialService billOfMaterialService,
+      StockMoveService stockMoveService,
+      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
     super(
         sequenceService,
         operationOrderService,
-        manufOrderWorkflowService,
+        manufOrderPlanService,
+        manufOrderCreatePurchaseOrderService,
         productVariantService,
         appBaseService,
         appProductionService,
@@ -82,7 +91,10 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         barcodeGeneratorService,
         productStockLocationService,
         unitConversionService,
-        metaFiles);
+        metaFiles,
+        partnerRepository,
+        billOfMaterialService,
+        stockMoveService);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 

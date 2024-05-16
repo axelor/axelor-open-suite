@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,12 @@ import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -50,31 +51,57 @@ public class DurationServiceImpl implements DurationService {
   }
 
   @Override
-  public BigDecimal computeRatio(LocalDate start, LocalDate end, Duration duration) {
+  public BigDecimal computeRatio(
+      LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd, Duration duration) {
     Preconditions.checkNotNull(
         start, I18n.get("You can't compute a" + " duration ratio without start date."));
     Preconditions.checkNotNull(
         end, I18n.get("You can't compute a" + " duration ratio without end date."));
-    if (duration == null) {
+    totalEnd = totalEnd.plus(1, ChronoUnit.DAYS);
+
+    long totalComputedDays = ChronoUnit.DAYS.between(start, end) + 1;
+
+    if (isFullDuration(start, duration, totalComputedDays)) {
       return BigDecimal.ONE;
     }
-    end = end.plus(1, ChronoUnit.DAYS);
 
+    long totalDays = getTotalDays(totalStart, totalEnd, duration);
+
+    return BigDecimal.valueOf(totalComputedDays)
+        .divide(
+            BigDecimal.valueOf(totalDays),
+            AppBaseService.COMPUTATION_SCALING,
+            RoundingMode.HALF_UP);
+  }
+
+  protected boolean isFullDuration(LocalDate start, Duration duration, long totalComputedDays) {
     if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
-      long months = ChronoUnit.MONTHS.between(start, end);
-      LocalDate theoryEnd = start.plusMonths(months);
-      long restDays = ChronoUnit.DAYS.between(theoryEnd, end);
-      long daysInMonth = ChronoUnit.DAYS.between(theoryEnd, theoryEnd.plusMonths(1));
-      return BigDecimal.valueOf(months)
-          .add(
-              BigDecimal.valueOf(restDays)
-                  .divide(BigDecimal.valueOf(daysInMonth), MathContext.DECIMAL32))
-          .divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+      return ChronoUnit.DAYS.between(start, start.plusMonths(duration.getValue()))
+          == totalComputedDays;
     } else {
-      long restDays = ChronoUnit.DAYS.between(start, end);
-      return BigDecimal.valueOf(restDays)
-          .divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+      return duration.getValue() == totalComputedDays;
     }
+  }
+
+  protected long getTotalDays(LocalDate totalStart, LocalDate totalEnd, Duration duration) {
+    long totalDays = ChronoUnit.DAYS.between(totalStart, totalEnd);
+    if (duration == null) {
+      return totalDays;
+    }
+    long durationValue = duration.getValue();
+    if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
+      long months = ChronoUnit.MONTHS.between(totalStart, totalEnd);
+      if (months < durationValue) {
+        LocalDate theoryStart = totalStart.minusMonths(duration.getValue() - months);
+        totalDays = ChronoUnit.DAYS.between(theoryStart, totalEnd);
+      }
+    } else {
+      if (totalDays < durationValue) {
+        LocalDate theoryStart = totalStart.minusDays(duration.getValue() - totalDays);
+        totalDays = ChronoUnit.DAYS.between(theoryStart, totalEnd);
+      }
+    }
+    return totalDays;
   }
 
   @Override
