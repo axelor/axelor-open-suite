@@ -49,6 +49,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Sets;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -245,7 +246,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     setTaxEquiv(invoiceLine, company, isPurchase);
 
-    invoiceLine.setTaxLineSet(taxLineSet);
+    invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
