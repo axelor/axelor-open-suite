@@ -50,16 +50,25 @@ public class ProductReservationServiceImpl implements ProductReservationService 
               .filter(
                   "self.typeSelect = :typeSelect AND self.status = :status"
                       + (productReservation.getStockLocation() != null
-                          ? " AND self.stockLocation = :stockLocation AND self.product = :product "
-                          : ""))
+                          ? " AND self.stockLocation = :stockLocation"
+                          : "")
+                      + (isTracked
+                          ? " AND self.trackingNumber = :trackingNumber"
+                          : " AND self.product = :product"))
               .bind("product", productReservation.getProduct())
               .bind("typeSelect", productReservation.getTypeSelect())
               .bind("status", ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS)
               .bind("stockLocation", productReservation.getStockLocation())
+              .bind("trackingNumber", productReservation.getTrackingNumber())
               .fetchStream()
               .map(ProductReservation::getQty)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
-      BigDecimal realQty = this.getRealQtyForProductReservation(productReservation);
+      BigDecimal realQty =
+          productReservation.getStockLocation().getDetailsStockLocationLineList().stream()
+              .filter(it -> it.getTrackingNumber().equals(productReservation.getTrackingNumber()))
+              .findFirst()
+              .get()
+              .getCurrentQty();
       BigDecimal availableQty =
           realQty.subtract(alreadyAllocatedQty).setScale(2, RoundingMode.HALF_UP);
 
