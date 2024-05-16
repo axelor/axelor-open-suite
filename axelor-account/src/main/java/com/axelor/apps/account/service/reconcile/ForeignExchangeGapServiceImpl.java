@@ -64,14 +64,16 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
   }
 
   @Override
-  public Move manageForeignExchangeGap(Reconcile reconcile) throws AxelorException {
+  public ForeignMoveToReconcile manageForeignExchangeGap(Reconcile reconcile)
+      throws AxelorException {
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
 
     // We only run the process if currency rate between the two moveLines are different
     if (debitMoveLine != null
         && creditMoveLine != null
-        && !debitMoveLine.getCurrencyRate().equals(creditMoveLine.getCurrencyRate())) {
+        && !debitMoveLine.getCurrencyRate().equals(creditMoveLine.getCurrencyRate())
+        && this.checkForeignExchangeAccounts(reconcile.getCompany())) {
       boolean isDebit = foreignExchangeGapToolsService.isDebit(creditMoveLine, debitMoveLine);
       BigDecimal foreignExchangeGapAmount =
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
@@ -81,8 +83,24 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
         boolean isGain =
             foreignExchangeGapToolsService.isGain(creditMoveLine, debitMoveLine, isDebit);
 
-        return this.createForeignExchangeGapMove(
-            reconcile, foreignExchangeGapAmount, isGain, isDebit);
+        Move foreignExchangeMove =
+            this.createForeignExchangeGapMove(reconcile, foreignExchangeGapAmount, isGain, isDebit);
+        MoveLine foreignExchangeDebitMoveLine = foreignExchangeMove.getMoveLineList().get(0);
+        MoveLine foreignExchangeCreditMoveLine = foreignExchangeMove.getMoveLineList().get(1);
+
+        MoveLine debitMoveLineToReconcile;
+        MoveLine creditMoveLineToReconcile;
+        // if (creditMoveLine.getCredit().compareTo(creditMoveLine.getDebit()) < 0) {
+        if (isGain) {
+          debitMoveLineToReconcile = foreignExchangeDebitMoveLine;
+          creditMoveLineToReconcile = creditMoveLine;
+        } else {
+          debitMoveLineToReconcile = debitMoveLine;
+          creditMoveLineToReconcile = foreignExchangeCreditMoveLine;
+        }
+
+        return new ForeignMoveToReconcile(
+            foreignExchangeMove, debitMoveLineToReconcile, creditMoveLineToReconcile);
       }
     }
 
@@ -156,12 +174,12 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
             null,
             originMove != null ? originMove.getCompanyBankDetails() : null);
 
-    // Credit move line creation
-    this.miscOperationMoveCreation(
-        move, originMove.getPartner(), creditAccount, foreignExchangeAmount, false, 1);
     // Debit move line creation
     this.miscOperationMoveCreation(
-        move, originMove.getPartner(), debitAccount, foreignExchangeAmount, true, 2);
+        move, originMove.getPartner(), debitAccount, foreignExchangeAmount, true, 1);
+    // Credit move line creation
+    this.miscOperationMoveCreation(
+        move, originMove.getPartner(), creditAccount, foreignExchangeAmount, false, 2);
 
     moveValidateService.accounting(move);
 
