@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -51,7 +52,8 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      PfpService pfpService) {
+      PfpService pfpService,
+      ForeignExchangeGapToolsService foreignExchangeGapToolsService) {
 
     super(
         invoicePaymentRepository,
@@ -61,7 +63,8 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
         invoiceTermPaymentService,
         invoiceTermService,
         invoiceService,
-        pfpService);
+        pfpService,
+        foreignExchangeGapToolsService);
   }
 
   @Override
