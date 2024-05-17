@@ -358,7 +358,6 @@
     <hilite color="success" if="leadScoringSelect == 5.00"/>
     <template> <![CDATA[
 	         <>
-	         	{picture && <Image src={$image('picture', 'image')} w={25} h={25} style={{ objectFit: "contain" }}></Image>}
 	         	<dl>
 	         		{name &&
 	         			<Box>
@@ -385,6 +384,9 @@
 	         			</Box>
 	         		</Box>
 	         	</dl>
+	         	<Box d="flex" justifyContent="flex-end">
+	         		{picture && <Image src={$image('picture', 'image')} w={25} h={25} style={{ objectFit: "contain", width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+	         	</Box>
 	        	<Box className="card-summary popover">
 	       			<Box as="p" m={2}>
 	        			{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ wordBreak: "break-all", maxWidth: 250 }}></Box>}
