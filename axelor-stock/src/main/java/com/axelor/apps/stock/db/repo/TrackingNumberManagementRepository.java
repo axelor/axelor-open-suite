@@ -27,7 +27,9 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
 import com.google.inject.Inject;
@@ -89,6 +91,14 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
 
     // Barcode generation
     AppStock appStock = appStockService.getAppStock();
+    try {
+      // This method calls is to check circular parent dependencies.
+      Beans.get(TrackingNumberService.class).getOriginParents(trackingNumber);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+
     if (appStock != null
         && appStock.getActivateTrackingNumberBarCodeGeneration()
         && trackingNumber.getBarCode() == null) {

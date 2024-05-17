@@ -197,8 +197,9 @@
   <action-view name="sc.root.sale.conf.partner.price.list" title="Partner price lists"
     model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
-    <view type="form" name="sale-partner-price-list-form"/>
+    <view type="form" name="partner-price-list-form"/>
     <domain>self.typeSelect = 1</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
   </action-view>
 
   <menuitem name="sc-root-sale-conf-price-list" parent="sc-root-sale-conf"
@@ -207,8 +208,9 @@
   <action-view name="sc.root.sale.conf.price.list" title="Price lists"
     model="com.axelor.apps.base.db.PriceList">
     <view type="grid" name="price-list-grid"/>
-    <view type="form" name="sale-price-list-form"/>
+    <view type="form" name="price-list-form"/>
     <domain>self.typeSelect = 1</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
   </action-view>
 
   <menuitem name="sc-root-sale-templates" parent="sc-root-sale-conf"

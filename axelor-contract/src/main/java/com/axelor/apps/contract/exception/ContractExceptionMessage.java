@@ -60,4 +60,13 @@ public final class ContractExceptionMessage {
 
   public static final String CONTRACT_QUANTITIES_EXCEED_MAX = /*$$(*/
       "Consumption line quantities exceed the max quantity defined in the contract line." /*)*/;
+
+  public static final String CONTRACT_LINE_PRODUCT_MISSING = /*$$(*/
+      "Contract lines must have a product." /*)*/;
+
+  public static final String CONTRACT_YEB_PRODUCT_MISSING = /*$$(*/
+      "Year end bonus product must be filled in account configuration." /*)*/;
+
+  public static final String CONTRACT_YEB_PRODUCT_ACCOUNT_MISSING = /*$$(*/
+      "Year end bonus product account must be filled in account configuration." /*)*/;
 }

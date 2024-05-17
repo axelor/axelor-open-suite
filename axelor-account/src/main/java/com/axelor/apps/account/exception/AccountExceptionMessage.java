@@ -1472,6 +1472,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX = /*$$(*/
       "Please select a sale financial discount tax in account config for company %s." /*)*/;
 
+  public static final String ACCOUNT_CONFIG_MISSING_BILL_OF_EXCHANGE_RECEIV_ACCOUNT = /*$$(*/
+      "Please select a bill of exchange receivable account in account config for company %s." /*)*/;
+
   public static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 

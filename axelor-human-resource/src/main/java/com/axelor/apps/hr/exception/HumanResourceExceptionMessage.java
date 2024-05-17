@@ -398,4 +398,10 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_UPDATED_CURRENCY_CURRENT_EXPENSE_INCONSISTENCY = /*$$(*/
       "Updated currency and current parent currency are incompatible." /*)*/;
+
+  public static final String TIMESHEET_INVALID_DATES = /*$$(*/
+      "The start date cannot be more recent than the end date." /*)*/;
+
+  public static final String TIMESHEET_LINE_INVALID_DATES = /*$$(*/
+      "%s date is invalid. It must be included in the timesheet's period." /*)*/;
 }

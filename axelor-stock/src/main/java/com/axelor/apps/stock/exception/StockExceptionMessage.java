@@ -305,4 +305,6 @@ public final class StockExceptionMessage {
       "No dimension could be computed, please make sure that you have the necessary field to compute at least one field" /*)*/;
   public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_EXPECTED_DECIMAL_RESULT = /*$$(*/
       "Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula." /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
+      "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
 }

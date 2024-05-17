@@ -13,6 +13,8 @@
     <bind to="projectTaskPrioritySet" column="projectTaskPrioritySet"
       search="self.importId in :projectTaskPrioritySet"
       eval="projectTaskPrioritySet.split('\\|') as List"/>
+    <bind to="completedTaskStatus" column="completedTaskStatus_importId"
+      search="self.importId = :completedTaskStatus_importId"/>
   </input>
 
   <input file="business_project_project.csv" type="com.axelor.apps.project.db.Project"
@@ -37,6 +39,8 @@
       search="self.importId = :completedProjectStatus_importId"/>
     <bind to="canceledProjectStatus" column="canceledProjectStatus_importId"
       search="self.importId = :canceledProjectStatus_importId"/>
+    <bind to="completedTaskStatus" column="completedTaskStatus_importId"
+      search="self.importId = :completedTaskStatus_importId"/>
   </input>
 
   <input file="project_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";"/>

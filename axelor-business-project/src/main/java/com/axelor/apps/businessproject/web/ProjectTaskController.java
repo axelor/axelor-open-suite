@@ -20,9 +20,11 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -190,5 +192,37 @@ public class ProjectTaskController {
           .setProjectAndProjectTask(purchaseOrderId, projectTask.getProject(), projectTask);
       response.setCanClose(true);
     }
+  }
+
+  public void getProductData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Map<String, Object> productMap =
+        Beans.get(ProjectFrameworkContractService.class).getProductDataFromContract(projectTask);
+    response.setValues(productMap);
+  }
+
+  public void getEmployeeProduct(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Product employeeProduct =
+        Beans.get(ProjectFrameworkContractService.class).getEmployeeProduct(projectTask);
+    response.setValue("product", employeeProduct);
+  }
+
+  public void getCustomerContractDomain(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    String domain =
+        Beans.get(ProjectFrameworkContractService.class).getCustomerContractDomain(projectTask);
+    response.setAttr("frameworkCustomerContract", "domain", domain);
+  }
+
+  public void getSupplierContractDomain(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    String domain =
+        Beans.get(ProjectFrameworkContractService.class).getSupplierContractDomain(projectTask);
+    response.setAttr("frameworkSupplierContract", "domain", domain);
   }
 }
