@@ -287,12 +287,14 @@
     <action name="action-contract-line-method-hide-date-panel"/>
     <action name="action-contract-line-method-hide-is-to-revaluate"/>
     <action name="action-contract-line-group-manage-analytic"/>
+    <action name="action-contract-line-method-product-required"/>
   </action-group>
 
   <action-group name="action-contract-line-group-additional-onnew-onload">
     <action name="action-contract-line-method-scale-and-precision"/>
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-group-manage-analytic"/>
+    <action name="action-contract-line-method-product-required"/>
   </action-group>
 
   <action-group
@@ -461,4 +463,9 @@ In case you have contract lines with different invoicing duration, you can activ
   <action-attrs name="action-contract-line-attrs-show-pricing-lines">
     <attribute for="$showLine" name="value" expr="true"/>
   </action-attrs>
+
+  <action-method name="action-contract-line-method-product-required">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setProductRequired"/>
+  </action-method>
 </object-views>
