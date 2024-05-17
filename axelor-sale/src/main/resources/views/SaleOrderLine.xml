@@ -774,6 +774,8 @@
     <field name="$nbDecimalDigitForUnitPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <field name="$currencyNumberOfDecimals"
+      expr="eval: __parent__?.currency?.numberOfDecimals"/>
   </action-record>
 
   <!-- ACTION METHOD -->
