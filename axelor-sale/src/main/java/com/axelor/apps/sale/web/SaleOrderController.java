@@ -676,7 +676,7 @@ public class SaleOrderController {
 
       Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
 
-      response.setValues(saleOrder);
+      response.setValues(Mapper.toMap(saleOrder));
       response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
