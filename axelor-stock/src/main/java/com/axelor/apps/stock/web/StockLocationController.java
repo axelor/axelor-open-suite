@@ -87,7 +87,8 @@ public class StockLocationController {
                   exportType,
                   financialDataDateTimeString,
                   withoutDetailsByStockLocation,
-                  idsArray);
+                  idsArray)
+              .generate();
 
       String fileLink = reportSettings.getFileLink();
       String title = reportSettings.getOutputName();

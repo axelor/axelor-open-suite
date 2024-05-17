@@ -566,6 +566,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected Invoice toPositivePriceInvoice(Invoice invoice) throws AxelorException {
     if (invoice.getExTaxTotal().signum() < 0) {
       Invoice refund = transformToRefund(invoice);
+      invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
       invoiceRepository.remove(invoice);
       return refund;
     } else {
@@ -632,8 +633,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     if (stockMove.getSaleOrder() != null) {
       SaleOrder saleOrder = stockMove.getSaleOrder();
+      Partner invoicedPartner = saleOrder.getInvoicedPartner();
+      if (invoicedPartner == null) {
+        if (stockMove.getInvoicedPartner() != null) {
+          invoicedPartner = stockMove.getInvoicedPartner();
+        } else {
+          invoicedPartner = saleOrder.getClientPartner();
+        }
+      }
       dummyInvoice.setCurrency(saleOrder.getCurrency());
-      dummyInvoice.setPartner(saleOrder.getClientPartner());
+      dummyInvoice.setPartner(invoicedPartner);
       dummyInvoice.setCompany(saleOrder.getCompany());
       dummyInvoice.setTradingName(saleOrder.getTradingName());
       dummyInvoice.setPaymentCondition(saleOrder.getPaymentCondition());
@@ -650,7 +659,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setFiscalPosition(saleOrder.getFiscalPosition());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
-      dummyInvoice.setPartner(stockMove.getPartner());
+      dummyInvoice.setPartner(
+          stockMove.getInvoicedPartner() != null
+              ? stockMove.getInvoicedPartner()
+              : stockMove.getPartner());
       dummyInvoice.setCompany(stockMove.getCompany());
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getToAddress());

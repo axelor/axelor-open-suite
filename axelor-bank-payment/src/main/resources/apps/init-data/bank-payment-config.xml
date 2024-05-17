@@ -24,4 +24,7 @@
     <bind to="appBase" search="self.id = '1'"/>
   </input>
 
+  <input file="account_accountingReportType.csv" separator=";"
+    search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType"/>
+
 </csv-inputs>

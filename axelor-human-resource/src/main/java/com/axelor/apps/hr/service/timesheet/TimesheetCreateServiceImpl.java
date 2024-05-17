@@ -98,6 +98,11 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE));
     }
+    if (fromDate != null && toDate != null && toDate.isBefore(fromDate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_INVALID_DATES));
+    }
     return createTimesheet(employee, fromDate, toDate);
   }
 

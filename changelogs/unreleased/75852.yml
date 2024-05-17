@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed 'FixedAsset' boolean never propagated to invoice line from purchase order line."
+module: axelor-supplychain

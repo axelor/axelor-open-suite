@@ -82,6 +82,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
     if (!invoicePayment.getManualChange()) {
       invoicePayment.setApplyFinancialDiscount(true);
     }
+
     invoicePayment.setFinancialDiscount(
         invoiceTermPaymentList.get(0).getInvoiceTerm().getFinancialDiscount());
     invoicePayment.setFinancialDiscountTotalAmount(
@@ -184,7 +185,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
 
       this.computeFinancialDiscount(invoicePayment);
 
-      if (invoicePayment.getApplyFinancialDiscount()) {
+      if (invoicePayment.getApplyFinancialDiscount() || invoicePayment.getPaymentDate() == null) {
         invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
 
         invoicePayment.setAmount(
