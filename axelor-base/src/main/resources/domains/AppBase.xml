@@ -172,6 +172,13 @@
     <boolean name="isPricingComputingOrder" title="Pricing computing order"
       help="When selected, this is the pricing scale computation order."/>
 
+    <boolean name="isActivateInstanceInfoShortcut" default="false"
+      title="Activate the instance information shortcut"
+      help="This configuration allows quick access to the type of environment and the configured date and time"/>
+    <boolean name="isActivateCompanyChangeShortcut" default="false"
+      title="Activate the company change shortcut"
+      help="This configuration allows quick access to the active company change"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

@@ -61,6 +61,8 @@ import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
+import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
+import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -325,6 +327,9 @@ public class BaseModule extends AxelorModule {
           }
         },
         new ControllerMethodInterceptor());
+
+    addQuickMenu(InstanceInfoQuickMenuCreator.class);
+    addQuickMenu(ActiveCompanyUpdateQuickMenuCreator.class);
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
