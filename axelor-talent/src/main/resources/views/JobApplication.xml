@@ -214,7 +214,7 @@
     <field name="dmsFile"/>
     <template><![CDATA[
 			<>
-				<h4>{fullName}</h4>
+				<strong>{fullName}</strong>
 				<Box mt={4}>
 					<span>{_t('Email')}</span><span> : { emailAddress.address }</span> <Box/>
 					<span>{_t('Fixed phone')}</span><span> : { fixedPhone }</span> <Box/>
