@@ -688,7 +688,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       contract = line.getContractVersion().getContract();
     }
 
-    BigDecimal qty = line.getProduct() == null ? BigDecimal.ONE : line.getQty();
+    BigDecimal qty = getQty(line, contract);
     Product product = getLineProduct(line, contract);
 
     Contract finalContract = contract;
@@ -786,6 +786,18 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoice.addInvoiceLineListItem(invoiceLine);
 
     return Beans.get(InvoiceLineRepository.class).save(invoiceLine);
+  }
+
+  protected BigDecimal getQty(ContractLine line, Contract contract) {
+    BigDecimal qty;
+    if (contract != null
+        && line.getProduct() == null
+        && contractYearEndBonusService.isYebContract(contract)) {
+      qty = BigDecimal.ONE;
+    } else {
+      qty = line.getQty();
+    }
+    return qty;
   }
 
   protected void replaceTaxLineSet(
