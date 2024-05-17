@@ -182,9 +182,6 @@
     <action name="action-leave-request-validate-dates-on-save"/>
     <action name="save"/>
     <action name="action-leave-request-method-sent-leave-request"/>
-    <action name="action-leave-request-attrs-buttons"/>
-    <action name="action-leave-request-attrs-send"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-leave-request-group-validate">
