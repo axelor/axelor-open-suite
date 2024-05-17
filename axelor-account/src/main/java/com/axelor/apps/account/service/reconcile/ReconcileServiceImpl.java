@@ -760,6 +760,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     return newReconcile;
   }
 
+  @Transactional
   protected void computeForeignExchange(Reconcile reconcile) throws AxelorException {
     ForeignMoveToReconcile foreignExchangeGapMove =
         foreignExchangeGapService.manageForeignExchangeGap(reconcile);
@@ -772,12 +773,16 @@ public class ReconcileServiceImpl implements ReconcileService {
               true);
 
       if (foreignExchangeReconcile != null) {
+        foreignExchangeReconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
+        reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
-        invoicePayment.setTypeSelect(
-            foreignExchangeGapToolsService.getInvoicePaymentType(reconcile));
-        invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-        invoicePaymentRepository.save(invoicePayment);
+        if (invoicePayment != null) {
+          invoicePayment.setTypeSelect(
+              foreignExchangeGapToolsService.getInvoicePaymentType(reconcile));
+          invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+          invoicePaymentRepository.save(invoicePayment);
+        }
       }
     }
   }

@@ -93,6 +93,11 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
     reconcileCheckService.checkCurrencies(debitMoveLine, creditMoveLine);
 
+    if (reconcile.getForeignExchangeMove() != null) {
+      creditInvoice = creditMove.getInvoice() != null ? creditMove.getInvoice() : null;
+      debitInvoice = debitMove.getInvoice() != null ? debitMove.getInvoice() : null;
+    }
+
     this.updatePayment(
         reconcile,
         debitMoveLine,
