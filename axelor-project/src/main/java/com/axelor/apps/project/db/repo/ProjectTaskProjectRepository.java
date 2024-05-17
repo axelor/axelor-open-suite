@@ -24,9 +24,11 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.utils.ProjectTaskUtilsService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,6 +40,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProjectTaskProjectRepository extends ProjectTaskRepository {
+
+  protected AppProjectService appProjectService;
+  protected ProjectTaskUtilsService projectTaskUtilsService;
+
+  @Inject
+  public ProjectTaskProjectRepository(
+      AppProjectService appProjectService, ProjectTaskUtilsService projectTaskUtilsService) {
+    this.appProjectService = appProjectService;
+    this.projectTaskUtilsService = projectTaskUtilsService;
+  }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -93,13 +105,13 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     projectTask.setHasDateOrFrequencyChanged(false);
 
     if (StringUtils.isEmpty(projectTask.getTicketNumber())
-        && Beans.get(AppProjectService.class).getAppProject().getIsEnablePerProjectTaskSequence()) {
+        && appProjectService.getAppProject().getIsEnablePerProjectTaskSequence()) {
       int sequence = project.getNextProjectTaskSequence();
       project.setNextProjectTaskSequence(sequence + 1);
       projectTask.setTicketNumber(project.getCode() + sequence);
     }
 
-    projectTask.setDescription(projectTaskService.getTaskLink(projectTask.getDescription()));
+    projectTask.setDescription(projectTaskUtilsService.getTaskLink(projectTask.getDescription()));
 
     return super.save(projectTask);
   }

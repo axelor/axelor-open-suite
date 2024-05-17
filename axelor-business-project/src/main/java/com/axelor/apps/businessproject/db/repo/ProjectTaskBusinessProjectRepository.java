@@ -22,11 +22,20 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.ProjectTaskProgressUpdateService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.utils.ProjectTaskUtilsService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Collections;
 import javax.persistence.PersistenceException;
 
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
+
+  @Inject
+  public ProjectTaskBusinessProjectRepository(
+      AppProjectService appProjectService, ProjectTaskUtilsService projectTaskUtilsService) {
+    super(appProjectService, projectTaskUtilsService);
+  }
 
   @Override
   public ProjectTask copy(ProjectTask entity, boolean deep) {

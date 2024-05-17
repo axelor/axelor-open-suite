@@ -26,12 +26,11 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
-import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.utils.ProjectTaskUtilsService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.studio.db.AppProject;
@@ -43,8 +42,19 @@ import javax.persistence.PersistenceException;
 
 public class ProjectManagementRepository extends ProjectRepository {
 
-  @Inject ProjectTaskService projectTaskService;
-  @Inject AppProjectService appProjectService;
+  protected AppProjectService appProjectService;
+  protected ProjectTaskUtilsService projectTaskUtilsService;
+  protected SequenceService sequenceService;
+
+  @Inject
+  public ProjectManagementRepository(
+      AppProjectService appProjectService,
+      ProjectTaskUtilsService projectTaskUtilsService,
+      SequenceService sequenceService) {
+    this.appProjectService = appProjectService;
+    this.projectTaskUtilsService = projectTaskUtilsService;
+    this.sequenceService = sequenceService;
+  }
 
   protected void setAllProjectFullName(Project project) throws AxelorException {
     setProjectFullName(project);
@@ -103,15 +113,14 @@ public class ProjectManagementRepository extends ProjectRepository {
   @Override
   public Project save(Project project) {
 
-    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+    AppProject appProject = appProjectService.getAppProject();
 
     try {
       if (StringUtils.isBlank(project.getCode()) && appProject.getGenerateProjectSequence()) {
         Company company = project.getCompany();
         String seq =
-            Beans.get(SequenceService.class)
-                .getSequenceNumber(
-                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code", project);
+            sequenceService.getSequenceNumber(
+                SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code", project);
 
         if (seq == null) {
           throw new AxelorException(
@@ -141,7 +150,7 @@ public class ProjectManagementRepository extends ProjectRepository {
       TraceBackService.traceExceptionFromSaveMethod(e.getCause());
       throw new PersistenceException(e.getMessage(), e);
     }
-    project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
+    project.setDescription(projectTaskUtilsService.getTaskLink(project.getDescription()));
     return super.save(project);
   }
 
@@ -157,7 +166,7 @@ public class ProjectManagementRepository extends ProjectRepository {
     try {
       final String canceledProjectStatusIdStr = "$canceledProjectStatusId";
 
-      AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+      AppProject appProject = appProjectService.getAppProject();
 
       if (appProject.getCanceledProjectStatus() != null) {
         json.put(canceledProjectStatusIdStr, appProject.getCanceledProjectStatus().getId());

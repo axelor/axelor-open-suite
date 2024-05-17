@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
@@ -25,6 +26,8 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.utils.ProjectTaskUtilsService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.List;
@@ -34,6 +37,14 @@ public class ProjectHRRepository extends ProjectManagementRepository {
   @Inject private ProjectPlanningTimeService projectPlanningTimeService;
 
   @Inject private ProjectPlanningTimeRepository planningTimeRepo;
+
+  @Inject
+  public ProjectHRRepository(
+      AppProjectService appProjectService,
+      ProjectTaskUtilsService projectTaskUtilsService,
+      SequenceService sequenceService) {
+    super(appProjectService, projectTaskUtilsService, sequenceService);
+  }
 
   @Override
   public Project save(Project project) {

@@ -19,17 +19,23 @@
 package com.axelor.apps.businesssupport.db.repo;
 
 import com.axelor.apps.businesssupport.db.ProjectAnnouncement;
-import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.utils.ProjectTaskUtilsService;
 import com.google.inject.Inject;
 
 public class ProjectAnnouncementBusinessSupportRepository extends ProjectAnnouncementRepository {
 
-  @Inject ProjectTaskService projectTaskService;
+  protected ProjectTaskUtilsService projectTaskUtilsService;
+
+  @Inject
+  public ProjectAnnouncementBusinessSupportRepository(
+      ProjectTaskUtilsService projectTaskUtilsService) {
+    this.projectTaskUtilsService = projectTaskUtilsService;
+  }
 
   @Override
   public ProjectAnnouncement save(ProjectAnnouncement entity) {
     String content = entity.getContent();
-    entity.setContent(projectTaskService.getTaskLink(content));
+    entity.setContent(projectTaskUtilsService.getTaskLink(content));
     return super.save(entity);
   }
 }

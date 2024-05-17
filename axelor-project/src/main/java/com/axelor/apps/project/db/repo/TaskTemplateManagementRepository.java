@@ -22,17 +22,24 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class TaskTemplateManagementRepository extends TaskTemplateRepository {
+
+  protected TaskTemplateService taskTemplateService;
+
+  @Inject
+  public TaskTemplateManagementRepository(TaskTemplateService taskTemplateService) {
+    this.taskTemplateService = taskTemplateService;
+  }
 
   @Override
   public TaskTemplate save(TaskTemplate taskTemplate) {
 
     if (taskTemplate.getVersion() != 0
-        && Beans.get(TaskTemplateService.class)
-            .isParentTaskTemplateCreatedLoop(taskTemplate, taskTemplate.getParentTaskTemplate())) {
+        && taskTemplateService.isParentTaskTemplateCreatedLoop(
+            taskTemplate, taskTemplate.getParentTaskTemplate())) {
       throw new PersistenceException(
           I18n.get(ProjectExceptionMessage.TASK_TEMPLATE_PARENT_TASK_CREATED_LOOP));
     }

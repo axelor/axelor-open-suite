@@ -31,7 +31,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -40,8 +39,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 
@@ -50,8 +47,6 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected FrequencyService frequencyService;
   protected AppBaseService appBaseService;
   protected ProjectRepository projectRepository;
-
-  private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
   @Inject
   public ProjectTaskServiceImpl(
@@ -228,31 +223,6 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   @Transactional
   public void deleteProjectTask(ProjectTask projectTask) {
     projectTaskRepo.remove(projectTask);
-  }
-
-  @Override
-  public String getTaskLink(String value) {
-    if (StringUtils.isEmpty(value)) {
-      return value;
-    }
-    StringBuffer buffer = new StringBuffer();
-    Matcher matcher = Pattern.compile("@([^\\s]+)").matcher(value);
-    Matcher nonMatcher = Pattern.compile("@([^\\s]+)(?=<\\/a>)").matcher(value);
-    while (matcher.find()) {
-      String matchedValue = matcher.group(1);
-      String ticketNumber = matchedValue.replaceAll("\\<.*?\\>", "");
-      if (nonMatcher.find() && ticketNumber.equals(nonMatcher.group(1))) {
-        continue;
-      }
-      ProjectTask task =
-          projectTaskRepo.all().filter("self.ticketNumber = ?1", ticketNumber).fetchOne();
-      if (task != null) {
-        matcher.appendReplacement(buffer, String.format(TASK_LINK, task.getId(), matchedValue));
-      }
-    }
-
-    String result = buffer.toString();
-    return StringUtils.isEmpty(result) ? value : result;
   }
 
   @Override

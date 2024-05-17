@@ -22,6 +22,8 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.utils.ProjectTaskUtilsService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.Map;
@@ -29,6 +31,12 @@ import java.util.Map;
 public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
 
   @Inject private ProjectPlanningTimeService projectPlanningTimeService;
+
+  @Inject
+  public ProjectTaskHRRepository(
+      AppProjectService appProjectService, ProjectTaskUtilsService projectTaskUtilsService) {
+    super(appProjectService, projectTaskUtilsService);
+  }
 
   @Override
   public ProjectTask save(ProjectTask projectTask) {

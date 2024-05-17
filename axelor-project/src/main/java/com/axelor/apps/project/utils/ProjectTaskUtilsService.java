@@ -16,25 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.db.repo;
+package com.axelor.apps.project.utils;
 
-import com.axelor.apps.project.db.Wiki;
-import com.axelor.apps.project.utils.ProjectTaskUtilsService;
-import com.google.inject.Inject;
+public interface ProjectTaskUtilsService {
 
-public class WikiProjectRepository extends WikiRepository {
-
-  protected ProjectTaskUtilsService projectTaskUtilsService;
-
-  @Inject
-  public WikiProjectRepository(ProjectTaskUtilsService projectTaskUtilsService) {
-    this.projectTaskUtilsService = projectTaskUtilsService;
-  }
-
-  @Override
-  public Wiki save(Wiki entity) {
-    String content = entity.getContent();
-    entity.setContent(projectTaskUtilsService.getTaskLink(content));
-    return super.save(entity);
-  }
+  String getTaskLink(String value);
 }

@@ -20,8 +20,17 @@ package com.axelor.apps.businesssupport.db.repo;
 
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.utils.ProjectTaskUtilsService;
+import com.google.inject.Inject;
 
 public class ProjectTaskBusinessSupportRepository extends ProjectTaskBusinessProjectRepository {
+
+  @Inject
+  public ProjectTaskBusinessSupportRepository(
+      AppProjectService appProjectService, ProjectTaskUtilsService projectTaskUtilsService) {
+    super(appProjectService, projectTaskUtilsService);
+  }
 
   @Override
   public ProjectTask copy(ProjectTask entity, boolean deep) {
