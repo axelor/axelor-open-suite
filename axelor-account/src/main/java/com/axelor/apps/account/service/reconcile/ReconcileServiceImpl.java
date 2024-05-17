@@ -337,10 +337,44 @@ public class ReconcileServiceImpl implements ReconcileService {
         debitMoveLine, creditMoveLine, null, canBeZeroBalanceOk, updateInvoicePayments);
   }
 
+  /**
+   * Méthode permettant de lettrer une écriture au débit avec une écriture au crédit
+   *
+   * @param debitMoveLine
+   * @param creditMoveLine
+   * @throws AxelorException
+   */
+  @Override
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       InvoicePayment invoicePayment,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
+      throws AxelorException {
+    return this.reconcile(
+        debitMoveLine,
+        creditMoveLine,
+        invoicePayment,
+        null,
+        canBeZeroBalanceOk,
+        updateInvoicePayments);
+  }
+
+  /**
+   * Method who allow to reconcile debit move and credit move with an foreign exchange move
+   *
+   * @param debitMoveLine
+   * @param creditMoveLine
+   * @param foreignExchangeMove
+   * @throws AxelorException
+   */
+  @Override
+  public Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
+      Move foreignExchangeMove,
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException {
@@ -352,6 +386,10 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (reconcile != null) {
       if (invoicePayment != null) {
         invoicePayment.setReconcile(reconcile);
+      }
+
+      if (foreignExchangeMove != null) {
+        reconcile.setForeignExchangeMove(foreignExchangeMove);
       }
 
       this.confirmReconcile(reconcile, updateInvoicePayments, true);
@@ -769,12 +807,12 @@ public class ReconcileServiceImpl implements ReconcileService {
           this.reconcile(
               foreignExchangeGapMove.getDebitMoveLine(),
               foreignExchangeGapMove.getCreditMoveLine(),
+              null,
+              foreignExchangeGapMove.getMove(),
               false,
               true);
 
       if (foreignExchangeReconcile != null) {
-        foreignExchangeReconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
-        reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
         if (invoicePayment != null) {

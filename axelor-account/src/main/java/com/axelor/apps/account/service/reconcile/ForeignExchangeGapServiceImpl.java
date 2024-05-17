@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -130,14 +131,14 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
             ? gainsAccount
             : (!isDebit && isGain) ? gainsAccount : debitMoveLine.getAccount();
 
-    Move originMove = null;
+    Invoice invoice;
     Partner partner = null;
 
     if (debitMoveLine.getMove().getFunctionalOriginSelect()
         == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
-      originMove = debitMoveLine.getMove();
+      invoice = creditMoveLine.getMove().getInvoice();
     } else {
-      originMove = creditMoveLine.getMove();
+      invoice = debitMoveLine.getMove().getInvoice();
     }
 
     if (debitMoveLine.getMove().getPartner() != null
@@ -158,14 +159,13 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
             0,
             null,
             null,
-            originMove != null ? originMove.getCompanyBankDetails() : null);
+            invoice != null ? invoice.getCompanyBankDetails() : null);
+    move.setInvoice(invoice);
 
     // Debit move line creation
-    this.miscOperationMoveCreation(
-        move, originMove.getPartner(), debitAccount, foreignExchangeAmount, true, 1);
+    this.miscOperationMoveCreation(move, partner, debitAccount, foreignExchangeAmount, true, 1);
     // Credit move line creation
-    this.miscOperationMoveCreation(
-        move, originMove.getPartner(), creditAccount, foreignExchangeAmount, false, 2);
+    this.miscOperationMoveCreation(move, partner, creditAccount, foreignExchangeAmount, false, 2);
 
     moveValidateService.accounting(move);
 

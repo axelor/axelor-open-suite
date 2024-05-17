@@ -142,7 +142,9 @@ public class ReconcileInvoiceTermComputationServiceImpl
         }
       }
 
-      if (invoicePayment == null
+      if ((invoicePayment == null
+              || (reconcile.getForeignExchangeMove() != null
+                  && !reconcile.equals(invoicePayment.getReconcile())))
           && moveLine.getAccount().getUseForPartnerBalance()
           && otherMoveLine.getAccount().getUseForPartnerBalance()) {
 
