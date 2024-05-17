@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.utils.FileExportTools;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
@@ -93,6 +94,7 @@ public class PayrollPreparationController {
 
     String file = payrollPreparationService.exportPayrollPreparation(payrollPreparation);
     if (file != null) {
+      FileExportTools.copyFileToExportDir(file);
       String[] filePath = file.split("/");
       response.setExportFile(filePath[filePath.length - 1]);
     }

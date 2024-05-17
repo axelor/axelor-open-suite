@@ -1,3 +1,251 @@
+## [7.1.21] (2024-05-03)
+
+### Fixes
+#### Base
+
+* Sequence: fixed NPE while checking yearly reset or monthly reset on unsaved sequence.
+* Advanced export: Fixed export doesn't work when maximum export limit exceeds.
+
+#### Account
+
+* Invoice: fixed default financial discount from partner not being computed after invoice copy.
+* Accounting export: Fixed error when replaying the accounting export.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed tax move line generation when origin is payment.
+
+#### Contract
+
+* Contract: fixed prorata invoicing when invoicing a full period.
+* Contract: correctly disable related configuration when disabling invoice management.
+* Contract: Fixed error when using contract template with contract line to generate a contract.
+
+#### Production
+
+* Manufacturing order: fixed conversion of missing quantity of consumed products.
+* Machine: fixed machine planning type when creating it from machine.
+
+#### Purchase
+
+* Purchase order report: fixed sequence order issue when title lines are present.
+
+#### Stock
+
+* Tracking number: fixed available qty not displayed on grid view.
+* Stock move: fixed printing settings when creating stock move from sale order.
+* Stock configuration: fixed typo in french translation, 'incoterme' => 'incoterm'
+
+
+### Developer
+
+#### Production
+
+Changed signature of `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId)`
+to `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit)`
+
+## [7.1.20] (2024-04-19)
+
+### Fixes
+#### Account
+
+* Payment voucher: fixed required message at on new and fixed invoice refresh at confirm.
+* Invoice: fixed report when invoice is linked to more than one stock move.
+* Accounting report: fixed 'Fees declaration supporting file' report displaying records that should not appear.
+* Financial Discount: fixed french translations for 'discount'.
+
+#### Human Resource
+
+* Expense: fixed expense accounting moves generation when expense line dates are different and tax amount is zero.
+
+#### Sale
+
+* Sale order: removed french translation from english file.
+
+#### Supply Chain
+
+* Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead.
+* Mass stock move invoicing: fixed an issue preventing to invoice customer returns.
+
+## [7.1.19] (2024-04-04)
+
+### Fixes
+#### Account
+
+* Move template line: added missing tax in demo data.
+* Payment Session: fixed error when selecting bank details where payment mode have empty accounting setting.
+* Accounting Situation: fixed used credit calculation not taking in account completed sale orders.
+* Accounting Batch: in closing account batch, prevented result move generation when no accounts are treated.
+* Accounting batch: fixed move generation on account closing/opening batch.
+
+#### Bank Payment
+
+* Bank reconciliation: move lines to reconcile in other currencies are now displayed.
+
+#### Business Project
+
+* Invoicing project: fixed batch to prevent the generation of invoicing business project when there is nothing to invoice.
+
+#### Contract
+
+* Contract template/Contract version: fixed 'Additional Benefit Management' field display.
+* Contract template: fixed an error occuring in the server logs on opening a contract template.
+
+#### Human Resource
+
+* Expense: fixed expenses creation for subordinates.
+* Expense line: fixed project filter to use user related to employee instead of current user.
+
+#### Production
+
+* Manufacturing order: fixed unable to select a tracking number on a consumed product.
+
+#### Sale
+
+* Sale order line: fixed an error that occured when changing project of a line.
+* Sale order: 'Total W.T' is no longer displayed twice in template grid view.
+
+#### Talent
+
+* App config: fixed demo data in the recruitment app config.
+
+
+### Developer
+
+#### Sale
+
+Removed action `action-sale-order-line-record-progress`
+
+## [7.1.18] (2024-03-21)
+
+### Fixes
+#### Base
+
+* Customer: fixed error when loading customer map.
+* Fixed wrong french translation of 'Application' (was 'Domaine d'applicabilité').
+* Language: fixed an issue where getting default language did not use the configuration 'application.locale'.
+* App Base: fixed wrong currency conversion line in demo data.
+
+#### Account
+
+* Accounting batch: fixed result move functional origin in closure/open batch.
+* Move: fixed mass entry technical origin missing in Move printing.
+* Payment voucher: fixed paid amount selecting overdue move line.
+* Accounting batch: fixed the block customer message when no result.
+* Reconcile manager: fixed move lines selection.
+* Accounting batch: fixed currency amounts on result moves in opening/closure.
+* FEC Export: fixed technical error when journal is missing.
+
+#### Budget
+
+* Purchase order line: fixed wrong budget distribution when invoicing multiple purchase order lines.
+
+#### Contract
+
+* Contract: fixed prorata invoicing when invoicing period was smaller than the invoicing frequency.
+
+#### Helpdesk
+
+* SLA: added missing translations inside 'reach in' in readonly.
+
+#### Production
+
+* Prod process line: added missing filter on type for work centers.
+* Manufacturing order: fixed error on change of client partner for manuf orders without related sale orders.
+* MPS: fixed quantity not editable on MPS proposal.
+* Product: fixed an issue where 'economic manuf order qty' field was displayed twice.
+* Product: fixed cost sheet group display on product form on semi-finished products.
+
+#### Stock
+
+* Inventory: fixed type in inventory demo data.
+
+#### Supplier Management
+
+* Supplier request: fixed 'JNPE' error on partner selection in Supplier request form.
+
+## [7.1.17] (2024-03-07)
+
+### Fixes
+
+* The format of this file has been updated: the fixes are now separated by modules to improve readability, and a new `developer` section was added with technical information that could be useful for developers working on modules on top of Axelor Open Suite.
+
+#### Account
+
+* Account clearance: fixed issue when opening a generated move line from account clearance.
+* Invoice payment: added missing french translation for error message.
+* Period: fixed an issue when checking user permission where the roles in user's group were not checked.
+* Reconcile: fixed passed for payment check at reconcile confirmation.
+* Reconcile: fixed selected amount with negative values.
+* Move: fixed missing label in accounting move printing.
+
+#### CRM
+
+* CRM App: fixed small typos in english titles.
+* Lead: fixed anomaly which was forcing a lead to have a company.
+
+#### Human Resource
+
+* Payroll preparation: fixed 'the exported file is not found' error on payroll generation when the export dir is different from upload dir.
+
+#### Production
+
+* Sale order: fixed a NPE that occured at the manuf order generation.
+* Manufacturing order: real process are now correctly computed in cost sheet.
+* Manufacturing order: fixed a bug a producible quantity was not correctly computed when a component was not available.
+
+#### Sale
+
+* Sale order: improve performance on sale order save.
+
+#### Supply Chain
+
+* Stock move: fixed a bug that prevented to totally invoice a stock move when partial invoicing for out stock move was activated.
+* Supplychain configuration: fixed default value for "Generation of out stock move for products".
+* Sale order: fixed a bug where sale orders waiting for stock move were not displayed.
+
+
+### Developer
+
+#### Account
+
+- Removal of `action-method-account-clearance-show-move-lines` and creation of `action-account-clearance-view-move-lines` for its replacement
+- `showAccountClearanceMoveLines` has been removed from `AccountClearanceController`
+
+#### CRM
+
+- in `lead-form-view`, removed `required` from `enterpriseName`
+
+## [7.1.16] (2024-02-22)
+
+#### Fixed
+
+* Stock location: fixed wrong QR Code on copied stock location.
+* Manufacturing order: fixed an issue where the stock location is incorrect for generated stock moves in manufacturing order using outsourcing.
+* Move: fixed currency rate errors in move line view.
+* Invoice: fixed an issue when returning to the refund list after creating a refund from an invoice.
+* Bank order: fixed multi currency management.
+* Purchase order: fixed JNPE error on purchase order historic opening.
+* Cost calculation: fixed JNPE error on select of product.
+* Product: replaced stock history panel which is showing empty records by a panel to stock location line history.
+* Employee: fixed error happening while deleting employee.
+* Invoice: fixed an error on invoice ventilation when the invoice had an advance payment in previous period.
+* Sale order: removed the possibility to mass update fields on sale order, as it caused inconsistencies.
+* Fixed asset: fixed purchase account move domain in fixed asset form view.
+* Invoice: fixed display of delivery address on advance payment invoices generated from a sale order.
+* Budget: remove all dependencies with other modules when the app budget is disabled.
+* Computing amounts in employee bonus management now alert user if employee does not have a birth date or seniority date.
+* Project: fixed opening gantt view per user.
+* Accounting report: set readonly export button and add report type check to provide critical error.
+* Operation order: finishing a manuf order from the operations correctly computes the cost sheet quantities.
+* Sale order: fixed technical error preventing pack creation.
+* Contract: reset sequence when duplicating contracts.
+* Reconciliation: fixed invoice term imputation when PFP not validated.
+* Manufacturing order: finishing a manufacturing order now correctly updates the cost price of a product.
+* Stock move: fixed error when spliting in two a stock move.
+* Inventory line: forbid negative values in inventories.
+* Accounting export: fixed FEC export not taking journal into account.
+
 ## [7.1.15] (2024-02-01)
 
 #### Fixed
@@ -841,6 +1089,12 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.21]: https://github.com/axelor/axelor-open-suite/compare/v7.1.20...v7.1.21
+[7.1.20]: https://github.com/axelor/axelor-open-suite/compare/v7.1.19...v7.1.20
+[7.1.19]: https://github.com/axelor/axelor-open-suite/compare/v7.1.18...v7.1.19
+[7.1.18]: https://github.com/axelor/axelor-open-suite/compare/v7.1.17...v7.1.18
+[7.1.17]: https://github.com/axelor/axelor-open-suite/compare/v7.1.16...v7.1.17
+[7.1.16]: https://github.com/axelor/axelor-open-suite/compare/v7.1.15...v7.1.16
 [7.1.15]: https://github.com/axelor/axelor-open-suite/compare/v7.1.14...v7.1.15
 [7.1.14]: https://github.com/axelor/axelor-open-suite/compare/v7.1.13...v7.1.14
 [7.1.13]: https://github.com/axelor/axelor-open-suite/compare/v7.1.12...v7.1.13

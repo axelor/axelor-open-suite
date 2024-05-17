@@ -165,7 +165,7 @@
       <field name="contactPartnerToCheck" hidden="true" colSpan="12"/>
       <field name="$priceList" title="Price List" type="many-to-one"
         target="com.axelor.apps.base.db.PriceList"
-        domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3"
+        domain="self.typeSelect = 1 and self.isActive = true" colSpan="6" colOffset="3"
         width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form"
         grid-view="price-list-grid"/>
       <field name="$stockLocation" canEdit="false" title="Stock location"
@@ -847,7 +847,6 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
   </grid>
@@ -1542,6 +1541,10 @@
       expr=" eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"
       if="company != null"/>
+    <attribute name="title" for="saleOrderLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+    <attribute name="title" for="saleOrderLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-set-contact-partner"

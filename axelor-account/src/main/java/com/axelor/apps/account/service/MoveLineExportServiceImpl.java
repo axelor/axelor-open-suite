@@ -37,6 +37,7 @@ import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -87,6 +88,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   protected AccountRepository accountRepo;
   protected MoveLineConsolidateService moveLineConsolidateService;
   protected PartnerService partnerService;
+  protected CompanyRepository companyRepository;
 
   protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
   protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
@@ -103,7 +105,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       JournalRepository journalRepo,
       AccountRepository accountRepo,
       MoveLineConsolidateService moveLineConsolidateService,
-      PartnerService partnerService) {
+      PartnerService partnerService,
+      CompanyRepository companyRepository) {
     this.accountingReportService = accountingReportService;
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
@@ -115,6 +118,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.partnerService = partnerService;
     this.appAccountService = appAccountService;
+    this.companyRepository = companyRepository;
   }
 
   public void updateMoveList(
@@ -384,8 +388,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     if (!administration) {
       moveLineQueryList.add("self.move.journal.notExportOk = false");
-      moveLineQueryList.add(
-          String.format("self.move.journal.id = %s", accountingReport.getJournal().getId()));
+
+      if (accountingReport.getJournal() != null) {
+        moveLineQueryList.add(
+            String.format("self.move.journal.id = %s", accountingReport.getJournal().getId()));
+      }
 
       if (replay) {
         moveLineQueryList.add(
@@ -410,6 +417,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     int offset = 0;
     List<Long> moveLineIdList;
     List<Move> moveList = new ArrayList<>();
+    String exportNumber = null;
 
     while (!(moveLineIdList =
             moveLineQuery
@@ -425,9 +433,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
 
       JPA.clear();
-
+      company = companyRepository.find(company.getId());
       if (!administration) {
-        String exportNumber = this.getSaleExportNumber(company);
+        exportNumber = exportNumber != null ? exportNumber : this.getSaleExportNumber(company);
         this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
       }
 

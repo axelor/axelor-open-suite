@@ -323,6 +323,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
+    if (saleOrder.getPrintingSettings() != null) {
+      stockMove.setPrintingSettings(saleOrder.getPrintingSettings());
+    }
     return stockMove;
   }
 

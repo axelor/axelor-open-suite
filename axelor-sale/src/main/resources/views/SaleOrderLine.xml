@@ -34,7 +34,6 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="estimatedShippingDate"/>
@@ -80,7 +79,6 @@
     <field name="qty" aggregate="sum"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
   </grid>
@@ -360,8 +358,7 @@
         title="Business Project" readonlyIf="$isReadOnly !== false"
         if-module="axelor-business-project">
         <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-attrs-domain-project"
-          onChange="action-sale-order-line-record-progress" form-view="project-form"
+          onSelect="action-sale-order-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
         <field name="toInvoice" colSpan="3"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
@@ -490,8 +487,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
         title="Project/Task" if-module="axelor-business-project">
         <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-attrs-domain-project"
-          onChange="action-sale-order-line-record-progress" form-view="project-form"
+          onSelect="action-sale-order-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
         <field name="progress" readonly="true" widget="SelectProgress"/>
       </panel>
@@ -843,11 +839,6 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect == 2 || saleSupplySelect == 3"/>
     <field name="standardDelay" expr="eval: 0"
       if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3"/>
-  </action-record>
-
-  <action-record name="action-sale-order-line-record-progress"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="progress" expr="eval: project?.progress"/>
   </action-record>
 
   <action-record name="action-sale-order-line-record-complementary-products-to-handle"
