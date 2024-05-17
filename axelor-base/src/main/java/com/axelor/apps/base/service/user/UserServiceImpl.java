@@ -516,4 +516,11 @@ public class UserServiceImpl implements UserService {
 
     return metaPermissionRuleList;
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setActiveCompany(User user, Company company) {
+    user.setActiveCompany(company);
+    userRepo.save(user);
+  }
 }
