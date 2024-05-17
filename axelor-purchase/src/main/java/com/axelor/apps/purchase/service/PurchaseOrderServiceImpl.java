@@ -30,7 +30,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -54,7 +53,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -89,6 +87,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected ProductConversionService productConversionService;
 
   @Inject protected PurchaseOrderPrintService purchaseOrderPrintService;
+
+  @Inject protected PurchaseOrderSequenceService purchaseOrderSequenceService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -247,32 +247,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
-    this.setDraftSequence(purchaseOrder);
+    purchaseOrderSequenceService.setDraftSequence(purchaseOrder);
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
     purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setDisplayPriceOnQuotationRequest(
         purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());
     return purchaseOrder;
-  }
-
-  @Override
-  public String getSequence(Company company, PurchaseOrder purchaseOrder) throws AxelorException {
-    String seq =
-        sequenceService.getSequenceNumber(
-            SequenceRepository.PURCHASE_ORDER,
-            company,
-            PurchaseOrder.class,
-            "purchaseOrderSeq",
-            purchaseOrder);
-    if (seq == null) {
-      throw new AxelorException(
-          company,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_1),
-          company.getName());
-    }
-    return seq;
   }
 
   @Override
@@ -333,7 +314,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     if (purchaseOrder.getVersionNumber() == 1
         && sequenceService.isEmptyOrDraftSequenceNumber(purchaseOrder.getPurchaseOrderSeq())) {
       purchaseOrder.setPurchaseOrderSeq(
-          this.getSequence(purchaseOrder.getCompany(), purchaseOrder));
+          purchaseOrderSequenceService.getSequence(purchaseOrder.getCompany(), purchaseOrder));
     }
     purchaseOrderRepo.save(purchaseOrder);
     if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()) {
@@ -411,15 +392,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   public void removeOldPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
     for (PurchaseOrder purchaseOrder : purchaseOrderList) {
       purchaseOrderRepo.remove(purchaseOrder);
-    }
-  }
-
-  @Override
-  public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException {
-
-    if (purchaseOrder.getId() != null
-        && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())) {
-      purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
     }
   }
 

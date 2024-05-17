@@ -79,10 +79,6 @@ public interface PurchaseOrderService {
       TradingName tradingName)
       throws AxelorException;
 
-  String getSequence(Company company, PurchaseOrder purchaseOrder) throws AxelorException;
-
-  public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException;
-
   @Transactional
   public Partner validateSupplier(PurchaseOrder purchaseOrder);
 

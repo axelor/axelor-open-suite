@@ -16,26 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.db.repo;
+package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
-import java.util.Map;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 
-public class SupplierCatalogManagementRepository extends SupplierCatalogRepository {
+public interface PurchaseOrderSequenceService {
 
-  protected AppBaseService appBaseService;
+  void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  @Inject
-  public SupplierCatalogManagementRepository(AppBaseService appBaseService) {
-    this.appBaseService = appBaseService;
-  }
-
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
-    json.put("$nbDecimalDigitForQty", appBaseService.getNbDecimalDigitForQty());
-
-    return super.populate(json, context);
-  }
+  String getSequence(Company company, PurchaseOrder purchaseOrder) throws AxelorException;
 }
