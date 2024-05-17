@@ -104,9 +104,6 @@ public interface PurchaseOrderLineService {
       ActionResponse response)
       throws AxelorException;
 
-  public String[] getProductSupplierInfos(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
-
   PurchaseOrderLine fill(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
       throws AxelorException;
 

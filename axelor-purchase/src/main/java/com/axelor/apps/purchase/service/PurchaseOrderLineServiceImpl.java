@@ -51,7 +51,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppPurchase;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -177,32 +176,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         new Object[] {quantity, price, amount});
 
     return amount;
-  }
-
-  public String[] getProductSupplierInfos(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
-
-    Product product = purchaseOrderLine.getProduct();
-    String productName = "";
-    String productCode = "";
-
-    if (product == null) {
-      return new String[] {productName, productCode};
-    }
-
-    SupplierCatalog supplierCatalog =
-        supplierCatalogService.getSupplierCatalog(
-            product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
-
-    if (supplierCatalog != null) {
-      productName = supplierCatalog.getProductSupplierName();
-      productCode = supplierCatalog.getProductSupplierCode();
-    }
-
-    return new String[] {
-      Strings.isNullOrEmpty(productName) ? product.getName() : productName,
-      Strings.isNullOrEmpty(productCode) ? product.getCode() : productCode
-    };
   }
 
   /**
