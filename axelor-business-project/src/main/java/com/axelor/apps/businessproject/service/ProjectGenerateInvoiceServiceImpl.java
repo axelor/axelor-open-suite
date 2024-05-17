@@ -3,6 +3,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -109,7 +110,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
             company,
             customer,
             customerContact,
-            project);
+            project,
+            customer.getInPaymentMode());
     return createInvoice(invoicingProject, invoiceGenerator, company);
   }
 
@@ -136,14 +138,15 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       Company company,
       Partner invoicedPartner,
       Partner invoicedPartnerContact,
-      Project project)
+      Project project,
+      PaymentMode paymentMode)
       throws AxelorException {
 
     return new InvoiceGenerator(
         operationTypeSelect,
         company,
         invoicedPartner.getPaymentCondition(),
-        invoicedPartner.getInPaymentMode(),
+        paymentMode,
         partnerService.getInvoicingAddress(invoicedPartner),
         invoicedPartner,
         invoicedPartnerContact,
