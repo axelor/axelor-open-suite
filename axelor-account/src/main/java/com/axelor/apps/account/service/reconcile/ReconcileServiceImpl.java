@@ -798,7 +798,6 @@ public class ReconcileServiceImpl implements ReconcileService {
     return newReconcile;
   }
 
-  @Transactional
   protected void computeForeignExchange(Reconcile reconcile) throws AxelorException {
     ForeignMoveToReconcile foreignExchangeGapMove =
         foreignExchangeGapService.manageForeignExchangeGap(reconcile);
