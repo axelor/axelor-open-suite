@@ -23,12 +23,12 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class TimesheetTimerHRRepository extends TSTimerRepository {
 
-  @Inject private TimesheetTimerService tsTimerService;
+  @Inject protected TimesheetTimerService tsTimerService;
+  @Inject protected TimesheetLineRepository timesheetLineRepository;
 
   @Override
   public TSTimer save(TSTimer tsTimer) {
@@ -58,6 +58,6 @@ public class TimesheetTimerHRRepository extends TSTimerRepository {
         tsTimerService.convertSecondDurationInHours(tsTimer.getDuration()));
     timesheetLine.setComments(tsTimer.getComments());
 
-    Beans.get(TimesheetLineRepository.class).save(timesheetLine);
+    timesheetLineRepository.save(timesheetLine);
   }
 }

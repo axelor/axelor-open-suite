@@ -23,11 +23,21 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.KilometricService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class ExpenseLineHRRepository extends ExpenseLineRepository {
+
+  protected EmployeeRepository employeeRepository;
+  protected KilometricService kilometricService;
+
+  @Inject
+  public ExpenseLineHRRepository(
+      KilometricService kilometricService, EmployeeRepository employeeRepository) {
+    this.kilometricService = kilometricService;
+    this.employeeRepository = employeeRepository;
+  }
 
   @Override
   public ExpenseLine save(ExpenseLine expenseLine) {
@@ -44,9 +54,9 @@ public class ExpenseLineHRRepository extends ExpenseLineRepository {
           employee = expenseLine.getEmployee();
         }
         if (employee != null) {
-          employee = Beans.get(EmployeeRepository.class).find(employee.getId());
+          employee = employeeRepository.find(employee.getId());
           expenseLine.setTotalAmount(
-              Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+              kilometricService.computeKilometricExpense(expenseLine, employee));
         } else {
           expenseLine.setTotalAmount(BigDecimal.ZERO);
         }

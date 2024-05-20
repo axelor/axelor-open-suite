@@ -16,25 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.db.repo;
+package com.axelor.apps.hr.utils;
 
-import com.axelor.apps.base.db.repo.UserBaseRepository;
-import com.axelor.apps.hr.utils.UserUtilsHRService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
 
-public class UserHRRepository extends UserBaseRepository {
-
-  protected UserUtilsHRService userUtilsHRService;
-
-  @Inject
-  public UserHRRepository(UserUtilsHRService userUtilsHRService) {
-    this.userUtilsHRService = userUtilsHRService;
-  }
+public class EmployeeUtilsServiceImpl implements EmployeeUtilsService {
 
   @Override
-  public void remove(User user) {
-    userUtilsHRService.removeLinkedUser(user);
-    super.remove(user);
+  @Transactional(rollbackOn = Exception.class)
+  public void removeLinkedEmployee(Employee employee) {
+    if (employee.getUser() == null) {
+      return;
+    }
+    UserRepository userRepository = Beans.get(UserRepository.class);
+    User user = userRepository.find(employee.getUser().getId());
+    if (user != null) {
+      user.setEmployee(null);
+      userRepository.save(user);
+    }
   }
 }

@@ -130,6 +130,8 @@ import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseSequenceService;
+import com.axelor.apps.hr.service.expense.ExpenseSequenceServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseToolServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
@@ -201,6 +203,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLeaveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateDefaultService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateDefaultServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
@@ -233,6 +237,12 @@ import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.hr.service.user.UserHrServiceImpl;
+import com.axelor.apps.hr.utils.EmployeeUtilsService;
+import com.axelor.apps.hr.utils.EmployeeUtilsServiceImpl;
+import com.axelor.apps.hr.utils.ProjectPlanningTimeUtilsService;
+import com.axelor.apps.hr.utils.ProjectPlanningTimeUtilsServiceImpl;
+import com.axelor.apps.hr.utils.UserUtilsHRService;
+import com.axelor.apps.hr.utils.UserUtilsHRServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
@@ -358,5 +368,10 @@ public class HumanResourceModule extends AxelorModule {
     bind(PlannedTimeValueService.class).to(PlannedTimeValueServiceImpl.class);
     bind(ProjectPlanningTimeResponseComputeService.class)
         .to(ProjectPlanningTimeResponseComputeServiceImpl.class);
+    bind(ExpenseSequenceService.class).to(ExpenseSequenceServiceImpl.class);
+    bind(EmployeeUtilsService.class).to(EmployeeUtilsServiceImpl.class);
+    bind(UserUtilsHRService.class).to(UserUtilsHRServiceImpl.class);
+    bind(ProjectPlanningTimeUtilsService.class).to(ProjectPlanningTimeUtilsServiceImpl.class);
+    bind(TimesheetLineCreateDefaultService.class).to(TimesheetLineCreateDefaultServiceImpl.class);
   }
 }

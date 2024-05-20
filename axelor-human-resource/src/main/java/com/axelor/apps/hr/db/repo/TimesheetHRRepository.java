@@ -20,11 +20,10 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateDefaultService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,15 +32,24 @@ import java.util.Map;
 
 public class TimesheetHRRepository extends TimesheetRepository {
 
-  @Inject private TimesheetCreateService timesheetCreateService;
   @Inject private TimesheetLineService timesheetLineService;
   @Inject private ProjectRepository projectRepository;
+  protected TimesheetLineHRRepository timesheetLineHRRepository;
+  protected TimesheetLineCreateDefaultService timesheetLineCreateDefaultService;
+
+  @Inject
+  public TimesheetHRRepository(
+      TimesheetLineHRRepository timesheetLineHRRepository,
+      TimesheetLineCreateDefaultService timesheetLineCreateDefaultService) {
+    this.timesheetLineHRRepository = timesheetLineHRRepository;
+    this.timesheetLineCreateDefaultService = timesheetLineCreateDefaultService;
+  }
 
   @Override
   public Timesheet save(Timesheet timesheet) {
     if (timesheet.getTimesheetLineList() != null) {
       for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList())
-        Beans.get(TimesheetLineHRRepository.class).computeFullName(timesheetLine);
+        timesheetLineHRRepository.computeFullName(timesheetLine);
     }
     return super.save(timesheet);
   }
@@ -55,7 +63,8 @@ public class TimesheetHRRepository extends TimesheetRepository {
       Timesheet timesheet = create(json);
       if (timesheet.getTimesheetLineList() == null || timesheet.getTimesheetLineList().isEmpty()) {
         timesheet.setTimesheetLineList(new ArrayList<TimesheetLine>());
-        obj.put("timesheetLineList", timesheetCreateService.createDefaultLines(timesheet));
+        obj.put(
+            "timesheetLineList", timesheetLineCreateDefaultService.createDefaultLines(timesheet));
       }
     }
 

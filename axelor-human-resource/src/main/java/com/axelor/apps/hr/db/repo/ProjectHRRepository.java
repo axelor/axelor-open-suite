@@ -19,33 +19,38 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
+import com.axelor.apps.hr.utils.ProjectPlanningTimeUtilsService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
-import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
-import com.axelor.inject.Beans;
+import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import java.util.List;
 
 public class ProjectHRRepository extends ProjectManagementRepository {
 
-  @Inject private ProjectPlanningTimeService projectPlanningTimeService;
+  protected AppHumanResourceService appHumanResourceService;
+  protected ProjectPlanningTimeUtilsService projectPlanningTimeUtilsService;
 
-  @Inject private ProjectPlanningTimeRepository planningTimeRepo;
+  @Inject
+  public ProjectHRRepository(
+      AppHumanResourceService appHumanResourceService,
+      ProjectPlanningTimeUtilsService projectPlanningTimeUtilsService) {
+    this.appHumanResourceService = appHumanResourceService;
+    this.projectPlanningTimeUtilsService = projectPlanningTimeUtilsService;
+  }
 
   @Override
   public Project save(Project project) {
     project = super.save(project);
 
-    if (!Beans.get(AppHumanResourceService.class).isApp("employee")) {
+    if (!appHumanResourceService.isApp("employee")) {
       return project;
     }
 
     List<ProjectPlanningTime> projectPlanningTimeList =
-        planningTimeRepo
-            .all()
+        JPA.all(ProjectPlanningTime.class)
             .filter("self.project = ?1 OR self.project.parentProject = ?1", project)
             .fetch();
 
@@ -53,7 +58,7 @@ public class ProjectHRRepository extends ProjectManagementRepository {
       for (ProjectPlanningTime planningTime : projectPlanningTimeList) {
         ProjectTask task = planningTime.getProjectTask();
         if (task != null) {
-          task.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(task));
+          task.setTotalPlannedHrs(projectPlanningTimeUtilsService.getTaskPlannedHrs(task));
         }
       }
     }

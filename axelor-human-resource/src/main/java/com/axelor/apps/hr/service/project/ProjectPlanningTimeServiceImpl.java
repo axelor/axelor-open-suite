@@ -32,7 +32,6 @@ import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
@@ -114,48 +113,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.iCalendarEventRepository = iCalendarEventRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.unitConversionRepository = unitConversionRepository;
-  }
-
-  @Override
-  public BigDecimal getTaskPlannedHrs(ProjectTask task) {
-
-    BigDecimal totalPlanned = BigDecimal.ZERO;
-    if (task != null) {
-      List<ProjectPlanningTime> plannings =
-          planningTimeRepo.all().filter("self.projectTask = ?1", task).fetch();
-      if (plannings != null) {
-        totalPlanned =
-            plannings.stream()
-                .map(ProjectPlanningTime::getPlannedTime)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-      }
-    }
-
-    return totalPlanned;
-  }
-
-  @Override
-  public BigDecimal getProjectPlannedHrs(Project project) {
-
-    BigDecimal totalPlanned = BigDecimal.ZERO;
-    if (project != null) {
-      List<ProjectPlanningTime> plannings =
-          planningTimeRepo
-              .all()
-              .filter(
-                  "self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)",
-                  project,
-                  true)
-              .fetch();
-      if (plannings != null) {
-        totalPlanned =
-            plannings.stream()
-                .map(ProjectPlanningTime::getPlannedTime)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-      }
-    }
-
-    return totalPlanned;
   }
 
   @Override
@@ -281,19 +238,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     for (Integer id : projectPlanningLineIds) {
       removeProjectPlanningLine(planningTimeRepo.find(Long.valueOf(id)));
     }
-  }
-
-  @Override
-  public BigDecimal getDurationForCustomer(ProjectTask projectTask) {
-    String query =
-        "SELECT SUM(self.durationForCustomer) FROM TimesheetLine AS self WHERE self.timesheet.statusSelect = :statusSelect AND self.projectTask = :projectTask";
-    BigDecimal durationForCustomer =
-        JPA.em()
-            .createQuery(query, BigDecimal.class)
-            .setParameter("statusSelect", TimesheetRepository.STATUS_VALIDATED)
-            .setParameter("projectTask", projectTask)
-            .getSingleResult();
-    return durationForCustomer != null ? durationForCustomer : BigDecimal.ZERO;
   }
 
   @Override

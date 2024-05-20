@@ -19,16 +19,17 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
+import com.axelor.apps.hr.utils.EmployeeUtilsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
@@ -36,15 +37,33 @@ import java.util.Optional;
 
 public class EmployeeHRRepository extends EmployeeRepository {
 
+  protected EmployeeComputeStatusService employeeComputeStatusService;
+  protected PartnerService partnerService;
+  protected PartnerHRRepository partnerRepo;
+  protected UserHRRepository userRepo;
+  protected EmployeeUtilsService employeeUtilsService;
+
+  @Inject
+  public EmployeeHRRepository(
+      EmployeeComputeStatusService employeeComputeStatusService,
+      PartnerService partnerService,
+      PartnerHRRepository partnerRepo,
+      UserHRRepository userRepo,
+      EmployeeUtilsService employeeUtilsService) {
+    this.employeeComputeStatusService = employeeComputeStatusService;
+    this.partnerService = partnerService;
+    this.partnerRepo = partnerRepo;
+    this.userRepo = userRepo;
+    this.employeeUtilsService = employeeUtilsService;
+  }
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     if (json != null && json.get("id") != null) {
       Long id = (Long) json.get("id");
       if (id != null) {
         Employee employee = super.find(id);
-        json.put(
-            "$employeeStatus",
-            Beans.get(EmployeeComputeStatusService.class).getEmployeeStatus(employee));
+        json.put("$employeeStatus", employeeComputeStatusService.getEmployeeStatus(employee));
       }
     }
     return super.populate(json, context);
@@ -55,7 +74,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
     Partner partner = entity.getContactPartner();
     if (Strings.isNullOrEmpty(partner.getFullName())
         || Strings.isNullOrEmpty(partner.getSimpleFullName())) {
-      Beans.get(PartnerService.class).setPartnerFullName(partner);
+      partnerService.setPartnerFullName(partner);
     }
     EmploymentContract employmentContract = entity.getMainEmploymentContract();
     if ((partner.getCompanySet() == null || partner.getCompanySet().isEmpty())
@@ -65,7 +84,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
     if (!partner.getIsEmployee()) {
       partner.setIsContact(true);
       partner.setIsEmployee(true);
-      Beans.get(PartnerHRRepository.class).save(partner);
+      partnerRepo.save(partner);
     }
     if (employmentContract != null && employmentContract.getEmployee() == null) {
       employmentContract.setEmployee(entity);
@@ -101,20 +120,10 @@ public class EmployeeHRRepository extends EmployeeRepository {
 
   @Override
   public void remove(Employee employee) {
-
-    if (employee.getUser() != null) {
-      UserHRRepository userRepo = Beans.get(UserHRRepository.class);
-      User user = userRepo.find(employee.getUser().getId());
-      if (user != null) {
-        user.setEmployee(null);
-        userRepo.save(user);
-      }
-    }
-
+    employeeUtilsService.removeLinkedEmployee(employee);
     super.remove(employee);
 
     if (employee.getContactPartner() != null) {
-      PartnerBaseRepository partnerRepo = Beans.get(PartnerBaseRepository.class);
       Partner partner = partnerRepo.find(employee.getContactPartner().getId());
       if (partner != null) {
         partner.setEmployee(null);

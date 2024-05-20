@@ -19,27 +19,34 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
+import com.axelor.apps.hr.utils.ProjectPlanningTimeUtilsService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.Map;
 
 public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
 
-  @Inject private ProjectPlanningTimeService projectPlanningTimeService;
+  protected AppHumanResourceService appHumanResourceService;
+  protected ProjectPlanningTimeUtilsService projectPlanningTimeUtilsService;
+
+  @Inject
+  public ProjectTaskHRRepository(
+      AppHumanResourceService appHumanResourceService,
+      ProjectPlanningTimeUtilsService projectPlanningTimeUtilsService) {
+    this.appHumanResourceService = appHumanResourceService;
+    this.projectPlanningTimeUtilsService = projectPlanningTimeUtilsService;
+  }
 
   @Override
   public ProjectTask save(ProjectTask projectTask) {
     projectTask = super.save(projectTask);
 
-    if (!Beans.get(AppHumanResourceService.class).isApp("employee")
-        || projectTask.getProject() == null) {
+    if (!appHumanResourceService.isApp("employee") || projectTask.getProject() == null) {
       return projectTask;
     }
 
-    projectTask.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(projectTask));
+    projectTask.setTotalPlannedHrs(projectPlanningTimeUtilsService.getTaskPlannedHrs(projectTask));
 
     return projectTask;
   }
@@ -60,7 +67,8 @@ public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
       Long id = (Long) json.get("id");
       ProjectTask projectTask = find(id);
       json.put(
-          "$durationForCustomer", projectPlanningTimeService.getDurationForCustomer(projectTask));
+          "$durationForCustomer",
+          projectPlanningTimeUtilsService.getDurationForCustomer(projectTask));
     }
     return super.populate(json, context);
   }

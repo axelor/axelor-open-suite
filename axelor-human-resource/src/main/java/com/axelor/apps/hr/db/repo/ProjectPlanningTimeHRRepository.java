@@ -18,21 +18,30 @@
  */
 package com.axelor.apps.hr.db.repo;
 
-import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
+import com.axelor.apps.hr.utils.ProjectPlanningTimeUtilsService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeRepository {
 
-  @Inject private ProjectPlanningTimeService planningTimeService;
+  protected ProjectRepository projectRepo;
+  protected ProjectTaskRepository projectTaskRepository;
+  protected ProjectPlanningTimeUtilsService projectPlanningTimeUtilsService;
 
-  @Inject private ProjectRepository projectRepo;
+  @Inject
+  public ProjectPlanningTimeHRRepository(
+      ProjectRepository projectRepo,
+      ProjectTaskRepository projectTaskRepository,
+      ProjectPlanningTimeUtilsService projectPlanningTimeUtilsService) {
+    this.projectRepo = projectRepo;
+    this.projectTaskRepository = projectTaskRepository;
+    this.projectPlanningTimeUtilsService = projectPlanningTimeUtilsService;
+  }
 
   @Override
   public ProjectPlanningTime save(ProjectPlanningTime projectPlanningTime) {
@@ -41,7 +50,7 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
 
     ProjectTask task = projectPlanningTime.getProjectTask();
     if (task != null) {
-      task.setTotalPlannedHrs(planningTimeService.getTaskPlannedHrs(task));
+      task.setTotalPlannedHrs(projectPlanningTimeUtilsService.getTaskPlannedHrs(task));
     }
 
     return projectPlanningTime;
@@ -56,7 +65,7 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
     super.remove(projectPlanningTime);
 
     if (task != null) {
-      Beans.get(ProjectTaskRepository.class).save(task);
+      projectTaskRepository.save(task);
     } else {
       projectRepo.save(project);
     }

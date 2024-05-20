@@ -21,12 +21,22 @@ package com.axelor.apps.businessproject.db.repo;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.ProjectTaskProgressUpdateService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.utils.ProjectPlanningTimeUtilsService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Collections;
 import javax.persistence.PersistenceException;
 
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
+
+  @Inject
+  public ProjectTaskBusinessProjectRepository(
+      AppHumanResourceService appHumanResourceService,
+      ProjectPlanningTimeUtilsService projectPlanningTimeUtilsService) {
+    super(appHumanResourceService, projectPlanningTimeUtilsService);
+  }
 
   @Override
   public ProjectTask copy(ProjectTask entity, boolean deep) {

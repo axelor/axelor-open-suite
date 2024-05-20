@@ -34,8 +34,6 @@ public interface ExpenseToolService {
    */
   public Expense getOrCreateExpense(Employee employee);
 
-  public void setDraftSequence(Expense expense) throws AxelorException;
-
   public Expense updateMoveDateAndPeriod(Expense expense);
 
   void addExpenseLinesToExpense(Expense expense, List<ExpenseLine> expenseLineList)

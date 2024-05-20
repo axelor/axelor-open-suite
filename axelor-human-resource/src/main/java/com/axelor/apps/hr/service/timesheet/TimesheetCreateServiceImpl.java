@@ -20,27 +20,18 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class TimesheetCreateServiceImpl implements TimesheetCreateService {
 
@@ -104,47 +95,5 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_INVALID_DATES));
     }
     return createTimesheet(employee, fromDate, toDate);
-  }
-
-  @Override
-  public List<Map<String, Object>> createDefaultLines(Timesheet timesheet) {
-
-    List<Map<String, Object>> lines = new ArrayList<>();
-    User user = timesheet.getEmployee().getUser();
-    if (user == null || timesheet.getFromDate() == null) {
-      return lines;
-    }
-
-    Product product = userHrService.getTimesheetProduct(timesheet.getEmployee());
-
-    if (product == null) {
-      return lines;
-    }
-
-    List<Project> projects =
-        projectRepository
-            .all()
-            .filter(
-                "self.membersUserSet.id = ?1 and "
-                    + "self.imputable = true "
-                    + "and self.projectStatus.isCompleted = false "
-                    + "and self.isShowTimeSpent = true",
-                user.getId())
-            .fetch();
-
-    for (Project project : projects) {
-      TimesheetLine line =
-          timesheetLineCreateService.createTimesheetLine(
-              project,
-              product,
-              timesheet.getEmployee(),
-              timesheet.getFromDate(),
-              timesheet,
-              new BigDecimal(0),
-              null);
-      lines.add(Mapper.toMap(line));
-    }
-
-    return lines;
   }
 }

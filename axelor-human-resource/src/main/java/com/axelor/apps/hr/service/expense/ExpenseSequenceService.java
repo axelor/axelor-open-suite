@@ -16,25 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.db.repo;
+package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.base.db.repo.UserBaseRepository;
-import com.axelor.apps.hr.utils.UserUtilsHRService;
-import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Expense;
 
-public class UserHRRepository extends UserBaseRepository {
+public interface ExpenseSequenceService {
 
-  protected UserUtilsHRService userUtilsHRService;
-
-  @Inject
-  public UserHRRepository(UserUtilsHRService userUtilsHRService) {
-    this.userUtilsHRService = userUtilsHRService;
-  }
-
-  @Override
-  public void remove(User user) {
-    userUtilsHRService.removeLinkedUser(user);
-    super.remove(user);
-  }
+  public void setDraftSequence(Expense expense) throws AxelorException;
 }

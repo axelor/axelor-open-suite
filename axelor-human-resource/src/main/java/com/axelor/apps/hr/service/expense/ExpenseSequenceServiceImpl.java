@@ -16,42 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.db.repo;
+package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.apps.hr.db.Expense;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class EmploymentContractHRRepository extends EmploymentContractRepository {
+public class ExpenseSequenceServiceImpl implements ExpenseSequenceService {
 
   protected SequenceService sequenceService;
 
   @Inject
-  public EmploymentContractHRRepository(SequenceService sequenceService) {
+  public ExpenseSequenceServiceImpl(SequenceService sequenceService) {
     this.sequenceService = sequenceService;
   }
 
   @Override
-  public EmploymentContract save(EmploymentContract employmentContract) {
-    if (employmentContract.getRef() == null) {
-      String seq = null;
-      try {
-        seq =
-            sequenceService.getSequenceNumber(
-                SequenceRepository.EMPLOYMENT_CONTRACT,
-                employmentContract.getPayCompany(),
-                EmploymentContract.class,
-                "ref",
-                employmentContract);
-      } catch (AxelorException e) {
-        TraceBackService.traceExceptionFromSaveMethod(e);
-      }
-      employmentContract.setRef(seq);
+  public void setDraftSequence(Expense expense) throws AxelorException {
+    if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq())) {
+      expense.setExpenseSeq(sequenceService.getDraftSequenceNumber(expense));
     }
-
-    return super.save(employmentContract);
   }
 }

@@ -16,25 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.db.repo;
+package com.axelor.apps.hr.service.timesheet;
 
-import com.axelor.apps.base.db.repo.UserBaseRepository;
-import com.axelor.apps.hr.utils.UserUtilsHRService;
-import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import com.axelor.apps.hr.db.Timesheet;
+import java.util.List;
+import java.util.Map;
 
-public class UserHRRepository extends UserBaseRepository {
+public interface TimesheetLineCreateDefaultService {
 
-  protected UserUtilsHRService userUtilsHRService;
-
-  @Inject
-  public UserHRRepository(UserUtilsHRService userUtilsHRService) {
-    this.userUtilsHRService = userUtilsHRService;
-  }
-
-  @Override
-  public void remove(User user) {
-    userUtilsHRService.removeLinkedUser(user);
-    super.remove(user);
-  }
+  List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
 }

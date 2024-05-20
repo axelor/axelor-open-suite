@@ -29,9 +29,8 @@ import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
 import com.axelor.apps.hr.service.expense.ExpenseLimitService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
-import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.apps.hr.service.expense.ExpenseSequenceService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,22 +38,35 @@ import org.apache.commons.collections.CollectionUtils;
 public class ExpenseHRRepository extends ExpenseRepository {
 
   protected ExpenseFetchPeriodService expenseFetchPeriodService;
+  protected ExpenseLineService expenseLineService;
+  protected ExpenseProofFileService expenseProofFileService;
+  protected ExpenseLimitService expenseLimitService;
+  protected ExpenseSequenceService expenseSequenceService;
 
   @Inject
-  public ExpenseHRRepository(ExpenseFetchPeriodService expenseFetchPeriodService) {
+  public ExpenseHRRepository(
+      ExpenseFetchPeriodService expenseFetchPeriodService,
+      ExpenseLineService expenseLineService,
+      ExpenseProofFileService expenseProofFileService,
+      ExpenseLimitService expenseLimitService,
+      ExpenseSequenceService expenseSequenceService) {
     this.expenseFetchPeriodService = expenseFetchPeriodService;
+    this.expenseLineService = expenseLineService;
+    this.expenseProofFileService = expenseProofFileService;
+    this.expenseLimitService = expenseLimitService;
+    this.expenseSequenceService = expenseSequenceService;
   }
 
   @Override
   public Expense save(Expense expense) {
     try {
       expense = super.save(expense);
-      Beans.get(ExpenseToolService.class).setDraftSequence(expense);
+      expenseSequenceService.setDraftSequence(expense);
       if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
-        Beans.get(ExpenseLineService.class).completeExpenseLines(expense);
+        expenseLineService.completeExpenseLines(expense);
       }
-      Beans.get(ExpenseProofFileService.class).convertProofFilesInPdf(expense);
-      Beans.get(ExpenseLimitService.class).checkExpenseLimit(expense);
+      expenseProofFileService.convertProofFilesInPdf(expense);
+      expenseLimitService.checkExpenseLimit(expense);
       return expense;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

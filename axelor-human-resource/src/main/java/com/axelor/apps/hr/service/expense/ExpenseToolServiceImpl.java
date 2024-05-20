@@ -35,7 +35,6 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -117,13 +116,6 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
     }
     return expense;
-  }
-
-  @Override
-  public void setDraftSequence(Expense expense) throws AxelorException {
-    if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq())) {
-      expense.setExpenseSeq(sequenceService.getDraftSequenceNumber(expense));
-    }
   }
 
   @Override
