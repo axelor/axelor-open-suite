@@ -211,14 +211,6 @@ public interface ManufOrderService {
    */
   public boolean canMerge(List<Long> ids);
 
-  /**
-   * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
-   * {@link ManufOrder} on the header of every page.
-   *
-   * @return
-   */
-  public void createBarcode(ManufOrder manufOrder);
-
   List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 
   public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;

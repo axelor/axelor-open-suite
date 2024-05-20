@@ -16,30 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.service.operationorder.OperationOrderCreateBarcodeService;
-import com.google.inject.Inject;
 
-public class OperationOrderManagementRepository extends OperationOrderRepository {
+public interface OperationOrderCreateBarcodeService {
 
-  protected OperationOrderCreateBarcodeService operationOrderCreateBarcodeService;
-
-  @Inject
-  public OperationOrderManagementRepository(
-      OperationOrderCreateBarcodeService operationOrderCreateBarcodeService) {
-    this.operationOrderCreateBarcodeService = operationOrderCreateBarcodeService;
-  }
-
-  @Override
-  public OperationOrder save(OperationOrder entity) {
-
-    if (entity.getBarCode() == null) {
-      entity = super.save(entity);
-      operationOrderCreateBarcodeService.createBarcode(entity);
-    }
-
-    return super.save(entity);
-  }
+  void createBarcode(OperationOrder operationOrder);
 }
