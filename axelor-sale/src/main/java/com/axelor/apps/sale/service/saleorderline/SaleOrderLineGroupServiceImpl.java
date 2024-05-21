@@ -3,6 +3,7 @@ package com.axelor.apps.sale.service.saleorderline;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class SaleOrderLineGroupServiceImpl implements SaleOrderLineGroupService {
@@ -25,7 +26,7 @@ public class SaleOrderLineGroupServiceImpl implements SaleOrderLineGroupService 
     saleOrderLineAttrsSetService.hideQtyWarningLabel(attrsMap);
     saleOrderLineAttrsSetService.showPriceDiscounted(saleOrder, saleOrderLine, attrsMap);
     saleOrderLineAttrsSetService.setScaleAttrs(attrsMap);
-    saleOrderLineRecordUpdateService.setInitialQty(attrsMap);
+    saleOrderLineRecordUpdateService.setInitialQty(attrsMap, BigDecimal.ONE);
     saleOrderLineRecordUpdateService.setCompanyCurrencyValue(saleOrder, saleOrderLine, attrsMap);
     saleOrderLineRecordUpdateService.setCurrencyValue(saleOrder, saleOrderLine, attrsMap);
     saleOrderLineAttrsSetService.manageHiddenAttrForPrices(saleOrder, attrsMap);

@@ -10,4 +10,7 @@ public interface SaleOrderLineAttrsSetSupplychainService {
 
   void setRequestedReservedQtyToReadOnly(
       SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
+
+  void hideUpdateAllocatedQtyBtn(
+          SaleOrder saleOrder, SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap);
 }

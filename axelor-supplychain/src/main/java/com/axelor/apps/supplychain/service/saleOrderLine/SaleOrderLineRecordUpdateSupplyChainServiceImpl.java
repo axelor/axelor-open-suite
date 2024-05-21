@@ -1,34 +1,48 @@
 package com.axelor.apps.supplychain.service.saleOrderLine;
 
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.helper.SaleOrderLineHelper;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Objects;
 
 public class SaleOrderLineRecordUpdateSupplyChainServiceImpl
     implements SaleOrderLineRecordUpdateSupplyChainService {
 
-  @Override
-  public void updateRequestedReservedQty(
-      SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap) {
-    if (saleOrderLine.getRequestedReservedQty().compareTo(saleOrderLine.getQty()) > 0
-        || saleOrderLine.getIsQtyRequested()) {
-      SaleOrderLineHelper.addAttr(
-          "requestedReservedQty", "value", BigDecimal.ZERO.max(saleOrderLine.getQty()), attrsMap);
-    }
+  protected final StockMoveLineRepository stockMoveLineRepository;
+
+  SaleOrderLineRecordUpdateSupplyChainServiceImpl(StockMoveLineRepository stockMoveLineRepository){
+    this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
   @Override
-  public void hideUpdateAllocatedQtyBtn(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap) {
+  public void updateRequestedReservedQty(
+      SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap) {
     SaleOrderLineHelper.addAttr(
-        "updateAllocatedQtyBtn",
-        "hidden",
-        saleOrderLine.getId() == null
-            || saleOrder.getStatusSelect() != 3
-            || Objects.equals(saleOrderLine.getProduct().getProductTypeSelect(), "service"),
-        attrsMap);
+            "requestedReservedQty", "value", updateRequestedReservedQty(saleOrderLine), attrsMap);
+  }
+
+  @Override
+  public BigDecimal updateRequestedReservedQty(
+          SaleOrderLine saleOrderLine) {
+    BigDecimal requestedReservedQty = saleOrderLine.getRequestedReservedQty();
+    if (saleOrderLine.getRequestedReservedQty().compareTo(saleOrderLine.getQty()) > 0
+            || saleOrderLine.getIsQtyRequested()) {
+      requestedReservedQty = BigDecimal.ZERO.max(saleOrderLine.getQty());
+    }
+    return requestedReservedQty;
+  }
+
+  @Override
+  public void setAvailabilityRequestValue(
+          SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap) {
+
+    long count = stockMoveLineRepository.all().filter("self.saleOrderLine.id = ? AND self.stockMove.availabilityRequest = TRUE AND self.stockMove.statusSelect = 2", saleOrderLine.getId()).count();
+    SaleOrderLineHelper.addAttr(
+            "$availabiltyRequest",
+            "value",
+            saleOrderLine.getId() != null && (count > 0),
+            attrsMap);
   }
 }

@@ -2,6 +2,8 @@ package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+
+import java.math.BigDecimal;
 import java.util.Map;
 
 public interface SaleOrderLineRecordUpdateService {
@@ -16,5 +18,5 @@ public interface SaleOrderLineRecordUpdateService {
 
   void setNonNegotiableValue(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
 
-  void setInitialQty(Map<String, Map<String, Object>> attrsMap);
+  void setInitialQty(Map<String, Map<String, Object>> attrsMap, BigDecimal qty);
 }

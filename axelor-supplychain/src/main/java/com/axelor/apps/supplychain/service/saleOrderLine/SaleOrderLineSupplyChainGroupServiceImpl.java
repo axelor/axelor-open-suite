@@ -30,7 +30,7 @@ public class SaleOrderLineSupplyChainGroupServiceImpl extends SaleOrderLineGroup
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap) {
     super.getOnNewValuesMap(saleOrder, saleOrderLine, attrsMap);
     saleOrderLineAttrsSetSupplychainService.setIsReadOnlyValue(saleOrder, saleOrderLine, attrsMap);
-    saleOrderLineRecordUpdateSupplyChainService.hideUpdateAllocatedQtyBtn(
+    saleOrderLineAttrsSetSupplychainService.hideUpdateAllocatedQtyBtn(
         saleOrder, saleOrderLine, attrsMap);
     saleOrderLineAttrsSetSupplychainService.setRequestedReservedQtyToReadOnly(saleOrder, attrsMap);
     saleOrderLineRecordUpdateSupplyChainService.updateRequestedReservedQty(saleOrderLine, attrsMap);

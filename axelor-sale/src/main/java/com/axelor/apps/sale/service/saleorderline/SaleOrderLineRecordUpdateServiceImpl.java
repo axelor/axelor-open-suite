@@ -5,6 +5,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.helper.SaleOrderLineHelper;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class SaleOrderLineRecordUpdateServiceImpl implements SaleOrderLineRecordUpdateService {
@@ -66,7 +68,7 @@ public class SaleOrderLineRecordUpdateServiceImpl implements SaleOrderLineRecord
   }
 
   @Override
-  public void setInitialQty(Map<String, Map<String, Object>> attrsMap) {
-    SaleOrderLineHelper.addAttr("qty", "value", 1, attrsMap);
+  public void setInitialQty(Map<String, Map<String, Object>> attrsMap, BigDecimal qty) {
+    SaleOrderLineHelper.addAttr("qty", "value", qty, attrsMap);
   }
 }
