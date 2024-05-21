@@ -24,8 +24,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -136,7 +134,6 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
     PurchaseOrder purchaseOrder =
         createPurchaseOrderAndLines(supplierPartner, saleOrderLineList, saleOrder);
-    getAndSetSupplierCatalogInfo(purchaseOrder);
     purchaseOrderRepository.save(purchaseOrder);
 
     return purchaseOrder;
@@ -199,20 +196,6 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       purchaseOrder.addPurchaseOrderLineListItem(
           purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
               purchaseOrder, saleOrderLine));
-    }
-  }
-
-  protected void getAndSetSupplierCatalogInfo(PurchaseOrder purchaseOrder) throws AxelorException {
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      SupplierCatalog supplierCatalog =
-          supplierCatalogService.getSupplierCatalog(
-              purchaseOrderLine.getProduct(),
-              purchaseOrder.getSupplierPartner(),
-              purchaseOrder.getCompany());
-      if (supplierCatalog != null) {
-        purchaseOrderLine.setProductName(supplierCatalog.getProductSupplierName());
-        purchaseOrderLine.setProductCode(supplierCatalog.getProductSupplierCode());
-      }
     }
   }
 }
