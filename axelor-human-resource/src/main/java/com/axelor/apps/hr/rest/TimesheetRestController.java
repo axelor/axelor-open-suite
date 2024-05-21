@@ -20,6 +20,7 @@ package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.rest.dto.TimesheetPostRequest;
 import com.axelor.apps.hr.rest.dto.TimesheetPutRequest;
@@ -43,6 +44,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.servers.Server;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -70,11 +72,11 @@ public class TimesheetRestController {
     new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
+    List<TSTimer> tsTimerList = requestBody.fetchTSTimers();
     Timesheet timesheet =
         Beans.get(TimesheetCreateService.class)
             .createTimesheet(requestBody.getFromDate(), requestBody.getToDate());
-    Beans.get(TimerTimesheetGenerationService.class)
-        .addTimersToTimesheet(requestBody.fetchTSTimers(), timesheet);
+    Beans.get(TimerTimesheetGenerationService.class).addTimersToTimesheet(tsTimerList, timesheet);
     Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
 
     return ResponseConstructor.buildCreateResponse(timesheet, new TimesheetResponse(timesheet));
