@@ -8,7 +8,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
@@ -25,13 +24,10 @@ public class PurchaseOrderCreateServiceImpl implements PurchaseOrderCreateServic
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected SequenceService sequenceService;
   protected PurchaseConfigService purchaseConfigService;
 
   @Inject
-  public PurchaseOrderCreateServiceImpl(
-      SequenceService sequenceService, PurchaseConfigService purchaseConfigService) {
-    this.sequenceService = sequenceService;
+  public PurchaseOrderCreateServiceImpl(PurchaseConfigService purchaseConfigService) {
     this.purchaseConfigService = purchaseConfigService;
   }
 
@@ -103,8 +99,6 @@ public class PurchaseOrderCreateServiceImpl implements PurchaseOrderCreateServic
 
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
-
-    purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);

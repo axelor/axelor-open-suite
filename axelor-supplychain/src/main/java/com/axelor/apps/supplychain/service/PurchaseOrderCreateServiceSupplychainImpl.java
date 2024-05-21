@@ -8,7 +8,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
@@ -29,10 +28,8 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
 
   @Inject
   public PurchaseOrderCreateServiceSupplychainImpl(
-      SequenceService sequenceService,
-      PurchaseConfigService purchaseConfigService,
-      AccountConfigService accountConfigService) {
-    super(sequenceService, purchaseConfigService);
+      PurchaseConfigService purchaseConfigService, AccountConfigService accountConfigService) {
+    super(purchaseConfigService);
     this.accountConfigService = accountConfigService;
   }
 

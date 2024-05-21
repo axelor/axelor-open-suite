@@ -60,7 +60,8 @@ public class PurchaseOrderMergingServiceProductionImpl
       manufOrderList.addAll(
           manufOrderRepository
               .all()
-              .filter("self.purchaseOrder.id = ?1", purchaseOrder.getId())
+              .filter(":purchaseOrder MEMBER OF self.purchaseOrderSet")
+              .bind("purchaseOrder", purchaseOrder)
               .fetch());
     }
     return manufOrderList;
