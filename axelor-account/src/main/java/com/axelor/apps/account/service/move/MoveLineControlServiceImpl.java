@@ -192,7 +192,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
       if (!isCompanyAmount) {
         if (invoiceAttached == null) {
-          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
         } else {
           invoiceTermList.forEach(
               it ->
