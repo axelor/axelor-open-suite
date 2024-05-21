@@ -16,26 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.csv.script;
+package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.service.OpportunitySequenceService;
-import com.axelor.inject.Beans;
-import java.util.Map;
 
-public class ImportOpportunity {
-  public Object importOpportunity(Object bean, Map<String, Object> values) {
-    assert bean instanceof Opportunity;
+public interface OpportunitySequenceService {
 
-    Opportunity opportunity = (Opportunity) bean;
-
-    try {
-      Beans.get(OpportunitySequenceService.class).setSequence(opportunity);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
-
-    return opportunity;
-  }
+  void setSequence(Opportunity opportunity) throws AxelorException;
 }
