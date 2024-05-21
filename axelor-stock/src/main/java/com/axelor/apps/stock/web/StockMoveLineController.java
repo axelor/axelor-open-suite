@@ -106,6 +106,8 @@ public class StockMoveLineController {
       newStockMoveLine.put("id", stockMoveLine.getId());
       newStockMoveLine.put("version", stockMoveLine.getVersion());
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
+      newStockMoveLine.put("toStockLocation", stockMoveLine.getToStockLocation());
+      newStockMoveLine.put("fromStockLocation", stockMoveLine.getFromStockLocation());
       response.setValues(newStockMoveLine);
     }
   }
