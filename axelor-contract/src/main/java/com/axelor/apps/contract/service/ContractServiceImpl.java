@@ -709,7 +709,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getDiscountTypeSelect(),
             line.getExTaxTotal(),
             line.getInTaxTotal(),
-            false) {
+            false,
+            line.getTypeSelect()) {
 
           @Override
           public void setProductAccount(
