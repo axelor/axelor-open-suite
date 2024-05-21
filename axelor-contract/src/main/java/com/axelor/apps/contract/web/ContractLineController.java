@@ -262,7 +262,10 @@ public class ContractLineController {
       if (parentParentContext != null
           && Contract.class.equals(parentParentContext.getContextClass())) {
         response.setAttr(
-            "product", "required", (int) parentParentContext.get("contractTypeSelect") == 2);
+            "product",
+            "required",
+            (int) parentParentContext.get("contractTypeSelect")
+                == ContractRepository.TYPE_FRAMEWORK);
         return;
       }
     }
@@ -270,7 +273,10 @@ public class ContractLineController {
     // Additional line
     if (parentContext != null && Contract.class.equals(parentContext.getContextClass())) {
       Contract contract = parentContext.asType(Contract.class);
-      response.setAttr("product", "required", contract.getContractTypeSelect() == 2);
+      response.setAttr(
+          "product",
+          "required",
+          contract.getContractTypeSelect() == ContractRepository.TYPE_FRAMEWORK);
     }
   }
 }
