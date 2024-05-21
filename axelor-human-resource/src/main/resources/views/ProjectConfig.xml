@@ -9,9 +9,10 @@
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel name="settingsPanel" title="Settings">
-          <field name="isSelectionOnDisplayPlannedTime" widget="boolean-switch"/>
+          <field name="valueByDefaultOnDisplayPlannedTime" colSpan="4"/>
+          <field name="isSelectionOnDisplayPlannedTime" widget="boolean-switch" colSpan="4"/>
           <field name="plannedTimeValueList" showIf="isSelectionOnDisplayPlannedTime"
-            widget="TagSelect" x-order="plannedTime"/>
+            widget="TagSelect" x-order="plannedTime" colSpan="4"/>
         </panel>
       </insert>
     </extend>
