@@ -38,7 +38,6 @@ import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -74,7 +73,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final StockMoveInvoiceService stockMoveInvoiceService;
   protected final AppStockService appStockService;
   protected final SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
-  protected final PurchaseOrderMergingService purchaseOrderMergingService;
+  protected final PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
@@ -84,14 +83,14 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       StockMoveInvoiceService stockMoveInvoiceService,
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
-      PurchaseOrderMergingService purchaseOrderMergingService) {
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
     this.invoiceRepository = invoiceRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.stockMoveInvoiceService = stockMoveInvoiceService;
     this.appStockService = appStockService;
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
-    this.purchaseOrderMergingService = purchaseOrderMergingService;
+    this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
   }
 
   @Override
@@ -704,7 +703,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
     if (ObjectUtils.notEmpty(purchaseOrderSet)) {
       PurchaseOrder purchaseOrder =
-          purchaseOrderMergingService.getDummyMergedPurchaseOrder(purchaseOrderSet);
+          purchaseOrderMergingSupplychainService.getDummyMergedPurchaseOrder(stockMove);
       dummyInvoice.setCurrency(purchaseOrder.getCurrency());
       dummyInvoice.setPartner(purchaseOrder.getSupplierPartner());
       dummyInvoice.setCompany(purchaseOrder.getCompany());

@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.rpc.Context;
 import java.util.List;
-import java.util.Set;
 
 public interface PurchaseOrderMergingService {
 
@@ -116,15 +115,54 @@ public interface PurchaseOrderMergingService {
 
   Checks getChecks(PurchaseOrderMergingResult result);
 
-  PurchaseOrderMergingResult mergePurchaseOrders(
-      List<PurchaseOrder> purchaseOrdersToMerge, boolean dummyPurchaseOrder) throws AxelorException;
-
-  PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
-      List<PurchaseOrder> saleOrdersToMerge, Context context, boolean dummyPurchaseOrder)
+  /**
+   * Merge purchase orders. This method can update the database, removing existing purchase orders
+   * and creating a new one.
+   *
+   * @param purchaseOrdersToMerge purchase orders to merge
+   * @return a {@link PurchaseOrderMergingResult} object.
+   * @throws AxelorException
+   */
+  PurchaseOrderMergingResult mergePurchaseOrders(List<PurchaseOrder> purchaseOrdersToMerge)
       throws AxelorException;
+
+  /**
+   * Do the same actions as {@link this#mergePurchaseOrders(List)}, but does not update the
+   * database. This can be used to check if multiple purchase orders are merge-compatible and
+   * extract their common fields.
+   *
+   * @param purchaseOrdersToMerge purchase orders to merge
+   * @return a {@link PurchaseOrderMergingResult} object.
+   * @throws AxelorException
+   */
+  PurchaseOrderMergingResult simulateMergePurchaseOrders(List<PurchaseOrder> purchaseOrdersToMerge)
+      throws AxelorException;
+
+  /**
+   * Merge purchase orders.
+   *
+   * @param purchaseOrdersToMerge purchase orders to merge
+   * @param context a context with the parameters the user chose for conflicting fields (example:
+   *     contactPartner)
+   * @return a PurchaseOrderMergingResult object.
+   * @throws AxelorException
+   */
+  PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
+      List<PurchaseOrder> purchaseOrdersToMerge, Context context) throws AxelorException;
+
+  /**
+   * Do the same actions as {@link this#mergePurchaseOrdersWithContext(List, Context)}, but does not
+   * update the database. This can be used to check if multiple sale orders are merge-compatible and
+   * extract their common fields.
+   *
+   * @param purchaseOrdersToMerge sale orders to merge
+   * @param context a context with the parameters the user chose for conflicting fields (example:
+   *     contactPartner)
+   * @return a {@link PurchaseOrderMergingResult} object.
+   * @throws AxelorException
+   */
+  PurchaseOrderMergingResult simulateMergePurchaseOrdersWithContext(
+      List<PurchaseOrder> purchaseOrdersToMerge, Context context) throws AxelorException;
 
   List<PurchaseOrder> convertSelectedLinesToMergeLines(List<Integer> idList);
-
-  PurchaseOrder getDummyMergedPurchaseOrder(Set<PurchaseOrder> purchaseOrderSet)
-      throws AxelorException;
 }

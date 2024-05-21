@@ -19,22 +19,30 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
 
-public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMergingServiceImpl {
+public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMergingServiceImpl
+    implements PurchaseOrderMergingSupplychainService {
 
   protected static class CommonFieldsSupplyChainImpl extends CommonFieldsImpl {
     private StockLocation commonStockLocation = null;
@@ -72,18 +80,25 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
     }
   }
 
-  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
-  protected AppPurchaseService appPurchaseService;
+  protected PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService;
 
   @Inject
   public PurchaseOrderMergingServiceSupplyChainImpl(
+      AppPurchaseService appPurchaseService,
       PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
       PurchaseOrderRepository purchaseOrderRepository,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
-      AppPurchaseService appPurchaseService) {
-    super(purchaseOrderService, purchaseOrderRepository);
-    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
-    this.appPurchaseService = appPurchaseService;
+      DMSService dmsService,
+      PurchaseOrderLineRepository purchaseOrderLineRepository,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService) {
+    super(
+        appPurchaseService,
+        purchaseOrderService,
+        purchaseOrderCreateService,
+        purchaseOrderRepository,
+        dmsService,
+        purchaseOrderLineRepository);
+    this.purchaseOrderCreateSupplychainService = purchaseOrderCreateSupplychainService;
   }
 
   @Override
@@ -133,22 +148,35 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   }
 
   @Override
-  protected PurchaseOrder mergePurchaseOrders(
-      List<PurchaseOrder> purchaseOrdersToMerge,
-      PurchaseOrderMergingResult result,
-      boolean dummyPurchaseOrder)
+  protected PurchaseOrder generatePurchaseOrder(
+      List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result)
       throws AxelorException {
-    CommonFieldsSupplyChainImpl commonFields = getCommonFields(result);
-    return purchaseOrderSupplychainService.mergePurchaseOrders(
-        purchaseOrdersToMerge,
-        commonFields.getCommonCurrency(),
-        commonFields.getCommonSupplierPartner(),
-        commonFields.getCommonCompany(),
-        commonFields.getCommonStockLocation(),
-        commonFields.getCommonContactPartner(),
-        commonFields.getCommonPriceList(),
-        commonFields.getCommonTradingName(),
-        dummyPurchaseOrder);
+
+    String numSeq =
+        computeConcatenatedString(purchaseOrdersToMerge, PurchaseOrder::getPurchaseOrderSeq, "-");
+    String externalRef =
+        computeConcatenatedString(purchaseOrdersToMerge, PurchaseOrder::getExternalReference, "|");
+    Company company = getCommonFields(result).getCommonCompany();
+
+    PurchaseOrder purchaseOrderMerged =
+        purchaseOrderCreateSupplychainService.createPurchaseOrder(
+            AuthUtils.getUser(),
+            company,
+            getCommonFields(result).getCommonContactPartner(),
+            getCommonFields(result).getCommonCurrency(),
+            null,
+            numSeq,
+            externalRef,
+            getCommonFields(result).getCommonStockLocation(),
+            appPurchaseService.getTodayDate(company),
+            getCommonFields(result).getCommonPriceList(),
+            getCommonFields(result).getCommonSupplierPartner(),
+            getCommonFields(result).getCommonTradingName(),
+            getCommonFields(result).getCommonFiscalPosition());
+
+    this.attachToNewPurchaseOrder(purchaseOrdersToMerge, purchaseOrderMerged);
+    purchaseOrderService.computePurchaseOrder(purchaseOrderMerged);
+    return purchaseOrderMerged;
   }
 
   @Override
@@ -161,11 +189,16 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   }
 
   @Override
-  protected StringJoiner getConfirmationNeededErrorMsg(StringJoiner errorMsg)
-      throws AxelorException {
-    if (appPurchaseService.isApp("supplychain")) {
-      errorMsg.add(I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED));
+  public PurchaseOrder getDummyMergedPurchaseOrder(StockMove stockMove) throws AxelorException {
+    PurchaseOrderMergingResult result =
+        simulateMergePurchaseOrders(new ArrayList<>(stockMove.getPurchaseOrderSet()));
+
+    if (result.isConfirmationNeeded()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICING_ERROR),
+          stockMove.getStockMoveSeq());
     }
-    return super.getConfirmationNeededErrorMsg(errorMsg);
+    return result.getPurchaseOrder();
   }
 }

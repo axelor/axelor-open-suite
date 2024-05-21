@@ -43,8 +43,7 @@ public class PurchaseOrderMergingController {
               request.getContext(), PurchaseOrder.class, "purchaseOrderToMerge");
       if (CollectionUtils.isNotEmpty(purchaseOrdersToMerge)) {
         PurchaseOrderMergingResult result =
-            Beans.get(PurchaseOrderMergingService.class)
-                .mergePurchaseOrders(purchaseOrdersToMerge, false);
+            Beans.get(PurchaseOrderMergingService.class).mergePurchaseOrders(purchaseOrdersToMerge);
         if (result.isConfirmationNeeded()) {
           ActionView.ActionViewBuilder confirmView =
               Beans.get(PurchaseOrderMergingViewService.class)
@@ -67,7 +66,7 @@ public class PurchaseOrderMergingController {
       if (CollectionUtils.isNotEmpty(purchaseOrdersToMerge)) {
         PurchaseOrderMergingResult result =
             Beans.get(PurchaseOrderMergingService.class)
-                .mergePurchaseOrdersWithContext(purchaseOrdersToMerge, request.getContext(), false);
+                .mergePurchaseOrdersWithContext(purchaseOrdersToMerge, request.getContext());
         setResponseView(response, result);
       }
     } catch (Exception e) {
@@ -87,8 +86,7 @@ public class PurchaseOrderMergingController {
       }
       if (CollectionUtils.isNotEmpty(purchaseOrdersToMerge)) {
         PurchaseOrderMergingResult result =
-            Beans.get(PurchaseOrderMergingService.class)
-                .mergePurchaseOrders(purchaseOrdersToMerge, false);
+            Beans.get(PurchaseOrderMergingService.class).mergePurchaseOrders(purchaseOrdersToMerge);
         if (result.isConfirmationNeeded()) {
           ActionViewBuilder confirmView =
               Beans.get(PurchaseOrderMergingViewService.class)

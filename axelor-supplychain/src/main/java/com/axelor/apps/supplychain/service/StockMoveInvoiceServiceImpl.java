@@ -34,7 +34,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -80,7 +79,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
   protected SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
-  protected PurchaseOrderMergingService purchaseOrderMergingService;
+  protected PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -96,7 +95,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       AppBaseService appBaseService,
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
-      PurchaseOrderMergingService purchaseOrderMergingService) {
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -109,7 +108,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
-    this.purchaseOrderMergingService = purchaseOrderMergingService;
+    this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
   }
 
   @Override
@@ -160,7 +159,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
       if (ObjectUtils.notEmpty(purchaseOrderSet)) {
         PurchaseOrder purchaseOrder =
-            purchaseOrderMergingService.getDummyMergedPurchaseOrder(purchaseOrderSet);
+            purchaseOrderMergingSupplychainService.getDummyMergedPurchaseOrder(stockMove);
         invoice = createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
         invoice.setExternalReference(fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet));
         invoice.setInternalReference(
