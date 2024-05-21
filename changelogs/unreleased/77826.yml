@@ -1,0 +1,3 @@
+---
+title: "PurchaseOrder From SaleOrder: When Catalog does not have a code or name, it will take from product."
+module: axelor-supplychain

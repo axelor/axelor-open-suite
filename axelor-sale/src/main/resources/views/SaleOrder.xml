@@ -174,7 +174,7 @@
       <field name="fromStockMove" hidden="true" colSpan="12"/>
       <field name="$priceList" title="Price List" type="many-to-one"
         target="com.axelor.apps.base.db.PriceList"
-        domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3"
+        domain="self.typeSelect = 1 and self.isActive = true" colSpan="6" colOffset="3"
         width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form"
         grid-view="price-list-grid"/>
       <field name="$stockLocation" canEdit="false" title="Stock location"

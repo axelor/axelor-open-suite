@@ -1,0 +1,3 @@
+---
+title: "Expense line: fixed an error when computing distance on orphan kilometric expense line"
+module: axelor-human-resource
