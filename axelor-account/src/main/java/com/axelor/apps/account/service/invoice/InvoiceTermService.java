@@ -326,5 +326,6 @@ public interface InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
-      BigDecimal currencyRate);
+      BigDecimal currencyRate,
+      Company company);
 }

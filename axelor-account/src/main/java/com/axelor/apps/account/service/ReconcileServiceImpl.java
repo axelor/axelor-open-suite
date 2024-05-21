@@ -522,20 +522,17 @@ public class ReconcileServiceImpl implements ReconcileService {
         }
       }
 
-      if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)
-          && Objects.equals(move.getCurrency(), otherMove.getCurrency())) {
-        amount = this.getTotal(moveLine, otherMoveLine, amount, invoicePayment != null);
-      } else if (this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
-        amount =
-            currencyService.getAmountCurrencyConvertedAtDate(
-                otherMove.getCurrency(), invoice.getCurrency(), amount, otherMove.getDate());
-      }
-
       if (invoicePayment == null
           && moveLine.getAccount().getUseForPartnerBalance()
           && otherMoveLine.getAccount().getUseForPartnerBalance()) {
+        BigDecimal invoicePaymentAmount = amount;
+        if (!this.isCompanyCurrency(reconcile, null, otherMove)) {
+          invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, false);
+        }
+
         invoicePayment =
-            invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
+            invoicePaymentCreateService.createInvoicePayment(
+                invoice, invoicePaymentAmount, otherMove);
         invoicePayment.setReconcile(reconcile);
       }
     } else if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {

@@ -36,9 +36,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -231,7 +233,7 @@ public class InvoicePaymentController {
         List<InvoiceTerm> invoiceTerms =
             Beans.get(InvoiceTermService.class)
                 .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
-        BigDecimal payableAmount =
+        BigDecimal payableCurrencyAmount =
             Beans.get(InvoicePaymentToolService.class)
                 .getPayableAmount(
                     invoiceTerms,
@@ -240,8 +242,8 @@ public class InvoicePaymentController {
                     invoicePayment.getCurrency());
 
         if (!invoicePayment.getManualChange()
-            || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
-          invoicePayment.setAmount(payableAmount);
+            || invoicePayment.getAmount().compareTo(payableCurrencyAmount) > 0) {
+          invoicePayment.setAmount(payableCurrencyAmount);
           amountError = true;
         }
 
@@ -250,17 +252,19 @@ public class InvoicePaymentController {
         if (!CollectionUtils.isEmpty(invoiceTerms)) {
           response.setValue("$invoiceTerms", invoiceTermIdList);
 
-          BigDecimal amount = invoicePayment.getAmount();
+          BigDecimal companyAmount =
+              this.computeCompanyAmount(invoicePayment.getAmount(), invoicePayment);
 
           if (invoicePayment.getManualChange()) {
             Beans.get(InvoicePaymentToolService.class)
                 .computeFromInvoiceTermPayments(invoicePayment);
-            amount = amount.add(invoicePayment.getFinancialDiscountTotalAmount());
+            companyAmount = companyAmount.add(invoicePayment.getFinancialDiscountTotalAmount());
           }
 
           invoicePayment.clearInvoiceTermPaymentList();
           Beans.get(InvoiceTermPaymentService.class)
-              .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount, amount);
+              .initInvoiceTermPaymentsWithAmount(
+                  invoicePayment, invoiceTerms, companyAmount, companyAmount);
         }
         response.setValues(invoicePayment);
         response.setAttr(
@@ -350,5 +354,20 @@ public class InvoicePaymentController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  protected BigDecimal computeCompanyAmount(
+      BigDecimal amountInCurrency, InvoicePayment invoicePayment) throws AxelorException {
+    Currency companyCurrency = invoicePayment.getInvoice().getCompany().getCurrency();
+    if (!invoicePayment.getCurrency().equals(companyCurrency)) {
+      return Beans.get(CurrencyService.class)
+          .getAmountCurrencyConvertedAtDate(
+              invoicePayment.getCurrency(),
+              companyCurrency,
+              amountInCurrency,
+              invoicePayment.getPaymentDate());
+    }
+
+    return amountInCurrency;
   }
 }

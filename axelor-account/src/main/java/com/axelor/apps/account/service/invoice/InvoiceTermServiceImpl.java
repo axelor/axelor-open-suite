@@ -50,6 +50,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -86,6 +87,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected CurrencyService currencyService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -96,7 +98,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
-      InvoicePaymentCreateService invoicePaymentCreateService) {
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      CurrencyService currencyService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -105,6 +108,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.accountConfigService = accountConfigService;
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -669,8 +673,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       throws AxelorException {
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
-      BigDecimal paidAmount =
-          invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
+      InvoicePayment invoicePayment = invoiceTermPayment.getInvoicePayment();
+
+      BigDecimal paidAmount;
+      if (invoicePayment != null
+          && invoicePayment.getCurrency().equals(invoiceTerm.getCurrency())) {
+        paidAmount = invoiceTermPayment.getPaidAmount();
+      } else {
+        paidAmount = this.computePaidAmount(invoiceTermPayment, invoicePayment, invoiceTerm);
+      }
+      paidAmount = paidAmount.add(invoiceTermPayment.getFinancialDiscountAmount());
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       BigDecimal companyAmountRemaining;
@@ -699,6 +711,36 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
     }
+  }
+
+  protected BigDecimal computePaidAmount(
+      InvoiceTermPayment invoiceTermPayment, InvoicePayment invoicePayment, InvoiceTerm invoiceTerm)
+      throws AxelorException {
+    Currency currency = null;
+    boolean needConvert = true;
+
+    BigDecimal paidAmount = invoiceTermPayment.getCompanyPaidAmount();
+    Currency invoiceTermCompanyCurrency = invoiceTerm.getCompany().getCurrency();
+
+    if (invoicePayment != null && invoicePayment.getCurrency().equals(invoiceTermCompanyCurrency)) {
+      currency = invoicePayment.getCurrency();
+    } else if (invoicePayment == null
+        && !invoiceTerm.getCurrency().equals(invoiceTermCompanyCurrency)) {
+      currency = invoiceTermCompanyCurrency;
+    } else {
+      needConvert = false;
+    }
+
+    if (needConvert) {
+      paidAmount =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              currency,
+              invoiceTerm.getCurrency(),
+              invoiceTermPayment.getCompanyPaidAmount(),
+              invoiceTerm.getDueDate());
+    }
+
+    return paidAmount;
   }
 
   @Override
@@ -1616,9 +1658,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
-      BigDecimal currencyRate) {
+      BigDecimal currencyRate,
+      Company company) {
     BigDecimal moveLineAmountRemaining =
         companyAmountRemaining.subtract(amountToPayInCompanyCurrency);
+    BigDecimal diff = BigDecimal.ZERO;
+
     BigDecimal invoiceTermAmountRemaining =
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmountRemaining)
@@ -1627,19 +1672,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal invoiceCurrencyRate =
         companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP);
 
-    if (Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
-      if (BigDecimal.ONE.compareTo(invoiceCurrencyRate) == 0) {
-        invoiceTermAmountRemaining =
-            invoiceTermAmountRemaining.subtract(amountToPay).multiply(currencyRate);
-      } else {
-        invoiceTermAmountRemaining =
-            (invoiceTermAmountRemaining.subtract(
-                amountToPay.divide(
-                    invoiceCurrencyRate,
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_UP)));
-      }
-    } else {
+    if (!Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
       if (BigDecimal.ONE.compareTo(invoiceCurrencyRate) != 0) {
         invoiceTermAmountRemaining =
             invoiceTermAmountRemaining.subtract(amountToPay).multiply(invoiceCurrencyRate);
@@ -1647,12 +1680,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTermAmountRemaining =
             invoiceTermAmountRemaining.subtract(amountToPayInCompanyCurrency);
       }
-    }
 
-    BigDecimal diff =
-        moveLineAmountRemaining.subtract(
-            invoiceTermAmountRemaining.setScale(
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      diff =
+          moveLineAmountRemaining.subtract(
+              invoiceTermAmountRemaining.setScale(
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    }
 
     return amountToPayInCompanyCurrency
         .add(diff)
