@@ -293,21 +293,37 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       List<InvoiceTerm> invoiceTermList,
       LocalDate date,
       boolean manualChange,
-      Currency paymentCurrency) {
+      Currency paymentCurrency)
+      throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceTermList)) {
       return BigDecimal.ZERO;
     }
 
-    boolean isCompanyCurrency =
-        paymentCurrency.equals(invoiceTermList.get(0).getCompany().getCurrency());
-    return invoiceTermList.stream()
-        .map(
-            it ->
-                manualChange
-                    ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
-                    : isCompanyCurrency ? it.getCompanyAmountRemaining() : it.getAmountRemaining())
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+    Company company = invoiceTermList.get(0).getCompany();
+    Currency currency = invoiceTermList.get(0).getCurrency();
+
+    boolean isCompanyCurrency = company != null && paymentCurrency.equals(company.getCurrency());
+    boolean isTermMonoCurrency = company != null && Objects.equals(company.getCurrency(), currency);
+
+    BigDecimal amountRemaining =
+        invoiceTermList.stream()
+            .map(
+                it ->
+                    manualChange
+                        ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
+                        : isCompanyCurrency
+                            ? it.getCompanyAmountRemaining()
+                            : it.getAmountRemaining())
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (isTermMonoCurrency && !isCompanyCurrency) {
+      amountRemaining =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              currency, paymentCurrency, amountRemaining, date);
+    }
+
+    return amountRemaining;
   }
 
   @Override
