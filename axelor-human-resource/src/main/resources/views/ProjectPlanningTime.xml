@@ -219,6 +219,7 @@
     <attribute for="timeUnit" name="readonly" expr="eval: true" if="projectTask"/>
     <attribute for="timeUnit" name="value" expr="" if="!projectTask"/>
     <attribute for="timeUnit" name="readonly" expr="eval: false" if="!projectTask"/>
+    <attribute for="product" name="value" expr="eval: projectTask?.product"/>
   </action-attrs>
 
 </object-views>
