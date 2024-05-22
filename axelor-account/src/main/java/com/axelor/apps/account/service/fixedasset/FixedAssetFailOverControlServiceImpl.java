@@ -85,7 +85,6 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
   @Override
   public boolean isFailOver(FixedAsset fixedAsset) {
     return fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT
-        && fixedAsset.getImportDepreciationDate() != null
-        && fixedAsset.getIsFromImport();
+        && fixedAsset.getImportDepreciationDate() != null;
   }
 }

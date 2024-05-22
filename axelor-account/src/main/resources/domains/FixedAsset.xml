@@ -172,8 +172,6 @@
 	    ]]>
     </many-to-one>
 
-    <boolean name="isFromImport" title="Transferred/Imported ?"/>
-
     <extra-code><![CDATA[
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
