@@ -69,7 +69,7 @@ public class ProjectUnitConversionRestController {
         ObjectFinder.find(Unit.class, requestBody.getStartingUnitId(), ObjectFinder.NO_VERSION);
     Unit endUnit =
         ObjectFinder.find(Unit.class, requestBody.getDestinationUnitId(), ObjectFinder.NO_VERSION);
-    BigDecimal value = BigDecimal.valueOf(requestBody.getStartingValue());
+    BigDecimal value = requestBody.getStartingValue();
 
     BigDecimal result =
         Beans.get(UnitConversionForProjectService.class)
