@@ -87,14 +87,21 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getAccount().getLabel());
     }
 
+    BigDecimal foreignExchangeAmount = this.getForeignExchangeAmount(reconcile);
     if ((currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
-            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
+            creditMoveLine
+                .getCredit()
+                .subtract(creditMoveLine.getAmountPaid())
+                .add(foreignExchangeAmount),
             creditMoveLine,
             false)
         || currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
-            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
+            debitMoveLine
+                .getDebit()
+                .subtract(debitMoveLine.getAmountPaid())
+                .add(foreignExchangeAmount),
             debitMoveLine,
             false))) {
 
@@ -187,5 +194,20 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
           move.getReference());
     }
+  }
+
+  protected BigDecimal getForeignExchangeAmount(Reconcile reconcile) {
+    BigDecimal foreignExchangeAmount = BigDecimal.ZERO;
+    if (reconcile.getForeignExchangeMove() != null) {
+      foreignExchangeAmount =
+          reconcile.getForeignExchangeMove().getMoveLineList().stream()
+              .map(MoveLine::getDebit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (foreignExchangeAmount.compareTo(reconcile.getAmount()) == 0) {
+        return BigDecimal.ZERO;
+      }
+    }
+    return foreignExchangeAmount;
   }
 }
