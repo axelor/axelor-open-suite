@@ -16,27 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.csv.script;
+package com.axelor.apps.helpdesk.service;
 
-import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.helpdesk.db.Ticket;
-import com.axelor.apps.helpdesk.service.TicketSequenceService;
-import com.axelor.inject.Beans;
-import java.util.Map;
 
-public class ImportTicket {
+public interface TicketSequenceService {
 
-  public Object importTicket(Object bean, Map<String, Object> values) {
-    assert bean instanceof Ticket;
-
-    Ticket ticket = (Ticket) bean;
-
-    try {
-      Beans.get(TicketSequenceService.class).computeSeq(ticket);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
-
-    return ticket;
-  }
+  void computeSeq(Ticket ticket) throws AxelorException;
 }
