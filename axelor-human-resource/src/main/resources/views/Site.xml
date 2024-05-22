@@ -24,6 +24,8 @@
     <attribute for="isUsableOnProject" name="value" expr="eval:_isFromProject"/>
     <attribute for="isUsableOnExpense" name="value" expr="eval:_isFromProject"/>
     <attribute for="isUsableOnTimesheet" name="value" expr="eval:_isFromProject"/>
+    <attribute for="isUsableOnProject" name="value" expr="eval: true"
+      if="__parent__?._model == 'com.axelor.studio.db.AppBase'"/>
   </action-attrs>
 
 </object-views>
