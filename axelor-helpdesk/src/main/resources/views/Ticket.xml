@@ -185,7 +185,7 @@
     <template>
 	 <![CDATA[
  	 <>
- 	     <h4>{ticketSeq}</h4>
+ 	     <strong>{ticketSeq}</strong>
 	     <Box as="p" mt={2}>{subject}</Box>
  	     <Box as="dl">
 	 	     {progressSelect > 0 &&

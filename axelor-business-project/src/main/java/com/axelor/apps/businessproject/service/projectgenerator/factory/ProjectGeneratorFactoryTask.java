@@ -134,7 +134,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
                 tasks.add(task);
               });
     } else {
-      tasks.add(createProjectTask(project, saleOrder, startDate, saleOrderLine));
+      tasks.add(createProjectTask(project, startDate, saleOrderLine));
     }
   }
 
@@ -142,7 +142,6 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
    * create task from saleOrderLine
    *
    * @param project
-   * @param saleOrder
    * @param startDate
    * @param saleOrderLine
    * @return
@@ -150,29 +149,41 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
    */
   @Transactional
   protected ProjectTask createProjectTask(
-      Project project, SaleOrder saleOrder, LocalDateTime startDate, SaleOrderLine saleOrderLine)
+      Project project, LocalDateTime startDate, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
     ProjectTask task =
         projectTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
 
-    if (saleOrder.getToInvoiceViaTask()) {
-      task.setToInvoice(true);
-      task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
-    } else {
-      task.setToInvoice(project.getIsInvoicingTimesheet());
-    }
-    if (saleOrderLine.getToInvoice()
-        && saleOrderLine.getInvoicingModeSelect()
-            == SaleOrderLineRepository.INVOICING_MODE_PROGRESS_BILLING) {
-      task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
-    }
+    setTaskInvoicingType(saleOrderLine, task);
 
     task.setTaskDate(startDate.toLocalDate());
     task.setUnitPrice(saleOrderLine.getPrice());
     task.setExTaxTotal(saleOrderLine.getExTaxTotal());
     projectTaskRepo.save(task);
     return task;
+  }
+
+  protected void setTaskInvoicingType(SaleOrderLine saleOrderLine, ProjectTask task) {
+    switch (saleOrderLine.getInvoicingModeSelect()) {
+      case SaleOrderLineRepository.INVOICING_MODE_STANDARD:
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_NO_INVOICING);
+        break;
+      case SaleOrderLineRepository.INVOICING_MODE_PROGRESS_BILLING:
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
+        break;
+      case SaleOrderLineRepository.INVOICING_MODE_SPENT_TIME:
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT);
+        break;
+      case SaleOrderLineRepository.INVOICING_MODE_PACKAGE:
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+        break;
+      default:
+        break;
+    }
+
+    task.setToInvoice(
+        !ProjectTaskRepository.INVOICING_TYPE_NO_INVOICING.equals(task.getInvoicingType()));
   }
 
   protected void updateSoldTime(ProjectTask task, SaleOrderLine saleOrderLine) {

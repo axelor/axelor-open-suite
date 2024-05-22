@@ -47,6 +47,9 @@
       eval="defaultTaxSet.split('\\|') as List"/>
   </input>
 
+  <input file="account_taxType.csv" separator=";" type="com.axelor.apps.account.db.TaxType"
+    search="self.code = :code"/>
+
   <input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax"
     search="self.code = :code AND self.importId = :importId">
     <bind to="importOrigin" eval="_dataFileName"/>

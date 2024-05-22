@@ -269,7 +269,7 @@
     <template>
     	<![CDATA[
   			<>
-	    		<h4>{sequence}</h4>
+	    		<strong>{sequence}</strong>
   				<Box as="dl" mt={4}>
   					{qiDetection.origin == 1 && qiIdentification.supplierPartner.fullName &&
   						<Box>
