@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -46,7 +47,6 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
     implements AccountingSituationSupplychainService {
 
   protected AppAccountService appAccountService;
-  protected SaleOrderRepository saleOrderRepository;
   protected InvoicePaymentRepository invoicePaymentRepository;
 
   @Inject
@@ -55,11 +55,9 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       PaymentModeService paymentModeService,
       AccountingSituationRepository accountingSituationRepo,
       AppAccountService appAccountService,
-      SaleOrderRepository saleOrderRepository,
       InvoicePaymentRepository invoicePaymentRepository) {
     super(accountConfigService, paymentModeService, accountingSituationRepo);
     this.appAccountService = appAccountService;
-    this.saleOrderRepository = saleOrderRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
@@ -147,8 +145,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       throws AxelorException {
     BigDecimal sum = BigDecimal.ZERO;
     List<SaleOrder> saleOrderList =
-        saleOrderRepository
-            .all()
+        JPA.all(SaleOrder.class)
             .filter(
                 "self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4",
                 accountingSituation.getCompany(),

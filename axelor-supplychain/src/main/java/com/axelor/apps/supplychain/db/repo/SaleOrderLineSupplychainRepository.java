@@ -24,13 +24,20 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineStockService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 
 public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleRepository {
+
+  protected SaleOrderLineStockService saleOrderLineStockService;
+
+  @Inject
+  public SaleOrderLineSupplychainRepository(SaleOrderLineStockService saleOrderLineStockService) {
+    this.saleOrderLineStockService = saleOrderLineStockService;
+  }
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
@@ -44,11 +51,9 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
     }
 
     BigDecimal availableStock =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
-            .getAvailableStock(saleOrder, saleOrderLine);
+        saleOrderLineStockService.getAvailableStock(saleOrder, saleOrderLine);
     BigDecimal allocatedStock =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
-            .getAllocatedStock(saleOrder, saleOrderLine);
+        saleOrderLineStockService.getAllocatedStock(saleOrder, saleOrderLine);
 
     BigDecimal availableQty = availableStock.add(allocatedStock);
     BigDecimal realQty = saleOrderLine.getQty();

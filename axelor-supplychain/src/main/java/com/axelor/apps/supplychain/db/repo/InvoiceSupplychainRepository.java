@@ -25,9 +25,17 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
+
+  protected AppSaleService appSaleService;
+
+  @Inject
+  public InvoiceSupplychainRepository(AppSaleService appSaleService) {
+    this.appSaleService = appSaleService;
+  }
 
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
@@ -55,8 +63,7 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
       InvoiceServiceSupplychain invoiceServiceSupplychain =
           Beans.get(InvoiceServiceSupplychain.class);
 
-      if (Boolean.TRUE.equals(
-          Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())) {
+      if (Boolean.TRUE.equals(appSaleService.getAppSale().getEnablePackManagement())) {
         invoiceServiceSupplychain.computePackTotal(invoice);
       } else {
         invoiceServiceSupplychain.resetPackTotal(invoice);

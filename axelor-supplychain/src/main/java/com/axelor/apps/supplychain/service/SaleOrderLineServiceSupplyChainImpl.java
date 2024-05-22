@@ -45,11 +45,9 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
@@ -137,40 +135,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
       analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
     }
-  }
-
-  @Override
-  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-
-    if (!appAccountService.isApp("supplychain")) {
-      return super.getAvailableStock(saleOrder, saleOrderLine);
-    }
-
-    StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
-
-    if (stockLocationLine == null) {
-      return BigDecimal.ZERO;
-    }
-    return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-  }
-
-  @Override
-  public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-
-    if (!appAccountService.isApp("supplychain")) {
-      return super.getAllocatedStock(saleOrder, saleOrderLine);
-    }
-
-    StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
-
-    if (stockLocationLine == null) {
-      return BigDecimal.ZERO;
-    }
-    return stockLocationLine.getReservedQty();
   }
 
   @Override

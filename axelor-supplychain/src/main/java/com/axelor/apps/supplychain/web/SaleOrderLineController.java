@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineStockService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -125,17 +126,18 @@ public class SaleOrderLineController {
 
   public void fillAvailableAndAllocatedStock(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    SaleOrderLineServiceSupplyChainImpl saleOrderLineServiceSupplyChainImpl =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class);
+    SaleOrderLineStockService saleOrderLineStockService =
+        Beans.get(SaleOrderLineStockService.class);
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(context);
+    SaleOrder saleOrder =
+        Beans.get(SaleOrderLineServiceSupplyChainImpl.class).getSaleOrder(context);
 
     if (saleOrder != null) {
       if (saleOrderLine.getProduct() != null && saleOrder.getStockLocation() != null) {
         BigDecimal availableStock =
-            saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrder, saleOrderLine);
+            saleOrderLineStockService.getAvailableStock(saleOrder, saleOrderLine);
         BigDecimal allocatedStock =
-            saleOrderLineServiceSupplyChainImpl.getAllocatedStock(saleOrder, saleOrderLine);
+            saleOrderLineStockService.getAllocatedStock(saleOrder, saleOrderLine);
 
         response.setValue("$availableStock", availableStock);
         response.setValue("$allocatedStock", allocatedStock);

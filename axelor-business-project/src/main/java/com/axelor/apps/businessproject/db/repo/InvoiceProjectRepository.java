@@ -20,8 +20,8 @@ package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -31,17 +31,15 @@ import java.util.List;
 
 public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
 
-  protected AppBusinessProjectService appBusinessProjectService;
-
   @Inject
-  public InvoiceProjectRepository(AppBusinessProjectService appBusinessProjectService) {
-    this.appBusinessProjectService = appBusinessProjectService;
+  public InvoiceProjectRepository(AppSaleService appSaleService) {
+    super(appSaleService);
   }
 
   @Override
   public void remove(Invoice entity) {
 
-    if (appBusinessProjectService.isApp("business-project")) {
+    if (appSaleService.isApp("business-project")) {
       List<InvoicingProject> invoiceProjectList =
           JPA.all(InvoicingProject.class).filter("self.invoice.id = ?", entity.getId()).fetch();
       List<ProjectTask> projectTaskList =

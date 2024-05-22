@@ -20,22 +20,33 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
-import com.axelor.inject.Beans;
-import com.axelor.studio.app.service.AppService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
+
+  protected AppBaseService appBaseService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+
+  @Inject
+  public SaleOrderSupplychainRepository(
+      AppBaseService appBaseService,
+      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+    this.appBaseService = appBaseService;
+    this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+  }
 
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {
 
     SaleOrder copy = super.copy(entity, deep);
 
-    if (!Beans.get(AppService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       return copy;
     }
 
@@ -68,7 +79,7 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     super.remove(order);
 
     try {
-      Beans.get(AccountingSituationSupplychainService.class).updateUsedCredit(partner);
+      accountingSituationSupplychainService.updateUsedCredit(partner);
     } catch (AxelorException e) {
       e.printStackTrace();
     }
