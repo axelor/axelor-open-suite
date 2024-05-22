@@ -2,7 +2,6 @@ package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-
 import java.math.BigDecimal;
 import java.util.Map;
 

@@ -89,6 +89,8 @@ import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusi
 import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineAttrsSetBusinessProjectService;
 import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineAttrsSetBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineGroupBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineInitialValuesBusinessProjectService;
+import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineInitialValuesBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineRecordUpdateBusinessProjectService;
 import com.axelor.apps.businessproject.service.saleorderline.SaleOrderLineRecordUpdateBusinessProjectServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
@@ -195,5 +197,7 @@ public class BusinessProjectModule extends AxelorModule {
         .to(SaleOrderLineGroupBusinessProjectServiceImpl.class);
     bind(SaleOrderLineRecordUpdateBusinessProjectService.class)
         .to(SaleOrderLineRecordUpdateBusinessProjectServiceImpl.class);
+    bind(SaleOrderLineInitialValuesBusinessProjectService.class)
+        .to(SaleOrderLineInitialValuesBusinessProjectServiceImpl.class);
   }
 }

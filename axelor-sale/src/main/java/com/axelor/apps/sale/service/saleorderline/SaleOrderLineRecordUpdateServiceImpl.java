@@ -5,7 +5,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.helper.SaleOrderLineHelper;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
 import java.util.Map;
 

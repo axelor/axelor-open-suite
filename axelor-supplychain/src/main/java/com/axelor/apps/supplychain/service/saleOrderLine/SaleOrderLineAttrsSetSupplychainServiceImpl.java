@@ -45,13 +45,13 @@ public class SaleOrderLineAttrsSetSupplychainServiceImpl extends SaleOrderLineAt
 
   @Override
   public void hideUpdateAllocatedQtyBtn(
-          SaleOrder saleOrder, SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap) {
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Map<String, Map<String, Object>> attrsMap) {
     SaleOrderLineHelper.addAttr(
-            "updateAllocatedQtyBtn",
-            "hidden",
-            saleOrderLine.getId() == null
-                    || saleOrder.getStatusSelect() != 3
-                    || Objects.equals(saleOrderLine.getProduct().getProductTypeSelect(), "service"),
-            attrsMap);
+        "updateAllocatedQtyBtn",
+        "hidden",
+        saleOrderLine.getId() == null
+            || saleOrder.getStatusSelect() != 3
+            || Objects.equals(saleOrderLine.getProduct().getProductTypeSelect(), "service"),
+        attrsMap);
   }
 }
