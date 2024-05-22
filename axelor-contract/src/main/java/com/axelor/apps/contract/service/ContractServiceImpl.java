@@ -1012,7 +1012,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Contract generateContractFromOpportunity(
-      Opportunity opportunity, ContractTemplate contractTemplate) {
+      Opportunity opportunity, ContractTemplate contractTemplate) throws AxelorException {
     Contract contract = new Contract();
     Currency currency = opportunity.getCurrency();
     Company company = opportunity.getCompany();
@@ -1033,9 +1033,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     ContractTemplate contractTemplate1 = JPA.copy(contractTemplate, true);
     if (contractTemplate != null) {
-      contract.setAdditionalBenefitContractLineList(
-          contractTemplate1.getAdditionalBenefitContractLineList());
-      contract.setContractTypeSelect(contractTemplate1.getContractTypeSelect());
+      copyFromTemplate(contract, contractTemplate1);
     }
     contract.setOpportunity(opportunity);
     contractRepository.save(contract);
