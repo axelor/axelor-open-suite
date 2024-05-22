@@ -18,14 +18,22 @@
  */
 package com.axelor.apps.talent.service;
 
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 
-public interface JobApplicationService {
+public class JobApplicationComputeNameServiceImpl implements JobApplicationComputeNameService {
 
-  Employee createEmployeeFromJobApplication(JobApplication jobApplication);
+  @Override
+  public String computeFullName(JobApplication jobApplication) {
+    String fullName = null;
 
-  void setDMSFile(JobApplication jobApplication);
-
-  String getInlineUrl(JobApplication jobApplication);
+    if (jobApplication.getFirstName() != null) {
+      fullName = jobApplication.getFirstName();
+    }
+    if (fullName == null) {
+      fullName = jobApplication.getLastName();
+    } else {
+      fullName += " " + jobApplication.getLastName();
+    }
+    return fullName;
+  }
 }

@@ -18,14 +18,18 @@
  */
 package com.axelor.apps.talent.service;
 
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.talent.db.JobApplication;
+import com.axelor.apps.talent.db.TrainingSession;
+import java.time.format.DateTimeFormatter;
 
-public interface JobApplicationService {
+public class TrainingSessionComputeNameServiceImpl implements TrainingSessionComputeNameService {
 
-  Employee createEmployeeFromJobApplication(JobApplication jobApplication);
+  @Override
+  public String computeFullName(TrainingSession trainingSession) {
 
-  void setDMSFile(JobApplication jobApplication);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-  String getInlineUrl(JobApplication jobApplication);
+    return trainingSession.getFromDate().format(formatter)
+        + " - "
+        + trainingSession.getToDate().format(formatter);
+  }
 }

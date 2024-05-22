@@ -18,14 +18,9 @@
  */
 package com.axelor.apps.talent.service;
 
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.talent.db.JobApplication;
+import com.axelor.apps.talent.db.TrainingRegister;
 
-public interface JobApplicationService {
+public interface TrainingRegisterComputeNameService {
 
-  Employee createEmployeeFromJobApplication(JobApplication jobApplication);
-
-  void setDMSFile(JobApplication jobApplication);
-
-  String getInlineUrl(JobApplication jobApplication);
+  String computeFullName(TrainingRegister trainingRegister);
 }
