@@ -62,6 +62,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -993,5 +994,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       invoiceList.add(invoice);
     }
     return invoiceList;
+  }
+
+  @Override
+  public List<Map<String, Object>> getSaleOrderLineList(SaleOrder saleOrder) {
+    List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+      saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
+      saleOrderLineList.add(saleOrderLineMap);
+    }
+    return saleOrderLineList;
   }
 }
