@@ -18,14 +18,12 @@
  */
 package com.axelor.apps.talent.service;
 
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.talent.db.JobApplication;
+import com.axelor.apps.talent.db.Training;
+import com.axelor.apps.talent.db.TrainingSession;
 
-public interface JobApplicationService {
+public interface TrainingRegisterComputeRatingService {
 
-  Employee createEmployeeFromJobApplication(JobApplication jobApplication);
+  Training updateTrainingRating(Training training, Long excludeId);
 
-  void setDMSFile(JobApplication jobApplication);
-
-  String getInlineUrl(JobApplication jobApplication);
+  TrainingSession updateSessionRating(TrainingSession trainingSession, Long excludeId);
 }
