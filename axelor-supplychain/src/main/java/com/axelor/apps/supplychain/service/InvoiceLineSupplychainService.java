@@ -102,7 +102,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       }
     } else {
       if (product.getSalesUnit() != null) {
-        return product.getPurchasesUnit();
+        return product.getSalesUnit();
       } else {
         return product.getUnit();
       }
