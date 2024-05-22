@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
@@ -155,9 +156,10 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .filter(it -> it.getAccount() != null && it.getAccount().getUseForPartnerBalance())
               .collect(Collectors.toList());
 
-      return moveLinesWithInvoiceTerms.size() <= 1
-          && (moveLinesWithInvoiceTerms.size() == 0
-              || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() <= 1);
+      return ObjectUtils.isEmpty(moveLinesWithInvoiceTerms)
+          || (moveLinesWithInvoiceTerms.size() == 1
+              && (ObjectUtils.isEmpty(moveLinesWithInvoiceTerms.get(0).getInvoiceTermList())
+                  || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() == 1));
     }
 
     return true;
