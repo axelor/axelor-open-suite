@@ -771,7 +771,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     ProjectStatus completedStatus = appProjectService.getCompletedProjectStatus();
     ProjectStatus completedPaidStatus =
         appProjectService.getAppProject().getCompletedPaidProjectStatus();
-    if (Objects.isNull(completedPaidStatus)) {
+    if (completedPaidStatus == null) {
       throw new AxelorException(
           appProjectService.getAppProject(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

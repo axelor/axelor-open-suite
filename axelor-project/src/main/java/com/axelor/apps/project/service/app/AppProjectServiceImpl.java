@@ -41,7 +41,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import java.util.Objects;
 
 @Singleton
 public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProjectService {
@@ -96,7 +95,7 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
   @Override
   public ProjectStatus getCompletedProjectStatus() throws AxelorException {
     ProjectStatus projectStatus = getAppProject().getCompletedProjectStatus();
-    if (Objects.isNull(projectStatus)) {
+    if (projectStatus == null) {
       throw new AxelorException(
           getAppProject(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
