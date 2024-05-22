@@ -26,4 +26,6 @@ public interface PlannedTimeValueService {
   boolean checkIfExists(PlannedTimeValue plannedTimeValue);
 
   PlannedTimeValue createPlannedTimeValue(BigDecimal plannedTime);
+
+  PlannedTimeValue createAndSavePlannedTimeValue(BigDecimal plannedTime);
 }

@@ -9,8 +9,10 @@
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel name="settingsPanel" title="Settings">
-          <field name="valueByDefaultOnDisplayPlannedTime" colSpan="4"/>
-          <field name="isSelectionOnDisplayPlannedTime" widget="boolean-switch" colSpan="4"/>
+          <field name="valueByDefaultOnDisplayPlannedTime" colSpan="4"
+            onChange="action-project-config-method-generate-default-planned-time-value"/>
+          <field name="isSelectionOnDisplayPlannedTime" widget="boolean-switch" colSpan="4"
+            onChange="action-project-config-method-generate-default-planned-time-value"/>
           <field name="plannedTimeValueList" showIf="isSelectionOnDisplayPlannedTime"
             widget="TagSelect" x-order="plannedTime" colSpan="4"/>
         </panel>
@@ -19,5 +21,10 @@
 
   </form>
 
+  <action-method
+    name="action-project-config-method-generate-default-planned-time-value">
+    <call class="com.axelor.apps.hr.web.ProjectConfigHRController"
+      method="generateDefaultPlannedTimeValue"/>
+  </action-method>
 
 </object-views>
