@@ -64,6 +64,10 @@
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <many-to-one name="invoiceExpensePrintTemplate" title="Invoice expense template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <boolean name="isExpenseLineOnInvoiceGrouped" title="Group expense on invoice"
+      help="This configuration allows you to group expenses by period on the project's invoice and to attach separate receipts for these expenses."/>
+    <string name="groupingPeriodSelect" title="Grouping period"
+      selection="business.project.invoice.grouping.period.select" default="month"/>
 
     <extra-code><![CDATA[
 		public static final int CLOSING_PROJECT_RULE_NONE = 0;
@@ -84,6 +88,8 @@
 
       <field name="enableToInvoiceTimesheet" on="UPDATE"/>
       <field name="enableToInvoiceExpense" on="UPDATE"/>
+      <field name="isExpenseLineOnInvoiceGrouped" on="UPDATE"/>
+      <field name="groupingPeriodSelect" on="UPDATE"/>
       <field name="generateProjectOrder" on="UPDATE"/>
       <field name="automaticProject" on="UPDATE"/>
       <field name="projectSaleOrderLines" on="UPDATE"/>
