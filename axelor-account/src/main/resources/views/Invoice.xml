@@ -1120,7 +1120,7 @@
         readonlyIf="$reportType != 1"/>
       <field name="$localization" title="Localization" type="many-to-one"
         target="com.axelor.apps.base.db.Localization" showIf="$reportType ==1 || $reportType==3"/>
-      <button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close"
+      <button name="printBtn" title="Print" onClick="action-invoice-wizard-group-print"
         readonlyIf="$reportType==null || $invoicePrintTemplate == null"/>
     </panel>
   </form>
@@ -2842,6 +2842,11 @@
   <action-group name="action-invoice-group-report-button">
     <action name="save"/>
     <action name="action-invoice-view-reports-wizard"/>
+  </action-group>
+
+  <action-group name="action-invoice-wizard-group-print">
+    <action name="action-invoice-group-report-print"/>
+    <action name="close"/>
   </action-group>
 
 </object-views>

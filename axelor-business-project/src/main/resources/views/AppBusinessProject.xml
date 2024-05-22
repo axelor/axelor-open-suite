@@ -65,6 +65,7 @@
     <panel name="printingsPanel" title="Printings" colSpan="12">
       <field name="invoicingProjectAnnexPrintTemplate"/>
       <field name="invoicingAnnexPrintTemplate"/>
+      <field name="invoiceExpensePrintTemplate"/>
     </panel>
 
     <panel name="actionsPanel">

@@ -22,7 +22,7 @@
   <form name="maintenance-bill-of-material-form" title="Bill of materials"
     model="com.axelor.apps.production.db.BillOfMaterial" width="large"
     onLoad="action-bill-of-material-group-on-load"
-    onSave="save,action-bill-of-material-method-name,action-bill-of-material-method-validate-prod-process"
+    onSave="save,action-bill-of-material-method-validate-prod-process"
     onNew="action-maintenance-bill-of-material-group-onnew" canNew="!_isPersonalized">
     <toolbar>
       <button name="printBtn" title="Print" onClick="action-bill-of-material-method-print"/>

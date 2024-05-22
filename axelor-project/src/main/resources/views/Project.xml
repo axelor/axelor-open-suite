@@ -600,7 +600,7 @@
     <template>
 		<![CDATA[
 	    <>
-	    	<h4>{fullName}</h4>
+	    	<strong>{fullName}</strong>
 	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
 	    </>
 		]]>
@@ -616,7 +616,7 @@
     <template>
 		<![CDATA[
 	    <>
-	    	<h4>{fullName}</h4>
+	    	<strong>{fullName}</strong>
 	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
 	    </>
 		]]>

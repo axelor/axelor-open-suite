@@ -174,7 +174,7 @@
       <field name="fromStockMove" hidden="true" colSpan="12"/>
       <field name="$priceList" title="Price List" type="many-to-one"
         target="com.axelor.apps.base.db.PriceList"
-        domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3"
+        domain="self.typeSelect = 1 and self.isActive = true" colSpan="6" colOffset="3"
         width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form"
         grid-view="price-list-grid"/>
       <field name="$stockLocation" canEdit="false" title="Stock location"
@@ -598,8 +598,6 @@
           </panel>
           <field name="$_elementStartDate" title="Start date" widget="date-time"
             type="datetime" colSpan="3"/>
-          <field name="toInvoiceViaTask" hidden="true"
-            showIf="$_projectGeneratorType == 'TASK_BY_LINE'" colSpan="3"/>
         </panel>
       </panel>
 
@@ -1948,8 +1946,6 @@
     <field name="versionNumber" hidden="true"
       if="!__config__.app.getApp('sale')?.getManageSaleOrderVersion()"/>
     <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="toInvoiceViaTask" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="timetableTemplate" hidden="true"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
