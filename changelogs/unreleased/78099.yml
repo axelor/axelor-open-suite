@@ -1,2 +1,2 @@
-title: "Project : Can not invoice timesheet due to missing product"
+title: "Timesheet line: fixed an issue preventing to invoice timesheet when the task has an activity."
 module: axelor-business-project
