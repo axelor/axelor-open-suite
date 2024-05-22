@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -265,17 +264,10 @@ public abstract class InvoiceGenerator {
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    int atiChoice = accountConfig.getInvoiceInAtiSelect();
-
     if (inAti == null) {
       invoice.setInAti(accountConfigService.getInvoiceInAti(accountConfig));
-    } else if (atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT
-        || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT) {
-      invoice.setInAti(inAti);
-    } else if (atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS) {
-      invoice.setInAti(true);
     } else {
-      invoice.setInAti(false);
+      invoice.setInAti(inAti);
     }
     if (companyBankDetails == null) {
       fillCompanyBankDetails(accountingSituation, accountConfig);

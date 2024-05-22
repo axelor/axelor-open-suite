@@ -46,6 +46,9 @@ public final class ProjectExceptionMessage {
   public static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for Project" /*)*/;
 
+  public static final String PROJECT_CONFIG_1 = /*$$(*/
+      "%s : You must configure Project module for company %s" /*)*/;
+
   public static final String PROJECT_GROOVY_FORMULA_ERROR = /*$$(*/
       "Please check the compute full name groovy formula in project app configuration" /*)*/;
 
@@ -54,4 +57,10 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_TASK_INFINITE_LOOP_ISSUE = /*$$(*/
       "Task parent or children has not been configured correctly." /*)*/;
+
+  public static final String PROJECT_CONFIG_COMPLETED_PROJECT_STATUS_MISSING = /*$$(*/
+      "Please set the completed project status in the project configuration." /*)*/;
+
+  public static final String PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING = /*$$(*/
+      "Please set the completed paid project status in the project configuration." /*)*/;
 }

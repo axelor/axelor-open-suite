@@ -79,6 +79,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
   protected SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
+  protected PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -93,7 +94,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       SupplyChainConfigService supplyChainConfigService,
       AppBaseService appBaseService,
       AppStockService appStockService,
-      SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain) {
+      SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -106,6 +108,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
+    this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
   }
 
   @Override
@@ -152,12 +155,18 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
       SaleOrder saleOrder = saleOrderMergingServiceSupplyChain.getDummyMergedSaleOrder(stockMove);
       invoice = createInvoiceFromSaleOrder(stockMove, saleOrder, qtyToInvoiceMap);
-    } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
-      invoice =
-          createInvoiceFromPurchaseOrder(
-              stockMove, stockMove.getPurchaseOrderSet().iterator().next(), qtyToInvoiceMap);
     } else {
-      invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
+      Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
+      if (ObjectUtils.notEmpty(purchaseOrderSet)) {
+        PurchaseOrder purchaseOrder =
+            purchaseOrderMergingSupplychainService.getDummyMergedPurchaseOrder(stockMove);
+        invoice = createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
+        invoice.setExternalReference(fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet));
+        invoice.setInternalReference(
+            fillInternalReferenceInvoiceFromInStockMove(stockMove, purchaseOrderSet));
+      } else {
+        invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
+      }
     }
     return invoice;
   }
@@ -294,7 +303,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       if (invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()) {
         return null;
       }
-      this.extendInternalReference(stockMove, invoice);
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
 
@@ -713,6 +721,24 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       StockMove stockMove, Set<SaleOrder> saleOrderSet) {
     return saleOrderSet.stream()
         .map(saleOrder -> stockMove.getStockMoveSeq() + ":" + saleOrder.getSaleOrderSeq())
+        .collect(Collectors.joining("|"));
+  }
+
+  @Override
+  public String fillExternalReferenceInvoiceFromInStockMove(Set<PurchaseOrder> purchaseOrderSet) {
+    return purchaseOrderSet.stream()
+        .map(PurchaseOrder::getExternalReference)
+        .filter(Objects::nonNull)
+        .collect(Collectors.joining("|"));
+  }
+
+  @Override
+  public String fillInternalReferenceInvoiceFromInStockMove(
+      StockMove stockMove, Set<PurchaseOrder> purchaseOrderSet) {
+    return purchaseOrderSet.stream()
+        .map(
+            purchaseOrder ->
+                stockMove.getStockMoveSeq() + ":" + purchaseOrder.getPurchaseOrderSeq())
         .collect(Collectors.joining("|"));
   }
 }

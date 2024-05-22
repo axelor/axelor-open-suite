@@ -5,6 +5,9 @@
 
   <grid name="payment-voucher-grid" title="Payment vouchers"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
+    <toolbar>
+      <button name="printBtn" hidden="true" onClick=""/>
+    </toolbar>
     <field name="ref" width="120"/>
     <field name="operationTypeSelect"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -23,6 +26,9 @@
     onNew="action-account-payment-voucher-onnew-group"
     onLoad="action-account-payment-voucher-onload-group"
     onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
+    <toolbar>
+      <button name="printBtn" hidden="true" onClick=""/>
+    </toolbar>
     <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
       <field name="ref" readonly="true" colSpan="4"/>
       <field name="operationTypeSelect" colSpan="4"
@@ -46,7 +52,7 @@
         showIf="statusSelect == 1 || !id"
         readonlyIf="paidAmount == 0 || (moveLine != null &amp;&amp; payVoucherElementToPayList.length == 0)"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
-        icon="fa-print" onClick="save,action-method-print-birt"/>
+        icon="fa-print" onClick="save,action-method-print-template"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
@@ -136,7 +142,7 @@
           onClick="action-method-payment-voucher-load-selected-lines,save"
           readonlyIf="paidAmount == 0 || payVoucherDueElementList.length == 0" colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="action-payment-voucher-method-reset-imputation"
+          onClick="action-payment-voucher-method-reset-imputation,save"
           readonlyIf="payVoucherElementToPayList.length == 0" colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"

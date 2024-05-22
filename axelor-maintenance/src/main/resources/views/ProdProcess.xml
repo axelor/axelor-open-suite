@@ -5,6 +5,9 @@
 
   <grid name="maintenance-prod-process-grid" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <field name="name"/>
     <field name="company"/>
     <field name="workshopStockLocation"/>

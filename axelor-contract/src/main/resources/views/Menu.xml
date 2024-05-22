@@ -121,6 +121,17 @@
     <view type="form" name="revaluation-formula-form"/>
   </action-view>
 
+  <menuitem name="contract-root-files" title="Files" parent="contracts-root-conf-all"
+    action="action.file.view.contract" order="550"/>
+
+  <action-view name="action.file.view.contract" title="Files"
+    model="com.axelor.apps.base.db.File">
+    <view type="grid" name="file-grid"/>
+    <view type="form" name="file-form"/>
+    <domain>self.fileTypeSelect = 1</domain>
+    <context name="_fileTypeSelect" expr="eval: 1"/>
+  </action-view>
+
   <menuitem title="Pricing" name="contracts-conf-pricing" parent="contracts-root-conf-all"
     order="600" action="contracts.conf.pricing"
     if="__config__.app.getApp('base')?.enablePricingScale"/>
@@ -130,6 +141,30 @@
     <view type="grid" name="pricing-grid"/>
     <view type="form" name="contract-line-pricing-form"/>
     <domain>self.concernedModel.name = 'InvoiceLine'</domain>
+  </action-view>
+
+  <menuitem name="contracts-conf-customer-partner-price-list"
+    parent="contracts-root-conf-all" title="Customer price lists"
+    action="contracts.conf.customer.partner.price.list" order="800"/>
+
+  <action-view name="contracts.conf.customer.partner.price.list"
+    title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+    <view type="grid" name="partner-price-list-grid"/>
+    <view type="form" name="partner-price-list-form"/>
+    <domain>self.typeSelect = 3</domain>
+    <context name="_typeSelect" expr="eval: 3"/>
+  </action-view>
+
+  <menuitem name="contracts-conf-supplier-partner-price-list"
+    parent="contracts-root-conf-all" title="Supplier price lists"
+    action="contracts.conf.supplier.partner.price.list" order="900"/>
+
+  <action-view name="contracts.conf.supplier.partner.price.list"
+    title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+    <view type="grid" name="partner-price-list-grid"/>
+    <view type="form" name="partner-price-list-form"/>
+    <domain>self.typeSelect = 4</domain>
+    <context name="_typeSelect" expr="eval: 4"/>
   </action-view>
 
   <menuitem title="Pricing rules" name="contracts-conf-pricing-rule"

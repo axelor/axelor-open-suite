@@ -28,6 +28,10 @@
     <many-to-many name="invoiceLineSet" title="Related Invoice lines"
       ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="projectTaskSet"/>
     <boolean name="isTaskRefused" title="Refused"/>
+    <many-to-one name="frameworkCustomerContract" title="Framework customer contract"
+      ref="com.axelor.apps.contract.db.Contract"/>
+    <many-to-one name="frameworkSupplierContract" title="Framework supplier contract"
+      ref="com.axelor.apps.contract.db.Contract"/>
 
     <!-- planification fields -->
     <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>

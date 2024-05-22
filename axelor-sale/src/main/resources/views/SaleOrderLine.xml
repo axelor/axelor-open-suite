@@ -37,7 +37,6 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="estimatedShippingDate"/>
@@ -137,7 +136,6 @@
     <field name="qty" aggregate="sum"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
   </grid>
@@ -420,14 +418,11 @@
         <field name="project" title="Business Project" canEdit="false"
           onSelect="action-sale-order-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
-        <field name="toInvoice" colSpan="3"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-          if-module="axelor-business-project"
-          onChange="action-sale-order-line-record-set-default-invoicing-mode-select"/>
         <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-          if-module="axelor-business-project" showIf="toInvoice"
-          onChange="action-sale-order-line-validate-check-coefficient-config"/>
+          if-module="axelor-business-project"
+          onChange="action-sale-order-line-group-invoicing-mode-select-onchange"/>
+        <field name="toInvoice" hidden="true"/>
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
           action="action-sale-order-line-view-project-tasks" colSpan="12"/>
       </panel>
@@ -1074,15 +1069,19 @@
   </action-validate>
 
   <action-attrs name="action-sale-order-line-attrs-reset-invoicing-mode">
-    <attribute for="invoicingModeSelect" name="value" expr="eval: null"/>
+    <attribute for="invoicingModeSelect" name="value"
+      expr="eval: __repo__(SaleOrderLine).INVOICING_MODE_STANDARD"/>
+    <attribute for="toInvoice" name="value" expr="eval: false"/>
   </action-attrs>
 
-  <action-record
-    name="action-sale-order-line-record-set-default-invoicing-mode-select"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="invoicingModeSelect"
-      expr="eval:__repo__(SaleOrderLine).INVOICING_MODE_DIRECTLY" if="toInvoice"/>
-    <field name="invoicingModeSelect" expr="eval:null" if="!toInvoice"/>
-  </action-record>
+  <action-attrs name="action-sale-order-line-attrs-to-invoice">
+    <attribute for="toInvoice" name="value"
+      expr="eval: invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_DIRECTLY || invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_ON_DELIVERY"/>
+  </action-attrs>
+
+  <action-group name="action-sale-order-line-group-invoicing-mode-select-onchange">
+    <action name="action-sale-order-line-validate-check-coefficient-config"/>
+    <action name="action-sale-order-line-attrs-to-invoice"/>
+  </action-group>
 
 </object-views>

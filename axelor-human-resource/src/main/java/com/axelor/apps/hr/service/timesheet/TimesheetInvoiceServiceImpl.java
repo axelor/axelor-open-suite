@@ -37,9 +37,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
 
@@ -57,17 +59,23 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
   protected PartnerPriceListService partnerPriceListService;
   protected ProductCompanyService productCompanyService;
   protected PriceListService priceListService;
+  protected UnitConversionService unitConversionService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   @Inject
   public TimesheetInvoiceServiceImpl(
       AppHumanResourceService appHumanResourceService,
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
-      PriceListService priceListService) {
+      PriceListService priceListService,
+      UnitConversionService unitConversionService,
+      UnitConversionForProjectService unitConversionForProjectService) {
     this.appHumanResourceService = appHumanResourceService;
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
     this.priceListService = priceListService;
+    this.unitConversionService = unitConversionService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
@@ -139,11 +147,14 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
           this.createInvoiceLine(
               invoice,
               product,
+              null,
               employee,
               strDate,
               hoursDuration,
               priority * 100 + count,
-              priceList));
+              priceList,
+              null,
+              null));
       count++;
     }
 
@@ -154,11 +165,14 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
   public List<InvoiceLine> createInvoiceLine(
       Invoice invoice,
       Product product,
+      Project project,
       Employee employee,
       String date,
       BigDecimal hoursDuration,
       int priority,
-      PriceList priceList)
+      PriceList priceList,
+      BigDecimal forcedUnitPrice,
+      BigDecimal forcedPriceDiscounted)
       throws AxelorException {
 
     int discountMethodTypeSelect = PriceListLineRepository.TYPE_DISCOUNT;
@@ -173,16 +187,26 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
     BigDecimal discountAmount = BigDecimal.ZERO;
     BigDecimal priceDiscounted = price;
 
-    BigDecimal qtyConverted =
-        Beans.get(UnitConversionService.class)
-            .convert(
-                appHumanResourceService.getAppBase().getUnitHours(),
-                (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
-                hoursDuration,
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                product);
+    BigDecimal qtyConverted;
+    if (project != null) {
+      qtyConverted =
+          unitConversionForProjectService.convert(
+              appHumanResourceService.getAppBase().getUnitHours(),
+              (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
+              hoursDuration,
+              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              project);
+    } else {
+      qtyConverted =
+          unitConversionService.convert(
+              appHumanResourceService.getAppBase().getUnitHours(),
+              (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
+              hoursDuration,
+              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              product);
+    }
 
-    if (priceList != null) {
+    if (forcedUnitPrice == null && priceList != null) {
       PriceListLine priceListLine =
           priceListService.getPriceListLine(product, qtyConverted, priceList, price);
       if (priceListLine != null) {
@@ -215,14 +239,15 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
       productName += " " + "(" + date + ")";
     }
 
+    BigDecimal finalPrice = Optional.ofNullable(forcedUnitPrice).orElse(price);
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
             product,
             productName,
-            price,
-            price,
-            priceDiscounted,
+            finalPrice,
+            finalPrice,
+            Optional.ofNullable(forcedPriceDiscounted).orElse(priceDiscounted),
             description,
             qtyConverted,
             (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
@@ -230,7 +255,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
             priority,
             discountAmount,
             discountTypeSelect,
-            price.multiply(qtyConverted),
+            finalPrice.multiply(qtyConverted),
             null,
             false) {
 
