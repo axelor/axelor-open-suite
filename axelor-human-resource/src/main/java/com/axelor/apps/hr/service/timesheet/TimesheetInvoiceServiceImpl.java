@@ -83,7 +83,8 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[5];
-      tabInformations[0] = timesheetLine.getProduct();
+      Product product = getProduct(timesheetLine);
+      tabInformations[0] = product;
       tabInformations[1] = timesheetLine.getEmployee();
       // Start date
       tabInformations[2] = timesheetLine.getDate();
@@ -93,7 +94,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
 
       String key = null;
       if (consolidate) {
-        key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getEmployee().getId();
+        key = product.getId() + "|" + timesheetLine.getEmployee().getId();
         if (timeSheetInformationsMap.containsKey(key)) {
           tabInformations = timeSheetInformationsMap.get(key);
           // Update date
@@ -148,6 +149,10 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
     }
 
     return invoiceLineList;
+  }
+
+  protected Product getProduct(TimesheetLine timesheetLine) {
+    return timesheetLine.getProduct();
   }
 
   @Override
