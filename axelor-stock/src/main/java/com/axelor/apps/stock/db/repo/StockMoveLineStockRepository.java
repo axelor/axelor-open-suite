@@ -26,12 +26,23 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
+import com.google.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 
 public class StockMoveLineStockRepository extends StockMoveLineRepository {
+
+  protected ProductCompanyService productCompanyService;
+  protected StockMoveLineUtilsService stockMoveLineUtilsService;
+
+  @Inject
+  public StockMoveLineStockRepository(
+      ProductCompanyService productCompanyService,
+      StockMoveLineUtilsService stockMoveLineUtilsService) {
+    this.productCompanyService = productCompanyService;
+    this.stockMoveLineUtilsService = stockMoveLineUtilsService;
+  }
 
   @Override
   public StockMoveLine copy(StockMoveLine entity, boolean deep) {
@@ -58,7 +69,7 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
         return super.populate(json, context);
       }
       if (stockMove.getStatusSelect() < StockMoveRepository.STATUS_REALIZED) {
-        Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+        stockMoveLineUtilsService.setAvailableStatus(stockMoveLine);
         json.put(
             "availableStatus",
             stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
@@ -85,8 +96,7 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
 
       trackingNumberConfig =
           (TrackingNumberConfiguration)
-              Beans.get(ProductCompanyService.class)
-                  .get(product, "trackingNumberConfiguration", company);
+              productCompanyService.get(product, "trackingNumberConfiguration", company);
     }
 
     json.put(trackingNumberConfiguration, trackingNumberConfig);

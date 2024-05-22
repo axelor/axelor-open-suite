@@ -52,23 +52,6 @@ public interface StockMoveToolService {
   void computeAddressStr(StockMove stockMove);
 
   /**
-   * Compute stock move name.
-   *
-   * @param stockMove
-   * @return
-   */
-  String computeName(StockMove stockMove);
-
-  /**
-   * Compute stock move name with the given name.
-   *
-   * @param stockMove
-   * @param name
-   * @return
-   */
-  String computeName(StockMove stockMove, String name);
-
-  /**
    * Get from address from stock move or stock location.
    *
    * @param stockMoveLine

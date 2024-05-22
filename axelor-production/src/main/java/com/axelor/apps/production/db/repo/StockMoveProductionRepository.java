@@ -18,11 +18,23 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.service.StockMoveComputeNameService;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
+import com.google.inject.Inject;
 
 public class StockMoveProductionRepository extends StockMoveSupplychainRepository {
+
+  @Inject
+  public StockMoveProductionRepository(
+      SequenceService sequenceService,
+      StockMoveComputeNameService stockMoveComputeNameService,
+      StockMoveLineUtilsService stockMoveLineUtilsService) {
+    super(sequenceService, stockMoveComputeNameService, stockMoveLineUtilsService);
+  }
 
   @Override
   public StockMove copy(StockMove entity, boolean deep) {

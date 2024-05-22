@@ -28,8 +28,16 @@ import java.util.Map;
 
 public class ProductStockRepository extends ProductBaseRepository {
 
-  @Inject protected ProductStockRepositorySave productStockRepositorySave;
-  @Inject protected ProductStockRepositoryPopulate productStockRepositoryPopulate;
+  protected ProductStockRepositorySave productStockRepositorySave;
+  protected ProductStockRepositoryPopulate productStockRepositoryPopulate;
+
+  @Inject
+  public ProductStockRepository(
+      ProductStockRepositorySave productStockRepositorySave,
+      ProductStockRepositoryPopulate productStockRepositoryPopulate) {
+    this.productStockRepositorySave = productStockRepositorySave;
+    this.productStockRepositoryPopulate = productStockRepositoryPopulate;
+  }
 
   @Override
   public Product save(Product product) {

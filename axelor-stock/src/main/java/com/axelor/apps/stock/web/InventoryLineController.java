@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.stock.utils.InventoryLineUtilsService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -107,6 +108,6 @@ public class InventoryLineController {
 
     response.setValue(
         "isPresentInStockLocation",
-        Beans.get(InventoryLineService.class).isPresentInStockLocation(inventoryLine));
+        Beans.get(InventoryLineUtilsService.class).isPresentInStockLocation(inventoryLine));
   }
 }

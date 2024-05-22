@@ -29,13 +29,27 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class LogisticalFormStockRepository extends LogisticalFormRepository {
+
+  protected SequenceService sequenceService;
+  protected StockConfigService stockConfigService;
+  protected TemplateMessageService templateMessageService;
+
+  @Inject
+  public LogisticalFormStockRepository(
+      SequenceService sequenceService,
+      StockConfigService stockConfigService,
+      TemplateMessageService templateMessageService) {
+    this.sequenceService = sequenceService;
+    this.stockConfigService = stockConfigService;
+    this.templateMessageService = templateMessageService;
+  }
 
   @Override
   public LogisticalForm save(LogisticalForm logisticalForm) {
@@ -46,13 +60,12 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
       if (company != null) {
         if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumberSeq())) {
           String sequenceNumber =
-              Beans.get(SequenceService.class)
-                  .getSequenceNumber(
-                      "logisticalForm",
-                      logisticalForm.getCompany(),
-                      LogisticalForm.class,
-                      "deliveryNumberSeq",
-                      logisticalForm);
+              sequenceService.getSequenceNumber(
+                  "logisticalForm",
+                  logisticalForm.getCompany(),
+                  LogisticalForm.class,
+                  "deliveryNumberSeq",
+                  logisticalForm);
           if (Strings.isNullOrEmpty(sequenceNumber)) {
             throw new AxelorException(
                 Sequence.class,
@@ -64,7 +77,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
         }
 
         if (!logisticalForm.getIsEmailSent()) {
-          StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(company);
+          StockConfig stockConfig = stockConfigService.getStockConfig(company);
           if (stockConfig.getLogisticalFormAutomaticEmail()) {
             Template template = stockConfig.getLogisticalFormMessageTemplate();
             if (template == null) {
@@ -74,8 +87,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
                   logisticalForm);
             }
 
-            Beans.get(TemplateMessageService.class)
-                .generateAndSendMessage(logisticalForm, template);
+            templateMessageService.generateAndSendMessage(logisticalForm, template);
 
             logisticalForm.setIsEmailSent(true);
           }

@@ -18,13 +18,25 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockMoveComputeNameService;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class StockMoveSupplychainRepository extends StockMoveManagementRepository {
+
+  @Inject
+  public StockMoveSupplychainRepository(
+      SequenceService sequenceService,
+      StockMoveComputeNameService stockMoveComputeNameService,
+      StockMoveLineUtilsService stockMoveLineUtilsService) {
+    super(sequenceService, stockMoveComputeNameService, stockMoveLineUtilsService);
+  }
 
   @Override
   public StockMove copy(StockMove entity, boolean deep) {

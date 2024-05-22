@@ -25,8 +25,8 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
+import com.axelor.apps.stock.utils.StockMoveUtilsService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -51,7 +51,8 @@ public class ProductStockController {
     LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
 
     List<Map<String, Object>> stocks =
-        Beans.get(StockMoveService.class).getStockPerDate(locationId, productId, fromDate, toDate);
+        Beans.get(StockMoveUtilsService.class)
+            .getStockPerDate(locationId, productId, fromDate, toDate);
     response.setValue("$stockPerDayList", stocks);
   }
 

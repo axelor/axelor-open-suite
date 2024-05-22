@@ -21,19 +21,32 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.utils.StockMoveLineUtilsServiceSupplychain;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class StockMoveLineSupplychainRepository extends StockMoveLineStockRepository {
+
+  protected StockMoveLineUtilsServiceSupplychain stockMoveLineUtilsServiceSupplychain;
+
+  @Inject
+  public StockMoveLineSupplychainRepository(
+      ProductCompanyService productCompanyService,
+      StockMoveLineUtilsService stockMoveLineUtilsService,
+      StockMoveLineUtilsServiceSupplychain stockMoveLineUtilsServiceSupplychain) {
+    super(productCompanyService, stockMoveLineUtilsService);
+    this.stockMoveLineUtilsServiceSupplychain = stockMoveLineUtilsServiceSupplychain;
+  }
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
@@ -51,12 +64,12 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
 
         json.put(
             "$notInvoicedAmount",
-            Beans.get(StockMoveLineServiceSupplychain.class)
-                .getAmountNotInvoiced(stockMoveLine, isPurchase, ati, recoveredTax));
+            stockMoveLineUtilsServiceSupplychain.getAmountNotInvoiced(
+                stockMoveLine, isPurchase, ati, recoveredTax));
       }
 
       if (stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
-        Beans.get(StockMoveLineServiceSupplychain.class).setInvoiceStatus(stockMoveLine);
+        stockMoveLineUtilsServiceSupplychain.setInvoiceStatus(stockMoveLine);
         json.put(
             "availableStatus",
             stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
@@ -75,8 +88,7 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
   @Override
   public void remove(StockMoveLine stockMoveLine) {
     try {
-      if (Beans.get(StockMoveLineServiceSupplychain.class)
-          .isAllocatedStockMoveLine(stockMoveLine)) {
+      if (stockMoveLineUtilsServiceSupplychain.isAllocatedStockMoveLine(stockMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(SupplychainExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));

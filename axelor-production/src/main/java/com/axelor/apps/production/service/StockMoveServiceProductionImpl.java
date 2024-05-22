@@ -32,15 +32,18 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.StockMoveComputeNameService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.utils.StockMoveLineUtilsServiceSupplychain;
 import com.google.inject.Inject;
 
 public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl {
@@ -67,7 +70,10 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       FixedAssetRepository fixedAssetRepository,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PfpService pfpService,
-      ProductCompanyService productCompanyService) {
+      StockMoveLineUtilsServiceSupplychain stockMoveLineUtilsServiceSupplychain,
+      ProductCompanyService productCompanyService,
+      StockMoveLineUtilsService stockMoveLineUtilsService,
+      StockMoveComputeNameService stockMoveComputeNameService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -89,7 +95,10 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         fixedAssetRepository,
         stockMoveLineServiceSupplychain,
         pfpService,
-        productCompanyService);
+        stockMoveLineUtilsServiceSupplychain,
+        productCompanyService,
+        stockMoveLineUtilsService,
+        stockMoveComputeNameService);
   }
 
   @Override

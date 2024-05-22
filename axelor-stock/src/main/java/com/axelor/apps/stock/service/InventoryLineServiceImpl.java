@@ -36,7 +36,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
 import java.util.Optional;
 
 public class InventoryLineServiceImpl implements InventoryLineService {
@@ -254,23 +253,5 @@ public class InventoryLineServiceImpl implements InventoryLineService {
             null);
     updateInventoryLine(inventoryLine, realQty, null);
     return inventoryLine;
-  }
-
-  @Override
-  public boolean isPresentInStockLocation(InventoryLine inventoryLine) {
-
-    Objects.requireNonNull(inventoryLine);
-
-    if (inventoryLine.getProduct() == null
-        || inventoryLine.getStockLocation() == null
-        || inventoryLine.getStockLocation().getStockLocationLineList() == null) {
-      return false;
-    }
-
-    StockLocation stockLocation =
-        stockLocationRepository.find(inventoryLine.getStockLocation().getId());
-    return stockLocation.getStockLocationLineList().stream()
-        .map(StockLocationLine::getProduct)
-        .anyMatch(product -> inventoryLine.getProduct().equals(product));
   }
 }

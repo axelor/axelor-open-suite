@@ -252,19 +252,8 @@ public interface StockMoveLineService {
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers)
       throws AxelorException;
 
-  /**
-   * set the available quantity of product in a given location.
-   *
-   * @param stockMoveLine
-   * @return
-   */
-  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation)
-      throws AxelorException;
-
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
-
-  public void setAvailableStatus(StockMoveLine stockMoveLine) throws AxelorException;
 
   public List<TrackingNumber> getAvailableTrackingNumbers(StockMoveLine stockMoveLine);
 

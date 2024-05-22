@@ -52,6 +52,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -67,7 +68,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -92,6 +92,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
+  protected StockMoveLineUtilsService stockMoveLineUtilsService;
+  protected StockMoveComputeNameService stockMoveComputeNameService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -105,7 +107,9 @@ public class StockMoveServiceImpl implements StockMoveService {
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      StockMoveLineUtilsService stockMoveLineUtilsService,
+      StockMoveComputeNameService stockMoveComputeNameService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -117,6 +121,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
+    this.stockMoveLineUtilsService = stockMoveLineUtilsService;
+    this.stockMoveComputeNameService = stockMoveComputeNameService;
   }
 
   /**
@@ -311,7 +317,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
     stockMove.addStockMoveLineListItem(stockMoveLine);
     stockMoveLineRepo.save(stockMoveLine);
-    stockMoveLineService.setAvailableStatus(stockMoveLine);
+    stockMoveLineUtilsService.setAvailableStatus(stockMoveLine);
     stockMoveLineService.compute(stockMoveLine, stockMove);
     return stockMoveLineRepo.save(stockMoveLine);
   }
@@ -397,7 +403,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     if (Strings.isNullOrEmpty(stockMove.getName())
         || draftSeq != null && stockMove.getName().startsWith(draftSeq)) {
-      stockMove.setName(stockMoveToolService.computeName(stockMove));
+      stockMove.setName(stockMoveComputeNameService.computeName(stockMove));
     }
 
     int initialStatus = stockMove.getStatusSelect();
@@ -777,7 +783,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveToolService.getSequenceStockMove(
             newStockMove.getTypeSelect(), newStockMove.getCompany(), stockMove));
     newStockMove.setName(
-        stockMoveToolService.computeName(
+        stockMoveComputeNameService.computeName(
             newStockMove,
             newStockMove.getStockMoveSeq()
                 + " "
@@ -929,7 +935,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   protected void setStockMoveName(StockMove newStockMove, StockMove stockMove) {
     newStockMove.setName(
-        stockMoveToolService.computeName(
+        stockMoveComputeNameService.computeName(
             newStockMove,
             String.format(
                 I18n.get(StockExceptionMessage.STOCK_MOVE_8),
@@ -1148,59 +1154,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  public List<Map<String, Object>> getStockPerDate(
-      Long locationId, Long productId, LocalDate fromDate, LocalDate toDate) {
-
-    List<Map<String, Object>> stock = new ArrayList<>();
-
-    while (!fromDate.isAfter(toDate)) {
-      Double qty = getStock(locationId, productId, fromDate);
-      Map<String, Object> dateStock = new HashMap<>();
-      dateStock.put("$date", fromDate);
-      dateStock.put("$qty", new BigDecimal(qty));
-      stock.add(dateStock);
-      fromDate = fromDate.plusDays(1);
-    }
-
-    return stock;
-  }
-
-  protected Double getStock(Long locationId, Long productId, LocalDate date) {
-
-    List<StockMoveLine> inLines =
-        stockMoveLineRepo
-            .all()
-            .filter(
-                "self.product.id = ?1 AND self.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
-                productId,
-                locationId,
-                StockMoveRepository.STATUS_CANCELED,
-                date)
-            .fetch();
-
-    List<StockMoveLine> outLines =
-        stockMoveLineRepo
-            .all()
-            .filter(
-                "self.product.id = ?1 AND self.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
-                productId,
-                locationId,
-                StockMoveRepository.STATUS_CANCELED,
-                date)
-            .fetch();
-
-    Double inQty =
-        inLines.stream().mapToDouble(inl -> Double.parseDouble(inl.getQty().toString())).sum();
-
-    Double outQty =
-        outLines.stream().mapToDouble(out -> Double.parseDouble(out.getQty().toString())).sum();
-
-    Double qty = inQty - outQty;
-
-    return qty;
-  }
-
-  @Override
   public List<StockMoveLine> changeConformityStockMove(StockMove stockMove) {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 
@@ -1333,7 +1286,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   public void setAvailableStatus(StockMove stockMove) throws AxelorException {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      stockMoveLineService.setAvailableStatus(stockMoveLine);
+      stockMoveLineUtilsService.setAvailableStatus(stockMoveLine);
     }
   }
 

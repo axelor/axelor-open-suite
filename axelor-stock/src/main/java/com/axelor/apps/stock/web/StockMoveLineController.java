@@ -38,6 +38,7 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -245,7 +246,7 @@ public class StockMoveLineController {
     }
 
     if (stockLocation != null) {
-      Beans.get(StockMoveLineService.class).updateAvailableQty(stockMoveLine, stockLocation);
+      Beans.get(StockMoveLineUtilsService.class).updateAvailableQty(stockMoveLine, stockLocation);
       response.setValue("$availableQty", stockMoveLine.getAvailableQty());
       response.setValue("$availableQtyForProduct", stockMoveLine.getAvailableQtyForProduct());
     }
@@ -270,7 +271,7 @@ public class StockMoveLineController {
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
     try {
       StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+      Beans.get(StockMoveLineUtilsService.class).setAvailableStatus(stockMoveLine);
       response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
       response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
     } catch (Exception e) {

@@ -89,22 +89,5 @@ public interface StockMoveLineServiceSupplychain {
 
   boolean isAvailableProduct(StockMoveLine stockMoveLine) throws AxelorException;
 
-  void setInvoiceStatus(StockMoveLine stockMoveLine);
-
-  public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine);
-
-  BigDecimal getAmountNotInvoiced(
-      StockMoveLine stockMoveLine, boolean isPurchase, boolean ati, boolean recoveredTax)
-      throws AxelorException;
-
-  BigDecimal getAmountNotInvoiced(
-      StockMoveLine stockMoveLine,
-      PurchaseOrderLine purchaseOrderLine,
-      SaleOrderLine saleOrderLine,
-      boolean isPurchase,
-      boolean ati,
-      boolean recoveredTax)
-      throws AxelorException;
-
   Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) throws AxelorException;
 }

@@ -22,12 +22,20 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.Inventory;
-import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.stock.utils.InventoryUtils;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class InventoryManagementRepository extends InventoryRepository {
+
+  protected SequenceService sequenceService;
+
+  @Inject
+  public InventoryManagementRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
+
   @Override
   public Inventory copy(Inventory entity, boolean deep) {
 
@@ -41,7 +49,6 @@ public class InventoryManagementRepository extends InventoryRepository {
   @Override
   public Inventory save(Inventory entity) {
     Inventory inventory = super.save(entity);
-    SequenceService sequenceService = Beans.get(SequenceService.class);
 
     try {
       if (Strings.isNullOrEmpty(inventory.getInventorySeq())) {
@@ -52,7 +59,7 @@ public class InventoryManagementRepository extends InventoryRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
 
-    entity.setInventoryTitle(Beans.get(InventoryService.class).computeTitle(entity));
+    entity.setInventoryTitle(InventoryUtils.computeTitle(entity));
 
     return inventory;
   }

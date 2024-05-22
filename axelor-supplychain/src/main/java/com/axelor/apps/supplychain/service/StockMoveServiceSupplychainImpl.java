@@ -52,13 +52,16 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.StockMoveComputeNameService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.utils.StockMoveLineUtilsServiceSupplychain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -96,6 +99,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected PartnerSupplychainService partnerSupplychainService;
   protected FixedAssetRepository fixedAssetRepository;
   protected PfpService pfpService;
+  protected StockMoveLineUtilsServiceSupplychain stockMoveLineUtilsServiceSupplychain;
 
   @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
@@ -121,7 +125,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       FixedAssetRepository fixedAssetRepository,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PfpService pfpService,
-      ProductCompanyService productCompanyService) {
+      StockMoveLineUtilsServiceSupplychain stockMoveLineUtilsServiceSupplychain,
+      ProductCompanyService productCompanyService,
+      StockMoveLineUtilsService stockMoveLineUtilsService,
+      StockMoveComputeNameService stockMoveComputeNameService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -133,7 +140,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         partnerStockSettingsService,
         stockConfigService,
         appStockService,
-        productCompanyService);
+        productCompanyService,
+        stockMoveLineUtilsService,
+        stockMoveComputeNameService);
     this.appSupplyChainService = appSupplyChainService;
     this.appAccountService = appAccountService;
     this.purchaseOrderRepo = purchaseOrderRepo;
@@ -144,6 +153,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.fixedAssetRepository = fixedAssetRepository;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.pfpService = pfpService;
+    this.stockMoveLineUtilsServiceSupplychain = stockMoveLineUtilsServiceSupplychain;
   }
 
   @Override
@@ -598,7 +608,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       List<StockMoveLine> storedStockMoveLineList = storedStockMove.getStockMoveLineList();
       if (stockMoveLineList != null && storedStockMoveLineList != null) {
         for (StockMoveLine stockMoveLine : storedStockMoveLineList) {
-          if (stockMoveLineServiceSupplychain.isAllocatedStockMoveLine(stockMoveLine)
+          if (stockMoveLineUtilsServiceSupplychain.isAllocatedStockMoveLine(stockMoveLine)
               && !stockMoveLineList.contains(stockMoveLine)) {
             stockMoveLineList.add(stockMoveLine);
             isAllocatedStockMoveLineRemoved = true;

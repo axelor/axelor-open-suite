@@ -73,6 +73,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.utils.StockMoveLineUtilsServiceSupplychain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -95,7 +96,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
   protected StockMoveLineRepository stockMoveLineRepository;
   protected SaleOrderRepository saleOrderRepository;
   protected PurchaseOrderRepository purchaseOrderRepository;
-  protected StockMoveLineServiceSupplychain stockMoveLineService;
+  protected StockMoveLineUtilsServiceSupplychain stockMoveLineUtilsServiceSupplychain;
   protected BankDetailsService bankDetailsService;
   protected TaxService taxService;
   protected int counter = 0;
@@ -121,7 +122,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       AccountConfigService accountConfigService,
       MoveLineCreateService moveLineCreateService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      StockMoveLineServiceSupplychain stockMoveLineService,
+      StockMoveLineUtilsServiceSupplychain stockMoveLineUtilsServiceSupplychain,
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
       CurrencyService currencyService,
@@ -157,7 +158,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
-    this.stockMoveLineService = stockMoveLineService;
+    this.stockMoveLineUtilsServiceSupplychain = stockMoveLineUtilsServiceSupplychain;
     this.bankDetailsService = bankDetailsService;
     this.taxService = taxService;
   }
@@ -473,7 +474,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     boolean isFixedAssets =
         isPurchase && purchaseOrderLine != null && purchaseOrderLine.getFixedAssets();
     BigDecimal amountInCurrency =
-        stockMoveLineService.getAmountNotInvoiced(
+        stockMoveLineUtilsServiceSupplychain.getAmountNotInvoiced(
             stockMoveLine, purchaseOrderLine, saleOrderLine, isPurchase, ati, recoveredTax);
 
     if (amountInCurrency == null || amountInCurrency.signum() == 0) {

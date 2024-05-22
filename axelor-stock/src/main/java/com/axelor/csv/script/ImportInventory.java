@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.stock.utils.InventoryUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class ImportInventory {
     inventory.setInventorySeq(
         sequenceService.getSequenceNumber(
             SequenceRepository.INVENTORY, Inventory.class, "inventorySeq", inventory));
-    inventory.setInventoryTitle(inventoryService.computeTitle(inventory));
+    inventory.setInventoryTitle(InventoryUtils.computeTitle(inventory));
 
     return inventory;
   }

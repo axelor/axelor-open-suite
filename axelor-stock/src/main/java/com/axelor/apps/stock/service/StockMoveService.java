@@ -154,9 +154,6 @@ public interface StockMoveService {
       StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
       throws AxelorException;
 
-  public List<Map<String, Object>> getStockPerDate(
-      Long locationId, Long productId, LocalDate fromDate, LocalDate toDate);
-
   /**
    * Change conformity on each stock move line according to the stock move conformity.
    *

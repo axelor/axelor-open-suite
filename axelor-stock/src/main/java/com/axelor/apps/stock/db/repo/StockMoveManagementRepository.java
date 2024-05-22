@@ -25,15 +25,29 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.StockMoveComputeNameService;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class StockMoveManagementRepository extends StockMoveRepository {
+
+  protected SequenceService sequenceService;
+  protected StockMoveComputeNameService stockMoveComputeNameService;
+  protected StockMoveLineUtilsService stockMoveLineUtilsService;
+
+  @Inject
+  public StockMoveManagementRepository(
+      SequenceService sequenceService,
+      StockMoveComputeNameService stockMoveComputeNameService,
+      StockMoveLineUtilsService stockMoveLineUtilsService) {
+    this.sequenceService = sequenceService;
+    this.stockMoveComputeNameService = stockMoveComputeNameService;
+    this.stockMoveLineUtilsService = stockMoveLineUtilsService;
+  }
 
   @Override
   public StockMove copy(StockMove entity, boolean deep) {
@@ -59,7 +73,6 @@ public class StockMoveManagementRepository extends StockMoveRepository {
   public StockMove save(StockMove entity) {
     try {
       StockMove stockMove = super.save(entity);
-      SequenceService sequenceService = Beans.get(SequenceService.class);
 
       if (Strings.isNullOrEmpty(stockMove.getStockMoveSeq())) {
         stockMove.setStockMoveSeq(sequenceService.getDraftSequenceNumber(stockMove));
@@ -67,7 +80,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
       if (Strings.isNullOrEmpty(stockMove.getName())
           || stockMove.getName().startsWith(stockMove.getStockMoveSeq())) {
-        stockMove.setName(Beans.get(StockMoveToolService.class).computeName(stockMove));
+        stockMove.setName(stockMoveComputeNameService.computeName(stockMove));
       }
 
       return stockMove;
@@ -119,8 +132,8 @@ public class StockMoveManagementRepository extends StockMoveRepository {
                     == StockLocationRepository.TYPE_VIRTUAL)) {
           continue;
         }
-        Beans.get(StockMoveLineService.class)
-            .updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
+        stockMoveLineUtilsService.updateAvailableQty(
+            stockMoveLine, stockMoveLine.getFromStockLocation());
         Product product = stockMoveLine.getProduct();
         if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
             || product != null && !product.getStockManaged()) {

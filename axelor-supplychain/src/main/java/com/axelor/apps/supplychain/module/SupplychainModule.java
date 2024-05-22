@@ -78,6 +78,7 @@ import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsServiceImpl;
 import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
@@ -235,6 +236,8 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
+import com.axelor.apps.supplychain.utils.StockMoveLineUtilsServiceSupplychain;
+import com.axelor.apps.supplychain.utils.StockMoveLineUtilsServiceSupplychainImpl;
 
 public class SupplychainModule extends AxelorModule {
 
@@ -375,5 +378,8 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderCreateSupplychainService.class).to(SaleOrderCreateServiceSupplychainImpl.class);
     bind(AdvancePaymentRefundService.class).to(AdvancePaymentRefundServiceImpl.class);
     bind(TrackingNumberSupplychainService.class).to(TrackingNumberSupplychainServiceImpl.class);
+    bind(StockMoveLineUtilsServiceImpl.class).to(StockMoveLineUtilsServiceSupplychainImpl.class);
+    bind(StockMoveLineUtilsServiceSupplychain.class)
+        .to(StockMoveLineUtilsServiceSupplychainImpl.class);
   }
 }

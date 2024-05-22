@@ -46,6 +46,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.InventoryLineUtilsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
@@ -119,6 +120,7 @@ public class InventoryService {
   protected TrackingNumberRepository trackingNumberRepository;
   protected AppBaseService appBaseService;
   protected StockLocationRepository stockLocationRepository;
+  protected InventoryLineUtilsService inventoryLineUtilsService;
 
   @Inject
   public InventoryService(
@@ -135,7 +137,8 @@ public class InventoryService {
       TrackingNumberRepository trackingNumberRepository,
       AppBaseService appBaseService,
       StockLocationRepository stockLocationRepository,
-      InventoryLineRepository inventoryLineRepository) {
+      InventoryLineRepository inventoryLineRepository,
+      InventoryLineUtilsService inventoryLineUtilsService) {
     this.inventoryLineService = inventoryLineService;
     this.sequenceService = sequenceService;
     this.stockConfigService = stockConfigService;
@@ -150,6 +153,7 @@ public class InventoryService {
     this.appBaseService = appBaseService;
     this.stockLocationRepository = stockLocationRepository;
     this.inventoryLineRepository = inventoryLineRepository;
+    this.inventoryLineUtilsService = inventoryLineUtilsService;
   }
 
   public Inventory createInventory(
@@ -733,7 +737,7 @@ public class InventoryService {
       StockLocationLine stockLocationLine =
           stockLocationLineService.getStockLocationLine(toStockLocation, product);
       BigDecimal unitPrice = getAvgPrice(stockLocationLine);
-      if (!inventoryLineService.isPresentInStockLocation(inventoryLine)) {
+      if (!inventoryLineUtilsService.isPresentInStockLocation(inventoryLine)) {
         unitPrice = inventoryLine.getPrice();
       }
 
@@ -1029,13 +1033,6 @@ public class InventoryService {
             .bind("inventoryId", inventory.getId())
             .count()
         > 0;
-  }
-
-  public String computeTitle(Inventory entity) {
-    return entity.getStockLocation().getName()
-        + (!Strings.isNullOrEmpty(entity.getDescription())
-            ? "-" + StringUtils.abbreviate(entity.getDescription(), 10)
-            : "");
   }
 
   protected void validateInventoryLineList(Inventory inventory) throws AxelorException {

@@ -35,12 +35,10 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,36 +185,6 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
     AddressService addressService = Beans.get(AddressService.class);
     stockMove.setFromAddressStr(addressService.computeAddressStr(stockMove.getFromAddress()));
     stockMove.setToAddressStr(addressService.computeAddressStr(stockMove.getToAddress()));
-  }
-
-  @Override
-  public String computeName(StockMove stockMove) {
-    return computeName(stockMove, null);
-  }
-
-  @Override
-  public String computeName(StockMove stockMove, String name) {
-    Objects.requireNonNull(stockMove);
-    StringBuilder nameBuilder = new StringBuilder();
-
-    if (Strings.isNullOrEmpty(name)) {
-      if (!Strings.isNullOrEmpty(stockMove.getStockMoveSeq())) {
-        nameBuilder.append(stockMove.getStockMoveSeq());
-      }
-    } else {
-      nameBuilder.append(name);
-    }
-
-    if (stockMove.getPartner() != null
-        && !Strings.isNullOrEmpty(stockMove.getPartner().getFullName())) {
-      if (nameBuilder.length() > 0) {
-        nameBuilder.append(" - ");
-      }
-
-      nameBuilder.append(stockMove.getPartner().getFullName());
-    }
-
-    return nameBuilder.toString();
   }
 
   @Override

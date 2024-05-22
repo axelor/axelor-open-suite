@@ -18,10 +18,22 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.utils.StockMoveLineUtilsService;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
+import com.axelor.apps.supplychain.utils.StockMoveLineUtilsServiceSupplychain;
+import com.google.inject.Inject;
 
 public class StockMoveLineProductionRepository extends StockMoveLineSupplychainRepository {
+
+  @Inject
+  public StockMoveLineProductionRepository(
+      ProductCompanyService productCompanyService,
+      StockMoveLineUtilsService stockMoveLineUtilsService,
+      StockMoveLineUtilsServiceSupplychain stockMoveLineUtilsServiceSupplychain) {
+    super(productCompanyService, stockMoveLineUtilsService, stockMoveLineUtilsServiceSupplychain);
+  }
 
   @Override
   public StockMoveLine copy(StockMoveLine entity, boolean deep) {
