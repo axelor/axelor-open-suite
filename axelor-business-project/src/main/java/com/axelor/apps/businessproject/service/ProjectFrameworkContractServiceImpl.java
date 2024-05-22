@@ -95,7 +95,7 @@ public class ProjectFrameworkContractServiceImpl implements ProjectFrameworkCont
     }
 
     ContractLine contractLine = contractLines.get(0);
-    productMap.put("unitPrice", contractLine.getPrice());
+    productMap.put("unitPrice", contractLine.getPriceDiscounted());
     productMap.put(
         "currency",
         Optional.ofNullable(contractLine.getContractVersion())
@@ -141,7 +141,7 @@ public class ProjectFrameworkContractServiceImpl implements ProjectFrameworkCont
     }
 
     ContractLine contractLine = contractLines.get(0);
-    productMap.put("unitCost", contractLine.getPrice());
+    productMap.put("unitCost", contractLine.getPriceDiscounted());
 
     return productMap;
   }
