@@ -19,21 +19,28 @@
 package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.helpdesk.db.Sla;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.helpdesk.db.Ticket;
-import java.time.LocalDateTime;
+import com.google.common.base.Strings;
+import com.google.inject.Inject;
 
-public interface TicketService {
+public class TicketSequenceServiceImpl implements TicketSequenceService {
 
-  public Sla computeSLA(Ticket ticket);
+  protected SequenceService sequenceService;
 
-  public void computeSLAAndDeadLine(Ticket ticket) throws AxelorException;
+  @Inject
+  public TicketSequenceServiceImpl(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
-  public void checkSLAcompleted(Ticket ticket);
-
-  public Long computeDuration(Ticket ticket);
-
-  public LocalDateTime computeEndDate(Ticket ticket);
-
-  public LocalDateTime computeStartDate(Ticket ticket);
+  @Override
+  public void computeSeq(Ticket ticket) throws AxelorException {
+    if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
+      String ticketSeq =
+          sequenceService.getSequenceNumber(
+              SequenceRepository.TICKET, null, Ticket.class, "ticketSeq", ticket);
+      ticket.setTicketSeq(ticketSeq);
+    }
+  }
 }
