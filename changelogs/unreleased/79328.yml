@@ -1,0 +1,3 @@
+---
+title: "BankReconciliation: Fix wrong computation of balances"
+module: axelor-bank-payment
