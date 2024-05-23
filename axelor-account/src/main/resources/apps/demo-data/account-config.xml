@@ -55,7 +55,6 @@
     <bind column="validAccounts" to="validAccountSet"
       search="self.importId in :validAccounts and self.company.importId = :company_importId"
       eval="validAccounts.split('\\|') as List"/>
-    <bind to="company" search="self.importId = :company_importId"/>
   </input>
 
   <input file="account_paymentMode.csv" separator=";"
