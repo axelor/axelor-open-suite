@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -104,14 +105,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   @Inject
   public ContractServiceImpl(
+      ContractLineService contractLineService,
+      ContractVersionService contractVersionService,
+      SequenceService sequenceService,
+      ContractVersionRepository contractVersionRepository,
       AppBaseService appBaseService,
       ContractVersionService versionService,
-      ContractLineService contractLineService,
       DurationService durationService,
       ContractLineRepository contractLineRepo,
       ContractRepository contractRepository,
       TaxService taxService,
-      ContractVersionRepository contractVersionRepository,
       InvoiceRepository invoiceRepository,
       InvoiceService invoiceService,
       AnalyticLineModelService analyticLineModelService,
@@ -120,14 +123,13 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ProductCompanyService productCompanyService,
       AccountManagementContractService accountManagementContractService,
       FiscalPositionService fiscalPositionService) {
+    super(contractLineService, contractVersionService, sequenceService, contractVersionRepository);
     this.appBaseService = appBaseService;
     this.versionService = versionService;
-    this.contractLineService = contractLineService;
     this.durationService = durationService;
     this.contractLineRepo = contractLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
-    this.contractVersionRepository = contractVersionRepository;
     this.invoiceRepository = invoiceRepository;
     this.invoiceService = invoiceService;
     this.analyticLineModelService = analyticLineModelService;
