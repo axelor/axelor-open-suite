@@ -560,6 +560,7 @@ public class BankReconciliationService {
       bankReconciliations =
           bankReconciliationRepository
               .findByBankDetails(bankReconciliation.getBankDetails())
+              .order("id")
               .fetch(limit, offset);
     } while (bankReconciliations.size() != 0);
 
@@ -627,6 +628,7 @@ public class BankReconciliationService {
         .bind("cashAccount", cashAccount)
         .bind("daybook", MoveRepository.STATUS_DAYBOOK)
         .bind("accounted", MoveRepository.STATUS_ACCOUNTED)
+        .order("id")
         .fetch(limit, offset);
   }
 
