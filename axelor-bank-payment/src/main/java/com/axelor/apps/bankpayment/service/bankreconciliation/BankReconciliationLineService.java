@@ -116,15 +116,18 @@ public class BankReconciliationLineService {
     BigDecimal bankCredit = bankReconciliationLine.getCredit();
     boolean isDebit = bankDebit.compareTo(bankCredit) > 0;
 
-    BigDecimal moveLineDebit;
-    BigDecimal moveLineCredit;
+    BigDecimal moveLineDebit = moveLine.getDebit();
+    BigDecimal moveLineCredit = moveLine.getCredit();
 
-    if (isDebit) {
-      moveLineCredit = moveLine.getCurrencyAmount();
-      moveLineDebit = moveLine.getDebit();
-    } else {
-      moveLineDebit = moveLine.getCurrencyAmount();
-      moveLineCredit = moveLine.getCredit();
+    if (moveLine
+        .getMove()
+        .getCurrency()
+        .equals(bankReconciliationLine.getBankReconciliation().getCurrency())) {
+      if (isDebit) {
+        moveLineCredit = moveLine.getCurrencyAmount();
+      } else {
+        moveLineDebit = moveLine.getCurrencyAmount();
+      }
     }
 
     if (bankDebit.add(bankCredit).compareTo(BigDecimal.ZERO) == 0) {
