@@ -940,9 +940,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
             + " AND (:journal IS NULL OR self.move.journal = :journal)"
             + " AND (:cashAccount IS NULL OR self.account = :cashAccount)"
             + " AND ((self.move.currency = :bankReconciliationCurrency AND self.bankReconciledAmount < abs(self.currencyAmount)) OR (self.move.currency != :bankReconciliationCurrency AND (self.bankReconciledAmount < (self.debit + self.credit))))";
-    if (bankReconciliation.getCurrency() != bankReconciliation.getCompany().getCurrency()) {
-      query = query + " AND self.move.currency = :bankReconciliationCurrency";
-    }
 
     return query;
   }
