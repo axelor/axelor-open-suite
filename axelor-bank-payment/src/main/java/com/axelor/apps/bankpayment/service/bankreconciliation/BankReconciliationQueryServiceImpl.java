@@ -38,7 +38,7 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
   }
 
   @Override
-  public String getRequestMoveLines(BankReconciliation bankReconciliation) {
+  public String getRequestMoveLines() {
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
