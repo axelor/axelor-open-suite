@@ -120,8 +120,10 @@ public class BankReconciliationLineService {
     BigDecimal moveLineDebit = moveLine.getDebit();
     BigDecimal moveLineCredit = moveLine.getCredit();
 
-    if (moveLine.getMove().getCurrency()
-        == bankReconciliationLine.getBankReconciliation().getCurrency()) {
+    if (moveLine
+        .getMove()
+        .getCurrency()
+        .equals(bankReconciliationLine.getBankReconciliation().getCurrency())) {
       if (isDebit) {
         moveLineCredit = moveLine.getCurrencyAmount().abs();
       } else {
