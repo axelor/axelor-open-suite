@@ -23,7 +23,6 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,9 +31,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GlobalBudgetToolsServiceImpl implements GlobalBudgetToolsService {
-
-  @Inject
-  public GlobalBudgetToolsServiceImpl() {}
 
   @Override
   public List<Budget> getAllBudgets(GlobalBudget globalBudget) {

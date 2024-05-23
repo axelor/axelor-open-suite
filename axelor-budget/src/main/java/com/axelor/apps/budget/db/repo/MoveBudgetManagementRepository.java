@@ -23,24 +23,41 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
 
+  protected AppBaseService appBaseService;
+  protected MoveLineBudgetService moveLineBudgetService;
+  protected BudgetDistributionService budgetDistributionService;
+  protected BudgetService budgetService;
+
+  @Inject
+  public MoveBudgetManagementRepository(
+      AppBaseService appBaseService,
+      MoveLineBudgetService moveLineBudgetService,
+      BudgetDistributionService budgetDistributionService,
+      BudgetService budgetService) {
+    this.appBaseService = appBaseService;
+    this.moveLineBudgetService = moveLineBudgetService;
+    this.budgetDistributionService = budgetDistributionService;
+    this.budgetService = budgetService;
+  }
+
   @Override
   public Move save(Move move) {
-    if (Beans.get(AppBudgetService.class).isApp("budget")) {
+    if (appBaseService.isApp("budget")) {
       try {
         if (!CollectionUtils.isEmpty(move.getMoveLineList())
             && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
-          MoveLineBudgetService moveLineBudgetService = Beans.get(MoveLineBudgetService.class);
+
           moveLineBudgetService.manageMonoBudget(move);
 
           for (MoveLine moveLine : move.getMoveLineList()) {
@@ -49,7 +66,7 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
           }
         }
 
-        Beans.get(BudgetService.class).updateBudgetLinesFromMove(move, false);
+        budgetService.updateBudgetLinesFromMove(move, false);
 
       } catch (AxelorException e) {
         throw new PersistenceException(e.getLocalizedMessage());
@@ -65,10 +82,8 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
   public Move copy(Move entity, boolean deep) {
     Move copy = super.copy(entity, deep);
 
-    if (!CollectionUtils.isEmpty(copy.getMoveLineList())
-        && Beans.get(AppBudgetService.class).isApp("budget")) {
-      BudgetDistributionService budgetDistributionService =
-          Beans.get(BudgetDistributionService.class);
+    if (!CollectionUtils.isEmpty(copy.getMoveLineList()) && appBaseService.isApp("budget")) {
+
       for (MoveLine ml : copy.getMoveLineList()) {
         ml.setIsBudgetImputed(false);
         if (!CollectionUtils.isEmpty(ml.getBudgetDistributionList())) {

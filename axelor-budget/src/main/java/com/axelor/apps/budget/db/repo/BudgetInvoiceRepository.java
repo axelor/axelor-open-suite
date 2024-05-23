@@ -21,23 +21,37 @@ package com.axelor.apps.budget.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
+import com.axelor.apps.budget.service.invoice.InvoiceLineToolBudgetService;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetInvoiceRepository extends InvoiceProjectRepository {
 
+  protected AppBaseService appBaseService;
+  protected BudgetToolsService budgetToolsService;
+  protected InvoiceLineToolBudgetService invoiceLineToolBudgetService;
+
+  @Inject
+  public BudgetInvoiceRepository(
+      AppBaseService appBaseService,
+      BudgetToolsService budgetToolsService,
+      InvoiceLineToolBudgetService invoiceLineToolBudgetService) {
+    this.appBaseService = appBaseService;
+    this.budgetToolsService = budgetToolsService;
+    this.invoiceLineToolBudgetService = invoiceLineToolBudgetService;
+  }
+
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
     Invoice copy = super.copy(entity, deep);
 
-    if (deep && Beans.get(AppBudgetService.class).isApp("budget")) {
+    if (deep && appBaseService.isApp("budget")) {
       if (copy.getInvoiceLineList() != null && !copy.getInvoiceLineList().isEmpty()) {
-        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
+
         for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
           invoiceLine.setBudget(null);
           invoiceLine.clearBudgetDistributionList();
@@ -56,17 +70,16 @@ public class BudgetInvoiceRepository extends InvoiceProjectRepository {
   public Invoice save(Invoice invoice) {
     try {
       if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())
-          && Beans.get(AppBudgetService.class).isApp("budget")) {
-        BudgetInvoiceLineService budgetInvoiceLineService =
-            Beans.get(BudgetInvoiceLineService.class);
+          && appBaseService.isApp("budget")) {
+
         boolean negateAmount =
             invoice.getOperationTypeSelect() == OPERATION_TYPE_SUPPLIER_REFUND
                 || invoice.getOperationTypeSelect() == OPERATION_TYPE_CLIENT_REFUND
                 || invoice.getOperationSubTypeSelect() == OPERATION_SUB_TYPE_ADVANCE;
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          budgetInvoiceLineService.checkAmountForInvoiceLine(invoiceLine);
+          invoiceLineToolBudgetService.checkAmountForInvoiceLine(invoiceLine);
           if (negateAmount) {
-            budgetInvoiceLineService.negateAmount(invoiceLine, invoice);
+            invoiceLineToolBudgetService.negateAmount(invoiceLine, invoice);
           }
         }
       }

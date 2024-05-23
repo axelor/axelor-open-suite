@@ -22,15 +22,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
+import com.axelor.apps.budget.utils.PurchaseOrderBudgetUtilsService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -41,29 +39,35 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupplychainRepository {
 
+  protected BudgetService budgetService;
+  protected PurchaseOrderBudgetUtilsService purchaseOrderBudgetUtilsService;
+
   @Inject
   public PurchaseOrderManagementBudgetRepository(
-      AppBaseService appBaseService, PurchaseOrderSequenceService purchaseOrderSequenceService) {
+      AppBaseService appBaseService,
+      PurchaseOrderSequenceService purchaseOrderSequenceService,
+      BudgetService budgetService,
+      PurchaseOrderBudgetUtilsService purchaseOrderBudgetUtilsService) {
     super(appBaseService, purchaseOrderSequenceService);
+    this.budgetService = budgetService;
+    this.purchaseOrderBudgetUtilsService = purchaseOrderBudgetUtilsService;
   }
 
   @Override
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {
-    if (!Beans.get(AppBudgetService.class).isApp("budget")) {
+    if (!appBaseService.isApp("budget")) {
       return super.save(purchaseOrder);
     }
     try {
 
-      Beans.get(PurchaseOrderBudgetService.class).generateBudgetDistribution(purchaseOrder);
+      purchaseOrderBudgetUtilsService.generateBudgetDistribution(purchaseOrder);
 
       purchaseOrder = super.save(purchaseOrder);
-      Beans.get(PurchaseOrderBudgetService.class)
-          .validatePurchaseAmountWithBudgetDistribution(purchaseOrder);
+      purchaseOrderBudgetUtilsService.validatePurchaseAmountWithBudgetDistribution(purchaseOrder);
 
       if (purchaseOrder.getStatusSelect() != null
           && purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_REQUESTED) {
-        Beans.get(PurchaseOrderBudgetService.class)
-            .updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+        purchaseOrderBudgetUtilsService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
       }
 
     } catch (AxelorException e) {
@@ -77,7 +81,7 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
   // be calculated again, which is done in cancel method.
   @Override
   public void remove(PurchaseOrder entity) {
-    if (!Beans.get(AppBudgetService.class).isApp("budget")) {
+    if (!appBaseService.isApp("budget")) {
       super.remove(entity);
       return;
     }
@@ -110,7 +114,6 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
 
   @Transactional(rollbackOn = {Exception.class})
   public void resetBudgets(List<Budget> budgetList) {
-    BudgetService budgetService = Beans.get(BudgetService.class);
 
     if (!CollectionUtils.isEmpty(budgetList)) {
       for (Budget budget : budgetList) {

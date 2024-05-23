@@ -21,7 +21,6 @@ package com.axelor.apps.budget.service.globalbudget;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
@@ -45,7 +44,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -64,7 +62,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected BudgetToolsService budgetToolsService;
   protected GlobalBudgetToolsService globalBudgetToolsService;
   protected BudgetScenarioLineService budgetScenarioLineService;
-  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public GlobalBudgetServiceImpl(
@@ -77,8 +74,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       BudgetScenarioService budgetScenarioService,
       BudgetToolsService budgetToolsService,
       GlobalBudgetToolsService globalBudgetToolsService,
-      BudgetScenarioLineService budgetScenarioLineService,
-      CurrencyScaleService currencyScaleService) {
+      BudgetScenarioLineService budgetScenarioLineService) {
     this.budgetLevelService = budgetLevelService;
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetService = budgetService;
@@ -89,7 +85,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     this.budgetToolsService = budgetToolsService;
     this.globalBudgetToolsService = globalBudgetToolsService;
     this.budgetScenarioLineService = budgetScenarioLineService;
-    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -103,52 +98,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
         budgetService.checkDatesOnBudget(budget);
       }
     }
-  }
-
-  @Override
-  public void computeBudgetLevelTotals(Budget budget) {
-    budgetService.computeAvailableFields(budget);
-
-    budgetLevelService.computeBudgetLevelTotals(budget);
-
-    GlobalBudget globalBudget = budget.getGlobalBudget();
-
-    if (globalBudget == null) {
-      globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
-    }
-
-    if (globalBudget != null) {
-      computeTotals(globalBudget);
-    }
-  }
-
-  @Override
-  public void computeTotals(GlobalBudget globalBudget) {
-    List<BudgetLevel> budgetLevelList = globalBudget.getBudgetLevelList();
-    List<Budget> budgetList = globalBudget.getBudgetList();
-    Map<String, BigDecimal> amountByField =
-        budgetToolsService.buildMapWithAmounts(budgetList, budgetLevelList);
-    globalBudget.setTotalAmountExpected(amountByField.get("totalAmountExpected"));
-    globalBudget.setTotalAmountCommitted(amountByField.get("totalAmountCommitted"));
-    globalBudget.setTotalAmountPaid(amountByField.get("totalAmountPaid"));
-    globalBudget.setTotalAmountRealized(amountByField.get("totalAmountRealized"));
-    globalBudget.setRealizedWithNoPo(amountByField.get("realizedWithNoPo"));
-    globalBudget.setRealizedWithPo(amountByField.get("realizedWithPo"));
-    globalBudget.setTotalAmountAvailable(
-        currencyScaleService.getCompanyScaledValue(
-            globalBudget,
-            (amountByField
-                    .get("totalAmountExpected")
-                    .subtract(amountByField.get("realizedWithPo"))
-                    .subtract(amountByField.get("realizedWithNoPo")))
-                .max(BigDecimal.ZERO)));
-    globalBudget.setTotalFirmGap(amountByField.get("totalFirmGap"));
-    globalBudget.setSimulatedAmount(amountByField.get("simulatedAmount"));
-    globalBudget.setAvailableAmountWithSimulated(
-        currencyScaleService.getCompanyScaledValue(
-            globalBudget,
-            (globalBudget.getTotalAmountAvailable().subtract(amountByField.get("simulatedAmount")))
-                .max(BigDecimal.ZERO)));
   }
 
   @Override

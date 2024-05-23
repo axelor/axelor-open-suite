@@ -26,10 +26,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
-import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -48,24 +45,15 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetService {
 
-  protected BudgetService budgetService;
   protected BudgetDistributionService budgetDistributionService;
   protected SaleOrderLineRepository saleOrderLineRepo;
-  protected AppBudgetService appBudgetService;
-  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public SaleOrderLineBudgetServiceImpl(
-      BudgetService budgetService,
       BudgetDistributionService budgetDistributionService,
-      SaleOrderLineRepository saleOrderLineRepo,
-      AppBudgetService appBudgetService,
-      BudgetToolsService budgetToolsService) {
-    this.budgetService = budgetService;
+      SaleOrderLineRepository saleOrderLineRepo) {
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineRepo = saleOrderLineRepo;
-    this.appBudgetService = appBudgetService;
-    this.budgetToolsService = budgetToolsService;
   }
 
   @Override

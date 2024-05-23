@@ -32,6 +32,7 @@ import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.export.ExportBudgetCallableService;
 import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
 import com.axelor.apps.budget.service.BudgetVersionService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetComputeService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
@@ -177,7 +178,7 @@ public class GlobalBudgetController {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       globalBudget.setBudgetList(new ArrayList<>());
-      Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+      Beans.get(GlobalBudgetComputeService.class).computeTotals(globalBudget);
       response.setValues(globalBudget);
     }
   }

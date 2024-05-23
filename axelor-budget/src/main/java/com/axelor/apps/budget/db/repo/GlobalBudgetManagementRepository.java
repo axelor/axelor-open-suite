@@ -18,33 +18,42 @@
  */
 package com.axelor.apps.budget.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class GlobalBudgetManagementRepository extends GlobalBudgetRepository {
+
+  protected AppBaseService appBaseService;
+  protected GlobalBudgetResetToolService globalBudgetResetToolService;
+  protected GlobalBudgetToolsService globalBudgetToolsService;
+
+  @Inject
+  public GlobalBudgetManagementRepository(
+      AppBaseService appBaseService,
+      GlobalBudgetResetToolService globalBudgetResetToolService,
+      GlobalBudgetToolsService globalBudgetToolsService) {
+    this.appBaseService = appBaseService;
+    this.globalBudgetResetToolService = globalBudgetResetToolService;
+    this.globalBudgetToolsService = globalBudgetToolsService;
+  }
 
   @Override
   public GlobalBudget copy(GlobalBudget entity, boolean deep) {
     GlobalBudget copy = super.copy(entity, deep);
 
-    if (Beans.get(AppBudgetService.class).isApp("budget")) {
-      Beans.get(GlobalBudgetResetToolService.class).resetGlobalBudget(copy);
+    if (appBaseService.isApp("budget")) {
+      globalBudgetResetToolService.resetGlobalBudget(copy);
     }
     return copy;
   }
 
   @Override
   public GlobalBudget save(GlobalBudget entity) {
-
-    GlobalBudgetToolsService globalBudgetToolsService = Beans.get(GlobalBudgetToolsService.class);
-
     globalBudgetToolsService.fillGlobalBudgetOnBudget(entity);
-
     entity = super.save(entity);
-
     return entity;
   }
 }

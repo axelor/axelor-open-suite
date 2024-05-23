@@ -19,19 +19,22 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetComputeService;
+import com.google.inject.Inject;
 
 public class BudgetManagementRepository extends BudgetRepository {
 
+  protected GlobalBudgetComputeService globalBudgetComputeService;
+
+  @Inject
+  public BudgetManagementRepository(GlobalBudgetComputeService globalBudgetComputeService) {
+    this.globalBudgetComputeService = globalBudgetComputeService;
+  }
+
   @Override
   public Budget save(Budget entity) {
-
-    GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
-    globalBudgetService.computeBudgetLevelTotals(entity);
-
+    globalBudgetComputeService.computeBudgetLevelTotals(entity);
     entity = super.save(entity);
-
     return entity;
   }
 }

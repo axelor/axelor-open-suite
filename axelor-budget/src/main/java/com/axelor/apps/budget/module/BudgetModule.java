@@ -53,6 +53,8 @@ import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetDistributionServiceImpl;
 import com.axelor.apps.budget.service.BudgetGroupService;
 import com.axelor.apps.budget.service.BudgetGroupServiceImpl;
+import com.axelor.apps.budget.service.BudgetLevelComputeService;
+import com.axelor.apps.budget.service.BudgetLevelComputeServiceImpl;
 import com.axelor.apps.budget.service.BudgetLevelResetToolService;
 import com.axelor.apps.budget.service.BudgetLevelResetToolServiceImpl;
 import com.axelor.apps.budget.service.BudgetLevelService;
@@ -77,6 +79,8 @@ import com.axelor.apps.budget.service.ReconcileInvoiceTermComputationBudgetServi
 import com.axelor.apps.budget.service.ReconcileToolBudgetService;
 import com.axelor.apps.budget.service.ReconcileToolBudgetServiceImpl;
 import com.axelor.apps.budget.service.UnreconcileBudgetServiceImpl;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetComputeService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetComputeServiceImpl;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupServiceImpl;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolService;
@@ -92,6 +96,8 @@ import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceServiceImpl;
+import com.axelor.apps.budget.service.invoice.InvoiceLineToolBudgetService;
+import com.axelor.apps.budget.service.invoice.InvoiceLineToolBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
 import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.StockMoveInvoiceBudgetServiceImpl;
@@ -118,6 +124,10 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineGroupBudgetServiceImpl;
+import com.axelor.apps.budget.utils.PurchaseOrderBudgetUtilsService;
+import com.axelor.apps.budget.utils.PurchaseOrderBudgetUtilsServiceImpl;
+import com.axelor.apps.budget.utils.SaleOrderBudgetUtilsService;
+import com.axelor.apps.budget.utils.SaleOrderBudgetUtilsServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
@@ -205,5 +215,10 @@ public class BudgetModule extends AxelorModule {
     bind(Callable.class).to(ExportBudgetCallableService.class);
     bind(UnreconcileServiceImpl.class).to(UnreconcileBudgetServiceImpl.class);
     bind(ReconcileToolBudgetService.class).to(ReconcileToolBudgetServiceImpl.class);
+    bind(InvoiceLineToolBudgetService.class).to(InvoiceLineToolBudgetServiceImpl.class);
+    bind(GlobalBudgetComputeService.class).to(GlobalBudgetComputeServiceImpl.class);
+    bind(BudgetLevelComputeService.class).to(BudgetLevelComputeServiceImpl.class);
+    bind(SaleOrderBudgetUtilsService.class).to(SaleOrderBudgetUtilsServiceImpl.class);
+    bind(PurchaseOrderBudgetUtilsService.class).to(PurchaseOrderBudgetUtilsServiceImpl.class);
   }
 }

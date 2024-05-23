@@ -19,21 +19,37 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.BudgetLevel;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetLevelResetToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class BudgetLevelManagementRepository extends BudgetLevelRepository {
+
+  protected AppBaseService appBaseService;
+  protected BudgetLevelResetToolService budgetLevelResetToolService;
+  protected CurrencyScaleService currencyScaleService;
+  protected BudgetToolsService budgetToolsService;
+
+  @Inject
+  public BudgetLevelManagementRepository(
+      AppBaseService appBaseService,
+      BudgetLevelResetToolService budgetLevelResetToolService,
+      CurrencyScaleService currencyScaleService,
+      BudgetToolsService budgetToolsService) {
+    this.budgetLevelResetToolService = budgetLevelResetToolService;
+    this.currencyScaleService = currencyScaleService;
+    this.budgetToolsService = budgetToolsService;
+  }
 
   @Override
   public BudgetLevel copy(BudgetLevel entity, boolean deep) {
     BudgetLevel copy = super.copy(entity, deep);
 
-    if (Beans.get(AppBudgetService.class).isApp("budget")) {
-      Beans.get(BudgetLevelResetToolService.class).resetBudgetLevel(copy);
+    if (appBaseService.isApp("budget")) {
+      budgetLevelResetToolService.resetBudgetLevel(copy);
     }
     return copy;
   }
@@ -42,11 +58,8 @@ public class BudgetLevelManagementRepository extends BudgetLevelRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     json.put(
         "$currencyNumberOfDecimals",
-        Beans.get(CurrencyScaleService.class)
-            .getCompanyScale(
-                Beans.get(BudgetToolsService.class)
-                    .getGlobalBudgetUsingBudgetLevel(
-                        Beans.get(BudgetLevelRepository.class).find((Long) json.get("id")))));
+        currencyScaleService.getCompanyScale(
+            budgetToolsService.getGlobalBudgetUsingBudgetLevel(find((Long) json.get("id")))));
 
     return super.populate(json, context);
   }

@@ -22,20 +22,16 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 
-public interface BudgetInvoiceLineService {
+public interface InvoiceLineToolBudgetService {
 
   /**
-   * Clear budget distribution, compute the budget key related to this configuration of account and
-   * analytic, find the budget related to this key and the invoice date or created on. Then create
-   * an automatic budget distribution with the company ex tax total and save the invoice line.
-   * Return an error message if a budget distribution is not generated
+   * Take all budget distribution and throw an error if the total amount of budget distribution is
+   * superior to the company ex tax total of the invoice line
    *
-   * @param invoice
    * @param invoiceLine
-   * @return String
+   * @throws AxelorException
    */
-  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine)
-      throws AxelorException;
+  void checkAmountForInvoiceLine(InvoiceLine invoiceLine) throws AxelorException;
 
-  String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  void negateAmount(InvoiceLine invoiceLine, Invoice invoice);
 }

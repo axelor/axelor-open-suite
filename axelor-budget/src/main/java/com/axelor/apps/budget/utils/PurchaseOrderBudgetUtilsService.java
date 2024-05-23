@@ -16,26 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service.invoice;
+package com.axelor.apps.budget.utils;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 
-public interface BudgetInvoiceLineService {
+public interface PurchaseOrderBudgetUtilsService {
+
+  // Duplicated from axelor-supplychain to prevent axelor-production dependency
+  void generateBudgetDistribution(PurchaseOrder purchaseOrder);
 
   /**
-   * Clear budget distribution, compute the budget key related to this configuration of account and
-   * analytic, find the budget related to this key and the invoice date or created on. Then create
-   * an automatic budget distribution with the company ex tax total and save the invoice line.
-   * Return an error message if a budget distribution is not generated
+   * Take all budget distribution on this purchase order and throw an error if the total amount of
+   * budget distribution is superior to company ex tax total of the purchase order
    *
-   * @param invoice
-   * @param invoiceLine
-   * @return String
+   * @param purchaseOrder
+   * @throws AxelorException
    */
-  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine)
+  void validatePurchaseAmountWithBudgetDistribution(PurchaseOrder purchaseOrder)
       throws AxelorException;
 
-  String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  void updateBudgetLinesFromPurchaseOrder(PurchaseOrder purchaseOrder);
 }

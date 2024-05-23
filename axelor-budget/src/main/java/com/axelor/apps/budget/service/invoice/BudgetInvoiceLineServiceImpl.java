@@ -25,20 +25,11 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
-import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
@@ -48,25 +39,16 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
 
   protected InvoiceLineRepository invoiceLineRepo;
   protected AppBaseService appBaseService;
-  protected BudgetService budgetService;
-  protected BudgetRepository budgetRepository;
   protected BudgetDistributionService budgetDistributionService;
-  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetInvoiceLineServiceImpl(
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      BudgetService budgetService,
-      BudgetRepository budgetRepository,
-      BudgetDistributionService budgetDistributionService,
-      BudgetToolsService budgetToolsService) {
+      BudgetDistributionService budgetDistributionService) {
     this.appBaseService = appBaseService;
     this.invoiceLineRepo = invoiceLineRepo;
-    this.budgetService = budgetService;
-    this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
-    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -96,32 +78,6 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
   }
 
   @Override
-  public void checkAmountForInvoiceLine(InvoiceLine invoiceLine) throws AxelorException {
-    if (invoiceLine.getBudgetDistributionList() != null
-        && !invoiceLine.getBudgetDistributionList().isEmpty()) {
-      BigDecimal amountSum = BigDecimal.ZERO;
-      for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
-        if (budgetDistribution.getAmount().abs().compareTo(invoiceLine.getCompanyExTaxTotal())
-            > 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE),
-              budgetDistribution.getBudget().getCode(),
-              invoiceLine.getProduct().getCode());
-        } else {
-          amountSum = amountSum.add(budgetDistribution.getAmount());
-        }
-      }
-      if (amountSum.compareTo(invoiceLine.getCompanyExTaxTotal()) > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_INVOICE),
-            invoiceLine.getProduct().getCode());
-      }
-    }
-  }
-
-  @Override
   public String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
     Company company = null;
     LocalDate date = null;
@@ -143,21 +99,5 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
 
     return budgetDistributionService.getBudgetDomain(
         company, date, technicalTypeSelect, invoiceLine.getAccount(), new HashSet<>());
-  }
-
-  @Override
-  public void negateAmount(InvoiceLine invoiceLine, Invoice invoice) {
-    if (invoiceLine == null || ObjectUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
-      return;
-    }
-
-    for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
-      if (budgetDistribution.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-        budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
-      }
-    }
-    invoiceLine.setBudgetRemainingAmountToAllocate(
-        budgetToolsService.getBudgetRemainingAmountToAllocate(
-            invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
   }
 }

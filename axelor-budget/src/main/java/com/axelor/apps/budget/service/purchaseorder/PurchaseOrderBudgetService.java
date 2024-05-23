@@ -45,27 +45,12 @@ public interface PurchaseOrderBudgetService {
   public String computeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException;
 
   /**
-   * Take all budget distribution on this purchase order and throw an error if the total amount of
-   * budget distribution is superior to company ex tax total of the purchase order
-   *
-   * @param purchaseOrder
-   * @throws AxelorException
-   */
-  public void validatePurchaseAmountWithBudgetDistribution(PurchaseOrder purchaseOrder)
-      throws AxelorException;
-
-  /**
    * Return if there is budget distribution on any purchase order line
    *
    * @param purchaseOrder
    * @return boolean
    */
   public boolean isBudgetInLines(PurchaseOrder purchaseOrder);
-
-  // Duplicated from axelor-supplychain to prevent axelor-production dependency
-  void generateBudgetDistribution(PurchaseOrder purchaseOrder);
-
-  public void updateBudgetLinesFromPurchaseOrder(PurchaseOrder purchaseOrder);
 
   public void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
 
