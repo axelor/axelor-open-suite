@@ -27,9 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -42,13 +40,13 @@ import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
@@ -70,14 +68,10 @@ public class BudgetServiceImpl implements BudgetService {
 
   protected BudgetLineRepository budgetLineRepository;
   protected BudgetRepository budgetRepository;
-  protected BudgetLevelRepository budgetLevelRepository;
   protected BudgetDistributionRepository budgetDistributionRepo;
   protected BudgetLineService budgetLineService;
   protected AccountConfigService accountConfigService;
-  protected AnalyticMoveLineService analyticMoveLineService;
   protected BudgetDistributionRepository budgetDistributionRepository;
-  protected AccountRepository accountRepo;
-  protected AnalyticDistributionLineRepository analyticDistributionLineRepo;
   protected BudgetToolsService budgetToolsService;
   protected CurrencyScaleService currencyScaleService;
 
@@ -85,26 +79,18 @@ public class BudgetServiceImpl implements BudgetService {
   public BudgetServiceImpl(
       BudgetLineRepository budgetLineRepository,
       BudgetRepository budgetRepository,
-      BudgetLevelRepository budgetLevelRepository,
       BudgetDistributionRepository budgetDistributionRepo,
       BudgetLineService budgetLineService,
       AccountConfigService accountConfigService,
-      AnalyticMoveLineService analyticMoveLineService,
       BudgetDistributionRepository budgetDistributionRepository,
-      AccountRepository accountRepo,
-      AnalyticDistributionLineRepository analyticDistributionLineRepo,
       BudgetToolsService budgetToolsService,
       CurrencyScaleService currencyScaleService) {
     this.budgetLineRepository = budgetLineRepository;
     this.budgetRepository = budgetRepository;
-    this.budgetLevelRepository = budgetLevelRepository;
     this.budgetDistributionRepo = budgetDistributionRepo;
     this.budgetLineService = budgetLineService;
     this.accountConfigService = accountConfigService;
-    this.analyticMoveLineService = analyticMoveLineService;
     this.budgetDistributionRepository = budgetDistributionRepository;
-    this.accountRepo = accountRepo;
-    this.analyticDistributionLineRepo = analyticDistributionLineRepo;
     this.budgetToolsService = budgetToolsService;
     this.currencyScaleService = currencyScaleService;
   }
@@ -774,8 +760,7 @@ public class BudgetServiceImpl implements BudgetService {
       }
 
       List<Account> accountList =
-          accountRepo
-              .all()
+          JPA.all(Account.class)
               .filter(
                   "self.accountType.technicalTypeSelect IN (:accountTypeList) "
                       + "AND self.company.id = :companyId "

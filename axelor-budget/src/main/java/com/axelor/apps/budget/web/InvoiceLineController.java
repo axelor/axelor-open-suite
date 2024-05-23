@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
+import com.axelor.apps.budget.service.invoice.InvoiceLineToolBudgetService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -38,7 +39,7 @@ public class InvoiceLineController {
   public void validateBudgetLinesAmount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      Beans.get(BudgetInvoiceLineService.class).checkAmountForInvoiceLine(invoiceLine);
+      Beans.get(InvoiceLineToolBudgetService.class).checkAmountForInvoiceLine(invoiceLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
     }

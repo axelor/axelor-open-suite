@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service.saleorder;
+package com.axelor.apps.budget.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.meta.CallMethod;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetLevel;
 
-public interface SaleOrderBudgetService {
+public interface BudgetLevelComputeService {
 
-  void generateBudgetDistribution(SaleOrder saleOrder);
+  /**
+   * This function computes all totalAmounts of {@link BudgetLevel} list.
+   *
+   * @param budgetLevel
+   */
+  void computeTotals(BudgetLevel budgetLevel);
 
-  String computeBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
-
-  boolean isBudgetInLines(SaleOrder saleOrder);
-
-  public void updateBudgetLinesFromSaleOrder(SaleOrder saleOrder);
-
-  @CallMethod
-  String getBudgetExceedAlert(SaleOrder saleOrder);
-
-  void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
+  /**
+   * This function computes all totals of {@link BudgetLevel}
+   *
+   * @param budget
+   */
+  void computeBudgetLevelTotals(Budget budget);
 }

@@ -16,24 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service.saleorder;
+package com.axelor.apps.budget.utils;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.meta.CallMethod;
 
-public interface SaleOrderBudgetService {
+public interface SaleOrderBudgetUtilsService {
 
-  void generateBudgetDistribution(SaleOrder saleOrder);
-
-  String computeBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
-
-  boolean isBudgetInLines(SaleOrder saleOrder);
-
-  public void updateBudgetLinesFromSaleOrder(SaleOrder saleOrder);
-
-  @CallMethod
-  String getBudgetExceedAlert(SaleOrder saleOrder);
-
-  void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
+  void validateSaleAmountWithBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
 }

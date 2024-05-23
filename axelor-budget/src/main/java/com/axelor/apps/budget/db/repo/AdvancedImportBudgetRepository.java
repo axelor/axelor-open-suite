@@ -20,8 +20,8 @@ package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
-import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.google.inject.Inject;
 
 public class AdvancedImportBudgetRepository extends AdvancedImportBaseRepository {
 
@@ -30,9 +30,16 @@ public class AdvancedImportBudgetRepository extends AdvancedImportBaseRepository
 
   public static final String IMPORT_ID_2 = "102"; // Budget Instance Import Id
 
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public AdvancedImportBudgetRepository(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
+
   @Override
   public void remove(AdvancedImport entity) {
-    if (Beans.get(AppBudgetService.class).isApp("budget")) {
+    if (appBaseService.isApp("budget")) {
       if (entity.getImportId() != null
           && (entity.getImportId().equals(IMPORT_ID_1)
               || entity.getImportId().equals(IMPORT_ID_2))) {

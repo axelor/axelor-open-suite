@@ -33,7 +33,6 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
@@ -59,9 +58,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetDistributionServiceImpl implements BudgetDistributionService {
 
-  protected BudgetDistributionRepository budgetDistributionRepository;
   protected BudgetLineService budgetLineService;
-  protected BudgetLevelService budgetLevelService;
   protected BudgetRepository budgetRepo;
 
   protected BudgetService budgetService;
@@ -71,17 +68,13 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
   @Inject
   public BudgetDistributionServiceImpl(
-      BudgetDistributionRepository budgetDistributionRepository,
       BudgetLineService budgetLineService,
-      BudgetLevelService budgetLevelService,
       BudgetRepository budgetRepo,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService,
       CurrencyScaleService currencyScaleService,
       AppBudgetService appBudgetService) {
-    this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
-    this.budgetLevelService = budgetLevelService;
     this.budgetRepo = budgetRepo;
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;

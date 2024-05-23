@@ -19,17 +19,17 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetServiceImpl;
-import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
+import com.axelor.apps.budget.utils.SaleOrderBudgetUtilsService;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,24 +39,40 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderBudgetRepository extends SaleOrderProjectRepository {
 
+  protected AppBaseService appBaseService;
+  protected BudgetService budgetService;
+  protected SaleOrderLineBudgetService saleOrderLineBudgetService;
+  protected SaleOrderBudgetUtilsService saleOrderBudgetUtilsService;
+
+  @Inject
+  public SaleOrderBudgetRepository(
+      AppBaseService appBaseService,
+      BudgetService budgetService,
+      SaleOrderLineBudgetService saleOrderLineBudgetService,
+      SaleOrderBudgetUtilsService saleOrderBudgetUtilsService) {
+    this.appBaseService = appBaseService;
+    this.budgetService = budgetService;
+    this.saleOrderLineBudgetService = saleOrderLineBudgetService;
+    this.saleOrderBudgetUtilsService = saleOrderBudgetUtilsService;
+  }
+
   @Override
   public SaleOrder save(SaleOrder saleOrder) {
-    if (!Beans.get(AppBudgetService.class).isApp("budget")) {
+    if (!appBaseService.isApp("budget")) {
       return super.save(saleOrder);
     }
 
     try {
       if (!CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-        SaleOrderLineBudgetService saleOrderBudgetService =
-            Beans.get(SaleOrderLineBudgetService.class);
+
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderBudgetService.checkAmountForSaleOrderLine(saleOrderLine);
+          saleOrderLineBudgetService.checkAmountForSaleOrderLine(saleOrderLine);
         }
       }
 
       saleOrder = super.save(saleOrder);
 
-      Beans.get(SaleOrderBudgetService.class).validateSaleAmountWithBudgetDistribution(saleOrder);
+      saleOrderBudgetUtilsService.validateSaleAmountWithBudgetDistribution(saleOrder);
 
     } catch (AxelorException e) {
       throw new PersistenceException(e.getLocalizedMessage());
@@ -94,14 +110,13 @@ public class SaleOrderBudgetRepository extends SaleOrderProjectRepository {
 
   @Transactional(rollbackOn = {Exception.class})
   public void resetBudgets(List<Budget> budgetList) {
-    BudgetServiceImpl budgetBudgetService = Beans.get(BudgetServiceImpl.class);
 
     if (!CollectionUtils.isEmpty(budgetList)) {
       for (Budget budget : budgetList) {
-        budgetBudgetService.updateLines(budget);
-        budgetBudgetService.computeTotalAmountCommitted(budget);
-        budgetBudgetService.computeTotalAmountPaid(budget);
-        budgetBudgetService.computeToBeCommittedAmount(budget);
+        budgetService.updateLines(budget);
+        budgetService.computeTotalAmountCommitted(budget);
+        budgetService.computeTotalAmountPaid(budget);
+        budgetService.computeToBeCommittedAmount(budget);
       }
     }
   }

@@ -19,7 +19,6 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.budget.db.BudgetLine;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.time.LocalDate;
 import java.util.List;
@@ -27,9 +26,6 @@ import java.util.Optional;
 
 @RequestScoped
 public class BudgetLineServiceImpl implements BudgetLineService {
-
-  @Inject
-  public BudgetLineServiceImpl() {}
 
   @Override
   public Optional<BudgetLine> findBudgetLineAtDate(

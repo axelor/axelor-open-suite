@@ -29,13 +29,6 @@ import java.util.Map;
 public interface BudgetLevelService {
 
   /**
-   * This function computes all totalAmounts of {@link BudgetLevel} list.
-   *
-   * @param budgetLevel
-   */
-  public void computeTotals(BudgetLevel budgetLevel);
-
-  /**
    * Archive the global budget and archive all related budget levels and budgets
    *
    * @param budgetLevel
@@ -88,13 +81,6 @@ public interface BudgetLevelService {
 
   void getUpdatedBudgetList(List<Budget> budgetList, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
-
-  /**
-   * This function computes all totals of {@link BudgetLevel}
-   *
-   * @param budget
-   */
-  public void computeBudgetLevelTotals(Budget budget);
 
   List<BudgetLevel> getLastSections(GlobalBudget globalBudget);
 
