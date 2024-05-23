@@ -1,0 +1,2 @@
+title: "InvoicePayment : Invoice payment remains 'Pending' while bank order has been realized (while no accounting entry generated) even after reconcile"
+module: axelor-bank-payment
