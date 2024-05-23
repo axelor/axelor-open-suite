@@ -932,10 +932,11 @@ public class BankReconciliationService {
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
-            + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount"
+            + " AND self.currencyAmount > 0"
             + " AND (:includeOtherBankStatements IS TRUE OR (self.date BETWEEN :fromDate AND :toDate OR self.dueDate BETWEEN :fromDate AND :toDate))"
             + " AND (:journal IS NULL OR self.move.journal = :journal)"
-            + " AND (:cashAccount IS NULL OR self.account = :cashAccount)";
+            + " AND (:cashAccount IS NULL OR self.account = :cashAccount)"
+            + " AND ((self.move.currency = :bankReconciliationCurrency AND self.bankReconciledAmount < abs(self.currencyAmount)) OR (self.move.currency != :bankReconciliationCurrency AND (self.bankReconciledAmount < (self.debit + self.credit))))";
     if (bankReconciliation.getCurrency() != bankReconciliation.getCompany().getCurrency()) {
       query = query + " AND self.move.currency = :bankReconciliationCurrency";
     }
@@ -972,9 +973,7 @@ public class BankReconciliationService {
 
     params.put("cashAccount", bankReconciliation.getCashAccount());
 
-    if (bankReconciliation.getCurrency() != bankReconciliation.getCompany().getCurrency()) {
-      params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
-    }
+    params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
 
     return params;
   }
