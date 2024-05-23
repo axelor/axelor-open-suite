@@ -1,3 +1,3 @@
 ---
-title: "Purchase order line: fixed typo in the viewer template."
+title: "Purchase order line: fixed an issue causing an error when the line was marked as `toInvoice`."
 module: axelor-purchase
