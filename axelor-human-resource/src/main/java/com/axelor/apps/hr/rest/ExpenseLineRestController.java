@@ -167,7 +167,8 @@ public class ExpenseLineRestController {
                 requestBody.fetchEmployee(),
                 requestBody.fetchCurrency(),
                 requestBody.getToInvoice(),
-                requestBody.fetchExpense());
+                requestBody.fetchExpense(),
+                requestBody.fetchProjectTask());
 
     return ResponseConstructor.build(
         Response.Status.OK,
