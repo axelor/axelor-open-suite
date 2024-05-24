@@ -1,3 +1,0 @@
----
-title: "Invoice: Fixed a bug where generated invoices from orders had wrong WT/ATI configuration."
-module: axelor-account

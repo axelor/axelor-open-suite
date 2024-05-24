@@ -1,3 +1,56 @@
+## [6.5.34] (2024-05-24)
+
+### Fixes
+#### Base
+
+* ICalendar: fixed synchronization duration widget.
+* Sale order/Purchase order/Invoice: fixed wrong column name displayed on discounted amount.
+
+#### Account
+
+* Accounting report: update font size and improve lettering display on partner general ledger.
+* Payment voucher: fixed an issue where some fields were not displayed in due element list.
+* Invoice: fixed a bug where generated invoices from orders had wrong WT/ATI configuration.
+* FEC Import: fixed partner not filled when the partner is only on the first line of an entry.
+* Move line: fixed move fiscal position not being used for tax equivalence on account change.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong computation of balances when having more than 10 records.
+* Bank statement line: fixed wrong balance on the demo data sample statement.
+* Bank reconciliation: fixed move line filter and controls when reconciliating.
+* Accounting report: fixed bank reconciliation accounting report displaying already reconciled move lines
+
+#### Business Project
+
+* Timesheet line: fixed an issue preventing to invoice timesheet when the task has an activity.
+
+#### Contract
+
+* Contract: fixed 'nouvelle version' used as key instead of 'new version'.
+* Contract: deleted version history while duplicating.
+
+#### Human Resource
+
+* Leave request: fixed issue where a leave request was not updated after sending it.
+
+#### Maintenance
+
+* Maintenance request: fixed impossible to create a maintenance request from the quick adding field.
+
+#### Purchase
+
+* Purchase request: added sequence for purchase request in demo data.
+
+#### Sale
+
+* Sale order merge: fixed an issue where it was not possible to select a price list in case of conflicts.
+
+#### Supply Chain
+
+* Customer invoice line: fixed default product unit on product change.
+* Purchase order: when a purchase order is generated from a sale order, when the catalog does not have a code or name, it will use the product.
+
 ## [6.5.33] (2024-05-03)
 
 ### Fixes
@@ -1327,6 +1380,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.34]: https://github.com/axelor/axelor-open-suite/compare/v6.5.33...v6.5.34
 [6.5.33]: https://github.com/axelor/axelor-open-suite/compare/v6.5.32...v6.5.33
 [6.5.32]: https://github.com/axelor/axelor-open-suite/compare/v6.5.31...v6.5.32
 [6.5.31]: https://github.com/axelor/axelor-open-suite/compare/v6.5.30...v6.5.31
