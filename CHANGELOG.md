@@ -1,3 +1,97 @@
+## [8.0.7] (2024-05-24)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 2.0.2.
+* ICalendar: fixed synchronization duration widget.
+* Sale order/Purchase order/Invoice: fixed wrong column name displayed on discounted amount.
+* Price list: fixed a NPE when opening a new price list.
+* Birt Template: for developers, added hot reload for .rptdesign files.
+
+#### Account
+
+* Invoice: fixed an issue where it was possible to change the printing format on a ventilated invoice.
+* Accounting report: update font size and improve lettering display on partner general ledger.
+* Reconciliation: added more traceability when a move line is not reconcilable.
+* Accounting Situation: fixed wrong scale on 'Used credit' and 'Accepted credit' fields.
+* Payment voucher: fixed an issue where some fields were not displayed in due element list.
+* Invoice: fixed a bug where generated invoices from orders had wrong WT/ATI configuration.
+* FEC Import: fixed partner not filled when the partner is only on the first line of an entry.
+* Move line: fixed move fiscal position not being used for tax equivalence on account change.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong computation of balances when having more than 10 records.
+* Bank reconciliation: fixed move line filter and controls when reconciliating.
+* Accounting report type: added bank reconciliation statement report record in accounting report type list.
+* Accounting report: fixed bank reconciliation accounting report displaying already reconciled move lines.
+* Bank statement line: fixed wrong balance on the demo data sample statement.
+
+#### Business Project
+
+* Timesheet line: fixed an issue preventing to invoice timesheet when the task has an activity.
+* Project: fixed validation error missing timeUnit when creating a planned time planning while business-project module is not installed.
+* Timesheet line: fixed NPE when generating a project invoice with a timesheet line that has a non null duration for customer.
+
+#### Contract
+
+* Contract: fixed display condition of the Revaluation fields.
+* Contract: fixed 'nouvelle version' used as key instead of 'new version'.
+* Contract: fixed 'ID to load' error when we modifying supposed activation date without saving.
+* Contract: deleted version history on duplication.
+
+#### Helpdesk
+
+* Ticket: fixed demo data status.
+
+#### Human Resource
+
+* Expense line: fixed an error when computing distance on orphan kilometric expense line.
+* TSTimer: fixed french translation of errors message when creating timer from API.
+* Timesheet API: added more checks on date to prevent inconsistency issues.
+* Leave request: fixed issue where a leave request was not updated after sending it.
+
+#### Maintenance
+
+* Maintenance request: fixed impossible to create a maintenance request from the quick adding field.
+
+#### Mobile Settings
+
+* Mobile dashboard: set name required in view for dashboard configuration lines.
+
+#### Production
+
+* Bill of materials: fixed blank printing.
+* Manufacturing order: fixed error preventing quantity change on consumed products.
+* Configurator: improved demo data for configurator 'Ordinateur personnalisé'.
+* Manufacturing Order: fixed NPE error on selecting a product in Consumed products.
+
+#### Project
+
+* Project: fixed an issue where a task was not displayed when using the sub-task button.
+
+#### Purchase
+
+* Purchase order line: fixed an issue causing an error when the line was marked as `toInvoice`.
+* Purchase request: added sequence for purchase request in demo data.
+
+#### Sale
+
+* Sale order merge: fixed an issue where it was not possible to select a price list in case of conflicts.
+* Sale order: fixed sale order line sequence issue.
+* Sale order: fixed scales on amount in sale order line grid.
+
+#### Stock
+
+* Stock move line: fixed issue when changing the line type to title.
+
+#### Supply Chain
+
+* Customer invoice line: fixed default product unit on product change.
+* Invoice: fixed 'FixedAsset' boolean never propagated to invoice line from purchase order line.
+* Purchase order: when a purchase order is generated from a sale order, when the catalog does not have a code or name, it will use the product.
+
 ## [8.0.6] (2024-05-03)
 
 ### Fixes
@@ -589,6 +683,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.7]: https://github.com/axelor/axelor-open-suite/compare/v8.0.6...v8.0.7
 [8.0.6]: https://github.com/axelor/axelor-open-suite/compare/v8.0.5...v8.0.6
 [8.0.5]: https://github.com/axelor/axelor-open-suite/compare/v8.0.4...v8.0.5
 [8.0.4]: https://github.com/axelor/axelor-open-suite/compare/v8.0.3...v8.0.4
