@@ -1,3 +1,75 @@
+## [7.2.14] (2024-05-24)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 1.3.5.
+* ICalendar: fixed synchronization duration widget.
+* Sale order/Purchase order/Invoice: fixed wrong column name displayed on discounted amount
+* Birt Template: for developers, added hot reload for .rptdesign files.
+
+#### Account
+
+* Accounting report: update font size and improve lettering display on partner general ledger.
+* Payment voucher: fixed an issue where some fields were not displayed in due element list.
+* Invoice: fixed a bug where generated invoices from orders had wrong WT/ATI configuration.
+* FEC Import: fixed partner not filled when the partner is only on the first line of an entry.
+* Move line: fixed move fiscal position not being used for tax equivalence on account change.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong computation of balances when having more than 10 records.
+* Bank statement line: fixed wrong balance on the demo data sample statement.
+* Bank reconciliation: fixed move line filter and controls when reconciliating.
+* Accounting report: fixed bank reconciliation accounting report displaying already reconciled move lines.
+
+#### Business Project
+
+* Timesheet line: fixed an issue preventing to invoice timesheet when the task has an activity.
+* Project: fixed validation error missing timeUnit when creating a planned time planning while business-project module is not installed.
+
+#### Contract
+
+* Contract: fixed display condition of the Revaluation fields.
+* Contract: fixed 'nouvelle version' used as key instead of 'new version'.
+* Contract: fixed 'ID to load' error when we modifying supposed activation date without saving.
+* Contract: deleted version history on duplication.
+
+#### Human Resource
+
+* Leave request: fixed issue where a leave request was not updated after sending it.
+
+#### Maintenance
+
+* Maintenance request: fixed impossible to create a maintenance request from the quick adding field.
+
+#### Production
+
+* Bill of materials: fixed blank printing.
+* Manufacturing order: fixed NPE error on selecting a product in Consumed products.
+
+#### Project
+
+* Project: fixed a issue where a task was not displayed when using the sub-task button
+
+#### Purchase
+
+* Purchase request: added sequence for purchase request in demo data.
+
+#### Sale
+
+* Sale order merge: fixed an issue where it was not possible to select a price list in case of conflicts.
+
+#### Stock
+
+* Stock move line: fixed issue when changing the line type to title.
+
+#### Supply Chain
+
+* Customer invoice line: fixed default product unit on product change.
+* Invoice: fixed 'FixedAsset' boolean never propagated to invoice line from purchase order line.
+* Purchase order: when a purchase order is generated from a sale order, when the catalog does not have a code or name, it will use the product.
+
 ## [7.2.13] (2024-05-03)
 
 ### Fixes
@@ -822,6 +894,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.14]: https://github.com/axelor/axelor-open-suite/compare/v7.2.13...v7.2.14
 [7.2.13]: https://github.com/axelor/axelor-open-suite/compare/v7.2.12...v7.2.13
 [7.2.12]: https://github.com/axelor/axelor-open-suite/compare/v7.2.11...v7.2.12
 [7.2.11]: https://github.com/axelor/axelor-open-suite/compare/v7.2.10...v7.2.11
