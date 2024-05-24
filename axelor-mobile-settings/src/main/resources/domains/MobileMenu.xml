@@ -7,7 +7,8 @@
 
   <entity name="MobileMenu">
     <string name="technicalName" unique="true" required="true" title="Technical name"
-      help="Technical name should be the menu key used in module export on mobile application."/>
+      help="Technical name should be the menu key used in module export on mobile application."
+      readonly="true"/>
     <string name="name" title="Menu name"/>
     <integer name="menuOrder" title="mobileMenu.Order"/>
     <string name="parentApplication" title="Parent application"
