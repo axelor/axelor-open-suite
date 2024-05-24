@@ -36,6 +36,6 @@ public interface ITranslation {
 
   public static final String FISCAL_YEAR_CODE = /*$$(*/ "fiscalYear.code" /*)*/;
   public static final String FIXED_ASSET_IMPORT_BTN_IMPORT = /*$$(*/
-      "Change to Import/Transfert" /*)*/;
-  public static final String FIXED_ASSET_IMPORT_BTN_MANUAL = /*$$(*/ "Change to Manual" /*)*/;
+      "Define origin as Imported/Transferred" /*)*/;
+  public static final String FIXED_ASSET_IMPORT_BTN_MANUAL = /*$$(*/ "Reset origin" /*)*/;
 }
