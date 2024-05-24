@@ -658,18 +658,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    // defined in supplychain
-    return BigDecimal.ZERO;
-  }
-
-  @Override
-  public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    // defined in supplychain
-    return BigDecimal.ZERO;
-  }
-
-  @Override
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response) {
 
     Product product = saleOrderLine.getProduct();

@@ -25,7 +25,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
@@ -34,8 +34,8 @@ import org.apache.commons.collections.CollectionUtils;
 public class BudgetInvoiceRepository extends InvoiceProjectRepository {
 
   @Inject
-  public BudgetInvoiceRepository(AppBusinessProjectService appBusinessProjectService) {
-    super(appBusinessProjectService);
+  public BudgetInvoiceRepository(AppSaleService appSaleService) {
+    super(appSaleService);
   }
 
   @Override

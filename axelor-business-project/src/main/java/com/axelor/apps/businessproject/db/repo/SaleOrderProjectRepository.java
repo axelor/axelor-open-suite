@@ -18,19 +18,20 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.google.inject.Inject;
 
 public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
 
-  protected AppBusinessProjectService appBusinessProjectService;
-
   @Inject
-  public SaleOrderProjectRepository(AppBusinessProjectService appBusinessProjectService) {
-    this.appBusinessProjectService = appBusinessProjectService;
+  public SaleOrderProjectRepository(
+      AppBaseService appBaseService,
+      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+    super(appBaseService, accountingSituationSupplychainService);
   }
 
   @Override
@@ -38,7 +39,7 @@ public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
 
     SaleOrder copy = super.copy(entity, deep);
 
-    if (appBusinessProjectService.isApp("business-project")) {
+    if (appBaseService.isApp("business-project")) {
       copy.setProject(null);
       if (copy.getSaleOrderLineList() != null) {
         for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {

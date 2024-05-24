@@ -30,9 +30,17 @@ import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class MrpManagementRepository extends MrpRepository {
+
+  protected SequenceService sequenceService;
+
+  @Inject
+  public MrpManagementRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public void remove(Mrp entity) {
@@ -49,9 +57,8 @@ public class MrpManagementRepository extends MrpRepository {
       if (Strings.isNullOrEmpty(entity.getMrpSeq())) {
         Company company = entity.getStockLocation().getCompany();
         String seq =
-            Beans.get(SequenceService.class)
-                .getSequenceNumber(
-                    SequenceRepository.SUPPLYCHAIN_MRP, company, Mrp.class, "mrpSeq", entity);
+            sequenceService.getSequenceNumber(
+                SequenceRepository.SUPPLYCHAIN_MRP, company, Mrp.class, "mrpSeq", entity);
 
         if (seq == null) {
           throw new AxelorException(
