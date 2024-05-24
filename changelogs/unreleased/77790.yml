@@ -1,0 +1,3 @@
+---
+title: "Move/Analytic: fix negative analytic when generating cut off moves"
+module: axelor-account
