@@ -1,0 +1,5 @@
+---
+title: "Fixed search filter on domain fields."
+module: axelor-base
+developer: |
+  Modified the search attribute for domain fields to exclude non-string type fields.

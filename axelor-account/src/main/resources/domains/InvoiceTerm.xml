@@ -73,8 +73,7 @@
       title="Apply Fin. Discount (session) ?"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true" scale="3" precision="20"/>
     <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
-    <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
-      title="Name">
+    <string name="name" namecolumn="true" search="invoice,moveLine" title="Name">
             <![CDATA[
             if( invoice != null ){
                if (dueDate != null) {
