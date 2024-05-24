@@ -1708,6 +1708,6 @@ public final class AccountExceptionMessage {
   public static final String FINANCIAL_DISCOUNT_NOT_COMPATIBLE_WITH_ADVANCE_PAYMENT_INVOICE =
       /*$$(*/ "Financial discount is not compatible with the advance payment invoice. Please unselect financial discount in order to continue." /*)*/;
 
-  public static final String CAN_NOT_BE_RECONCILED_WAITING_PAYMENT =
-      /*$$(*/ "The move line %s can not be reconciled because of a pending payment." /*)*/;
+  public static final String CANNOT_BE_RECONCILED_WAITING_PAYMENT =
+      /*$$(*/ "The move line %s cannot be reconciled because of a pending payment." /*)*/;
 }

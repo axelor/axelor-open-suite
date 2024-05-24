@@ -335,7 +335,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(AccountExceptionMessage.CAN_NOT_BE_RECONCILED_WAITING_PAYMENT),
+                I18n.get(AccountExceptionMessage.CANNOT_BE_RECONCILED_WAITING_PAYMENT),
                 moveLine.getName()));
       }
 
