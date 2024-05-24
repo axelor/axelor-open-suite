@@ -1,3 +1,57 @@
+## [7.0.27] (2024-05-24)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 1.0.6.
+* ICalendar: fixed synchronization duration widget.
+* Sale order/Purchase order/Invoice: fixed wrong column name displayed on discounted amount.
+
+#### Account
+
+* Accounting report: update font size and improve lettering display on partner general ledger.
+* Payment voucher: fixed an issue where some fields were not displayed in due element list.
+* Invoice: fixed a bug where generated invoices from orders had wrong WT/ATI configuration.
+* FEC Import: fixed partner not filled when the partner is only on the first line of an entry.
+* Move line: fixed move fiscal position not being used for tax equivalence on account change.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong computation of balances when having more than 10 records.
+* Bank statement line: fixed wrong balance on the demo data sample statement.
+* Bank reconciliation: fixed move line filter and controls when reconciliating.
+* Accounting report: fixed bank reconciliation accounting report displaying already reconciled move lines.
+
+#### Business Project
+
+* Timesheet line: fixed an issue preventing to invoice timesheet when the task has an activity.
+
+#### Contract
+
+* Contract: 'nouvelle version' used as key instead of 'new version'.
+* Contract: Deleted version history while duplicating.
+
+#### Human Resource
+
+* Leave request: fixed issue where a leave request was not updated after sending it.
+
+#### Maintenance
+
+* Maintenance request: fixed impossible to create a maintenance request from the quick adding field.
+
+#### Purchase
+
+* Purchase request: Added sequence for purchase request in demo data.
+
+#### Sale
+
+* Sale order merge: fixed an issue where it was not possible to select a price list in case of conflicts.
+
+#### Supply Chain
+
+* Customer invoice line: fixed default product unit on product change.
+* Purchase order: when a purchase order is generated from a sale order, when the catalog does not have a code or name, it will use the product.
+
 ## [7.0.26] (2024-05-03)
 
 ### Fixes
@@ -1076,6 +1130,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.27]: https://github.com/axelor/axelor-open-suite/compare/v7.0.26...v7.0.27
 [7.0.26]: https://github.com/axelor/axelor-open-suite/compare/v7.0.25...v7.0.26
 [7.0.25]: https://github.com/axelor/axelor-open-suite/compare/v7.0.24...v7.0.25
 [7.0.24]: https://github.com/axelor/axelor-open-suite/compare/v7.0.23...v7.0.24
