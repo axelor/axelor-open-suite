@@ -42,7 +42,7 @@
   </input>
 
   <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
-         search="self.importId = :importId"/>
+    search="self.importId = :importId"/>
 
   <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.apps.sale.db.SaleOrder">
@@ -166,6 +166,6 @@
     type="com.axelor.apps.businessproject.db.BusinessProjectConfig"
     search="self.importId = :importId"/>
 
-  <input file="hr_projectPlannedTimeValue.csv" separator=";" type="com.axelor.apps.project.db.PlannedTimeValue"
-         search="self.importId = :importId"/>
+  <input file="hr_projectPlannedTimeValue.csv" separator=";"
+    type="com.axelor.apps.project.db.PlannedTimeValue" search="self.importId = :importId"/>
 </csv-inputs>
