@@ -45,7 +45,7 @@ public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
       List<InvoicingProject> invoiceProjectList =
           JPA.all(InvoicingProject.class).filter("self.invoice.id = ?", entity.getId()).fetch();
       List<ProjectTask> projectTaskList =
-          JPA.all(ProjectTask.class).filter("?1 IN self.invoiceLineList.invoice", entity).fetch();
+          JPA.all(ProjectTask.class).filter("?1 IN self.invoiceLineSet.invoice", entity).fetch();
       if (ObjectUtils.notEmpty(projectTaskList)) {
         for (ProjectTask projectTask : projectTaskList) {
           projectTask.setInvoiceLineSet(Collections.emptySet());

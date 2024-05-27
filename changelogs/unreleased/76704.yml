@@ -1,2 +1,0 @@
-title: "Contract: fix ID to load error when we change supposedActivationDate without saving"
-module: axelor-contract

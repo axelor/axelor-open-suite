@@ -38,7 +38,7 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
   }
 
   @Override
-  public String getRequestMoveLines(BankReconciliation bankReconciliation) {
+  public String getRequestMoveLines() {
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
@@ -48,9 +48,6 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
             + " AND (:journal IS NULL OR self.move.journal = :journal)"
             + " AND (:cashAccount IS NULL OR self.account = :cashAccount)"
             + " AND ((self.move.currency = :bankReconciliationCurrency AND self.bankReconciledAmount < abs(self.currencyAmount)) OR (self.move.currency != :bankReconciliationCurrency AND (self.bankReconciledAmount < (self.debit + self.credit))))";
-    if (bankReconciliation.getCurrency() != bankReconciliation.getCompany().getCurrency()) {
-      query = query + " AND self.move.currency = :bankReconciliationCurrency";
-    }
 
     return query;
   }

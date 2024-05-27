@@ -137,7 +137,7 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     BigDecimal moveLineCredit =
         currencyScaleService.getCompanyScaledValue(moveLine, moveLine.getCredit());
 
-    if (moveLine.getMove().getCurrency() == bankReconciliationLine.getCurrency()) {
+    if (moveLine.getMove().getCurrency().equals(bankReconciliationLine.getCurrency())) {
       if (isDebit) {
         moveLineCredit =
             currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
