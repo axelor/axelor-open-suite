@@ -13,6 +13,8 @@
     <field name="partner"/>
     <field name="startDate"/>
     <field name="currentContractVersion.supposedEndDate"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="statusSelect"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
@@ -67,7 +69,7 @@
             form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
             colSpan="3"/>
         </panel>
-        <panel name="partnerPanel" itemSpan="4" colSpan="12">
+        <panel name="partnerPanel" colSpan="8">
           <field name="partner" onSelect="action-contract-attrs-domains-partner"
             showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
             onChange="action-contract-group-partner-onchange" required="true"
@@ -76,8 +78,19 @@
             canEdit="false" form-view="partner-form" readonlyIf="statusSelect >= 2" required="true"
             onSelect="action-contract-method-set-invoiced-partner-domain"/>
         </panel>
+        <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
+          name="tradingName"
+          readonlyIf="(contractLineList &amp;&amp; contractLineList.length > 0) || statusSelect >= 2"
+          canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          grid-view="trading-name-grid" colSpan="3"
+          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
+          hideIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+          hidden="true"/>
+        <label name="tradingNameLabel"
+          if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
         <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
           showIf="contractTypeSelect == 1"/>
+        <field name="company.tradingNameSet" hidden="true"/>
       </panel>
     </panel>
     <panel sidebar="true" name="actionPanel">
@@ -241,7 +254,8 @@
     <panel title="Notes" sidebar="true" name="notesPanel" canCollapse="true">
       <field name="note" showTitle="false"/>
     </panel>
-    <panel-tabs name="mainPanelTab" showIf="partner">
+    <panel-tabs name="mainPanelTab"
+      hideIf="!partner || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
       <panel title="Content" name="contentPanel">
         <panel name="contractLineListPanel" hidden="true"
           showIf="isInvoicingManagement &amp;&amp; targetTypeSelect &lt;= 2" colSpan="12">
@@ -524,6 +538,7 @@
   <action-group name="action-contract-group-on-new">
     <action name="action-contract-record-default"/>
     <action name="action-contract-attrs-partner-payment-config"/>
+    <action name="action-contract-record-get-trading-names-management-config"/>
   </action-group>
 
   <action-group name="action-contract-group-on-load">
@@ -533,6 +548,7 @@
     <action name="action-contract-method-hide-fields-list"/>
     <action name="action-contract-method-contract-line-list-on-change"/>
     <action name="action-contract-method-additional-contract-line-list-on-change"/>
+    <action name="action-contract-record-get-trading-names-management-config"/>
   </action-group>
 
   <action-group name="action-contract-group-invoicing-management-change">
@@ -563,6 +579,7 @@
     <field name="partner" expr="eval: _clientPartner" if="_clientPartner != null"/>
     <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
     <field name="project" expr="eval:_project" if="_project != null"/>
+    <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>
 
   <action-record name="action-record-contract-version-default-record"
@@ -927,5 +944,11 @@
     <view type="form" name="purchase-order-form"/>
     <domain>self.contract.id = :id</domain>
   </action-view>
+
+  <action-record name="action-contract-record-get-trading-names-management-config"
+    model="com.axelor.apps.contract.db.Contract">
+    <field name="$enableTradingNamesManagement"
+      expr="eval: __config__.app.getApp('base')?.enableTradingNamesManagement"/>
+  </action-record>
 
 </object-views>

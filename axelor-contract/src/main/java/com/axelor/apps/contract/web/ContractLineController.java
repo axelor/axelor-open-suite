@@ -28,6 +28,7 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.contract.service.ContractLineToolService;
 import com.axelor.apps.contract.service.ContractLineViewService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
@@ -36,7 +37,6 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServ
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.util.HashMap;
@@ -254,29 +254,16 @@ public class ContractLineController {
   }
 
   public void setProductRequired(ActionRequest request, ActionResponse response) {
-    Context parentContext = request.getContext().getParent();
+    Contract contract = Beans.get(ContractLineToolService.class).getContract(request.getContext());
+    response.setAttr(
+        "product",
+        "required",
+        contract.getContractTypeSelect() == ContractRepository.TYPE_FRAMEWORK);
+  }
 
-    // Classic contract line
-    if (parentContext != null && ContractVersion.class.equals(parentContext.getContextClass())) {
-      Context parentParentContext = parentContext.getParent();
-      if (parentParentContext != null
-          && Contract.class.equals(parentParentContext.getContextClass())) {
-        response.setAttr(
-            "product",
-            "required",
-            (int) parentParentContext.get("contractTypeSelect")
-                == ContractRepository.TYPE_FRAMEWORK);
-        return;
-      }
-    }
-
-    // Additional line
-    if (parentContext != null && Contract.class.equals(parentContext.getContextClass())) {
-      Contract contract = parentContext.asType(Contract.class);
-      response.setAttr(
-          "product",
-          "required",
-          contract.getContractTypeSelect() == ContractRepository.TYPE_FRAMEWORK);
-    }
+  public void computeProductDomain(ActionRequest request, ActionResponse response) {
+    Contract contract = Beans.get(ContractLineToolService.class).getContract(request.getContext());
+    response.setAttr(
+        "product", "domain", Beans.get(ContractLineService.class).computeProductDomain(contract));
   }
 }

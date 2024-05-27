@@ -18,6 +18,8 @@
     <boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management"/>
 
     <boolean name="isConfigContract" title="Configurable contract"/>
+    <boolean name="isEnableContractsProductByTradName"
+      title="Filter products by trading name"/>
 
     <track>
       <field name="isUnchangableContract" on="UPDATE"/>
