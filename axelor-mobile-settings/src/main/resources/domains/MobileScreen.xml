@@ -6,7 +6,7 @@
   <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
 
   <entity name="MobileScreen">
-    <string name="technicalName" unique="true" required="true" title="Key"/>
+    <string name="technicalName" unique="true" required="true" title="Key" readonly="true"/>
     <string name="name" title="Screen name" namecolumn="true"/>
     <boolean name="isUsableOnShortcut" title="Usable on shortcut"/>
 

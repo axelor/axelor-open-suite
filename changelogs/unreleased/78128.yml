@@ -1,3 +1,0 @@
----
-title: "Leave request: fixed issue where a leave request was not updated after sending it."
-module: axelor-human-resource

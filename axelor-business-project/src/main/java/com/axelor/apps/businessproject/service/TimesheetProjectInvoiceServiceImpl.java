@@ -82,7 +82,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[8];
-      Product product = timesheetLine.getProduct();
+      Product product = getProduct(timesheetLine);
       Employee employee = timesheetLine.getEmployee();
 
       // forced prices if framework customer contract set on task
@@ -100,7 +100,6 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       if (product == null) {
         product = employee.getProduct();
       }
-
       tabInformations[0] = product;
       tabInformations[1] = employee;
       // Start date
@@ -186,5 +185,16 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
     }
 
     return invoiceLineList;
+  }
+
+  @Override
+  protected Product getProduct(TimesheetLine timesheetLine) {
+    Product product = super.getProduct(timesheetLine);
+
+    if (product == null && timesheetLine.getProjectTask() != null) {
+      product = timesheetLine.getProjectTask().getProduct();
+    }
+
+    return product;
   }
 }
