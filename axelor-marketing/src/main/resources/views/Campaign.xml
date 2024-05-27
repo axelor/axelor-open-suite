@@ -192,7 +192,7 @@
     <hilite color="success" if="stageSelect &lt;= 4"/>
     <template><![CDATA[
 	        <>
-		        <h4>{name}</h4>
+		        <strong>{name}</strong>
 		        <Box>{campaignType.name}</Box>
 	        </>
 	]]></template>

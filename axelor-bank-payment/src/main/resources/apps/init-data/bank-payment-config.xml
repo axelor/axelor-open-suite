@@ -17,11 +17,7 @@
     type="com.axelor.apps.bankpayment.db.BankStatementQuery" search="self.importId = :importId">
   </input>
 
-  <input file="base_birtTemplateConfigLine.csv"
-    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
-    search="self.importId = :importId">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
-    <bind to="appBase" search="self.id = '1'"/>
-  </input>
+  <input file="account_accountingReportType.csv" separator=";"
+    search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType"/>
 
 </csv-inputs>

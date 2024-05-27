@@ -42,4 +42,22 @@ public interface InterventionExceptionMessage {
 
   String INTERVENTION_MISSING_FIELDS = /*$$(*/
       "Customer request can't be generated as some required fields are missing." /*)*/;
+
+  String INTERVENTION_API_WRONG_STATUS = /*$$(*/
+      "Cannot go to requested status from current status." /*)*/;
+
+  String INTERVENTION_API_SAME_STATUS = /*$$(*/ "Already in requested status." /*)*/;
+
+  String INTERVENTION_API_MISSING_USER_ID = /*$$(*/
+      "No planned technician user id in request body." /*)*/;
+
+  String INTERVENTION_API_MISSING_PLANNED_DURATION = /*$$(*/
+      "No planned duration in request body." /*)*/;
+
+  String INTERVENTION_API_MISSING_DATE_TIME = /*$$(*/ "No date time in request body." /*)*/;
+
+  String INTERVENTION_API_EQUIPMENT_NOT_FOUND = /*$$(*/
+      "Could not find equipment with id %s." /*)*/;
+
+  String INTERVENTION_API_PICTURE_NOT_FOUND = /*$$(*/ "Could not find picture with id %s." /*)*/;
 }

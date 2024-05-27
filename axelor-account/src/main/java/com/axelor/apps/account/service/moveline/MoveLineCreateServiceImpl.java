@@ -43,6 +43,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -69,6 +70,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -509,6 +511,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
         moveLine.setTaxCode(tax.getCode());
         moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
+        moveLineToolService.setIsNonDeductibleTax(moveLine, tax);
         moveLines.add(moveLine);
       }
     }
@@ -926,6 +929,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               move.getFunctionalOriginSelect());
@@ -940,6 +944,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               move.getFunctionalOriginSelect());
@@ -961,6 +966,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
+              moveLine.getAccount(),
               vatSystemSelect,
               true,
               move.getFunctionalOriginSelect());
@@ -1001,6 +1007,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     moveLine.setSourceTaxLineSet(Sets.newHashSet(taxLine));
     moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
     moveLine.setDescription(move.getDescription());
+    moveLineToolService.setIsNonDeductibleTax(moveLine, taxLine.getTax());
     return moveLine;
   }
 
@@ -1069,5 +1076,43 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     return moveLine;
+  }
+
+  @Override
+  public MoveLine createTaxMoveLine(
+      Move move,
+      Partner partner,
+      boolean isDebitInvoice,
+      LocalDate paymentDate,
+      Integer counter,
+      String origin,
+      BigDecimal amount,
+      BigDecimal companyAmount,
+      TaxConfiguration taxConfiguration)
+      throws AxelorException {
+    if (taxConfiguration == null || taxConfiguration.getTaxLine() == null) {
+      return null;
+    }
+    TaxLine taxLine = taxConfiguration.getTaxLine();
+    MoveLine taxMoveLine =
+        createMoveLine(
+            move,
+            partner,
+            taxConfiguration.getAccount(),
+            amount,
+            companyAmount,
+            null,
+            isDebitInvoice,
+            paymentDate,
+            null,
+            paymentDate,
+            counter,
+            origin,
+            move.getDescription());
+    taxMoveLine.setTaxLineSet(Sets.newHashSet(taxLine));
+    taxMoveLine.setTaxRate(taxLine.getValue());
+    taxMoveLine.setTaxCode(Optional.of(taxLine).map(TaxLine::getTax).map(Tax::getCode).orElse(""));
+    taxMoveLine.setVatSystemSelect(taxConfiguration.getVatSystem());
+    return taxMoveLine;
   }
 }

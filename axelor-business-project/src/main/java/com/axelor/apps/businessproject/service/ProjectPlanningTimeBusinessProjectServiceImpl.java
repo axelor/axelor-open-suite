@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
@@ -32,6 +33,7 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
@@ -41,6 +43,7 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -63,6 +66,9 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
       AppProjectService appProjectService,
+      ProjectConfigService projectConfigService,
+      UnitConversionForProjectService unitConversionForProjectService,
+      UnitConversionRepository unitConversionRepository,
       AppBusinessProjectService appBusinessProjectService,
       ICalendarService iCalendarService,
       ICalendarEventRepository iCalendarEventRepository) {
@@ -76,8 +82,11 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         employeeRepo,
         timesheetLineRepository,
         appProjectService,
+        projectConfigService,
         iCalendarService,
-        iCalendarEventRepository);
+        iCalendarEventRepository,
+        unitConversionForProjectService,
+        unitConversionRepository);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

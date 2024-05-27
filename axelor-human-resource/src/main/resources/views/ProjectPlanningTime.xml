@@ -34,16 +34,28 @@
 
   <form name="project-planning-time-form" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime"
-    onNew="action-project-planning-time-attrs-default"
+    onNew="action-project-planning-time-group-default"
+    onLoad="action-project-planning-time-method-get-company-config"
     onSave="action-project-planning-time-method-update-event">
     <panel name="mainPanel">
       <field name="projectTask" domain="self.project = :project" canEdit="false"
-        onChange="action-project-planning-time-attrs-project-task-onChange"/>
-      <field name="plannedTime" colSpan="3"/>
-      <field name="timeUnit" colSpan="3"
+        onChange="action-project-planning-time-group-project-task-on-change"/>
+      <spacer colSpan="6"/>
+      <field name="plannedTime" colSpan="3" readonly="true"/>
+      <field name="timeUnit" colSpan="3" readonly="true"
         onSelect="action-project-task-attrs-set-time-unit-domain"
         if="__config__.app.isApp('business-project')"/>
-
+      <panel stacked="true" colSpan="3" itemSpan="12">
+        <field name="displayPlannedTime" showIf="!$isSelectionOnDisplayPlannedTime"
+          onChange="action-project-planning-time-method-compute-planned-time"/>
+        <field name="displayPlannedTimeRestricted" showIf="$isSelectionOnDisplayPlannedTime"
+          onSelect="action-project-planning-time-method-compute-display-planned-time-restricted-domain"
+          onChange="action-project-planning-time-method-compute-planned-time"/>
+        <field name="$isSelectionOnDisplayPlannedTime" hidden="true"/>
+      </panel>
+      <field name="displayTimeUnit" colSpan="3"
+        onChange="action-project-planning-time-method-compute-planned-time"
+        onSelect="action-project-planning-time-method-compute-display-time-unit-domain"/>
       <field name="employee" onSelect="action-project-planning-time-attrs-project-domain"
         canEdit="false" onChange="action-project-planning-time-attrs-employee-change"
         form-view="employee-form"/>
@@ -66,7 +78,7 @@
   </form>
 
   <form name="project-planning-time-wizard-form" model="com.axelor.utils.db.Wizard"
-    title="Project planning time" onNew="action-project-planning-time-attrs-default">
+    title="Project planning time" onNew="action-project-planning-time-group-default">
     <panel name="mainPanel">
       <field name="fromDate" required="true" type="datetime" title="From"/>
       <field name="toDate" required="true" type="datetime" title="To"/>
@@ -161,6 +173,11 @@
     <attribute name="value" for="product" expr="eval: employee?.product"/>
   </action-attrs>
 
+  <action-group name="action-project-planning-time-group-default">
+    <action name="action-project-planning-time-attrs-default"/>
+    <action name="action-project-planning-time-method-get-company-config"/>
+  </action-group>
+
   <action-attrs name="action-project-planning-time-attrs-default">
     <attribute name="value" for="projectTask" expr="eval:_projectTask"/>
     <attribute name="value" for="timeUnit" expr="eval:_timeUnit" if="_projectTask"/>
@@ -185,7 +202,14 @@
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' || _projectTask"/>
     <attribute name="value" for="product" expr="eval: __user__.employee.product"
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet &amp;&amp; __user__.employee"/>
+    <attribute name="value" for="timeUnit" expr="eval: _project.projectTimeUnit"/>
+    <attribute name="value" for="displayTimeUnit" expr="eval: _project.projectTimeUnit"/>
   </action-attrs>
+
+  <action-method name="action-project-planning-time-method-get-company-config">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="getCompanyConfig"/>
+  </action-method>
 
   <action-method
     name="action-project-planning-time-method-add-multiple-project-planning-time">
@@ -214,12 +238,20 @@
     <field name="endDateTime" expr="eval: startDateTime.plusMinutes(60)" if="startDateTime"/>
   </action-record>
 
+  <action-group name="action-project-planning-time-group-project-task-on-change">
+    <action name="action-project-planning-time-attrs-project-task-onChange"/>
+    <action name="action-project-planning-time-method-compute-planned-time"/>
+  </action-group>
+
   <action-attrs name="action-project-planning-time-attrs-project-task-onChange">
     <attribute for="timeUnit" name="value" expr="eval: projectTask.timeUnit"
       if="projectTask"/>
-    <attribute for="timeUnit" name="readonly" expr="eval: true" if="projectTask"/>
-    <attribute for="timeUnit" name="value" expr="" if="!projectTask"/>
-    <attribute for="timeUnit" name="readonly" expr="eval: false" if="!projectTask"/>
+    <attribute for="timeUnit" name="value" expr="eval: project?.projectTimeUnit"
+      if="!projectTask"/>
+    <attribute for="displayTimeUnit" name="value" expr="eval: projectTask.timeUnit"
+      if="projectTask"/>
+    <attribute for="displayTimeUnit" name="value" expr="eval: project?.projectTimeUnit"
+      if="!projectTask"/>
     <attribute for="site" name="value" expr="eval: projectTask?.site"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>
@@ -242,6 +274,23 @@
   <action-method name="action-project-planning-time-method-update-event">
     <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
       method="updateEvent"/>
+  </action-method>
+
+  <action-method name="action-project-planning-time-method-compute-planned-time">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="computePlannedTime"/>
+  </action-method>
+
+  <action-method
+    name="action-project-planning-time-method-compute-display-time-unit-domain">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="computeDisplayTimeUnitDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-project-planning-time-method-compute-display-planned-time-restricted-domain">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="computeDisplayPlannedTimeRestrictedDomain"/>
   </action-method>
 
 </object-views>

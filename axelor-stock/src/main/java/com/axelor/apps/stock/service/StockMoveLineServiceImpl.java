@@ -325,15 +325,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
 
-      this.splitStockMoveLine(
-          stockMoveLine,
-          minQty,
-          trackingNumberService.getTrackingNumber(
-              product,
-              stockMove.getCompany(),
-              stockMove.getEstimatedDate(),
-              stockMove.getOrigin(),
-              supplier));
+      StockMoveLine newStockMoveLine =
+          this.splitStockMoveLine(
+              stockMoveLine,
+              minQty,
+              trackingNumberService.getTrackingNumber(
+                  product,
+                  stockMove.getCompany(),
+                  stockMove.getEstimatedDate(),
+                  stockMove.getOrigin(),
+                  supplier));
+      this.fillOriginTrackingNumber(newStockMoveLine);
 
       generateTrakingNumberCounter++;
 
@@ -351,6 +353,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               stockMove.getEstimatedDate(),
               stockMove.getOrigin(),
               supplier));
+      fillOriginTrackingNumber(stockMoveLine);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void fillOriginTrackingNumber(StockMoveLine stockMoveLine) {
+    TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
+    if (trackingNumber != null) {
+      trackingNumber.setOriginMoveTypeSelect(0);
+      trackingNumber.setOriginStockMoveLine(stockMoveLine);
+
+      trackingNumberRepo.save(trackingNumber);
     }
   }
 
@@ -1242,7 +1256,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     startUnit = product.getMassUnit();
     if (startUnit == null) {
 
-      if (!checkMassesRequired(stockMove, stockMoveLine)) {
+      if (stockMove == null || !checkMassesRequired(stockMove, stockMoveLine)) {
         return product.getNetMass();
       }
 
