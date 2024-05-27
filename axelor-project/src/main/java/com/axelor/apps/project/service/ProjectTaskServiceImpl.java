@@ -191,16 +191,6 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public TaskStatus getDefaultCompletedStatus(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
-        ? null
-        : project.getProjectTaskStatusSet().stream()
-            .filter(TaskStatus::getIsDefaultCompleted)
-            .findAny()
-            .orElse(null);
-  }
-
-  @Override
   public TaskStatus getStatus(Project project) {
     if (project == null) {
       return null;

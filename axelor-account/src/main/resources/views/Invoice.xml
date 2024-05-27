@@ -758,6 +758,12 @@
           hidden="true"/>
         <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
           hidden="true"/>
+        <field name="isExpenseLineOnInvoiceGrouped" if-module="axelor-business-project"
+          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
+          showIf="displayExpenseOnPrinting"/>
+        <field name="groupingPeriodSelect" if-module="axelor-business-project"
+          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
+          showIf="isExpenseLineOnInvoiceGrouped &amp;&amp; displayExpenseOnPrinting"/>
         <field name="displayStockMoveOnInvoicePrinting" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$localization" title="Localization" type="many-to-one"
@@ -1114,7 +1120,7 @@
         readonlyIf="$reportType != 1"/>
       <field name="$localization" title="Localization" type="many-to-one"
         target="com.axelor.apps.base.db.Localization" showIf="$reportType ==1 || $reportType==3"/>
-      <button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close"
+      <button name="printBtn" title="Print" onClick="action-invoice-wizard-group-print"
         readonlyIf="$reportType==null || $invoicePrintTemplate == null"/>
     </panel>
   </form>
@@ -1813,7 +1819,10 @@
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"
       if="company != null"/>
     <attribute name="hidden" for="inAti" expr="eval: true" if="company == null"/>
-
+    <attribute name="title" for="invoiceLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+    <attribute name="title" for="invoiceLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-display-line-coefficient">
@@ -2833,6 +2842,11 @@
   <action-group name="action-invoice-group-report-button">
     <action name="save"/>
     <action name="action-invoice-view-reports-wizard"/>
+  </action-group>
+
+  <action-group name="action-invoice-wizard-group-print">
+    <action name="action-invoice-group-report-print"/>
+    <action name="close"/>
   </action-group>
 
 </object-views>

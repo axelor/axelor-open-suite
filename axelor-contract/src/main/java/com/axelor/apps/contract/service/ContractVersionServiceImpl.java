@@ -29,6 +29,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.AbstractContractVersionRepository;
+import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -56,9 +57,11 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
   @Inject
   public ContractVersionServiceImpl(
+      ContractLineRepository contractLineRepository,
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
       InvoiceLineRepository invoiceLineRepository) {
+    super(contractLineRepository);
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
     this.invoiceLineRepository = invoiceLineRepository;

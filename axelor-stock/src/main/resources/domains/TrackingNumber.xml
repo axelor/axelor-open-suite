@@ -53,6 +53,10 @@
     <decimal name="nbrOfPieces" title="Number of pieces" default="0" min="0" precision="20"
       scale="3"/>
 
+    <many-to-many name="parentTrackingNumberSet"
+      ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking number's parents"/>
+
+
     <unique-constraint columns="product,trackingNumberSeq"/>
 
     <finder-method name="findBySeq" using="trackingNumberSeq"/>

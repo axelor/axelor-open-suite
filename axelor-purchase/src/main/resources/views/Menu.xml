@@ -139,8 +139,9 @@
   <action-view name="sc.root.purchase.conf.partner.price.list"
     title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
-    <view type="form" name="purchase-partner-price-list-form"/>
+    <view type="form" name="partner-price-list-form"/>
     <domain>self.typeSelect = 2</domain>
+    <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
   <menuitem name="sc-root-purchase-conf-price-list" parent="sc-root-purchase-conf"
@@ -149,12 +150,13 @@
   <action-view name="sc.root.purchase.conf.price.list" title="Price lists"
     model="com.axelor.apps.base.db.PriceList">
     <view type="grid" name="price-list-grid"/>
-    <view type="form" name="purchase-price-list-form"/>
+    <view type="form" name="price-list-form"/>
     <domain>self.typeSelect = 2 and self.id not in (select priceList.id from PriceList priceList
       where parentPriceList IS NOT NULL ) and self.id not in (select priceList.id from PriceList
       priceList join PartnerPriceList partnerPriceList on priceList member of
       partnerPriceList.priceListSet where priceList.typeSelect = 2 and partnerPriceList.isExclusive
       IS TRUE )</domain>
+    <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
   <!-- TOP MENU -->

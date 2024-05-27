@@ -90,16 +90,15 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
   }
 
   @Override
-  public Set<TaxLine> getTaxLineSet(Move move, MoveLine moveLine, Account accountingAccount)
+  public Set<TaxLine> getTaxLineSet(Move move, MoveLine moveLine, Account account)
       throws AxelorException {
 
     Partner partner = move.getPartner();
-    if (accountingAccount == null
-        || CollectionUtils.isEmpty(accountingAccount.getDefaultTaxSet())) {
+    if (account == null || CollectionUtils.isEmpty(account.getDefaultTaxSet())) {
       return null;
     }
 
-    Set<Tax> taxSet = accountingAccount.getDefaultTaxSet();
+    Set<Tax> taxSet = account.getDefaultTaxSet();
     Set<TaxLine> taxLineSet = taxService.getTaxLineSet(taxSet, moveLine.getDate());
 
     if (!ObjectUtils.isEmpty(partner) && !ObjectUtils.isEmpty(partner.getFiscalPosition())) {

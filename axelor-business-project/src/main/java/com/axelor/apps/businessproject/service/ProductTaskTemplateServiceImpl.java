@@ -30,6 +30,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -154,7 +155,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     }
 
     task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
-    if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
+    if (saleOrderLine.getInvoicingModeSelect() == SaleOrderLineRepository.INVOICING_MODE_PACKAGE) {
       task.setToInvoice(true);
       task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
     }

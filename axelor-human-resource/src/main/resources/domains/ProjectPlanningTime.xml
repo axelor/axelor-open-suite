@@ -26,6 +26,8 @@
     <many-to-one name="timeUnit" title="Time unit" ref="com.axelor.apps.base.db.Unit"
       required="true"/>
     <decimal name="displayPlannedTime" title="Display planned time"/>
+    <many-to-one name="displayPlannedTimeRestricted" title="Display planned time"
+      ref="com.axelor.apps.project.db.PlannedTimeValue"/>
     <many-to-one name="displayTimeUnit" title="Display time unit"
       ref="com.axelor.apps.base.db.Unit"/>
 

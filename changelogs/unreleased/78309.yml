@@ -1,6 +1,0 @@
----
-title: "Manufacturing order: fixed conversion of missing quantity of consumed products."
-module: axelor-production
-developer: |
-  Changed signature of `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId)`
-  to `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit)`

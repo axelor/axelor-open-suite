@@ -101,6 +101,8 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FakerService;
 import com.axelor.apps.base.service.FakerServiceImpl;
+import com.axelor.apps.base.service.FileService;
+import com.axelor.apps.base.service.FileServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.ImportExportTranslationService;
@@ -260,6 +262,8 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
+import com.axelor.apps.base.service.user.UserPermissionResponseComputeService;
+import com.axelor.apps.base.service.user.UserPermissionResponseComputeServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -469,6 +473,9 @@ public class BaseModule extends AxelorModule {
     bind(PrintingTemplatePrintService.class).to(PrintingTemplatePrintServiceImpl.class);
     bind(PrintingGeneratorFactoryProvider.class).to(PrintingGeneratorFactoryProviderImpl.class);
     bind(UnitConversionService.class).to(UnitConversionServiceImpl.class);
+    bind(FileService.class).to(FileServiceImpl.class);
     bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
+    bind(UserPermissionResponseComputeService.class)
+        .to(UserPermissionResponseComputeServiceImpl.class);
   }
 }

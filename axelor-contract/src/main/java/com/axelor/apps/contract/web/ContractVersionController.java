@@ -159,9 +159,11 @@ public class ContractVersionController {
 
   public void updateContractLines(ActionRequest request, ActionResponse response) {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
-    ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
+    Contract contract = request.getContext().getParent().asType(Contract.class);
     try {
-      contractVersion = Beans.get(ContractVersionRepository.class).find(contractVersion.getId());
+      ContractVersion contractVersion =
+          Beans.get(ContractVersionRepository.class)
+              .find(contract.getCurrentContractVersion().getId());
       if (contractVersion.getSupposedActivationDate() != null) {
         contractLineService.updateContractLinesFromContractVersion(contractVersion);
       }
