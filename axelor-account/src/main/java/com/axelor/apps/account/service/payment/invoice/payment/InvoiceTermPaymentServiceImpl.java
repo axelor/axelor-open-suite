@@ -308,7 +308,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           invoicePayment.getCurrency(),
           invoiceTerm.getCurrency(),
           companyPaidAmount,
-          invoicePayment.getPaymentDate());
+          invoicePayment.getInvoice().getInvoiceDate());
     } else if (invoicePayment != null) {
       BigDecimal ratio;
       if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())

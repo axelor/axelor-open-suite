@@ -829,7 +829,7 @@ public class ReconcileServiceImpl implements ReconcileService {
               foreignExchangeGapMove.getMove(),
               false,
               true,
-              false);
+              !foreignExchangeGapMove.getIsGain());
       if (foreignExchangeReconcile != null) {
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
@@ -841,9 +841,10 @@ public class ReconcileServiceImpl implements ReconcileService {
           reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
 
           if (reconcile
-                  .getAmount()
-                  .compareTo(invoicePayment.getInvoice().getCompanyInTaxTotalRemaining())
-              != 0) {
+                      .getAmount()
+                      .compareTo(invoicePayment.getInvoice().getCompanyInTaxTotalRemaining())
+                  != 0
+              && foreignExchangeGapMove.getIsGain()) {
             reconcile.setAmount(
                 reconcile.getAmount().subtract(foreignExchangeReconcile.getAmount()));
           }

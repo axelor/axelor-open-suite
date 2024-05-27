@@ -88,7 +88,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
         }
 
         return new ForeignMoveToReconcile(
-            foreignExchangeMove, debitMoveLineToReconcile, creditMoveLineToReconcile);
+            foreignExchangeMove, debitMoveLineToReconcile, creditMoveLineToReconcile, isGain);
       }
     }
 
