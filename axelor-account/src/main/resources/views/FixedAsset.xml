@@ -63,9 +63,9 @@
           showIf="fixedAssetCategory != null"
           onChange="action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"
           hidden="true"/>
-        <spacer colSpan="3"/>
-        <field name="qty" colSpan="3" required="true" min="0.01" title="Quantity"
+        <field name="qty" required="true" min="0.01" title="Quantity"
           readonlyIf="statusSelect > 1"/>
+        <spacer colSpan="3"/>
         <field if-module="axelor-supplychain" name="stockLocation" canNew="false"
           canEdit="false" domain="self.company = :company" form-view="stock-location-form"
           grid-view="stock-location-grid"/>
@@ -250,6 +250,9 @@
     </panel-tabs>
     <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true"
       hidden="true">
+      <button name="changeOriginBtn" hideIf="statusSelect != 1"
+        title="Define origin as Imported/Transferred"
+        onClick="action-fixed-asset-group-change-origin"/>
       <field name="moveGenerationException"/>
       <button name="computeDepreciationBtn" title="Compute depreciation"
         hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || statusSelect > 1"
@@ -270,9 +273,6 @@
         showIf="statusSelect == 2  &amp;&amp; $canUpdateDepreciation &amp;&amp; !$readonly()"
         onClick="save, action-method-account-fixed-asset-update-depreciation,  action-attrs-account-fixed-asset-set-false-can-update-depreciation, save"
         hidden="true" css="btn-success"/>
-      <button name="changeOriginBtn" hideIf="statusSelect != 1"
-        title="Define origin as Imported/Transferred" colSpan="3"
-        onClick="action-fixed-asset-group-change-origin"/>
       <field name="$canUpdateDepreciation" type="boolean" hidden="true"/>
     </panel>
     <panel name="datesPanel" readonlyIf="statusSelect > 1" sidebar="true">
