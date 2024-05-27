@@ -21,6 +21,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
@@ -55,6 +56,7 @@ public class SaleOrderLineGroupBudgetServiceImpl extends SaleOrderLineServiceSup
       SaleInvoicingStateService saleInvoicingStateService,
       AnalyticLineModelService analyticLineModelService,
       CurrencyScaleService currencyScaleService,
+      StockLocationLineFetchService stockLocationLineFetchService,
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService) {
     super(
@@ -76,7 +78,8 @@ public class SaleOrderLineGroupBudgetServiceImpl extends SaleOrderLineServiceSup
         invoiceLineRepository,
         saleInvoicingStateService,
         analyticLineModelService,
-        currencyScaleService);
+        currencyScaleService,
+        stockLocationLineFetchService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }

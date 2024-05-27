@@ -49,7 +49,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
@@ -81,6 +81,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected InvoiceLineRepository invoiceLineRepository;
   protected SaleInvoicingStateService saleInvoicingStateService;
   protected AnalyticLineModelService analyticLineModelService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -102,7 +103,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       InvoiceLineRepository invoiceLineRepository,
       SaleInvoicingStateService saleInvoicingStateService,
       AnalyticLineModelService analyticLineModelService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     super(
         currencyService,
         priceListService,
@@ -123,6 +125,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.invoiceLineRepository = invoiceLineRepository;
     this.saleInvoicingStateService = saleInvoicingStateService;
     this.analyticLineModelService = analyticLineModelService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -147,8 +150,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     }
 
     StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+        stockLocationLineFetchService.getStockLocationLine(
+            saleOrder.getStockLocation(), saleOrderLine.getProduct());
 
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;
@@ -164,8 +167,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     }
 
     StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+        stockLocationLineFetchService.getStockLocationLine(
+            saleOrder.getStockLocation(), saleOrderLine.getProduct());
 
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;
