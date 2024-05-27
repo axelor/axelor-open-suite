@@ -130,19 +130,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
 
-      BigDecimal foreignExchangeAmount =
-          invoice.getInvoicePaymentList().stream()
-              .filter(
-                  ip ->
-                      foreignExchangeGapToolsService
-                          .getForeignExchangeTypes()
-                          .contains(ip.getTypeSelect()))
-              .map(InvoicePayment::getAmount)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-
-      currencyAmount = currencyAmount.subtract(foreignExchangeAmount);
-
       if (currencyAmount.signum() >= 0 || (currencyAmount.signum() == 0 && amount.signum() == 0)) {
         return currencyAmount;
       }

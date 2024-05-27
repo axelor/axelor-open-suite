@@ -378,6 +378,25 @@ public class ReconcileServiceImpl implements ReconcileService {
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException {
+    return this.reconcile(
+        debitMoveLine,
+        creditMoveLine,
+        invoicePayment,
+        foreignExchangeMove,
+        canBeZeroBalanceOk,
+        updateInvoicePayments,
+        true);
+  }
+
+  protected Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
+      Move foreignExchangeMove,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments,
+      boolean updateInvoiceTerms)
+      throws AxelorException {
     BigDecimal amount =
         debitMoveLine.getAmountRemaining().abs().min(creditMoveLine.getAmountRemaining().abs());
     Reconcile reconcile =
@@ -392,7 +411,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         reconcile.setForeignExchangeMove(foreignExchangeMove);
       }
 
-      this.confirmReconcile(reconcile, updateInvoicePayments, true);
+      this.confirmReconcile(reconcile, updateInvoicePayments, updateInvoiceTerms);
       return reconcile;
     }
 
@@ -809,8 +828,8 @@ public class ReconcileServiceImpl implements ReconcileService {
               null,
               foreignExchangeGapMove.getMove(),
               false,
-              true);
-
+              true,
+              false);
       if (foreignExchangeReconcile != null) {
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
@@ -820,6 +839,14 @@ public class ReconcileServiceImpl implements ReconcileService {
           invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
           invoicePaymentRepository.save(invoicePayment);
           reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
+
+          if (reconcile
+                  .getAmount()
+                  .compareTo(invoicePayment.getInvoice().getCompanyInTaxTotalRemaining())
+              != 0) {
+            reconcile.setAmount(
+                reconcile.getAmount().subtract(foreignExchangeReconcile.getAmount()));
+          }
         }
       }
     }

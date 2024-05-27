@@ -19,6 +19,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService {
 
@@ -100,10 +101,22 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     BigDecimal moveLineRate = BigDecimal.ONE;
 
     if (creditMoveLine.getAmountRemaining().abs().compareTo(amountReconciled) == 0) {
-      currencyAmount = creditMoveLine.getCurrencyAmount();
+      currencyAmount =
+          creditMoveLine
+              .getAmountRemaining()
+              .divide(
+                  creditMoveLine.getCurrencyRate(),
+                  creditMoveLine.getCurrencyDecimals(),
+                  RoundingMode.HALF_UP);
       moveLineRate = debitMoveLine.getCurrencyRate();
     } else if (debitMoveLine.getAmountRemaining().abs().compareTo(amountReconciled) == 0) {
-      currencyAmount = debitMoveLine.getCurrencyAmount();
+      currencyAmount =
+          debitMoveLine
+              .getAmountRemaining()
+              .divide(
+                  debitMoveLine.getCurrencyRate(),
+                  debitMoveLine.getCurrencyDecimals(),
+                  RoundingMode.HALF_UP);
       moveLineRate = creditMoveLine.getCurrencyRate();
     }
 

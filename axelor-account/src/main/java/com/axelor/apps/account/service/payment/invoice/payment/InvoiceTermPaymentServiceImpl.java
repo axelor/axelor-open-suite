@@ -292,18 +292,32 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     List<Integer> foreignExchangeTypes = foreignExchangeGapToolsService.getForeignExchangeTypes();
     Currency invoicePaymentCurrency = invoicePayment != null ? invoicePayment.getCurrency() : null;
     Currency companyCurrency = invoiceTerm.getCompanyCurrency();
+    boolean haveForeignExchangePayment =
+        Optional.ofNullable(invoiceTerm.getInvoice())
+            .map(Invoice::getInvoicePaymentList)
+            .map(
+                payments ->
+                    payments.stream()
+                        .map(InvoicePayment::getTypeSelect)
+                        .anyMatch(foreignExchangeTypes::contains))
+            .orElse(false);
 
     if (companyCurrency.equals(invoicePaymentCurrency)
         && !foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
-      return companyPaidAmount;
+      return currencyService.getAmountCurrencyConvertedAtDate(
+          invoicePayment.getCurrency(),
+          invoiceTerm.getCurrency(),
+          companyPaidAmount,
+          invoicePayment.getPaymentDate());
     } else if (invoicePayment != null) {
       BigDecimal ratio;
-      if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
+      if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())
+          || haveForeignExchangePayment) {
         ratio =
             currencyService.getCurrencyConversionRate(
+                invoicePayment.getCompanyCurrency(),
                 invoicePayment.getCurrency(),
-                invoiceTerm.getCurrency(),
-                invoicePayment.getPaymentDate());
+                invoicePayment.getInvoice().getInvoiceDate());
       } else {
         ratio =
             invoiceTerm
