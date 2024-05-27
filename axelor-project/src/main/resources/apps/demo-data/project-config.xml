@@ -56,6 +56,6 @@
   </input>
 
   <input file="project_project_config.csv" type="com.axelor.apps.project.db.ProjectConfig"
-         separator=";"/>
+    separator=";"/>
 </csv-inputs>
 
