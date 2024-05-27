@@ -26,8 +26,12 @@
     <panel name="invoicingPanel" title="Invoicing" colSpan="12">
       <field name="productInvoicingProject" canEdit="false"/>
       <field name="enableToInvoiceTimesheet" widget="boolean-switch"/>
-      <field name="enableToInvoiceExpense" widget="boolean-switch"/>
-      <field name="automaticInvoicing" widget="boolean-switch"/>
+      <field name="enableToInvoiceExpense" widget="boolean-switch" colSpan="3"/>
+      <field name="isExpenseLineOnInvoiceGrouped" widget="boolean-switch"
+        showIf="enableToInvoiceExpense" colSpan="3"/>
+      <field name="groupingPeriodSelect"
+        showIf="enableToInvoiceExpense &amp;&amp; isExpenseLineOnInvoiceGrouped" colSpan="3"/>
+      <field name="automaticInvoicing" widget="boolean-switch" colSpan="3"/>
       <field name="preTaskStatusSet" widget="TagSelect"/>
       <field name="postTaskStatusSet" widget="TagSelect"/>
       <field name="excludeTaskInvoicing"/>
@@ -61,6 +65,7 @@
     <panel name="printingsPanel" title="Printings" colSpan="12">
       <field name="invoicingProjectAnnexPrintTemplate"/>
       <field name="invoicingAnnexPrintTemplate"/>
+      <field name="invoiceExpensePrintTemplate"/>
     </panel>
 
     <panel name="actionsPanel">

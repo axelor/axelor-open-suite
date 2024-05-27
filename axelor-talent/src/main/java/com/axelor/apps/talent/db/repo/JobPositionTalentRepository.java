@@ -27,7 +27,12 @@ import com.google.inject.Inject;
 
 public class JobPositionTalentRepository extends JobPositionRepository {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
+
+  @Inject
+  public JobPositionTalentRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public JobPosition save(JobPosition jobPosition) {

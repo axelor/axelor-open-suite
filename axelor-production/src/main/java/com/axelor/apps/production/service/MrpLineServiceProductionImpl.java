@@ -49,7 +49,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
-import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -73,7 +73,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   @Inject
   public MrpLineServiceProductionImpl(
       AppBaseService appBaseService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -90,7 +90,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       ProductionConfigService productionConfigService) {
     super(
         appBaseService,
-        purchaseOrderSupplychainService,
+        purchaseOrderCreateSupplychainService,
         purchaseOrderService,
         purchaseOrderLineService,
         purchaseOrderRepo,

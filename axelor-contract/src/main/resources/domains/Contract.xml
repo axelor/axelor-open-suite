@@ -111,6 +111,9 @@
             public static final int SUPPLIER_CONTRACT = 2;
             public static final int YEB_CUSTOMER_CONTRACT = 3;
             public static final int YEB_SUPPLIER_CONTRACT = 4;
+
+            public static final int TYPE_BILLING = 1;
+            public static final int TYPE_FRAMEWORK = 2;
         ]]></extra-code>
 
   </entity>

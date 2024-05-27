@@ -63,8 +63,8 @@
           showIf="answerTypeSelect === 'indication'"
           requiredIf="answerTypeSelect === 'indication' &amp;&amp; isRequired" widget="string"/>
         <field name="signatureAnswer" hidden="true" showIf="answerTypeSelect === 'signature'"
-          requiredIf="answerTypeSelect === 'signature' &amp;&amp; isRequired"
-          grid-view="meta-file-grid" form-view="meta-file-form" widget="binary-link"/>
+          requiredIf="answerTypeSelect === 'signature' &amp;&amp; isRequired" widget="drawing"
+          x-stroke-width="2" x-drawing-height="300" x-drawing-width="540"/>
         <label hidden="true" showIf="answerTypeSelect === 'signature' &amp;&amp; !$readonly()"
           title="Upload a file or log in to the mobile app to sign"/>
         <field name="advancedMonitoringAnswer" hidden="true"

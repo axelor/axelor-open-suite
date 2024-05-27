@@ -18,11 +18,16 @@
  */
 package com.axelor.apps.project.service.app;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.project.db.ProjectConfig;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.repo.ProjectConfigRepository;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -85,5 +90,17 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
       projectConfig.setCompany(company);
       projectConfigRepo.save(projectConfig);
     }
+  }
+
+  @Override
+  public ProjectStatus getCompletedProjectStatus() throws AxelorException {
+    ProjectStatus projectStatus = getAppProject().getCompletedProjectStatus();
+    if (projectStatus == null) {
+      throw new AxelorException(
+          getAppProject(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProjectExceptionMessage.PROJECT_CONFIG_COMPLETED_PROJECT_STATUS_MISSING));
+    }
+    return projectStatus;
   }
 }
