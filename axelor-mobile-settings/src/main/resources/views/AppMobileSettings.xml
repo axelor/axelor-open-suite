@@ -71,7 +71,8 @@
         <field name="isOneLineShortcut" widget="boolean-radio" x-true-text="Line"
           x-false-text="isOneLineShortcut.Grid"/>
         <field name="mobileShortcutList" title="Shortcut management" colSpan="12"/>
-        <field name="mobileDashboardList" title="Dashboard management" colSpan="12"/>
+        <field name="mobileDashboardList" title="Dashboard management" colSpan="12"
+          canSelect="true"/>
       </panel>
       <panel name="stockValidationPanel" title="Stock" hideIf="!isStockAppEnabled">
         <field name="isStockLocationManagementEnabled" widget="boolean-switch" colSpan="12"/>
