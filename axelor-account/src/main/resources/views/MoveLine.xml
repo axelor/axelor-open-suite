@@ -227,7 +227,7 @@
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false" groupBy="account"
-    expandable="true" canArchive="false">
+    canArchive="false">
     <hilite color="info" if="$get('move.statusSelect') == 1"/>
     <hilite color="danger" if="$get('move.statusSelect') == 4"/>
     <field name="name" width="135"/>

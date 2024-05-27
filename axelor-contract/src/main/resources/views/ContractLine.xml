@@ -90,7 +90,8 @@
         </panel>
         <field name="taxLineSet" canEdit="false"
           onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
-        <field name="unit" canEdit="false" onChange="action-contract-line-validate-unit-type"/>
+        <field name="unit" canEdit="false" onChange="action-contract-line-validate-unit-type"
+          required="true"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
 
@@ -160,7 +161,7 @@
           onChange="action-method-contract-line-compute-total"/>
         <field name="taxLineSet" canEdit="false"
           onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
-        <field name="unit" canEdit="false"/>
+        <field name="unit" canEdit="false" required="true"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
@@ -211,7 +212,7 @@
       <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="taxLineSet" canEdit="false" widget="TagSelect"/>
-      <field name="unit" canEdit="false"/>
+      <field name="unit" canEdit="false" required="true"/>
       <field name="isConsumptionLine"
         onChange="action-method-contract-line-change-is-consumption-line"/>
       <field name="description" colSpan="12" widget="html"/>
@@ -229,7 +230,7 @@
       <field name="qty" x-scale="$nbDecimalDigitForQty"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="taxLineSet" canEdit="false" widget="TagSelect"/>
-      <field name="unit" canEdit="false"/>
+      <field name="unit" canEdit="false" required="true"/>
       <field name="description" colSpan="12" widget="html"/>
     </panel>
   </form>
@@ -250,7 +251,19 @@
         <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
           <field name="pricing" canNew="true" canEdit="true"
             onChange="action-contract-line-group-pricing-onchange"
-            form-view="contract-line-pricing-form" grid-view="contract-line-grid"/>
+            form-view="contract-line-pricing-form" grid-view="pricing-line-grid"/>
+          <static name="usedPricingAlert" hidden="true" colSpan="12" showIf="$pricingUsed">
+            <![CDATA[<><Badge bg="warning">{_t('This pricing is already used by another contract line. Use the + button to create a new copy.')}</Badge></>]]>
+          </static>
+          <field name="pricing" showIf="pricing" showTitle="false" canSelect="false"
+            canNew="false" canRemove="false">
+            <editor x-show-titles="false" x-viewer="true">
+              <button title="Show lines" name="showLineBtn"
+                onClick="action-contract-line-group-pricing-show-line" showIf="!$showLine"/>
+              <field name="pricingLineList" colSpan="12" readonly="true" showIf="$showLine"/>
+              <field name="$showLine" hidden="true"/>
+            </editor>
+          </field>
         </panel>
       </panel>
 
@@ -274,12 +287,14 @@
     <action name="action-contract-line-method-hide-date-panel"/>
     <action name="action-contract-line-method-hide-is-to-revaluate"/>
     <action name="action-contract-line-group-manage-analytic"/>
+    <action name="action-contract-line-method-product-required"/>
   </action-group>
 
   <action-group name="action-contract-line-group-additional-onnew-onload">
     <action name="action-contract-line-method-scale-and-precision"/>
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-group-manage-analytic"/>
+    <action name="action-contract-line-method-product-required"/>
   </action-group>
 
   <action-group
@@ -297,7 +312,8 @@
     <action name="action-contract-line-method-hide-axis-analytic-account"/>
     <action name="action-contract-line-method-print-analytic-account"/>
     <action name="action-contract-line-attrs-read-only-distribution-lines"/>
-    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"/>
+    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"
+      if="eval: __parent__?.targetTypeSelect == 1 || __parent__?.targetTypeSelect == 2"/>
   </action-group>
 
   <action-group name="action-contract-line-group-product-onchange">
@@ -416,11 +432,10 @@ In case you have contract lines with different invoicing duration, you can activ
 
   <!-- Pricing actions -->
 
-  <action-condition name="action-contract-line-condition-check-pricing">
-    <check field="pricing"
-      if="eval: pricing != null &amp;&amp; __repo__(ContractLine).all().filter('self.pricing = ?', pricing).count() > 0"
-      error="This pricing is already used by another contract line. Use the + button to create a new copy."/>
-  </action-condition>
+  <action-attrs name="action-contract-line-attrs-check-pricing">
+    <attribute for="$pricingUsed" name="value"
+      expr="eval: pricing != null &amp;&amp; __repo__(ContractLine).all().filter('self.pricing = ?', pricing).count() > 0"/>
+  </action-attrs>
 
   <action-group name="action-contract-line-group-pricing-onnew">
     <action name="action-contract-line-group-onnew"/>
@@ -428,10 +443,29 @@ In case you have contract lines with different invoicing duration, you can activ
 
   <action-group name="action-contract-line-group-pricing-onload">
     <action name="action-contract-line-group-edit-view"/>
-    <action name="action-contract-line-condition-check-pricing"/>
+    <action name="action-contract-line-attrs-check-pricing"/>
   </action-group>
 
   <action-group name="action-contract-line-group-pricing-onchange">
-    <action name="action-contract-line-condition-check-pricing"/>
+    <action name="action-contract-line-attrs-check-pricing"/>
+    <action name="action-contract-line-attrs-hide-pricing-lines"/>
   </action-group>
+
+  <action-group name="action-contract-line-group-pricing-show-line">
+    <action name="action-contract-line-attrs-show-pricing-lines"/>
+    <action name="action-pricing-group-attrs-pricing-line-list"/>
+  </action-group>
+
+  <action-attrs name="action-contract-line-attrs-hide-pricing-lines">
+    <attribute for="$showLine" name="value" expr="false"/>
+  </action-attrs>
+
+  <action-attrs name="action-contract-line-attrs-show-pricing-lines">
+    <attribute for="$showLine" name="value" expr="true"/>
+  </action-attrs>
+
+  <action-method name="action-contract-line-method-product-required">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setProductRequired"/>
+  </action-method>
 </object-views>

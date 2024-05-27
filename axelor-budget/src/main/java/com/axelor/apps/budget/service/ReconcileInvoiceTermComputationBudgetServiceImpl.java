@@ -76,8 +76,9 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
     this.reconcileToolBudgetService = reconcileToolBudgetService;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
-  protected void updatePayment(
+  public void updatePayment(
       Reconcile reconcile,
       MoveLine moveLine,
       MoveLine otherMoveLine,

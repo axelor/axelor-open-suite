@@ -36,6 +36,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServ
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.util.HashMap;
@@ -249,6 +250,33 @@ public class ContractLineController {
 
       response.setAttrs(
           Beans.get(ContractLineAttrsService.class).setScaleAndPrecision(contract, ""));
+    }
+  }
+
+  public void setProductRequired(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+
+    // Classic contract line
+    if (parentContext != null && ContractVersion.class.equals(parentContext.getContextClass())) {
+      Context parentParentContext = parentContext.getParent();
+      if (parentParentContext != null
+          && Contract.class.equals(parentParentContext.getContextClass())) {
+        response.setAttr(
+            "product",
+            "required",
+            (int) parentParentContext.get("contractTypeSelect")
+                == ContractRepository.TYPE_FRAMEWORK);
+        return;
+      }
+    }
+
+    // Additional line
+    if (parentContext != null && Contract.class.equals(parentContext.getContextClass())) {
+      Contract contract = parentContext.asType(Contract.class);
+      response.setAttr(
+          "product",
+          "required",
+          contract.getContractTypeSelect() == ContractRepository.TYPE_FRAMEWORK);
     }
   }
 }

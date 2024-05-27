@@ -26,11 +26,14 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -47,9 +50,16 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       PriceListService priceListService,
+      UnitConversionService unitConversionService,
+      UnitConversionForProjectService unitConversionForProjectService,
       TimesheetProjectService timesheetProjectService) {
     super(
-        appHumanResourceService, partnerPriceListService, productCompanyService, priceListService);
+        appHumanResourceService,
+        partnerPriceListService,
+        productCompanyService,
+        priceListService,
+        unitConversionService,
+        unitConversionForProjectService);
     this.timesheetProjectService = timesheetProjectService;
   }
 
@@ -71,10 +81,27 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
     boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
-      Object[] tabInformations = new Object[6];
-      Product product = timesheetLine.getProduct();
+      Object[] tabInformations = new Object[8];
+      Product product = getProduct(timesheetLine);
+      Employee employee = timesheetLine.getEmployee();
+
+      // forced prices if framework customer contract set on task
+      BigDecimal forcedUnitPrice = null;
+      BigDecimal forcedPriceDiscounted = null;
+
+      ProjectTask projectTask = timesheetLine.getProjectTask();
+      if (projectTask != null && projectTask.getFrameworkCustomerContract() != null) {
+        product = projectTask.getProduct();
+        forcedUnitPrice = product != null ? projectTask.getUnitPrice() : null;
+        forcedPriceDiscounted = product != null ? projectTask.getPriceDiscounted() : null;
+      }
+
+      // if no product set on task, get the employee product
+      if (product == null) {
+        product = employee.getProduct();
+      }
       tabInformations[0] = product;
-      tabInformations[1] = timesheetLine.getEmployee();
+      tabInformations[1] = employee;
       // Start date
       tabInformations[2] = timesheetLine.getDate();
       // End date, useful only for consolidation
@@ -84,12 +111,14 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
               ? timesheetProjectService.computeDurationForCustomer(timesheetLine)
               : timesheetLine.getHoursDuration();
       tabInformations[5] = timesheetLine.getProject();
+      tabInformations[6] = forcedUnitPrice;
+      tabInformations[7] = forcedPriceDiscounted;
 
       String key = null;
       if (consolidate) {
         key =
             (product != null ? product.getId() + "|" : "")
-                + timesheetLine.getEmployee().getId()
+                + employee.getId()
                 + "|"
                 + timesheetLine.getProject().getId();
         if (timeSheetInformationsMap.containsKey(key)) {
@@ -126,6 +155,8 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
       Project project = (Project) timesheetInformations[5];
+      BigDecimal forcedUnitPrice = (BigDecimal) timesheetInformations[6];
+      BigDecimal forcedPriceDiscounted = (BigDecimal) timesheetInformations[7];
       PriceList priceList = project.getPriceList();
       if (consolidate) {
         if (startDate != null && endDate != null) {
@@ -141,15 +172,29 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
           this.createInvoiceLine(
               invoice,
               product,
+              project,
               employee,
               strDate,
               hoursDuration,
               priority * 100 + count,
-              priceList));
+              priceList,
+              forcedUnitPrice,
+              forcedPriceDiscounted));
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
       count++;
     }
 
     return invoiceLineList;
+  }
+
+  @Override
+  protected Product getProduct(TimesheetLine timesheetLine) {
+    Product product = super.getProduct(timesheetLine);
+
+    if (product == null && timesheetLine.getProjectTask() != null) {
+      product = timesheetLine.getProjectTask().getProduct();
+    }
+
+    return product;
   }
 }

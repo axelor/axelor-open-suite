@@ -96,9 +96,10 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
         Beans.get(InvoiceRepository.class)
             .all()
             .filter(
-                "self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect")
+                "self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.operationTypeSelect = :operationTypeSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .fetch();
     if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
       return total;

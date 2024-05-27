@@ -20,7 +20,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.apps.crm.service.OpportunitySequenceService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -31,7 +31,7 @@ public class ImportOpportunity {
     Opportunity opportunity = (Opportunity) bean;
 
     try {
-      Beans.get(OpportunityService.class).setSequence(opportunity);
+      Beans.get(OpportunitySequenceService.class).setSequence(opportunity);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

@@ -60,6 +60,11 @@ public class DurationServiceImpl implements DurationService {
     totalEnd = totalEnd.plus(1, ChronoUnit.DAYS);
 
     long totalComputedDays = ChronoUnit.DAYS.between(start, end) + 1;
+
+    if (isFullDuration(start, duration, totalComputedDays)) {
+      return BigDecimal.ONE;
+    }
+
     long totalDays = getTotalDays(totalStart, totalEnd, duration);
 
     return BigDecimal.valueOf(totalComputedDays)
@@ -67,6 +72,15 @@ public class DurationServiceImpl implements DurationService {
             BigDecimal.valueOf(totalDays),
             AppBaseService.COMPUTATION_SCALING,
             RoundingMode.HALF_UP);
+  }
+
+  protected boolean isFullDuration(LocalDate start, Duration duration, long totalComputedDays) {
+    if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
+      return ChronoUnit.DAYS.between(start, start.plusMonths(duration.getValue()))
+          == totalComputedDays;
+    } else {
+      return duration.getValue() == totalComputedDays;
+    }
   }
 
   protected long getTotalDays(LocalDate totalStart, LocalDate totalEnd, Duration duration) {

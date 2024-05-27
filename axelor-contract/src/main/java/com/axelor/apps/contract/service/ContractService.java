@@ -178,7 +178,7 @@ public interface ContractService {
       Integer initProductId);
 
   Contract generateContractFromOpportunity(
-      Opportunity opportunity, ContractTemplate contractTemplate);
+      Opportunity opportunity, ContractTemplate contractTemplate) throws AxelorException;
 
   Boolean contractsFromOpportunityAreGenerated(Long opportunityId);
 }

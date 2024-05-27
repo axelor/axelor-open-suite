@@ -39,6 +39,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
@@ -73,7 +74,7 @@ public class PurchaseOrderController {
 
         response.setValue(
             "purchaseOrderSeq",
-            Beans.get(PurchaseOrderService.class)
+            Beans.get(PurchaseOrderSequenceService.class)
                 .getSequence(purchaseOrder.getCompany(), purchaseOrder));
       }
     } catch (Exception e) {

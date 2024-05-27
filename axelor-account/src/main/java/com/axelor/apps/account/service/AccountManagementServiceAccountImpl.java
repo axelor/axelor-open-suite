@@ -348,6 +348,11 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
                 AccountExceptionMessage
                     .ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
           }
+        } else if (functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
+          account = accountManagement.getPurchaseTaxVatSystem2Account();
+          error =
+              AccountExceptionMessage
+                  .ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
         }
       } else {
         if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {

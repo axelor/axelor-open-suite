@@ -36,4 +36,6 @@ public interface AppBusinessProjectService extends AppBaseService {
   BigDecimal getDefaultHoursADay() throws AxelorException;
 
   public PrintingTemplate getInvoicingAnnexPrintTemplate() throws AxelorException;
+
+  void generateBusinessProjectConfigurations();
 }
