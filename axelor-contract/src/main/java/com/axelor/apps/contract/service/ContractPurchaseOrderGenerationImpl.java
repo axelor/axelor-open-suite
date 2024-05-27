@@ -7,6 +7,7 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
@@ -19,6 +20,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
   protected AppBaseService appBaseService;
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderCreateService purchaseOrderCreateService;
   protected AnalyticLineModelFromContractService analyticLineModelFromContractService;
 
   @Inject
@@ -26,10 +28,12 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
       AppBaseService appBaseService,
       PurchaseOrderRepository purchaseOrderRepository,
       PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
       AnalyticLineModelFromContractService analyticLineModelFromContractService) {
     this.appBaseService = appBaseService;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderCreateService = purchaseOrderCreateService;
     this.analyticLineModelFromContractService = analyticLineModelFromContractService;
   }
 
@@ -38,7 +42,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
   public PurchaseOrder generatePurchaseOrder(Contract contract) throws AxelorException {
 
     PurchaseOrder purchaseOrder =
-        purchaseOrderService.createPurchaseOrder(
+        purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
             contract.getCompany(),
             null,

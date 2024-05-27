@@ -246,9 +246,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     setTaxEquiv(invoiceLine, company, isPurchase);
 
-    invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
-
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
       invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
       invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
     }

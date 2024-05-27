@@ -3095,16 +3095,15 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="name">expense_date</property>
                     <expression name="expression">if(row["ExpenseDate"]){
 var dateParts = row["ExpenseDate"].toString().split("-");
-var year = parseInt(dateParts[0]);
-var month = parseInt(dateParts[1]); 
-var day = parseInt(dateParts[2]);
+var year = dateParts[0];
+var month = dateParts[1]; 
+var day = dateParts[2];
 
 var now = new Date(year,month-1,day);
 var onejan = new Date(now.getFullYear(), 0, 1);
 var week = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7);
 
 if(row["groupingPeriodSelect"] == "month"){
-	month = month&lt;10 ? "0"+month : month
 	month + "/" + year;
 }
 else if(row["groupingPeriodSelect"] == "week"){

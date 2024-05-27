@@ -202,7 +202,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       childTask.setTimeUnit(orderLineUnit);
     }
 
-    if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
+    if (orderLine.getInvoicingModeSelect() == SaleOrderLineRepository.INVOICING_MODE_PACKAGE) {
       childTask.setToInvoice(true);
       childTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
     }

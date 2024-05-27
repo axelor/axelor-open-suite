@@ -24,11 +24,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -49,15 +46,12 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -108,62 +102,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  public PurchaseOrder createPurchaseOrder(
-      User buyerUser,
-      Company company,
-      Partner contactPartner,
-      Currency currency,
-      LocalDate deliveryDate,
-      String internalReference,
-      String externalReference,
-      StockLocation stockLocation,
-      LocalDate orderDate,
-      PriceList priceList,
-      Partner supplierPartner,
-      TradingName tradingName)
-      throws AxelorException {
-
-    LOG.debug(
-        "Creation of a purchase order : Company = {},  External reference = {}, Supplier = {}",
-        company.getName(),
-        externalReference,
-        supplierPartner.getFullName());
-
-    PurchaseOrder purchaseOrder =
-        super.createPurchaseOrder(
-            buyerUser,
-            company,
-            contactPartner,
-            currency,
-            deliveryDate,
-            internalReference,
-            externalReference,
-            orderDate,
-            priceList,
-            supplierPartner,
-            tradingName);
-
-    purchaseOrder.setStockLocation(stockLocation);
-
-    purchaseOrder.setPaymentMode(supplierPartner.getOutPaymentMode());
-    purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
-
-    if (purchaseOrder.getPaymentMode() == null) {
-      purchaseOrder.setPaymentMode(
-          this.accountConfigService.getAccountConfig(company).getOutPaymentMode());
-    }
-
-    if (purchaseOrder.getPaymentCondition() == null) {
-      purchaseOrder.setPaymentCondition(
-          this.accountConfigService.getAccountConfig(company).getDefPaymentCondition());
-    }
-
-    purchaseOrder.setTradingName(tradingName);
-
-    return purchaseOrder;
-  }
-
-  @Override
   public void _computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super._computePurchaseOrder(purchaseOrder);
 
@@ -200,60 +138,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       total = total.add(advancePaymentAmount);
     }
     return total;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public PurchaseOrder mergePurchaseOrders(
-      List<PurchaseOrder> purchaseOrderList,
-      Currency currency,
-      Partner supplierPartner,
-      Company company,
-      StockLocation stockLocation,
-      Partner contactPartner,
-      PriceList priceList,
-      TradingName tradingName)
-      throws AxelorException {
-    StringBuilder numSeq = new StringBuilder();
-    StringBuilder externalRef = new StringBuilder();
-    for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
-      if (numSeq.length() > 0) {
-        numSeq.append("-");
-      }
-      numSeq.append(purchaseOrderLocal.getPurchaseOrderSeq());
-
-      if (externalRef.length() > 0) {
-        externalRef.append("|");
-      }
-      if (purchaseOrderLocal.getExternalReference() != null) {
-        externalRef.append(purchaseOrderLocal.getExternalReference());
-      }
-    }
-
-    PurchaseOrder purchaseOrderMerged =
-        this.createPurchaseOrder(
-            AuthUtils.getUser(),
-            company,
-            contactPartner,
-            currency,
-            null,
-            numSeq.toString(),
-            externalRef.toString(),
-            stockLocation,
-            appBaseService.getTodayDate(company),
-            priceList,
-            supplierPartner,
-            tradingName);
-
-    super.attachToNewPurchaseOrder(purchaseOrderList, purchaseOrderMerged);
-
-    this.computePurchaseOrder(purchaseOrderMerged);
-
-    purchaseOrderRepo.save(purchaseOrderMerged);
-
-    super.removeOldPurchaseOrders(purchaseOrderList);
-
-    return purchaseOrderMerged;
   }
 
   @Override

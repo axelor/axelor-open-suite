@@ -36,11 +36,13 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -65,6 +67,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -759,6 +762,33 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         return FA_LEVEL_UP;
       default:
         return "";
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void transitionBetweenPaidStatus(Project project) throws AxelorException {
+    ProjectStatus completedStatus = appProjectService.getCompletedProjectStatus();
+    ProjectStatus completedPaidStatus =
+        appProjectService.getAppProject().getCompletedPaidProjectStatus();
+    if (completedPaidStatus == null) {
+      throw new AxelorException(
+          appProjectService.getAppProject(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProjectExceptionMessage.PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING));
+    }
+
+    List<Invoice> invoiceList =
+        invoiceRepository.all().filter("self.project = :project").bind("project", project).fetch();
+
+    if (Objects.equals(project.getProjectStatus(), completedStatus)) {
+      if (invoiceList.stream().noneMatch(invoice -> invoice.getAmountRemaining().signum() != 0)) {
+        project.setProjectStatus(completedPaidStatus);
+      }
+    } else if (Objects.equals(project.getProjectStatus(), completedPaidStatus)) {
+      if (invoiceList.stream().anyMatch(invoice -> invoice.getAmountRemaining().signum() != 0)) {
+        project.setProjectStatus(completedStatus);
+      }
     }
   }
 }
