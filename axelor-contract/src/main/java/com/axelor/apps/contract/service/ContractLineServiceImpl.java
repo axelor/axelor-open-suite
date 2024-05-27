@@ -43,7 +43,7 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
-import com.axelor.apps.contract.service.app.AppContractService;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.db.mapper.Mapper;
@@ -71,7 +71,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
-  protected AppContractService appContractService;
+  protected AppSaleService appSaleService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -86,7 +86,7 @@ public class ContractLineServiceImpl implements ContractLineService {
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
       TaxService taxService,
-      AppContractService appContractService) {
+      AppSaleService appSaleService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
@@ -98,7 +98,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
     this.taxService = taxService;
-    this.appContractService = appContractService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
@@ -379,7 +379,7 @@ public class ContractLineServiceImpl implements ContractLineService {
             + " and self.dtype = 'Product'";
 
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
-        && appContractService.getAppContract().getIsEnableContractsProductByTradName()
+        && appSaleService.getAppSale().getEnableSalesProductByTradName()
         && contract != null
         && contract.getTradingName() != null
         && contract.getCompany() != null
