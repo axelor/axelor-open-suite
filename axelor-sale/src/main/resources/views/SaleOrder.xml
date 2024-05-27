@@ -270,7 +270,7 @@
           action="save,action-sale-order-method-cancel-reservation"
           showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
           if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
-        <item name="taskGenerationItem" title="Project and task generation"
+        <item name="taskGenerationItem" title="Task generation"
           action="action-sale-order-validate-saved-object,action-sale-order-view-generate-tasks"/>
       </menu>
     </menubar>
@@ -1373,7 +1373,7 @@
 
   <form title="Project and task generation" name="sale-order-project-and-task-generation-form"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <panel name="projectAndTaskGenerationPanel" title="Project and task generation"
+    <panel name="projectAndTaskGenerationPanel" title="Task generation"
       colSpan="12">
       <field name="$_projectGeneratorType" title="Project generation method"
         x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"
@@ -2342,7 +2342,7 @@
   </action-attrs>
 
   <action-view name="action-sale-order-view-generate-tasks"
-    title="Project and task generation" model="com.axelor.apps.sale.db.SaleOrder">
+    title="Task generation" model="com.axelor.apps.sale.db.SaleOrder">
     <view type="form" name="sale-order-project-and-task-generation-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
