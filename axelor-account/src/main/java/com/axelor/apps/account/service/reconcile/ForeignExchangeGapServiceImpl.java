@@ -20,6 +20,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 
 public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService {
 
@@ -88,7 +89,10 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
         }
 
         return new ForeignMoveToReconcile(
-            foreignExchangeMove, debitMoveLineToReconcile, creditMoveLineToReconcile, isGain);
+            foreignExchangeMove,
+            debitMoveLineToReconcile,
+            creditMoveLineToReconcile,
+            (isDebit && isGain) || (!isDebit && isGain));
       }
     }
 
@@ -159,6 +163,10 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
       partner = debitMoveLine.getMove().getPartner();
     }
 
+    LocalDate date =
+        (isDebit && isGain) || (!isDebit && isGain)
+            ? creditMoveLine.getDate()
+            : debitMoveLine.getDate();
     // Move creation
     Move move =
         moveCreateService.createMove(
@@ -166,6 +174,8 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
             reconcile.getCompany(),
             null,
             partner,
+            date,
+            date,
             null,
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
