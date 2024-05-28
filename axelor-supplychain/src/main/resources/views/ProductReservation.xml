@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid name="product-reservation-grid" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation" orderBy="product.code"
+    canDelete="false">
+    <toolbar>
+      <button name="cancelBtn" title="Cancel"
+        onClick="action-product-reservation-method-cancel" showIf="id" icon="fa-times"/>
+    </toolbar>
+    <field name="typeSelect"/>
+    <field name="product"/>
+    <field name="qty"/>
+    <field name="reservationTypeSelect"/>
+    <field name="priorityReservationDateTime"/>
+    <field name="stockLocation"/>
+    <field name="trackingNumber"/>
+    <field name="originSaleOrderLine"/>
+    <field name="status"/>
+  </grid>
+
+  <form name="product-reservation-form" title="Reservations / allocations" canDelete="false"
+    canCopy="false" model="com.axelor.apps.supplychain.db.ProductReservation" width="large"
+    onNew="action-product-reservation-record-set-company"
+    onSave="action-method-product-reservation-update-status">
+    <toolbar>
+      <button name="cancelBtn" title="Cancel"
+        onClick="action-product-reservation-method-cancel" showIf="id &amp;&amp; status != 3"
+        icon="fa-times"/>
+    </toolbar>
+    <panel name="mainPanel" itemSpan="12">
+      <panel name="general">
+        <field name="typeSelect" required="true"
+          onChange="action-product-reservation-record-on-change-clear-fields"/>
+        <field name="status" readonly="true"/>
+        <field name="product" showIf="typeSelect" required="true"
+          domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.stockManaged = 'true'"/>
+        <field name="qty" showIf="typeSelect" required="true" validIf="qty &gt; 0"
+          readonlyIf="id"/>
+        <field name="typeOfUsageTypeSelect" showIf="typeSelect == 1"
+          requiredIf="typeSelect == 1"/>
+        <field name="company"/>
+        <field name="description" colSpan="12" showIf="typeSelect" widget="html" large="true"/>
+      </panel>
+      <panel name="reservation" showIf="typeSelect == 1 &amp;&amp; product">
+        <field name="priorityReservationDateTime" colSpan="6" requiredIf="typeSelect == 1"
+          widget="date-time"/>
+        <field name="reservationTypeSelect" colSpan="6" requiredIf="typeSelect == 1"/>
+      </panel>
+      <panel name="allocation" showIf="typeSelect == 2 &amp;&amp; product">
+        <field name="stockLocation" requiredIf="typeSelect == 2"
+          onChange="action-product-reservation-record-onchange-stock-location"/>
+        <field name="trackingNumber" title="Tracking number"
+          requiredIf="product.trackingNumberConfiguration != null"
+          onSelect="action-product-reservation-attrs-set-tracking-number-domain"
+          readonlyIf="!stockLocation"/>
+      </panel>
+      <panel name="origin" showIf="product">
+        <field name="originSaleOrderLine" target="com.axelor.apps.sale.db.SaleOrderLine"
+          target-name="originSaleOrderLineName"
+          domain="self.product.id = :product AND (select so.statusSelect from SaleOrder so where so.id = self.saleOrder) not in (1,5)"/>
+      </panel>
+    </panel>
+
+    <panel name="hiddenPanel" hidden="true">
+      <field name="product.trackingNumberConfiguration"/>
+    </panel>
+  </form>
+
+  <action-method name="action-product-reservation-method-cancel">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="cancelReservation"/>
+  </action-method>
+
+  <action-method name="action-method-product-reservation-update-status">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="updateStatus"/>
+  </action-method>
+
+  <action-attrs name="action-product-reservation-attrs-set-tracking-number-domain">
+    <attribute name="domain" for="trackingNumber"
+      expr="eval: &quot;self.product = :product AND self.id IN (${(stockLocation?.detailsStockLocationLineList?.findAll{it.trackingNumber.trackingNumberSeq?.substring(0,3) == product?.productCompanyList?.find{it.company == company}?.trackingNumberConfiguration?.sequence?.prefixe?.substring(0,3) &amp;&amp; it.currentQty != 0}.collect{it.trackingNumber.id} ?: []).join(',') ?: null})&quot;"
+      if="product?.productCompanyList?.find{it.company == company}?.trackingNumberConfiguration != null"/>
+    <attribute name="domain" for="trackingNumber"
+      expr="eval: &quot;self.product = :product AND self.id IN (${(stockLocation?.detailsStockLocationLineList?.findAll{it.trackingNumber.trackingNumberSeq?.substring(0,3) == product?.trackingNumberConfiguration?.sequence?.prefixe?.substring(0,3) &amp;&amp; it.currentQty != 0}.collect{it.trackingNumber.id} ?: []).join(',') ?: null})&quot;"
+      if="product?.trackingNumberConfiguration &amp;&amp; product?.productCompanyList?.find{it.company == company}?.trackingNumberConfiguration == null"/>
+  </action-attrs>
+
+  <action-record name="action-product-reservation-record-set-company"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <field name="company" expr="eval: __user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+  </action-record>
+
+  <action-attrs name="action-product-reservation-attrs-show-tracking-number"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <attribute for="trackingNumber" name="hidden"
+      expr="eval: !(product?.productCompanyList?.find{it.company == company}?.trackingNumberConfiguration || product?.trackingNumberConfiguration) ? true : false"/>
+  </action-attrs>
+
+  <action-record name="action-product-reservation-record-onchange-stock-location"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <field name="trackingNumber" expr="eval: null"/>
+  </action-record>
+
+</object-views>

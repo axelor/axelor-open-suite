@@ -56,6 +56,23 @@
 
 
 
+
+    <one-to-many name="productReservationList"
+      ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservations"
+      mappedBy="originSaleOrderLine"/>
+
+    <string name="originSaleOrderLineName" title="Sale order line sequence name">
+      <![CDATA[
+	  		String originSaleOrderLineName = "";
+	  		if(saleOrder != null && saleOrder.getSaleOrderSeq() != null){
+	  			originSaleOrderLineName += saleOrder.getSaleOrderSeq();
+	  		}
+            originSaleOrderLineName += "-";
+            originSaleOrderLineName += sequence;
+	  		return originSaleOrderLineName;
+	  	]]>
+    </string>
+
     <extra-code>
   		<![CDATA[
             // SALE SUPPLY SELECT
@@ -80,7 +97,6 @@
 			public static final int STATUS_MISSING = 2;
 	  	]]>
     </extra-code>
-
 
     <track on="UPDATE">
       <field name="requestedReservedQty"/>
