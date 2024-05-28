@@ -21,12 +21,20 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.Map;
 
 public class BankPaymentBankStatementLineAFB120Repository
     extends BankStatementLineAFB120Repository {
+
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public BankPaymentBankStatementLineAFB120Repository(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
+  }
+
   public BankStatementLineAFB120 findLineBetweenDate(
       LocalDate fromDate,
       LocalDate toDate,
@@ -54,12 +62,9 @@ public class BankPaymentBankStatementLineAFB120Repository
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     Long bankStatementLineAFB120Id = (Long) json.get("id");
-    BankStatementLineAFB120 bankStatementLineAFB120 =
-        Beans.get(BankStatementLineAFB120Repository.class).find(bankStatementLineAFB120Id);
+    BankStatementLineAFB120 bankStatementLineAFB120 = find(bankStatementLineAFB120Id);
 
-    json.put(
-        "$currencyNumberOfDecimals",
-        Beans.get(CurrencyScaleService.class).getScale(bankStatementLineAFB120));
+    json.put("$currencyNumberOfDecimals", currencyScaleService.getScale(bankStatementLineAFB120));
 
     return super.populate(json, context);
   }

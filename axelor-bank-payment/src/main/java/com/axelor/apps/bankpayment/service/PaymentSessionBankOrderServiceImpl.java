@@ -16,7 +16,6 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -39,7 +38,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrderService {
 
-  protected BankOrderService bankOrderService;
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderLineService bankOrderLineService;
   protected BankOrderLineOriginService bankOrderLineOriginService;
@@ -52,7 +50,6 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
 
   @Inject
   public PaymentSessionBankOrderServiceImpl(
-      BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
       BankOrderLineOriginService bankOrderLineOriginService,
@@ -62,7 +59,6 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
       DateService dateService,
       BankOrderLineRepository bankOrderLineRepo,
       PartnerService partnerService) {
-    this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
@@ -81,7 +77,7 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
     BankOrder bankOrder = this.createBankOrder(paymentSession);
 
     paymentSession.setBankOrder(bankOrder);
-    bankOrderService.generateSequence(bankOrder);
+    bankOrderRepo.save(bankOrder);
 
     return bankOrder;
   }

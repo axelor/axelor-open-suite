@@ -23,8 +23,8 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
@@ -44,14 +44,14 @@ public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
   public BankOrderMergeHRServiceImpl(
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
-      BankOrderService bankOrderService,
+      BankOrderComputeService bankOrderComputeService,
       InvoiceRepository invoiceRepository,
       PaymentScheduleLineRepository paymentScheduleLineRepository,
       ExpenseHRRepository expenseHRRepository) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
-        bankOrderService,
+        bankOrderComputeService,
         invoiceRepository,
         paymentScheduleLineRepository);
     this.expenseHRRepository = expenseHRRepository;

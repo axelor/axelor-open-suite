@@ -29,6 +29,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -54,6 +55,7 @@ public class BankReconciliationValidateService {
   protected BankReconciliationLineService bankReconciliationLineService;
   protected BankReconciliationComputeService bankReconciliationComputeService;
   protected CurrencyScaleService currencyScaleService;
+  protected MoveLinePostedNbrService moveLinePostedNbrService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -65,7 +67,8 @@ public class BankReconciliationValidateService {
       BankReconciliationRepository bankReconciliationRepository,
       BankReconciliationLineService bankReconciliationLineService,
       BankReconciliationComputeService bankReconciliationComputeService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      MoveLinePostedNbrService moveLinePostedNbrService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -76,6 +79,7 @@ public class BankReconciliationValidateService {
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.bankReconciliationComputeService = bankReconciliationComputeService;
     this.currencyScaleService = currencyScaleService;
+    this.moveLinePostedNbrService = moveLinePostedNbrService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -248,7 +252,7 @@ public class BankReconciliationValidateService {
           bankReconciliationLine.setCredit(credit);
           bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
           moveLine =
-              bankReconciliationLineService.setMoveLinePostedNbr(
+              moveLinePostedNbrService.setMoveLinePostedNbr(
                   moveLine, bankReconciliationLine.getPostedNbr());
           bankReconciliationLine.setMoveLine(moveLine);
           firstLine = false;
