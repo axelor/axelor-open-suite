@@ -106,7 +106,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
     project.setCode(fullName.split("-")[0]);
     project.setName(fullName.split("-")[1]);
-    project.setFullName(project.getName());
+    project.setFullName(fullName);
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());
