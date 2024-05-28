@@ -46,6 +46,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   protected StockLocationLineService stockLocationLineService;
   protected ProductCompanyService productCompanyService;
   protected StockLocationRepository stockLocationRepository;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public InventoryLineServiceImpl(
@@ -53,12 +54,14 @@ public class InventoryLineServiceImpl implements InventoryLineService {
       InventoryLineRepository inventoryLineRepository,
       StockLocationLineService stockLocationLineService,
       ProductCompanyService productCompanyService,
-      StockLocationRepository stockLocationRepository) {
+      StockLocationRepository stockLocationRepository,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.stockConfigService = stockConfigService;
     this.inventoryLineRepository = inventoryLineRepository;
     this.stockLocationLineService = stockLocationLineService;
     this.productCompanyService = productCompanyService;
     this.stockLocationRepository = stockLocationRepository;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -146,7 +149,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
     StockLocationLine stockLocationLine =
-        stockLocationLineService.getStockLocationLine(stockLocation, product);
+        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
 
     if (product != null) {
       inventoryLine.setUnit(product.getUnit());
@@ -212,7 +215,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
 
     if (stockLocation != null && product != null) {
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(stockLocation, product);
+          stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null) {
         currentQty = stockLocationLine.getCurrentQty();
       }

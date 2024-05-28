@@ -22,9 +22,8 @@ import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationSaveService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
 import com.google.inject.Inject;
@@ -34,12 +33,19 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
   protected AppStockService appStockService;
   protected BarcodeGeneratorService barcodeGeneratorService;
+  protected StockLocationSaveService stockLocationSaveService;
+  protected StockLocationUtilsService stockLocationUtilsService;
 
   @Inject
   public StockLocationStockRepository(
-      AppStockService appStockService, BarcodeGeneratorService barcodeGeneratorService) {
+      AppStockService appStockService,
+      BarcodeGeneratorService barcodeGeneratorService,
+      StockLocationSaveService stockLocationSaveService,
+      StockLocationUtilsService stockLocationUtilsService) {
     this.appStockService = appStockService;
     this.barcodeGeneratorService = barcodeGeneratorService;
+    this.stockLocationSaveService = stockLocationSaveService;
+    this.stockLocationUtilsService = stockLocationUtilsService;
   }
 
   /**
@@ -50,7 +56,7 @@ public class StockLocationStockRepository extends StockLocationRepository {
    */
   @Override
   public StockLocation save(StockLocation stockLocation) {
-    Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(stockLocation);
+    stockLocationSaveService.removeForbiddenDefaultStockLocation(stockLocation);
 
     // Barcode generation
     AppStock appStock = appStockService.getAppStock();
@@ -86,9 +92,7 @@ public class StockLocationStockRepository extends StockLocationRepository {
       return super.populate(json, context);
     }
 
-    json.put(
-        "stockLocationValue",
-        Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
+    json.put("stockLocationValue", stockLocationUtilsService.getStockLocationValue(stockLocation));
 
     return super.populate(json, context);
   }

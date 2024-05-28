@@ -28,7 +28,7 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.service.InventoryLineService;
-import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.TrackingNumberCreateService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ public class ImportInventoryLine {
 
   protected InventoryLineRepository inventoryLineRepo;
   protected InventoryLineService inventoryLineService;
-  protected TrackingNumberService trackingNumberService;
+  protected TrackingNumberCreateService trackingNumberCreateService;
   protected AppBaseService appBaseService;
 
   protected ProductCompanyService productCompanyService;
@@ -48,12 +48,12 @@ public class ImportInventoryLine {
   public ImportInventoryLine(
       InventoryLineRepository inventoryLineRepo,
       InventoryLineService inventoryLineService,
-      TrackingNumberService trackingNumberService,
+      TrackingNumberCreateService trackingNumberCreateService,
       AppBaseService appBaseService,
       ProductCompanyService productCompanyService) {
     this.inventoryLineRepo = inventoryLineRepo;
     this.inventoryLineService = inventoryLineService;
-    this.trackingNumberService = trackingNumberService;
+    this.trackingNumberCreateService = trackingNumberCreateService;
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
   }
@@ -98,7 +98,7 @@ public class ImportInventoryLine {
       for (int i = 0; i < inventoryLine.getRealQty().intValue(); i += qtyByTracking.intValue()) {
 
         trackingNumber =
-            trackingNumberService.createTrackingNumber(
+            trackingNumberCreateService.createTrackingNumber(
                 inventoryLine.getProduct(),
                 company,
                 appBaseService.getTodayDate(company),

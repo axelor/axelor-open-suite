@@ -16,18 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.stock.utils;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import java.util.Set;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.meta.CallMethod;
+import java.math.BigDecimal;
+import java.util.List;
 
-public interface TrackingNumberService {
+public interface StockLocationUtilsService {
 
-  String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration);
+  @CallMethod
+  BigDecimal getRealQtyOfProductInStockLocations(
+      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
 
-  void calculateDimension(TrackingNumber trackingNumber) throws AxelorException;
+  @CallMethod
+  BigDecimal getFutureQtyOfProductInStockLocations(
+      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
 
-  Set<TrackingNumber> getOriginParents(TrackingNumber trackingNumber) throws AxelorException;
+  public BigDecimal getStockLocationValue(StockLocation stockLocation);
 }

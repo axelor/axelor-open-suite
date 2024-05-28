@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
@@ -65,7 +65,7 @@ public class ProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(StockLocationLineService.class)
+        Beans.get(StockLocationLineFetchService.class)
             .getAvailableStockForAProduct(productId, companyId, stockLocationId);
 
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
@@ -151,7 +151,7 @@ public class ProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(StockLocationLineService.class)
+        Beans.get(StockLocationLineFetchService.class)
             .getRequestedReservedQtyForAProduct(productId, companyId, stockLocationId);
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
     String title = I18n.get(VIEW_REQUESTED_RESERVED_QTY_TITLE);
