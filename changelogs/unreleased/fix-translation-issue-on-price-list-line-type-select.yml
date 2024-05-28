@@ -1,5 +1,0 @@
----
-title: "Price list line: fixed translation issue on type select."
-module: axelor-base
-developer: |
-  "Changed the price list typeSelect selection title from 'Addition' to 'Increase' for value = 2."
