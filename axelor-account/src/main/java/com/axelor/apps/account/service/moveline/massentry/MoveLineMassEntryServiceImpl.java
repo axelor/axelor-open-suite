@@ -147,7 +147,6 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
       moveLine.setCutOffStartDate(LocalDate.now());
       moveLine.setCutOffEndDate(LocalDate.now());
-      moveLine.setDeliveryDate(LocalDate.now());
     }
   }
 
