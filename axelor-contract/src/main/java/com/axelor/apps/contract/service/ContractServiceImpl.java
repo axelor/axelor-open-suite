@@ -86,7 +86,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   protected AppBaseService appBaseService;
   protected ContractVersionService versionService;
-  protected ContractLineService contractLineService;
   protected DurationService durationService;
 
   protected ContractLineRepository contractLineRepo;
@@ -94,7 +93,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected OpportunityRepository opportunityRepository;
 
   protected TaxService taxService;
-  protected ContractVersionRepository contractVersionRepository;
   protected InvoiceRepository invoiceRepository;
   protected InvoiceService invoiceService;
   protected AnalyticLineModelService analyticLineModelService;
