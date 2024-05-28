@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
@@ -96,4 +97,6 @@ public interface TimesheetLineService {
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit);
 
   Product getDefaultProduct(TimesheetLine timesheetLine);
+
+  void resetTimesheetLineTimer(TSTimer tsTimer);
 }

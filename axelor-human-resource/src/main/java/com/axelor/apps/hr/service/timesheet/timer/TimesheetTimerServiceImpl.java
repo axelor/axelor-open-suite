@@ -217,4 +217,12 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     Long updatedDuration = timer.getUpdatedDuration();
     return updatedDuration == null || updatedDuration == 0 ? timer.getDuration() : updatedDuration;
   }
+
+  @Override
+  public void deleteTimesheetLineTimer(TimesheetLine timesheetLine) {
+    TSTimer timer = timesheetLine.getTimer();
+    if (timer != null) {
+      tsTimerRepository.remove(timer);
+    }
+  }
 }

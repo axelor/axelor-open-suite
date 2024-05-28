@@ -20,6 +20,8 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
+import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
 public class TimesheetLineHRRepository extends TimesheetLineRepository {
@@ -44,5 +46,11 @@ public class TimesheetLineHRRepository extends TimesheetLineRepository {
             + timesheetLine.getDate()
             + " "
             + timesheetLine.getId());
+  }
+
+  @Override
+  public void remove(TimesheetLine timesheetLine) {
+    Beans.get(TimesheetTimerService.class).deleteTimesheetLineTimer(timesheetLine);
+    super.remove(timesheetLine);
   }
 }

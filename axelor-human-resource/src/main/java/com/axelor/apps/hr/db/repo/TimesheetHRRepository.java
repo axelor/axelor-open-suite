@@ -22,6 +22,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.inject.Beans;
@@ -29,7 +30,9 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TimesheetHRRepository extends TimesheetRepository {
 
@@ -64,17 +67,25 @@ public class TimesheetHRRepository extends TimesheetRepository {
 
   @Override
   public void remove(Timesheet entity) {
+    List<TimesheetLine> timesheetLineList = entity.getTimesheetLineList();
 
     if (entity.getStatusSelect() == TimesheetRepository.STATUS_VALIDATED
-        && entity.getTimesheetLineList() != null) {
+        && timesheetLineList != null) {
 
       Map<Project, BigDecimal> projectTimeSpentMap =
-          timesheetLineService.getProjectTimeSpentMap(entity.getTimesheetLineList());
+          timesheetLineService.getProjectTimeSpentMap(timesheetLineList);
       Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
 
       while (projectIterator.hasNext()) {
         Project project = projectIterator.next();
         projectRepository.save(project);
+      }
+    }
+
+    TimesheetTimerService timesheetTimerService = Beans.get(TimesheetTimerService.class);
+    if (!CollectionUtils.isEmpty(timesheetLineList)) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        timesheetTimerService.deleteTimesheetLineTimer(timesheetLine);
       }
     }
     super.remove(entity);
