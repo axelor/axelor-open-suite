@@ -53,13 +53,6 @@ public class PlannedTimeValueServiceImpl implements PlannedTimeValueService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public PlannedTimeValue createAndSavePlannedTimeValue(BigDecimal plannedTime) {
-    PlannedTimeValue plannedTimeValue =
-        plannedTimeValueRepository.findByName(plannedTime.toString());
-    if (plannedTimeValue != null) {
-      return plannedTimeValue;
-    }
-    plannedTimeValue = new PlannedTimeValue();
-    plannedTimeValue.setPlannedTime(plannedTime);
-    return plannedTimeValueRepository.save(plannedTimeValue);
+    return plannedTimeValueRepository.save(createPlannedTimeValue(plannedTime));
   }
 }
