@@ -20,7 +20,6 @@ package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.Inventory;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.rest.dto.InventoryPutRequest;
 import com.axelor.apps.stock.rest.dto.InventoryResponse;
 import com.axelor.apps.stock.service.InventoryUpdateService;
@@ -33,7 +32,6 @@ import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.servers.Server;
-import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -57,7 +55,7 @@ public class InventoryRestController {
   public Response updateStatus(@PathParam("id") Long inventoryId, InventoryPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Arrays.asList(Inventory.class, StockMove.class)).check();
+    new SecurityCheck().writeAccess(Inventory.class, inventoryId).check();
 
     Inventory inventory = ObjectFinder.find(Inventory.class, inventoryId, requestBody.getVersion());
 
