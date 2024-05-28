@@ -36,12 +36,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
-import com.google.common.base.Strings;
 import com.google.inject.Singleton;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Optional;
 
 @Singleton
@@ -58,13 +54,11 @@ public class SaleOrderProjectController {
             I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
         return;
       }
-      String generatorType = (String) request.getContext().get("_projectGeneratorType");
-      LocalDateTime startDate = getElementStartDate(request.getContext());
-      if (generatorType == null) {
-        generatorType = "PROJECT_ALONE";
-      }
-      ProjectGeneratorType projectGeneratorType = ProjectGeneratorType.valueOf(generatorType);
-
+      LocalDateTime startDate = getElementStartDate(saleOrder);
+      ProjectGeneratorType projectGeneratorType = saleOrder.getProjectGeneratorType();
+        if (projectGeneratorType == null) {
+            projectGeneratorType = ProjectGeneratorType.valueOf("PROJECT_ALONE");
+        }
       ProjectGeneratorFactory factory = ProjectGeneratorFactory.getFactory(projectGeneratorType);
 
       Project project;
@@ -100,13 +94,11 @@ public class SaleOrderProjectController {
             I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
         return;
       }
-      String generatorType = (String) request.getContext().get("_projectGeneratorType");
-      LocalDateTime startDate = getElementStartDate(request.getContext());
-
+      LocalDateTime startDate = getElementStartDate(saleOrder);
       ProjectGeneratorFactory factory =
-          ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));
+          ProjectGeneratorFactory.getFactory(saleOrder.getProjectGeneratorType());
       ActionViewBuilder view = factory.fill(saleOrder.getProject(), saleOrder, startDate);
-
+      Beans.get(ProjectGenerationService.class).setIsFilledProject(saleOrder);
       response.setReload(true);
       response.setView(view.map());
 
@@ -126,12 +118,9 @@ public class SaleOrderProjectController {
     }
   }
 
-  protected LocalDateTime getElementStartDate(Context context) {
-    LocalDateTime date;
-    String stringStartDate = (String) context.get("_elementStartDate");
-    if (!Strings.isNullOrEmpty(stringStartDate)) {
-      date = LocalDateTime.ofInstant(Instant.parse(stringStartDate), ZoneId.systemDefault());
-    } else {
+  protected LocalDateTime getElementStartDate(SaleOrder saleOrder) {
+    LocalDateTime date = saleOrder.getElementStartDate();
+    if (date == null) {
       date =
           Beans.get(AppBaseService.class)
               .getTodayDate(

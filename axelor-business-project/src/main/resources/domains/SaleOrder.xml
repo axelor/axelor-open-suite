@@ -9,6 +9,11 @@
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
+    <enum name="projectGeneratorType" ref="com.axelor.apps.project.db.ProjectGeneratorType"
+      title="Project generation method"
+      help="You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has Produce as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration."/>
+    <datetime name="elementStartDate" title="Start date"/>
+    <boolean name="isFilledProject" title="Project filled" default="false"/>
   </entity>
 
 </domain-models>
