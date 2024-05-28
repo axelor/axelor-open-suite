@@ -1,7 +1,7 @@
 package com.axelor.apps.base.service.partner.registrationnumber.factory;
 
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.RegistrationNumberTemplate;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
@@ -25,11 +25,11 @@ public class PartnerRegistrationValidatorFactoryServiceImpl
 
   protected Class<? extends RegistrationNumberValidator> getRegistrationNumberValidatorClass(
       Partner partner) throws ClassNotFoundException {
-    Address mainAddress = partner.getMainAddress();
-    if (mainAddress == null || mainAddress.getCountry() == null) {
+    Localization localization = partner.getLocalization();
+    if (localization == null) {
       return null;
     }
-    Country businessCountry = partner.getMainAddress().getCountry();
+    Country businessCountry = localization.getCountry();
     RegistrationNumberTemplate registrationNumberTemplate =
         businessCountry.getRegistrationNumberTemplate();
 
