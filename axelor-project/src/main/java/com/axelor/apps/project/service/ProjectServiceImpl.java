@@ -104,7 +104,8 @@ public class ProjectServiceImpl implements ProjectService {
     if (Strings.isNullOrEmpty(fullName)) {
       fullName = "project";
     }
-    project.setName(fullName);
+    project.setCode(fullName.split("-")[0]);
+    project.setName(fullName.split("-")[1]);
     project.setFullName(project.getName());
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
