@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -32,11 +34,16 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
@@ -50,8 +57,11 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.date.LocalDateHelper;
@@ -67,6 +77,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -80,39 +91,53 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   protected ContractLineRepository contractLineRepo;
   protected ContractRepository contractRepository;
+  protected OpportunityRepository opportunityRepository;
+
   protected TaxService taxService;
   protected ContractVersionRepository contractVersionRepository;
   protected InvoiceRepository invoiceRepository;
   protected InvoiceService invoiceService;
   protected AnalyticLineModelService analyticLineModelService;
   protected ContractYearEndBonusService contractYearEndBonusService;
+  protected ProductCompanyService productCompanyService;
+  protected AccountManagementContractService accountManagementContractService;
+  protected FiscalPositionService fiscalPositionService;
 
   @Inject
   public ContractServiceImpl(
+      ContractLineService contractLineService,
+      ContractVersionService contractVersionService,
+      SequenceService sequenceService,
+      ContractVersionRepository contractVersionRepository,
       AppBaseService appBaseService,
       ContractVersionService versionService,
-      ContractLineService contractLineService,
       DurationService durationService,
       ContractLineRepository contractLineRepo,
       ContractRepository contractRepository,
       TaxService taxService,
-      ContractVersionRepository contractVersionRepository,
       InvoiceRepository invoiceRepository,
       InvoiceService invoiceService,
       AnalyticLineModelService analyticLineModelService,
-      ContractYearEndBonusService contractYearEndBonusService) {
+      ContractYearEndBonusService contractYearEndBonusService,
+      OpportunityRepository opportunityRepository,
+      ProductCompanyService productCompanyService,
+      AccountManagementContractService accountManagementContractService,
+      FiscalPositionService fiscalPositionService) {
+    super(contractLineService, contractVersionService, sequenceService, contractVersionRepository);
     this.appBaseService = appBaseService;
     this.versionService = versionService;
-    this.contractLineService = contractLineService;
     this.durationService = durationService;
     this.contractLineRepo = contractLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
-    this.contractVersionRepository = contractVersionRepository;
     this.invoiceRepository = invoiceRepository;
     this.invoiceService = invoiceService;
     this.analyticLineModelService = analyticLineModelService;
     this.contractYearEndBonusService = contractYearEndBonusService;
+    this.opportunityRepository = opportunityRepository;
+    this.productCompanyService = productCompanyService;
+    this.accountManagementContractService = accountManagementContractService;
+    this.fiscalPositionService = fiscalPositionService;
   }
 
   @Override
@@ -570,7 +595,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
     Invoice invoice = invoiceGenerator.generate();
     invoice.addContractSetItem(contract);
-
     return invoice;
   }
 
@@ -659,16 +683,27 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 + " "
                 + line.getContractVersion().getContract().getInvoicePeriodEndDate()
             : line.getDescription();
+
+    ContractVersion contractVersion = line.getContractVersion();
+    Contract contract = null;
+    if (contractVersion != null) {
+      contract = line.getContractVersion().getContract();
+    }
+
+    BigDecimal qty = getQty(line, contract);
+    Product product = getLineProduct(line, contract);
+
+    Contract finalContract = contract;
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
-            line.getProduct(),
+            product,
             line.getProductName(),
             line.getPrice(),
             inTaxPriceComputed,
             line.getPriceDiscounted(),
             description,
-            line.getQty(),
+            qty,
             line.getUnit(),
             line.getTaxLineSet(),
             line.getSequence(),
@@ -677,6 +712,44 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getExTaxTotal(),
             line.getInTaxTotal(),
             false) {
+
+          @Override
+          public void setProductAccount(
+              InvoiceLine invoiceLine, Company company, boolean isPurchase) throws AxelorException {
+            if (finalContract != null && contractYearEndBonusService.isYebContract(finalContract)) {
+              if (product != null) {
+                invoiceLine.setProductCode(
+                    (String) productCompanyService.get(product, "code", company));
+                Account account =
+                    accountManagementContractService.getProductYebAccount(
+                        product, company, isPurchase);
+                invoiceLine.setAccount(account);
+              }
+            } else {
+              super.setProductAccount(invoiceLine, company, isPurchase);
+            }
+          }
+
+          @Override
+          public void setTaxEquiv(InvoiceLine invoiceLine, Company company, boolean isPurchase)
+              throws AxelorException {
+            if (finalContract != null && contractYearEndBonusService.isYebContract(finalContract)) {
+              if (CollectionUtils.isNotEmpty(taxLineSet)) {
+                Set<Tax> taxSet =
+                    taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet());
+                if (CollectionUtils.isNotEmpty(taxSet)) {
+                  TaxEquiv taxEquiv =
+                      fiscalPositionService.getTaxEquiv(invoice.getFiscalPosition(), taxSet);
+                  invoiceLine.setTaxEquiv(taxEquiv);
+                }
+              } else {
+                super.setTaxEquiv(invoiceLine, company, isPurchase);
+              }
+            } else {
+              super.setTaxEquiv(invoiceLine, company, isPurchase);
+            }
+          }
+
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
             InvoiceLine invoiceLine = this.createInvoiceLine();
@@ -700,16 +773,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice)
             == PriceListRepository.TYPE_PURCHASE;
 
-    Set<TaxLine> taxLineSet =
-        Beans.get(AccountManagementService.class)
-            .getTaxLineSet(
-                appBaseService.getTodayDate(invoice.getCompany()),
-                invoiceLine.getProduct(),
-                invoice.getCompany(),
-                fiscalPosition,
-                isPurchase);
+    replaceTaxLineSet(invoice, invoiceLine, contract, fiscalPosition, isPurchase);
 
-    invoiceLine.setTaxLineSet(taxLineSet);
     invoiceLine.setAccount(replacedAccount);
 
     invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
@@ -723,6 +788,52 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoice.addInvoiceLineListItem(invoiceLine);
 
     return Beans.get(InvoiceLineRepository.class).save(invoiceLine);
+  }
+
+  protected BigDecimal getQty(ContractLine line, Contract contract) {
+    BigDecimal qty;
+    if (contract != null
+        && line.getProduct() == null
+        && contractYearEndBonusService.isYebContract(contract)) {
+      qty = BigDecimal.ONE;
+    } else {
+      qty = line.getQty();
+    }
+    return qty;
+  }
+
+  protected void replaceTaxLineSet(
+      Invoice invoice,
+      InvoiceLine invoiceLine,
+      Contract contract,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(invoiceLine.getTaxLineSet())) {
+      Set<TaxLine> taxLineSet = Set.of();
+      if (contract != null && contractYearEndBonusService.isYebContract(contract)) {
+        Product product = contractYearEndBonusService.getYebProduct(contract);
+        taxLineSet =
+            accountManagementContractService.getTaxLineSet(
+                appBaseService.getTodayDate(invoice.getCompany()),
+                product,
+                invoice.getCompany(),
+                fiscalPosition,
+                isPurchase);
+      } else {
+        Product product = invoiceLine.getProduct();
+        if (product != null) {
+          taxLineSet =
+              accountManagementContractService.getTaxLineSet(
+                  appBaseService.getTodayDate(invoice.getCompany()),
+                  product,
+                  invoice.getCompany(),
+                  fiscalPosition,
+                  isPurchase);
+        }
+      }
+      invoiceLine.setTaxLineSet(taxLineSet);
+    }
   }
 
   public void copyAnalyticMoveLines(
@@ -814,6 +925,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
     }
 
+    contract.setContractTypeSelect(template.getContractTypeSelect());
     contract.setCompany(template.getCompany());
     contract.setCurrency(template.getCurrency());
     contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
@@ -897,5 +1009,115 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
     }
     contractRepository.save(contract);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Contract generateContractFromOpportunity(
+      Opportunity opportunity, ContractTemplate contractTemplate) throws AxelorException {
+    Contract contract = new Contract();
+    Currency currency = opportunity.getCurrency();
+    Company company = opportunity.getCompany();
+    if (currency == null && opportunity.getPartner() != null) {
+      currency = opportunity.getPartner().getCurrency();
+    }
+    if (currency == null && company != null) {
+      currency = company.getCurrency();
+    }
+
+    contract.setCompany(company);
+    contract.setCurrency(currency);
+    contract.setPartner(opportunity.getPartner());
+    contract.setTargetTypeSelect(ContractRepository.CUSTOMER_CONTRACT);
+    contract.setName(opportunity.getName());
+    contract.setStatusSelect(ContractRepository.DRAFT_CONTRACT);
+    contract.setCurrentContractVersion(new ContractVersion());
+
+    ContractTemplate contractTemplate1 = JPA.copy(contractTemplate, true);
+    if (contractTemplate != null) {
+      copyFromTemplate(contract, contractTemplate1);
+    }
+    contract.setOpportunity(opportunity);
+    contractRepository.save(contract);
+
+    return contract;
+  }
+
+  public Boolean contractsFromOpportunityAreGenerated(Long opportunityId) {
+    return contractRepository
+            .all()
+            .filter("self.opportunity.id =:opportunityId")
+            .bind("opportunityId", opportunityId)
+            .count()
+        > 0;
+  }
+
+  @Override
+  public boolean checkConsumptionLineQuantity(
+      Contract contractCtx,
+      ConsumptionLine consumptionLineCtx,
+      BigDecimal initQty,
+      Integer initProductId) {
+
+    BigDecimal max = BigDecimal.ZERO;
+    if (!contractCtx.getCurrentContractVersion().getContractLineList().isEmpty()) {
+      List<ContractLine> contractLines =
+          contractCtx.getCurrentContractVersion().getContractLineList().stream()
+              .filter(
+                  cl ->
+                      cl.getIsConsumptionLine()
+                          && Objects.equals(
+                              cl.getProduct().getId(), consumptionLineCtx.getProduct().getId()))
+              .collect(Collectors.toList());
+      if (contractLines.isEmpty()) {
+        return false;
+      }
+      if (contractLines.get(0).getConsumptionMaxQuantity() == null) {
+        return false;
+      }
+      max = contractLines.get(0).getConsumptionMaxQuantity();
+    }
+    if (initProductId != null) {
+      if (!Objects.equals(Long.valueOf(initProductId), consumptionLineCtx.getProduct().getId())) {
+        contractCtx.getConsumptionLineList().add(consumptionLineCtx);
+      }
+    }
+    BigDecimal sum =
+        contractCtx.getConsumptionLineList().stream()
+            .filter(
+                consumptionLine ->
+                    dateInPeriod(
+                            consumptionLine.getLineDate(),
+                            contractCtx.getInvoicePeriodStartDate(),
+                            contractCtx.getInvoicePeriodEndDate())
+                        && consumptionLine
+                            .getProduct()
+                            .getId()
+                            .equals(consumptionLineCtx.getProduct().getId())
+                        && !consumptionLine.getIsInvoiced())
+            .map(ConsumptionLine::getQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    sum = sum.subtract(initQty);
+    sum = sum.add(consumptionLineCtx.getQty());
+    return sum.compareTo(max) > 0;
+  }
+
+  private boolean dateInPeriod(LocalDate date, LocalDate startDate, LocalDate endDate) {
+    if (startDate == null || endDate == null) {
+      return true;
+    }
+    return !date.isBefore(startDate) && !date.isAfter(endDate);
+  }
+
+  protected Product getLineProduct(ContractLine line, Contract contract) throws AxelorException {
+    Product product = line.getProduct();
+
+    if (contract != null
+        && contractYearEndBonusService.isYebContract(contract)
+        && product == null) {
+      product = contractYearEndBonusService.getYebProduct(contract);
+    }
+    return product;
   }
 }

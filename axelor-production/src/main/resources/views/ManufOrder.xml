@@ -5,8 +5,6 @@
   <grid name="manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-method-print-birt-list"/>
       <button name="mergeBtn" title="Merge" icon="back"
         onClick="action-manuf-order-group-merge"/>
     </toolbar>
@@ -43,7 +41,8 @@
       readonlyIf="statusSelect != 4"/>
     <button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel"
       readonlyIf="statusSelect == 2"/>
-    <button name="printBtn" title="Print" icon="fa-print" onClick="action-method-print-birt"/>
+    <button name="printBtn" title="Print" icon="fa-print"
+      onClick="action-method-print-template"/>
   </grid>
 
 
@@ -86,8 +85,6 @@
     <!-- TODO avec propagation -->
     <menubar>
       <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-method-print-birt"
-          showIf="statusSelect > 1"/>
         <item name="printProductionProcessItem" title="Print Production Process"
           action="save,action-production-process-method-print"/>
       </menu>
@@ -163,7 +160,7 @@
           edit-window="blank"/>
         <field name="qty" hideIf="typeSelect != 1"
           readonlyIf="statusSelect &gt; 1 || typeSelect == 2" validIf="typeSelect == 2 || qty > 0"
-          colSpan="3"/>
+          colSpan="3" onChange="action-manuf-order-method-compute-missing-components-label"/>
         <field name="product.economicManufOrderQty" colSpan="3"/>
         <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
@@ -217,6 +214,7 @@
         <button name="draftBtn" icon="fa-eraser " title="Return to draft status" colSpan="12"
           showIf="statusSelect == 2" onClick="action-manuf-order-record-set-status-to-draft,save"
           hidden="true"/>
+        <label name="missingComponentsLabel" hidden="true" css="label-danger" colSpan="12"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
@@ -755,6 +753,8 @@
     <action name="action-manuf-order-attrs-scale-and-precision"/>
     <action name="action-production-attrs-hide-purchaseOrder"/>
     <action name="action-manuf-order-method-compute-producible-qty" if="statusSelect == 1"/>
+    <action name="action-manuf-order-method-compute-missing-components-label"
+      if="statusSelect == 1"/>
     <action name="action-manuf-order-method-update-lines-outsourced"/>
   </action-group>
 
@@ -789,6 +789,7 @@
     <action name="action-production-attrs-set-outsourcing-value"/>
     <action name="action-production-attrs-hide-purchaseOrder"/>
     <action name="action-manuf-order-method-compute-producible-qty"/>
+    <action name="action-manuf-order-method-compute-missing-components-label"/>
   </action-group>
 
   <action-group name="action-manuf-order-group-cancel-confirm">
@@ -1084,6 +1085,11 @@
   <action-method name="action-manuf-order-method-compute-producible-qty">
     <call class="com.axelor.apps.production.web.ManufOrderController"
       method="computeProducibleQty"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-compute-missing-components-label">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="computeMissingComponentsLabel"/>
   </action-method>
 
   <search-filters name="manuf-order-filters"

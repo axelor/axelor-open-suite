@@ -20,7 +20,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
-import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.helpdesk.service.TicketSequenceService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class ImportTicket {
     Ticket ticket = (Ticket) bean;
 
     try {
-      Beans.get(TicketService.class).computeSeq(ticket);
+      Beans.get(TicketSequenceService.class).computeSeq(ticket);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

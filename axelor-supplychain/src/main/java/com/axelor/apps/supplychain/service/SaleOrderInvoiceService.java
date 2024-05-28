@@ -41,6 +41,8 @@ import java.util.Map;
 
 public interface SaleOrderInvoiceService {
 
+  String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
+
   /**
    * Generate an invoice from a sale order. call {@link
    * SaleOrderInvoiceService#createInvoice(SaleOrder)} to create the invoice.
@@ -303,4 +305,15 @@ public interface SaleOrderInvoiceService {
   void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 
   void updateInvoicingState(SaleOrder saleOrder);
+
+  List<Invoice> generateInvoicesFromSaleOrderLines(
+      Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps,
+      Map<SaleOrder, BigDecimal> amountToInvoiceMap,
+      boolean isPercent,
+      int operationSelect)
+      throws AxelorException;
+
+  List<Map<String, Object>> getSaleOrderLineList(SaleOrder saleOrder);
 }

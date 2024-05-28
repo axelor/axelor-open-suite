@@ -53,4 +53,10 @@ public class PartnerPriceListController {
       response.setAlert(e.getMessage());
     }
   }
+
+  public void computePriceListDomain(ActionRequest request, ActionResponse response) {
+    PartnerPriceList partnerPriceList = request.getContext().asType(PartnerPriceList.class);
+    Integer typeSelect = (Integer) request.getContext().get("_typeSelect");
+    response.setAttr("priceListSet", "domain", "self.typeSelect = " + typeSelect);
+  }
 }

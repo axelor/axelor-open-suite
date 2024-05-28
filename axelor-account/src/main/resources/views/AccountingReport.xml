@@ -9,7 +9,7 @@
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="ref" width="120"/>
     <field name="date"/>
-    <field name="$companyStr" type="string" title="Company(ies)"/>
+    <field name="companySet" widget="TagSelect"/>
     <field name="currency"/>
     <field name="exportTypeSelect"/>
     <field name="reportType"/>
@@ -24,7 +24,6 @@
     <field name="statusSelect"/>
     <field name="publicationDateTime"/>
     <field name="company" hidden="true"/>
-    <field name="companySet" hidden="true"/>
   </grid>
 
   <form name="accounting-report-form" title="Accounting report"
@@ -53,7 +52,8 @@
         onChange="action-group-account-accounting-report-reporttype-onchange"
         onSelect="action-accounting-report-method-set-report-type-domain"
         domain="self.reportExportTypeSelect = 1"/>
-      <field name="exportTypeSelect" selection-in="['pdf','xlsx','ods']"/>
+      <field name="exportTypeSelect" selection-in="['pdf','xlsx','ods']"
+        hideIf="reportType.typeSelect == 18"/>
     </panel>
     <panel sidebar="true" name="infoPanel" title="Info">
       <button name="searchBtn" title="Search"

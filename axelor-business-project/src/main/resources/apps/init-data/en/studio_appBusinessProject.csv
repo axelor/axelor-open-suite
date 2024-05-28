@@ -1,2 +1,2 @@
-"code";"invoicingProjectAnnexBirtTemplate.importId";"eventSubjectGroovyFormula"
-"business-project";86;"project.fullName + "" - "" + projectTask.fullName"
+"code";"invoicingAnnexPrintTemplate.importId";"invoicingProjectAnnexPrintTemplate.importId";"closingProjectRuleSelect";"invoiceExpensePrintTemplate.importId"
+"business-project";85;86;1;155

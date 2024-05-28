@@ -1,3 +1,283 @@
+## [8.0.7] (2024-05-24)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 2.0.2.
+* ICalendar: fixed synchronization duration widget.
+* Sale order/Purchase order/Invoice: fixed wrong column name displayed on discounted amount.
+* Price list: fixed a NPE when opening a new price list.
+* Birt Template: for developers, added hot reload for .rptdesign files.
+
+#### Account
+
+* Invoice: fixed an issue where it was possible to change the printing format on a ventilated invoice.
+* Accounting report: update font size and improve lettering display on partner general ledger.
+* Reconciliation: added more traceability when a move line is not reconcilable.
+* Accounting Situation: fixed wrong scale on 'Used credit' and 'Accepted credit' fields.
+* Payment voucher: fixed an issue where some fields were not displayed in due element list.
+* Invoice: fixed a bug where generated invoices from orders had wrong WT/ATI configuration.
+* FEC Import: fixed partner not filled when the partner is only on the first line of an entry.
+* Move line: fixed move fiscal position not being used for tax equivalence on account change.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong computation of balances when having more than 10 records.
+* Bank reconciliation: fixed move line filter and controls when reconciliating.
+* Accounting report type: added bank reconciliation statement report record in accounting report type list.
+* Accounting report: fixed bank reconciliation accounting report displaying already reconciled move lines.
+* Bank statement line: fixed wrong balance on the demo data sample statement.
+
+#### Business Project
+
+* Timesheet line: fixed an issue preventing to invoice timesheet when the task has an activity.
+* Project: fixed validation error missing timeUnit when creating a planned time planning while business-project module is not installed.
+* Timesheet line: fixed NPE when generating a project invoice with a timesheet line that has a non null duration for customer.
+
+#### Contract
+
+* Contract: fixed display condition of the Revaluation fields.
+* Contract: fixed 'nouvelle version' used as key instead of 'new version'.
+* Contract: fixed 'ID to load' error when we modifying supposed activation date without saving.
+* Contract: deleted version history on duplication.
+
+#### Helpdesk
+
+* Ticket: fixed demo data status.
+
+#### Human Resource
+
+* Expense line: fixed an error when computing distance on orphan kilometric expense line.
+* TSTimer: fixed french translation of errors message when creating timer from API.
+* Timesheet API: added more checks on date to prevent inconsistency issues.
+* Leave request: fixed issue where a leave request was not updated after sending it.
+
+#### Maintenance
+
+* Maintenance request: fixed impossible to create a maintenance request from the quick adding field.
+
+#### Mobile Settings
+
+* Mobile dashboard: set name required in view for dashboard configuration lines.
+
+#### Production
+
+* Bill of materials: fixed blank printing.
+* Manufacturing order: fixed error preventing quantity change on consumed products.
+* Configurator: improved demo data for configurator 'Ordinateur personnalisé'.
+* Manufacturing Order: fixed NPE error on selecting a product in Consumed products.
+
+#### Project
+
+* Project: fixed an issue where a task was not displayed when using the sub-task button.
+
+#### Purchase
+
+* Purchase order line: fixed an issue causing an error when the line was marked as `toInvoice`.
+* Purchase request: added sequence for purchase request in demo data.
+
+#### Sale
+
+* Sale order merge: fixed an issue where it was not possible to select a price list in case of conflicts.
+* Sale order: fixed sale order line sequence issue.
+* Sale order: fixed scales on amount in sale order line grid.
+
+#### Stock
+
+* Stock move line: fixed issue when changing the line type to title.
+
+#### Supply Chain
+
+* Customer invoice line: fixed default product unit on product change.
+* Invoice: fixed 'FixedAsset' boolean never propagated to invoice line from purchase order line.
+* Purchase order: when a purchase order is generated from a sale order, when the catalog does not have a code or name, it will use the product.
+
+## [8.0.6] (2024-05-03)
+
+### Fixes
+#### Base
+
+* Pricing: the formula panel is now collapsed by default.
+* Sequence: fixed NPE while checking yearly reset or monthly reset on unsaved sequence.
+* Advanced export: Fixed export which wasn't working when maximum export limit exceeded.
+
+#### Account
+
+* Invoice: fixed default financial discount from partner not being computed after invoice copy.
+* Accounting export: Fixed error when replaying the accounting export.
+* Invoice payment: fixed financial discount management when there is no payment date.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed tax move line generation when origin is payment.
+
+#### Contract
+
+* Contract: fixed prorata invoicing when invoicing a full period.
+* Contract: correctly disable related configuration when disabling invoice management.
+* Contract: Fixed error when using contract template with contract line to generate a contract.
+
+#### Production
+
+* Manufacturing order: fixed conversion of missing quantity of consumed products.
+* Machine: fixed machine planning type when creating it from machine.
+
+#### Purchase
+
+* Purchase order line: Fixed maximum and minimum order quantity error when partner doesn't have supplier catalog lines.
+* Purchase order report: fixed sequence order issue when title lines are present.
+
+#### Quality
+
+* ControlEntry/ControlPlan: fixed issues when dupplicating a control entry or control plan.
+
+#### Sale
+
+* Sale order: fixed refresh issue when saving a sale order.
+* Configurator : Fixed issues with the new configurator model in demo data.
+
+#### Stock
+
+* Tracking number: fixed available qty not displayed on grid view.
+* Stock move: fixed printing settings when creating stock move from sale order.
+* Stock configuration: fixed typo in french translation, 'incoterme' => 'incoterm'
+
+
+### Developer
+
+#### Production
+
+Changed signature of `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId)`
+to `ProdProductProductionRepository.computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit)`
+
+#### Quality
+
+Created `ControlEntryManagementRepository` extending `ControlEntryRepository`, `ControlPlanManagementRepository` extending `ControlPlanRepository`
+and `ControlEntryPlanLineManagementRepository` extending `ControlEntryPlanLineManagementRepository`
+
+## [8.0.5] (2024-04-19)
+
+### Fixes
+#### Base
+
+* (Webapp) Updated Axelor Open Platform dependency to 7.0.7.
+* Birt template: fixed duplicated printouts generated when attach boolean is set to true.
+
+#### Account
+
+* Payment voucher: fixed required message at on new and fixed invoice refresh at confirm.
+* Accounting report: fixed 'Fees declaration supporting file' report displaying records that should not appear.
+* Invoice: improved UX to prevent the use of financial discount on advance payment invoice.
+* Financial Discount: fixed french translations for 'discount'.
+* Invoice payment: fixed anomalies when doing multi currency payments.
+* Invoice: fixed invoice term amount remaining on invoice payment move.
+
+#### Budget
+
+* Purchase order/Sale order/Stock move/Invoice: link order budget to invoice after stock move generation.
+* Global budget: fixed structure validation when the global budget have no budget.
+* Budget: fixed technical error when creating budget on a saved budget level.
+
+#### Human Resource
+
+* Expense: fixed expense accounting moves generation when expense line dates are different and tax amount is zero.
+
+#### Sale
+
+* Sale order: removed french translation from english file.
+
+#### Supply Chain
+
+* Mass stock move invoicing: fixed an issue where invoiced partners were not used to invoice stock moves, the other partner was used instead.
+* Mass stock move invoicing: fixed an issue preventing to invoice customer returns.
+
+## [8.0.4] (2024-04-04)
+
+### Fixes
+#### Base
+
+* Pricing: fixed the parent product filter in computed pricing formula.
+* Company: fixed missing info in the demo data import.
+
+#### Account
+
+* Invoice: fixed printing of advance payment invoice in invoice report.
+* Analytic axis by company: fixed analytic axis display error.
+* Invoice: fixed report when invoice is linked to more than one stock move.
+* Move: fixed error when selecting a third party payer partner.
+* Move template line: added missing tax in demo data.
+* Payment Session: fixed error when selecting bank details where payment mode have empty accounting setting.
+* Accounting Situation: fixed used credit calculation not taking in account completed sale orders.
+* Analytic: fixed amount computation when we change the analytic line percentage.
+* Accounting Batch: in closing account batch, prevented result move generation when no accounts are treated.
+* Accounting batch: fixed move generation on account closing/opening batch.
+
+#### Bank Payment
+
+* Bank reconciliation: move lines to reconcile in other currencies are now displayed.
+* AccountingBatch: fixed direct debit batch.
+
+#### Business Project
+
+* Invoicing project: fixed batch to prevent the generation of invoicing business project when there is nothing to invoice.
+
+#### Contract
+
+* Contract template/Contract version: fixed 'Additional Benefit Management' field display.
+* Contract template: fixed an error occuring in the server logs on opening a contract template.
+* Contract: fixed issue on change of contract line fields on a new version.
+
+#### Human Resource
+
+* Expense: fixed expenses creation for subordinates.
+* Expense line: fixed project filter to use user related to employee instead of current user.
+
+#### Production
+
+* Manufacturing order: fixed unable to select a tracking number on a consumed product.
+* Bill of materials import: fixed creation of a new product from bill of materials import form view.
+* Outsourcing: fixed setting outsourced in a new prod process line.
+
+#### Quality
+
+* Quality: fixed formula of dimension in control type demo data.
+
+#### Sale
+
+* Sale order line: fixed an error that occured when changing project of a line.
+* Sale order: fixed scale for quantity and price fields in editable grid.
+
+#### Talent
+
+* App config: fixed demo data in the recruitment app config.
+
+
+### Developer
+
+#### Account
+
+- Updated Invoice.rptdesign file with some fixes.
+- On an advance invoice payment, 'Imputed by' field is now correctly filled with the reference to the payment on the invoice.
+
+---
+
+In accounting configuration, the field `analyticAxisByCompanyList` had previously a sequence starting with 0. However, since the upgrade of the framework to v7, the sequence of this list now starts with 1. 
+The processes that previously assumed a starting sequence of 0 will now be adjusted to start from 1 in order to align with the behavior of AOP.
+
+If you use this configuration, after this patch please make sure that this sequence is starting with 1 in your database.
+
+---
+
+- Removed getAnalyticAmountFromParent method from AnalyticLineService.
+- Removed calculateAmountWithPercentage method from AnalyticDistributionController.
+- Removed action-method : `action-method-calculate-amount-with-percentage-analytic-move-line` and replaced by existing action-method : `action-analytic-move-line-method-compute-amount`.
+- Added computeAmount method in AnalyticMoveLineService.
+- Updated parameters on getParentWithContext method from AnalyticControllerUtils.
+
+#### Sale
+
+Removed `action action-sale-order-line-record-progress`
+
 ## [8.0.3] (2024-03-21)
 
 ### Fixes
@@ -403,6 +683,10 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.7]: https://github.com/axelor/axelor-open-suite/compare/v8.0.6...v8.0.7
+[8.0.6]: https://github.com/axelor/axelor-open-suite/compare/v8.0.5...v8.0.6
+[8.0.5]: https://github.com/axelor/axelor-open-suite/compare/v8.0.4...v8.0.5
+[8.0.4]: https://github.com/axelor/axelor-open-suite/compare/v8.0.3...v8.0.4
 [8.0.3]: https://github.com/axelor/axelor-open-suite/compare/v8.0.2...v8.0.3
 [8.0.2]: https://github.com/axelor/axelor-open-suite/compare/v8.0.1...v8.0.2
 [8.0.1]: https://github.com/axelor/axelor-open-suite/compare/v8.0.0...v8.0.1

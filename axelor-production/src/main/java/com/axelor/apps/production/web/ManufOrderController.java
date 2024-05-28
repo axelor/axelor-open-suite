@@ -19,17 +19,19 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProcess;
@@ -64,6 +66,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -347,14 +350,14 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 
       Company company = manufOrder.getCompany();
-      BirtTemplate prodProcessBirtTemplate = null;
+      PrintingTemplate prodProcessPrintTemplate = null;
       if (ObjectUtils.notEmpty(company)) {
-        prodProcessBirtTemplate =
+        prodProcessPrintTemplate =
             Beans.get(ProductionConfigService.class)
                 .getProductionConfig(company)
-                .getProdProcessBirtTemplate();
+                .getProdProcessPrintTemplate();
       }
-      if (ObjectUtils.isEmpty(prodProcessBirtTemplate)) {
+      if (ObjectUtils.isEmpty(prodProcessPrintTemplate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
@@ -364,9 +367,11 @@ public class ManufOrderController {
           Beans.get(ProdProcessRepository.class).find(manufOrder.getProdProcess().getId());
       String prodProcessLable = manufOrder.getProdProcess().getName();
       String fileLink =
-          Beans.get(BirtTemplateService.class)
-              .generateBirtTemplateLink(
-                  prodProcessBirtTemplate, prodProcess, prodProcessLable + "-${date}");
+          Beans.get(PrintingTemplatePrintService.class)
+              .getPrintLink(
+                  prodProcessPrintTemplate,
+                  new PrintingGenFactoryContext(prodProcess),
+                  prodProcessLable + "-${date}");
 
       response.setView(ActionView.define(prodProcessLable).add("html", fileLink).map());
     } catch (Exception e) {
@@ -607,7 +612,10 @@ public class ManufOrderController {
                       !showOnlyMissingQty
                           || prodProductProductionRepository
                                   .computeMissingQty(
-                                      prodProduct.getProduct().getId(), prodProduct.getQty(), moId)
+                                      prodProduct.getProduct().getId(),
+                                      prodProduct.getQty(),
+                                      moId,
+                                      prodProduct.getUnit())
                                   .compareTo(BigDecimal.ZERO)
                               > 0)
               .collect(Collectors.toList());
@@ -928,6 +936,45 @@ public class ManufOrderController {
           .setConsumedStockMoveLineStockLocation(manufOrder);
 
       response.setValue("consumedStockMoveLineList", manufOrder.getConsumedStockMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeMissingComponentsLabel(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      BigDecimal producibleQty =
+          new BigDecimal(request.getContext().get("producibleQty").toString());
+
+      Map<Product, BigDecimal> missingComponents = null;
+      if (manufOrder.getQty().compareTo(producibleQty) > 0) {
+        missingComponents = Beans.get(ManufOrderService.class).getMissingComponents(manufOrder);
+        TranslationService translationService = Beans.get(TranslationService.class);
+        UserService userService = Beans.get(UserService.class);
+        String missingComponentsStr =
+            missingComponents.entrySet().stream()
+                .map(
+                    entry -> {
+                      return String.format(
+                          "<b>%s</b> %s",
+                          translationService.getValueTranslation(
+                              entry.getKey().getName(),
+                              userService.getLocalizationCode().split("_")[0]),
+                          entry.getValue());
+                    })
+                .collect(Collectors.joining(", "));
+
+        response.setAttr(
+            "missingComponentsLabel",
+            "title",
+            String.format(
+                I18n.get(ProductionExceptionMessage.MANUF_ORDER_MISSING_COMPONENTS),
+                missingComponentsStr));
+      }
+
+      response.setAttr("missingComponentsLabel", "hidden", ObjectUtils.isEmpty(missingComponents));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

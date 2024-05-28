@@ -11,7 +11,6 @@
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="inTaxPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="coefficient"/>
     <field name="exTaxTotal" aggregate="sum"/>
@@ -128,7 +127,7 @@
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
-        <field name="taxEquivSet" hidden="true" grid-view="tax-equiv-grid"
+        <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="invoice" hidden="true"/>
         <field name="invoice.company.currency.symbol" hidden="true"/>
@@ -277,7 +276,7 @@
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="invoice" hidden="true"/>
-        <panel name="discountPanel" title="Discount" colSpan="12">
+        <panel name="discountPanel" title="Financial Discount" colSpan="12">
           <field name="discountTypeSelect"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
           <field name="discountAmount"
