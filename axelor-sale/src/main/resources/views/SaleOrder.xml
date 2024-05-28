@@ -1371,7 +1371,7 @@
     </template>
   </cards>
 
-  <form title="Project and task generation" name="sale-order-project-and-task-generation-form"
+  <form title="Task generation" name="sale-order-project-and-task-generation-form"
     model="com.axelor.apps.sale.db.SaleOrder">
     <panel name="projectAndTaskGenerationPanel" title="Task generation" colSpan="12">
       <field name="$_projectGeneratorType" title="Project generation method"
