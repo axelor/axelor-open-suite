@@ -70,7 +70,7 @@ public class StockProductRestController {
       @PathParam("productId") long productId, StockProductGetRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().readAccess(Product.class).check();
+    new SecurityCheck().readAccess(Product.class, productId).check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
@@ -95,7 +95,7 @@ public class StockProductRestController {
       @PathParam("productId") Long productId, StockProductPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Product.class).check();
+    new SecurityCheck().writeAccess(Product.class, productId).check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
@@ -122,12 +122,10 @@ public class StockProductRestController {
     RequestValidator.validateBody(requestBody);
 
     new SecurityCheck()
+        .readAccess(Product.class, productId)
         .readAccess(
             Arrays.asList(
-                Product.class,
-                ProductVariant.class,
-                ProductVariantAttr.class,
-                ProductVariantValue.class))
+                ProductVariant.class, ProductVariantAttr.class, ProductVariantValue.class))
         .check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());

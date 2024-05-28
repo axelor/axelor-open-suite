@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.stock.db.StockCorrection;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.rest.dto.StockCorrectionPostRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionPutRequest;
@@ -34,7 +33,6 @@ import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.servers.Server;
-import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -58,7 +56,7 @@ public class StockCorrectionRestController {
   @HttpExceptionHandler
   public Response createStockCorrection(StockCorrectionPostRequest requestBody) throws Exception {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().createAccess(Arrays.asList(StockCorrection.class, StockMove.class)).check();
+    new SecurityCheck().createAccess(StockCorrection.class).check();
 
     StockCorrection stockCorrection =
         Beans.get(StockCorrectionService.class)
@@ -88,7 +86,7 @@ public class StockCorrectionRestController {
       @PathParam("id") long stockCorrectionId, StockCorrectionPutRequest requestBody)
       throws Exception {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockCorrection.class).createAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockCorrection.class, stockCorrectionId).check();
 
     StockCorrection stockCorrection =
         ObjectFinder.find(StockCorrection.class, stockCorrectionId, requestBody.getVersion());
