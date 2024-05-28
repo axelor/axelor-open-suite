@@ -270,7 +270,7 @@
           action="save,action-sale-order-method-cancel-reservation"
           showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
           if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
-        <item name="taskGenerationItem" title="Task generation"
+        <item name="taskGenerationItem" title="Task generation" if="__config__.app.isApp('business-project')"
           action="action-sale-order-validate-saved-object,action-sale-order-view-generate-tasks"/>
       </menu>
     </menubar>
