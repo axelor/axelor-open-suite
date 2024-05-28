@@ -1,0 +1,3 @@
+---
+title: "Extra hours: lines employee now correctly depend on the parent employee"
+module: axelor-human-resource
