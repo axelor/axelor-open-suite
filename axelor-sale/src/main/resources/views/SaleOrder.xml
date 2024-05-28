@@ -580,9 +580,11 @@
         <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
           form-view="project-form" grid-view="project-grid" edit-window="blank"
           onChange="action-business-project-sale-order-method-update-lines"/>
-        <button name="generateProjectBtn" title="Generate Project/Business" readonlyIf="!projectGeneratorType || isFilledProject"
+        <button name="generateProjectBtn" title="Generate Project/Business"
+          readonlyIf="isFilledProject"
           if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null"
           hidden="true" onClick="save,action-business-project-method-generate-project"/>
+        <field name="isFilledProject" hidden="true"/>
       </panel>
 
       <panel
@@ -1374,14 +1376,14 @@
   <form title="Task generation" name="sale-order-project-and-task-generation-form"
     model="com.axelor.apps.sale.db.SaleOrder">
     <panel name="projectAndTaskGenerationPanel" title="Task generation" colSpan="12">
-        <field name="projectGeneratorType" readonlyIf="isFilledProject"/>
-      <button name="fillProjectBtn" readonlyIf="!projectGeneratorType || isFilledProject" title="Fill project"
-        if="__config__.app.getApp('business-project').projectSaleOrderLines"
-        showIf="project != null" hidden="true"
-        onClick="save,action-business-project-method-fill-project,close"/>
-        <field name="elementStartDate" widget="date-time" colSpan="3"
-               readonlyIf="isFilledProject"/>
-        <field name="isFilledProject" hidden="true"/>
+      <field name="projectGeneratorType" readonlyIf="isFilledProject"/>
+      <button name="fillProjectBtn" readonlyIf="!projectGeneratorType || isFilledProject"
+        title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines"
+        showIf="project != null" onClick="save,action-business-project-method-fill-project,close"/>
+      <field name="elementStartDate" widget="date-time" colSpan="3"
+        readonlyIf="isFilledProject"/>
+      <field name="isFilledProject" hidden="true"/>
+      <field name="project" hidden="true"/>
     </panel>
   </form>
 

@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineService;
+import com.axelor.apps.businessproject.service.projectgenerator.ProjectGenerationService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
@@ -56,9 +57,9 @@ public class SaleOrderProjectController {
       }
       LocalDateTime startDate = getElementStartDate(saleOrder);
       ProjectGeneratorType projectGeneratorType = saleOrder.getProjectGeneratorType();
-        if (projectGeneratorType == null) {
-            projectGeneratorType = ProjectGeneratorType.valueOf("PROJECT_ALONE");
-        }
+      if (projectGeneratorType == null) {
+        projectGeneratorType = ProjectGeneratorType.valueOf("PROJECT_ALONE");
+      }
       ProjectGeneratorFactory factory = ProjectGeneratorFactory.getFactory(projectGeneratorType);
 
       Project project;
