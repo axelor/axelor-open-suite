@@ -1373,8 +1373,7 @@
 
   <form title="Project and task generation" name="sale-order-project-and-task-generation-form"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <panel name="projectAndTaskGenerationPanel" title="Task generation"
-      colSpan="12">
+    <panel name="projectAndTaskGenerationPanel" title="Task generation" colSpan="12">
       <field name="$_projectGeneratorType" title="Project generation method"
         x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"
         help="You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has &quot;Produce&quot; as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration."/>
@@ -2341,8 +2340,8 @@
       expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
 
-  <action-view name="action-sale-order-view-generate-tasks"
-    title="Task generation" model="com.axelor.apps.sale.db.SaleOrder">
+  <action-view name="action-sale-order-view-generate-tasks" title="Task generation"
+    model="com.axelor.apps.sale.db.SaleOrder">
     <view type="form" name="sale-order-project-and-task-generation-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
