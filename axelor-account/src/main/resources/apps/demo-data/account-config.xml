@@ -55,7 +55,6 @@
     <bind column="validAccounts" to="validAccountSet"
       search="self.importId in :validAccounts and self.company.importId = :company_importId"
       eval="validAccounts.split('\\|') as List"/>
-    <bind to="company" search="self.importId = :company_importId"/>
   </input>
 
   <input file="account_paymentMode.csv" separator=";"
@@ -290,9 +289,6 @@
   <input file="account_moveTemplate.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.apps.account.db.MoveTemplate"
     call="com.axelor.csv.script.ImportMoveTemplate:importMove">
-    <bind to="name" column="name"/>
-    <bind to="code" column="code"/>
-    <bind to="journal" column="journal" search="self.importId = :journal"/>
     <bind to="moveTemplateType" search="self.importId = :type"/>
   </input>
 
