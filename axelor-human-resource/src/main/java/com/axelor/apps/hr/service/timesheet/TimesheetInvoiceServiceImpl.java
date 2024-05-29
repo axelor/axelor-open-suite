@@ -91,7 +91,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[5];
-      Product product = getProduct(timesheetLine);
+      Product product = timesheetLine.getProduct();
       tabInformations[0] = product;
       tabInformations[1] = timesheetLine.getEmployee();
       // Start date
@@ -160,10 +160,6 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
     }
 
     return invoiceLineList;
-  }
-
-  protected Product getProduct(TimesheetLine timesheetLine) {
-    return timesheetLine.getProduct();
   }
 
   @Override
