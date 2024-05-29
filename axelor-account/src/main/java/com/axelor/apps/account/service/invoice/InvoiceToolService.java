@@ -35,6 +35,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -302,7 +303,8 @@ public class InvoiceToolService {
     copy.setOriginalInvoice(null);
     copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
     copy.setAmountPaid(BigDecimal.ZERO);
-    copy.setAmountRemaining(copy.getInTaxTotal());
+    computeInvoiceAmounts(copy);
+    copy.setAmountRemaining(copy.getInTaxTotal()); // AND CHANGE copy.getCompanyInTaxTotal()  copy.getInTaxTotal()  copy.setAmountRemaining()  copy.getExTaxTotal()  copy.getCompanyExTaxTotal()  copy.getTaxTotal()  copy.getCompanyTaxTotal()
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
     copy.setPaymentProgress(0);
@@ -428,4 +430,21 @@ public class InvoiceToolService {
     copy.setRemainingAmountAfterFinDiscount(remainingAmountAfterFinDiscount);
     copy.setLegalNotice(legalNotice);
   }
+
+  protected static void computeInvoiceAmounts(Invoice copy) {
+
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+
+    // Update invoice
+    // compute invoice Line first and then compute invoice amounts
+
+    // copy.getCompanyInTaxTotal()
+    // copy.getInTaxTotal()
+    // copy.setAmountRemaining()
+    // copy.getExTaxTotal()
+    // copy.getCompanyExTaxTotal()
+    // copy.getTaxTotal()
+    // copy.getCompanyTaxTotal()
+  }
+
 }
