@@ -140,6 +140,6 @@ public class TimesheetLineController {
   public void setProduct(ActionRequest request, ActionResponse response) {
     TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
     response.setAttr(
-        "product", "value", Beans.get(TimesheetLineService.class).findProduct(timesheetLine));
+        "product", "value", Beans.get(TimesheetLineService.class).getDefaultProduct(timesheetLine));
   }
 }

@@ -282,7 +282,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   }
 
   @Override
-  public Product findProduct(TimesheetLine timesheetLine) {
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
     if (timesheetLine.getProduct() == null) {
       return timesheetLine.getEmployee().getProduct();
     }
