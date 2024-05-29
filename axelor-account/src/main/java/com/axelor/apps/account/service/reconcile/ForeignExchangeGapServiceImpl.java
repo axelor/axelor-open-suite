@@ -60,7 +60,9 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     // are equals
     if (foreignExchangeGapToolsService.checkCurrencies(creditMoveLine, debitMoveLine)
         && !debitMoveLine.getCurrencyRate().equals(creditMoveLine.getCurrencyRate())
-        && this.checkForeignExchangeAccounts(reconcile.getCompany())) {
+        && this.checkForeignExchangeAccounts(reconcile.getCompany())
+        && foreignExchangeGapToolsService.checkIsTotalPayment(
+            reconcile, creditMoveLine, debitMoveLine)) {
       BigDecimal foreignExchangeGapAmount =
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
 

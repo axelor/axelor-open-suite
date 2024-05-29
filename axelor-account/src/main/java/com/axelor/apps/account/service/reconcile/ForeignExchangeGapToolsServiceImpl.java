@@ -47,4 +47,15 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
         && !debitMoveLine.getCurrency().equals(debitMoveLine.getCompanyCurrency())
         && creditMoveLine.getCurrency().equals(debitMoveLine.getCurrency());
   }
+
+  @Override
+  public boolean checkIsTotalPayment(
+      Reconcile reconcile, MoveLine creditMoveLine, MoveLine debitMoveLine) {
+    boolean paymentIsDebit = this.isDebit(creditMoveLine, debitMoveLine);
+
+    return reconcile
+            .getAmount()
+            .compareTo(paymentIsDebit ? creditMoveLine.getCredit() : debitMoveLine.getDebit())
+        == 0;
+  }
 }

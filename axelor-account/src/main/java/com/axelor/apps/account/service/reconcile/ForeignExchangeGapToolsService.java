@@ -15,4 +15,6 @@ public interface ForeignExchangeGapToolsService {
   int getInvoicePaymentType(Reconcile reconcile);
 
   boolean checkCurrencies(MoveLine creditMoveLine, MoveLine debitMoveLine);
+
+  boolean checkIsTotalPayment(Reconcile reconcile, MoveLine creditMoveLine, MoveLine debitMoveLine);
 }
