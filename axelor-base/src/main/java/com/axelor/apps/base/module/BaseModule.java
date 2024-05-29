@@ -61,7 +61,6 @@ import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
-import com.axelor.apps.base.openapi.AosSwagger;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -430,7 +429,6 @@ public class BaseModule extends AxelorModule {
     bind(ResearchRequestService.class).to(ResearchRequestServiceImpl.class);
     bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
     bind(BaseServerStartListener.class);
-    bind(AosSwagger.class);
     bind(BirtTemplateConfigLineService.class).to(BirtTemplateConfigLineServiceImpl.class);
     bind(PrintFromBirtTemplateService.class).to(PrintFromBirtTemplateServiceImpl.class);
     bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
