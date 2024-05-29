@@ -1,0 +1,3 @@
+---
+title: "MoveLine : Select default account from partner configuration only for first moveline of the move"
+module: axelor-account
