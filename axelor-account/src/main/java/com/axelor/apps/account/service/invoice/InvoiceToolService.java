@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -35,15 +36,18 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.google.common.base.Strings;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
@@ -304,7 +308,7 @@ public class InvoiceToolService {
     copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
     copy.setAmountPaid(BigDecimal.ZERO);
     computeInvoiceAmounts(copy);
-    copy.setAmountRemaining(copy.getInTaxTotal()); // AND CHANGE copy.getCompanyInTaxTotal()  copy.getInTaxTotal()  copy.setAmountRemaining()  copy.getExTaxTotal()  copy.getCompanyExTaxTotal()  copy.getTaxTotal()  copy.getCompanyTaxTotal()
+    copy.setAmountRemaining(copy.getInTaxTotal());
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
     copy.setPaymentProgress(0);
@@ -431,20 +435,41 @@ public class InvoiceToolService {
     copy.setLegalNotice(legalNotice);
   }
 
-  protected static void computeInvoiceAmounts(Invoice copy) {
-
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+  protected static void computeInvoiceAmounts(Invoice copy) throws AxelorException {
+    // Update invoice lines with new currency rate
+    for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
+      computeInvoiceLine(invoiceLine, copy);
+    }
 
     // Update invoice
-    // compute invoice Line first and then compute invoice amounts
-
-    // copy.getCompanyInTaxTotal()
-    // copy.getInTaxTotal()
-    // copy.setAmountRemaining()
-    // copy.getExTaxTotal()
-    // copy.getCompanyExTaxTotal()
-    // copy.getTaxTotal()
-    // copy.getCompanyTaxTotal()
+    Beans.get(InvoiceService.class).compute(copy);
   }
 
+  protected static void computeInvoiceLine(InvoiceLine invoiceLine, Invoice copy)
+      throws AxelorException {
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    Map<String, Object> productInformation = new HashMap<>();
+
+    if (invoiceLine.getProduct() != null) {
+      try {
+        productInformation = invoiceLineService.fillProductInformation(copy, invoiceLine);
+        String errorMsg = (String) productInformation.get("error");
+
+        if (!Strings.isNullOrEmpty(errorMsg)) {
+          productInformation = invoiceLineService.resetProductInformation(copy);
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+    } else {
+      productInformation = invoiceLineService.resetProductInformation(copy);
+    }
+
+    invoiceLine.setPrice((BigDecimal) productInformation.get("price"));
+    invoiceLine.setTaxRate((BigDecimal) productInformation.get("taxRate"));
+    invoiceLine.setInTaxPrice((BigDecimal) productInformation.get("inTaxPrice"));
+    invoiceLine.setDiscountAmount((BigDecimal) productInformation.get("discountAmount"));
+
+    invoiceLineService.compute(copy, invoiceLine);
+  }
 }

@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix multi currency invoice duplication when currency rate is updated"
+module: axelor-account
