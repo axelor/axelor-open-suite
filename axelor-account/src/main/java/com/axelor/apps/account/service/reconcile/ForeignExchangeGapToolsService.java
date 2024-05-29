@@ -8,9 +8,11 @@ public interface ForeignExchangeGapToolsService {
 
   List<Integer> getForeignExchangeTypes();
 
-  boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine, boolean isDebit);
+  boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine);
 
   boolean isDebit(MoveLine creditMoveLine, MoveLine debitMoveLine);
 
   int getInvoicePaymentType(Reconcile reconcile);
+
+  boolean checkCurrencies(MoveLine creditMoveLine, MoveLine debitMoveLine);
 }

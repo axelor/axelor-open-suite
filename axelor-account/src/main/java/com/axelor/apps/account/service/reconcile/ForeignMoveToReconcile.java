@@ -7,14 +7,14 @@ public class ForeignMoveToReconcile {
   private Move move;
   private MoveLine debitMoveLine;
   private MoveLine creditMoveLine;
-  private boolean isGain;
+  private boolean updateInvoiceTerms;
 
   public ForeignMoveToReconcile(
-      Move move, MoveLine debitMoveLine, MoveLine creditMoveLine, boolean isGain) {
+      Move move, MoveLine debitMoveLine, MoveLine creditMoveLine, boolean updateInvoiceTerms) {
     this.move = move;
     this.debitMoveLine = debitMoveLine;
     this.creditMoveLine = creditMoveLine;
-    this.isGain = isGain;
+    this.updateInvoiceTerms = updateInvoiceTerms;
   }
 
   public Move getMove() {
@@ -29,7 +29,7 @@ public class ForeignMoveToReconcile {
     return creditMoveLine;
   }
 
-  public boolean getIsGain() {
-    return isGain;
+  public boolean getUpdateInvoiceTerms() {
+    return updateInvoiceTerms;
   }
 }

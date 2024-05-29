@@ -56,31 +56,24 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
 
-    // We only run the process if currency rate between the two moveLines are different
-    if (debitMoveLine != null
-        && creditMoveLine != null
+    // We only run the process if currency rate between the two moveLines are different and currency
+    // are equals
+    if (foreignExchangeGapToolsService.checkCurrencies(creditMoveLine, debitMoveLine)
         && !debitMoveLine.getCurrencyRate().equals(creditMoveLine.getCurrencyRate())
-        && this.checkForeignExchangeAccounts(reconcile.getCompany())
-        && !creditMoveLine.getCurrency().equals(creditMoveLine.getCompanyCurrency())
-        && !debitMoveLine.getCurrency().equals(debitMoveLine.getCompanyCurrency())
-        && creditMoveLine.getCurrency().equals(debitMoveLine.getCurrency())) {
-      boolean isDebit = foreignExchangeGapToolsService.isDebit(creditMoveLine, debitMoveLine);
+        && this.checkForeignExchangeAccounts(reconcile.getCompany())) {
       BigDecimal foreignExchangeGapAmount =
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
 
       // We only create a foreign exchange move if foreignExchangeGapAmount is greater than 0.01
       if (foreignExchangeGapAmount.compareTo(BigDecimal.valueOf(0.01)) > 0) {
-        boolean isGain =
-            foreignExchangeGapToolsService.isGain(creditMoveLine, debitMoveLine, isDebit);
-
         Move foreignExchangeMove =
-            this.createForeignExchangeGapMove(reconcile, foreignExchangeGapAmount, isGain, isDebit);
+            this.createForeignExchangeGapMove(reconcile, foreignExchangeGapAmount);
         MoveLine foreignExchangeDebitMoveLine = foreignExchangeMove.getMoveLineList().get(0);
         MoveLine foreignExchangeCreditMoveLine = foreignExchangeMove.getMoveLineList().get(1);
 
         MoveLine debitMoveLineToReconcile;
         MoveLine creditMoveLineToReconcile;
-        if (isGain) {
+        if (foreignExchangeGapToolsService.isGain(creditMoveLine, debitMoveLine)) {
           debitMoveLineToReconcile = foreignExchangeDebitMoveLine;
           creditMoveLineToReconcile = creditMoveLine;
         } else {
@@ -88,11 +81,14 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
           creditMoveLineToReconcile = foreignExchangeCreditMoveLine;
         }
 
+        boolean updateInvoiceTerms =
+            foreignExchangeGapToolsService.isGain(creditMoveLine, debitMoveLine)
+                == foreignExchangeGapToolsService.isDebit(creditMoveLine, debitMoveLine);
         return new ForeignMoveToReconcile(
             foreignExchangeMove,
             debitMoveLineToReconcile,
             creditMoveLineToReconcile,
-            (isDebit && isGain) || (!isDebit && isGain));
+            updateInvoiceTerms);
       }
     }
 
@@ -127,8 +123,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     return amountReconciled.subtract(currencyAmount.abs().multiply(moveLineRate)).abs();
   }
 
-  protected Move createForeignExchangeGapMove(
-      Reconcile reconcile, BigDecimal foreignExchangeAmount, boolean isGain, boolean isDebit)
+  protected Move createForeignExchangeGapMove(Reconcile reconcile, BigDecimal foreignExchangeAmount)
       throws AxelorException {
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
@@ -139,14 +134,17 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     Account gainsAccount = accountConfigService.getForeignExchangeAccount(accountConfig, true);
     Account lossesAccount = accountConfigService.getForeignExchangeAccount(accountConfig, false);
 
+    boolean paymentIsDebit = foreignExchangeGapToolsService.isDebit(creditMoveLine, debitMoveLine);
+    boolean isGain = foreignExchangeGapToolsService.isGain(creditMoveLine, debitMoveLine);
+
     Account debitAccount =
-        (isDebit && !isGain)
+        (paymentIsDebit && !isGain)
             ? lossesAccount
-            : (!isDebit && !isGain) ? lossesAccount : creditMoveLine.getAccount();
+            : (!paymentIsDebit && !isGain) ? lossesAccount : creditMoveLine.getAccount();
     Account creditAccount =
-        (isDebit && isGain)
+        (paymentIsDebit && isGain)
             ? gainsAccount
-            : (!isDebit && isGain) ? gainsAccount : debitMoveLine.getAccount();
+            : (!paymentIsDebit && isGain) ? gainsAccount : debitMoveLine.getAccount();
 
     Invoice invoice;
     Partner partner = null;
@@ -163,10 +161,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
       partner = debitMoveLine.getMove().getPartner();
     }
 
-    LocalDate date =
-        (isDebit && isGain) || (!isDebit && isGain)
-            ? creditMoveLine.getDate()
-            : debitMoveLine.getDate();
+    LocalDate date = paymentIsDebit ? debitMoveLine.getDate() : creditMoveLine.getDate();
     // Move creation
     Move move =
         moveCreateService.createMove(

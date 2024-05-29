@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -829,22 +830,21 @@ public class ReconcileServiceImpl implements ReconcileService {
               foreignExchangeGapMove.getMove(),
               false,
               true,
-              foreignExchangeGapMove.getIsGain());
+              foreignExchangeGapMove.getUpdateInvoiceTerms());
       if (foreignExchangeReconcile != null) {
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
         if (invoicePayment != null) {
-          invoicePayment.setTypeSelect(
-              foreignExchangeGapToolsService.getInvoicePaymentType(reconcile));
-          invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-          invoicePaymentRepository.save(invoicePayment);
-          reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
+          int typeSelect = foreignExchangeGapToolsService.getInvoicePaymentType(reconcile);
+          invoicePayment.setTypeSelect(typeSelect);
 
-          if (reconcile
-                      .getAmount()
-                      .compareTo(invoicePayment.getInvoice().getCompanyInTaxTotalRemaining())
-                  != 0
-              && foreignExchangeGapMove.getIsGain()) {
+          Invoice invoice = invoicePayment.getInvoice();
+          invoicePaymentToolService.updateAmountPaid(invoice);
+          invoicePaymentRepository.save(invoicePayment);
+
+          reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
+          if (reconcile.getAmount().compareTo(invoice.getCompanyInTaxTotalRemaining()) != 0
+              && typeSelect == InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN) {
             reconcile.setAmount(
                 reconcile.getAmount().subtract(foreignExchangeReconcile.getAmount()));
           }

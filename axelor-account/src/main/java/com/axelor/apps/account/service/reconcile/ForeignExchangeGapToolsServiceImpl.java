@@ -17,14 +17,14 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
   }
 
   @Override
-  public boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine, boolean isDebit) {
+  public boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+    return this.isGain(creditMoveLine, debitMoveLine, this.isDebit(creditMoveLine, debitMoveLine));
+  }
+
+  protected boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine, boolean isDebit) {
     return isDebit
         ? creditMoveLine.getCurrencyRate().compareTo(debitMoveLine.getCurrencyRate()) > 0
         : debitMoveLine.getCurrencyRate().compareTo(creditMoveLine.getCurrencyRate()) < 0;
-  }
-
-  protected boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine) {
-    return this.isGain(creditMoveLine, debitMoveLine, this.isDebit(creditMoveLine, debitMoveLine));
   }
 
   @Override
@@ -37,5 +37,14 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
     return this.isGain(reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine())
         ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN
         : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS;
+  }
+
+  @Override
+  public boolean checkCurrencies(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+    return debitMoveLine != null
+        && creditMoveLine != null
+        && !creditMoveLine.getCurrency().equals(creditMoveLine.getCompanyCurrency())
+        && !debitMoveLine.getCurrency().equals(debitMoveLine.getCompanyCurrency())
+        && creditMoveLine.getCurrency().equals(debitMoveLine.getCurrency());
   }
 }
