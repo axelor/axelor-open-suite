@@ -3,9 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
 
-  <input file="account_accountingReportType.csv" separator=";"
-    search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType">
-    <bind to="company" column="company" search="self.importId = :company" update="true"/>
-  </input>
+  <input file="project_project_config.csv" type="com.axelor.apps.project.db.ProjectConfig"
+    separator=";" update="true" search="self.importId = :importId"/>
 
 </csv-inputs>
