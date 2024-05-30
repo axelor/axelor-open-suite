@@ -50,5 +50,5 @@ public interface MoveLineMassEntryService {
   void setPfpValidatorUserForInTaxAccount(
       List<MoveLineMassEntry> moveLineMassEntryList, Company company, int temporaryMoveNumber);
 
-  MoveLineMassEntry createMoveLineMassEntry();
+  MoveLineMassEntry createMoveLineMassEntry(Company company);
 }
