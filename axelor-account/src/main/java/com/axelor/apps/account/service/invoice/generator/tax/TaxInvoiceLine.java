@@ -137,6 +137,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
           imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
         } else {
+          vatSystem = 0;
           imputedAccount = null;
         }
 
