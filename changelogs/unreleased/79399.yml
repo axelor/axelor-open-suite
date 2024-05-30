@@ -1,5 +1,0 @@
----
-title: "Contract version: Fixed contract version service class to avoid repo extension."
-module: axelor-contract
-developer: |
-  Refactored ContractVersionServiceImpl to remove inheritance from ContractVersionRepository.
