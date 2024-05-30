@@ -29,6 +29,7 @@ import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -75,6 +76,7 @@ public class ExpenseLineRestController {
     String comments = requestBody.getComments();
     String expenseLineType = requestBody.getExpenseLineType();
     Boolean toInvoice = requestBody.getToInvoice();
+    ProjectTask projectTask = requestBody.fetchProjectTask();
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
@@ -88,7 +90,8 @@ public class ExpenseLineRestController {
               comments,
               employee,
               requestBody.fetchCurrency(),
-              toInvoice);
+              toInvoice,
+              projectTask);
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
@@ -105,7 +108,8 @@ public class ExpenseLineRestController {
               employee,
               requestBody.fetchCompany(),
               requestBody.fetchCurrency(),
-              toInvoice);
+              toInvoice,
+              projectTask);
     }
 
     return Beans.get(ExpenseLineResponseComputeService.class)
@@ -163,7 +167,8 @@ public class ExpenseLineRestController {
                 requestBody.fetchEmployee(),
                 requestBody.fetchCurrency(),
                 requestBody.getToInvoice(),
-                requestBody.fetchExpense());
+                requestBody.fetchExpense(),
+                requestBody.fetchProjectTask());
 
     return ResponseConstructor.build(
         Response.Status.OK,
