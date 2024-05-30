@@ -828,7 +828,6 @@ public class PaymentVoucherConfirmService {
             moveLineToPay.getAmountRemaining(),
             companyAmountToPay,
             amountToPay,
-            moveLineToPay.getCurrencyRate(),
             moveLineToPay.getMove().getCompany());
 
     MoveLine moveLine =

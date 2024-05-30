@@ -1744,4 +1744,10 @@ public final class AccountExceptionMessage {
   public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
   public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
       "Duplicate from tax found for this fiscal position." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange gain account config for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_LOSSES_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange loss account config for company %s." /*)*/;
 }
