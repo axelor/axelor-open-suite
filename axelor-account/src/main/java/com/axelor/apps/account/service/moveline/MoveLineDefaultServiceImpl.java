@@ -82,10 +82,10 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
     Account accountingAccount =
         moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
 
-    if (ObjectUtils.isEmpty(move.getMoveLineList())
-        || move.getMoveLineList().size() == 1
-            && Objects.equals(move.getMoveLineList().get(0), moveLine)
-            && accountingAccount != null) {
+    if (accountingAccount != null
+        && (ObjectUtils.isEmpty(move.getMoveLineList())
+            || move.getMoveLineList().size() == 1
+                && Objects.equals(move.getMoveLineList().get(0), moveLine))) {
       moveLine.setAccount(accountingAccount);
 
       AnalyticDistributionTemplate analyticDistributionTemplate =
