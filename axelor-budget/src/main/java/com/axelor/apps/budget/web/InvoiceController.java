@@ -28,7 +28,6 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
@@ -71,16 +70,17 @@ public class InvoiceController {
     }
   }
 
-  public void computeInvoiceBudgetDistributionSumAmount(
+  public void computeInvoiceBudgetRemainingAmountToAllocate(
       ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
-        BudgetInvoiceLineService budgetInvoiceLineService =
-            Beans.get(BudgetInvoiceLineService.class);
+        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          budgetInvoiceLineService.computeBudgetDistributionSumAmount(invoiceLine, invoice);
+          invoiceLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }

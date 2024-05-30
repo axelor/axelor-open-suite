@@ -47,4 +47,16 @@ public interface CurrencyService {
       throws AxelorException;
 
   BigDecimal computeScaledExchangeRate(BigDecimal amount1, BigDecimal amount2);
+
+  boolean isSameCurrencyRate(
+      LocalDate invoiceDate, LocalDate paymentDate, Currency startCurrency, Currency endCurrency)
+      throws AxelorException;
+
+  BigDecimal getCurrencyRate(
+      LocalDate oldDate,
+      LocalDate newDate,
+      Currency startCurrency,
+      Currency endCurrency,
+      BigDecimal oldCurrencyRate)
+      throws AxelorException;
 }

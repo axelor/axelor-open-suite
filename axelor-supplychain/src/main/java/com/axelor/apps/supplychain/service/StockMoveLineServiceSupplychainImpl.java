@@ -63,6 +63,7 @@ import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -680,6 +681,30 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       }
     } else {
       super.fillRealQuantities(stockMoveLine, stockMove, qty);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  protected void fillOriginTrackingNumber(StockMoveLine stockMoveLine) {
+    super.fillOriginTrackingNumber(stockMoveLine);
+
+    if (appBaseService.isApp("supplychain")) {
+      TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
+      if (trackingNumber != null) {
+        if (stockMoveLine.getSaleOrderLine() != null) {
+
+          trackingNumber.setOriginMoveTypeSelect(TrackingNumberRepository.ORIGIN_MOVE_TYPE_SALE);
+          trackingNumber.setOriginSaleOrderLine(stockMoveLine.getSaleOrderLine());
+        } else if (stockMoveLine.getPurchaseOrderLine() != null) {
+
+          trackingNumber.setOriginMoveTypeSelect(
+              TrackingNumberRepository.ORIGIN_MOVE_TYPE_PURCHASE);
+          trackingNumber.setOriginPurchaseOrderLine(stockMoveLine.getPurchaseOrderLine());
+        }
+
+        trackingNumberRepo.save(trackingNumber);
+      }
     }
   }
 }

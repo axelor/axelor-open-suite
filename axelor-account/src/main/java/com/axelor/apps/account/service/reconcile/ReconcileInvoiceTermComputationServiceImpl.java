@@ -18,6 +18,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -39,6 +40,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoiceTermService invoiceTermService;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected CurrencyService currencyService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoiceTermPaymentRepository invoiceTermPaymentRepository;
   protected InvoiceRepository invoiceRepository;
@@ -51,6 +53,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
       InvoicePaymentCreateService invoicePaymentCreateService,
       InvoiceTermService invoiceTermService,
       InvoicePaymentToolService invoicePaymentToolService,
+      CurrencyService currencyService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
       InvoiceRepository invoiceRepository) {
@@ -60,6 +63,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.invoiceTermService = invoiceTermService;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.currencyService = currencyService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoiceTermPaymentRepository = invoiceTermPaymentRepository;
     this.invoiceRepository = invoiceRepository;
@@ -89,6 +93,13 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
     reconcileCheckService.checkCurrencies(debitMoveLine, creditMoveLine);
 
+    if (reconcile.getForeignExchangeMove() != null
+        && creditInvoice == null
+        && debitInvoice == null) {
+      creditInvoice = creditMove.getInvoice() != null ? creditMove.getInvoice() : null;
+      debitInvoice = debitMove.getInvoice() != null ? debitMove.getInvoice() : null;
+    }
+
     this.updatePayment(
         reconcile,
         debitMoveLine,
@@ -109,8 +120,9 @@ public class ReconcileInvoiceTermComputationServiceImpl
         updateInvoiceTerms);
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
-  protected void updatePayment(
+  public void updatePayment(
       Reconcile reconcile,
       MoveLine moveLine,
       MoveLine otherMoveLine,
@@ -132,19 +144,36 @@ public class ReconcileInvoiceTermComputationServiceImpl
         }
       }
 
-      if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
-        amount = this.getTotal(moveLine, otherMoveLine, amount, invoicePayment != null);
-      }
-
-      if (invoicePayment == null
-          && moveLine.getAccount().getUseForPartnerBalance()
+      if (moveLine.getAccount().getUseForPartnerBalance()
           && otherMoveLine.getAccount().getUseForPartnerBalance()) {
-        invoicePayment =
-            invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
-        invoicePayment.setReconcile(reconcile);
+        BigDecimal invoicePaymentAmount = amount;
+        if (!reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove)) {
+          invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, false);
+        }
+
+        InvoicePayment foreignExchangePayment =
+            invoicePaymentRepository.findByMove(reconcile.getForeignExchangeMove()).fetchOne();
+        if (foreignExchangePayment == null
+            && reconcile.getForeignExchangeMove() != null
+            && invoicePayment != null
+            && !reconcile.equals(invoicePayment.getReconcile())) {
+          invoicePayment =
+              invoicePaymentCreateService.createInvoicePayment(
+                  invoice, invoicePaymentAmount, reconcile.getForeignExchangeMove());
+          invoicePayment.setReconcile(reconcile);
+        } else if (invoicePayment == null) {
+          invoicePayment =
+              invoicePaymentCreateService.createInvoicePayment(
+                  invoice, invoicePaymentAmount, otherMove);
+          invoicePayment.setReconcile(reconcile);
+        }
       }
     } else if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
       amount = this.getTotal(moveLine, otherMoveLine, amount, false);
+    } else {
+      amount =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              otherMove.getCurrency(), move.getCurrency(), amount, move.getDate());
     }
 
     List<InvoiceTermPayment> invoiceTermPaymentList = null;

@@ -43,9 +43,6 @@ public interface ProjectTaskService {
   public ProjectTask create(String subject, Project project, User assignedTo);
 
   @CallMethod
-  public TaskStatus getDefaultCompletedStatus(Project project);
-
-  @CallMethod
   public TaskStatus getStatus(Project project);
 
   @CallMethod
@@ -56,6 +53,4 @@ public interface ProjectTaskService {
   public String getTaskLink(String value);
 
   public void fillSubtask(ProjectTask projectTask);
-
-  int computeProgressSelect(ProjectTask projectTask);
 }

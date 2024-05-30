@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.reconcile.ReconcileCheckService;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationServiceImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -52,6 +53,7 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
       InvoicePaymentCreateService invoicePaymentCreateService,
       InvoiceTermService invoiceTermService,
       InvoicePaymentToolService invoicePaymentToolService,
+      CurrencyService currencyService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
       InvoiceRepository invoiceRepository,
@@ -65,6 +67,7 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
         invoicePaymentCreateService,
         invoiceTermService,
         invoicePaymentToolService,
+        currencyService,
         invoicePaymentRepository,
         invoiceTermPaymentRepository,
         invoiceRepository);
@@ -73,8 +76,9 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
     this.reconcileToolBudgetService = reconcileToolBudgetService;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
-  protected void updatePayment(
+  public void updatePayment(
       Reconcile reconcile,
       MoveLine moveLine,
       MoveLine otherMoveLine,

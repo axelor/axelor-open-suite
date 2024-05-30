@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.common.FileUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.service.TranslationBaseService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,12 +41,13 @@ public interface PrintingGeneratorFactory {
       throws AxelorException;
 
   default File renameFile(File file, PrintingTemplateLine printTemplateLine) throws IOException {
+    String name =
+        Beans.get(TranslationBaseService.class)
+            .getValueTranslation(FileUtils.stripExtension(file.getName()));
     String fileName =
         String.format(
             "%s-%s.%s",
-            FileUtils.stripExtension(file.getName()),
-            printTemplateLine.getSequence(),
-            FileUtils.getExtension(file.getName()));
+            name, printTemplateLine.getSequence(), FileUtils.getExtension(file.getName()));
     Path src = file.toPath();
     Path dest = Files.move(src, src.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING);
     return dest.toFile();

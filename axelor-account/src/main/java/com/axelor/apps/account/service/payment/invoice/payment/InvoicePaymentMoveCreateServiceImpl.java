@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
@@ -18,6 +19,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -28,14 +30,18 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
@@ -45,6 +51,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCreateService {
 
@@ -63,6 +70,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   protected AccountingSituationService accountingSituationService;
   protected CurrencyService currencyService;
   protected InvoicePaymentRepository invoicePaymentRepository;
+  protected InvoiceLineTaxToolService invoiceLineTaxToolService;
 
   @Inject
   public InvoicePaymentMoveCreateServiceImpl(
@@ -80,7 +88,8 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       MoveLineCreateService moveLineCreateService,
       AccountingSituationService accountingSituationService,
       CurrencyService currencyService,
-      InvoicePaymentRepository invoicePaymentRepository) {
+      InvoicePaymentRepository invoicePaymentRepository,
+      InvoiceLineTaxToolService invoiceLineTaxToolService) {
     this.dateService = dateService;
     this.paymentModeService = paymentModeService;
     this.moveToolService = moveToolService;
@@ -96,6 +105,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     this.accountingSituationService = accountingSituationService;
     this.currencyService = currencyService;
     this.invoicePaymentRepository = invoicePaymentRepository;
+    this.invoiceLineTaxToolService = invoiceLineTaxToolService;
   }
 
   /**
@@ -125,6 +135,16 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
               invoicePayment.getPaymentMode().getName(),
               invoice.getPartner().getName(),
               invoice.getDueDate().format(dateService.getDateFormat()));
+    }
+
+    if (this.isFinancialDiscount(invoicePayment)
+        && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      throw new AxelorException(
+          invoicePayment,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              AccountExceptionMessage
+                  .FINANCIAL_DISCOUNT_NOT_COMPATIBLE_WITH_ADVANCE_PAYMENT_INVOICE));
     }
 
     Account customerAccount;
@@ -270,11 +290,10 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
 
-    BigDecimal currencyRate =
-        currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
     companyPaymentAmount =
-        companyPaymentAmount.subtract(
-            invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));
+        companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
+    BigDecimal currencyRate =
+        this.computeCurrencyRate(invoice, invoicePayment, companyPaymentAmount, paymentAmount);
 
     companyPaymentAmount =
         invoiceTermService.adjustAmountInCompanyCurrency(
@@ -282,13 +301,15 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
             invoice.getCompanyInTaxTotalRemaining(),
             companyPaymentAmount,
             paymentAmount,
-            invoice.getMove() != null
-                ? invoice.getMove().getMoveLineList().stream()
-                    .map(MoveLine::getCurrencyRate)
-                    .findAny()
-                    .orElse(BigDecimal.ONE)
-                : BigDecimal.ONE,
             company);
+    companyPaymentAmount =
+        this.correctCompanyAmountWithForeignExchange(
+            invoice.getInvoiceDate(),
+            invoicePayment.getPaymentDate(),
+            invoicePayment.getCurrency(),
+            invoicePayment.getCompanyCurrency(),
+            paymentAmount,
+            companyPaymentAmount);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -337,6 +358,9 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
             origin,
             move.getDescription()));
 
+    createTaxMoveLinesForAdvancePayment(
+        move, partner, isDebitInvoice, paymentDate, counter, origin, invoice);
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, paymentDate, false);
     }
@@ -362,5 +386,131 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       accountingSituationService.updateCustomerCredit(invoice.getPartner());
       invoicePaymentRepository.save(invoicePayment);
     }
+  }
+
+  protected BigDecimal computeCurrencyRate(
+      Invoice invoice,
+      InvoicePayment invoicePayment,
+      BigDecimal companyPaymentAmount,
+      BigDecimal paymentAmount)
+      throws AxelorException {
+    Currency invoiceCurrency = invoice.getCurrency();
+    Currency paymentCurrency = invoicePayment.getCurrency();
+    Currency companyCurrency = invoice.getCompanyCurrency();
+    Move invoiceMove = invoice.getMove();
+
+    BigDecimal currencyRate =
+        currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
+
+    if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
+      BigDecimal newCurrencyRate =
+          currencyService.getCurrencyRate(
+              invoice.getInvoiceDate(),
+              invoicePayment.getPaymentDate(),
+              paymentCurrency,
+              companyCurrency,
+              currencyRate);
+      if (newCurrencyRate.compareTo(currencyRate) != 0) {
+        return newCurrencyRate;
+      }
+
+      return invoiceMove != null
+          ? invoiceMove.getMoveLineList().stream()
+              .map(MoveLine::getCurrencyRate)
+              .findAny()
+              .orElse(currencyRate)
+          : currencyRate;
+    }
+
+    return currencyRate;
+  }
+
+  protected void createTaxMoveLinesForAdvancePayment(
+      Move move,
+      Partner partner,
+      boolean isDebitInvoice,
+      LocalDate paymentDate,
+      Integer counter,
+      String origin,
+      Invoice invoice)
+      throws AxelorException {
+    AppAccount appAccount = appAccountService.getAppAccount();
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        || appAccount == null
+        || ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())
+        || (InvoiceToolService.isPurchase(invoice)
+            && appAccount.getPaymentVouchersOnSupplierInvoice())
+        || (!InvoiceToolService.isPurchase(invoice)
+            && appAccount.getPaymentVouchersOnCustomerInvoice())) {
+      return;
+    }
+
+    List<Pair<InvoiceLineTax, Account>> invoiceLineTaxAccountPair =
+        invoiceLineTaxToolService.getInvoiceLineTaxAccountPair(
+            invoice.getInvoiceLineTaxList(), invoice.getCompany());
+
+    if (ObjectUtils.isEmpty(invoiceLineTaxAccountPair)) {
+      return;
+    }
+
+    for (Pair<InvoiceLineTax, Account> pair : invoiceLineTaxAccountPair) {
+      InvoiceLineTax invoiceLineTax = pair.getLeft();
+      Account vatPendingAccount = pair.getRight();
+      TaxConfiguration taxConfiguration =
+          new TaxConfiguration(
+              invoiceLineTax.getTaxLine(),
+              invoiceLineTax.getImputedAccount(),
+              invoiceLineTax.getVatSystemSelect());
+      TaxConfiguration pendingTaxConfiguration =
+          new TaxConfiguration(
+              invoiceLineTax.getTaxLine(), vatPendingAccount, invoiceLineTax.getVatSystemSelect());
+
+      MoveLine taxMoveLine =
+          moveLineCreateService.createTaxMoveLine(
+              move,
+              partner,
+              !isDebitInvoice,
+              paymentDate,
+              counter,
+              origin,
+              invoiceLineTax.getTaxTotal(),
+              invoiceLineTax.getCompanyTaxTotal(),
+              taxConfiguration);
+      if (taxMoveLine != null) {
+        move.addMoveLineListItem(taxMoveLine);
+
+        MoveLine reverseTaxMoveLine =
+            moveLineCreateService.createTaxMoveLine(
+                move,
+                partner,
+                isDebitInvoice,
+                paymentDate,
+                counter,
+                origin,
+                invoiceLineTax.getTaxTotal(),
+                invoiceLineTax.getCompanyTaxTotal(),
+                pendingTaxConfiguration);
+
+        if (reverseTaxMoveLine != null) {
+          move.addMoveLineListItem(reverseTaxMoveLine);
+        }
+      }
+    }
+  }
+
+  protected BigDecimal correctCompanyAmountWithForeignExchange(
+      LocalDate invoiceDate,
+      LocalDate paymentDate,
+      Currency startCurrency,
+      Currency endCurrency,
+      BigDecimal currencyAmount,
+      BigDecimal companyCurrencyAmount)
+      throws AxelorException {
+    if (!currencyService.isSameCurrencyRate(invoiceDate, paymentDate, startCurrency, endCurrency)) {
+      return currencyService.getAmountCurrencyConvertedAtDate(
+          startCurrency, endCurrency, currencyAmount, paymentDate);
+    }
+
+    return companyCurrencyAmount;
   }
 }

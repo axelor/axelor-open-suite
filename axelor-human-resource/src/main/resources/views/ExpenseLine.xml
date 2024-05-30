@@ -17,6 +17,9 @@
       onSelect="action-expense-line-method-compute-project-task-domain"
       onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
       form-view="project-task-form"/>
+    <field name="site" form-view="site-form" grid-view="site-grid"
+      onSelect="action-expense-line-attrs-set-site-domain"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
     <field name="expenseProduct" canView="false"
       onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
       form-view="product-expense-form" grid-view="product-expense-grid" width="200"
@@ -48,8 +51,12 @@
       grid-view="project-grid" width="120"/>
     <field name="projectTask" canView="false"
       onSelect="action-expense-line-method-compute-project-task-domain"
-      onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
-      form-view="project-task-form"/>
+      onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
+      grid-view="project-task-grid" form-view="project-task-form"/>
+    <field name="site" form-view="site-form" grid-view="site-grid"
+      onSelect="action-expense-line-attrs-set-site-domain"
+      onChange="action-expense-line-group-fill-arrival-and-compute"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
     <field name="expenseDate" title="Date" width="95"
       onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
     <field name="kilometricAllowParam" canEdit="false" required="true" width="60"
@@ -115,6 +122,9 @@
         onSelect="action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
         grid-view="project-task-grid"/>
+      <field name="site" form-view="site-form" grid-view="site-grid"
+        onSelect="action-expense-line-attrs-set-site-domain"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
       <field name="expenseProduct" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
         form-view="product-expense-form" grid-view="product-expense-grid"
@@ -188,8 +198,12 @@
         form-view="project-form" grid-view="project-grid"/>
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-method-compute-project-task-domain"
-        onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
-        grid-view="project-task-grid"/>
+        onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
+        form-view="project-task-form" grid-view="project-task-grid"/>
+      <field name="site" form-view="site-form" grid-view="site-grid"
+        onSelect="action-expense-line-attrs-set-site-domain"
+        onChange="action-expense-line-group-fill-arrival-and-compute"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
       <field name="expenseDate"/>
       <field name="kilometricAllowParam" required="true"
         onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
@@ -298,7 +312,7 @@
 
   <action-attrs name="action-expense-line-attrs-domain-project">
     <attribute name="domain" for="project"
-      expr="eval: &quot; ${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id} &quot;"/>
+      expr="eval: &quot; self.projectStatus = 2 AND ${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id} &quot;"/>
   </action-attrs>
 
   <action-method name="action-expense-line-method-compute-project-task-domain">
@@ -308,6 +322,12 @@
 
   <action-attrs name="action-expense-line-attrs-on-project-task-change">
     <attribute for="project" name="value" expr="eval: projectTask?.project"/>
+    <attribute for="site" name="value" expr="eval: projectTask?.site"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+  </action-attrs>
+
+  <action-attrs name="action-expense-line-attrs-fill-arrival-from-site">
+    <attribute for="toCity" name="value" expr="eval: site?.address?.fullName"/>
   </action-attrs>
 
   <action-record name="action-expense-line-default"
@@ -468,5 +488,17 @@
     <attribute for="untaxedAmount" name="value" expr="eval: 0"/>
     <attribute for="totalTax" name="value" expr="eval: 0"/>
   </action-attrs>
+
+  <action-attrs name="action-expense-line-attrs-set-site-domain">
+    <attribute for="site" name="domain"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"
+      if="project"/>
+    <attribute for="site" name="domain" expr="self.isUsableOnExpense = true" if="!project"/>
+  </action-attrs>
+
+  <action-group name="action-expense-line-group-fill-arrival-and-compute">
+    <action name="action-expense-line-attrs-fill-arrival-from-site"/>
+    <action name="action-kilometric-allowance-method-compute-distance"/>
+  </action-group>
 
 </object-views>

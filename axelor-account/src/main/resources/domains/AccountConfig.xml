@@ -75,6 +75,11 @@
     <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
       selection="account.account.chart.code.nbr.char.select"/>
 
+    <!-- Foreign exchange gains/losses -->
+    <many-to-one name="foreignExchangeGainsAccount"
+      ref="com.axelor.apps.account.db.Account" title="Gains account"/>
+    <many-to-one name="foreignExchangeLossesAccount"
+      ref="com.axelor.apps.account.db.Account" title="Losses account"/>
 
     <!-- Automatic account creation for partners -->
     <integer name="partnerAccountGenerationModeSelect"
@@ -337,12 +342,14 @@
     <decimal name="allowedTaxGap" title="Allowed tax gap" default="0.00" initParam="true"
       help="Field allowing a tax gap during the accounting of a move. Its value specifies the tolerance applied during the tax values control and the move balance control."/>
 
-    <many-to-one name="invoiceBirtTemplate" title="Invoice template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="purchaseInvoicesDetailsBirtTemplate"
-      title="Purchase invoices details template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="chequeDepositSlipBirtTemplate"
-      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="invoicePrintTemplate" title="Invoice template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="purchaseInvoicesDetailsPrintTemplate"
+      title="Purchase invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="chequeDepositSlipPrintTemplate"
+      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="saleInvoicesDetailsPrintTemplate"
+      title="Sale invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -538,9 +545,10 @@
 
       <field name="retrieveDaybookMovesInPaymentSession" on="UPDATE"/>
 
-      <field name="invoiceBirtTemplate" on="UPDATE"/>
-      <field name="purchaseInvoicesDetailsBirtTemplate" on="UPDATE"/>
-      <field name="chequeDepositSlipBirtTemplate" on="UPDATE"/>
+      <field name="invoicePrintTemplate" on="UPDATE"/>
+      <field name="purchaseInvoicesDetailsPrintTemplate" on="UPDATE"/>
+      <field name="chequeDepositSlipPrintTemplate" on="UPDATE"/>
+      <field name="saleInvoicesDetailsPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

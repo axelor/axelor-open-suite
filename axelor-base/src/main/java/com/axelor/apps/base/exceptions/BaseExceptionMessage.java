@@ -636,6 +636,8 @@ public final class BaseExceptionMessage {
 
   public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
       "Pricing process unavailable for this class : %s" /*)*/;
+  public static final String REGISTRATION_CODE_EMPTY_FOR_COMPANIES = /*$$(*/
+      "Registration code is required for companies" /*)*/;
 
   /** Import Configuration */
   public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/

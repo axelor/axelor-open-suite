@@ -10,6 +10,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.TrackingNumberConfigurationProfile;
 import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -20,6 +21,10 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public class TrackingNumberServiceImpl implements TrackingNumberService {
 
@@ -28,17 +33,21 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
   protected AppStockService appStockService;
 
   protected ProductCompanyService productCompanyService;
+  protected TrackingNumberConfigurationProfileService trackingNumberConfigurationProfileService;
+  protected static final int MAX_ITERATION = 1000;
 
   @Inject
   public TrackingNumberServiceImpl(
       SequenceService sequenceService,
       TrackingNumberRepository trackingNumberRepo,
       AppStockService appStockService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      TrackingNumberConfigurationProfileService trackingNumberConfigurationProfileService) {
     this.sequenceService = sequenceService;
     this.trackingNumberRepo = trackingNumberRepo;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
+    this.trackingNumberConfigurationProfileService = trackingNumberConfigurationProfileService;
   }
 
   @Override
@@ -148,6 +157,12 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
     }
     trackingNumber.setSupplier(supplier);
 
+    if (product.getTrackingNumberConfiguration() != null
+        && product.getTrackingNumberConfiguration().getIsDimensional()) {
+      trackingNumber.setUnitMass(product.getNetMass());
+      trackingNumber.setMetricMass(product.getMetricMass());
+    }
+
     return trackingNumber;
   }
 
@@ -168,5 +183,54 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
     trackingNumber.setNote(notes);
     trackingNumberRepo.save(trackingNumber);
     return trackingNumber;
+  }
+
+  @Override
+  public void calculateDimension(TrackingNumber trackingNumber) throws AxelorException {
+    Objects.requireNonNull(trackingNumber);
+
+    Optional<TrackingNumberConfigurationProfile> optTrackingNumberConfigurationProfile =
+        Optional.ofNullable(trackingNumber.getProduct())
+            .map(Product::getTrackingNumberConfiguration)
+            .map((TrackingNumberConfiguration::getTrackingNumberConfigurationProfile));
+
+    if (optTrackingNumberConfigurationProfile.isPresent()) {
+      trackingNumberConfigurationProfileService.calculateDimension(
+          trackingNumber, optTrackingNumberConfigurationProfile.get());
+    }
+  }
+
+  @Override
+  public Set<TrackingNumber> getOriginParents(TrackingNumber trackingNumber)
+      throws AxelorException {
+    Objects.requireNonNull(trackingNumber);
+
+    if (trackingNumber.getParentTrackingNumberSet() != null
+        && !trackingNumber.getParentTrackingNumberSet().isEmpty()) {
+      return getOriginParentsRecursive(trackingNumber, 0);
+    }
+    return Set.of();
+  }
+
+  protected Set<TrackingNumber> getOriginParentsRecursive(
+      TrackingNumber trackingNumber, int loopNbr) throws AxelorException {
+
+    if (loopNbr >= MAX_ITERATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              StockExceptionMessage.STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED));
+    }
+
+    if (trackingNumber.getParentTrackingNumberSet() != null
+        && !trackingNumber.getParentTrackingNumberSet().isEmpty()) {
+      HashSet<TrackingNumber> trackingNumbers = new HashSet<>();
+      for (TrackingNumber parentTrackingNumber : trackingNumber.getParentTrackingNumberSet()) {
+        trackingNumbers.addAll(this.getOriginParentsRecursive(parentTrackingNumber, loopNbr + 1));
+      }
+      return trackingNumbers;
+    }
+
+    return Set.of(trackingNumber);
   }
 }

@@ -169,6 +169,44 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.inTaxTotal = this.currencyScaleService.getScaledValue(invoice, inTaxTotal);
   }
 
+  protected InvoiceLineGenerator(
+      Invoice invoice,
+      Product product,
+      String productName,
+      BigDecimal price,
+      BigDecimal inTaxPrice,
+      BigDecimal priceDiscounted,
+      String description,
+      BigDecimal qty,
+      Unit unit,
+      Set<TaxLine> taxLineSet,
+      int sequence,
+      BigDecimal discountAmount,
+      int discountTypeSelect,
+      BigDecimal exTaxTotal,
+      BigDecimal inTaxTotal,
+      boolean isTaxInvoice,
+      int typeSelect) {
+    this(
+        invoice,
+        product,
+        productName,
+        price,
+        inTaxPrice,
+        priceDiscounted,
+        description,
+        qty,
+        unit,
+        taxLineSet,
+        sequence,
+        discountAmount,
+        discountTypeSelect,
+        exTaxTotal,
+        inTaxTotal,
+        isTaxInvoice);
+    this.typeSelect = typeSelect;
+  }
+
   public Invoice getInvoice() {
     return invoice;
   }
@@ -179,6 +217,32 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
   @Override
   public abstract List<InvoiceLine> creates() throws AxelorException;
+
+  public void setProductAccount(InvoiceLine invoiceLine, Company company, boolean isPurchase)
+      throws AxelorException {
+    if (product != null) {
+      invoiceLine.setProductCode((String) productCompanyService.get(product, "code", company));
+      Account account =
+          accountManagementService.getProductAccount(
+              product,
+              company,
+              invoice.getFiscalPosition(),
+              isPurchase,
+              invoiceLine.getFixedAssets());
+      invoiceLine.setAccount(account);
+    }
+  }
+
+  public void setTaxEquiv(InvoiceLine invoiceLine, Company company, boolean isPurchase)
+      throws AxelorException {
+    if (product != null) {
+      TaxEquiv taxEquiv =
+          Beans.get(AccountManagementService.class)
+              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
+
+      invoiceLine.setTaxEquiv(taxEquiv);
+    }
+  }
 
   /**
    * @return
@@ -195,17 +259,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setProduct(product);
 
     invoiceLine.setProductName(productName);
-    if (product != null) {
-      invoiceLine.setProductCode((String) productCompanyService.get(product, "code", company));
-      Account account =
-          accountManagementService.getProductAccount(
-              product,
-              company,
-              invoice.getFiscalPosition(),
-              isPurchase,
-              invoiceLine.getFixedAssets());
-      invoiceLine.setAccount(account);
-    }
+
+    setProductAccount(invoiceLine, company, isPurchase);
 
     invoiceLine.setDescription(description);
     invoiceLine.setPrice(price);
@@ -227,17 +282,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       this.determineTaxLine();
     }
 
-    if (product != null) {
-      Set<TaxEquiv> taxEquivSet =
-          Beans.get(AccountManagementService.class)
-              .getProductTaxEquivSet(product, company, invoice.getFiscalPosition(), isPurchase);
-
-      invoiceLine.setTaxEquivSet(taxEquivSet);
-    }
-
-    invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
+    setTaxEquiv(invoiceLine, company, isPurchase);
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
       invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
       invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
     }

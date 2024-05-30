@@ -170,6 +170,9 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
 
       for (BillOfMaterial childBom : childBomList) {
 
+        if (childBom.getProdProcess() == null) {
+          continue;
+        }
         ManufOrder manufOrder =
             this.generateManufOrder(
                 childBom.getProduct(),

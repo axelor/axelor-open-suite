@@ -21,13 +21,11 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.project.db.ProjectTask;
@@ -43,22 +41,18 @@ import javax.xml.datatype.DatatypeConfigurationException;
 public class InvoicePaymentValidateProjectServiceImpl
     extends InvoicePaymentValidateServiceBankPayImpl {
 
-  private InvoicingProjectRepository invoicingProjectRepo;
+  protected InvoicingProjectRepository invoicingProjectRepo;
 
   @Inject
   public InvoicePaymentValidateProjectServiceImpl(
-      MoveCreateService moveCreateService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
-      DateService dateService,
       InvoicePaymentMoveCreateService invoicePaymentMoveCreateService,
       PaymentModeService paymentModeService,
       InvoicingProjectRepository invoicingProjectRepo) {
     super(
-        moveCreateService,
         invoicePaymentRepository,
         invoicePaymentToolService,
-        dateService,
         invoicePaymentMoveCreateService,
         paymentModeService);
     this.invoicingProjectRepo = invoicingProjectRepo;

@@ -27,7 +27,6 @@
 "User";"email";"1";"true";"internet.emailAddress"
 "User";"fullName";"1";"true";"name.fullName"
 "Partner";"siren";"1";"true";"code.imei"
-"Partner";"companyStr";"1";"true";"company.name"
 "Partner";"taxNbr";"1";"true";"code.imei"
 "Partner";"registrationCode";"1";"true";"code.imei"
 "Partner";"fullName";"1";"true";"name.fullName"
