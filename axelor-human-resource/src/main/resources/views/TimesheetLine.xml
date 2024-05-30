@@ -320,7 +320,6 @@
       if="_projectTask != null"/>
     <attribute name="value" for="project" expr="eval: _project" if="_project != null"/>
     <attribute name="value" for="employee" expr="eval: _employee"/>
-    <attribute name="value" for="product" expr="eval:__user__.employee?.product"/>
     <attribute name="value" expr="eval: _invoicingType == 1 ? true : false"
       for="toInvoice"/>
     <attribute name="value" for="enableEditor" expr="eval: true"
