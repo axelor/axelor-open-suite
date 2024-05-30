@@ -18,10 +18,10 @@
  */
 package com.axelor.apps.base.service.pricing;
 
-import com.axelor.rpc.Response;
+import com.axelor.meta.schema.views.AbstractView;
 
 public interface PricingMetaService {
-  Response managePricing(Response response, String model);
+  void managePricing(AbstractView view);
 
   String setButtonCondition(String model);
 }
