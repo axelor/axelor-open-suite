@@ -74,7 +74,7 @@
           requiredIf="!product &amp;&amp; !formula"
           onChange="action-pricing-method-set-formula-field"/>
         <panel name="formulaPanel" title="Formula" colSpan="12" canCollapse="true"
-          collapseIf="$readonly()">
+          collapseIf="id">
           <field name="formula" showTitle="false" readonlyIf="product || productCategory"
             height="150" colSpan="12" widget="CodeEditor"
             onChange="action-pricing-method-clear-fields-related-to-formula"

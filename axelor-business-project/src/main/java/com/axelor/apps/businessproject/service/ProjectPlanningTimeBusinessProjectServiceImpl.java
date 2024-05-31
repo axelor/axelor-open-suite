@@ -34,6 +34,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
+import com.axelor.apps.hr.service.project.PlannedTimeValueService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
@@ -43,6 +44,7 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -65,6 +67,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
       AppProjectService appProjectService,
+      ProjectConfigService projectConfigService,
+      PlannedTimeValueService plannedTimeValueService,
       UnitConversionForProjectService unitConversionForProjectService,
       UnitConversionRepository unitConversionRepository,
       AppBusinessProjectService appBusinessProjectService,
@@ -80,6 +84,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         employeeRepo,
         timesheetLineRepository,
         appProjectService,
+        projectConfigService,
+        plannedTimeValueService,
         iCalendarService,
         iCalendarEventRepository,
         unitConversionForProjectService,

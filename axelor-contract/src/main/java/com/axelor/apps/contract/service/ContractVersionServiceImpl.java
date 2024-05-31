@@ -47,21 +47,23 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
-public class ContractVersionServiceImpl extends ContractVersionRepository
-    implements ContractVersionService {
+public class ContractVersionServiceImpl implements ContractVersionService {
 
   protected AppBaseService appBaseService;
   protected InvoiceRepository invoiceRepository;
   protected InvoiceLineRepository invoiceLineRepository;
+  protected ContractVersionRepository contractVersionRepository;
 
   @Inject
   public ContractVersionServiceImpl(
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
-      InvoiceLineRepository invoiceLineRepository) {
+      InvoiceLineRepository invoiceLineRepository,
+      ContractVersionRepository contractVersionRepository) {
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
     this.invoiceLineRepository = invoiceLineRepository;
+    this.contractVersionRepository = contractVersionRepository;
   }
 
   @Override
@@ -105,7 +107,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ContractExceptionMessage.CONTRACT_MISSING_FIRST_PERIOD));
     }
-    version.setStatusSelect(WAITING_VERSION);
+    version.setStatusSelect(ContractVersionRepository.WAITING_VERSION);
   }
 
   @Override
@@ -138,7 +140,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
     version.setActivationDateTime(dateTime);
     version.setActivatedByUser(AuthUtils.getUser());
-    version.setStatusSelect(ONGOING_VERSION);
+    version.setStatusSelect(ContractVersionRepository.ONGOING_VERSION);
 
     if (version.getVersion() != null
         && version.getVersion() >= 0
@@ -158,7 +160,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
           I18n.get("Please fill the first period end date and the invoice frequency."));
     }
 
-    save(version);
+    contractVersionRepository.save(version);
   }
 
   @Override
@@ -188,14 +190,14 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
     }
 
     version.setEndDateTime(dateTime);
-    version.setStatusSelect(TERMINATED_VERSION);
+    version.setStatusSelect(ContractVersionRepository.TERMINATED_VERSION);
 
-    save(version);
+    contractVersionRepository.save(version);
   }
 
   @Override
   public ContractVersion newDraft(Contract contract) {
-    return copy(contract);
+    return contractVersionRepository.copy(contract);
   }
 
   public void computeTotals(ContractVersion contractVersion) {

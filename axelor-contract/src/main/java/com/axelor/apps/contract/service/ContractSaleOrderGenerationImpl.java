@@ -84,6 +84,7 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
     saleOrderLine.setPriceDiscounted(contractLine.getPriceDiscounted());
 
     saleOrderLine.setTaxLineSet(Sets.newHashSet(contractLine.getTaxLineSet()));
+    saleOrderLine.setTypeSelect(contractLine.getTypeSelect());
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
 

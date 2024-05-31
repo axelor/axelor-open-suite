@@ -23,8 +23,7 @@
     <hilite color="success" if="leadScoringSelect == 5.00"/>
     <template> <![CDATA[
          <>
-         	<h4>{simpleFullName}</h4>
-         	{user && <Image src={$image('user', 'image')}></Image>}
+         	<strong>{simpleFullName}</strong>
          	<Box as="dl" mt={4}>
          		{enterpriseName &&
          			<Box>
@@ -44,6 +43,9 @@
          				{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning" fontSize="15px"/>)}
          			</Box>
          		</Box>
+         	</Box>
+         	<Box d="flex" justifyContent="flex-end">
+         		{user && <Image src={$image('user', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
          	</Box>
 	        <Box className="card-summary popover">
 	       		<Box as="p" m={2}>

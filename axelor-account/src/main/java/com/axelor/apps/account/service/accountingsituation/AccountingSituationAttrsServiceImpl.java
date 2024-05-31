@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.accountingsituation;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -76,6 +77,20 @@ public class AccountingSituationAttrsServiceImpl implements AccountingSituationA
         "customerAccount", "hidden", partner != null && !partner.getIsCustomer(), attrsMap);
     this.addAttr(
         "employeeAccount", "hidden", partner != null && !partner.getIsEmployee(), attrsMap);
+  }
+
+  @Override
+  public void manageAnalyticAccountPanel(
+      Company company, Partner partner, Map<String, Map<String, Object>> attrsMap) {
+
+    this.addAttr(
+        "analyticsPanel",
+        "hidden",
+        partner == null
+            || company.getAccountConfig() == null
+            || company.getAccountConfig().getAnalyticDistributionTypeSelect()
+                != AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER,
+        attrsMap);
   }
 
   @Override

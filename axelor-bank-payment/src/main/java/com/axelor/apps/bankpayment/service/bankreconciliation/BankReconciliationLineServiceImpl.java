@@ -132,17 +132,19 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
             bankReconciliationLine, bankReconciliationLine.getCredit());
     boolean isDebit = bankDebit.compareTo(bankCredit) > 0;
 
-    BigDecimal moveLineDebit;
-    BigDecimal moveLineCredit;
+    BigDecimal moveLineDebit =
+        currencyScaleService.getCompanyScaledValue(moveLine, moveLine.getDebit());
+    BigDecimal moveLineCredit =
+        currencyScaleService.getCompanyScaledValue(moveLine, moveLine.getCredit());
 
-    if (isDebit) {
-      moveLineCredit =
-          currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
-      moveLineDebit = currencyScaleService.getCompanyScaledValue(moveLine, moveLine.getDebit());
-    } else {
-      moveLineDebit =
-          currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
-      moveLineCredit = currencyScaleService.getCompanyScaledValue(moveLine, moveLine.getCredit());
+    if (moveLine.getMove().getCurrency().equals(bankReconciliationLine.getCurrency())) {
+      if (isDebit) {
+        moveLineCredit =
+            currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
+      } else {
+        moveLineDebit =
+            currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
+      }
     }
 
     if (bankDebit.add(bankCredit).compareTo(BigDecimal.ZERO) == 0) {

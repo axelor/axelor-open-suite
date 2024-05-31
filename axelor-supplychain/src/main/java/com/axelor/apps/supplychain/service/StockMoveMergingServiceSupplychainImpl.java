@@ -23,7 +23,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -65,8 +64,13 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
                 .collect(Collectors.toSet()))) {
       errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
     }
-    if (!checkAllSame(stockMoveList, StockMove::getPurchaseOrderSet)) {
-      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER));
+    if (!checkAllSame(
+        stockMoveList,
+        stockMove ->
+            stockMove.getPurchaseOrderSet().stream()
+                .map(purchaseOrder -> purchaseOrder.getFiscalPosition())
+                .collect(Collectors.toSet()))) {
+      errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_PO));
     }
   }
 
@@ -88,7 +92,7 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
             .collect(Collectors.toSet()));
     mergedStockMove.setPurchaseOrderSet(
         stockMoveList.stream()
-            .flatMap(s -> s.getPurchaseOrderSet().stream())
+            .flatMap(p -> p.getPurchaseOrderSet().stream())
             .collect(Collectors.toSet()));
   }
 }

@@ -25,6 +25,10 @@ import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.helpdesk.rest.service.TicketUpdateRestService;
 import com.axelor.apps.helpdesk.rest.service.TicketUpdateRestServiceImpl;
 import com.axelor.apps.helpdesk.service.MailServiceHelpDeskImpl;
+import com.axelor.apps.helpdesk.service.TicketAssignmentService;
+import com.axelor.apps.helpdesk.service.TicketAssignmentServiceImpl;
+import com.axelor.apps.helpdesk.service.TicketSequenceService;
+import com.axelor.apps.helpdesk.service.TicketSequenceServiceImpl;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TicketServiceImpl;
 import com.axelor.apps.helpdesk.service.TicketStatusService;
@@ -49,5 +53,7 @@ public class HelpdeskModule extends AxelorModule {
     bind(TicketWorkflowService.class).to(TicketWorkflowServiceImpl.class);
     bind(AppHelpdeskService.class).to(AppHelpdeskServiceImpl.class);
     bind(TicketStatusService.class).to(TicketStatusServiceImpl.class);
+    bind(TicketSequenceService.class).to(TicketSequenceServiceImpl.class);
+    bind(TicketAssignmentService.class).to(TicketAssignmentServiceImpl.class);
   }
 }

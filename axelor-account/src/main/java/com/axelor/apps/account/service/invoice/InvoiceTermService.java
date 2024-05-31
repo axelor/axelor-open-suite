@@ -275,6 +275,8 @@ public interface InvoiceTermService {
 
   boolean isPaymentConditionFree(InvoiceTerm invoiceTerm);
 
+  void payInvoiceTerms(List<InvoiceTerm> invoiceTermList);
+
   List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm);
 
   void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
@@ -284,6 +286,5 @@ public interface InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
-      BigDecimal currencyRate,
       Company company);
 }

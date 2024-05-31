@@ -7,6 +7,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
@@ -46,8 +47,9 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
       BankOrderMoveService bankOrderMoveService,
       BankOrderLineOriginService bankOrderLineOriginService,
       PaymentSessionValidateService paymentSessionValidateService,
-      ExpensePaymentService expensePaymentService,
-      ExpenseRepository expenseRepository) {
+      ReconcileService reconcileService,
+      ExpenseRepository expenseRepository,
+      ExpensePaymentService expensePaymentService) {
     super(
         accountConfigService,
         invoicePaymentToolService,
@@ -61,7 +63,8 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
         accountingSituationService,
         bankOrderMoveService,
         bankOrderLineOriginService,
-        paymentSessionValidateService);
+        paymentSessionValidateService,
+        reconcileService);
     this.expenseRepository = expenseRepository;
     this.expensePaymentService = expensePaymentService;
   }
