@@ -78,8 +78,6 @@ import com.axelor.apps.base.service.BankServiceImpl;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.BaseReportGenerator;
-import com.axelor.apps.base.service.BirtTemplateConfigLineService;
-import com.axelor.apps.base.service.BirtTemplateConfigLineServiceImpl;
 import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
@@ -427,7 +425,6 @@ public class BaseModule extends AxelorModule {
     bind(ResearchRequestService.class).to(ResearchRequestServiceImpl.class);
     bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
     bind(BaseServerStartListener.class);
-    bind(BirtTemplateConfigLineService.class).to(BirtTemplateConfigLineServiceImpl.class);
     bind(PrintFromBirtTemplateService.class).to(PrintFromBirtTemplateServiceImpl.class);
     bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
     bind(DayPlanningService.class).to(DayPlanningServiceImpl.class);
