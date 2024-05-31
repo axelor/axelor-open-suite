@@ -1,0 +1,3 @@
+---
+title: "Invoice/MoveLine : fix financial discount amount and currency amount scaling"
+module: axelor-account
