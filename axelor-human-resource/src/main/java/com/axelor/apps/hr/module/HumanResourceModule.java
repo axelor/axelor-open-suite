@@ -46,6 +46,8 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.MedicalVisitHRRepository;
 import com.axelor.apps.hr.db.repo.MedicalVisitRepository;
 import com.axelor.apps.hr.db.repo.PartnerHRRepository;
+import com.axelor.apps.hr.db.repo.PayrollPreparationHRRepository;
+import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
@@ -364,6 +366,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(PlannedTimeValueService.class).to(PlannedTimeValueServiceImpl.class);
     bind(ProjectPlanningTimeResponseComputeService.class)
         .to(ProjectPlanningTimeResponseComputeServiceImpl.class);
+    bind(PayrollPreparationRepository.class).to(PayrollPreparationHRRepository.class);
     bind(MoveLineTaxServiceImpl.class).to(MoveLineTaxHRServiceImpl.class);
     bind(ReconcileCheckServiceImpl.class).to(ReconcileCheckServiceHRImpl.class);
     bind(PayrollPreparationExportService.class).to(PayrollPreparationExportServiceImpl.class);
