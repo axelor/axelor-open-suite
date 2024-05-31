@@ -115,6 +115,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoicePrintService invoicePrintService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -133,7 +134,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePrintService invoicePrintService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -151,6 +153,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoicePrintService = invoicePrintService;
   }
 
   // WKF
@@ -264,12 +267,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     invoiceRepo.save(invoice);
     if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
-      Beans.get(InvoicePrintService.class)
-          .printAndSave(
-              invoice,
-              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
-              accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
-              null);
+      invoicePrintService.printAndSave(
+          invoice,
+          InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
+          accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
+          null);
     }
   }
 
