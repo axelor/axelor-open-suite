@@ -69,6 +69,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -233,7 +234,8 @@ public class SaleOrderController {
         if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
           BigDecimal qtyToInvoiceItem =
               new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
-          if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
+          if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0
+              || Objects.equals(SaleOrderLineRepository.TYPE_TITLE, map.get("typeSelect"))) {
             Long soLineId = Long.valueOf((Integer) map.get("id"));
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
             BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
