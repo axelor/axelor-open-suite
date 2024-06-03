@@ -301,12 +301,14 @@ public class PayrollPreparationService {
     List<String[]> list = new ArrayList<>();
     String[] headerLine = {};
     if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD) {
-      String[] item = new String[5];
+      String[] item = new String[7];
       item[0] = payrollPreparation.getEmployee().getName();
       item[1] = payrollPreparation.getDuration().toString();
       item[2] = payrollPreparation.getLunchVoucherNumber().toString();
       item[3] = payrollPreparation.getEmployeeBonusAmount().toString();
       item[4] = payrollPreparation.getExtraHoursNumber().toString();
+      item[5] = payrollPreparation.getExpenseAmount().toString();
+      item[6] = payrollPreparation.getLeaveDuration().toString();
       list.add(item);
       headerLine = this.getPayrollPreparationExportHeader();
     } else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_NIBELIS) {
@@ -435,12 +437,14 @@ public class PayrollPreparationService {
 
   public String[] getPayrollPreparationExportHeader() {
 
-    String[] headers = new String[5];
+    String[] headers = new String[7];
     headers[0] = I18n.get("Employee");
     headers[1] = I18n.get("Working days' number");
     headers[2] = I18n.get("Lunch vouchers' number");
     headers[3] = I18n.get("Employee bonus amount");
     headers[4] = I18n.get("Extra hours' number");
+    headers[5] = I18n.get("Expenses amount to pay");
+    headers[6] = I18n.get("Leave days' number");
     return headers;
   }
 
