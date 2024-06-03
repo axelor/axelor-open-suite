@@ -24,48 +24,6 @@
     <field name="budgetLevel"/>
   </grid>
 
-  <tree name="budget-tree" title="Budget Levels">
-    <column name="name" type="string"/>
-    <column name="code" type="string"/>
-    <column name="totalAmountExpected"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="totalAmountCommitted"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="totalFirmGap" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="realizedWithNoPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="realizedWithPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="simulatedAmount" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="availableAmountWithSimulated"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="globalBudget.company.currency.numberOfDecimals" hidden="true"/>
-
-    <node model="com.axelor.apps.budget.db.BudgetLevel"
-      domain="self.parentBudgetLevel is null AND self.globalBudget.id = :_globalId "
-      onClick="action-budget-view-budget-level">
-      <field as="name" name="name"/>
-      <field as="code" name="code"/>
-      <field name="totalAmountExpected"/>
-      <field name="totalAmountCommitted"/>
-      <field name="totalFirmGap"/>
-      <field name="realizedWithNoPo"/>
-      <field name="realizedWithPo"/>
-      <field name="simulatedAmount"/>
-      <field name="availableAmountWithSimulated"/>
-    </node>
-    <node model="com.axelor.apps.budget.db.BudgetLevel" parent="parentBudgetLevel"
-      onClick="action-budget-view-budget-level">
-      <field as="name" name="name"/>
-      <field as="code" name="code"/>
-      <field name="totalAmountExpected"/>
-      <field name="totalAmountCommitted"/>
-      <field name="totalFirmGap"/>
-      <field name="realizedWithNoPo"/>
-      <field name="realizedWithPo"/>
-      <field name="simulatedAmount"/>
-      <field name="availableAmountWithSimulated"/>
-    </node>
-  </tree>
-
   <form name="budget-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
     width="large" onNew="budget-action-budget-group-onnew"
     onLoad="budget-action-budget-group-onload"

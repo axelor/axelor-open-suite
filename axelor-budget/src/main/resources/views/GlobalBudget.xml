@@ -151,7 +151,26 @@
         showIf="!budgetLevelList || budgetLevelList.length == 0" form-view="budget-form"
         grid-view="budget-grid" canEdit="statusSelect == 0" canNew="statusSelect == 0"
         canRemove="statusSelect == 0"/>
+    </panel>
+  </form>
 
+  <form model="com.axelor.apps.budget.db.GlobalBudget" title="Sections"
+    name="global-budget-tree-form" width="large">
+    <panel readonlyIf="statusSelect != 0" colSpan="12">
+      <panel-related name="budgetLevelTreePanel" colSpan="12" canNew="false"
+        canRemove="false" title="Sections (Tree)" field="budgetLevelList"
+        form-view="budget-level-form" grid-view="budget-level-grid" widget="tree-grid"
+        x-tree-field="budgetLevelList" x-tree-field-title="">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="totalAmountExpected" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountAvailable" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountCommitted" x-scale="$currencyNumberOfDecimals"/>
+        <field name="realizedWithNoPo" x-scale="$currencyNumberOfDecimals"/>
+        <field name="realizedWithPo" x-scale="$currencyNumberOfDecimals"/>
+        <field name="$currencyNumberOfDecimals" hidden="true"/>
+      </panel-related>
+      <field name="statusSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -375,11 +394,9 @@
   </action-method>
 
   <action-view name="action-global-budget-view-see-budget-levels" title="Sections"
-    model="com.axelor.apps.budget.db.BudgetLevel">
-    <view type="tree" name="budget-tree"/>
-    <view-param name="showArchived" value="true"/>
-    <domain>self.globalBudget.id = :_globalId</domain>
-    <context name="_globalId" expr="eval: id"/>
+    model="com.axelor.apps.budget.db.GlobalBudget">
+    <view type="form" name="global-budget-tree-form"/>
+    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-view-global-budget-export" title="Global budget export"
