@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -151,9 +152,10 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .filter(it -> it.getAccount() != null && it.getAccount().getUseForPartnerBalance())
               .collect(Collectors.toList());
 
-      return moveLinesWithInvoiceTerms.size() <= 1
-          && (moveLinesWithInvoiceTerms.size() == 0
-              || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() <= 1);
+      return ObjectUtils.isEmpty(moveLinesWithInvoiceTerms)
+          || (moveLinesWithInvoiceTerms.size() == 1
+              && (ObjectUtils.isEmpty(moveLinesWithInvoiceTerms.get(0).getInvoiceTermList())
+                  || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() == 1));
     }
 
     return true;
