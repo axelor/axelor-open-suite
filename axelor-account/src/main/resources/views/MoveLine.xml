@@ -164,7 +164,7 @@
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80" widget="TagSelect"/>
     <field name="vatSystemSelect"
-      readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt'].includes(account.accountType.technicalTypeSelect))"
+      readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt', 'tax'].includes(account.accountType.technicalTypeSelect))"
       width="80"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
@@ -607,7 +607,7 @@
             grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
             onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
           <field name="vatSystemSelect"
-            readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt'].includes(account.accountType.technicalTypeSelect)) || ![1,5].includes(move.statusSelect)"
+            readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt', 'tax'].includes(account.accountType.technicalTypeSelect)) || ![1,5].includes(move.statusSelect)"
             showIf="account.accountType.technicalTypeSelect == 'tax'"
             requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
         </panel>
