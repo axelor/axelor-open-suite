@@ -60,6 +60,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected SaleOrderComputeService saleOrderComputeService;
   protected DMSService dmsService;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -69,7 +70,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
       DMSService dmsService,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
 
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
@@ -78,6 +80,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     this.saleOrderComputeService = saleOrderComputeService;
     this.dmsService = dmsService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -235,7 +238,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             saleOrderLineService.resetPrice(saleOrderLine);
           }
           saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
-          saleOrderLineService.computeValues(saleOrder, saleOrderLine);
+          saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
         }
       }
     }

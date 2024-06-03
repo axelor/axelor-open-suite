@@ -24,6 +24,7 @@ import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
@@ -40,6 +41,7 @@ public class SaleOrderLineBusinessProductionServiceImpl
       SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
       AppBaseService appBaseService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
       AnalyticLineModelService analyticLineModelService,
       SupplyChainConfigService supplyChainConfigService,
       ReservedQtyService reservedQtyService) {
@@ -47,6 +49,7 @@ public class SaleOrderLineBusinessProductionServiceImpl
         saleOrderLineService,
         appSaleService,
         appBaseService,
+        saleOrderLineComputeService,
         analyticLineModelService,
         supplyChainConfigService,
         reservedQtyService);
