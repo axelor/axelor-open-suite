@@ -1,5 +1,3 @@
 ---
-title: "Fixed search filter on domain fields."
-module: axelor-base
-developer: |
-  Modified the search attribute for domain fields to exclude non-string type fields.
+title: "Project and tasks: fixed autocompletion not working for fields linking to tasks and task templates."
+module: axelor-project
