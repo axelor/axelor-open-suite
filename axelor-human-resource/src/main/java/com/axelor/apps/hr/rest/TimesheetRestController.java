@@ -40,9 +40,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import com.axelor.web.ITranslation;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +55,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import wslite.json.JSONException;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/timesheet")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
