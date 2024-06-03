@@ -1,0 +1,3 @@
+---
+title: "Move: Fixed a technical error when adding a first line without invoice terms in sale or purchase move."
+module: axelor-account
