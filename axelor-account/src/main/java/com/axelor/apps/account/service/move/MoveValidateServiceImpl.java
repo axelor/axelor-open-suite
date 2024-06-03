@@ -308,6 +308,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLineTaxService.checkDuplicateTaxMoveLines(move);
       moveLineTaxService.checkEmptyTaxLines(move.getMoveLineList());
       this.checkTaxAmount(move);
+      this.checkSpecialAccountAmount(move);
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
       this.checkMoveLineDescription(move);
@@ -974,6 +975,44 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_LINE_DESCRIPTION_MISSING));
+    }
+  }
+
+  protected void checkSpecialAccountAmount(Move move) throws AxelorException {
+    List<MoveLine> moveLineList = move.getMoveLineList();
+
+    BigDecimal debitSpecialAccountSum =
+        moveLineList.stream()
+            .filter(moveLineToolService::isMoveLineSpecialAccount)
+            .map(MoveLine::getDebit)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    BigDecimal creditSpecialAccountSum =
+        moveLineList.stream()
+            .filter(moveLineToolService::isMoveLineSpecialAccount)
+            .map(MoveLine::getCredit)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    BigDecimal debitOtherAccountSum =
+        moveLineList.stream()
+            .filter(moveLine -> !moveLineToolService.isMoveLineSpecialAccount(moveLine))
+            .map(MoveLine::getDebit)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    BigDecimal creditOtherAccountSum =
+        moveLineList.stream()
+            .filter(moveLine -> !moveLineToolService.isMoveLineSpecialAccount(moveLine))
+            .map(MoveLine::getCredit)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (debitSpecialAccountSum.compareTo(creditSpecialAccountSum) != 0
+        || debitOtherAccountSum.compareTo(creditOtherAccountSum) != 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS),
+          move.getId());
     }
   }
 }

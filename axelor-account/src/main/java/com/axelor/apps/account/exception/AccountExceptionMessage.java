@@ -1744,4 +1744,7 @@ public final class AccountExceptionMessage {
   public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
   public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
       "Duplicate from tax found for this fiscal position." /*)*/;
+
+  public static final String MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS = /*$$(*/
+      "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;
 }
