@@ -427,4 +427,14 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       moveLine.setIsNonDeductibleTax(true);
     }
   }
+
+  @Override
+  public boolean isMoveLineSpecialAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_SPECIAL.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
 }
