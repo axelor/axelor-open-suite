@@ -22,8 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerLink;
-import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -66,7 +64,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
@@ -283,8 +280,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       Partner clientPartner =
           Beans.get(PartnerRepository.class).find(saleOrder.getClientPartner().getId());
       if (clientPartner != null) {
-        saleOrder.setInvoicedPartner(partnerLinkSupplychainService.getDefaultInvoicedPartner(clientPartner));
-        saleOrder.setDeliveredPartner(partnerLinkSupplychainService.getDefaultDeliveredPartner(clientPartner));
+        saleOrder.setInvoicedPartner(
+            partnerLinkSupplychainService.getDefaultInvoicedPartner(clientPartner));
+        saleOrder.setDeliveredPartner(
+            partnerLinkSupplychainService.getDefaultDeliveredPartner(clientPartner));
         setInvoicedAndDeliveredAddresses(saleOrder);
       }
     }
@@ -304,7 +303,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           Beans.get(AddressService.class).computeAddressStr(saleOrder.getDeliveryAddress()));
     }
   }
-
 
   @Override
   public StockLocation getStockLocation(Partner clientPartner, Company company)

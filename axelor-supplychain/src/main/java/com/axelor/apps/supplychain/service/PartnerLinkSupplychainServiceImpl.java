@@ -19,14 +19,11 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerLink;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.google.inject.Inject;
-import org.apache.commons.collections.CollectionUtils;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PartnerLinkSupplychainServiceImpl extends PartnerLinkServiceImpl
     implements PartnerLinkSupplychainService {
@@ -38,20 +35,22 @@ public class PartnerLinkSupplychainServiceImpl extends PartnerLinkServiceImpl
   @Override
   public Partner getDefaultInvoicedPartner(Partner clientPartner) {
 
-    List<Long> partnerIds = getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
-      // If there is only one, then it is the default one
-      if (partnerIds.size() == 1) {
-        return partnerRepository.find(partnerIds.get(0));
-      } else if (partnerIds.isEmpty()) {
-        return clientPartner;
-      } else {
-        return null;
-      }
+    List<Long> partnerIds =
+        getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+    // If there is only one, then it is the default one
+    if (partnerIds.size() == 1) {
+      return partnerRepository.find(partnerIds.get(0));
+    } else if (partnerIds.isEmpty()) {
+      return clientPartner;
+    } else {
+      return null;
+    }
   }
 
   @Override
   public Partner getDefaultDeliveredPartner(Partner clientPartner) {
-    List<Long> partnerIds = getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+    List<Long> partnerIds =
+        getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
     // If there is only one, then it is the default one
     if (partnerIds.size() == 1) {
       return partnerRepository.find(partnerIds.get(0));
