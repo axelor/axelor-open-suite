@@ -77,20 +77,17 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineRepository moveLineRepository;
   protected AccountConfigService accountConfigService;
   protected MoveRepository moveRepository;
-  protected ListHelper listHelper;
 
   @Inject
   public MoveToolServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
       AccountConfigService accountConfigService,
-      MoveRepository moveRepository,
-      ListHelper listHelper) {
+      MoveRepository moveRepository) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
     this.moveRepository = moveRepository;
-    this.listHelper = listHelper;
   }
 
   @Override
@@ -722,7 +719,7 @@ public class MoveToolServiceImpl implements MoveToolService {
       if (statusList == null) {
         statusList = companyStatusList;
       } else {
-        statusList = listHelper.intersection(statusList, companyStatusList);
+        statusList = ListHelper.intersection(statusList, companyStatusList);
       }
     }
 
