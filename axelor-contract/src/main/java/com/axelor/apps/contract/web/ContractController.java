@@ -313,7 +313,7 @@ public class ContractController {
     try {
       Contract contract = request.getContext().asType(Contract.class);
       Partner partner =
-          Beans.get(PartnerLinkSupplychainService.class).getPartnerIfOnlyOne(contract.getPartner());
+          Beans.get(PartnerLinkSupplychainService.class).getDefaultInvoicedPartner(contract.getPartner());
       if (partner != null) {
         response.setValue("invoicedPartner", partner);
       }

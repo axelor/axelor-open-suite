@@ -21,5 +21,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.Partner;
 
 public interface PartnerLinkSupplychainService {
-  Partner getPartnerIfOnlyOne(Partner partner);
+  Partner getDefaultInvoicedPartner(Partner clientPartner);
+  Partner getDefaultDeliveredPartner(Partner clientPartner);
 }
