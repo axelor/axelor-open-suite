@@ -54,7 +54,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   protected AnalyticToolService analyticToolService;
   protected AnalyticAccountRepository analyticAccountRepository;
   protected AccountService accountService;
-  protected ListHelper listHelper;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected CurrencyScaleService currencyScaleService;
 
@@ -65,7 +64,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AnalyticToolService analyticToolService,
       AnalyticAccountRepository analyticAccountRepository,
       AccountService accountService,
-      ListHelper listHelper,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       CurrencyScaleService currencyScaleService) {
     this.accountConfigService = accountConfigService;
@@ -73,7 +71,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     this.analyticToolService = analyticToolService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.accountService = accountService;
-    this.listHelper = listHelper;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.currencyScaleService = currencyScaleService;
   }
@@ -148,7 +145,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
         }
         if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
           analyticAccountListByAxis =
-              listHelper.intersection(analyticAccountListByAxis, analyticAccountListByRules);
+              ListHelper.intersection(analyticAccountListByAxis, analyticAccountListByRules);
         }
       }
     }
