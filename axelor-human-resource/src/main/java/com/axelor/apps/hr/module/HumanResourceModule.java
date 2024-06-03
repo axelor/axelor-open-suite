@@ -20,10 +20,12 @@ package com.axelor.apps.hr.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
+import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveValidateServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
@@ -63,6 +65,8 @@ import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
+import com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl;
+import com.axelor.apps.hr.service.ReconcileHRServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -258,5 +262,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseLineResponseComputeService.class).to(ExpenseLineResponseComputeServiceImpl.class);
     bind(ExpenseLineCheckResponseService.class).to(ExpenseLineCheckResponseServiceImpl.class);
     bind(ExpenseCheckResponseService.class).to(ExpenseCheckResponseServiceImpl.class);
+    bind(MoveLineTaxServiceImpl.class).to(MoveLineTaxHRServiceImpl.class);
+    bind(ReconcileServiceImpl.class).to(ReconcileHRServiceImpl.class);
   }
 }

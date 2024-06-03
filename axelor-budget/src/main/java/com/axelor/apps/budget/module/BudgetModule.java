@@ -19,7 +19,6 @@
 package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
@@ -109,6 +108,7 @@ import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImp
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
+import com.axelor.apps.hr.service.ReconcileHRServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 
@@ -169,6 +169,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
     bind(SaleOrderProjectRepository.class).to(SaleOrderBudgetRepository.class);
     bind(ExpenseMoveReverseServiceImpl.class).to(MoveReverseServiceBudgetImpl.class);
-    bind(ReconcileServiceImpl.class).to(ReconcileBudgetServiceImpl.class);
+    bind(ReconcileHRServiceImpl.class).to(ReconcileBudgetServiceImpl.class);
   }
 }
