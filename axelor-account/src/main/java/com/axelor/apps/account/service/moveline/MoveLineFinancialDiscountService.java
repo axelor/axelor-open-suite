@@ -37,7 +37,7 @@ public interface MoveLineFinancialDiscountService {
   @CallMethod
   LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine);
 
-  void computeFinancialDiscount(MoveLine moveLine);
+  void computeFinancialDiscount(MoveLine moveLine, Move move);
 
   boolean isFinancialDiscountLine(MoveLine moveLine, Company company) throws AxelorException;
 

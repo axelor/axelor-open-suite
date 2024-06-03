@@ -197,7 +197,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (moveLine.getPartner() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount()) {
       moveLine.setFinancialDiscount(moveLine.getPartner().getFinancialDiscount());
-      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
     }
   }
 

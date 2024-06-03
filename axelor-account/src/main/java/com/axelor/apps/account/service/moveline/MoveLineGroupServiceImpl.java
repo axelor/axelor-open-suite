@@ -101,7 +101,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineRecordService.setCurrencyFields(moveLine, move);
     moveLineToolService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
     moveLineRecordService.setCounter(moveLine, move);
 
     valuesMap.put("counter", moveLine.getCounter());
@@ -246,7 +246,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
-    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
