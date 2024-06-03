@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import java.util.List;
@@ -63,4 +65,7 @@ public interface MoveLineToolService {
   void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 
   void setAmountRemainingReconciliableMoveLines(Context context);
+
+  List<MoveLine> getMoveExcessDueList(
+      boolean excessPayment, Company company, Partner partner, Long invoiceId);
 }
