@@ -278,7 +278,6 @@
             x-show-icons="false">
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
               <field name="description" colSpan="9" widget="html"/>
-              <field name="metaFile" colSpan="3" widget="binary-link"/>
             </editor>
           </field>
         </panel>
@@ -506,8 +505,16 @@
         showIf="id &amp;&amp; targetTypeSelect == 2 &amp;&amp; contractTypeSelect == 2"/>
 
       <panel name="contractFileListPanel" title="Files" colSpan="12">
-        <panel-dashlet action="action-contract-view-contract-files" colSpan="12"
-          x-show-bars="true"/>
+        <field name="currentContractVersion" showTitle="false" colSpan="12"
+          x-show-icons="false">
+          <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+            <field name="metaFile" colSpan="3" widget="binary-link"/>
+            <field form-view="file-form" grid-view="contract-file-grid"
+              name="contractFileList" readonlyIf="statusSelect !== 1 "
+              domain="self.contractVersion.id = currentContractVersion.id AND self.fileTypeSelect = 1"
+              colSpan="12"/>
+          </editor>
+        </field>
       </panel>
     </panel-tabs>
     <panel-mail name="mailsPanel">
@@ -731,13 +738,6 @@
     <domain>:id MEMBER OF self.contractSet</domain>
   </action-view>
 
-  <action-view name="action-contract-view-contract-files"
-    model="com.axelor.apps.base.db.File" title="Files">
-    <view type="grid" name="contract-file-grid"/>
-    <view type="form" name="file-form"/>
-    <domain>self.contractVersion.id = :_contractVersionId AND self.fileTypeSelect = 1</domain>
-    <context name="_contractVersionId" expr="eval: currentContractVersion.id"/>
-  </action-view>
 
   <action-attrs name="action-contract-attrs-domains-template">
     <attribute for="$contractTemplate" name="domain"

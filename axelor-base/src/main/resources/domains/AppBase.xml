@@ -145,10 +145,6 @@
     <one-to-many name="emailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink"
       title="Email links"/>
 
-    <one-to-many name="birtTemplateConfigLineList"
-      ref="com.axelor.apps.base.db.BirtTemplateConfigLine" title="BIRT printing settings"
-      mappedBy="appBase"/>
-
     <string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
     <string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
 

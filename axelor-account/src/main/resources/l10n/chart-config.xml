@@ -371,6 +371,10 @@
       search="self.code = :resultProfitAccount_code and self.company.id = :_companyId"/>
     <bind to="resultLossAccount" if="resultLossAccount_code"
       search="self.code = :resultLossAccount_code and self.company.id = :_companyId"/>
+    <bind to="foreignExchangeGainsAccount" if="foreignExchangeGainsAccount_code"
+      search="self.code = :foreignExchangeGainsAccount_code and self.company.id = :_companyId"/>
+    <bind to="foreignExchangeLossesAccount" if="foreignExchangeLossesAccount_code"
+      search="self.code = :foreignExchangeLossesAccount_code and self.company.id = :_companyId"/>
   </input>
 
   <input file="account_accountConfig_invoicing.csv" separator=";"
