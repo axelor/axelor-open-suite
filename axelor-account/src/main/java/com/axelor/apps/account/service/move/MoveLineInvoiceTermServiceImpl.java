@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -260,6 +261,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   protected MoveLine getHoldbackMoveLine(MoveLine moveLine, Move move, Account holdbackAccount) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return null;
+    }
+
     return move.getMoveLineList().stream()
         .filter(
             it ->
