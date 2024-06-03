@@ -6,7 +6,7 @@
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="TaskTemplate">
-    <string name="name" namecolumn="true" title="Name" search="id,name"/>
+    <string name="name" namecolumn="true" title="Name"/>
     <decimal name="delayToStart" default="0" title="Delay to start (Hours)"/>
     <decimal name="duration" title="Duration (Hours)"/>
     <decimal name="totalPlannedHrs" title="Total planned hours"/>
