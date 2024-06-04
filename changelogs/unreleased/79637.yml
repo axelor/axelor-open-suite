@@ -1,0 +1,3 @@
+---
+title: "Sequence: Fixed the import id in Intervention module to prevent duplicates with the opportunity."
+module: axelor-base
