@@ -1,0 +1,3 @@
+---
+title: "Contract: fix purchase tax check even in customer contract"
+module: axelor-contract
