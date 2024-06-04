@@ -4,7 +4,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.rpc.Context;
 
-public class ContractLineToolServiceImpl implements ContractLineToolService {
+public class ContractLineContextToolServiceImpl implements ContractLineContextToolService {
 
   @Override
   public Contract getContract(Context context) {

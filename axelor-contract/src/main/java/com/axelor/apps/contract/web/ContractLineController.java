@@ -28,7 +28,7 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.apps.contract.service.ContractLineToolService;
+import com.axelor.apps.contract.service.ContractLineContextToolService;
 import com.axelor.apps.contract.service.ContractLineViewService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
@@ -254,7 +254,7 @@ public class ContractLineController {
   }
 
   public void setProductRequired(ActionRequest request, ActionResponse response) {
-    Contract contract = Beans.get(ContractLineToolService.class).getContract(request.getContext());
+    Contract contract = Beans.get(ContractLineContextToolService.class).getContract(request.getContext());
     response.setAttr(
         "product",
         "required",
@@ -262,7 +262,7 @@ public class ContractLineController {
   }
 
   public void computeProductDomain(ActionRequest request, ActionResponse response) {
-    Contract contract = Beans.get(ContractLineToolService.class).getContract(request.getContext());
+    Contract contract = Beans.get(ContractLineContextToolService.class).getContract(request.getContext());
     response.setAttr(
         "product", "domain", Beans.get(ContractLineService.class).computeProductDomain(contract));
   }
