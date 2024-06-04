@@ -51,6 +51,8 @@
     <many-to-one name="currentInvoicePeriod"
       ref="com.axelor.apps.contract.db.InvoicePeriod" title="Current invoice period"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="Trading name"/>
 
     <one-to-one name="currentContractVersion"
       ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"
