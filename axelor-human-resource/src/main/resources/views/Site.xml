@@ -25,7 +25,7 @@
     <attribute for="isUsableOnExpense" name="value" expr="eval:_isFromProject"/>
     <attribute for="isUsableOnTimesheet" name="value" expr="eval:_isFromProject"/>
     <attribute for="isUsableOnProject" name="value" expr="eval: true"
-      if="__parent__?._model == 'com.axelor.studio.db.AppBase'"/>
+      if="__parent__?._model == 'com.axelor.studio.db.AppBase' || __parent__?._model == 'com.axelor.apps.project.db.Project'"/>
   </action-attrs>
 
 </object-views>
