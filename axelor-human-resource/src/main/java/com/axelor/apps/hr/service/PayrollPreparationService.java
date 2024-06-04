@@ -446,7 +446,7 @@ public class PayrollPreparationService {
 
   public String[] getPayrollPreparationMeilleurGestionExportHeader() {
     String[] headers = new String[7];
-    headers[0] = I18n.get("Registration number");
+    headers[0] = I18n.get("PayrollPreparation.registrationNumber");
     headers[1] = I18n.get("Employee lastname");
     headers[2] = I18n.get("Employee firstname");
     headers[3] = I18n.get("Code");
@@ -517,7 +517,7 @@ public class PayrollPreparationService {
 
   public String[] getPayrollPreparationSilaeExportHeader() {
     String[] headers = new String[5];
-    headers[0] = I18n.get("Registration number");
+    headers[0] = I18n.get("PayrollPreparation.registrationNumber");
     headers[1] = I18n.get("Code");
     headers[2] = I18n.get("Value");
     headers[3] = I18n.get("Start date");

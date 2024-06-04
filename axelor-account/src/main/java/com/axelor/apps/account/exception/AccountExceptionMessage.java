@@ -1724,6 +1724,9 @@ public final class AccountExceptionMessage {
   public static final String FINANCIAL_DISCOUNT_NOT_COMPATIBLE_WITH_ADVANCE_PAYMENT_INVOICE =
       /*$$(*/ "Financial discount is not compatible with the advance payment invoice. Please unselect financial discount in order to continue." /*)*/;
 
+  public static final String CANNOT_BE_RECONCILED_WAITING_PAYMENT =
+      /*$$(*/ "The move line %s cannot be reconciled because of a pending payment." /*)*/;
+
   public static final String CREATE_REFUND_BTN_CLASSIC_REFUND = /*$$(*/
       "Generate credit note" /*)*/;
   public static final String CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND = /*$$(*/
@@ -1741,4 +1744,10 @@ public final class AccountExceptionMessage {
   public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
   public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
       "Duplicate from tax found for this fiscal position." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange gain account config for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_LOSSES_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange loss account config for company %s." /*)*/;
 }

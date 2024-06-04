@@ -22,7 +22,8 @@
     <attribute for="_xTemplate" name="value" expr="eval: null"/>
   </action-attrs>
 
-  <action-method name="action-method-template-domain" if-module="axelor-base">
+  <action-method id="base-action-method-template-domain"
+    name="action-method-template-domain" if-module="axelor-base">
     <call class="com.axelor.apps.base.web.GenerateMessageController" method="templateDomain"/>
   </action-method>
 

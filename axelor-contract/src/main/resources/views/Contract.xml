@@ -98,7 +98,8 @@
         showIf="!id &amp;&amp; (statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2)"
         stacked="true" readonlyIf="!partner">
         <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE"
-          canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
+          canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"
+          domain="self.contractTypeSelect = :contractTypeSelect AND self.targetTypeSelect = :targetTypeSelect"/>
         <button name="copyFromTemplateBtn" title="Use this template"
           readonlyIf="!$contractTemplate"
           prompt="Do you really wish to fill your contract based on this template ?"
@@ -148,14 +149,14 @@
         <field name="currentContractVersion" showTitle="false" colSpan="12"
           x-show-icons="false" readonly="true">
           <viewer
-            depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals">
+            depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals,contract.isToRevaluate">
           <![CDATA[
           <>
             <Box mt={2} fontWeight="bold">{_t('Initial ex tax total per year')}</Box>
             <Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(initialExTaxTotalPerYear).toFixed(contract.currency.numberOfDecimals)}</Box>
-            <Box borderTop borderColor="inherit" m={1}/>
-            <Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>
-            <Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(yearlyExTaxTotalRevalued).toFixed(contract.currency.numberOfDecimals)}</Box>
+            {contract.isToRevaluate && <Box borderTop borderColor="inherit" m={1}/>}
+            {contract.isToRevaluate && <Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>}
+            {contract.isToRevaluate && <Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(yearlyExTaxTotalRevalued).toFixed(contract.currency.numberOfDecimals)}</Box>}
           </>
           ]]>
           </viewer>
@@ -281,17 +282,16 @@
         <field name="consumptionLineList"
           showIf="isConsumptionManagement &amp;&amp; targetTypeSelect &lt; 2" readonlyIf="!id"
           colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
-        <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement"
-          readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form"
+        <field name="additionalBenefitContractLineList" hidden="true"
+          showIf="isAdditionaBenefitManagement &amp;&amp; targetTypeSelect &lt;= 2" readonlyIf="!id"
+          colSpan="12" form-view="additional-contract-line-form"
           grid-view="additional-contract-line-grid"
-          onChange="action-contract-method-additional-contract-line-list-on-change"
-          hideIf="targetTypeSelect > 2"/>
+          onChange="action-contract-method-additional-contract-line-list-on-change"/>
         <panel name="currentContractVersionDescriptionPanel" colSpan="12">
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false">
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
               <field name="description" colSpan="9" widget="html"/>
-              <field name="metaFile" colSpan="3" widget="binary-link"/>
             </editor>
           </field>
         </panel>
@@ -486,16 +486,19 @@
           onChange="action-contract-method-hide-fields-list"/>
         <field name="revaluationPeriod"
           requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
-          domain="self.applicationTypeSelect = 2"/>
+          domain="self.applicationTypeSelect = 2" hidden="true" showIf="isToRevaluate"/>
         <field name="revaluationFormula"
-          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index2"/>
-        <field name="index2Date"/>
-        <field name="endOfApplicationDate"/>
-        <field name="lastRevaluationDate" readonly="true"/>
-        <field name="nextRevaluationDate"/>
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate" hidden="true"
+          showIf="isToRevaluate"/>
+        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          hidden="true" showIf="isToRevaluate"/>
+        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          hidden="true" showIf="isToRevaluate"/>
+        <field name="index2" hidden="true" showIf="isToRevaluate"/>
+        <field name="index2Date" hidden="true" showIf="isToRevaluate"/>
+        <field name="endOfApplicationDate" hidden="true" showIf="isToRevaluate"/>
+        <field name="lastRevaluationDate" readonly="true" hidden="true" showIf="isToRevaluate"/>
+        <field name="nextRevaluationDate" hidden="true" showIf="isToRevaluate"/>
       </panel>
 
       <panel-related name="versionHistoryPanel" hidden="true" readonly="true"
@@ -516,8 +519,16 @@
         showIf="id &amp;&amp; targetTypeSelect == 2 &amp;&amp; contractTypeSelect == 2"/>
 
       <panel name="contractFileListPanel" title="Files" colSpan="12">
-        <panel-dashlet action="action-contract-view-contract-files" colSpan="12"
-          x-show-bars="true"/>
+        <field name="currentContractVersion" showTitle="false" colSpan="12"
+          x-show-icons="false">
+          <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+            <field name="metaFile" colSpan="3" widget="binary-link"/>
+            <field form-view="file-form" grid-view="contract-file-grid"
+              name="contractFileList" readonlyIf="statusSelect !== 1 "
+              domain="self.contractVersion.id = currentContractVersion.id AND self.fileTypeSelect = 1"
+              colSpan="12"/>
+          </editor>
+        </field>
       </panel>
     </panel-tabs>
     <panel-mail name="mailsPanel">
@@ -542,7 +553,6 @@
   </action-group>
 
   <action-group name="action-contract-group-on-load">
-    <action name="action-contract-attrs-require-payment-config"/>
     <action name="action-contract-attrs-readonly-by-config"/>
     <action name="action-contract-readonly-if-unchangable"/>
     <action name="action-contract-method-hide-fields-list"/>
@@ -744,13 +754,6 @@
     <domain>:id MEMBER OF self.contractSet</domain>
   </action-view>
 
-  <action-view name="action-contract-view-contract-files"
-    model="com.axelor.apps.base.db.File" title="Files">
-    <view type="grid" name="contract-file-grid"/>
-    <view type="form" name="file-form"/>
-    <domain>self.contractVersion.id = :_contractVersionId AND self.fileTypeSelect = 1</domain>
-    <context name="_contractVersionId" expr="eval: currentContractVersion.id"/>
-  </action-view>
 
   <action-attrs name="action-contract-attrs-domains-template">
     <attribute for="$contractTemplate" name="domain"

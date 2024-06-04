@@ -61,7 +61,8 @@ import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
-import com.axelor.apps.base.openapi.AosSwagger;
+import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
+import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -79,8 +80,6 @@ import com.axelor.apps.base.service.BankServiceImpl;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.BaseReportGenerator;
-import com.axelor.apps.base.service.BirtTemplateConfigLineService;
-import com.axelor.apps.base.service.BirtTemplateConfigLineServiceImpl;
 import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
@@ -210,7 +209,6 @@ import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
-import com.axelor.apps.base.service.meta.BaseMetaService;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
@@ -289,7 +287,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
-import com.axelor.studio.service.CustomMetaService;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.axelor.utils.service.TranslationBaseService;
 import com.axelor.utils.service.TranslationBaseServiceImpl;
@@ -330,6 +327,9 @@ public class BaseModule extends AxelorModule {
           }
         },
         new ControllerMethodInterceptor());
+
+    addQuickMenu(InstanceInfoQuickMenuCreator.class);
+    addQuickMenu(ActiveCompanyUpdateQuickMenuCreator.class);
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
@@ -430,8 +430,6 @@ public class BaseModule extends AxelorModule {
     bind(ResearchRequestService.class).to(ResearchRequestServiceImpl.class);
     bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
     bind(BaseServerStartListener.class);
-    bind(AosSwagger.class);
-    bind(BirtTemplateConfigLineService.class).to(BirtTemplateConfigLineServiceImpl.class);
     bind(PrintFromBirtTemplateService.class).to(PrintFromBirtTemplateServiceImpl.class);
     bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
     bind(DayPlanningService.class).to(DayPlanningServiceImpl.class);
@@ -450,7 +448,6 @@ public class BaseModule extends AxelorModule {
     bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
     bind(CurrencyService.class).to(CurrencyServiceImpl.class);
     bind(CurrencyScaleService.class).to(CurrencyScaleServiceImpl.class);
-    bind(CustomMetaService.class).to(BaseMetaService.class);
     bind(PricingMetaService.class).to(PricingMetaServiceImpl.class);
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);

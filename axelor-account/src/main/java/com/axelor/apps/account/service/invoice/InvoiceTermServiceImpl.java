@@ -92,6 +92,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected DMSFileRepository DMSFileRepo;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -105,7 +106,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       CurrencyScaleService currencyScaleService,
       DMSFileRepository DMSFileRepo,
       InvoiceTermPaymentService invoiceTermPaymentService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      AppBaseService appBaseService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -117,6 +119,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.DMSFileRepo = DMSFileRepo;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.currencyService = currencyService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -672,12 +675,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     if (needConvert) {
+      // Date is null to get amount converted with today currency rate.
       paidAmount =
           currencyService.getAmountCurrencyConvertedAtDate(
               currency,
               invoiceTerm.getCurrency(),
               invoiceTermPayment.getCompanyPaidAmount(),
-              invoiceTerm.getDueDate());
+              Optional.ofNullable(invoicePayment)
+                  .map(InvoicePayment::getInvoice)
+                  .map(Invoice::getInvoiceDate)
+                  .orElse(null));
     }
 
     return paidAmount;
@@ -1557,7 +1564,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
-      BigDecimal currencyRate,
       Company company) {
     int companyScale = currencyScaleService.getCompanyCurrencyScale(company);
     BigDecimal moveLineAmountRemaining =
@@ -1570,7 +1576,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     BigDecimal invoiceCurrencyRate =
-        companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP);
+        currencyService.computeScaledExchangeRate(
+            companyAmountRemaining, invoiceTermAmountRemaining);
 
     if (!Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
       if (BigDecimal.ONE.compareTo(invoiceCurrencyRate) != 0) {
@@ -1699,5 +1706,48 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     } else {
       return BigDecimal.ZERO;
     }
+  }
+
+  @Override
+  public void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+        || checkIfCustomizedInvoiceTerms(invoice)) {
+      return;
+    }
+    if (InvoiceToolService.isPurchase(invoice)) {
+      if (invoice.getOriginDate() != null) {
+        invoice = setDueDates(invoice, invoice.getOriginDate());
+      } else {
+        invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
+      }
+    } else {
+      if (invoice.getInvoiceDate() != null) {
+        invoice = setDueDates(invoice, invoice.getInvoiceDate());
+      } else {
+        invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
+      }
+    }
+    return;
+  }
+
+  @Override
+  public void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException {
+    if (invoice.getPaymentCondition() == null
+        || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      if (invoice.getInvoiceTermList() != null) {
+        invoice.getInvoiceTermList().clear();
+      } else {
+        invoice.setInvoiceTermList(new ArrayList<>());
+      }
+
+      return;
+    }
+
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+        || checkIfCustomizedInvoiceTerms(invoice)) {
+      return;
+    }
+
+    invoice = computeInvoiceTerms(invoice);
   }
 }

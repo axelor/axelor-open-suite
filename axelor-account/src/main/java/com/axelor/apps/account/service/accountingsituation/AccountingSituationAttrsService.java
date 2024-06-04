@@ -15,6 +15,9 @@ public interface AccountingSituationAttrsService {
 
   void hideAccountsLinkToPartner(Partner partner, Map<String, Map<String, Object>> attrsMap);
 
+  void manageAnalyticAccountPanel(
+      Company company, Partner partner, Map<String, Map<String, Object>> attrsMap);
+
   void addCompanyDomain(
       AccountingSituation accountingSituation,
       Partner partner,

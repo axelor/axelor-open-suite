@@ -316,8 +316,14 @@
       expr="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'"
       if="!frameworkCustomerContract &amp;&amp; !frameworkSupplierContract"/>
     <attribute for="product" name="domain"
-      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND self.id IN (${(frameworkCustomerContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')}) AND self.id IN (${(frameworkSupplierContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')})&quot;"
-      if="frameworkCustomerContract || frameworkSupplierContract"/>
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND self.id IN (${(frameworkCustomerContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')})&quot;"
+      if="frameworkCustomerContract"/>
+    <attribute for="product" name="domain"
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND self.id IN (${(frameworkSupplierContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')})&quot;"
+      if="frameworkSupplierContract"/>
+    <attribute for="product" name="domain"
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND (self.id IN (${(frameworkCustomerContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')}) AND self.id IN (${(frameworkSupplierContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')}))&quot;"
+      if="frameworkCustomerContract &amp;&amp; frameworkSupplierContract"/>
   </action-attrs>
 
   <action-group name="action-project-task-group-set-price-from-contract">

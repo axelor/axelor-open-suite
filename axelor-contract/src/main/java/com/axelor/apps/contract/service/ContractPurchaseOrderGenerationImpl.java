@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -90,6 +91,8 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
     purchaseOrderLine.setPriceDiscounted(contractLine.getPriceDiscounted());
 
     purchaseOrderLine.setTaxLineSet(Sets.newHashSet(contractLine.getTaxLineSet()));
+    purchaseOrderLine.setIsTitleLine(
+        contractLine.getTypeSelect() == ContractLineRepository.TYPE_TITLE);
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
 
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
