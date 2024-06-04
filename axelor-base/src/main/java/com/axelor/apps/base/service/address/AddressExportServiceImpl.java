@@ -95,7 +95,7 @@ public class AddressExportServiceImpl implements AddressExportService {
         .all()
         .filter(
             "self.room = :room AND self.floor = :floor AND self.streetName = :streetName "
-                + "AND self.postBox = :postBox AND self.zip = :zip self.city = :city AND self.country = :country")
+                + "AND self.postBox = :postBox AND self.zip = :zip AND self.city = :city AND self.country = :country")
         .bind("room", room)
         .bind("floor", floor)
         .bind("streetName", streetName)
