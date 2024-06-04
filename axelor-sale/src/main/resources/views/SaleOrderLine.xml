@@ -778,6 +778,11 @@
       expr="eval: __parent__?.currency?.numberOfDecimals"/>
   </action-record>
 
+  <action-record name="action-sale-order-line-record-set-business-project"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="project" expr="eval: __parent__.project"/>
+  </action-record>
+
   <!-- ACTION METHOD -->
 
   <action-method name="action-sale-order-line-method-compute-pricing-scale">
@@ -1045,6 +1050,7 @@
     <action name="action-sale-order-line-record-init-dummy-fields"/>
     <action name="action-sale-order-line-attrs-onnew-focus"/>
     <action name="action-sale-order-line-record-non-negotiable"/>
+    <action name="action-sale-order-line-record-set-business-project"/>
   </action-group>
 
   <action-attrs name="action-sale-order-line-attrs-onnew-focus">
