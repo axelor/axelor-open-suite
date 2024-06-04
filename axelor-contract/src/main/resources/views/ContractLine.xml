@@ -84,7 +84,7 @@
       </panel>
       <panel name="informationsPanel" title="Information" showIf="typeSelect == 0">
         <field name="product" canEdit="false" colSpan="5"
-               onSelect="action-contract-line-method-domain-product"
+          onSelect="action-contract-line-method-domain-product"
           onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
         <field name="productName" colSpan="5"/>
         <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="2"
