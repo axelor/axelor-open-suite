@@ -843,6 +843,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           invoicePaymentRepository.save(invoicePayment);
 
           reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
+          reconcile.setCanBeZeroBalanceOk(false);
           if (reconcile.getAmount().compareTo(invoice.getCompanyInTaxTotalRemaining()) != 0
               && typeSelect == InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN) {
             reconcile.setAmount(
