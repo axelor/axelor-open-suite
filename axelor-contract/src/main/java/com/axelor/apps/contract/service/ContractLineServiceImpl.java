@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
@@ -147,7 +148,7 @@ public class ContractLineServiceImpl implements ContractLineService {
             product,
             contract.getCompany(),
             contractLine.getFiscalPosition(),
-            false);
+            contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT);
     contractLine.setTaxLine(taxLine);
 
     if (taxLine != null
