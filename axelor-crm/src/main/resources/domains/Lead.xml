@@ -21,7 +21,7 @@
     <string name="consuelFile" title="Consuel"/>
     <string name="planningPermissionFile" title="Autorisation d'urbanisme"/>
     <string name="connectionProofFile" title="Demande de raccordement"/>
-    <string name="dinvdeFile" title="DINVDE"/>    
+    <string name="dinvdeFile" title="DINVDE"/>
     <boolean name="isDuplicated" title="Doublon"/>    
     <string name="installerName" title="Nom de l'installateur"/> 
   	
