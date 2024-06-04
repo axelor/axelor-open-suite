@@ -19,7 +19,6 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.rest.dto.TimesheetPostRequest;
@@ -69,7 +68,8 @@ public class TimesheetRestController {
   @POST
   @HttpExceptionHandler
   public Response createTimesheet(TimesheetPostRequest requestBody) throws AxelorException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    Long[] timerIds = requestBody.getTimerIdList().toArray(new Long[0]);
+    new SecurityCheck().createAccess(Timesheet.class).readAccess(TSTimer.class, timerIds).check();
     RequestValidator.validateBody(requestBody);
 
     List<TSTimer> tsTimerList = requestBody.fetchTSTimers();
@@ -91,7 +91,11 @@ public class TimesheetRestController {
   public Response addTimersToTimesheet(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
       throws AxelorException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    Long[] timerIds = requestBody.getTimerIdList().toArray(new Long[0]);
+    new SecurityCheck()
+        .writeAccess(Timesheet.class, timesheetId)
+        .readAccess(TSTimer.class, timerIds)
+        .check();
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, requestBody.getVersion());
@@ -112,7 +116,7 @@ public class TimesheetRestController {
   public Response updateTimesheetStatus(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
       throws AxelorException, JSONException, IOException, ClassNotFoundException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    new SecurityCheck().writeAccess(Timesheet.class, timesheetId).check();
     RequestValidator.validateBody(requestBody);
 
     TimesheetWorkflowService timesheetWorkflowService = Beans.get(TimesheetWorkflowService.class);
@@ -146,8 +150,9 @@ public class TimesheetRestController {
   @Path("/check/{timesheetId}")
   @GET
   @HttpExceptionHandler
-  public Response checkExpense(@PathParam("timesheetId") Long timesheetId) throws AxelorException {
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+  public Response checkTimesheet(@PathParam("timesheetId") Long timesheetId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(Timesheet.class, timesheetId).check();
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(
@@ -164,7 +169,7 @@ public class TimesheetRestController {
   @HttpExceptionHandler
   public Response convertPeriodTotal(@PathParam("timesheetId") Long timesheetId)
       throws AxelorException {
-    new SecurityCheck().readAccess(Expense.class).check();
+    new SecurityCheck().readAccess(Timesheet.class, timesheetId).check();
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(
