@@ -37,7 +37,6 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="estimatedShippingDate"/>
@@ -90,8 +89,8 @@
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form"/>
     <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="description"/>
     <field name="availableStatus" if="__config__.app.isApp('supplychain')" readonly="true">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -101,6 +100,7 @@
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -137,7 +137,6 @@
     <field name="qty" aggregate="sum"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
   </grid>
@@ -775,6 +774,8 @@
     <field name="$nbDecimalDigitForUnitPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <field name="$currencyNumberOfDecimals"
+      expr="eval: __parent__?.currency?.numberOfDecimals"/>
   </action-record>
 
   <!-- ACTION METHOD -->
