@@ -21,4 +21,5 @@ package com.axelor.apps.budget.translation;
 public interface ITranslation {
 
   public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
+  public static final String ADVANCED_EXPORT_COMPANY_CODE = /*$$(*/ "Company code"; /*)*/
 }
