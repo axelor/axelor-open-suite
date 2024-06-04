@@ -1,3 +1,3 @@
 ---
-title: "Campaign: Fixed the duplicated condition check in sendReminderEmail."
+title: "Campaign: fixed error preventing to send reminder emails to leads when the list of partners is empty."
 module: axelor-marketing
