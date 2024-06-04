@@ -175,7 +175,7 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
     List<MoveLine> authorizedMoveLines =
         moveLineRepository
             .all()
-            .filter(bankReconciliationQueryService.getRequestMoveLines(bankReconciliation))
+            .filter(bankReconciliationQueryService.getRequestMoveLines())
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
             .fetch();
 

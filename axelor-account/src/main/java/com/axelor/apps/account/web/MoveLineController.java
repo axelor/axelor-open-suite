@@ -256,8 +256,9 @@ public class MoveLineController {
   public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
 
-      Beans.get(MoveLineFinancialDiscountService.class).computeFinancialDiscount(moveLine);
+      Beans.get(MoveLineFinancialDiscountService.class).computeFinancialDiscount(moveLine, move);
 
       response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
       response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());

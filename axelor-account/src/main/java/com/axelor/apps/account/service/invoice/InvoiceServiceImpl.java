@@ -65,7 +65,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -84,7 +83,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -117,6 +115,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoicePrintService invoicePrintService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -135,7 +134,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePrintService invoicePrintService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -153,6 +153,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoicePrintService = invoicePrintService;
   }
 
   // WKF
@@ -194,8 +195,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         };
 
     Invoice invoice1 = invoiceGenerator.generate();
-    if (invoice.getOperationSubTypeSelect()
-        != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND) {
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
     }
 
@@ -236,10 +236,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
-    if (Arrays.asList(
-            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
-            InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
-        .contains(invoice.getOperationSubTypeSelect())) {
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       ventilate(invoice);
     }
   }
@@ -260,6 +257,26 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Transactional(rollbackOn = {Exception.class})
   protected void ventilateProcess(Invoice invoice) throws AxelorException {
+
+    this.checkPreconditions(invoice);
+    this.computeEstimatedPaymentDate(invoice);
+
+    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
+
+    ventilateFactory.getVentilator(invoice).process();
+
+    invoiceRepo.save(invoice);
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      invoicePrintService.printAndSave(
+          invoice,
+          InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
+          accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
+          null);
+    }
+  }
+
+  @Override
+  public void checkPreconditions(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -287,10 +304,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
-          && !Arrays.asList(
-                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
-                  InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND)
-              .contains(invoice.getOperationSubTypeSelect())) {
+          && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -320,22 +334,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       throw new AxelorException(
           invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
-    }
-
-    this.computeEstimatedPaymentDate(invoice);
-
-    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
-
-    ventilateFactory.getVentilator(invoice).process();
-
-    invoiceRepo.save(invoice);
-    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
-      Beans.get(InvoicePrintService.class)
-          .printAndSave(
-              invoice,
-              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
-              ReportSettings.FORMAT_PDF,
-              null);
     }
   }
 
@@ -436,8 +434,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             refundType,
             InvoiceRepository.STATUS_VENTILATED,
             operationSubTypeSelect == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-                ? InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE_PAYMENT_REFUND
-                : InvoiceRepository.OPERATION_SUB_TYPE_STANDARD_REFUND)
+                ? InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+                : InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
         .count();
   }
 
@@ -734,7 +732,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     filter +=
         " AND self.partner = :_partner "
             + "AND self.currency = :_currency "
-            + "AND self.operationTypeSelect = :_operationTypeSelect "
             + "AND self.internalReference IS NULL";
 
     advancePaymentInvoices =
@@ -744,7 +741,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 .filter(filter)
                 .bind("_status", InvoiceRepository.STATUS_VALIDATED)
                 .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-                .bind("_operationTypeSelect", invoice.getOperationTypeSelect())
+                .bind(
+                    "_operationType",
+                    InvoiceToolService.isPurchase(invoice)
+                        ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                        : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .bind("_partner", partner)
                 .bind("_currency", currency)
                 .fetch());
@@ -870,7 +871,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected String writeGeneralFilterForAdvancePayment() {
-    return "self.statusSelect = :_status" + " AND self.operationSubTypeSelect = :_operationSubType";
+    return "self.statusSelect = :_status AND self.operationSubTypeSelect = :_operationSubType AND self.operationTypeSelect = :_operationType";
   }
 
   @Override

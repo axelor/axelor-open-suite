@@ -63,7 +63,7 @@
     <one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine"
       title="Recurring product" mappedBy="contractVersion"/>
     <one-to-many name="contractFileList" title="Files"
-      ref="com.axelor.apps.contract.db.ContractFile" mappedBy="contractVersion"/>
+      ref="com.axelor.apps.base.db.File" mappedBy="contractVersion"/>
 
     <string name="fullName" namecolumn="true">
 			<![CDATA[

@@ -103,7 +103,6 @@ public class SaleOrderController {
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
           saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, multiBudget);
         }
-        response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

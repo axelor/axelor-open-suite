@@ -47,6 +47,9 @@
       eval="defaultTaxSet.split('\\|') as List"/>
   </input>
 
+  <input file="account_taxType.csv" separator=";" type="com.axelor.apps.account.db.TaxType"
+    search="self.code = :code"/>
+
   <input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax"
     search="self.code = :code AND self.importId = :importId">
     <bind to="importOrigin" eval="_dataFileName"/>
@@ -264,6 +267,8 @@
       to="purchVatRegulationAccount" update="true" if="purchVatRegulationAccount_code"/>
     <bind search="self.code = :saleVatRegulationAccount_code and self.company.id = :_companyId"
       to="saleVatRegulationAccount" update="true" if="saleVatRegulationAccount_code"/>
+    <bind search="self.code = :vatPendingAccount_code and self.company.id = :_companyId"
+      to="vatPendingAccount" update="true" if="vatPendingAccount_code"/>
     <bind search="self.importId = (:_companyCode || '-' || :sequence_importId)" to="sequence"
       update="true" if="sequence_importId"/>
     <bind search="self.code = :journal_code and self.company.id = :_companyId" to="journal"
@@ -366,6 +371,10 @@
       search="self.code = :resultProfitAccount_code and self.company.id = :_companyId"/>
     <bind to="resultLossAccount" if="resultLossAccount_code"
       search="self.code = :resultLossAccount_code and self.company.id = :_companyId"/>
+    <bind to="foreignExchangeGainsAccount" if="foreignExchangeGainsAccount_code"
+      search="self.code = :foreignExchangeGainsAccount_code and self.company.id = :_companyId"/>
+    <bind to="foreignExchangeLossesAccount" if="foreignExchangeLossesAccount_code"
+      search="self.code = :foreignExchangeLossesAccount_code and self.company.id = :_companyId"/>
   </input>
 
   <input file="account_accountConfig_invoicing.csv" separator=";"

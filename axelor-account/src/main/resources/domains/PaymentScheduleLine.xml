@@ -33,7 +33,7 @@
 
     <decimal name="directDebitAmount" title="Debited amount" readonly="true"/>
 
-    <string name="name" namecolumn="true" search="paymentSchedule,scheduleLineSeq">
+    <string name="name" namecolumn="true" search="paymentSchedule">
 	    <![CDATA[
 	    	if (paymentSchedule != null && paymentSchedule.getPaymentScheduleSeq() != null) return paymentSchedule.getPaymentScheduleSeq() + " - " + scheduleLineSeq;
 	    	else if(scheduleLineSeq != null)  return scheduleLineSeq.toString();

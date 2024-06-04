@@ -239,6 +239,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     this.addValidatePeriod(move, valuesMap);
     valuesMap.put("$isThereRelatedCutOffMoves", moveCheckService.isRelatedCutoffMoves(move));
+    valuesMap.put("$isThereRelatedFixedAsset", moveCheckService.isRelatedToFixedAsset(move));
 
     this.addPeriodDummyFields(move, valuesMap);
     this.addValidateJournalRole(move, valuesMap);

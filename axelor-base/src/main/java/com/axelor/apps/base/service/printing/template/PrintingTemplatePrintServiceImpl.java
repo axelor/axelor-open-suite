@@ -33,11 +33,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.service.TranslationBaseService;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -47,11 +49,16 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
 
   protected AppBaseService appBaseService;
   protected MetaFiles metaFiles;
+  protected TranslationBaseService translationBaseService;
 
   @Inject
-  public PrintingTemplatePrintServiceImpl(AppBaseService appBaseService, MetaFiles metaFiles) {
+  public PrintingTemplatePrintServiceImpl(
+      AppBaseService appBaseService,
+      MetaFiles metaFiles,
+      TranslationBaseService translationBaseService) {
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
+    this.translationBaseService = translationBaseService;
   }
 
   @Override
@@ -122,11 +129,12 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
               @Override
               public void accept(T item) throws Exception {
                 try {
+                  String name = translationBaseService.getValueTranslation(template.getName());
                   File printFile =
                       getPrintFile(
                           template,
                           new PrintingGenFactoryContext(EntityHelper.getEntity(item)),
-                          template.getName() + "-" + item.getId());
+                          name + "-" + item.getId());
                   printedRecords.add(printFile);
                 } catch (Exception e) {
                   TraceBackService.trace(e);
@@ -146,7 +154,9 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   protected List<TemplatePrint> getPrintList(
       PrintingTemplate printingTemplate, PrintingGenFactoryContext context) throws AxelorException {
     List<TemplatePrint> prints = new ArrayList<>();
-    for (PrintingTemplateLine templateLine : printingTemplate.getPrintingTemplateLineList()) {
+    List<PrintingTemplateLine> templateLines = printingTemplate.getPrintingTemplateLineList();
+    templateLines.sort(Comparator.comparing(PrintingTemplateLine::getSequence));
+    for (PrintingTemplateLine templateLine : templateLines) {
       PrintingGeneratorFactory factory = PrintingGeneratorFactory.getFactory(templateLine);
       TemplatePrint print = factory.generate(templateLine, context);
       prints.add(print);

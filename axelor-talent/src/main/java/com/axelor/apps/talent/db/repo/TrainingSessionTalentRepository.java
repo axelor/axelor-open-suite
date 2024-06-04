@@ -20,14 +20,20 @@ package com.axelor.apps.talent.db.repo;
 
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.exception.TalentExceptionMessage;
-import com.axelor.apps.talent.service.TrainingSessionService;
+import com.axelor.apps.talent.service.TrainingSessionComputeNameService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import javax.validation.ValidationException;
 
 public class TrainingSessionTalentRepository extends TrainingSessionRepository {
 
-  @Inject private TrainingSessionService trainingSessionService;
+  protected TrainingSessionComputeNameService trainingSessionComputeNameService;
+
+  @Inject
+  public TrainingSessionTalentRepository(
+      TrainingSessionComputeNameService trainingSessionComputeNameService) {
+    this.trainingSessionComputeNameService = trainingSessionComputeNameService;
+  }
 
   @Override
   public TrainingSession save(TrainingSession trainingSession) {
@@ -36,7 +42,7 @@ public class TrainingSessionTalentRepository extends TrainingSessionRepository {
       throw new ValidationException(I18n.get(TalentExceptionMessage.INVALID_DATE_RANGE));
     }
 
-    trainingSession.setFullName(trainingSessionService.computeFullName(trainingSession));
+    trainingSession.setFullName(trainingSessionComputeNameService.computeFullName(trainingSession));
 
     return super.save(trainingSession);
   }

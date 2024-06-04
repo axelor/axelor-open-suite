@@ -49,6 +49,7 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
     saleOrder.setPaymentMode(contract.getCurrentContractVersion().getPaymentMode());
     saleOrder.setPaymentCondition(contract.getInvoicedPartner().getPaymentCondition());
     saleOrder.setContract(contract);
+    saleOrder.setTradingName(contract.getTradingName());
 
     if (appBaseService.getAppBase().getActivatePartnerRelations()) {
       saleOrder.setDeliveredPartner(clientPartner);
@@ -84,6 +85,7 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
     saleOrderLine.setPriceDiscounted(contractLine.getPriceDiscounted());
 
     saleOrderLine.setTaxLineSet(Sets.newHashSet(contractLine.getTaxLineSet()));
+    saleOrderLine.setTypeSelect(contractLine.getTypeSelect());
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
 

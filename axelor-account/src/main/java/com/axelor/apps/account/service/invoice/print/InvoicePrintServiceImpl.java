@@ -98,17 +98,25 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   @Override
   public String printInvoice(
-      Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
+      Invoice invoice,
+      boolean forceRefresh,
+      PrintingTemplate invoicePrintTemplate,
+      Integer reportType,
+      String locale)
       throws AxelorException, IOException {
     return PrintingTemplateHelper.getFileLink(
-        printCopiesToFile(invoice, forceRefresh, reportType, format, locale));
+        printCopiesToFile(invoice, forceRefresh, reportType, invoicePrintTemplate, locale));
   }
 
   @Override
   public File printCopiesToFile(
-      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)
+      Invoice invoice,
+      boolean forceRefresh,
+      Integer reportType,
+      PrintingTemplate invoicePrintTemplate,
+      String locale)
       throws AxelorException, IOException {
-    File file = getPrintedInvoice(invoice, forceRefresh, reportType, format, locale);
+    File file = getPrintedInvoice(invoice, forceRefresh, reportType, invoicePrintTemplate, locale);
     int copyNumber = invoice.getInvoicesCopySelect();
     copyNumber = copyNumber == 0 ? 1 : copyNumber;
     File fileCopies = file;
@@ -128,7 +136,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public File getPrintedInvoice(
-      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)
+      Invoice invoice,
+      boolean forceRefresh,
+      Integer reportType,
+      PrintingTemplate invoicePrintTemplate,
+      String locale)
       throws AxelorException {
 
     // if invoice is ventilated (or just validated for advance payment invoices)
@@ -149,17 +161,19 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         // generate a new printing
         return reportType != null
                 && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
-            ? print(invoice, reportType, format, locale)
-            : printAndSave(invoice, reportType, format, locale);
+            ? print(invoice, reportType, invoicePrintTemplate, locale)
+            : printAndSave(invoice, reportType, invoicePrintTemplate, locale);
       }
     } else {
       // invoice is not ventilated (or validated for advance payment invoices) --> generate and
       // don't save
-      return print(invoice, reportType, format, locale);
+      return print(invoice, reportType, invoicePrintTemplate, locale);
     }
   }
 
-  public File print(Invoice invoice, Integer reportType, String format, String locale)
+  @Override
+  public File print(
+      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
       throws AxelorException {
     if (invoice.getPrintingSettings() == null) {
       throw new AxelorException(
@@ -168,13 +182,6 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               I18n.get(AccountExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
               invoice.getInvoiceId()),
           invoice);
-    }
-    PrintingTemplate invoicePrintTemplate =
-        accountConfigService.getAccountConfig(invoice.getCompany()).getInvoicePrintTemplate();
-    if (invoicePrintTemplate == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String title = getInvoiceReportTitle(invoice);
@@ -225,10 +232,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     return title;
   }
 
-  public File printAndSave(Invoice invoice, Integer reportType, String format, String locale)
+  public File printAndSave(
+      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
       throws AxelorException {
 
-    File file = print(invoice, reportType, format, locale);
+    File file = print(invoice, reportType, invoicePrintTemplate, locale);
     MetaFile metaFile;
 
     try {
@@ -280,7 +288,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               public void accept(Invoice invoice) throws Exception {
                 try {
                   printedInvoices.add(
-                      printCopiesToFile(invoice, false, null, ReportSettings.FORMAT_PDF, null));
+                      printCopiesToFile(
+                          invoice,
+                          false,
+                          null,
+                          accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
+                          null));
                 } catch (Exception e) {
                   TraceBackService.trace(e);
                   throw e;
