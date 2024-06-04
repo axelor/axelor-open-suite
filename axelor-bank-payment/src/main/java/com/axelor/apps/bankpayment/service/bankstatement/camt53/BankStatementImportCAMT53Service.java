@@ -70,6 +70,7 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
     bankStatement = bankStatementRepository.find(bankStatement.getId());
     checkImport(bankStatement);
     updateBankDetailsBalance(bankStatement);
+    computeBankStatementName(bankStatement);
     setBankStatementImported(bankStatement);
   }
 
