@@ -26,7 +26,7 @@
 25;demo_project_14;demo_project_task_14_0_sub_1;"NOW[+2d]";"NOW[+3d]";"0.43";103;410;1;0.43;103
 26;demo_project_14;demo_project_task_14_0_sub_1;"NOW[+3d]";"NOW[+4d]";"0.43";103;410;1;0.43;103
 27;demo_project_14;demo_project_task_14_0_sub_1;"NOW[+4d]";"NOW[+5d]";"0.43";103;410;1;0.43;103
-28;demo_project_14;demo_project_task_14_2_sub_0;"NOW";"NOW[+1d]";"2";101;412;12;2;103
-29;demo_project_14;demo_project_task_14_2_sub_0;"NOW[+1d]";"NOW[+2d]";"2";101;412;12;2;103
-30;demo_project_14;demo_project_task_14_2_sub_1;"NOW";"NOW[+1d]";"5";101;412;12;5;103
-31;demo_project_14;demo_project_task_14_2_sub_1;"NOW[+1d]";"NOW[+2d]";"5";101;412;12;5;103
+28;demo_project_14;demo_project_task_14_2_sub_0;"NOW";"NOW[+1d]";"2";101;412;12;2;101
+29;demo_project_14;demo_project_task_14_2_sub_0;"NOW[+1d]";"NOW[+2d]";"2";101;412;12;2;101
+30;demo_project_14;demo_project_task_14_2_sub_1;"NOW";"NOW[+1d]";"5";101;412;12;5;101
+31;demo_project_14;demo_project_task_14_2_sub_1;"NOW[+1d]";"NOW[+2d]";"5";101;412;12;5;101
