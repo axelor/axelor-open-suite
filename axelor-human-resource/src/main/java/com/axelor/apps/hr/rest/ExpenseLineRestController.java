@@ -62,7 +62,7 @@ public class ExpenseLineRestController {
   @HttpExceptionHandler
   public Response createExpenseLine(ExpenseLinePostRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(ExpenseLine.class).createAccess(ExpenseLine.class).check();
+    new SecurityCheck().createAccess(ExpenseLine.class).check();
 
     ExpenseLineCreateService expenseLineCreateService = Beans.get(ExpenseLineCreateService.class);
     ExpenseLine expenseLine = new ExpenseLine();
@@ -117,7 +117,7 @@ public class ExpenseLineRestController {
   @HttpExceptionHandler
   public Response checkExpenseLine(@PathParam("expenseLineId") Long expenseLineId)
       throws AxelorException {
-    new SecurityCheck().writeAccess(ExpenseLine.class).createAccess(ExpenseLine.class).check();
+    new SecurityCheck().readAccess(ExpenseLine.class, expenseLineId).check();
     ExpenseLine expenseLine =
         ObjectFinder.find(ExpenseLine.class, expenseLineId, ObjectFinder.NO_VERSION);
 
