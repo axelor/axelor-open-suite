@@ -38,9 +38,7 @@ public class PartnerLinkServiceImpl implements PartnerLinkService {
   @Override
   public String computePartnerFilter(Partner partner, String strFilter) {
     List<Long> partnerIds = getPartnerIds(partner, strFilter);
-    if (partnerIds.isEmpty()) {
-      partnerIds.add(0L);
-    }
+    partnerIds.add(partner.getId());
     return "self.id IN (" + Joiner.on(",").join(partnerIds) + ")";
   }
 
@@ -48,8 +46,6 @@ public class PartnerLinkServiceImpl implements PartnerLinkService {
     List<Long> partnerIds = new ArrayList<>();
 
     if (partner != null && partner.getManagedByPartnerLinkList() != null) {
-      // add current partner
-      partnerIds.add(partner.getId());
       partnerIds.addAll(
           partner.getManagedByPartnerLinkList().stream()
               .filter(
