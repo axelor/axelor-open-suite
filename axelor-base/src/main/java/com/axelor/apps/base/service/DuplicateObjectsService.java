@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -112,10 +113,33 @@ public class DuplicateObjectsService {
         }
       }
     }
+    mergeDuplicates(originalObjct, duplicateObjects);
     JPA.em().flush();
     JPA.em().clear();
     for (Object obj : getDuplicateObject(selectedIds, modelName)) {
       JPA.em().remove(obj);
+    }
+  }
+
+  protected void mergeDuplicates(Object originalObjct, List<Object> duplicateObjects) {
+    Mapper mapper = Mapper.of(originalObjct.getClass());
+
+    for (Property property : mapper.getProperties()) {
+      final String fieldName = property.getName();
+      final Object value = mapper.get(originalObjct, fieldName);
+
+      if (ObjectUtils.notEmpty(value) || property.isPrimary() || property.isVersion()) {
+        continue;
+      }
+
+      for (Object duplicateObject : duplicateObjects) {
+        Object duplicateObjFieldValue = mapper.get(duplicateObject, fieldName);
+        if (ObjectUtils.notEmpty(duplicateObjFieldValue)) {
+          mapper.set(originalObjct, fieldName, duplicateObjFieldValue);
+          mapper.set(duplicateObject, fieldName, null);
+          break;
+        }
+      }
     }
   }
 
