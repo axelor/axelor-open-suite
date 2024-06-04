@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -49,6 +50,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -252,9 +255,26 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
       TaxLine taxLine = moveLine.getTaxLine();
       TaxLine sourceTaxLine = moveLine.getSourceTaxLine();
-      if (sourceTaxLine != null) {
 
-        String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
+      if (sourceTaxLine == null
+          && Objects.equals(
+              AccountTypeRepository.TYPE_TAX,
+              Optional.of(moveLine)
+                  .map(MoveLine::getAccount)
+                  .map(Account::getAccountType)
+                  .map(AccountType::getTechnicalTypeSelect)
+                  .orElse(""))) {
+        sourceTaxLine =
+            moveLine.getTaxLineBeforeReverse() != null
+                ? moveLine.getTaxLineBeforeReverse()
+                : moveLine.getTaxLine();
+      }
+      if (sourceTaxLine != null) {
+        String sourceTaxLineKey =
+            moveLine.getAccount().getCode()
+                + sourceTaxLine.getId()
+                + " "
+                + moveLine.getVatSystemSelect();
 
         moveLine.setCredit(BigDecimal.ZERO);
         moveLine.setDebit(BigDecimal.ZERO);
