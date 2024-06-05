@@ -232,7 +232,7 @@
 "When budget key is enabled, you must check at least one line on analytic axis to be included in budget key computation",,,
 "You can't compute the budget distribution because you are not authorized to.",,,
 "You cannot archive this budget without filling in a version end date.",,,
-"archiveBtn",,,
+"archiveBtn","Archive",,
 "budget","Budget",,
 "budget.Budget","Budget",,
 "budget.custom","Custom",,
