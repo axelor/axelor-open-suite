@@ -1,0 +1,3 @@
+---
+title: "Move: fixed automatic tax generation on a move with already existing tax lines."
+module: axelor-account

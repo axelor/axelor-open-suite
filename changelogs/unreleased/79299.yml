@@ -1,0 +1,3 @@
+---
+title: "Purchase order : Fix issue on purchase order merge due to old references on ManufOrder"
+module: axelor-production
