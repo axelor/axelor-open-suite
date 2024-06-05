@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -57,15 +58,18 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
+  protected MoveLineGroupService moveLineGroupService;
 
   @Inject
   public MoveLineControlServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineService moveLineService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      MoveLineGroupService moveLineGroupService) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
+    this.moveLineGroupService = moveLineGroupService;
   }
 
   @Override
@@ -246,6 +250,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       for (MoveLine moveLine : move.getMoveLineList()) {
         moveLine.setDate(move.getDate());
         moveLineToolService.checkDateInPeriod(move, moveLine);
+        moveLineGroupService.computeDateOnChangeValues(moveLine, move);
       }
     }
     return move;

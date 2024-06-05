@@ -37,12 +37,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.mapper.Mapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MoveGroupServiceImpl implements MoveGroupService {
 
@@ -258,7 +260,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("dueDate", move.getDueDate());
-    valuesMap.put("moveLineList", move.getMoveLineList());
+    valuesMap.put(
+        "moveLineList",
+        move.getMoveLineList().stream().map(Mapper::toMap).collect(Collectors.toList()));
     valuesMap.put("originDate", move.getOriginDate());
 
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
