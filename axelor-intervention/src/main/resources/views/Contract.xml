@@ -44,7 +44,21 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//button[@name='ongoingBtn']">
+      <attribute name="onClick" value="action-intervention-contract-group-ongoing"/>
+    </extend>
   </form>
+
+  <action-group name="action-intervention-contract-group-ongoing">
+    <action name="action-contract-group-ongoing"/>
+    <action name="action-contract-method-update-equipment"/>
+  </action-group>
+
+  <action-method name="action-contract-method-update-equipment">
+    <call class="com.axelor.apps.intervention.web.InterventionContractController"
+      method="updateEquipment"/>
+  </action-method>
 
   <action-view name="action-contract-view-display-related-interventions"
     title="Contract related interventions" model="com.axelor.apps.intervention.db.Intervention">
