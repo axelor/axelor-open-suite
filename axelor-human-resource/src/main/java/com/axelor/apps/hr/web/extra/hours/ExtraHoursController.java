@@ -302,4 +302,10 @@ public class ExtraHoursController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateLineEmployee(ActionRequest request, ActionResponse response) {
+    ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+    Beans.get(ExtraHoursService.class).updateLineEmployee(extraHours);
+    response.setValue("extraHoursLineList", extraHours.getExtraHoursLineList());
+  }
 }
