@@ -969,9 +969,7 @@ public class BankReconciliationService {
 
     params.put("cashAccount", bankReconciliation.getCashAccount());
 
-    if (bankReconciliation.getCurrency() != bankReconciliation.getCompany().getCurrency()) {
-      params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
-    }
+    params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
 
     return params;
   }
