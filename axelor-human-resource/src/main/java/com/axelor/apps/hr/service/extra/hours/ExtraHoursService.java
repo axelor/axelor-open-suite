@@ -51,4 +51,6 @@ public interface ExtraHoursService {
           IllegalAccessException, MessagingException, IOException, JSONException;
 
   public void compute(ExtraHours extraHours);
+
+  void updateLineEmployee(ExtraHours extraHours);
 }
