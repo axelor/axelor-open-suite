@@ -6,6 +6,8 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
+import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHoursLine;
 import com.axelor.apps.hr.db.ExtraHoursType;
 import com.axelor.apps.hr.db.HRConfig;
@@ -15,6 +17,7 @@ import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -144,30 +147,62 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
 
     HRConfig hrConfig = hrConfigService.getHRConfig(payrollPreparation.getCompany());
 
-    // LEAVES
-    if (payrollPreparation.getLeaveDuration().compareTo(BigDecimal.ZERO) > 0) {
-      List<PayrollLeave> payrollLeaveList =
-          payrollPreparationService.fillInLeaves(payrollPreparation);
-      for (PayrollLeave payrollLeave : payrollLeaveList) {
-        if (payrollLeave.getLeaveReason().getPayrollPreprationExport()) {
-          String[] leaveLine = createExportFileLine(payrollPreparation);
-          leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
-          leaveLine[4] = payrollLeave.getFromDate().format(NIBELIS_EXPORT_DATE_FORMATTER);
-          leaveLine[5] = payrollLeave.getToDate().format(NIBELIS_EXPORT_DATE_FORMATTER);
-          leaveLine[6] = payrollLeave.getDuration().toString();
-          list.add(leaveLine);
+    exportNibelisLeaveList(payrollPreparation, list);
+    exportNibelisLunchVoucher(payrollPreparation, list, hrConfig);
+    exportNibelisEmployeeBonus(payrollPreparation, list);
+    exportNibelisExtraHours(payrollPreparation, list);
+    exportNibelisExpense(payrollPreparation, list);
+  }
+
+  protected void exportNibelisExpense(PayrollPreparation payrollPreparation, List<String[]> list) {
+    if (payrollPreparation.getExpenseAmount().signum() == 0) {
+      return;
+    }
+
+    for (Expense expense : payrollPreparation.getExpenseList()) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        String exportCode = expenseLine.getExpenseProduct().getExportCode();
+        if (StringUtils.notEmpty(exportCode)) {
+          String[] exportExpenseLine = createExportFileLine(payrollPreparation);
+          exportExpenseLine[3] = exportCode;
+          list.add(exportExpenseLine);
         }
       }
     }
+  }
 
-    // LUNCH VOUCHER MANAGEMENT
-    if (payrollPreparation.getLunchVoucherNumber().compareTo(BigDecimal.ZERO) > 0) {
-      String[] lunchVoucherLine = createExportFileLine(payrollPreparation);
-      lunchVoucherLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
-      lunchVoucherLine[6] = payrollPreparation.getLunchVoucherNumber().toString();
-      list.add(lunchVoucherLine);
+  protected void exportNibelisExtraHours(
+      PayrollPreparation payrollPreparation, List<String[]> list) {
+    // EXTRA HOURS
+    if (payrollPreparation.getExtraHoursNumber().compareTo(BigDecimal.ZERO) > 0) {
+      List<ExtraHoursLine> extraHourLineList =
+          Beans.get(ExtraHoursLineRepository.class)
+              .all()
+              .filter(
+                  "self.payrollPreparation.id = ?1"
+                      + " AND self.extraHoursType.payrollPreprationExport = ?2",
+                  payrollPreparation.getId(),
+                  true)
+              .fetch();
+      Map<ExtraHoursType, BigDecimal> extraHourLineExportMap =
+          extraHourLineList.stream()
+              .collect(
+                  Collectors.groupingBy(
+                      ExtraHoursLine::getExtraHoursType,
+                      Collectors.reducing(
+                          BigDecimal.ZERO, ExtraHoursLine::getQty, BigDecimal::add)));
+      extraHourLineExportMap.forEach(
+          (extraHoursTypeGroup, totalHours) -> {
+            String[] extraHourLine = createExportFileLine(payrollPreparation);
+            extraHourLine[3] = extraHoursTypeGroup.getExportCode();
+            extraHourLine[6] = totalHours.toString();
+            list.add(extraHourLine);
+          });
     }
+  }
 
+  protected void exportNibelisEmployeeBonus(
+      PayrollPreparation payrollPreparation, List<String[]> list) {
     // EMPLOYEE BONUS MANAGEMENT
     if (payrollPreparation.getEmployeeBonusAmount().compareTo(BigDecimal.ZERO) > 0) {
       Map<String, BigDecimal> map = new HashMap<>();
@@ -195,32 +230,35 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
         list.add(employeeBonusLine);
       }
     }
+  }
 
-    // EXTRA HOURS
-    if (payrollPreparation.getExtraHoursNumber().compareTo(BigDecimal.ZERO) > 0) {
-      List<ExtraHoursLine> extraHourLineList =
-          Beans.get(ExtraHoursLineRepository.class)
-              .all()
-              .filter(
-                  "self.payrollPreparation.id = ?1"
-                      + " AND self.extraHoursType.payrollPreprationExport = ?2",
-                  payrollPreparation.getId(),
-                  true)
-              .fetch();
-      Map<ExtraHoursType, BigDecimal> extraHourLineExportMap =
-          extraHourLineList.stream()
-              .collect(
-                  Collectors.groupingBy(
-                      ExtraHoursLine::getExtraHoursType,
-                      Collectors.reducing(
-                          BigDecimal.ZERO, ExtraHoursLine::getQty, BigDecimal::add)));
-      extraHourLineExportMap.forEach(
-          (extraHoursTypeGroup, totalHours) -> {
-            String[] extraHourLine = createExportFileLine(payrollPreparation);
-            extraHourLine[3] = extraHoursTypeGroup.getExportCode();
-            extraHourLine[6] = totalHours.toString();
-            list.add(extraHourLine);
-          });
+  protected void exportNibelisLunchVoucher(
+      PayrollPreparation payrollPreparation, List<String[]> list, HRConfig hrConfig) {
+    // LUNCH VOUCHER MANAGEMENT
+    if (payrollPreparation.getLunchVoucherNumber().compareTo(BigDecimal.ZERO) > 0) {
+      String[] lunchVoucherLine = createExportFileLine(payrollPreparation);
+      lunchVoucherLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
+      lunchVoucherLine[6] = payrollPreparation.getLunchVoucherNumber().toString();
+      list.add(lunchVoucherLine);
+    }
+  }
+
+  protected void exportNibelisLeaveList(PayrollPreparation payrollPreparation, List<String[]> list)
+      throws AxelorException {
+    // LEAVES
+    if (payrollPreparation.getLeaveDuration().compareTo(BigDecimal.ZERO) > 0) {
+      List<PayrollLeave> payrollLeaveList =
+          payrollPreparationService.fillInLeaves(payrollPreparation);
+      for (PayrollLeave payrollLeave : payrollLeaveList) {
+        if (payrollLeave.getLeaveReason().getPayrollPreprationExport()) {
+          String[] leaveLine = createExportFileLine(payrollPreparation);
+          leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
+          leaveLine[4] = payrollLeave.getFromDate().format(NIBELIS_EXPORT_DATE_FORMATTER);
+          leaveLine[5] = payrollLeave.getToDate().format(NIBELIS_EXPORT_DATE_FORMATTER);
+          leaveLine[6] = payrollLeave.getDuration().toString();
+          list.add(leaveLine);
+        }
+      }
     }
   }
 
