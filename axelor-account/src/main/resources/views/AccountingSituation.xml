@@ -81,16 +81,13 @@
     </panel>
     <panel name="vatSystemPanel" title="VAT System"
       showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )|| (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)">
-      <field name="vatSystemSelect"
-        showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)"/>
+      <field name="vatSystemSelect"/>
     </panel>
-    <panel name="analyticsPanel" title="Analytics" colSpan="12"
-      showIf="__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; company.accountConfig.analyticDistributionTypeSelect == 2">
+    <panel name="analyticsPanel" title="Analytics" colSpan="12">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
-        form-view="analytic-distribution-template-form" domain="self.company = :company"/>
-      <field name="company.accountConfig" hidden="true"/>
-      <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
+        form-view="analytic-distribution-template-form"
+        domain="self.company = :company AND self.isSpecific = false"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
@@ -214,6 +211,7 @@
     <action name="action-accounting-situation-method-set-default-mail"/>
     <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
     <action name="action-record-manage-vat-system-onnew"/>
+    <action name="action-accounting-situation-attrs-hidden-analytic"/>
     <action name="action-record-set-parent"/>
   </action-group>
 
@@ -223,6 +221,7 @@
     <action name="action-accounting-situation-attrs-hide-employee-account"/>
     <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+    <action name="action-accounting-situation-attrs-hidden-analytic"/>
     <action name="action-record-set-parent"/>
   </action-group>
 
@@ -257,6 +256,11 @@
       expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <attribute name="hidden" for="companyOutBankDetails"
       expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-situation-attrs-hidden-analytic">
+    <attribute name="hidden" for="analyticsPanel"
+      expr="eval: __parent__?._model != 'com.axelor.apps.base.db.Partner' || company?.accountConfig?.analyticDistributionTypeSelect != 2"/>
   </action-attrs>
 
   <action-method name="action-supplychain-method-compute-used-credit">
