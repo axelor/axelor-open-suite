@@ -20,7 +20,6 @@ package com.axelor.apps.base.service.pricing;
 
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -30,13 +29,8 @@ import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.FormView;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PricingMetaServiceImpl implements PricingMetaService {
-
-  private static final Logger LOG = LoggerFactory.getLogger(PricingMetaServiceImpl.class);
 
   @Override
   public void managePricing(AbstractView view) {
@@ -65,23 +59,17 @@ public class PricingMetaServiceImpl implements PricingMetaService {
   }
 
   protected List<Button> addPricingButton(List<Button> toolbar, String model) {
-    try {
-      Button pricingButton = new Button();
-      pricingButton.setTitle(I18n.get(ITranslation.PRICING_BTN));
-      pricingButton.setName("pricingBtn");
-      pricingButton.setOnClick("action-group-use-pricings");
+    Button pricingButton = new Button();
+    pricingButton.setTitle(I18n.get(ITranslation.PRICING_BTN));
+    pricingButton.setName("pricingBtn");
+    pricingButton.setOnClick("action-group-use-pricings");
 
-      String condition = setButtonCondition(model);
-      if (StringUtils.notEmpty(condition)) {
-        pricingButton.setConditionToCheck(condition);
-      }
-      FieldUtils.writeField(pricingButton, "icon", "calculator", true);
-      toolbar.add(0, pricingButton);
-    } catch (Exception e) {
-      LOG.error(
-          String.format(
-              I18n.get(BaseExceptionMessage.PRICING_BUTTON_ERROR), e.getLocalizedMessage()));
+    String condition = setButtonCondition(model);
+    if (StringUtils.notEmpty(condition)) {
+      pricingButton.setConditionToCheck(condition);
     }
+    pricingButton.setIcon("calculator");
+    toolbar.add(0, pricingButton);
     return toolbar;
   }
 
