@@ -1,0 +1,3 @@
+---
+title: "InvoicePayment : fix wrong scale in form view"
+module: axelor-account
