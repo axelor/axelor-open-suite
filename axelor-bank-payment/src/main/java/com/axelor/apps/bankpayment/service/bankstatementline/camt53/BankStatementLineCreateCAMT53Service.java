@@ -3,6 +3,7 @@ package com.axelor.apps.bankpayment.service.bankstatementline.camt53;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineCAMT53;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineCAMT53Repository;
@@ -55,6 +56,7 @@ import jakarta.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.Query;
@@ -66,6 +68,8 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
   public static String BALANCE_TYPE_INITIAL_BALANCE = "OPBD";
   public static String BALANCE_TYPE_FINAL_BALANCE = "CLBD";
 
+  protected BankStatementFileFormat bankStatementFileFormatObj;
+
   protected BankStatementLineCAMT53Repository bankStatementLineCAMT53Repository;
 
   protected InterbankCodeLineRepository interbankCodeLineRepository;
@@ -73,6 +77,8 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
   protected BankDetailsRepository bankDetailsRepository;
 
   protected BankStatementLineCreationCAMT53Service bankStatementLineCreationCAMT53Service;
+
+  protected List<BankStatement> bankStatementList;
 
   private int differentCurrencyOccurrence = 0;
 
@@ -102,8 +108,13 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     return null;
   }
 
-  @Override
-  protected void process() throws IOException, AxelorException {
+  public List<BankStatement> processCAMT53(BankStatement bankStatement)
+      throws IOException, AxelorException {
+    setBankStatement(bankStatement);
+    return processCAMT53();
+  }
+
+  public List<BankStatement> processCAMT53() throws IOException, AxelorException {
     try {
       JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
       Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -119,106 +130,33 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
             TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: No bank statement found."));
       }
 
-      // May be multiple bank statements, now we only handle the first of it.
+      // May be multiple bank statements.
       List<AccountStatement2> stmtList = bkToCstmrStmt.getStmt();
       if (stmtList == null || stmtList.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: No bank statement found."));
       }
-      AccountStatement2 stmt = stmtList.get(0);
-      if (stmt == null) {
+      bankStatementList = new ArrayList<>();
+      AccountStatement2 firstStmt = stmtList.get(0);
+      if (firstStmt == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: No bank statement found."));
       }
-      DateTimePeriodDetails frToDt = stmt.getFrToDt();
-      bankStatement = setBankStatementFrToDt(frToDt, bankStatement);
 
-      CashAccount20 acct = stmt.getAcct();
-      BankDetails bankDetails = null;
-      String currencyCodeFromStmt = null;
-      if (acct != null) {
-        // get the currency code from Stmt-Acct-Ccy
+      BankStatement firstBankStatement = createBankStatement(firstStmt, null);
+      bankStatementList.add(firstBankStatement);
 
-        String ibanOrOthers =
-            Optional.of(acct)
-                .map(CashAccount20::getId)
-                .map(AccountIdentification4Choice::getIBAN)
-                .orElse(null);
-        if (ibanOrOthers == null) {
-          // others
-          ibanOrOthers =
-              Optional.of(acct)
-                  .map(CashAccount20::getId)
-                  .map(AccountIdentification4Choice::getOthr)
-                  .map(GenericAccountIdentification1::getId)
-                  .orElse(null);
-        }
-        // find bankDetails
-        bankDetails = findBankDetailsByIban(ibanOrOthers);
-
-        if (bankDetails == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get("Error: The bank details doesn't exist."));
-        }
-
-        currencyCodeFromStmt = acct.getCcy();
-        if (currencyCodeFromStmt == null) {
-          currencyCodeFromStmt =
-              Optional.of(bankDetails)
-                  .map(BankDetails::getCompany)
-                  .map(Company::getCurrency)
-                  .map(Currency::getCode)
-                  .orElse(null);
-        }
-      }
-
-      int sequence = 0;
-
-      List<CashBalance3> balList = stmt.getBal();
-      if (balList != null && !balList.isEmpty()) {
-        for (CashBalance3 balanceEntry : balList) {
-          sequence =
-              createBalanceLine(
-                  bankDetails,
-                  balanceEntry,
-                  sequence,
-                  BALANCE_TYPE_INITIAL_BALANCE,
-                  currencyCodeFromStmt);
-          if (sequence % 10 == 0) {
+      if (stmtList.size() > 1) {
+        for (int i = 1; i < stmtList.size(); i++) {
+          bankStatementList.add(createBankStatement(stmtList.get(i), firstBankStatement));
+          if (i % 10 == 0) {
             JPA.clear();
             findBankStatement();
           }
         }
       }
 
-      List<ReportEntry2> ntryList = stmt.getNtry();
-      if (ntryList != null && !ntryList.isEmpty()) {
-        for (ReportEntry2 ntry : ntryList) {
-          sequence = createEntryLine(bankDetails, ntry, sequence, currencyCodeFromStmt);
-          if (sequence % 10 == 0) {
-            JPA.clear();
-            findBankStatement();
-          }
-        }
-      }
-
-      if (balList != null && !balList.isEmpty()) {
-        for (CashBalance3 balanceEntry : balList) {
-          sequence =
-              createBalanceLine(
-                  bankDetails,
-                  balanceEntry,
-                  sequence,
-                  BALANCE_TYPE_FINAL_BALANCE,
-                  currencyCodeFromStmt);
-          if (sequence % 10 == 0) {
-            JPA.clear();
-            findBankStatement();
-          }
-        }
-      }
-
+      return bankStatementList;
 
       /* TODO: warn users when the currency symbol is different from the company's setting.
 
@@ -239,64 +177,140 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     }
   }
 
+  /**
+   * @param stmt the current bankStatement that is going to be handled.
+   * @param firstBankStatement means the first bankStatement of the bankStatement List. Use the
+   *     first bankStatement to get bankStatementFileFormat and bankStatementFile. When it's null,
+   *     it means we are handling the first bankStatement.
+   * @return new bankStatement
+   */
+  @Transactional
+  protected BankStatement createBankStatement(
+      AccountStatement2 stmt, BankStatement firstBankStatement) throws AxelorException {
+    /*
+     if the firstBankStatement is null, we are handling the first bankStatement of the bankStatement List.
+     if the firstBankStatement is not null, we are setting a new bankStatement.
+    */
+    if (firstBankStatement != null) {
+      bankStatement = new BankStatement();
+      bankStatement.setBankStatementFileFormat(firstBankStatement.getBankStatementFileFormat());
+      bankStatement.setBankStatementFile(firstBankStatement.getBankStatementFile());
+      bankStatement.setStatusSelect(1);
+      bankStatementRepository.save(bankStatement);
+    }
+
+    DateTimePeriodDetails frToDt = stmt.getFrToDt();
+    bankStatement = setBankStatementFrToDt(frToDt, bankStatement);
+
+    CashAccount20 acct = stmt.getAcct();
+    BankDetails bankDetails = null;
+    String currencyCodeFromStmt = null;
+    if (acct != null) {
+      String ibanOrOthers = getIBANOrOtherAccountIdentification(acct);
+      // find bankDetails
+      bankDetails = findBankDetailsByIBAN(ibanOrOthers);
+
+      if (bankDetails == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get("Error: The bank details doesn't exist."));
+      }
+
+      currencyCodeFromStmt = acct.getCcy();
+      if (currencyCodeFromStmt == null) {
+        currencyCodeFromStmt =
+            Optional.of(bankDetails)
+                .map(BankDetails::getCompany)
+                .map(Company::getCurrency)
+                .map(Currency::getCode)
+                .orElse(null);
+      }
+    }
+
+    int sequence = 0;
+
+    List<CashBalance3> balList = stmt.getBal();
+    if (balList != null && !balList.isEmpty()) {
+      for (CashBalance3 balanceEntry : balList) {
+        sequence =
+            createBalanceLine(
+                bankDetails,
+                balanceEntry,
+                sequence,
+                BALANCE_TYPE_INITIAL_BALANCE,
+                currencyCodeFromStmt);
+        if (sequence % 10 == 0) {
+          JPA.clear();
+          findBankStatement();
+        }
+      }
+    }
+
+    List<ReportEntry2> ntryList = stmt.getNtry();
+    if (ntryList != null && !ntryList.isEmpty()) {
+      for (ReportEntry2 ntry : ntryList) {
+        sequence = createEntryLine(bankDetails, ntry, sequence, currencyCodeFromStmt);
+        if (sequence % 10 == 0) {
+          JPA.clear();
+          findBankStatement();
+        }
+      }
+    }
+
+    if (balList != null && !balList.isEmpty()) {
+      for (CashBalance3 balanceEntry : balList) {
+        sequence =
+            createBalanceLine(
+                bankDetails,
+                balanceEntry,
+                sequence,
+                BALANCE_TYPE_FINAL_BALANCE,
+                currencyCodeFromStmt);
+        if (sequence % 10 == 0) {
+          JPA.clear();
+          findBankStatement();
+        }
+      }
+    }
+
+    return bankStatement;
+  }
+
+  protected String getIBANOrOtherAccountIdentification(CashAccount20 acct) {
+    String ibanOrOthers =
+        Optional.of(acct)
+            .map(CashAccount20::getId)
+            .map(AccountIdentification4Choice::getIBAN)
+            .orElse(null);
+    if (ibanOrOthers == null) {
+      // others
+      ibanOrOthers =
+          Optional.of(acct)
+              .map(CashAccount20::getId)
+              .map(AccountIdentification4Choice::getOthr)
+              .map(GenericAccountIdentification1::getId)
+              .orElse(null);
+    }
+    return ibanOrOthers;
+  }
+
   @Transactional
   protected int createEntryLine(
       BankDetails bankDetails, ReportEntry2 ntry, int sequence, String currencyCodeFromStmt) {
-    XMLGregorianCalendar opDate =
-        Optional.of(ntry)
-            .map(ReportEntry2::getBookgDt)
-            .map(DateAndDateTimeChoice::getDtTm)
-            .orElse(null);
-    // sometimes the DtTm is null, then check Dt.
-    if (opDate == null) {
-      opDate =
-          Optional.of(ntry)
-              .map(ReportEntry2::getBookgDt)
-              .map(DateAndDateTimeChoice::getDt)
-              .orElse(null);
-    }
-    LocalDate operationDate = null;
-    if (opDate != null) {
-      operationDate = LocalDate.of(opDate.getYear(), opDate.getMonth(), opDate.getDay());
-    }
+    LocalDate operationDate = getOperationDateFromEntry(ntry);
 
-    XMLGregorianCalendar valDate =
-        Optional.of(ntry)
-            .map(ReportEntry2::getValDt)
-            .map(DateAndDateTimeChoice::getDtTm)
-            .orElse(null);
-    // sometimes the DtTm is null, then check Dt.
-    if (valDate == null) {
-      valDate =
-          Optional.of(ntry)
-              .map(ReportEntry2::getValDt)
-              .map(DateAndDateTimeChoice::getDt)
-              .orElse(null);
-    }
-    LocalDate valueDate = null;
-    if (valDate != null) {
-      valueDate = LocalDate.of(valDate.getYear(), valDate.getMonth(), valDate.getDay());
-    }
+    LocalDate valueDate = getValDate(ntry);
 
     String description = addNtryInfoIntoDescription(ntry);
 
-    String currencyCode =
-        Optional.of(ntry)
-            .map(ReportEntry2::getAmt)
-            .map(ActiveOrHistoricCurrencyAndAmount::getCcy)
-            .orElse(null);
+    String currencyCode = getCurrencyCode(ntry);
     Currency currency = findCurrencyByCode(currencyCode);
 
-    String creditOrDebit =
-        Optional.of(ntry).map(ReportEntry2::getCdtDbtInd).map(CreditDebitCode::value).orElse(null);
+    String creditDebitIndicator = getCreditDebitIndicatorFromEntry(ntry);
     BigDecimal credit = BigDecimal.ZERO;
     BigDecimal debit = BigDecimal.ZERO;
-    if (CREDIT_DEBIT_INDICATOR_CREDIT.equals(creditOrDebit)) {
-      credit =
-          Optional.of(ntry)
-              .map(ReportEntry2::getAmt)
-              .map(ActiveOrHistoricCurrencyAndAmount::getValue)
-              .orElse(null);
+    if (CREDIT_DEBIT_INDICATOR_CREDIT.equals(creditDebitIndicator)) {
+      credit = getCreditOrDebitValue(ntry);
       if (currencyCodeFromStmt != null && !currencyCodeFromStmt.equals(currencyCode)) {
         StringBuilder descriptionSB = new StringBuilder();
         descriptionSB.append("Entry.ccy=");
@@ -308,12 +322,8 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
         differentCurrencyOccurrence++;
       }
 
-    } else if (CREDIT_DEBIT_INDICATOR_DEBIT.equals(creditOrDebit)) {
-      debit =
-          Optional.of(ntry)
-              .map(ReportEntry2::getAmt)
-              .map(ActiveOrHistoricCurrencyAndAmount::getValue)
-              .orElse(null);
+    } else if (CREDIT_DEBIT_INDICATOR_DEBIT.equals(creditDebitIndicator)) {
+      debit = getCreditOrDebitValue(ntry);
       if (currencyCodeFromStmt != null && !currencyCodeFromStmt.equals(currencyCode)) {
         StringBuilder descriptionSB = new StringBuilder();
         descriptionSB.append("Entry.ccy=");
@@ -326,43 +336,11 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
       }
     }
 
-    String origin =
-        Optional.ofNullable(ntry)
-            .map(ReportEntry2::getNtryDtls)
-            .flatMap(
-                ntryDtls ->
-                    ntryDtls.stream()
-                        .findFirst()) // Convert to Stream and get first element if present
-            .map(EntryDetails1::getTxDtls)
-            .flatMap(txDtls -> txDtls.stream().findFirst()) // Same for TxDtls
-            .map(EntryTransaction2::getRefs)
-            .map(TransactionReferences2::getAcctSvcrRef)
-            .orElse(null);
-    if (origin == null) {
-      origin = Optional.ofNullable(ntry).map(ReportEntry2::getNtryRef).orElse(null);
-    }
+    String origin = getOrigin(ntry);
 
-    String reference =
-        Optional.ofNullable(ntry)
-            .map(ReportEntry2::getNtryDtls)
-            .flatMap(ntryDtls -> ntryDtls.stream().findFirst())
-            .map(EntryDetails1::getTxDtls)
-            .flatMap(txDtls -> txDtls.stream().findFirst())
-            .map(EntryTransaction2::getRefs)
-            .map(TransactionReferences2::getEndToEndId)
-            .orElse(null);
+    String reference = getReference(ntry);
 
-    String interBankCodeLineCode = null;
-    BankTransactionCodeStructure4 bkTxCd = ntry.getBkTxCd();
-    BankTransactionCodeStructure5 domn = bkTxCd.getDomn();
-    if (domn != null) {
-      interBankCodeLineCode = domn.getCd();
-    } else {
-      ProprietaryBankTransactionCodeStructure1 prtry = bkTxCd.getPrtry();
-      if (prtry != null) {
-        interBankCodeLineCode = prtry.getCd();
-      }
-    }
+    String interBankCodeLineCode = getInterBankCodeLineCode(ntry);
 
     /* Possible interbankCode type values:
       int TYPE_OPERATION_CODE = 1;
@@ -384,7 +362,7 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     }
 
     if (description != null
-        && description.length() >= 1
+        && !description.isEmpty()
         && description.charAt(description.length() - 1) == ';') {
       description = description.substring(0, description.length() - 1);
     }
@@ -410,6 +388,114 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     return ++sequence;
   }
 
+  protected LocalDate getOperationDateFromEntry(ReportEntry2 ntry) {
+    XMLGregorianCalendar opDate =
+        Optional.of(ntry)
+            .map(ReportEntry2::getBookgDt)
+            .map(DateAndDateTimeChoice::getDtTm)
+            .orElse(null);
+    // sometimes the DtTm is null, then check Dt.
+    if (opDate == null) {
+      opDate =
+          Optional.of(ntry)
+              .map(ReportEntry2::getBookgDt)
+              .map(DateAndDateTimeChoice::getDt)
+              .orElse(null);
+    }
+    LocalDate operationDate = null;
+    if (opDate != null) {
+      operationDate = LocalDate.of(opDate.getYear(), opDate.getMonth(), opDate.getDay());
+    }
+    return operationDate;
+  }
+
+  protected LocalDate getValDate(ReportEntry2 ntry) {
+    XMLGregorianCalendar valDate =
+        Optional.of(ntry)
+            .map(ReportEntry2::getValDt)
+            .map(DateAndDateTimeChoice::getDtTm)
+            .orElse(null);
+    // sometimes the DtTm is null, then check Dt.
+    if (valDate == null) {
+      valDate =
+          Optional.of(ntry)
+              .map(ReportEntry2::getValDt)
+              .map(DateAndDateTimeChoice::getDt)
+              .orElse(null);
+    }
+    LocalDate valueDate = null;
+    if (valDate != null) {
+      valueDate = LocalDate.of(valDate.getYear(), valDate.getMonth(), valDate.getDay());
+    }
+    return valueDate;
+  }
+
+  protected String getCurrencyCode(ReportEntry2 ntry) {
+    return Optional.of(ntry)
+        .map(ReportEntry2::getAmt)
+        .map(ActiveOrHistoricCurrencyAndAmount::getCcy)
+        .orElse(null);
+  }
+
+  protected String getCreditDebitIndicatorFromEntry(ReportEntry2 ntry) {
+    return Optional.of(ntry)
+        .map(ReportEntry2::getCdtDbtInd)
+        .map(CreditDebitCode::value)
+        .orElse(null);
+  }
+
+  protected BigDecimal getCreditOrDebitValue(ReportEntry2 ntry) {
+    return Optional.of(ntry)
+        .map(ReportEntry2::getAmt)
+        .map(ActiveOrHistoricCurrencyAndAmount::getValue)
+        .orElse(null);
+  }
+
+  protected String getOrigin(ReportEntry2 ntry) {
+    String origin =
+        Optional.ofNullable(ntry)
+            .map(ReportEntry2::getNtryDtls)
+            .flatMap(
+                ntryDtls ->
+                    ntryDtls.stream()
+                        .findFirst()) // Convert to Stream and get first element if present
+            .map(EntryDetails1::getTxDtls)
+            .flatMap(txDtls -> txDtls.stream().findFirst()) // Same for TxDtls
+            .map(EntryTransaction2::getRefs)
+            .map(TransactionReferences2::getAcctSvcrRef)
+            .orElse(null);
+    if (origin == null) {
+      origin = Optional.ofNullable(ntry).map(ReportEntry2::getNtryRef).orElse(null);
+    }
+    return origin;
+  }
+
+  protected String getReference(ReportEntry2 ntry) {
+    return Optional.ofNullable(ntry)
+        .map(ReportEntry2::getNtryDtls)
+        .flatMap(ntryDtls -> ntryDtls.stream().findFirst())
+        .map(EntryDetails1::getTxDtls)
+        .flatMap(txDtls -> txDtls.stream().findFirst())
+        .map(EntryTransaction2::getRefs)
+        .map(TransactionReferences2::getEndToEndId)
+        .orElse(null);
+  }
+
+  protected String getInterBankCodeLineCode(ReportEntry2 ntry) {
+    String interBankCodeLineCode = null;
+    BankTransactionCodeStructure4 bkTxCd = ntry.getBkTxCd();
+    BankTransactionCodeStructure5 domn = bkTxCd.getDomn();
+    if (domn != null) {
+      interBankCodeLineCode = domn.getCd();
+    } else {
+      ProprietaryBankTransactionCodeStructure1 prtry = bkTxCd.getPrtry();
+      if (prtry != null) {
+        interBankCodeLineCode = prtry.getCd();
+      }
+    }
+    return interBankCodeLineCode;
+  }
+
   /*
   TODO: In an xml file, there may be multiple balanceLines (balList.size >2), and multiple entryLines.
         For example, we have 2 init balance lines and 2 final balance lines.
@@ -423,13 +509,7 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
       String balanceTypeRequired,
       String currencyCodeFromStmt) {
     int lineTypeSelect = 0;
-    String balanceType =
-        Optional.of(balanceEntry)
-            .map(CashBalance3::getTp)
-            .map(BalanceType12::getCdOrPrtry)
-            .map(BalanceType5Choice::getCd)
-            .map(BalanceType12Code::value)
-            .orElse(null);
+    String balanceType = getBalanceType(balanceEntry);
     if (!balanceTypeRequired.equals(balanceType)) {
       return sequence;
     }
@@ -441,24 +521,7 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
       lineTypeSelect = 3;
     }
 
-    XMLGregorianCalendar date =
-        Optional.of(balanceEntry)
-                    .map(CashBalance3::getDt)
-                    .map(DateAndDateTimeChoice::getDt)
-                    .orElse(null)
-                != null
-            ? Optional.of(balanceEntry)
-                .map(CashBalance3::getDt)
-                .map(DateAndDateTimeChoice::getDt)
-                .orElse(null)
-            : Optional.of(balanceEntry)
-                .map(CashBalance3::getDt)
-                .map(DateAndDateTimeChoice::getDtTm)
-                .orElse(null);
-    LocalDate operationDate = null;
-    if (date != null) {
-      operationDate = LocalDate.of(date.getYear(), date.getMonth(), date.getDay());
-    }
+    LocalDate operationDate = getOperationDateFromBalanceEntry(balanceEntry);
 
     String currencyCode =
         Optional.of(balanceEntry)
@@ -519,7 +582,7 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     }
 
     if (description != null
-        && description.length() >= 1
+        && !description.isEmpty()
         && description.charAt(description.length() - 1) == ';') {
       description = description.substring(0, description.length() - 1);
     }
@@ -544,6 +607,37 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     updateBankStatementDate(operationDate, lineTypeSelect);
     bankStatementLineCAMT53Repository.save(bankStatementLineCAMT53);
     return ++sequence;
+  }
+
+  protected String getBalanceType(CashBalance3 balanceEntry) {
+    return Optional.of(balanceEntry)
+        .map(CashBalance3::getTp)
+        .map(BalanceType12::getCdOrPrtry)
+        .map(BalanceType5Choice::getCd)
+        .map(BalanceType12Code::value)
+        .orElse(null);
+  }
+
+  protected LocalDate getOperationDateFromBalanceEntry(CashBalance3 balanceEntry) {
+    XMLGregorianCalendar date =
+        Optional.of(balanceEntry)
+                    .map(CashBalance3::getDt)
+                    .map(DateAndDateTimeChoice::getDt)
+                    .orElse(null)
+                != null
+            ? Optional.of(balanceEntry)
+                .map(CashBalance3::getDt)
+                .map(DateAndDateTimeChoice::getDt)
+                .orElse(null)
+            : Optional.of(balanceEntry)
+                .map(CashBalance3::getDt)
+                .map(DateAndDateTimeChoice::getDtTm)
+                .orElse(null);
+    LocalDate operationDate = null;
+    if (date != null) {
+      operationDate = LocalDate.of(date.getYear(), date.getMonth(), date.getDay());
+    }
+    return operationDate;
   }
 
   /**
@@ -624,7 +718,11 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     return bankStatement;
   }
 
-  protected BankDetails findBankDetailsByIban(String ibanOrOthers) {
+  /**
+   * @param ibanOrOthers now we only support IBAN
+   * @return
+   */
+  protected BankDetails findBankDetailsByIBAN(String ibanOrOthers) {
     return bankDetailsRepository.all().filter("self.iban = ?1", ibanOrOthers).fetchOne();
   }
 
@@ -655,10 +753,6 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
       descriptionSb.append(";");
     }
     if (txDtl == null) {
-      //            if (descriptionSb.length() >= 1 && descriptionSb.charAt(descriptionSb.length() -
-      // 1) == ';') {
-      //                descriptionSb.deleteCharAt(descriptionSb.length() - 1);
-      //            }
       return descriptionSb.toString();
     } else {
       // <TxDtls> -> <Refs> -> <ChqNb>
@@ -847,10 +941,6 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
       }
     }
 
-    //        if (descriptionSb.length() >= 1 && descriptionSb.charAt(descriptionSb.length() - 1) ==
-    // ';') {
-    //            descriptionSb.deleteCharAt(descriptionSb.length() - 1);
-    //        }
     return descriptionSb.toString();
   }
 }

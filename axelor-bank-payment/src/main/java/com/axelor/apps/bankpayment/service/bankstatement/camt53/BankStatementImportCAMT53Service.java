@@ -66,12 +66,15 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
   @Override
   @Transactional
   public void runImport(BankStatement bankStatement) throws AxelorException, IOException {
-    bankStatementLineCreateCAMT53Service.process(bankStatement);
-    bankStatement = bankStatementRepository.find(bankStatement.getId());
-    checkImport(bankStatement);
-    updateBankDetailsBalance(bankStatement);
-    computeBankStatementName(bankStatement);
-    setBankStatementImported(bankStatement);
+    List<BankStatement> bankStatementList =
+        bankStatementLineCreateCAMT53Service.processCAMT53(bankStatement);
+    for (BankStatement bkstmt : bankStatementList) {
+      bkstmt = bankStatementRepository.find(bkstmt.getId());
+      checkImport(bkstmt);
+      updateBankDetailsBalance(bkstmt);
+      computeBankStatementName(bkstmt);
+      setBankStatementImported(bkstmt);
+    }
   }
 
   @Override
@@ -182,8 +185,11 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
               .fetchOne();
       BankStatementLineCAMT53 finalBankStatementLineCAMT53 =
           bankPaymentBankStatementLineCAMT53Repository
-              .findByBankDetailsLineTypeExcludeBankStatement(
-                  bankStatement, bd, BankStatementLineCAMT53Repository.LINE_TYPE_FINAL_BALANCE)
+              .findByBankDetailsLineTypeAndOperationDateExcludeBankStatement(
+                  bankStatement,
+                  bd,
+                  BankStatementLineCAMT53Repository.LINE_TYPE_FINAL_BALANCE,
+                  initialBankStatementLineCAMT53.getOperationDate())
               .order("-operationDate")
               .order("-sequence")
               .fetchOne();
