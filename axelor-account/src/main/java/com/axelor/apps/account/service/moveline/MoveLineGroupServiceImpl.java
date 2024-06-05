@@ -308,9 +308,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   @Override
   public Map<String, Object> getDateOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
-    moveLineRecordService.setOriginDate(moveLine);
-    moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
-    moveLineToolService.checkDateInPeriod(move, moveLine);
+    computeDateOnChangeValues(moveLine, move);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -318,6 +316,13 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
     return valuesMap;
+  }
+
+  @Override
+  public void computeDateOnChangeValues(MoveLine moveLine, Move move) throws AxelorException {
+    moveLineRecordService.setOriginDate(moveLine);
+    moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+    moveLineToolService.checkDateInPeriod(move, moveLine);
   }
 
   @Override
