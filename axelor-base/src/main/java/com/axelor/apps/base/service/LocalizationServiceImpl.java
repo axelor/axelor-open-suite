@@ -47,14 +47,17 @@ public class LocalizationServiceImpl implements LocalizationService {
     // Format for en_CA: yyyy-MM-dd
     String formattedDateCanada = formatDate(date, new Locale("en", "CA"));
     System.out.println("Formatted Date (en_CA): " + formattedDateCanada);
+    System.out.println("DateFormat for CA :" + DateFormat.getDateInstance(DateFormat.SHORT, new Locale("en", "CA")));
 
     // Format for en_US: MM/dd/yyyy
     String formattedDateUS = formatDate(date, Locale.US);
     System.out.println("Formatted Date (en_US): " + formattedDateUS);
+    System.out.println("DateFormat for US :" + DateFormat.getDateInstance(DateFormat.SHORT, Locale.US));
 
     // Format for fr_FR: dd/MM/yyyy
     String formattedDateFrance = formatDate(date, Locale.FRANCE);
     System.out.println("Formatted Date (fr_FR): " + formattedDateFrance);
+    System.out.println("DateFormat for FR :" + DateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE));
     return null;
   }
 
