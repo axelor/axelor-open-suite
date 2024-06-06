@@ -286,6 +286,42 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
     extraHoursLine[1] = hrConfig.getExportCodeForExtraHours();
     extraHoursLine[2] = String.valueOf(payrollPrep.getExtraHoursNumber());
     exportLineList.add(extraHoursLine);
+
+    // Payroll employee bonus amount
+    if (payrollPrep.getEmployeeBonusAmount().compareTo(BigDecimal.ZERO) > 0) {
+      Map<String, BigDecimal> map = new HashMap<>();
+      for (EmployeeBonusMgtLine bonus : payrollPrep.getEmployeeBonusMgtLineList()) {
+        if (bonus.getEmployeeBonusMgt().getEmployeeBonusType().getPayrollPreparationExport()) {
+          if (map.containsKey(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())) {
+            map.put(
+                bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(),
+                bonus
+                    .getAmount()
+                    .add(
+                        map.get(
+                            bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())));
+          } else {
+            map.put(
+                bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(),
+                bonus.getAmount());
+          }
+        }
+      }
+      for (Map.Entry<String, BigDecimal> entry : map.entrySet()) {
+        String[] employeeBonusLine = createSilaeExportFileLine(payrollPrep);
+        employeeBonusLine[1] = entry.getKey();
+        employeeBonusLine[2] = entry.getValue().toString();
+        exportLineList.add(employeeBonusLine);
+      }
+    }
+
+    // LUNCH VOUCHER MANAGEMENT
+    if (payrollPrep.getLunchVoucherNumber().compareTo(BigDecimal.ZERO) > 0) {
+      String[] lunchVoucherLine = createSilaeExportFileLine(payrollPrep);
+      lunchVoucherLine[1] = hrConfig.getExportCodeForLunchVoucherManagement();
+      lunchVoucherLine[2] = payrollPrep.getLunchVoucherNumber().toString();
+      exportLineList.add(lunchVoucherLine);
+    }
     return exportLineList;
   }
 
