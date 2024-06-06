@@ -1718,7 +1718,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP);
 
     if (!Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
-      if (BigDecimal.ONE.compareTo(invoiceCurrencyRate) != 0) {
+      if (BigDecimal.ONE.compareTo(invoiceCurrencyRate.abs()) != 0) {
         invoiceTermAmountRemaining =
             invoiceTermAmountRemaining.subtract(amountToPay).multiply(invoiceCurrencyRate);
       } else {
