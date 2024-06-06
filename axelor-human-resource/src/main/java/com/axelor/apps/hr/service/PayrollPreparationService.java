@@ -19,9 +19,6 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -454,33 +451,6 @@ public class PayrollPreparationService {
     headers[5] = I18n.get("End date");
     headers[6] = I18n.get("Value");
     return headers;
-  }
-
-  /**
-   * If each employee's payroll preparation has been exported, close the pay period.
-   *
-   * @param payrollPreparation
-   */
-  @Transactional
-  public void closePayPeriodIfExported(PayrollPreparation payrollPreparation) {
-    Company company = payrollPreparation.getCompany();
-    Period payPeriod = payrollPreparation.getPeriod();
-
-    long nbNotExportedPayroll =
-        payrollPreparationRepo
-            .all()
-            .filter(
-                "self.company = :_company AND self.exported = false "
-                    + "AND self.period = :_period")
-            .bind("_company", company)
-            .bind("_period", payPeriod)
-            .count();
-
-    if (nbNotExportedPayroll == 0) {
-      payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-      payPeriod.setClosureDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
-    }
-    Beans.get(PeriodRepository.class).save(payPeriod);
   }
 
   public List<String[]> exportSilae(PayrollPreparation payrollPrep, List<String[]> exportLineList)
