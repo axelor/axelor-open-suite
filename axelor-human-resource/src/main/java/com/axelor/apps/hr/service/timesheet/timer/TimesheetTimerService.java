@@ -52,4 +52,6 @@ public interface TimesheetTimerService {
   public BigDecimal convertSecondDurationInHours(long durationInSeconds);
 
   void setUpdatedDuration(TSTimer timer, Long duration);
+
+  void deleteTimesheetLineTimer(TimesheetLine timesheetLine);
 }
