@@ -406,7 +406,8 @@ public class ReconcileServiceImpl implements ReconcileService {
                     && it.getAccount()
                         .getAccountType()
                         .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))) {
+                        .equals(AccountTypeRepository.TYPE_TAX)
+                    && it.getAccount().getIsTaxAuthorizedOnMoveLine())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
