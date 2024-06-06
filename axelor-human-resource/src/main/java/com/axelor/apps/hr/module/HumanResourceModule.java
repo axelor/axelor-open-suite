@@ -70,6 +70,8 @@ import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
 import com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl;
+import com.axelor.apps.hr.service.PayrollPreparationExportService;
+import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
 import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
 import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
@@ -364,5 +366,6 @@ public class HumanResourceModule extends AxelorModule {
         .to(ProjectPlanningTimeResponseComputeServiceImpl.class);
     bind(MoveLineTaxServiceImpl.class).to(MoveLineTaxHRServiceImpl.class);
     bind(ReconcileCheckServiceImpl.class).to(ReconcileCheckServiceHRImpl.class);
+    bind(PayrollPreparationExportService.class).to(PayrollPreparationExportServiceImpl.class);
   }
 }
