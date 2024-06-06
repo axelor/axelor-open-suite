@@ -68,7 +68,8 @@
     onLoad="action-partner-account-method-accounting-situation-label">
     <panel name="accountingSituationPanel" if-module="axelor-account"
       onTabSelect="action-partner-account-method-accounting-situation-label"
-      if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact">
+      if="__config__.app.isApp('account')" title="Accounting situation"
+      hideIf="isContact || isProspect">
       <field name="isCompensation" colSpan="12" widget="boolean-switch"
         showIf="isCustomer &amp;&amp; isSupplier"/>
       <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>

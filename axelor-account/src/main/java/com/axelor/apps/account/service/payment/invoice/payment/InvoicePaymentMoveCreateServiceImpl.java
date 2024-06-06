@@ -215,24 +215,30 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     }
 
     invoicePayment.setMove(move);
-    if (customerMoveLine != null
-        && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      for (MoveLine invoiceMoveLine : invoiceMoveLines) {
-        Reconcile reconcile =
-            reconcileService.reconcile(
-                invoiceMoveLine, customerMoveLine, true, true, invoicePayment);
+    if (customerMoveLine != null) {
+      if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+          && InvoiceToolService.isRefund(invoice)) {
+        invoiceMoveLines = moveToolService.getRefundAdvancePaymentMoveLines(invoicePayment);
+      }
 
-        if (reconcile == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
-              invoiceMoveLine.getName(),
-              invoiceMoveLine.getAccount().getCode(),
-              customerMoveLine.getName(),
-              customerMoveLine.getAccount().getCode());
+      if (!ObjectUtils.isEmpty(invoiceMoveLines)) {
+        for (MoveLine invoiceMoveLine : invoiceMoveLines) {
+          Reconcile reconcile =
+              reconcileService.reconcile(
+                  invoiceMoveLine, customerMoveLine, true, true, invoicePayment);
+
+          if (reconcile == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
+                invoiceMoveLine.getName(),
+                invoiceMoveLine.getAccount().getCode(),
+                customerMoveLine.getName(),
+                customerMoveLine.getAccount().getCode());
+          }
+
+          invoicePayment.setReconcile(reconcile);
         }
-
-        invoicePayment.setReconcile(reconcile);
       }
     }
 
