@@ -165,6 +165,7 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
         if (StringUtils.notEmpty(exportCode)) {
           String[] exportExpenseLine = createExportFileLine(payrollPreparation);
           exportExpenseLine[3] = exportCode;
+          exportExpenseLine[6] = String.valueOf(expenseLine.getTotalAmount());
           list.add(exportExpenseLine);
         }
       }
@@ -299,6 +300,52 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
       throws AxelorException {
     HRConfig hrConfig = hrConfigService.getHRConfig(payrollPrep.getCompany());
 
+    exportSilaeLeaves(payrollPrep, exportLineList);
+    exportSilaeDuration(payrollPrep, exportLineList, hrConfig);
+    exportSilaeExtraHour(payrollPrep, exportLineList, hrConfig);
+    exportSilaeExpense(payrollPrep, exportLineList);
+
+    return exportLineList;
+  }
+
+  protected void exportSilaeExpense(PayrollPreparation payrollPreparation, List<String[]> list) {
+    if (payrollPreparation.getExpenseAmount().signum() == 0) {
+      return;
+    }
+
+    for (Expense expense : payrollPreparation.getExpenseList()) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        String exportCode = expenseLine.getExpenseProduct().getExportCode();
+        if (StringUtils.notEmpty(exportCode)) {
+          String[] exportExpenseLine = createSilaeExportFileLine(payrollPreparation);
+          exportExpenseLine[1] = exportCode;
+          exportExpenseLine[2] = String.valueOf(expenseLine.getTotalAmount());
+          list.add(exportExpenseLine);
+        }
+      }
+    }
+  }
+
+  protected void exportSilaeExtraHour(
+      PayrollPreparation payrollPrep, List<String[]> exportLineList, HRConfig hrConfig) {
+    // Payroll extraHoursNumber
+    String[] extraHoursLine = createSilaeExportFileLine(payrollPrep);
+    extraHoursLine[1] = hrConfig.getExportCodeForExtraHours();
+    extraHoursLine[2] = String.valueOf(payrollPrep.getExtraHoursNumber());
+    exportLineList.add(extraHoursLine);
+  }
+
+  protected void exportSilaeDuration(
+      PayrollPreparation payrollPrep, List<String[]> exportLineList, HRConfig hrConfig) {
+    // Payroll duration
+    String[] durationLine = createSilaeExportFileLine(payrollPrep);
+    durationLine[1] = hrConfig.getExportCodeForDuration();
+    durationLine[2] = String.valueOf(payrollPrep.getDuration());
+    exportLineList.add(durationLine);
+  }
+
+  protected void exportSilaeLeaves(PayrollPreparation payrollPrep, List<String[]> exportLineList)
+      throws AxelorException {
     // Payroll leaves
     if (payrollPrep.getLeaveDuration().compareTo(BigDecimal.ZERO) > 0) {
       List<PayrollLeave> payrollLeaveList = payrollPreparationService.fillInLeaves(payrollPrep);
@@ -313,18 +360,6 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
         }
       }
     }
-    // Payroll duration
-    String[] durationLine = createSilaeExportFileLine(payrollPrep);
-    durationLine[1] = hrConfig.getExportCodeForDuration();
-    durationLine[2] = String.valueOf(payrollPrep.getDuration());
-    exportLineList.add(durationLine);
-
-    // Payroll extraHoursNumber
-    String[] extraHoursLine = createSilaeExportFileLine(payrollPrep);
-    extraHoursLine[1] = hrConfig.getExportCodeForExtraHours();
-    extraHoursLine[2] = String.valueOf(payrollPrep.getExtraHoursNumber());
-    exportLineList.add(extraHoursLine);
-    return exportLineList;
   }
 
   @Override
