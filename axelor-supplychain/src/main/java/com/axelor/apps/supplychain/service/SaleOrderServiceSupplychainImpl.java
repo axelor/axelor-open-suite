@@ -286,6 +286,13 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             partnerLinkSupplychainService.getDefaultDeliveredPartner(clientPartner));
         setInvoicedAndDeliveredAddresses(saleOrder);
       }
+    } else if (saleOrder != null && saleOrder.getClientPartner() == null) {
+      saleOrder.setInvoicedPartner(null);
+      saleOrder.setDeliveredPartner(null);
+      saleOrder.setMainInvoicingAddress(null);
+      saleOrder.setMainInvoicingAddressStr(null);
+      saleOrder.setDeliveryAddress(null);
+      saleOrder.setDeliveryAddressStr(null);
     }
   }
 
