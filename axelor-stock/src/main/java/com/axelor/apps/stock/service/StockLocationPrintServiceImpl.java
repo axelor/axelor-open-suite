@@ -1,13 +1,31 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -29,7 +47,7 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected StockConfigService stockConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
   protected StockLocationRepository stockLocationRepository;
   protected StockLocationService stockLocationService;
   protected AppBaseService appBaseService;
@@ -37,21 +55,21 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
   @Inject
   public StockLocationPrintServiceImpl(
       StockConfigService stockConfigService,
-      BirtTemplateService birtTemplateService,
+      PrintingTemplatePrintService printingTemplatePrintService,
       StockLocationRepository stockLocationRepository,
       StockLocationService stockLocationService,
       AppBaseService appBaseService) {
     this.stockConfigService = stockConfigService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
     this.stockLocationRepository = stockLocationRepository;
     this.stockLocationService = stockLocationService;
     this.appBaseService = appBaseService;
   }
 
   @Override
-  public ReportSettings print(
+  public String print(
       Integer printType,
-      String exportType,
+      PrintingTemplate stockLocationPrintTemplate,
       String financialDataDateTimeString,
       Boolean withoutDetailsByStockLocation,
       Long... stockLocationIds)
@@ -69,16 +87,16 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
 
     return print(
         printType,
-        exportType,
+        stockLocationPrintTemplate,
         financialDataDateTime,
         withoutDetailsByStockLocation,
         stockLocationIds);
   }
 
   @Override
-  public ReportSettings print(
+  public String print(
       Integer printType,
-      String exportType,
+      PrintingTemplate stockLocationPrintTemplate,
       LocalDateTime financialDataDateTime,
       Boolean withoutDetailsByStockLocation,
       Long... stockLocationIds)
@@ -92,13 +110,7 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
     Long firstStockLocationId = stockLocationIds[0];
     StockLocation stockLocation = stockLocationRepository.find(firstStockLocationId);
 
-    String title = I18n.get("Stock location");
-    if (stockLocation.getName() != null) {
-      title =
-          stockLocationIds.length == 1
-              ? I18n.get("Stock location") + " " + stockLocation.getName()
-              : I18n.get("Stock location(s)");
-    }
+    String title = getOutputFileName(stockLocationIds);
 
     String stockLocationIdsString;
     if (withoutDetailsByStockLocation) {
@@ -123,34 +135,47 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
               .reduce("", (id1, id2) -> id1 + "," + id2)
               .substring(1);
     }
-    BirtTemplate stockLocationBirtTemplate =
-        stockConfigService
-            .getStockConfig(stockLocation.getCompany())
-            .getStockLocationBirtTemplate();
-    if (ObjectUtils.isEmpty(stockLocationBirtTemplate)) {
+
+    if (ObjectUtils.isEmpty(stockLocationPrintTemplate)) {
+      stockLocationPrintTemplate =
+          stockConfigService
+              .getStockConfig(stockLocation.getCompany())
+              .getStockLocationPrintTemplate();
+    }
+    if (ObjectUtils.isEmpty(stockLocationPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    ReportSettings reportSettings =
-        birtTemplateService.generate(
-            stockLocationBirtTemplate,
-            null,
-            Map.of(
-                "StockLocationId",
-                stockLocationIdsString,
-                "PrintType",
-                printType,
-                "FinancialDataDateTime",
-                financialDataDateTime,
-                "WithoutDetailsByStockLocation",
-                withoutDetailsByStockLocation),
-            title + "-${date}",
-            stockLocationBirtTemplate.getAttach(),
-            exportType);
+    PrintingGenFactoryContext factoryContext = new PrintingGenFactoryContext(stockLocation);
+    factoryContext.setContext(
+        Map.of(
+            "StockLocationId",
+            stockLocationIdsString,
+            "PrintType",
+            printType,
+            "FinancialDataDateTime",
+            financialDataDateTime,
+            "WithoutDetailsByStockLocation",
+            withoutDetailsByStockLocation));
 
     log.debug("Printing {}", title);
-    return reportSettings;
+    return printingTemplatePrintService.getPrintLink(
+        stockLocationPrintTemplate, factoryContext, title + "-${date}");
+  }
+
+  @Override
+  public String getOutputFileName(Long[] stockLocationIds) {
+    Long firstStockLocationId = stockLocationIds[0];
+    StockLocation stockLocation = stockLocationRepository.find(firstStockLocationId);
+    String title = I18n.get("Stock location");
+    if (stockLocation.getName() != null) {
+      title =
+          stockLocationIds.length == 1
+              ? I18n.get("Stock location") + " " + stockLocation.getName()
+              : I18n.get("Stock location(s)");
+    }
+    return title;
   }
 }

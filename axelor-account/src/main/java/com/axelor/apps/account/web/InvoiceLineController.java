@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -46,6 +45,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -66,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -192,13 +193,13 @@ public class InvoiceLineController {
                           .getInTaxUnitPrice(
                               invoice,
                               invoiceLine,
-                              invoiceLine.getTaxLine(),
+                              invoiceLine.getTaxLineSet(),
                               InvoiceToolService.isPurchase(invoice))
                       : Beans.get(InvoiceLineService.class)
                           .getExTaxUnitPrice(
                               invoice,
                               invoiceLine,
-                              invoiceLine.getTaxLine(),
+                              invoiceLine.getTaxLineSet(),
                               InvoiceToolService.isPurchase(invoice)));
       discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
@@ -223,14 +224,14 @@ public class InvoiceLineController {
 
     try {
       BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
-      TaxLine taxLine = invoiceLine.getTaxLine();
+      Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
 
       response.setValue(
           "price",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   true,
-                  taxLine,
+                  taxLineSet,
                   inTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -253,16 +254,16 @@ public class InvoiceLineController {
 
     try {
       BigDecimal exTaxPrice = invoiceLine.getPrice();
-      TaxLine taxLine = invoiceLine.getTaxLine();
+      Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
 
       response.setValue(
           "inTaxPrice",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   false,
-                  taxLine,
+                  taxLineSet,
                   exTaxPrice,
-                  Beans.get(CurrencyScaleServiceAccount.class).getScale(invoiceLine)));
+                  Beans.get(CurrencyScaleService.class).getScale(invoiceLine)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

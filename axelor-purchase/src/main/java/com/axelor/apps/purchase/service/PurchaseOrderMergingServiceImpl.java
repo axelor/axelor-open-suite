@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
@@ -8,13 +26,19 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +46,18 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingService {
+
+  @FunctionalInterface
+  protected interface MergingMethod {
+    PurchaseOrder createOrMergePurchaseOrders(
+        List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result)
+        throws AxelorException;
+  }
+
+  @FunctionalInterface
+  protected interface PurchaseOrderStringGetter {
+    String getString(PurchaseOrder purchaseOrder);
+  }
 
   protected static class CommonFieldsImpl implements CommonFields {
 
@@ -240,15 +276,28 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     }
   }
 
+  protected AppPurchaseService appPurchaseService;
   protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderCreateService purchaseOrderCreateService;
 
   protected PurchaseOrderRepository purchaseOrderRepository;
+  protected PurchaseOrderLineRepository purchaseOrderLineRepository;
+  protected DMSService dmsService;
 
   @Inject
   public PurchaseOrderMergingServiceImpl(
-      PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository) {
+      AppPurchaseService appPurchaseService,
+      PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
+      PurchaseOrderRepository purchaseOrderRepository,
+      DMSService dmsService,
+      PurchaseOrderLineRepository purchaseOrderLineRepository) {
+    this.appPurchaseService = appPurchaseService;
     this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderCreateService = purchaseOrderCreateService;
     this.purchaseOrderRepository = purchaseOrderRepository;
+    this.purchaseOrderLineRepository = purchaseOrderLineRepository;
+    this.dmsService = dmsService;
   }
 
   @Override
@@ -269,6 +318,42 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
   @Override
   public PurchaseOrderMergingResult mergePurchaseOrders(List<PurchaseOrder> purchaseOrdersToMerge)
       throws AxelorException {
+    return mergePurchaseOrders(purchaseOrdersToMerge, this::mergePurchaseOrders);
+  }
+
+  @Override
+  public PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
+      List<PurchaseOrder> purchaseOrdersToMerge, Context context) throws AxelorException {
+    return mergePurchaseOrdersWithContext(
+        purchaseOrdersToMerge, context, this::mergePurchaseOrders);
+  }
+
+  @Override
+  public PurchaseOrderMergingResult simulateMergePurchaseOrders(
+      List<PurchaseOrder> purchaseOrdersToMerge) throws AxelorException {
+    return mergePurchaseOrders(purchaseOrdersToMerge, this::generatePurchaseOrder);
+  }
+
+  @Override
+  public PurchaseOrderMergingResult simulateMergePurchaseOrdersWithContext(
+      List<PurchaseOrder> purchaseOrdersToMerge, Context context) throws AxelorException {
+    return mergePurchaseOrdersWithContext(
+        purchaseOrdersToMerge, context, this::generatePurchaseOrder);
+  }
+
+  /**
+   * Generic method to merge a purchase order that can update the database or not.
+   *
+   * @param purchaseOrdersToMerge list of purchases order to merge
+   * @param mergeMethod can be {@link this#mergePurchaseOrders( List, PurchaseOrderMergingResult)}
+   *     which will update the database or {@link this#generatePurchaseOrder( List,
+   *     PurchaseOrderMergingResult)} which will not update the database, only create the merged
+   *     purchase order in memory.
+   * @return a purchase order merging result object
+   * @throws AxelorException
+   */
+  protected PurchaseOrderMergingResult mergePurchaseOrders(
+      List<PurchaseOrder> purchaseOrdersToMerge, MergingMethod mergeMethod) throws AxelorException {
     Objects.requireNonNull(purchaseOrdersToMerge);
     PurchaseOrderMergingResult result = controlPurchaseOrdersToMerge(purchaseOrdersToMerge);
 
@@ -276,19 +361,32 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
       result.needConfirmation();
       return result;
     }
-    result.setPurchaseOrder(mergePurchaseOrders(purchaseOrdersToMerge, result));
+    result.setPurchaseOrder(mergeMethod.createOrMergePurchaseOrders(purchaseOrdersToMerge, result));
     return result;
   }
 
-  @Override
-  public PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
-      List<PurchaseOrder> purchaseOrdersToMerge, Context context) throws AxelorException {
+  /**
+   * Generic method to merge a purchase order that can update the database or not.
+   *
+   * @param purchaseOrdersToMerge list of purchases order to merge
+   * @param context a context with the parameters the user chose for conflicting fields (example:
+   *     contactPartner)
+   * @param mergeMethod can be {@link this#mergePurchaseOrders(List, PurchaseOrderMergingResult)}
+   *     which will update the database or {@link this#generatePurchaseOrder(List,
+   *     PurchaseOrderMergingResult)} which will not update the database, only create the merged
+   *     purchase order in memory.
+   * @return a purchase order merging result object
+   * @throws AxelorException
+   */
+  protected PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
+      List<PurchaseOrder> purchaseOrdersToMerge, Context context, MergingMethod mergeMethod)
+      throws AxelorException {
     Objects.requireNonNull(purchaseOrdersToMerge);
     Objects.requireNonNull(context);
 
     PurchaseOrderMergingResult result = controlPurchaseOrdersToMerge(purchaseOrdersToMerge);
     updateResultWithContext(result, context);
-    result.setPurchaseOrder(mergePurchaseOrders(purchaseOrdersToMerge, result));
+    result.setPurchaseOrder(mergeMethod.createOrMergePurchaseOrders(purchaseOrdersToMerge, result));
     return result;
   }
 
@@ -332,20 +430,80 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
         || getChecks(result).isExistPriceListDiff();
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result)
       throws AxelorException {
-    PurchaseOrder purchaseOrder =
-        purchaseOrderService.mergePurchaseOrders(
-            purchaseOrdersToMerge,
-            getCommonFields(result).getCommonCurrency(),
-            getCommonFields(result).getCommonSupplierPartner(),
-            getCommonFields(result).getCommonCompany(),
+
+    PurchaseOrder purchaseOrderMerged = generatePurchaseOrder(purchaseOrdersToMerge, result);
+    return updateDatabase(purchaseOrderMerged, purchaseOrdersToMerge);
+  }
+
+  protected PurchaseOrder generatePurchaseOrder(
+      List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result)
+      throws AxelorException {
+
+    String numSeq =
+        computeConcatenatedString(purchaseOrdersToMerge, PurchaseOrder::getPurchaseOrderSeq, "-");
+    String externalRef =
+        computeConcatenatedString(purchaseOrdersToMerge, PurchaseOrder::getExternalReference, "|");
+    Company company = getCommonFields(result).getCommonCompany();
+
+    PurchaseOrder purchaseOrderMerged =
+        purchaseOrderCreateService.createPurchaseOrder(
+            AuthUtils.getUser(),
+            company,
             getCommonFields(result).getCommonContactPartner(),
+            getCommonFields(result).getCommonCurrency(),
+            null,
+            numSeq,
+            externalRef,
+            appPurchaseService.getTodayDate(company),
             getCommonFields(result).getCommonPriceList(),
-            getCommonFields(result).getCommonTradingName());
-    purchaseOrder.setFiscalPosition(getCommonFields(result).getCommonFiscalPosition());
-    return purchaseOrder;
+            getCommonFields(result).getCommonSupplierPartner(),
+            getCommonFields(result).getCommonTradingName(),
+            getCommonFields(result).getCommonFiscalPosition());
+
+    this.attachToNewPurchaseOrder(purchaseOrdersToMerge, purchaseOrderMerged);
+    purchaseOrderService.computePurchaseOrder(purchaseOrderMerged);
+    return purchaseOrderMerged;
+  }
+
+  protected String computeConcatenatedString(
+      List<PurchaseOrder> purchaseOrderList, PurchaseOrderStringGetter getter, String joiner) {
+    return purchaseOrderList.stream()
+        .map(getter::getString)
+        .filter(s -> s != null && !s.isEmpty())
+        .collect(Collectors.joining(joiner));
+  }
+
+  protected PurchaseOrder updateDatabase(
+      PurchaseOrder purchaseOrderMerged, List<PurchaseOrder> purchaseOrdersToMerge) {
+    purchaseOrderRepository.save(purchaseOrderMerged);
+    dmsService.addLinkedDMSFiles(purchaseOrdersToMerge, purchaseOrderMerged);
+    this.removeOldPurchaseOrders(purchaseOrdersToMerge);
+    return purchaseOrderMerged;
+  }
+
+  /** Attach all purchase order lines to new purchase order */
+  protected void attachToNewPurchaseOrder(
+      List<PurchaseOrder> purchaseOrderList, PurchaseOrder purchaseOrderMerged) {
+    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+      int countLine = 1;
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        purchaseOrderLine = purchaseOrderLineRepository.copy(purchaseOrderLine, false);
+        purchaseOrderLine.setSequence(countLine * 10);
+        purchaseOrderMerged.addPurchaseOrderLineListItem(purchaseOrderLine);
+        countLine++;
+      }
+    }
+  }
+
+  /** Remove old purchase orders after merge */
+  protected void removeOldPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
+    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+      purchaseOrderRepository.remove(purchaseOrder);
+    }
   }
 
   protected void checkErrors(StringJoiner fieldErrors, PurchaseOrderMergingResult result) {

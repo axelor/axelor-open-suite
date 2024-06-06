@@ -22,8 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -40,12 +38,9 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
@@ -81,28 +76,6 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     this.timesheetLineRepo = timesheetLineRepo;
     this.timesheetRepo = timesheetRepo;
     this.timesheetCreateService = timesheetCreateService;
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments) {
-    TimesheetLine timesheetLine =
-        super.createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
-
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")
-        && project != null
-        && (project.getIsInvoicingTimesheet()
-            || (project.getParentProject() != null
-                && project.getParentProject().getIsInvoicingTimesheet())))
-      timesheetLine.setToInvoice(true);
-
-    return timesheetLine;
   }
 
   @Override
@@ -220,5 +193,14 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
             timesheetLine.getEmployee(),
             timesheetLine.getProject().getCompany(),
             timesheetLine.getDate());
+  }
+
+  @Override
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    if (timesheetLine.getProjectTask() != null
+        && timesheetLine.getProjectTask().getProduct() != null) {
+      return timesheetLine.getProjectTask().getProduct();
+    }
+    return timesheetLine.getEmployee().getProduct();
   }
 }

@@ -18,22 +18,17 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
@@ -46,9 +41,8 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
@@ -184,9 +178,8 @@ public class MoveLineController {
         finalBalance = totalDebit.subtract(totalCredit);
 
         if (!differentCompanies) {
-          CurrencyScaleServiceAccount currencyScaleServiceAccount =
-              Beans.get(CurrencyScaleServiceAccount.class);
-          int scale = currencyScaleServiceAccount.getCompanyScale(company);
+          CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
+          int scale = currencyScaleService.getCompanyCurrencyScale(company);
 
           totalCredit = totalCredit.setScale(scale, RoundingMode.HALF_UP);
           totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);
@@ -260,26 +253,12 @@ public class MoveLineController {
     }
   }
 
-  public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine.setMove(this.getMove(request, moveLine));
-
-      response.setAttr(
-          "invoiceTermPanel",
-          "readonly",
-          Beans.get(MoveLineControlService.class)
-              .isInvoiceTermReadonly(moveLine, request.getUser()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
 
-      Beans.get(MoveLineFinancialDiscountService.class).computeFinancialDiscount(moveLine);
+      Beans.get(MoveLineFinancialDiscountService.class).computeFinancialDiscount(moveLine, move);
 
       response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
       response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
@@ -373,28 +352,11 @@ public class MoveLineController {
 
   public void updateTaxEquiv(ActionRequest request, ActionResponse response) {
     try {
-      Context parentContext = request.getContext().getParent();
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      if (parentContext != null) {
-        Move move = parentContext.asType(Move.class);
-        TaxLine taxLine = moveLine.getTaxLine();
-        TaxEquiv taxEquiv = null;
-        FiscalPosition fiscalPosition = move.getFiscalPosition();
-        response.setValue("taxLineBeforeReverse", null);
 
-        if (fiscalPosition != null && taxLine != null) {
-          taxEquiv =
-              Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
-
-          if (taxEquiv != null) {
-            response.setValue("taxLineBeforeReverse", taxLine);
-            taxLine =
-                Beans.get(TaxService.class).getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
-          }
-        }
-        response.setValue("taxLine", taxLine);
-        response.setValue("taxEquiv", taxEquiv);
-      }
+      Move move = getMove(request, moveLine);
+      response.setValues(
+          Beans.get(MoveLineGroupService.class).getTaxLineOnChangesValuesMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

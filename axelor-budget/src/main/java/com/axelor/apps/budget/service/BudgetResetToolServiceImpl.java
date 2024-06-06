@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
@@ -30,16 +31,16 @@ public class BudgetResetToolServiceImpl implements BudgetResetToolService {
 
   protected BudgetLineResetToolService budgetLineResetToolService;
   protected BudgetRepository budgetRepository;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetResetToolServiceImpl(
       BudgetLineResetToolService budgetLineResetToolService,
       BudgetRepository budgetRepository,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
+      CurrencyScaleService currencyScaleService) {
     this.budgetLineResetToolService = budgetLineResetToolService;
     this.budgetRepository = budgetRepository;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -50,7 +51,7 @@ public class BudgetResetToolServiceImpl implements BudgetResetToolService {
     entity.setArchived(false);
 
     entity.setTotalAmountExpected(
-        currencyScaleServiceBudget.getCompanyScaledValue(entity, entity.getTotalAmountExpected()));
+        currencyScaleService.getCompanyScaledValue(entity, entity.getTotalAmountExpected()));
     entity.setTotalAmountCommitted(BigDecimal.ZERO);
     entity.setRealizedWithNoPo(BigDecimal.ZERO);
     entity.setRealizedWithPo(BigDecimal.ZERO);

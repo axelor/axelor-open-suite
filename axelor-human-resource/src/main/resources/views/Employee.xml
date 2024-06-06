@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
@@ -37,8 +37,6 @@
     <toolbar>
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id"
         onClick="action-employee-view-annual-report-wizard"/>
-      <button name="employeeReportBtn" title="Print" showIf="id"
-        onClick="save,action-method-print-birt"/>
       <button onClick="action-employee-view-employee-planning" name="employeePlanningBtn"
         title="Employee planning" if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
     </toolbar>
@@ -518,6 +516,8 @@
             grid-view="employee-advance-employee-grid"
             if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement()"
             readonly="false"/>
+          <panel-related name="bankCardPanel" title="Bank cards" field="bankCardList"
+            colSpan="12" form-view="bank-card-form-from-employee" grid-view="bank-card-grid"/>
         </panel>
 
         <panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')"
@@ -564,7 +564,7 @@
 
       <panel name="employeeFileListPanel" title="Files" colSpan="12">
         <panel-related field="employeeFileList" showTitle="false"
-          grid-view="employee-file-grid" form-view="employee-file-form" colSpan="12"/>
+          grid-view="employee-file-grid" form-view="file-form" colSpan="12"/>
       </panel>
 
       <panel name="medicalVisitPanel" title="Medical visit" colSpan="12"

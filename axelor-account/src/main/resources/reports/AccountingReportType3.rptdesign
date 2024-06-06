@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -24,7 +24,6 @@
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
-    <property name="locale">fr_FR</property>
     <parameters>
         <scalar-parameter name="AccountingReportId" id="896">
             <property name="hidden">true</property>
@@ -71,21 +70,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -236,6 +220,12 @@ row["amount_remaining"]/row["countmoveline"]
                     <text-property name="displayName">showProvisionTitle</text-property>
                     <text-property name="heading">showProvisionTitle</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -325,16 +315,21 @@ row["amount_remaining"]/row["countmoveline"]
                     </structure>
                     <structure>
                         <property name="position">15</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
                         <property name="name">Invoice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">credit_to_use</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">excess_payment</property>
                         <property name="dataType">float</property>
                     </structure>
@@ -445,12 +440,19 @@ row["amount_remaining"]/row["countmoveline"]
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineName", MoveLine.partner_full_name as partner_name, MoveLine.partner_seq,
 AccountingReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name", YYear.reported_balance_date,
 AccountingReport.date_from, Reconcile.amount as amountReconciled, ABS(MoveLine.amount_remaining) as amount_remaining, count(Reconcile.id) as countMoveLine,
-CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"
+CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle", Currency.number_of_decimals
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -467,7 +469,9 @@ left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_
 left outer join public.account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
 left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
 left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
-where 
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
@@ -484,7 +488,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 group by MoveLine.name,MoveLine.partner_full_name,MoveLine.partner_seq,AccountingReport.ref,MoveLine.credit,MoveLine.debit,Invoice.invoice_id,
-InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_from,Reconcile.amount,ABS(MoveLine.amount_remaining)]]></xml-property>
+InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_from,Reconcile.amount,ABS(MoveLine.amount_remaining),Currency.number_of_decimals]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
@@ -724,7 +728,7 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -1063,7 +1067,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             <column id="6282"/>
             <detail>
                 <row id="6277">
-                    <cell id="6278"/>
+                    <cell id="6283"/>
                 </row>
             </detail>
         </table>
@@ -1855,6 +1859,12 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                 <expression name="expression" type="javascript">dataSetRow["showProvisionTitle"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1168">
@@ -2284,16 +2294,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="2646">
+                                        <text id="6297">
                                             <property name="fontSize">9pt</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="fontWeight">normal</property>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">SumDebit</property>
-                                        </data>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["SumDebit"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="1193">
                                         <property name="borderLeftColor">#000000</property>
@@ -2305,16 +2319,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="2647">
+                                        <text id="6298">
                                             <property name="fontSize">9pt</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="fontWeight">normal</property>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">SumCredit</property>
-                                        </data>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["SumCredit"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="1194">
                                         <property name="borderLeftColor">#000000</property>
@@ -2326,16 +2344,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="2648">
+                                        <text id="6299">
                                             <property name="fontSize">9pt</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="fontWeight">normal</property>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">SumDifDebit</property>
-                                        </data>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["SumDifDebit"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDifDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="1195">
                                         <property name="borderLeftColor">#000000</property>
@@ -2347,16 +2369,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="2649">
+                                        <text id="6300">
                                             <property name="fontSize">9pt</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="fontWeight">normal</property>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">DifCredit</property>
-                                        </data>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["DifCredit"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DifCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                 </row>
                             </header>
@@ -2425,17 +2451,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2654">
+                                    <text id="6286">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">TotalDebit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["TotalDebit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="1165">
                                     <property name="borderBottomColor">#000000</property>
@@ -2450,17 +2479,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2655">
+                                    <text id="6287">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">TotalCredit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["TotalCredit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="1166">
                                     <property name="borderBottomColor">#000000</property>
@@ -2475,17 +2507,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2656">
+                                    <text id="6289">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">DiffDebit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["DiffDebit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DiffDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="1167">
                                     <property name="borderBottomColor">#000000</property>
@@ -2500,17 +2535,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2657">
+                                    <text id="6291">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">DiffCredit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["DiffCredit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DiffCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                             <row id="1356">
@@ -2576,17 +2614,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2658">
+                                    <text id="6302">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumDiffDebit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["SumDiffDebit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDiffDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="1363">
                                     <property name="borderBottomColor">#000000</property>
@@ -2601,17 +2642,20 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2659">
+                                    <text id="6301">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumDifCrd</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["SumDifCrd"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDifCrd"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </footer>
@@ -2817,7 +2861,7 @@ total
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">Total Debit</property>
+                                <property name="name">TotalDebit</property>
                                 <text-property name="displayName">TotalDebit</text-property>
                                 <expression name="expression" type="javascript">Total.sum(row["debit"]) </expression>
                                 <property name="dataType">float</property>
@@ -3030,6 +3074,12 @@ dataSetRow["invoice_reconciled_name"]
                                 <property name="name">showProvisionTitle</property>
                                 <text-property name="displayName">showProvisionTitle</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["showProvisionTitle"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
@@ -3683,27 +3733,19 @@ false
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="3222">
+                                        <text id="6306">
                                             <property name="fontSize">9pt</property>
                                             <property name="color">red</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["SumExcessPaymentOnGroup"]==null  ||row["SumExcessPaymentOnGroup"]==0)  {
-true
-}
-else  {
-false
-}</expression>
+                                                    <expression name="valueExpr" type="javascript">row["SumExcessPaymentOnGroup"]==null  || row["SumExcessPaymentOnGroup"]==0</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">SumExcessPaymentOnGroup</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumExcessPaymentOnGroup"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="3295">
                                         <property name="borderLeftColor">#000000</property>
@@ -3720,27 +3762,19 @@ false
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="3302">
+                                        <text id="6313">
                                             <property name="fontSize">9pt</property>
                                             <property name="color">red</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["SumExcessPaymentOnGroup"]==null || row["SumExcessPaymentOnGroup"]==0)  {
-true
-}
-else  {
-false
-}</expression>
+                                                    <expression name="valueExpr" type="javascript">row["SumExcessPaymentOnGroup"]==null || row["SumExcessPaymentOnGroup"]==0</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">SumExcessPaymentOnGroup</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumExcessPaymentOnGroup"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                 </row>
                                 <row id="1413">
@@ -3793,17 +3827,18 @@ false
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="2660">
+                                        <text id="6307">
                                             <property name="fontSize">9pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">SumDifDbt</property>
-                                        </data>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["SumDifDbt"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDifDbt"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="1421">
                                         <property name="borderLeftColor">#000000</property>
@@ -3812,17 +3847,18 @@ false
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="2661">
+                                        <text id="6309">
                                             <property name="fontSize">9pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">SumDifCrd</property>
-                                        </data>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["SumDifCrd"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDifCrd"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                 </row>
                             </footer>
@@ -3875,13 +3911,9 @@ false
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="2650">
+                                        <text id="6294">
                                             <property name="fontSize">9pt</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="fontWeight">normal</property>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -3894,16 +3926,14 @@ false
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">DebitOnInvoice</property>
-                                        </data>
-                                        <data id="2695">
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DebitOnInvoice"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
+                                        <text id="6293">
                                             <property name="fontSize">9pt</property>
-                                            <property name="color">#FF0000</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="fontWeight">normal</property>
+                                            <property name="color">red</property>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -3916,8 +3946,10 @@ true
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">DebitOnInvoice</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DebitOnInvoice"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="1477">
                                         <property name="borderLeftColor">#000000</property>
@@ -3926,13 +3958,9 @@ true
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="2651">
+                                        <text id="6295">
                                             <property name="fontSize">9pt</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="fontWeight">normal</property>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -3945,16 +3973,14 @@ false
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">CreditOnInvoice</property>
-                                        </data>
-                                        <data id="2696">
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["CreditOnInvoice"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
+                                        <text id="6296">
                                             <property name="fontSize">9pt</property>
-                                            <property name="color">#FF0000</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="fontWeight">normal</property>
+                                            <property name="color">red</property>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -3967,8 +3993,10 @@ true
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">CreditOnInvoice</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["CreditOnInvoice"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="1478">
                                         <property name="borderLeftColor">#000000</property>
@@ -3977,16 +4005,18 @@ true
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="2652">
+                                        <text id="6303">
                                             <property name="fontSize">9pt</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">DifDebit</property>
-                                        </data>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["DifDebit"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DifDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="1479">
                                         <property name="borderLeftColor">#000000</property>
@@ -3995,49 +4025,35 @@ true
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="2653">
+                                        <text id="6304">
                                             <property name="fontSize">9pt</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
-true
-}
-else  {
-false
-}</expression>
+                                                    <expression name="valueExpr" type="javascript">row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">DifCredit</property>
-                                        </data>
-                                        <data id="3303">
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["DifCredit"])
+Formatter.format(row["DifCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
+                                        <text id="6305">
                                             <property name="fontSize">9pt</property>
-                                            <property name="color">#FF0000</property>
-                                            <property name="numberAlign">right</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="color">red</property>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
-false
-}
-else  {
-true
-}</expression>
+                                                    <expression name="valueExpr" type="javascript">!(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">DifCredit</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["DifCredit"])
+Formatter.format(row["DifCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                 </row>
                             </header>
@@ -4121,17 +4137,20 @@ true
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2662">
+                                    <text id="6288">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">Total Debit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["TotalDebit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="1429">
                                     <property name="borderBottomColor">#000000</property>
@@ -4146,17 +4165,20 @@ true
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2663">
+                                    <text id="6292">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">TotalCredit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["TotalDebit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="1431">
                                     <property name="borderBottomColor">#000000</property>
@@ -4171,17 +4193,13 @@ true
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2664">
+                                    <text id="6308">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumOnDebit</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumOnDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="1433">
                                     <property name="borderBottomColor">#000000</property>
@@ -4196,17 +4214,13 @@ true
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2665">
+                                    <text id="6310">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumOnCredit</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumOnCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                             <row id="1435">
@@ -4272,17 +4286,19 @@ true
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2666">
+                                    <text id="6312">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">DebitBalance</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["DebitBalance"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DebitBalance"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="1444">
                                     <property name="borderBottomColor">#000000</property>
@@ -4297,21 +4313,66 @@ true
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="2667">
+                                    <text id="6311">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="numberAlign">right</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">CreditBalance</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["CreditBalance"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["CreditBalance"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </footer>
                     </table>
+                </cell>
+            </row>
+        </grid>
+        <grid id="6284">
+            <property name="dataSet">MoveLineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row.__rownum != -1</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">MoveLineName</property>
+                    <text-property name="displayName">MoveLineName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MoveLineName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="6285"/>
+            <row id="6286">
+                <cell id="6287">
+                    <text id="6288">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
             </row>
         </grid>

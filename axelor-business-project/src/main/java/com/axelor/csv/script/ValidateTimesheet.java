@@ -45,10 +45,8 @@ public class ValidateTimesheet {
 
     Timesheet timesheet = (Timesheet) bean;
 
-    if (timesheet.getStatusSelect() == TimesheetRepository.STATUS_VALIDATED) {
-      timesheetWorkflowService.validate(timesheet);
-      timesheetRepository.save(timesheet);
-    }
+    timesheetWorkflowService.validate(timesheet);
+    timesheetRepository.save(timesheet);
 
     return timesheet;
   }

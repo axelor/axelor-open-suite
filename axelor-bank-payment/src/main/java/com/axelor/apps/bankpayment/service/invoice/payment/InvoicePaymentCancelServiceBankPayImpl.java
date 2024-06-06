@@ -21,19 +21,17 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -43,27 +41,23 @@ import org.slf4j.LoggerFactory;
 public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancelServiceImpl
     implements InvoicePaymentBankPaymentCancelService {
 
-  protected BankOrderService bankOrderService;
+  protected BankOrderCancelService bankOrderCancelService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected AppBankPaymentService appBankPaymentService;
 
   @Inject
   public InvoicePaymentCancelServiceBankPayImpl(
-      AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
-      ReconcileService reconcileService,
-      BankOrderService bankOrderService,
-      InvoicePaymentToolService invoicePaymentToolService) {
-
+      InvoicePaymentToolService invoicePaymentToolService,
+      InvoiceTermService invoiceTermService,
+      BankOrderCancelService bankOrderCancelService,
+      AppBankPaymentService appBankPaymentService) {
     super(
-        accountConfigService,
-        invoicePaymentRepository,
-        moveCancelService,
-        reconcileService,
-        invoicePaymentToolService);
-
-    this.bankOrderService = bankOrderService;
+        invoicePaymentRepository, moveCancelService, invoicePaymentToolService, invoiceTermService);
+    this.bankOrderCancelService = bankOrderCancelService;
+    this.appBankPaymentService = appBankPaymentService;
   }
 
   /**
@@ -79,7 +73,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
 
-    if (!Beans.get(AppBankPaymentService.class).isApp("bank-payment")) {
+    if (!appBankPaymentService.isApp("bank-payment")) {
       super.cancel(invoicePayment);
       return;
     }
@@ -89,7 +83,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
     BankOrder paymentBankOrder = invoicePayment.getBankOrder();
     if (paymentBankOrder != null
         && paymentBankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
-      bankOrderService.cancelBankOrder(paymentBankOrder);
+      bankOrderCancelService.cancelBankOrder(paymentBankOrder);
       this.updateCancelStatus(invoicePayment);
     }
 

@@ -175,6 +175,9 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
           move.getDate(),
           moveLine.getCredit().add(moveLine.getDebit()),
           moveLine);
+      moveLine.setBudgetRemainingAmountToAllocate(
+          budgetToolsService.getBudgetRemainingAmountToAllocate(
+              moveLine.getBudgetDistributionList(), moveLine.getDebit().max(moveLine.getCredit())));
     }
   }
 }

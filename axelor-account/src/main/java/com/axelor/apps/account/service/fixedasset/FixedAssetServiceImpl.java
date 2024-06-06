@@ -29,12 +29,12 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -53,7 +53,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +78,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected DateService dateService;
 
   protected FixedAssetLineService fixedAssetLineService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -95,7 +97,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetDateService fixedAssetDateService,
       DateService dateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -107,7 +109,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.dateService = dateService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -118,7 +120,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       int disposalQtySelect,
       BigDecimal disposalQty,
       Boolean generateSaleMove,
-      TaxLine saleTaxLine,
+      Set<TaxLine> saleTaxLineSet,
       Integer disposalTypeSelect,
       BigDecimal disposalAmount,
       AssetDisposalReason assetDisposalReason,
@@ -126,7 +128,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       throws AxelorException {
 
     this.checkFixedAssetBeforeDisposal(
-        fixedAsset, disposalDate, disposalQtySelect, disposalQty, generateSaleMove, saleTaxLine);
+        fixedAsset, disposalDate, disposalQtySelect, disposalQty, generateSaleMove, saleTaxLineSet);
 
     int transferredReason =
         this.computeTransferredReason(
@@ -141,14 +143,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             transferredReason,
             assetDisposalReason,
             comments);
-    if (generateSaleMove && saleTaxLine != null) {
+    if (generateSaleMove && CollectionUtils.isNotEmpty(saleTaxLineSet)) {
       if (createdFixedAsset != null) {
 
         fixedAssetLineMoveService.generateSaleMove(
-            createdFixedAsset, saleTaxLine, disposalAmount, disposalDate);
+            createdFixedAsset, saleTaxLineSet, disposalAmount, disposalDate);
       } else {
         fixedAssetLineMoveService.generateSaleMove(
-            fixedAsset, saleTaxLine, disposalAmount, disposalDate);
+            fixedAsset, saleTaxLineSet, disposalAmount, disposalDate);
       }
     }
     return createdFixedAsset;
@@ -364,22 +366,22 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     if (fixedAsset.getGrossValue() != null) {
       fixedAsset.setGrossValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset, prorata.multiply(fixedAsset.getGrossValue())));
     }
     if (fixedAsset.getResidualValue() != null) {
       fixedAsset.setResidualValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset, prorata.multiply(fixedAsset.getResidualValue())));
     }
     if (fixedAsset.getAccountingValue() != null) {
       fixedAsset.setAccountingValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset, prorata.multiply(fixedAsset.getAccountingValue())));
     }
     if (fixedAsset.getCorrectedAccountingValue() != null) {
       fixedAsset.setCorrectedAccountingValue(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset, prorata.multiply(fixedAsset.getCorrectedAccountingValue())));
     }
   }
@@ -578,7 +580,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       int disposalQtySelect,
       BigDecimal disposalQty,
       Boolean generateSaleMove,
-      TaxLine saleTaxLine)
+      Set<TaxLine> saleTaxLineSet)
       throws AxelorException {
     if (disposalDate != null
             && Stream.of(
@@ -613,7 +615,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset.getQty().toString());
     }
     if (generateSaleMove
-        && saleTaxLine != null
+        && CollectionUtils.isNotEmpty(saleTaxLineSet)
         && fixedAsset.getCompany().getAccountConfig().getCustomerSalesJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
@@ -34,10 +52,34 @@ public class TimesheetCheckResponseServiceImpl implements TimesheetCheckResponse
     checkResponseLineList.add(checkFromDate(timesheet));
     checkResponseLineList.add(checkToDate(timesheet));
     checkDailyLimit(timesheet, checkResponseLineList);
+    checkTimesheetLinesDates(timesheet, checkResponseLineList);
     List<CheckResponseLine> filteredList =
         checkResponseLineList.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
     return new CheckResponse(timesheet, filteredList);
+  }
+
+  protected void checkTimesheetLinesDates(
+      Timesheet timesheet, List<CheckResponseLine> checkResponseLineList) {
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    if (CollectionUtils.isEmpty(timesheetLineList)) {
+      return;
+    }
+    LocalDate fromDate = timesheet.getFromDate();
+    LocalDate toDate = timesheet.getToDate();
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+      LocalDate date = timesheetLine.getDate();
+      if (date != null
+          && ((fromDate != null && date.isBefore(fromDate))
+              || (toDate != null && date.isAfter(toDate)))) {
+        checkResponseLineList.add(
+            new CheckResponseLine(
+                timesheetLine,
+                String.format(
+                    I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINE_INVALID_DATES), date),
+                CheckResponseLine.CHECK_TYPE_ERROR));
+      }
+    }
   }
 
   protected void checkDailyLimit(Timesheet timesheet, List<CheckResponseLine> checkResponseLineList)

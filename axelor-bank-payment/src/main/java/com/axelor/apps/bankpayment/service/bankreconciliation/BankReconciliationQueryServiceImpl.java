@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -24,12 +42,12 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
-            + " AND self.move.currency = :bankReconciliationCurrency"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
-            + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount)"
+            + " AND abs(self.currencyAmount) > 0"
             + " AND (:includeOtherBankStatements IS TRUE OR (self.date BETWEEN :fromDate AND :toDate OR self.dueDate BETWEEN :fromDate AND :toDate))"
             + " AND (:journal IS NULL OR self.move.journal = :journal)"
-            + " AND (:cashAccount IS NULL OR self.account = :cashAccount)";
+            + " AND (:cashAccount IS NULL OR self.account = :cashAccount)"
+            + " AND ((self.move.currency = :bankReconciliationCurrency AND self.bankReconciledAmount < abs(self.currencyAmount)) OR (self.move.currency != :bankReconciliationCurrency AND (self.bankReconciledAmount < (self.debit + self.credit))))";
 
     return query;
   }
@@ -44,7 +62,6 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
     params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
     params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
     params.put("company", bankReconciliation.getCompany());
-    params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
 
     params.put("includeOtherBankStatements", bankReconciliation.getIncludeOtherBankStatements());
@@ -64,6 +81,8 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
     params.put("journal", bankReconciliation.getJournal());
 
     params.put("cashAccount", bankReconciliation.getCashAccount());
+
+    params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
 
     return params;
   }

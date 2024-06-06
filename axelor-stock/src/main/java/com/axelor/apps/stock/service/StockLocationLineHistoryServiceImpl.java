@@ -18,32 +18,39 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockLocationLineHistory;
 import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class StockLocationLineHistoryServiceImpl implements StockLocationLineHistoryService {
 
   protected StockLocationLineHistoryRepository stockLocationLineHistoryRepo;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public StockLocationLineHistoryServiceImpl(
-      StockLocationLineHistoryRepository stockLocationLineHistoryRepo) {
+      StockLocationLineHistoryRepository stockLocationLineHistoryRepo,
+      ProductCompanyService productCompanyService) {
     this.stockLocationLineHistoryRepo = stockLocationLineHistoryRepo;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
   @Transactional
   public StockLocationLineHistory saveHistory(
-      StockLocationLine stockLocationLine,
-      LocalDateTime dateTime,
-      String origin,
-      String typeSelect) {
-
+      StockLocationLine stockLocationLine, LocalDateTime dateTime, String origin, String typeSelect)
+      throws AxelorException {
+    Product product = stockLocationLine.getProduct();
+    Company company = stockLocationLine.getStockLocation().getCompany();
     return stockLocationLineHistoryRepo.save(
         new StockLocationLineHistory(
             stockLocationLine,
@@ -52,7 +59,10 @@ public class StockLocationLineHistoryServiceImpl implements StockLocationLineHis
             origin,
             stockLocationLine.getAvgPrice(),
             stockLocationLine.getCurrentQty(),
-            stockLocationLine.getUnit()));
+            stockLocationLine.getUnit(),
+            (BigDecimal) productCompanyService.get(product, "salePrice", company),
+            (BigDecimal) productCompanyService.get(product, "purchasePrice", company),
+            (BigDecimal) productCompanyService.get(product, "costPrice", company)));
   }
 
   @Override

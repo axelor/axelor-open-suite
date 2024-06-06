@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
@@ -8,11 +26,15 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,9 +51,18 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       PriceListService priceListService,
-      TimesheetProjectService timesheetProjectService) {
+      UnitConversionService unitConversionService,
+      UnitConversionForProjectService unitConversionForProjectService,
+      TimesheetProjectService timesheetProjectService,
+      TimesheetLineService timesheetLineService) {
     super(
-        appHumanResourceService, partnerPriceListService, productCompanyService, priceListService);
+        appHumanResourceService,
+        partnerPriceListService,
+        productCompanyService,
+        priceListService,
+        unitConversionService,
+        unitConversionForProjectService,
+        timesheetLineService);
     this.timesheetProjectService = timesheetProjectService;
   }
 
@@ -53,10 +84,26 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
     boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
-      Object[] tabInformations = new Object[6];
+      Object[] tabInformations = new Object[8];
       Product product = timesheetLine.getProduct();
+      if (product == null) {
+        product = timesheetLineService.getDefaultProduct(timesheetLine);
+      }
+      Employee employee = timesheetLine.getEmployee();
+
+      // forced prices if framework customer contract set on task
+      BigDecimal forcedUnitPrice = null;
+      BigDecimal forcedPriceDiscounted = null;
+
+      ProjectTask projectTask = timesheetLine.getProjectTask();
+      if (projectTask != null && projectTask.getFrameworkCustomerContract() != null) {
+        forcedUnitPrice = projectTask.getProduct() != null ? projectTask.getUnitPrice() : null;
+        forcedPriceDiscounted =
+            projectTask.getProduct() != null ? projectTask.getPriceDiscounted() : null;
+      }
+
       tabInformations[0] = product;
-      tabInformations[1] = timesheetLine.getEmployee();
+      tabInformations[1] = employee;
       // Start date
       tabInformations[2] = timesheetLine.getDate();
       // End date, useful only for consolidation
@@ -66,12 +113,14 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
               ? timesheetProjectService.computeDurationForCustomer(timesheetLine)
               : timesheetLine.getHoursDuration();
       tabInformations[5] = timesheetLine.getProject();
+      tabInformations[6] = forcedUnitPrice;
+      tabInformations[7] = forcedPriceDiscounted;
 
       String key = null;
       if (consolidate) {
         key =
             (product != null ? product.getId() + "|" : "")
-                + timesheetLine.getEmployee().getId()
+                + employee.getId()
                 + "|"
                 + timesheetLine.getProject().getId();
         if (timeSheetInformationsMap.containsKey(key)) {
@@ -108,6 +157,8 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
       Project project = (Project) timesheetInformations[5];
+      BigDecimal forcedUnitPrice = (BigDecimal) timesheetInformations[6];
+      BigDecimal forcedPriceDiscounted = (BigDecimal) timesheetInformations[7];
       PriceList priceList = project.getPriceList();
       if (consolidate) {
         if (startDate != null && endDate != null) {
@@ -123,11 +174,14 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
           this.createInvoiceLine(
               invoice,
               product,
+              project,
               employee,
               strDate,
               hoursDuration,
               priority * 100 + count,
-              priceList));
+              priceList,
+              forcedUnitPrice,
+              forcedPriceDiscounted));
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
       count++;
     }

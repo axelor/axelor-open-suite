@@ -25,10 +25,12 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -63,6 +65,8 @@ public class PaymentServiceImpl implements PaymentService {
   protected AppBaseService appBaseService;
   protected CurrencyService currencyService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected InvoicePaymentRepository invoicePaymentRepository;
+  protected AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService;
 
   @Inject
   public PaymentServiceImpl(
@@ -71,7 +75,9 @@ public class PaymentServiceImpl implements PaymentService {
       ReconcileService reconcileService,
       MoveLineCreateService moveLineCreateService,
       CurrencyService currencyService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      InvoicePaymentRepository invoicePaymentRepository,
+      AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
@@ -79,6 +85,8 @@ public class PaymentServiceImpl implements PaymentService {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.invoicePaymentRepository = invoicePaymentRepository;
+    this.advancePaymentMoveLineCreateService = advancePaymentMoveLineCreateService;
   }
 
   /**
@@ -268,6 +276,15 @@ public class PaymentServiceImpl implements PaymentService {
 
       BigDecimal currencyRate = debitMoveLine.getCurrencyRate();
       BigDecimal amountToPay = remainingPaidAmount2.abs().min(amountRemaining);
+
+      if (amountRemaining.signum() != 0) {
+        BigDecimal prorata =
+            amountToPay.divide(
+                amountRemaining, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
+            move, debitMoveLine, prorata, paymentDate);
+      }
+
       BigDecimal moveLineAmount = amountToPay;
       if (currencyRate.signum() > 0) {
         moveLineAmount =
@@ -282,7 +299,7 @@ public class PaymentServiceImpl implements PaymentService {
         invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
       }
 
-      LocalDate date = appAccountService.getTodayDate(company);
+      LocalDate date = paymentDate;
 
       MoveLine creditMoveLine =
           moveLineCreateService.createMoveLine(
@@ -345,7 +362,7 @@ public class PaymentServiceImpl implements PaymentService {
               account,
               remainingPaidAmount2,
               false,
-              appAccountService.getTodayDate(company),
+              paymentDate,
               moveLineNo2,
               null,
               null);
@@ -446,6 +463,13 @@ public class PaymentServiceImpl implements PaymentService {
               }
 
               BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining().abs());
+              BigDecimal prorata =
+                  amountToPay.divide(
+                      creditMoveLine.getAmountRemaining().abs(),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP);
+              advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
+                  move, creditMoveLine, prorata, date);
 
               // Gestion du passage en 580
               if (i == 0) {
