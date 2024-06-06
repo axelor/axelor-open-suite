@@ -408,20 +408,21 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (move.getMoveLineList().stream()
-        .anyMatch(
-            it ->
-                it.getTaxLine() == null
-                    && it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX)
-                    && it.getAccount().getIsTaxAuthorizedOnMoveLine())) {
+    if (move.getMoveLineList().stream().anyMatch(this::isAccountTypeTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
           move.getReference());
     }
+  }
+
+  protected boolean isAccountTypeTax(MoveLine it) {
+    return it.getTaxLine() == null
+        && it.getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_TAX)
+        && it.getAccount().getIsTaxAuthorizedOnMoveLine();
   }
 
   @Override
