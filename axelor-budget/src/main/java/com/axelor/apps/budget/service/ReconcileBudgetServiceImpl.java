@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileSequenceService;
-import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -49,6 +48,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.hr.service.ReconcileHRServiceImpl;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -56,7 +56,7 @@ import java.math.RoundingMode;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
-public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
+public class ReconcileBudgetServiceImpl extends ReconcileHRServiceImpl {
 
   protected BudgetDistributionService budgetDistributionService;
   protected AppBudgetService appBudgetService;

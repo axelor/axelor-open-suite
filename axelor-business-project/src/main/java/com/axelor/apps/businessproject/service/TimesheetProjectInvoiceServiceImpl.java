@@ -72,7 +72,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[6];
-      Product product = timesheetLine.getProduct();
+      Product product = getProduct(timesheetLine);
       tabInformations[0] = product;
       tabInformations[1] = timesheetLine.getEmployee();
       // Start date
@@ -151,5 +151,16 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
     }
 
     return invoiceLineList;
+  }
+
+  @Override
+  protected Product getProduct(TimesheetLine timesheetLine) {
+    Product product = super.getProduct(timesheetLine);
+
+    if (product == null && timesheetLine.getProjectTask() != null) {
+      product = timesheetLine.getProjectTask().getProduct();
+    }
+
+    return product;
   }
 }

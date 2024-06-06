@@ -42,8 +42,10 @@ import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupplychainImpl {
 
@@ -91,9 +93,9 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       TradingName tradingName)
       throws AxelorException {
 
-    List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
+    Set<ManufOrder> manufOrders = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.clearPurchaseOrderSet());
+    removePurchaseOrdersFromMO(purchaseOrderList, manufOrders);
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -105,7 +107,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.addPurchaseOrderSetItem(mergedPurchaseOrder));
+    manufOrders.forEach(manufOrder -> manufOrder.addPurchaseOrderSetItem(mergedPurchaseOrder));
     return mergedPurchaseOrder;
   }
 
@@ -122,9 +124,9 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       TradingName tradingName)
       throws AxelorException {
 
-    List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
+    Set<ManufOrder> manufOrders = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.clearPurchaseOrderSet());
+    removePurchaseOrdersFromMO(purchaseOrderList, manufOrders);
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -137,17 +139,32 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.addPurchaseOrderSetItem(mergedPurchaseOrder));
+    manufOrders.forEach(manufOrder -> manufOrder.addPurchaseOrderSetItem(mergedPurchaseOrder));
 
     return mergedPurchaseOrder;
   }
 
-  protected List<ManufOrder> getManufOrdersOfPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
-    List<ManufOrder> manufOrderList = new ArrayList<>();
-    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
-      manufOrderList.addAll(
-          manufOrderRepo.all().filter("self.purchaseOrder.id = ?1", purchaseOrder.getId()).fetch());
+  protected void removePurchaseOrdersFromMO(
+      List<PurchaseOrder> purchaseOrderList, Set<ManufOrder> manufOrders) {
+    for (ManufOrder manufOrder : manufOrders) {
+      List<PurchaseOrder> orderstoRemove =
+          manufOrder.getPurchaseOrderSet().stream()
+              .filter(purchaseOrderList::contains)
+              .collect(Collectors.toList());
+      orderstoRemove.forEach(manufOrder::removePurchaseOrderSetItem);
     }
-    return manufOrderList;
+  }
+
+  protected Set<ManufOrder> getManufOrdersOfPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
+    Set<ManufOrder> manufOrders = new HashSet<>();
+    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+      manufOrders.addAll(
+          manufOrderRepo
+              .all()
+              .filter(":purchaseOrder MEMBER OF self.purchaseOrderSet")
+              .bind("purchaseOrder", purchaseOrder)
+              .fetch());
+    }
+    return manufOrders;
   }
 }

@@ -145,14 +145,14 @@
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false" readonly="true">
             <viewer
-              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals">
+              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals,contract.isToRevaluate">
               <![CDATA[
 					<>
 						<Box mt={2} fontWeight="bold">{_t('Initial ex tax total per year')}</Box>
 						<Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(initialExTaxTotalPerYear).toFixed(contract.currency.numberOfDecimals)}</Box>
-						<Box borderTop borderColor="inherit" m={1}/>
-						<Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>
-						<Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(yearlyExTaxTotalRevalued).toFixed(contract.currency.numberOfDecimals)}</Box>
+						{contract.isToRevaluate && <Box borderTop borderColor="inherit" m={1}/>}
+						{contract.isToRevaluate && <Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>}
+						{contract.isToRevaluate && <Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(yearlyExTaxTotalRevalued).toFixed(contract.currency.numberOfDecimals)}</Box>}
 					</>
               ]]>
             </viewer>
@@ -365,16 +365,19 @@
           onChange="action-contract-method-hide-fields-list"/>
         <field name="revaluationPeriod"
           requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
-          domain="self.applicationTypeSelect = 2"/>
+          domain="self.applicationTypeSelect = 2" hidden="true" showIf="isToRevaluate"/>
         <field name="revaluationFormula"
-          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
-        <field name="index2"/>
-        <field name="index2Date"/>
-        <field name="endOfApplicationDate"/>
-        <field name="lastRevaluationDate" readonly="true"/>
-        <field name="nextRevaluationDate"/>
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate" hidden="true"
+          showIf="isToRevaluate"/>
+        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          hidden="true" showIf="isToRevaluate"/>
+        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          hidden="true" showIf="isToRevaluate"/>
+        <field name="index2" hidden="true" showIf="isToRevaluate"/>
+        <field name="index2Date" hidden="true" showIf="isToRevaluate"/>
+        <field name="endOfApplicationDate" hidden="true" showIf="isToRevaluate"/>
+        <field name="lastRevaluationDate" readonly="true" hidden="true" showIf="isToRevaluate"/>
+        <field name="nextRevaluationDate" hidden="true" showIf="isToRevaluate"/>
       </panel>
 
       <panel-related name="versionHistoryPanel" hidden="true" readonly="true"
@@ -407,7 +410,6 @@
   </action-group>
 
   <action-group name="action-contract-group-on-load">
-    <action name="action-contract-attrs-require-payment-config"/>
     <action name="action-contract-attrs-readonly-by-config"/>
     <action name="action-contract-readonly-if-unchangable"/>
     <action name="action-contract-method-hide-fields-list"/>
@@ -529,7 +531,7 @@
     <context name="_showRecord" expr="eval: nextVersion.id"/>
   </action-view>
 
-  <action-view name="action-view-contract-add-version" title="Nouvelle version"
+  <action-view name="action-view-contract-add-version" title="New version"
     model="com.axelor.apps.contract.db.ContractVersion">
     <view type="form" name="contract-version-next-form"/>
     <view type="grid" name="contract-version-next-grid"/>
