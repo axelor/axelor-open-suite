@@ -1,7 +1,6 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -89,11 +88,6 @@ public class ReconcileHRServiceImpl extends ReconcileServiceImpl {
 
   @Override
   protected boolean isAccountTypeTax(MoveLine it) {
-    return (it.getMove().getExpense() == null && it.getTaxLine() == null)
-        && it.getAccount()
-            .getAccountType()
-            .getTechnicalTypeSelect()
-            .equals(AccountTypeRepository.TYPE_TAX)
-        && it.getAccount().getIsTaxAuthorizedOnMoveLine();
+    return it.getMove().getExpense() == null && super.isAccountTypeTax(it);
   }
 }
