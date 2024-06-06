@@ -499,12 +499,12 @@ Move.company = AccountingReport.company AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 Account.reconcile_ok = true AND InvoiceTerm.amount_remaining != 0
 AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
-AND CASE
+AND (CASE
     WHEN AccountingReport.display_closing_accounting_moves IS TRUE AND AccountingReport.display_opening_accounting_moves IS TRUE THEN Move.functional_origin_select IN (1,2,3,4)
-    WHEN AccountingReport.display_closing_accounting_moves IS TRUE THEN Move.functional_origin_select IN (2,3,4) OR Move.functional_origin_select IS NULL
-    WHEN AccountingReport.display_opening_accounting_moves IS TRUE THEN Move.functional_origin_select IN (1,3,4) OR Move.functional_origin_select IS NULL
-    ELSE Move.functional_origin_select IN (3,4) OR Move.functional_origin_select IS NULL
-END
+    WHEN AccountingReport.display_closing_accounting_moves IS TRUE THEN Move.functional_origin_select IN (2,3,4)
+    WHEN AccountingReport.display_opening_accounting_moves IS TRUE THEN Move.functional_origin_select IN (1,3,4)
+    ELSE Move.functional_origin_select IN (3,4)
+END OR Move.functional_origin_select IS NULL)
 group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,MoveLine.name, Currency.number_of_decimals]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
