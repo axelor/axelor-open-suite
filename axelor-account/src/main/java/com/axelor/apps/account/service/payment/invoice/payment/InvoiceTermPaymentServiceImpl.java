@@ -302,30 +302,26 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                         .anyMatch(foreignExchangeTypes::contains))
             .orElse(false);
 
-    if (companyCurrency.equals(invoicePaymentCurrency)
-        && !foreignExchangeTypes.contains(invoicePayment.getTypeSelect())) {
+    if (companyCurrency.equals(invoicePaymentCurrency)) {
       return currencyService.getAmountCurrencyConvertedAtDate(
           invoicePayment.getCurrency(),
           invoiceTerm.getCurrency(),
           companyPaidAmount,
-          invoicePayment.getInvoice().getInvoiceDate());
+          invoicePayment.getPaymentDate());
     } else if (invoicePayment != null) {
-      BigDecimal ratio;
-      if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())
-          || haveForeignExchangePayment) {
+      BigDecimal ratio =
+          invoiceTerm
+              .getAmount()
+              .divide(
+                  invoiceTerm.getCompanyAmount(),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+      if (haveForeignExchangePayment) {
         ratio =
             currencyService.getCurrencyConversionRate(
                 invoicePayment.getCompanyCurrency(),
                 invoicePayment.getCurrency(),
-                invoicePayment.getInvoice().getInvoiceDate());
-      } else {
-        ratio =
-            invoiceTerm
-                .getAmount()
-                .divide(
-                    invoiceTerm.getCompanyAmount(),
-                    AppBaseService.COMPUTATION_SCALING,
-                    RoundingMode.HALF_UP);
+                invoicePayment.getPaymentDate());
       }
 
       return currencyScaleService.getCompanyScaledValue(
