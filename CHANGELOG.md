@@ -1,3 +1,48 @@
+## [7.1.23] (2024-06-07)
+
+### Fixes
+#### Account
+
+* Move line: set the vat system editable for tax account.
+* Account: fixed technical type select for journal type demo data.
+* Move line/Reconcile/Tax: fixed error when you forbid tax line on tax account.
+* Move: fixed a technical error when adding a first line without invoice terms in sale or purchase move.
+* Invoice payment: fixed reconcile differences process for supplier invoices.
+* Analytic distribution template: removed analytic percentage total verification when we add a new analytic distribution line.
+* Invoice/AutoReconcile: removed tax moveline reconciliation in move excess or move due at ventilation.
+* Payment session: fixed issue when validating the payment session causing amount being updated and not corresponding to the value of the amount being validated and equal to the bank order generated.
+* Move line: select default account from partner configuration only for first line of the move instead of all lines.
+* Move : date of analytic move lines will be updated on change of move's date.
+* Accounting report: fixed opening moves are not displayed on aged balance report.
+
+#### Bank Payment
+
+* Invoice payment: fixed payment remaining 'Pending' while bank order has been realized (while no accounting entry generated).
+
+#### Budget
+
+* Global budget: fixed missing english translation for archiveBtn.
+
+#### CRM
+
+* Partner: fixed display condition for customer recovery button.
+
+#### Human Resource
+
+* Extra hours: fixed an issue where lines were filled with the connected employee instead of the employee filled in the form view.
+* Payroll preparation: correctly empty lists on payroll preparation view when employee is changed.
+
+#### Marketing
+
+* Campaign: fixed error preventing from sending reminder emails to leads when the list of partners is empty.
+
+
+### Developer
+
+#### Account
+
+The constructor for MoveLineControlServiceImpl has been updated to include the additional parameter 'MoveLineGroupService moveLineGroupService'.
+
 ## [7.1.22] (2024-05-24)
 
 ### Fixes
@@ -1155,6 +1200,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.23]: https://github.com/axelor/axelor-open-suite/compare/v7.1.22...v7.1.23
 [7.1.22]: https://github.com/axelor/axelor-open-suite/compare/v7.1.21...v7.1.22
 [7.1.21]: https://github.com/axelor/axelor-open-suite/compare/v7.1.20...v7.1.21
 [7.1.20]: https://github.com/axelor/axelor-open-suite/compare/v7.1.19...v7.1.20
