@@ -36,18 +36,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
-import com.google.common.base.Strings;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
@@ -448,28 +444,10 @@ public class InvoiceToolService {
   protected static void computeInvoiceLine(InvoiceLine invoiceLine, Invoice copy)
       throws AxelorException {
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-    Map<String, Object> productInformation = new HashMap<>();
 
-    if (invoiceLine.getProduct() != null) {
-      try {
-        productInformation = invoiceLineService.fillProductInformation(copy, invoiceLine);
-        String errorMsg = (String) productInformation.get("error");
-
-        if (!Strings.isNullOrEmpty(errorMsg)) {
-          productInformation = invoiceLineService.resetProductInformation(copy);
-        }
-      } catch (Exception e) {
-        TraceBackService.trace(e);
-      }
-    } else {
-      productInformation = invoiceLineService.resetProductInformation(copy);
-    }
-
-    invoiceLine.setPrice((BigDecimal) productInformation.get("price"));
-    invoiceLine.setTaxRate((BigDecimal) productInformation.get("taxRate"));
-    invoiceLine.setInTaxPrice((BigDecimal) productInformation.get("inTaxPrice"));
-    invoiceLine.setDiscountAmount((BigDecimal) productInformation.get("discountAmount"));
-
-    invoiceLineService.compute(copy, invoiceLine);
+    invoiceLine.setCompanyExTaxTotal(
+        invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), copy));
+    invoiceLine.setCompanyInTaxTotal(
+        invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), copy));
   }
 }
