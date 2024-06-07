@@ -1,5 +1,0 @@
----
-title: "Move : date of analytic move lines will be updated on change of move's date."
-module: axelor-account
-developer: |
-  The constructor for MoveLineControlServiceImpl has been updated to include the additional parameter 'MoveLineGroupService moveLineGroupService'.
