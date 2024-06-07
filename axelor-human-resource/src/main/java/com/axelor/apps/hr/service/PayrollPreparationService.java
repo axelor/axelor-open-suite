@@ -37,7 +37,6 @@ import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtLineRepository;
-import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
@@ -278,14 +277,14 @@ public class PayrollPreparationService {
             .all()
             .filter(
                 "self.employee = ?1"
-                    + " AND self.employeeBonusMgt.statusSelect = ?4"
+                    + " AND self.statusSelect = ?4"
                     + " AND (self.payrollPreparation = null"
                     + " OR self.payrollPreparation.id = ?2)"
                     + " AND self.employeeBonusMgt.payPeriod = ?3",
                 payrollPreparation.getEmployee(),
                 payrollPreparation.getId(),
                 payrollPreparation.getPeriod(),
-                EmployeeBonusMgtRepository.STATUS_CALCULATED)
+                EmployeeBonusMgtLineRepository.STATUS_CALCULATED)
             .fetch();
     for (EmployeeBonusMgtLine employeeBonusMgtLine : employeeBonusList) {
       payrollPreparation.addEmployeeBonusMgtLineListItem(employeeBonusMgtLine);
