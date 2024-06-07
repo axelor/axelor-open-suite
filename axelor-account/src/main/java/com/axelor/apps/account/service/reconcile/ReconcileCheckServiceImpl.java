@@ -193,7 +193,9 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   }
 
   protected boolean isMissingTax(MoveLine it) {
-    return ObjectUtils.isEmpty(it.getTaxLineSet()) && moveLineToolService.isMoveLineTaxAccount(it);
+    return ObjectUtils.isEmpty(it.getTaxLineSet())
+        && moveLineToolService.isMoveLineTaxAccount(it)
+        && it.getAccount().getIsTaxAuthorizedOnMoveLine();
   }
 
   protected BigDecimal getForeignExchangeAmount(Reconcile reconcile) {
