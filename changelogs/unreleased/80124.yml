@@ -1,0 +1,3 @@
+---
+title: "App base : Removed admin module reference from modules field"
+module: axelor-base
