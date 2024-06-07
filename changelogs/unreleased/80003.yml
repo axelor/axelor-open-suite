@@ -1,0 +1,3 @@
+---
+title: "Payroll preparation: correctly empty lists on payroll preparation view when employee is changed."
+module: axelor-human-resource
