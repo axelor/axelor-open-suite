@@ -54,7 +54,9 @@ public class TimesheetLineRestController {
   @POST
   @HttpExceptionHandler
   public Response createTimesheetLine(TimesheetLinePostRequest requestBody) throws AxelorException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    new SecurityCheck()
+        .createAccess(TimesheetLine.class)
+        .writeAccess(Timesheet.class, requestBody.getTimesheetId());
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet = requestBody.fetchTimesheet();
@@ -84,7 +86,7 @@ public class TimesheetLineRestController {
   public Response updateTimesheetLine(
       @PathParam("timesheetLineId") Long timesheetLineId, TimesheetLinePutRequest requestBody)
       throws AxelorException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    new SecurityCheck().writeAccess(TimesheetLine.class, timesheetLineId).check();
     RequestValidator.validateBody(requestBody);
 
     TimesheetLine timesheetLine =

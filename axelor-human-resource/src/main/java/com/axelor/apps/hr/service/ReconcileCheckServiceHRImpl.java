@@ -1,7 +1,6 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
@@ -31,10 +30,9 @@ public class ReconcileCheckServiceHRImpl extends ReconcileCheckServiceImpl {
         .anyMatch(
             it ->
                 (move.getExpense() == null && ObjectUtils.isEmpty(it.getTaxLineSet()))
-                    && it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))) {
+                    && ObjectUtils.isEmpty(it.getTaxLineSet())
+                    && moveLineToolService.isMoveLineTaxAccount(it)
+                    && it.getAccount().getIsTaxAuthorizedOnMoveLine())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,

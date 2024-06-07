@@ -1,5 +1,0 @@
----
-title: "Expense: Fixed an issue that prevented to ventilate a expense."
-module: axelor-human-resource
-developer: |
-  Created a new service `MoveLineTaxHRServiceImpl` that extends `MoveLineTaxServiceImpl` and override the method `isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect)`

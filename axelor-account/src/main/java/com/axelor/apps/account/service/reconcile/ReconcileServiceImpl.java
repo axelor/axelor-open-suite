@@ -500,7 +500,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         && debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
       balanceDebit(debitMoveLine);
     } else if (creditMoveLine != null
-        && creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        && creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) < 0) {
       balanceCredit(creditMoveLine);
     }
 
@@ -542,7 +542,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine debitAdjustmentMoveLine =
-              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount, false);
+              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount);
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -592,7 +592,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine creditAdjustMoveLine =
-              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount, true);
+              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount);
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -843,6 +843,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           invoicePaymentRepository.save(invoicePayment);
 
           reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
+          reconcile.setCanBeZeroBalanceOk(false);
           if (reconcile.getAmount().compareTo(invoice.getCompanyInTaxTotalRemaining()) != 0
               && typeSelect == InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN) {
             reconcile.setAmount(
