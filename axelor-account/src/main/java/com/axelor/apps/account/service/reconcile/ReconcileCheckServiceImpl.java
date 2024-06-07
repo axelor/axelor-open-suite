@@ -188,7 +188,8 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
         .anyMatch(
             it ->
                 ObjectUtils.isEmpty(it.getTaxLineSet())
-                    && moveLineToolService.isMoveLineTaxAccount(it))) {
+                    && moveLineToolService.isMoveLineTaxAccount(it)
+                    && it.getAccount().getIsTaxAuthorizedOnMoveLine())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
