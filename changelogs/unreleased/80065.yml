@@ -1,0 +1,3 @@
+---
+title: "Analytic/InvoiceLine: remove analytic when account doesn't allow analytic in all configuration"
+module: axelor-account
