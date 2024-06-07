@@ -1,8 +1,6 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
@@ -60,35 +58,6 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
     this.periodRepository = periodRepository;
     this.payrollPreparationService = payrollPreparationService;
     this.hrConfigService = hrConfigService;
-  }
-
-  /**
-   * If each employee's payroll preparation has been exported, close the pay period.
-   *
-   * @param payrollPreparation
-   */
-  @Override
-  @Transactional
-  public void closePayPeriodIfExported(PayrollPreparation payrollPreparation) {
-
-    Company company = payrollPreparation.getCompany();
-    Period payPeriod = payrollPreparation.getPeriod();
-
-    long nbNotExportedPayroll =
-        payrollPreparationRepository
-            .all()
-            .filter(
-                "self.company = :_company AND self.exported = false "
-                    + "AND self.period = :_period")
-            .bind("_company", company)
-            .bind("_period", payPeriod)
-            .count();
-
-    if (nbNotExportedPayroll == 0) {
-      payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-      payPeriod.setClosureDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
-    }
-    periodRepository.save(payPeriod);
   }
 
   @Transactional(rollbackOn = {Exception.class})
