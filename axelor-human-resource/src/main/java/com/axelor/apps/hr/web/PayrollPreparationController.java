@@ -98,7 +98,6 @@ public class PayrollPreparationController {
       String[] filePath = file.split("/");
       response.setExportFile(filePath[filePath.length - 1]);
     }
-    payrollPreparationService.closePayPeriodIfExported(payrollPreparation);
 
     response.setReload(true);
   }
