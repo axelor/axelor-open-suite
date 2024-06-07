@@ -1,3 +1,28 @@
+## [6.5.35] (2024-06-07)
+
+### Fixes
+#### Account
+
+* Account: fixed technical type select for journal type demo data.
+* Move: fixed a technical error when adding a first line without invoice terms in sale or purchase move.
+* Analytic distribution template: removed analytic percentage total verification when we add a new analytic distribution line.
+* Invoice/AutoReconcile: removed tax moveline reconciliation in move excess or move due at ventilation.
+* Payment session: fixed issue when validating the payment session causing amount being updated and not corresponding to the value of the amount being validated and equal to the bank order generated.
+* Accounting report: fixed opening moves are not displayed on aged balance report.
+
+#### Bank Payment
+
+* Invoice payment: fixed payment remaining 'Pending' while bank order has been realized (while no accounting entry generated).
+
+#### CRM
+
+* Partner: fixed display condition for customer recovery button.
+
+#### Human Resource
+
+* Extra hours: fixed an issue where lines were filled with the connected employee instead of the employee filled in the form view.
+* Payroll preparation: correctly empty lists on payroll preparation view when employee is changed.
+
 ## [6.5.34] (2024-05-24)
 
 ### Fixes
@@ -1380,6 +1405,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.35]: https://github.com/axelor/axelor-open-suite/compare/v6.5.34...v6.5.35
 [6.5.34]: https://github.com/axelor/axelor-open-suite/compare/v6.5.33...v6.5.34
 [6.5.33]: https://github.com/axelor/axelor-open-suite/compare/v6.5.32...v6.5.33
 [6.5.32]: https://github.com/axelor/axelor-open-suite/compare/v6.5.31...v6.5.32
