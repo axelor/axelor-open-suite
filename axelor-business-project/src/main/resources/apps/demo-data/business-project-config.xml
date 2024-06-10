@@ -162,4 +162,7 @@
   <input file="project_businessProjectConfig.csv" separator=";"
     type="com.axelor.apps.businessproject.db.BusinessProjectConfig"
     search="self.importId = :importId"/>
+
+  <input file="hr_projectPlannedTimeValue.csv" separator=";"
+    type="com.axelor.apps.project.db.PlannedTimeValue" search="self.importId = :importId"/>
 </csv-inputs>
