@@ -19,4 +19,6 @@ public interface ForeignExchangeGapToolsService {
 
   boolean checkIsTotalPayment(
       BigDecimal reconcileAmount, MoveLine creditMoveLine, MoveLine debitMoveLine);
+
+  boolean checkAcceptableAmountGap(BigDecimal amount);
 }

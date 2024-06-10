@@ -4,10 +4,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToolsService {
+
+  protected final BigDecimal ACCEPTED_GAP_DIFF = BigDecimal.valueOf(0.01);
 
   @Override
   public List<Integer> getForeignExchangeTypes() {
@@ -53,11 +56,20 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
   public boolean checkIsTotalPayment(
       BigDecimal reconcileAmount, MoveLine creditMoveLine, MoveLine debitMoveLine) {
     boolean paymentIsDebit = this.isDebit(creditMoveLine, debitMoveLine);
-    MoveLine invoiceMoveLine = paymentIsDebit ? creditMoveLine : debitMoveLine;
+    BigDecimal invoiceMoveLineAmount =
+        paymentIsDebit ? creditMoveLine.getCurrencyAmount() : debitMoveLine.getCurrencyAmount();
     BigDecimal currencyRate =
-        paymentIsDebit ? creditMoveLine.getCurrencyRate() : debitMoveLine.getCurrencyRate();
+        paymentIsDebit ? debitMoveLine.getCurrencyRate() : creditMoveLine.getCurrencyRate();
+    BigDecimal reconcileCurrencyAmount =
+        reconcileAmount.divide(currencyRate, 2, RoundingMode.HALF_UP).abs();
+    BigDecimal gap = reconcileCurrencyAmount.subtract(invoiceMoveLineAmount.abs());
 
-    return reconcileAmount.multiply(currencyRate).compareTo(invoiceMoveLine.getCurrencyAmount())
-        == 0;
+    return reconcileCurrencyAmount.compareTo(invoiceMoveLineAmount) == 0
+        || !checkAcceptableAmountGap(gap);
+  }
+
+  @Override
+  public boolean checkAcceptableAmountGap(BigDecimal amount) {
+    return amount.compareTo(ACCEPTED_GAP_DIFF) > 0;
   }
 }
