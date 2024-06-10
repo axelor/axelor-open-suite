@@ -408,19 +408,21 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (move.getMoveLineList().stream()
-        .anyMatch(
-            it ->
-                it.getTaxLine() == null
-                    && it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))) {
+    if (move.getMoveLineList().stream().anyMatch(this::isAccountTypeTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
           move.getReference());
     }
+  }
+
+  protected boolean isAccountTypeTax(MoveLine it) {
+    return it.getTaxLine() == null
+        && it.getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_TAX)
+        && it.getAccount().getIsTaxAuthorizedOnMoveLine();
   }
 
   @Override
@@ -1038,7 +1040,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         && debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
       balanceDebit(debitMoveLine);
     } else if (creditMoveLine != null
-        && creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        && creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) < 0) {
       balanceCredit(creditMoveLine);
     }
 
@@ -1080,7 +1082,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine debitAdjustmentMoveLine =
-              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount, false);
+              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount);
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -1130,7 +1132,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine creditAdjustMoveLine =
-              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount, true);
+              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount);
 
           // Création de la réconciliation
           Reconcile newReconcile =

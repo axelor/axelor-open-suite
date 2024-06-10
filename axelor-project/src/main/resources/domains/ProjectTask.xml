@@ -33,7 +33,7 @@
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
-    <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
+    <string name="fullName" namecolumn="true" title="Name" search="name"/>
 
     <many-to-one name="statusBeforeComplete" title="Last status"
       ref="com.axelor.apps.project.db.TaskStatus"/>

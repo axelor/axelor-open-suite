@@ -19,9 +19,6 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -65,6 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PayrollPreparationService {
 
@@ -209,6 +207,9 @@ public class PayrollPreparationService {
     LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
     LocalDate toDate = payrollPreparation.getPeriod().getToDate();
     BigDecimal extraHoursNumber = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(payrollPreparation.getExtraHoursLineList())) {
+      payrollPreparation.getExtraHoursLineList().clear();
+    }
     for (ExtraHoursLine extraHoursLine :
         Beans.get(ExtraHoursLineRepository.class)
             .all()
@@ -227,6 +228,9 @@ public class PayrollPreparationService {
 
   public BigDecimal computeExpenseAmount(PayrollPreparation payrollPreparation) {
     BigDecimal expenseAmount = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(payrollPreparation.getExpenseList())) {
+      payrollPreparation.getExpenseList().clear();
+    }
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
             .all()
@@ -252,6 +256,9 @@ public class PayrollPreparationService {
 
   public BigDecimal computeLunchVoucherNumber(PayrollPreparation payrollPreparation) {
     BigDecimal lunchVoucherNumber = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(payrollPreparation.getLunchVoucherMgtLineList())) {
+      payrollPreparation.getLunchVoucherMgtLineList().clear();
+    }
     List<LunchVoucherMgtLine> lunchVoucherList =
         Beans.get(LunchVoucherMgtLineRepository.class)
             .all()
@@ -273,6 +280,9 @@ public class PayrollPreparationService {
 
   public BigDecimal computeEmployeeBonusAmount(PayrollPreparation payrollPreparation) {
     BigDecimal employeeBonusAmount = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(payrollPreparation.getEmployeeBonusMgtLineList())) {
+      payrollPreparation.getEmployeeBonusMgtLineList().clear();
+    }
     List<EmployeeBonusMgtLine> employeeBonusList =
         Beans.get(EmployeeBonusMgtLineRepository.class)
             .all()
@@ -454,33 +464,6 @@ public class PayrollPreparationService {
     headers[5] = I18n.get("End date");
     headers[6] = I18n.get("Value");
     return headers;
-  }
-
-  /**
-   * If each employee's payroll preparation has been exported, close the pay period.
-   *
-   * @param payrollPreparation
-   */
-  @Transactional
-  public void closePayPeriodIfExported(PayrollPreparation payrollPreparation) {
-    Company company = payrollPreparation.getCompany();
-    Period payPeriod = payrollPreparation.getPeriod();
-
-    long nbNotExportedPayroll =
-        payrollPreparationRepo
-            .all()
-            .filter(
-                "self.company = :_company AND self.exported = false "
-                    + "AND self.period = :_period")
-            .bind("_company", company)
-            .bind("_period", payPeriod)
-            .count();
-
-    if (nbNotExportedPayroll == 0) {
-      payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-      payPeriod.setClosureDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
-    }
-    Beans.get(PeriodRepository.class).save(payPeriod);
   }
 
   public List<String[]> exportSilae(PayrollPreparation payrollPrep, List<String[]> exportLineList)

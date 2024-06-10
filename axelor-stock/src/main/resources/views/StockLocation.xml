@@ -7,7 +7,7 @@
     model="com.axelor.apps.stock.db.StockLocation">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-stock-location-method-open-print-wizard"/>
+        onClick="action-stock-location-validate-selected-locations,action-stock-location-method-open-print-wizard"/>
       <button name="treeBtn" title="Stock location tree"
         onClick="action-stock-location-view-tree"/>
     </toolbar>
@@ -251,6 +251,10 @@
     model="com.axelor.apps.stock.db.StockLocation">
     <view type="tree" name="stock-location-tree"/>
   </action-view>
+
+  <action-validate name="action-stock-location-validate-selected-locations">
+    <error message="Please select the Stock Location(s) to print." if="!_ids"/>
+  </action-validate>
 
   <search-filters name="stock-location-filters"
     model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">

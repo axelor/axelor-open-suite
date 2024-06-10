@@ -37,6 +37,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -97,7 +98,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   }
 
   @Override
-  public void computeFinancialDiscount(MoveLine moveLine) {
+  public void computeFinancialDiscount(MoveLine moveLine, Move move) {
     if (!appAccountService.getAppAccount().getManageFinancialDiscount()) {
       return;
     }
@@ -112,7 +113,8 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       moveLine.setFinancialDiscountTotalAmount(
           currencyScaleService.getCompanyScaledValue(
               moveLine,
-              this.computeFinancialDiscountTotalAmount(financialDiscount, moveLine, amount)));
+              this.computeFinancialDiscountTotalAmount(
+                  financialDiscount, moveLine, amount, move.getCurrency())));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
     } else {
@@ -126,7 +128,10 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   }
 
   protected BigDecimal computeFinancialDiscountTotalAmount(
-      FinancialDiscount financialDiscount, MoveLine moveLine, BigDecimal amount) {
+      FinancialDiscount financialDiscount,
+      MoveLine moveLine,
+      BigDecimal amount,
+      Currency currency) {
     BigDecimal taxAmount =
         Optional.of(moveLine).map(MoveLine::getMove).map(Move::getMoveLineList).stream()
             .flatMap(Collection::stream)
@@ -142,7 +147,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
             .orElse(BigDecimal.ZERO);
 
     return financialDiscountService.computeFinancialDiscountTotalAmount(
-        financialDiscount, amount, taxAmount, moveLine.getMove().getCurrency());
+        financialDiscount, amount, taxAmount, currency);
   }
 
   protected void computeInvoiceTermsFinancialDiscount(MoveLine moveLine) {

@@ -1,3 +1,0 @@
----
-title: "Purchase order line: fixed an issue causing an error when the line was marked as `toInvoice`."
-module: axelor-purchase
