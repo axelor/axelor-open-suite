@@ -10,7 +10,7 @@
     <hilite color="success"
       if="$moment(startDate).diff(todayDate,'days') &lt;= 0 &amp;&amp; ($moment(endDate).diff(todayDate,'days') &gt;= 0 || endDate == null)"/>
     <field name="tax" form-view="tax-form" grid-view="tax-grid"/>
-    <field name="value" x-scale="2"/>
+    <field name="value"/>
     <field name="startDate"/>
     <field name="endDate"/>
   </grid>
@@ -30,7 +30,7 @@
   <grid name="tax-line-tax-grid" title="Tax Rates" model="com.axelor.apps.account.db.TaxLine">
     <field name="startDate"/>
     <field name="endDate"/>
-    <field name="value" x-scale="2"/>
+    <field name="value"/>
   </grid>
 
   <form name="tax-line-tax-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine"
