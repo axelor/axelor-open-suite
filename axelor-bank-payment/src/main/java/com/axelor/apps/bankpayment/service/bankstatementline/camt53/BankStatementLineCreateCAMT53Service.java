@@ -3,7 +3,6 @@ package com.axelor.apps.bankpayment.service.bankstatementline.camt53;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineCAMT53;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineCAMT53Repository;
@@ -20,6 +19,7 @@ import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.BalanceType
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.BankToCustomerStatementV02;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.BankTransactionCodeStructure4;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.BankTransactionCodeStructure5;
+import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.BatchInformation2;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashAccount20;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashBalance3;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CreditDebitCode;
@@ -56,7 +56,6 @@ import jakarta.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.Query;
@@ -67,20 +66,12 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
   public static String CREDIT_DEBIT_INDICATOR_DEBIT = "DBIT";
   public static String BALANCE_TYPE_INITIAL_BALANCE = "OPBD";
   public static String BALANCE_TYPE_FINAL_BALANCE = "CLBD";
-
-  protected BankStatementFileFormat bankStatementFileFormatObj;
-
   protected BankStatementLineCAMT53Repository bankStatementLineCAMT53Repository;
-
   protected InterbankCodeLineRepository interbankCodeLineRepository;
-
   protected BankDetailsRepository bankDetailsRepository;
-
   protected BankStatementLineCreationCAMT53Service bankStatementLineCreationCAMT53Service;
-
-  protected List<BankStatement> bankStatementList;
-
   private int differentCurrencyOccurrence = 0;
+  private int sequence = 0;
 
   @Inject
   protected BankStatementLineCreateCAMT53Service(
@@ -108,18 +99,16 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     return null;
   }
 
-  public List<BankStatement> processCAMT53(BankStatement bankStatement)
-      throws IOException, AxelorException {
+  public BankStatement processCAMT53(BankStatement bankStatement) throws AxelorException {
     setBankStatement(bankStatement);
     return processCAMT53();
   }
 
-  public List<BankStatement> processCAMT53() throws IOException, AxelorException {
+  public BankStatement processCAMT53() throws AxelorException {
     try {
       JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
       Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
       Document document = (Document) jaxbUnmarshaller.unmarshal(file);
-      differentCurrencyOccurrence = 0;
       if (document == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: Cannot read the input file."));
@@ -136,39 +125,29 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: No bank statement found."));
       }
-      bankStatementList = new ArrayList<>();
-      AccountStatement2 firstStmt = stmtList.get(0);
-      if (firstStmt == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: No bank statement found."));
-      }
 
-      BankStatement firstBankStatement = createBankStatement(firstStmt, null);
-      bankStatementList.add(firstBankStatement);
+      // initial the counter
+      sequence = 0;
+      differentCurrencyOccurrence = 0;
 
-      if (stmtList.size() > 1) {
-        for (int i = 1; i < stmtList.size(); i++) {
-          bankStatementList.add(createBankStatement(stmtList.get(i), firstBankStatement));
-          if (i % 10 == 0) {
-            JPA.clear();
-            findBankStatement();
-          }
+      for (int i = 0; i < stmtList.size(); i++) {
+        // handle each AccountStatement2 object in list
+        AccountStatement2 curBankStatement = stmtList.get(i);
+        if (i == 0) {
+          // the first statement, set fromDate
+          setBankStatementFromDate(curBankStatement.getFrToDt());
         }
-      }
+        if (i == stmtList.size() - 1) {
+          // the last statement, set toDate
+          setBankStatementToDate(curBankStatement.getFrToDt());
+        }
 
-      return bankStatementList;
+        createBankStatement(curBankStatement);
+      }
+      return bankStatement;
 
       /* TODO: warn users when the currency symbol is different from the company's setting.
-
-            if(differentCurrencyOccurrence != 0){
-              throw new AxelorException(
-                      TraceBackRepository.CATEGORY_INCONSISTENCY,
-                      I18n.get("Warning: There are %s bank statement lines that have different currency from the company's currency."),
-                              differentCurrencyOccurrence);
-
-            }
-
-      */
+       */
 
     } catch (jakarta.xml.bind.JAXBException e) {
       throw new AxelorException(
@@ -178,30 +157,14 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
   }
 
   /**
-   * @param stmt the current bankStatement that is going to be handled.
-   * @param firstBankStatement means the first bankStatement of the bankStatement List. Use the
-   *     first bankStatement to get bankStatementFileFormat and bankStatementFile. When it's null,
-   *     it means we are handling the first bankStatement.
-   * @return new bankStatement
+   * This method takes the input AccountStatement2 object and generates related bankStatementLines
+   * under the current BankStatement Object.
+   *
+   * @param stmt the input AccountStatement2 object from the file
+   * @throws AxelorException
    */
   @Transactional
-  protected BankStatement createBankStatement(
-      AccountStatement2 stmt, BankStatement firstBankStatement) throws AxelorException {
-    /*
-     if the firstBankStatement is null, we are handling the first bankStatement of the bankStatement List.
-     if the firstBankStatement is not null, we are setting a new bankStatement.
-    */
-    if (firstBankStatement != null) {
-      bankStatement = new BankStatement();
-      bankStatement.setBankStatementFileFormat(firstBankStatement.getBankStatementFileFormat());
-      bankStatement.setBankStatementFile(firstBankStatement.getBankStatementFile());
-      bankStatement.setStatusSelect(1);
-      bankStatementRepository.save(bankStatement);
-    }
-
-    DateTimePeriodDetails frToDt = stmt.getFrToDt();
-    bankStatement = setBankStatementFrToDt(frToDt, bankStatement);
-
+  protected void createBankStatement(AccountStatement2 stmt) throws AxelorException {
     CashAccount20 acct = stmt.getAcct();
     BankDetails bankDetails = null;
     String currencyCodeFromStmt = null;
@@ -226,8 +189,6 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
                 .orElse(null);
       }
     }
-
-    int sequence = 0;
 
     List<CashBalance3> balList = stmt.getBal();
     if (balList != null && !balList.isEmpty()) {
@@ -272,8 +233,6 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
         }
       }
     }
-
-    return bankStatement;
   }
 
   protected String getIBANOrOtherAccountIdentification(CashAccount20 acct) {
@@ -341,11 +300,6 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     String reference = getReference(ntry);
 
     String interBankCodeLineCode = getInterBankCodeLineCode(ntry);
-
-    /* Possible interbankCode type values:
-      int TYPE_OPERATION_CODE = 1;
-      int TYPE_REJECT_RETURN_CODE = 2;
-    */
     InterbankCodeLine interbankCodeLine = findInterBankCodeLineByCode(interBankCodeLineCode);
     InterbankCodeLine operationInterbankCodeLine = null;
     InterbankCodeLine rejectInterbankCodeLine = null;
@@ -357,6 +311,7 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
         rejectInterbankCodeLine = interbankCodeLine;
       }
     }
+
     if (bankDetails != null) {
       bankDetails = bankDetailsRepository.find(bankDetails.getId());
     }
@@ -459,13 +414,22 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
                 ntryDtls ->
                     ntryDtls.stream()
                         .findFirst()) // Convert to Stream and get first element if present
-            .map(EntryDetails1::getTxDtls)
-            .flatMap(txDtls -> txDtls.stream().findFirst()) // Same for TxDtls
-            .map(EntryTransaction2::getRefs)
-            .map(TransactionReferences2::getAcctSvcrRef)
+            .map(EntryDetails1::getBtch)
+            .map(BatchInformation2::getPmtInfId)
             .orElse(null);
     if (origin == null) {
-      origin = Optional.ofNullable(ntry).map(ReportEntry2::getNtryRef).orElse(null);
+      origin =
+          Optional.ofNullable(ntry)
+              .map(ReportEntry2::getNtryDtls)
+              .flatMap(
+                  ntryDtls ->
+                      ntryDtls.stream()
+                          .findFirst()) // Convert to Stream and get first element if present
+              .map(EntryDetails1::getTxDtls)
+              .flatMap(txDetls -> txDetls.stream().findFirst())
+              .map(EntryTransaction2::getRefs)
+              .map(TransactionReferences2::getPmtInfId)
+              .orElse(null);
     }
     return origin;
   }
@@ -496,11 +460,6 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     return interBankCodeLineCode;
   }
 
-  /*
-  TODO: In an xml file, there may be multiple balanceLines (balList.size >2), and multiple entryLines.
-        For example, we have 2 init balance lines and 2 final balance lines.
-        Then we need to find a way to assign sequence number correctly to all balanceLines and entryLines.
-   */
   @Transactional
   protected int createBalanceLine(
       BankDetails bankDetails,
@@ -695,31 +654,35 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
   }
 
   @Transactional
-  protected BankStatement setBankStatementFrToDt(
-      DateTimePeriodDetails frToDt, BankStatement bankStatement) {
-    // Bank Statement From Date
+  protected void setBankStatementFromDate(DateTimePeriodDetails frToDt) {
     if (frToDt == null) {
-      return bankStatement;
+      return;
     }
     XMLGregorianCalendar frDtTm = frToDt.getFrDtTm();
     if (frDtTm == null) {
-      return bankStatement;
+      return;
     }
     LocalDate fromDate = LocalDate.of(frDtTm.getYear(), frDtTm.getMonth(), frDtTm.getDay());
-    // Bank Statement To Date
+    bankStatement.setFromDate(fromDate);
+    bankStatementRepository.save(bankStatement);
+  }
+
+  @Transactional
+  protected void setBankStatementToDate(DateTimePeriodDetails frToDt) {
+    if (frToDt == null) {
+      return;
+    }
     XMLGregorianCalendar toDtTm = frToDt.getToDtTm();
     if (toDtTm == null) {
-      return bankStatement;
+      return;
     }
     LocalDate toDate = LocalDate.of(toDtTm.getYear(), toDtTm.getMonth(), toDtTm.getDay());
-    bankStatement.setFromDate(fromDate);
     bankStatement.setToDate(toDate);
     bankStatementRepository.save(bankStatement);
-    return bankStatement;
   }
 
   /**
-   * @param ibanOrOthers now we only support IBAN
+   * @param ibanOrOthers now we only support IBAN. Find BankDetails by IBAN.
    * @return
    */
   protected BankDetails findBankDetailsByIBAN(String ibanOrOthers) {

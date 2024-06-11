@@ -66,15 +66,11 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
   @Override
   @Transactional
   public void runImport(BankStatement bankStatement) throws AxelorException, IOException {
-    List<BankStatement> bankStatementList =
-        bankStatementLineCreateCAMT53Service.processCAMT53(bankStatement);
-    for (BankStatement bkstmt : bankStatementList) {
-      bkstmt = bankStatementRepository.find(bkstmt.getId());
-      checkImport(bkstmt);
-      updateBankDetailsBalance(bkstmt);
-      computeBankStatementName(bkstmt);
-      setBankStatementImported(bkstmt);
-    }
+    bankStatement = bankStatementLineCreateCAMT53Service.processCAMT53(bankStatement);
+    checkImport(bankStatement);
+    updateBankDetailsBalance(bankStatement);
+    computeBankStatementName(bankStatement);
+    setBankStatementImported(bankStatement);
   }
 
   @Override
