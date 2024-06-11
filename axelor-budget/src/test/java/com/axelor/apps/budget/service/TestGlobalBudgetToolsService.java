@@ -6,11 +6,12 @@ import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.module.BudgetTest;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.loader.LoaderHelper;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class TestGlobalBudgetToolsService extends BudgetTest {
@@ -18,22 +19,20 @@ public class TestGlobalBudgetToolsService extends BudgetTest {
   protected final GlobalBudgetRepository globalBudgetRepository;
   protected final BudgetRepository budgetRepository;
   protected final GlobalBudgetToolsService globalBudgetToolsService;
-  protected final LoaderHelper loaderHelper;
+  protected static final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
 
   @Inject
   public TestGlobalBudgetToolsService(
       GlobalBudgetRepository globalBudgetRepository,
       BudgetRepository budgetRepository,
-      GlobalBudgetToolsService globalBudgetToolsService,
-      LoaderHelper loaderHelper) {
+      GlobalBudgetToolsService globalBudgetToolsService) {
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetRepository = budgetRepository;
     this.globalBudgetToolsService = globalBudgetToolsService;
-    this.loaderHelper = loaderHelper;
   }
 
-  @BeforeEach
-  void setUp() {
+  @BeforeAll
+  static void setUp() {
     loaderHelper.importCsv("data/budget-input.xml");
     loaderHelper.importCsv("data/budget-template-input.xml");
   }
