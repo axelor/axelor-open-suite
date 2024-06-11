@@ -1,3 +1,95 @@
+## [8.0.8] (2024-06-07)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.0.8.
+* Update axelor-studio dependency to 2.0.3.
+
+#### Account
+
+* Move line: set the vat system editable for tax account.
+* Account: fixed technical type select for journal type demo data.
+* Move line/Reconcile/Tax: fixed error when you forbid tax line on tax account.
+* Move line: fixed impossible to create a move line when partner have financial discount
+* Move: fixed automatic tax generation on a move with already existing tax lines.
+* Move: fixed a technical error when adding a first line without invoice terms in sale or purchase move.
+* Account: fixed menu roles data init.
+* Invoice payment: fixed reconcile differences process for supplier invoices.
+* Analytic distribution template: removed analytic percentage total verification when we add a new analytic distribution line.
+* PaymentVoucher: fixed payment on supplier invoices
+* Invoice/AutoReconcile: removed tax moveline reconciliation in move excess or move due at ventilation.
+* Payment session: fixed issue when validating the payment session causing amount being updated and not corresponding to the value of the amount being validated and equal to the bank order generated.
+* Move line: select default account from partner configuration only for first line of the move instead of all lines.
+* Move: date of analytic move lines will be updated on change of move's date.
+* Accounting report: fixed opening moves are not displayed on aged balance report.
+* Accounting report: fixed error linked to field's name change in report 'Summary of gross values and depreciation'.
+
+#### Bank Payment
+
+* Invoice payment: fixed payment remaining 'Pending' while bank order has been realized (while no accounting entry generated).
+
+#### Budget
+
+* Global budget: fixed missing english translation for archiveBtn.
+
+#### CRM
+
+* Partner: fixed display condition for customer recovery button.
+
+#### Human Resource
+
+* Expense: fixed an issue that prevented to ventilate a expense.
+* Timesheet API: fixed requests permissions
+* Expense API: improved requests permissions.
+* Extra hours: fixed an issue where lines were filled with the connected employee instead of the employee filled in the form view.
+* Payroll preparation: do not block a period after exporting a payroll preparation.
+* Payroll preparation: correctly empty lists on payroll preparation view when employee is changed.
+* Timesheet: fixed an issue preventing a manager user to create timesheets for subordinates.
+
+#### Marketing
+
+* Campaign: fixed error preventing from sending reminder emails to leads when the list of partners is empty.
+
+#### Production
+
+* Purchase order: fixed issue on purchase order merge due to old references on ManufOrder
+
+#### Project
+
+* Project and tasks: fixed autocompletion not working for fields linking to tasks and task templates.
+
+#### Sale
+
+* Sale order line: filled project in sale order line while using editable grid of sale order.
+
+#### Stock
+
+* Stock location: fixed NPE while printing report from grid view without selecting any location.
+
+
+### Developer
+
+#### Account
+
+On MoveLineCurrencyService we update computeFinancialDiscount method signature.
+
+  - From `void computeFinancialDiscount(MoveLine moveLine)`
+  - To `void computeFinancialDiscount(MoveLine moveLine, Move move)`
+
+---
+
+The constructor for MoveLineControlServiceImpl has been updated to include the additional parameter 'MoveLineGroupService moveLineGroupService'.
+
+#### Human Resource
+
+Created a new service `MoveLineTaxHRServiceImpl` that extends `MoveLineTaxServiceImpl` and override the method `isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect)`
+
+---
+
+If you use the AOS API for Expense, please check that they still work with your current permission, as we fixed permission check to be more logic.
+For example, the check is done on expense line instead of expense for updating expense line. Also the API now correctly checks the permission with the record, meaning that conditional permission will now correctly be applied.
+
 ## [8.0.7] (2024-05-24)
 
 ### Fixes
@@ -683,6 +775,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.8]: https://github.com/axelor/axelor-open-suite/compare/v8.0.7...v8.0.8
 [8.0.7]: https://github.com/axelor/axelor-open-suite/compare/v8.0.6...v8.0.7
 [8.0.6]: https://github.com/axelor/axelor-open-suite/compare/v8.0.5...v8.0.6
 [8.0.5]: https://github.com/axelor/axelor-open-suite/compare/v8.0.4...v8.0.5

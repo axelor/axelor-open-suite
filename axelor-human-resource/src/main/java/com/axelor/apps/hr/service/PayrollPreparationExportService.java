@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface PayrollPreparationExportService {
 
-  public void closePayPeriodIfExported(PayrollPreparation payrollPreparation);
-
   String exportPayrollPreparation(PayrollPreparation payrollPreparation)
       throws AxelorException, IOException;
 

@@ -279,7 +279,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo
             .all()
-            .filter("self.paymentSession = :paymentSession")
+            .filter("self.paymentSession = :paymentSession AND self.paymentAmount > 0")
             .bind("paymentSession", paymentSession)
             .order("id");
 

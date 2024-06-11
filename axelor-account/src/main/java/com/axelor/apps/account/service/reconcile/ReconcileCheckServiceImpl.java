@@ -184,16 +184,18 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (move.getMoveLineList().stream()
-        .anyMatch(
-            it ->
-                ObjectUtils.isEmpty(it.getTaxLineSet())
-                    && moveLineToolService.isMoveLineTaxAccount(it))) {
+    if (move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
           move.getReference());
     }
+  }
+
+  protected boolean isMissingTax(MoveLine it) {
+    return ObjectUtils.isEmpty(it.getTaxLineSet())
+        && moveLineToolService.isMoveLineTaxAccount(it)
+        && it.getAccount().getIsTaxAuthorizedOnMoveLine();
   }
 
   protected BigDecimal getForeignExchangeAmount(Reconcile reconcile) {

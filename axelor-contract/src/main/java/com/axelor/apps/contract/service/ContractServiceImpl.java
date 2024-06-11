@@ -60,6 +60,7 @@ import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -100,6 +101,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected ProductCompanyService productCompanyService;
   protected AccountManagementContractService accountManagementContractService;
   protected FiscalPositionService fiscalPositionService;
+  protected PartnerLinkSupplychainService partnerLinkSupplychainService;
 
   @Inject
   public ContractServiceImpl(
@@ -120,7 +122,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       OpportunityRepository opportunityRepository,
       ProductCompanyService productCompanyService,
       AccountManagementContractService accountManagementContractService,
-      FiscalPositionService fiscalPositionService) {
+      FiscalPositionService fiscalPositionService,
+      PartnerLinkSupplychainService partnerLinkSupplychainService) {
     super(contractLineService, contractVersionService, sequenceService, contractVersionRepository);
     this.appBaseService = appBaseService;
     this.versionService = versionService;
@@ -136,6 +139,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.productCompanyService = productCompanyService;
     this.accountManagementContractService = accountManagementContractService;
     this.fiscalPositionService = fiscalPositionService;
+    this.partnerLinkSupplychainService = partnerLinkSupplychainService;
   }
 
   @Override
@@ -1031,7 +1035,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     contract.setName(opportunity.getName());
     contract.setStatusSelect(ContractRepository.DRAFT_CONTRACT);
     contract.setCurrentContractVersion(new ContractVersion());
-    contract.setInvoicedPartner(opportunity.getPartner());
+    contract.setInvoicedPartner(
+        partnerLinkSupplychainService.getDefaultInvoicedPartner(opportunity.getPartner()));
 
     ContractTemplate contractTemplate1 = JPA.copy(contractTemplate, true);
     if (contractTemplate != null) {

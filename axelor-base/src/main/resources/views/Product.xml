@@ -203,8 +203,8 @@
         <panel name="subSalePanel" title="Sales" colSpan="6">
           <field name="sellable" colSpan="6"/>
           <field name="tradingNameSellerSet"
-            if="__config__.app.getApp('sale')?.getEnableSalesProductByTradName() || __config__.app.getApp('contract')?.getEnableContractsProductByTradName()"
-            colSpan="12" showIf="sellable" canNew="false" canSelect="true"/>
+            if="__config__.app.getApp('sale')?.getEnableSalesProductByTradName()" colSpan="12"
+            showIf="sellable" canNew="false" canSelect="true"/>
           <field name="productSynchronizedInPrestashop" colSpan="6"
             if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
           <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"
