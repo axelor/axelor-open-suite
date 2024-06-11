@@ -96,7 +96,7 @@
       onChange="action-stock-move-line-group-real-qty-onchange" x-scale="$nbDecimalDigitForQty"/>
     <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="unitPriceUntaxed" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="companyPurchasePrice" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="companyPurchasePrice" hidden="true" x-scale="2"/>
     <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
@@ -128,8 +128,7 @@
     <field name="realQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="qtyInvoiced" x-scale="$nbDecimalDigitForQty"/>
     <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal"
-      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal" x-scale="2"/>
     <field name="stockMove.cutOffMoveGenerated" hidden="true"/>
     <field name="stockMove" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
