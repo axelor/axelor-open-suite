@@ -1,0 +1,3 @@
+---
+title: "BudgetStructure : fix query when searching the structure from budget and budget level"
+module: axelor-budget
