@@ -3,6 +3,9 @@ package com.axelor.apps.account.service.reconcile;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -11,6 +14,12 @@ import java.util.List;
 public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToolsService {
 
   protected final BigDecimal ACCEPTED_GAP_DIFF = BigDecimal.valueOf(0.01);
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public ForeignExchangeGapToolsServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
+  }
 
   @Override
   public List<Integer> getForeignExchangeTypes() {
@@ -55,21 +64,38 @@ public class ForeignExchangeGapToolsServiceImpl implements ForeignExchangeGapToo
   @Override
   public boolean checkIsTotalPayment(
       BigDecimal reconcileAmount, MoveLine creditMoveLine, MoveLine debitMoveLine) {
-    boolean paymentIsDebit = this.isDebit(creditMoveLine, debitMoveLine);
-    BigDecimal invoiceMoveLineAmount =
-        paymentIsDebit ? creditMoveLine.getCurrencyAmount() : debitMoveLine.getCurrencyAmount();
-    BigDecimal currencyRate =
-        paymentIsDebit ? debitMoveLine.getCurrencyRate() : creditMoveLine.getCurrencyRate();
+    Currency currency;
+    BigDecimal invoiceMoveLineAmount;
+    BigDecimal currencyRate;
+
+    boolean isGain = this.isGain(creditMoveLine, debitMoveLine);
+    if (isGain) {
+      invoiceMoveLineAmount = creditMoveLine.getCurrencyAmount().abs();
+      currencyRate = debitMoveLine.getCurrencyRate();
+      currency = creditMoveLine.getCurrency();
+    } else {
+      invoiceMoveLineAmount = debitMoveLine.getCurrencyAmount().abs();
+      currencyRate = creditMoveLine.getCurrencyRate();
+      currency = debitMoveLine.getCurrency();
+    }
+
     BigDecimal reconcileCurrencyAmount =
-        reconcileAmount.divide(currencyRate, 2, RoundingMode.HALF_UP).abs();
-    BigDecimal gap = reconcileCurrencyAmount.subtract(invoiceMoveLineAmount.abs());
+        reconcileAmount
+            .divide(
+                currencyRate, currencyScaleService.getCurrencyScale(currency), RoundingMode.HALF_UP)
+            .abs();
+    BigDecimal gap = reconcileCurrencyAmount.subtract(invoiceMoveLineAmount);
 
     return reconcileCurrencyAmount.compareTo(invoiceMoveLineAmount) == 0
-        || !checkAcceptableAmountGap(gap);
+        || checkAcceptableRoundingGap(gap.abs());
   }
 
   @Override
-  public boolean checkAcceptableAmountGap(BigDecimal amount) {
+  public boolean checkAcceptableGap(BigDecimal amount) {
     return amount.compareTo(ACCEPTED_GAP_DIFF) > 0;
+  }
+
+  protected boolean checkAcceptableRoundingGap(BigDecimal amount) {
+    return amount.compareTo(ACCEPTED_GAP_DIFF) <= 0;
   }
 }

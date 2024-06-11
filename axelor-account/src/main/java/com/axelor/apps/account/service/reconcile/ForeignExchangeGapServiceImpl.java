@@ -67,7 +67,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
 
       // We only create a foreign exchange move if foreignExchangeGapAmount is greater than 0.01
-      if (foreignExchangeGapToolsService.checkAcceptableAmountGap(foreignExchangeGapAmount)) {
+      if (foreignExchangeGapToolsService.checkAcceptableGap(foreignExchangeGapAmount)) {
         Move foreignExchangeMove =
             this.createForeignExchangeGapMove(reconcile, foreignExchangeGapAmount);
         MoveLine foreignExchangeDebitMoveLine = foreignExchangeMove.getMoveLineList().get(0);
