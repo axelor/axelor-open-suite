@@ -39,6 +39,7 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -68,6 +69,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
   protected ProductCompanyService productCompanyService;
   protected ContractVersionService versionService;
 
+  @Inject
   public ContractInvoicingServiceImpl(
       AppBaseService appBaseService,
       ContractLineService contractLineService,
