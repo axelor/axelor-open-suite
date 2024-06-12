@@ -21,6 +21,7 @@
       help="List of roles that have access to this application menu. If the field is empty then nobody has access to this menu. If it contains at least one role then only users with one of the roles present have access to the menu. However, if the application itself has restrictions on roles then the user must have a role included in the roles allowed for the application concerned as well as a role filled in this field."/>
 
     <finder-method name="findByTechnicalName" using="technicalName"/>
+    <finder-method name="findByParentApplication" using="parentApplication" all="true"/>
 
     <extra-code>
       <![CDATA[
