@@ -33,6 +33,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
@@ -52,7 +53,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderComputeService saleOrderComputeService,
       MetaFieldRepository metaFieldRepository,
-      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService) {
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -61,7 +63,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         saleOrderLineRepository,
         saleOrderComputeService,
         metaFieldRepository,
-        configuratorMetaJsonFieldService);
+        configuratorMetaJsonFieldService,
+        saleOrderLineComputeService);
   }
 
   /**

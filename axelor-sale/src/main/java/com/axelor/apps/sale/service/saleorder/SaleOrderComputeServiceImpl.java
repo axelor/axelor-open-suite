@@ -40,13 +40,17 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 
   protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderLineTaxService saleOrderLineTaxService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderComputeServiceImpl(
-      SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService) {
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineTaxService saleOrderLineTaxService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
 
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderLineTaxService = saleOrderLineTaxService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -55,7 +59,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     if (saleOrder.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         saleOrderLine.setCompanyExTaxTotal(
-            saleOrderLineService.getAmountInCompanyCurrency(
+            saleOrderLineComputeService.getAmountInCompanyCurrency(
                 saleOrderLine.getExTaxTotal(), saleOrder));
       }
     }

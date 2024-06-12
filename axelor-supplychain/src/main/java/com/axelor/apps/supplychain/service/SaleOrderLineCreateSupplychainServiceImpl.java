@@ -7,6 +7,7 @@ import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
@@ -27,10 +28,11 @@ public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCrea
       SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
       AppBaseService appBaseService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
       AnalyticLineModelService analyticLineModelService,
       SupplyChainConfigService supplyChainConfigService,
       ReservedQtyService reservedQtyService) {
-    super(saleOrderLineService, appSaleService, appBaseService);
+    super(saleOrderLineService, appSaleService, appBaseService, saleOrderLineComputeService);
     this.analyticLineModelService = analyticLineModelService;
     this.supplyChainConfigService = supplyChainConfigService;
     this.reservedQtyService = reservedQtyService;

@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.inject.Beans;
 import java.util.Map;
@@ -34,7 +35,8 @@ public class ImportSaleOrderLine {
     SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     saleOrderLine.setTaxLineSet(
         saleOrderLineService.getTaxLineSet(saleOrderLine.getSaleOrder(), saleOrderLine));
-    saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    Beans.get(SaleOrderLineComputeService.class)
+        .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
 
     return saleOrderLine;
   }

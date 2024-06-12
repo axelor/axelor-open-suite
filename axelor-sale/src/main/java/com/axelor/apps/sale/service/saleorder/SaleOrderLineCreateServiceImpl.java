@@ -18,15 +18,18 @@ public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateServic
   protected SaleOrderLineService saleOrderLineService;
   protected AppSaleService appSaleService;
   protected AppBaseService appBaseService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderLineCreateServiceImpl(
       SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.saleOrderLineService = saleOrderLineService;
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -70,7 +73,7 @@ public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateServic
         }
         try {
           saleOrderLineService.fillPriceFromPackLine(soLine, saleOrder);
-          saleOrderLineService.computeValues(saleOrder, soLine);
+          saleOrderLineComputeService.computeValues(saleOrder, soLine);
         } catch (AxelorException e) {
           TraceBackService.trace(e);
         }

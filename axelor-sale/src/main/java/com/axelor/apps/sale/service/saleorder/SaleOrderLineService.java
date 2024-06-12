@@ -23,7 +23,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -43,7 +42,7 @@ public interface SaleOrderLineService {
    * @param saleOrderLine
    * @param saleOrder
    */
-  void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  Map<String, Object> computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
   SaleOrderLine resetProductInformation(SaleOrderLine line);
@@ -56,34 +55,6 @@ public interface SaleOrderLineService {
    */
   void resetPrice(SaleOrderLine line);
 
-  /**
-   * Compute totals from a sale order line
-   *
-   * @param saleOrder
-   * @param saleOrderLine
-   * @return
-   * @throws AxelorException
-   */
-  public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException;
-
-  /**
-   * Compute the excluded tax total amount of a sale order line.
-   *
-   * @param saleOrderLine the sale order line which total amount you want to compute.
-   * @return The excluded tax total amount.
-   */
-  public BigDecimal computeAmount(SaleOrderLine saleOrderLine);
-
-  /**
-   * Compute the excluded tax total amount of a sale order line.
-   *
-   * @param quantity The quantity.
-   * @param price The unit price.
-   * @return The excluded tax total amount.
-   */
-  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale);
-
   public BigDecimal getExTaxUnitPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
       throws AxelorException;
@@ -95,23 +66,11 @@ public interface SaleOrderLineService {
   public Set<TaxLine> getTaxLineSet(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
-      throws AxelorException;
-
   public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
   public PriceListLine getPriceListLine(
       SaleOrderLine saleOrderLine, PriceList priceList, BigDecimal price);
-
-  /**
-   * Compute and return the discounted price of a sale order line.
-   *
-   * @param saleOrderLine the sale order line.
-   * @param inAti whether or not the sale order line (and thus the discounted price) includes taxes.
-   * @return the discounted price of the line, including taxes if inAti is true.
-   */
-  public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti);
 
   public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
@@ -136,7 +95,8 @@ public interface SaleOrderLineService {
    * @param saleOrder
    * @throws AxelorException
    */
-  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+  Map<String, Object> fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 
   /**
    * Fill the complementaryProductList of the saleOrderLine from the possible complementary products
@@ -144,7 +104,7 @@ public interface SaleOrderLineService {
    *
    * @param saleOrderLine
    */
-  public void fillComplementaryProductList(SaleOrderLine saleOrderLine);
+  Map<String, Object> fillComplementaryProductList(SaleOrderLine saleOrderLine);
 
   /**
    * Get unique values of type field from pack lines
@@ -220,20 +180,6 @@ public interface SaleOrderLineService {
   public boolean hasEndOfPackTypeLine(List<SaleOrderLine> saleOrderLineList);
 
   /**
-   * Update product qty.
-   *
-   * @param saleOrderLine
-   * @param saleOrder
-   * @param oldQty
-   * @param newQty
-   * @return {@link SaleOrderLine}}
-   * @throws AxelorException
-   */
-  public SaleOrderLine updateProductQty(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty)
-      throws AxelorException;
-
-  /**
    * To check that Start of pack type line quantity changed or not.
    *
    * @param saleOrderLineList
@@ -286,19 +232,6 @@ public interface SaleOrderLineService {
    * @return a String with the JPQL expression used to filter product selection
    */
   String computeProductDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  /**
-   * To manage Complementary Product sale order line.
-   *
-   * @param complementaryProduct
-   * @param saleOrder
-   * @param saleOrderLine
-   * @return New complementary sales order lines
-   * @throws AxelorException
-   */
-  public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
-      ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException;
 
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
       throws AxelorException;

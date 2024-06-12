@@ -40,6 +40,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderOnLineChangeServiceImpl(
@@ -48,13 +49,15 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
       SaleOrderLineService saleOrderLineService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderComputeService saleOrderComputeService,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -109,7 +112,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
                     .multiply(compProductSelected.getQty())
                     .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
             saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
-            saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+            saleOrderLineComputeService.computeValues(newSoLine.getSaleOrder(), newSoLine);
 
             newSoLine.setParentId(originSoLine.getManualId());
 
@@ -124,7 +127,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
                   .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
 
           saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
-          saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+          saleOrderLineComputeService.computeValues(newSoLine.getSaleOrder(), newSoLine);
         }
       }
       originSoLine.setIsComplementaryProductsUnhandledYet(false);
@@ -165,7 +168,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
         if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
           break;
         }
-        saleOrderLineService.updateProductQty(SOLine, saleOrder, oldQty, newQty);
+        saleOrderLineComputeService.updateProductQty(SOLine, saleOrder, oldQty, newQty);
       }
     }
     return saleOrder;
