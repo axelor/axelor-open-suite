@@ -56,6 +56,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceSupplychainImpl;
@@ -167,6 +168,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChain;
@@ -379,5 +381,7 @@ public class SupplychainModule extends AxelorModule {
     bind(TrackingNumberSupplychainService.class).to(TrackingNumberSupplychainServiceImpl.class);
     bind(SaleOrderLineComputeServiceImpl.class)
         .to(SaleOrderLineComputeSupplychainServiceImpl.class);
+    bind(SaleOrderLineProductServiceImpl.class)
+        .to(SaleOrderLineProductSupplychainServiceImpl.class);
   }
 }

@@ -20,26 +20,11 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.rpc.Context;
+import com.axelor.apps.sale.db.SaleOrderLineTax;
+import java.util.List;
 
-public class SaleOrderLineServiceImpl implements SaleOrderLineService {
+public interface SaleOrderLineCreateTaxLineService {
 
-  @Override
-  public SaleOrder getSaleOrder(Context context) {
-
-    Context parentContext = context.getParent();
-
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-
-    if (parentContext != null && !parentContext.getContextClass().equals(SaleOrder.class)) {
-      parentContext = parentContext.getParent();
-    }
-
-    if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
-      saleOrder = parentContext.asType(SaleOrder.class);
-    }
-
-    return saleOrder;
-  }
+  List<SaleOrderLineTax> createsSaleOrderLineTax(
+      SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList);
 }

@@ -1,12 +1,11 @@
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import java.util.Set;
+import java.util.List;
 
-public interface SaleOrderLineTaxService {
-  Set<TaxLine> getTaxLineSet(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+public interface SaleOrderLineFiscalPositionService {
+  List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
       throws AxelorException;
 }

@@ -9,7 +9,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
@@ -25,14 +25,14 @@ public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCrea
 
   @Inject
   public SaleOrderLineCreateSupplychainServiceImpl(
-      SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
       AppBaseService appBaseService,
       SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLinePackService saleOrderLinePackService,
       AnalyticLineModelService analyticLineModelService,
       SupplyChainConfigService supplyChainConfigService,
       ReservedQtyService reservedQtyService) {
-    super(saleOrderLineService, appSaleService, appBaseService, saleOrderLineComputeService);
+    super(appSaleService, appBaseService, saleOrderLineComputeService, saleOrderLinePackService);
     this.analyticLineModelService = analyticLineModelService;
     this.supplyChainConfigService = supplyChainConfigService;
     this.reservedQtyService = reservedQtyService;

@@ -75,8 +75,8 @@ import com.axelor.apps.production.service.ProductionProductStockLocationServiceI
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
-import com.axelor.apps.production.service.SaleOrderLineProductionService;
-import com.axelor.apps.production.service.SaleOrderLineProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
+import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
@@ -182,7 +182,7 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
@@ -288,7 +288,9 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderTrackingNumberService.class).to(ManufOrderTrackingNumberServiceImpl.class);
     bind(PurchaseOrderMergingServiceSupplyChainImpl.class)
         .to(PurchaseOrderMergingServiceProductionImpl.class);
-    bind(SaleOrderLineProductionService.class).to(SaleOrderLineProductionServiceImpl.class);
-    bind(SaleOrderLineServiceSupplyChainImpl.class).to(SaleOrderLineProductionServiceImpl.class);
+    bind(SaleOrderLineProductProductionService.class)
+        .to(SaleOrderLineProductProductionServiceImpl.class);
+    bind(SaleOrderLineProductSupplychainServiceImpl.class)
+        .to(SaleOrderLineProductProductionServiceImpl.class);
   }
 }

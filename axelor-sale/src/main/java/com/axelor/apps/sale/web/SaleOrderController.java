@@ -51,6 +51,8 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
@@ -581,7 +583,7 @@ public class SaleOrderController {
   public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     if (Boolean.FALSE.equals(Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())
-        || !Beans.get(SaleOrderLineService.class)
+        || !Beans.get(SaleOrderLinePackService.class)
             .isStartOfPackTypeLineQtyChanged(saleOrder.getSaleOrderLineList())) {
       return;
     }
@@ -668,7 +670,8 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       if (saleOrder.getSaleOrderLineList() != null) {
-        Beans.get(SaleOrderLineService.class).updateLinesAfterFiscalPositionChange(saleOrder);
+        Beans.get(SaleOrderLineFiscalPositionService.class)
+            .updateLinesAfterFiscalPositionChange(saleOrder);
       }
       response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {

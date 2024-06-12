@@ -125,17 +125,17 @@ public class SaleOrderLineController {
 
   public void fillAvailableAndAllocatedStock(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    SaleOrderLineServiceSupplyChainImpl saleOrderLineServiceSupplyChainImpl =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class);
+    SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
+        Beans.get(SaleOrderLineServiceSupplyChain.class);
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(context);
+    SaleOrder saleOrder = saleOrderLineServiceSupplyChain.getSaleOrder(context);
 
     if (saleOrder != null) {
       if (saleOrderLine.getProduct() != null && saleOrder.getStockLocation() != null) {
         BigDecimal availableStock =
-            saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrder, saleOrderLine);
+            saleOrderLineServiceSupplyChain.getAvailableStock(saleOrder, saleOrderLine);
         BigDecimal allocatedStock =
-            saleOrderLineServiceSupplyChainImpl.getAllocatedStock(saleOrder, saleOrderLine);
+            saleOrderLineServiceSupplyChain.getAllocatedStock(saleOrder, saleOrderLine);
 
         response.setValue("$availableStock", availableStock);
         response.setValue("$allocatedStock", allocatedStock);
