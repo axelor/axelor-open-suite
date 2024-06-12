@@ -6,4 +6,10 @@
   <input file="account_financialDiscount.csv" separator=";"
     type="com.axelor.apps.account.db.FinancialDiscount" search="self.importId = :importId"/>
 
+  <input file="account_paymentCondition.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId"/>
+
+  <input file="account_paymentConditionLine.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentConditionLine" search="self.importId = :importId"/>
+
 </csv-inputs>

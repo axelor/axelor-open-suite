@@ -12,6 +12,9 @@
     <bind to="city" search="concat(self.zip,' ',self.name) = :addressL6" update="true"/>
   </input>
 
+  <input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency"
+    search="self.code = :code"/>
+
   <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product">
     <bind to="unit" column="unit_importId" search="self.importId = :unit_importId"/>
   </input>
