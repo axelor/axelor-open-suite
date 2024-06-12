@@ -311,21 +311,34 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           invoicePayment.getInvoice().getInvoiceDate());
     } else if (invoicePayment != null) {
       BigDecimal ratio;
+      Invoice invoice = invoicePayment.getInvoice();
       if (foreignExchangeTypes.contains(invoicePayment.getTypeSelect())
           || haveForeignExchangePayment) {
         ratio =
             currencyService.getCurrencyConversionRate(
                 invoicePayment.getCompanyCurrency(),
                 invoicePayment.getCurrency(),
-                invoicePayment.getInvoice().getInvoiceDate());
+                invoicePayment.getPaymentDate());
       } else {
-        ratio =
-            invoiceTerm
-                .getAmount()
-                .divide(
-                    invoiceTerm.getCompanyAmount(),
-                    AppBaseService.COMPUTATION_SCALING,
-                    RoundingMode.HALF_UP);
+        if (!currencyService.isSameCurrencyRate(
+            invoice.getInvoiceDate(),
+            invoicePayment.getPaymentDate(),
+            invoicePayment.getCompanyCurrency(),
+            invoicePayment.getCurrency())) {
+          ratio =
+              currencyService.getCurrencyConversionRate(
+                  invoicePayment.getCompanyCurrency(),
+                  invoicePayment.getCurrency(),
+                  invoicePayment.getPaymentDate());
+        } else {
+          ratio =
+              invoiceTerm
+                  .getAmount()
+                  .divide(
+                      invoiceTerm.getCompanyAmount(),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP);
+        }
       }
 
       return currencyScaleService.getCompanyScaledValue(
