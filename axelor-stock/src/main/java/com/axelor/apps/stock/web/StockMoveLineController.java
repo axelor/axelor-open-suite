@@ -38,6 +38,7 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -432,6 +433,19 @@ public class StockMoveLineController {
             .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockMoveLine);
         response.setReload(true);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setTrackingNumberConfiguration(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      StockMove stockMove = getStockMove(request, stockMoveLine);
+      TrackingNumberConfiguration trackingNumberConfiguration =
+          Beans.get(TrackingNumberConfigurationService.class)
+              .getTrackingNumberConfiguration(stockMoveLine, stockMove);
+      response.setValue("$trackingNumberConfiguration", trackingNumberConfiguration);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

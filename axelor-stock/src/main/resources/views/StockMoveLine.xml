@@ -61,10 +61,16 @@
       canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
       onSelect="action-stock-move-line-attrs-tracking-number-domain"
       form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
-      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2"/>
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2 ||
+      $get('$trackingNumberConfiguration.generatePurchaseAutoTrackingNbr') || $get('$trackingNumberConfiguration.generateProductionAutoTrackingNbr') || $get('$trackingNumberConfiguration.generateSaleAutoTrackingNbr')"/>
     <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
     <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
     <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+    <field name="$trackingNumberConfiguration" type="many-to-one"
+      target="com.axelor.apps.stock.db.TrackingNumberConfiguration" hidden="true"/>
+    <field name="$trackingNumberConfiguration.generatePurchaseAutoTrackingNbr" hidden="true"/>
+    <field name="$trackingNumberConfiguration.generateProductionAutoTrackingNbr" hidden="true"/>
+    <field name="$trackingNumberConfiguration.generateSaleAutoTrackingNbr" hidden="true"/>
     <field name="stockMove.typeSelect" hidden="true"/>
     <field name="conformitySelect" readonlyIf="lineTypeSelect == 1"/>
     <field name="availableStatus" width="150" readonlyIf="lineTypeSelect == 1">
@@ -157,7 +163,7 @@
         onChange="action-stock-move-line-group-stock-location-onchange" hidden="true"/>
       <field name="product" canEdit="false"
         domain="self.expense = false AND self.dtype = 'Product'"
-        onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange"
+        onChange="action-group-stock-stockmoveline-product-onchange"
         onSelect="action-stock-move-line-method-product-domain" form-view="product-form"
         grid-view="stock-move-line-product-grid"
         readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
@@ -177,7 +183,8 @@
         type="decimal" title="Available qty" readonly="true" hidden="true"/>
       <field name="$availableQtyForProduct" type="decimal" title="Available qty for product"
         readonly="true" hidden="true"/>
-      <field name="$trackingNumberConfiguration" hidden="true"/>
+      <field name="$trackingNumberConfiguration" type="many-to-one"
+        target="com.axelor.apps.stock.db.TrackingNumberConfiguration" hidden="true"/>
       <field name="oldQty"/>
       <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange"
         readonly="true"/>
@@ -219,10 +226,15 @@
         onChange="action-stock-move-line-record-product"
         form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
-        readonlyIf="$get('stockMove.statusSelect') > 2"/>
+        readonlyIf="$get('stockMove.statusSelect') > 2 ||
+      $get('$trackingNumberConfiguration.generatePurchaseAutoTrackingNbr') || $get('$trackingNumberConfiguration.generateProductionAutoTrackingNbr') || $get('$trackingNumberConfiguration.generateSaleAutoTrackingNbr')"/>
       <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
       <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
       <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.generatePurchaseAutoTrackingNbr" hidden="true"/>
+      <field name="$trackingNumberConfiguration.generateProductionAutoTrackingNbr"
+        hidden="true"/>
+      <field name="$trackingNumberConfiguration.generateSaleAutoTrackingNbr" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
       <field name="stockMove.typeSelect" hidden="true"/>
       <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
@@ -560,7 +572,6 @@
   <action-group name="action-stock-move-line-group-onload">
     <action name="action-stock-move-line-attrs"/>
     <action name="action-stock-move-line-attrs-scale-and-precision"/>
-    <action name="action-stock-move-line-tracking-number-attrs"/>
     <action name="action-stock-move-line-qty-attrs"/>
     <action name="action-stock-move-line-attrs-hide-avg-price"/>
     <action name="action-stock-move-line-method-compute-available-qty"
@@ -592,6 +603,7 @@
     <action name="action-stock-move-line-method-compute-available-qty"
       if="__parent__?.statusSelect &lt; 3"/>
     <action name="action-stock-move-line-method-set-available-status"/>
+    <action name="action-stock-move-line-method-set-tracking-number-configuration"/>
     <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
     <action name="action-stock-move-line-method-translate-product-description-and-name"/>
     <action name="action-stock-move-line-attrs-reset-qty" if="eval: product == null"/>
@@ -636,11 +648,6 @@
     <action name="action-stock-move-line-method-set-real-qty"/>
     <action name="action-stock-move-line-group-real-qty-onchange"/>
   </action-group>
-
-  <action-attrs name="action-stock-move-line-tracking-number-attrs">
-    <attribute for="trackingNumber" name="readonly"
-      expr="eval: $trackingNumberConfiguration?.generatePurchaseAutoTrackingNbr || $trackingNumberConfiguration?.generateProductionAutoTrackingNbr || $trackingNumberConfiguration?.generateSaleAutoTrackingNbr"/>
-  </action-attrs>
 
   <action-attrs name="action-stock-move-line-qty-attrs">
     <attribute name="readonly" for="qty" expr="eval: __parent__?.statusSelect == 2"/>
@@ -919,6 +926,12 @@
     name="action-stock-move-line-method-split-into-fulfilled-line-and-unfulfilled-one">
     <call class="com.axelor.apps.stock.web.StockMoveLineController"
       method="splitIntoFulfilledMoveLineAndUnfulfilledOne"/>
+  </action-method>
+
+  <action-method
+    name="action-stock-move-line-method-set-tracking-number-configuration">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController"
+      method="setTrackingNumberConfiguration"/>
   </action-method>
 
   <search-filters name="stock-move-line-filters"

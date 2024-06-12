@@ -19,19 +19,24 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
-import java.util.Optional;
 
 public class StockMoveLineStockRepository extends StockMoveLineRepository {
+
+  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
+
+  @Inject
+  public StockMoveLineStockRepository(
+      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
+  }
 
   @Override
   public StockMoveLine copy(StockMoveLine entity, boolean deep) {
@@ -76,19 +81,9 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
   protected void populateTrackingNumberConfig(Map<String, Object> json, StockMoveLine stockMoveLine)
       throws AxelorException {
     final String trackingNumberConfiguration = "$trackingNumberConfiguration";
-
-    TrackingNumberConfiguration trackingNumberConfig = null;
-    if (stockMoveLine != null) {
-      Product product = stockMoveLine.getProduct();
-      Company company =
-          Optional.ofNullable(stockMoveLine.getStockMove()).map(StockMove::getCompany).orElse(null);
-
-      trackingNumberConfig =
-          (TrackingNumberConfiguration)
-              Beans.get(ProductCompanyService.class)
-                  .get(product, "trackingNumberConfiguration", company);
-    }
-
-    json.put(trackingNumberConfiguration, trackingNumberConfig);
+    json.put(
+        trackingNumberConfiguration,
+        trackingNumberConfigurationService.getTrackingNumberConfiguration(
+            stockMoveLine, stockMoveLine.getStockMove()));
   }
 }

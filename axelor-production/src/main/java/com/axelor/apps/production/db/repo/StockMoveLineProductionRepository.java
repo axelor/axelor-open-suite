@@ -19,9 +19,17 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
+import com.google.inject.Inject;
 
 public class StockMoveLineProductionRepository extends StockMoveLineSupplychainRepository {
+
+  @Inject
+  public StockMoveLineProductionRepository(
+      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+    super(trackingNumberConfigurationService);
+  }
 
   @Override
   public StockMoveLine copy(StockMoveLine entity, boolean deep) {

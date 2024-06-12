@@ -26,14 +26,22 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class StockMoveLineSupplychainRepository extends StockMoveLineStockRepository {
+
+  @Inject
+  public StockMoveLineSupplychainRepository(
+      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+    super(trackingNumberConfigurationService);
+  }
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
