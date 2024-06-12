@@ -115,6 +115,7 @@
     <view type="form" name="purchase-order-form"/>
     <view-param name="search-filters" value="purchase-order-filters"/>
     <context name="_internalUser" expr="eval: __user__.id"/>
+    <context name="_status" expr="eval: [1,2,3,4,5]"/>
   </action-view>
 
   <menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"
