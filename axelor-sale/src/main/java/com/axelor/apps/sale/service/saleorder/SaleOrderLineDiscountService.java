@@ -33,4 +33,9 @@ public interface SaleOrderLineDiscountService {
    */
   boolean isSaleOrderLineDiscountGreaterThanMaxDiscount(
       SaleOrderLine saleOrderLine, BigDecimal maxDiscount);
+
+  Map<String, Object> fillDiscount(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal price);
+
+  BigDecimal getDiscountedPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal price);
 }

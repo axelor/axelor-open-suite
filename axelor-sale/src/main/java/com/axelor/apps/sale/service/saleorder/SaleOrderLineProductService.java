@@ -4,7 +4,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import java.math.BigDecimal;
 import java.util.Map;
 
 public interface SaleOrderLineProductService {
@@ -29,8 +28,6 @@ public interface SaleOrderLineProductService {
    */
   Map<String, Object> fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
-
-  BigDecimal fillDiscount(SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal price);
 
   Map<String, Object> fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;

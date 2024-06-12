@@ -140,7 +140,10 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
       inTaxPrice =
           saleOrderLinePriceService.getInTaxUnitPrice(
               saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
-      inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
+      saleOrderLineMap.putAll(
+          saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
+      inTaxPrice =
+          saleOrderLineDiscountService.getDiscountedPrice(saleOrderLine, saleOrder, inTaxPrice);
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(
             taxService.convertUnitPrice(
@@ -154,7 +157,10 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
       exTaxPrice =
           saleOrderLinePriceService.getExTaxUnitPrice(
               saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
-      exTaxPrice = fillDiscount(saleOrderLine, saleOrder, exTaxPrice);
+      saleOrderLineMap.putAll(
+          saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, exTaxPrice));
+      exTaxPrice =
+          saleOrderLineDiscountService.getDiscountedPrice(saleOrderLine, saleOrder, exTaxPrice);
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
@@ -170,38 +176,6 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("inTaxPrice", saleOrderLine.getInTaxPrice());
     saleOrderLineMap.put("price", saleOrderLine.getPrice());
     return saleOrderLineMap;
-  }
-
-  @Override
-  public BigDecimal fillDiscount(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal price) {
-
-    Map<String, Object> discounts =
-        saleOrderLineDiscountService.getDiscountsFromPriceLists(saleOrder, saleOrderLine, price);
-
-    if (discounts != null) {
-      if (discounts.get("price") != null) {
-        price = (BigDecimal) discounts.get("price");
-      }
-      if (saleOrderLine.getProduct().getInAti() != saleOrder.getInAti()
-          && (Integer) discounts.get("discountTypeSelect")
-              != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
-        saleOrderLine.setDiscountAmount(
-            taxService.convertUnitPrice(
-                saleOrderLine.getProduct().getInAti(),
-                saleOrderLine.getTaxLineSet(),
-                (BigDecimal) discounts.get("discountAmount"),
-                appBaseService.getNbDecimalDigitForUnitPrice()));
-      } else {
-        saleOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
-      }
-      saleOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
-    } else if (!saleOrder.getTemplate()) {
-      saleOrderLine.setDiscountAmount(BigDecimal.ZERO);
-      saleOrderLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
-    }
-
-    return price;
   }
 
   @Override

@@ -35,6 +35,7 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
   protected ProductCompanyService productCompanyService;
   protected CurrencyService currencyService;
   protected SaleOrderLinePriceService saleOrderLinePriceService;
+  protected SaleOrderLineDiscountService saleOrderLineDiscountService;
 
   @Inject
   public SaleOrderLinePackServiceImpl(
@@ -44,7 +45,8 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
       TaxService taxService,
       ProductCompanyService productCompanyService,
       CurrencyService currencyService,
-      SaleOrderLinePriceService saleOrderLinePriceService) {
+      SaleOrderLinePriceService saleOrderLinePriceService,
+      SaleOrderLineDiscountService saleOrderLineDiscountService) {
     this.appBaseService = appBaseService;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderLineProductService = saleOrderLineProductService;
@@ -52,6 +54,7 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
     this.productCompanyService = productCompanyService;
     this.currencyService = currencyService;
     this.saleOrderLinePriceService = saleOrderLinePriceService;
+    this.saleOrderLineDiscountService = saleOrderLineDiscountService;
   }
 
   @Override
@@ -163,7 +166,10 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
       inTaxPrice =
           this.getInTaxUnitPriceFromPackLine(
               saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
-      inTaxPrice = saleOrderLineProductService.fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
+      saleOrderLineMap.putAll(
+          saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
+      inTaxPrice =
+          saleOrderLineDiscountService.getDiscountedPrice(saleOrderLine, saleOrder, inTaxPrice);
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(
             taxService.convertUnitPrice(
@@ -177,7 +183,10 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
       exTaxPrice =
           this.getExTaxUnitPriceFromPackLine(
               saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
-      exTaxPrice = saleOrderLineProductService.fillDiscount(saleOrderLine, saleOrder, exTaxPrice);
+      saleOrderLineMap.putAll(
+          saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, exTaxPrice));
+      exTaxPrice =
+          saleOrderLineDiscountService.getDiscountedPrice(saleOrderLine, saleOrder, exTaxPrice);
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
