@@ -23,6 +23,7 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -52,6 +53,7 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
       ProductCompanyService productCompanyService,
       AccountManagementContractService accountManagementContractService,
       FiscalPositionService fiscalPositionService,
+      PartnerLinkSupplychainService partnerLinkSupplychainService,
       EquipmentRepository equipmentRepository) {
     super(
         contractLineService,
@@ -71,7 +73,8 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
         opportunityRepository,
         productCompanyService,
         accountManagementContractService,
-        fiscalPositionService);
+        fiscalPositionService,
+        partnerLinkSupplychainService);
     this.equipmentRepository = equipmentRepository;
   }
 
