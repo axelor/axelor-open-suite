@@ -1,5 +1,0 @@
----
-title: "PurchaseOrderLineService : Remove unused method getProductSupplierInfos."
-module: axelor-purchase
-developer: |
-  "Remove unused method getProductSupplierInfos from PurchaseOrderLineService as it was replaced by SupplierCatalogService.getProductSupplierInfos"
