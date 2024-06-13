@@ -269,7 +269,7 @@
     <template>
     	<![CDATA[
   			<>
-	    		<h4>{sequence}</h4>
+	    		<strong>{sequence}</strong>
   				<Box as="dl" mt={4}>
   					{qiDetection.origin == 1 && qiIdentification.supplierPartner.fullName &&
   						<Box>
@@ -629,7 +629,7 @@
 
   <action-validate name="action-quality-improvement-validate-manuf-order-on-change">
     <alert
-      message="The following fields will be reset: operation order line, manuf Order product to consume, consummed manuf order product , continue ?"
+      message="The following fields will be reset: manufacturing operation line, manuf Order product to consume, consummed manuf order product , continue ?"
       if="operationOrder != null || toConsumeProdProduct != null || consummedProdProduct != null"
       action="action-quality-improvement-attrs-on-validate-set-field-values"/>
   </action-validate>

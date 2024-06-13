@@ -8,7 +8,7 @@
   <entity name="TrainingSkill">
     <many-to-one name="employee" title="Employee" ref="com.axelor.apps.hr.db.Employee"/>
     <many-to-one name="employeeFile" title="Competence certificate"
-      ref="com.axelor.apps.hr.db.EmployeeFile"/>
+      ref="com.axelor.apps.base.db.File"/>
     <many-to-one name="skill" title="Skill" ref="com.axelor.apps.talent.db.Skill"/>
     <date name="graduationDate" title="Graduation date"/>
     <date name="endOfValidityDate" title="End of validity date"/>

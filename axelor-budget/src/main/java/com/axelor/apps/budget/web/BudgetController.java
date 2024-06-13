@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.BudgetStructure;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
@@ -258,6 +259,7 @@ public class BudgetController {
     Budget budget = request.getContext().asType(Budget.class);
     Context parentContext = request.getContext().getParent();
     GlobalBudget globalBudget = getGlobalBudget(request);
+    BudgetStructure budgetStructure = getBudgetStructure(request);
     BudgetLevel parent = null;
     if (parentContext != null) {
       if (BudgetLevel.class.equals(parentContext.getContextClass())) {
@@ -265,6 +267,9 @@ public class BudgetController {
       } else if (globalBudget == null
           && GlobalBudget.class.equals(parentContext.getContextClass())) {
         globalBudget = parentContext.asType(GlobalBudget.class);
+      } else if (budgetStructure == null
+          && BudgetStructure.class.equals(parentContext.getContextClass())) {
+        budgetStructure = parentContext.asType(BudgetStructure.class);
       }
     }
 
@@ -275,7 +280,10 @@ public class BudgetController {
         globalBudget = Beans.get(GlobalBudgetRepository.class).find(Long.valueOf(globalId));
       }
     }
+
+    parent = EntityHelper.getEntity(parent);
     globalBudget = EntityHelper.getEntity(globalBudget);
+    budgetStructure = EntityHelper.getEntity(budgetStructure);
 
     response.setValues(
         Beans.get(BudgetGroupService.class)
@@ -283,6 +291,7 @@ public class BudgetController {
                 budget,
                 parent,
                 globalBudget,
+                budgetStructure,
                 Optional.of(request.getContext())
                     .map(context -> context.get("_typeSelect"))
                     .map(Object::toString)
@@ -324,5 +333,42 @@ public class BudgetController {
     }
 
     return getGlobalBudgetUsingBudgetLevel(context.getParent());
+  }
+
+  public BudgetStructure getBudgetStructure(ActionRequest request) {
+    Context context = request.getContext();
+    Budget budget = context.asType(Budget.class);
+    BudgetStructure budgetStructure =
+        Beans.get(BudgetToolsService.class).getBudgetStructureUsingBudget(budget);
+    if (budgetStructure != null) {
+      return budgetStructure;
+    }
+    if (context == null) {
+      return null;
+    }
+
+    if (context.getParent() != null
+        && BudgetStructure.class.isAssignableFrom(context.getParent().getContextClass())) {
+      return context.getParent().asType(BudgetStructure.class);
+    }
+    if (context.getParent() != null
+        && BudgetLevel.class.isAssignableFrom(context.getParent().getContextClass())) {
+      return getBudgetStructureUsingBudgetLevel(context.getParent());
+    }
+
+    return null;
+  }
+
+  protected BudgetStructure getBudgetStructureUsingBudgetLevel(Context context) {
+    if (context == null) {
+      return null;
+    }
+
+    if (context.getParent() != null
+        && BudgetStructure.class.isAssignableFrom(context.getParent().getContextClass())) {
+      return context.getParent().asType(BudgetStructure.class);
+    }
+
+    return getBudgetStructureUsingBudgetLevel(context.getParent());
   }
 }

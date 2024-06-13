@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
@@ -27,8 +28,8 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -43,6 +44,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
@@ -330,11 +332,7 @@ public class InvoiceToolService {
     copy.setExternalReference(null);
     copy.setLcrAccounted(false);
     copy.clearInvoiceTermList();
-    copy.setFinancialDiscount(null);
-    copy.setFinancialDiscountDeadlineDate(copy.getDueDate());
-    copy.setFinancialDiscountRate(BigDecimal.ZERO);
-    copy.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
-    copy.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+    setFinancialDiscount(copy);
     copy.setOldMove(null);
     copy.setBillOfExchangeBlockingOk(false);
     copy.setBillOfExchangeBlockingReason(null);
@@ -405,5 +403,29 @@ public class InvoiceToolService {
           I18n.get(AccountExceptionMessage.ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK),
           invoice.getPartnerAccount().getName());
     }
+  }
+
+  protected static void setFinancialDiscount(Invoice copy) {
+    FinancialDiscount financialDiscount =
+        Optional.of(copy).map(Invoice::getPartner).map(Partner::getFinancialDiscount).orElse(null);
+    BigDecimal discountRate = BigDecimal.ZERO;
+    BigDecimal financialDiscountTotalAmount = BigDecimal.ZERO;
+    BigDecimal remainingAmountAfterFinDiscount = BigDecimal.ZERO;
+    String legalNotice = null;
+    BigDecimal inTaxTotal = copy.getInTaxTotal();
+
+    if (financialDiscount != null) {
+      discountRate = financialDiscount.getDiscountRate();
+      financialDiscountTotalAmount =
+          discountRate.multiply(inTaxTotal).divide(BigDecimal.valueOf(100));
+      remainingAmountAfterFinDiscount = inTaxTotal.subtract(financialDiscountTotalAmount);
+      legalNotice = financialDiscount.getLegalNotice();
+    }
+    copy.setFinancialDiscount(financialDiscount);
+    copy.setFinancialDiscountDeadlineDate(null);
+    copy.setFinancialDiscountRate(discountRate);
+    copy.setFinancialDiscountTotalAmount(financialDiscountTotalAmount);
+    copy.setRemainingAmountAfterFinDiscount(remainingAmountAfterFinDiscount);
+    copy.setLegalNotice(legalNotice);
   }
 }

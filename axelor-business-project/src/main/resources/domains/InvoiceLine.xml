@@ -10,8 +10,10 @@
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-many name="projectTaskSet" ref="com.axelor.apps.project.db.ProjectTask"
       title="Tasks"/>
-    <decimal name="previousProgress" title="Previous progress"/>
-    <decimal name="newProgress" title="New progress"/>
+    <decimal name="previousProgress" title="Previous progress" nullable="true"/>
+    <decimal name="newProgress" title="New progress" nullable="true"/>
+    <many-to-one name="expenseLine" title="Expense line"
+      ref="com.axelor.apps.hr.db.ExpenseLine"/>
 
   </entity>
 

@@ -126,8 +126,10 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
       if (!invoiceTerm.getIsPaid() && paidAmount.signum() > 0 && totalAmount.signum() > 0) {
         BigDecimal amountRemaining = invoiceTerm.getAmountRemaining();
         BigDecimal newPercentage =
-            paidAmount.divide(
-                totalAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            paidAmount
+                .multiply(new BigDecimal(100))
+                .divide(
+                    totalAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
         invoiceTerm.setAmount(paidAmount);
         invoiceTerm.setCompanyAmount(paidAmount);
@@ -144,7 +146,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
         MoveLine moveLine = invoiceTerm.getMoveLine();
 
         moveLine.addInvoiceTermListItem(newInvoiceTerm);
-        invoiceTermToRemove.add(newInvoiceTerm);
+        invoiceTermToRemove.add(invoiceTerm);
       }
     }
     return invoiceTermToRemove;
@@ -207,8 +209,11 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
   protected void replaceInvoiceTermsToRemoveWithCopy(List<InvoiceTerm> invoiceTermListToRemove) {
     for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
       InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
-      invoiceTerm.getMoveLine().addInvoiceTermListItem(newInvoiceTerm);
-      invoiceTerm.getMoveLine().removeInvoiceTermListItem(invoiceTerm);
+      invoiceTerm.setPaymentSession(null);
+      MoveLine moveLine = invoiceTerm.getMoveLine();
+      moveLine.addInvoiceTermListItem(newInvoiceTerm);
+      moveLine.removeInvoiceTermListItem(invoiceTerm);
+      invoiceTerm.setMoveLine(null);
       invoiceTermRepo.remove(invoiceTerm);
     }
   }

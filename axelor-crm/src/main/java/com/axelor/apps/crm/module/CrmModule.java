@@ -32,6 +32,8 @@ import com.axelor.apps.crm.db.repo.LeadManagementRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.TourManagementRepository;
+import com.axelor.apps.crm.db.repo.TourRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.CatalogService;
@@ -46,10 +48,14 @@ import com.axelor.apps.crm.service.CrmReportingService;
 import com.axelor.apps.crm.service.CrmReportingServiceImpl;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.EventServiceImpl;
+import com.axelor.apps.crm.service.LeadComputeNameService;
+import com.axelor.apps.crm.service.LeadComputeNameServiceImpl;
 import com.axelor.apps.crm.service.LeadDuplicateService;
 import com.axelor.apps.crm.service.LeadDuplicateServiceImpl;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.LeadServiceImpl;
+import com.axelor.apps.crm.service.OpportunitySequenceService;
+import com.axelor.apps.crm.service.OpportunitySequenceServiceImpl;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.crm.service.PartnerCrmService;
@@ -88,5 +94,8 @@ public class CrmModule extends AxelorModule {
     bind(LeadDuplicateService.class).to(LeadDuplicateServiceImpl.class);
     bind(TourService.class).to(TourServiceImpl.class);
     bind(TourLineService.class).to(TourLineServiceImpl.class);
+    bind(TourRepository.class).to(TourManagementRepository.class);
+    bind(LeadComputeNameService.class).to(LeadComputeNameServiceImpl.class);
+    bind(OpportunitySequenceService.class).to(OpportunitySequenceServiceImpl.class);
   }
 }

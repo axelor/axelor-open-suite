@@ -117,31 +117,28 @@ public class PriceListService {
 
   @Transactional
   public void setPriceListLineAnomaly(Product product) {
-    if (!product.getSellable()) {
-      product
-          .getPriceListLineList()
-          .forEach(
-              line -> {
-                line.setAnomalySelect(PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE);
-                priceListLineRepo.persist(line);
-              });
-    } else if (product.getIsUnrenewed()) {
-      product
-          .getPriceListLineList()
-          .forEach(
-              line -> {
-                line.setAnomalySelect(PriceListLineRepository.ANOMALY_NOT_RENEWED);
-                priceListLineRepo.persist(line);
-              });
-    } else {
-      product
-          .getPriceListLineList()
-          .forEach(
-              line -> {
-                line.setAnomalySelect(null);
-                priceListLineRepo.persist(line);
-              });
+    for (PriceListLine priceListLine : product.getPriceListLineList()) {
+      Integer typeSelect = getPriceListTypeSelect(priceListLine);
+      priceListLine.setAnomalySelect(getAnomalySelect(product, typeSelect));
+      priceListLineRepo.save(priceListLine);
     }
+  }
+
+  protected int getPriceListTypeSelect(PriceListLine priceListLine) {
+    return priceListLine.getPriceList().getTypeSelect();
+  }
+
+  protected int getAnomalySelect(Product product, Integer typeSelect) {
+    if (typeSelect == PriceListRepository.TYPE_SALE) {
+      if (!product.getSellable()) {
+        return PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE;
+      } else if (product.getIsUnrenewed()) {
+        return PriceListLineRepository.ANOMALY_NOT_RENEWED;
+      }
+    } else if (typeSelect == PriceListRepository.TYPE_PURCHASE && !product.getPurchasable()) {
+      return PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_PURCHASE;
+    }
+    return 0;
   }
 
   public int getDiscountTypeSelect(PriceListLine priceListLine) {
@@ -152,7 +149,7 @@ public class PriceListService {
   public BigDecimal getDiscountAmount(PriceListLine priceListLine, BigDecimal unitPrice) {
 
     switch (priceListLine.getTypeSelect()) {
-      case PriceListLineRepository.TYPE_ADDITIONNAL:
+      case PriceListLineRepository.TYPE_INCREASE:
         return priceListLine.getAmount().negate();
 
       case PriceListLineRepository.TYPE_DISCOUNT:
@@ -169,7 +166,7 @@ public class PriceListService {
   public BigDecimal getUnitPriceDiscounted(PriceListLine priceListLine, BigDecimal unitPrice) {
 
     switch (priceListLine.getTypeSelect()) {
-      case PriceListLineRepository.TYPE_ADDITIONNAL:
+      case PriceListLineRepository.TYPE_INCREASE:
         if (priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
           return unitPrice.add(priceListLine.getAmount());
         } else if (priceListLine.getAmountTypeSelect()

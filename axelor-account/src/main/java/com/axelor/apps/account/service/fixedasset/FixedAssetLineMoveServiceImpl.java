@@ -38,7 +38,6 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FindFixedAssetService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -52,6 +51,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
@@ -104,7 +104,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   protected BankDetailsService bankDetailsService;
 
   protected FixedAssetDateService fixedAssetDateService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected FindFixedAssetService findFixedAssetService;
   protected AccountManagementService accountManagementService;
 
@@ -125,7 +125,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       BatchRepository batchRepository,
       BankDetailsService bankDetailsService,
       FixedAssetDateService fixedAssetDateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       FindFixedAssetService findFixedAssetService,
       AccountManagementService accountManagementService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
@@ -141,7 +141,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
     this.fixedAssetDateService = fixedAssetDateService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.findFixedAssetService = findFixedAssetService;
     this.accountManagementService = accountManagementService;
   }
@@ -297,6 +297,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   protected Move generateImpairementAccountMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return null;
+    }
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -451,6 +454,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   public Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated, boolean isDisposal)
       throws AxelorException {
     FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return null;
+    }
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -531,8 +537,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         }
       }
       BigDecimal amount =
-          currencyScaleServiceAccount.getCompanyScaledValue(
-              fixedAsset, fixedAssetLine.getDepreciation());
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset,
+              isDisposal ? fixedAsset.getDisposalValue() : fixedAssetLine.getDepreciation());
 
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(
@@ -591,6 +598,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       int transferredReason,
       LocalDate disposalDate)
       throws AxelorException {
+    if (fixedAsset.getMoveGenerationException()
+        != FixedAssetRepository.MOVE_GENERATION_EXCEPTION_NONE) {
+      return;
+    }
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
@@ -637,13 +648,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       }
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
       BigDecimal chargeAmount =
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset,
               fixedAssetLine != null
                   ? fixedAssetLine.getAccountingValue()
                   : fixedAsset.getAccountingValue());
       BigDecimal cumulativeDepreciationAmount =
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               fixedAsset,
               fixedAssetLine != null ? fixedAssetLine.getCumulativeDepreciation() : null);
       if (chargeAmount.signum() != 0) {
@@ -698,8 +709,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       if (chargeAmount.signum() == 0
           && (cumulativeDepreciationAmount == null || cumulativeDepreciationAmount.signum() > 0)) {
         cumulativeDepreciationAmount =
-            currencyScaleServiceAccount.getCompanyScaledValue(
-                fixedAsset, fixedAsset.getGrossValue());
+            currencyScaleService.getCompanyScaledValue(fixedAsset, fixedAsset.getGrossValue());
       }
       if (cumulativeDepreciationAmount != null && cumulativeDepreciationAmount.signum() > 0) {
         MoveLine deprecationAccountDebitMoveLine =
@@ -723,8 +733,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               move,
               partner,
               purchaseAccount,
-              currencyScaleServiceAccount.getCompanyScaledValue(
-                  fixedAsset, fixedAsset.getGrossValue()),
+              currencyScaleService.getCompanyScaledValue(fixedAsset, fixedAsset.getGrossValue()),
               false,
               disposalDate,
               ++moveLineSequenceCounter,
@@ -759,6 +768,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       BigDecimal disposalAmount,
       LocalDate disposalDate)
       throws AxelorException {
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return;
+    }
     Company company = fixedAsset.getCompany();
     Journal journal = company.getAccountConfig().getCustomerSalesJournal();
     Partner partner = fixedAsset.getPartner();
@@ -816,7 +828,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           }
         }
         BigDecimal creditAmountTwo =
-            currencyScaleServiceAccount.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 fixedAsset,
                 disposalAmount
                     .multiply(taxLine.getValue().divide(new BigDecimal(100)))

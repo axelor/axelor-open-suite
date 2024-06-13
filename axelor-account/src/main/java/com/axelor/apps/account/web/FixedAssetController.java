@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGroupService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
@@ -498,15 +499,31 @@ public class FixedAssetController {
   public void computeDisposalWizardDisposalAmount(ActionRequest request, ActionResponse response) {
     try {
       int disposalTypeSelect = (int) request.getContext().get("disposalTypeSelect");
+      FixedAsset disposal = request.getContext().asType(FixedAsset.class);
       FixedAsset fixedAsset =
           Beans.get(FixedAssetRepository.class)
               .find(Long.valueOf(request.getContext().get("_id").toString()));
       FixedAssetGroupService fixedAssetGroupService = Beans.get(FixedAssetGroupService.class);
 
       response.setValues(
-          fixedAssetGroupService.getDisposalWizardValuesMap(fixedAsset, disposalTypeSelect));
+          fixedAssetGroupService.getDisposalWizardValuesMap(
+              disposal, fixedAsset, disposalTypeSelect));
       response.setAttrs(
           fixedAssetGroupService.getDisposalWizardAttrsMap(disposalTypeSelect, fixedAsset));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void changeOriginBtnTitle(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      String btnTitle = ITranslation.FIXED_ASSET_IMPORT_BTN_IMPORT;
+      if (fixedAsset.getOriginSelect() != null
+          && fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT) {
+        btnTitle = ITranslation.FIXED_ASSET_IMPORT_BTN_MANUAL;
+      }
+      response.setAttr("changeOriginBtn", "title", I18n.get(btnTitle));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

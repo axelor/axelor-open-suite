@@ -19,12 +19,10 @@
 package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Partner;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -40,14 +38,6 @@ public interface ReconcileService {
   public Reconcile confirmReconcile(
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException;
-
-  public void reconcilePreconditions(
-      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerm)
-      throws AxelorException;
-
-  public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException;
-
-  public List<Partner> getPartners(Reconcile reconcile);
 
   Reconcile reconcile(
       MoveLine debitMoveLine,
@@ -72,7 +62,14 @@ public interface ReconcileService {
       boolean updateInvoicePayments)
       throws AxelorException;
 
-  public void unreconcile(Reconcile reconcile) throws AxelorException;
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
+      Move foreignExchangeMove,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
+      throws AxelorException;
 
   /**
    * Procédure permettant de gérer les écarts de règlement, check sur la case à cocher 'Peut être
@@ -95,15 +92,6 @@ public interface ReconcileService {
         && (acc1.getAccount().equals(acc2.getAccount())
             || acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount()));
   }
-
-  public List<InvoiceTermPayment> updateInvoiceTerms(
-      List<InvoiceTerm> invoiceTermList,
-      InvoicePayment invoicePayment,
-      BigDecimal amount,
-      Reconcile reconcile)
-      throws AxelorException;
-
-  void checkReconcile(Reconcile reconcile) throws AxelorException;
 
   String getStringAllowedCreditMoveLines(Reconcile reconcile);
 

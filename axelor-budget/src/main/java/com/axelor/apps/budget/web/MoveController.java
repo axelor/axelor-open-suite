@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -78,6 +79,25 @@ public class MoveController {
         && !moveBudgetService.isBudgetInLines(move)) {
       moveBudgetService.autoComputeBudgetDistribution(move);
       response.setValue("moveLineList", move.getMoveLineList());
+    }
+  }
+
+  public void computeMoveBudgetRemainingAmountToAllocate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          moveLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  moveLine.getBudgetDistributionList(),
+                  moveLine.getDebit().max(moveLine.getCredit())));
+        }
+        response.setValue("moveLineList", move.getMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
