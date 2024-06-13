@@ -20,12 +20,10 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
@@ -35,11 +33,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.translation.ITranslation;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -50,6 +47,8 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class SaleOrderLineController {
@@ -100,12 +99,21 @@ public class SaleOrderLineController {
       }
 
       try {
-        product = Beans.get(ProductRepository.class).find(product.getId());
-        saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+        Map<String, Object> saleOrderLineMap =
+            saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+        saleOrderLineMap.putAll(
+            Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
+        // Beans.get(SaleOrderLineCheckService.class).check(saleOrderLine); throws exception
+        // response.setValues(Beans.get(SaleOrderLineDummyService.class).getDummies());
+        // response.setAttrs(Beans.get(SaleOrderLineViewService.class).getHiddenAttrs())
 
         if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
-              pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
+              pricingService.getRandomPricing(
+                  saleOrder.getCompany(),
+                  saleOrderLine,
+                  null,
+                  PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
 
           if (defaultPricing.isPresent()
               && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {
@@ -115,9 +123,7 @@ public class SaleOrderLineController {
                     defaultPricing.get().getName()));
           }
         }
-
-        response.setValue("saleSupplySelect", product.getSaleSupplySelect());
-        response.setValues(saleOrderLine);
+        response.setValues(saleOrderLineMap);
       } catch (Exception e) {
         resetProductInformation(response, saleOrderLine);
         TraceBackService.trace(response, e);
@@ -145,12 +151,12 @@ public class SaleOrderLineController {
     if (saleOrder == null
         || saleOrderLine == null
         || saleOrder.getClientPartner() == null
-        || saleOrderLine.getTaxLine() == null) return;
+        || CollectionUtils.isEmpty(saleOrderLine.getTaxLineSet())) return;
 
     response.setValue(
         "taxEquiv",
         Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(saleOrder.getFiscalPosition(), saleOrderLine.getTaxLine().getTax()));
+            .getTaxEquivFromTaxLines(saleOrder.getFiscalPosition(), saleOrderLine.getTaxLineSet()));
   }
 
   public void getDiscount(ActionRequest request, ActionResponse response) {
@@ -176,14 +182,14 @@ public class SaleOrderLineController {
                 saleOrder,
                 saleOrderLine,
                 saleOrderLineService.getInTaxUnitPrice(
-                    saleOrder, saleOrderLine, saleOrderLine.getTaxLine()));
+                    saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet()));
       } else {
         discounts =
             saleOrderLineService.getDiscountsFromPriceLists(
                 saleOrder,
                 saleOrderLine,
                 saleOrderLineService.getExTaxUnitPrice(
-                    saleOrder, saleOrderLine, saleOrderLine.getTaxLine()));
+                    saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet()));
       }
 
       if (discounts != null) {
@@ -200,7 +206,7 @@ public class SaleOrderLineController {
                 "price",
                 taxService.convertUnitPrice(
                     true,
-                    saleOrderLine.getTaxLine(),
+                    saleOrderLine.getTaxLineSet(),
                     price,
                     appBaseService.getNbDecimalDigitForUnitPrice()));
           } else {
@@ -209,7 +215,7 @@ public class SaleOrderLineController {
                 "inTaxPrice",
                 taxService.convertUnitPrice(
                     false,
-                    saleOrderLine.getTaxLine(),
+                    saleOrderLine.getTaxLineSet(),
                     price,
                     appBaseService.getNbDecimalDigitForUnitPrice()));
           }
@@ -222,7 +228,7 @@ public class SaleOrderLineController {
               "discountAmount",
               taxService.convertUnitPrice(
                   saleOrderLine.getProduct().getInAti(),
-                  saleOrderLine.getTaxLine(),
+                  saleOrderLine.getTaxLineSet(),
                   (BigDecimal) discounts.get("discountAmount"),
                   appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
@@ -249,14 +255,14 @@ public class SaleOrderLineController {
 
     try {
       BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
-      TaxLine taxLine = saleOrderLine.getTaxLine();
+      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
 
       response.setValue(
           "price",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   true,
-                  taxLine,
+                  taxLineSet,
                   inTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -277,14 +283,14 @@ public class SaleOrderLineController {
 
     try {
       BigDecimal exTaxPrice = saleOrderLine.getPrice();
-      TaxLine taxLine = saleOrderLine.getTaxLine();
+      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
 
       response.setValue(
           "inTaxPrice",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   false,
-                  taxLine,
+                  taxLineSet,
                   exTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -312,7 +318,8 @@ public class SaleOrderLineController {
       BigDecimal price = saleOrderLine.getPrice();
       BigDecimal inTaxPrice =
           price.add(
-              price.multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
+              price.multiply(
+                  Beans.get(TaxService.class).getTotalTaxRate(saleOrderLine.getTaxLineSet())));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
@@ -366,8 +373,8 @@ public class SaleOrderLineController {
   protected void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
 
-    Map<String, BigDecimal> map =
-        Beans.get(SaleOrderLineService.class).computeValues(saleOrder, orderLine);
+    Map<String, Object> map =
+        Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, orderLine);
 
     map.put("price", orderLine.getPrice());
     map.put("inTaxPrice", orderLine.getInTaxPrice());
@@ -378,7 +385,7 @@ public class SaleOrderLineController {
     response.setAttr(
         "priceDiscounted",
         "hidden",
-        map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
+        ((BigDecimal) map.getOrDefault("priceDiscounted", BigDecimal.ZERO))
                 .compareTo(saleOrder.getInAti() ? orderLine.getInTaxPrice() : orderLine.getPrice())
             == 0);
   }
@@ -413,40 +420,6 @@ public class SaleOrderLineController {
 
       response.setValues(saleOrderLine);
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      InternationalService internationalService = Beans.get(InternationalService.class);
-      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      Partner partner =
-          Beans.get(SaleOrderLineService.class).getSaleOrder(context).getClientPartner();
-      String userLanguage = AuthUtils.getUser().getLanguage();
-      Product product = saleOrderLine.getProduct();
-
-      if (product != null) {
-        Map<String, String> translation =
-            internationalService.getProductDescriptionAndNameTranslation(
-                product, partner, userLanguage);
-
-        String description = translation.get("description");
-        String productName = translation.get("productName");
-
-        if (description != null
-            && !description.isEmpty()
-            && productName != null
-            && !productName.isEmpty()) {
-          if (Boolean.TRUE.equals(
-              Beans.get(AppSaleService.class).getAppSale().getIsEnabledProductDescriptionCopy())) {
-            response.setValue("description", description);
-          }
-          response.setValue("productName", productName);
-        }
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

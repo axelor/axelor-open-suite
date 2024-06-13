@@ -20,8 +20,6 @@ package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -29,16 +27,13 @@ import com.axelor.apps.helpdesk.db.Sla;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.db.repo.SlaRepository;
-import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -47,11 +42,7 @@ import java.util.Optional;
 
 public class TicketServiceImpl implements TicketService {
 
-  protected SequenceService sequenceService;
-
   protected AppHelpdeskRepository appHelpdeskRepo;
-
-  protected TicketRepository ticketRepo;
 
   protected SlaRepository slaRepo;
 
@@ -59,42 +50,22 @@ public class TicketServiceImpl implements TicketService {
 
   protected WeeklyPlanningService weeklyPlanningService;
 
-  protected TicketStatusService ticketStatusService;
-
   protected AppBaseService appBaseService;
 
   private LocalDateTime toDate;
 
   @Inject
   public TicketServiceImpl(
-      SequenceService sequenceService,
       AppHelpdeskRepository appHelpdeskRepo,
-      TicketRepository ticketRepo,
       SlaRepository slaRepo,
       PublicHolidayService publicHolidayService,
       WeeklyPlanningService weeklyPlanningService,
-      TicketStatusService ticketStatusService,
       AppBaseService appBaseService) {
-    this.sequenceService = sequenceService;
     this.appHelpdeskRepo = appHelpdeskRepo;
-    this.ticketRepo = ticketRepo;
     this.slaRepo = slaRepo;
     this.publicHolidayService = publicHolidayService;
     this.weeklyPlanningService = weeklyPlanningService;
-    this.ticketStatusService = ticketStatusService;
     this.appBaseService = appBaseService;
-  }
-
-  /** Generate sequence of the ticket. */
-  @Override
-  public void computeSeq(Ticket ticket) throws AxelorException {
-
-    if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
-      String ticketSeq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.TICKET, null, Ticket.class, "ticketSeq", ticket);
-      ticket.setTicketSeq(ticketSeq);
-    }
   }
 
   /**
@@ -251,25 +222,6 @@ public class TicketServiceImpl implements TicketService {
     }
   }
 
-  /** Ticket assign to the current user. */
-  @Override
-  @Transactional
-  public void assignToMeTicket(Long id, List<?> ids) {
-
-    if (id != null) {
-      Ticket ticket = ticketRepo.find(id);
-      ticket.setAssignedToUser(AuthUtils.getUser());
-      ticketRepo.save(ticket);
-
-    } else if (!ids.isEmpty()) {
-
-      for (Ticket ticket : ticketRepo.all().filter("id in ?1", ids).fetch()) {
-        ticket.setAssignedToUser(AuthUtils.getUser());
-        ticketRepo.save(ticket);
-      }
-    }
-  }
-
   @Override
   public Long computeDuration(Ticket ticket) {
     if (ticket.getStartDateT() != null
@@ -301,30 +253,5 @@ public class TicketServiceImpl implements TicketService {
     }
 
     return ticket.getStartDateT();
-  }
-
-  @Override
-  public boolean isNewTicket(Ticket ticket) {
-
-    return ticket.getTicketStatus() != null
-        && ticket.getTicketStatus().equals(ticketStatusService.findDefaultStatus());
-  }
-
-  @Override
-  public boolean isInProgressTicket(Ticket ticket) {
-    return ticket.getTicketStatus() != null
-        && ticket.getTicketStatus().equals(ticketStatusService.findOngoingStatus());
-  }
-
-  @Override
-  public boolean isResolvedTicket(Ticket ticket) {
-    return ticket.getTicketStatus() != null
-        && ticket.getTicketStatus().equals(ticketStatusService.findResolvedStatus());
-  }
-
-  @Override
-  public boolean isClosedTicket(Ticket ticket) {
-    return ticket.getTicketStatus() != null
-        && ticket.getTicketStatus().equals(ticketStatusService.findClosedStatus());
   }
 }

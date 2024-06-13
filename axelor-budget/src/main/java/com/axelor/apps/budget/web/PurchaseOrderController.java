@@ -75,18 +75,19 @@ public class PurchaseOrderController {
     }
   }
 
-  public void computePurchaseOrderBudgetDistributionSumAmount(
+  public void computePurchaseOrderBudgetRemainingAmountToAllocate(
       ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       if (purchaseOrder != null
           && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-        PurchaseOrderLineBudgetService purchaseOrderLineBudgetService =
-            Beans.get(PurchaseOrderLineBudgetService.class);
+        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
         for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-          purchaseOrderLineBudgetService.computeBudgetDistributionSumAmount(
-              purchaseOrderLine, purchaseOrder);
+          purchaseOrderLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  purchaseOrderLine.getBudgetDistributionList(),
+                  purchaseOrderLine.getCompanyExTaxTotal()));
         }
         response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
       }

@@ -31,10 +31,12 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Template;
 import com.google.inject.servlet.RequestScoped;
@@ -734,6 +736,50 @@ public class AccountConfigService {
           I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_PARTNER_ACCOUNT),
           accountConfig.getCompany().getName());
     }
+    return account;
+  }
+
+  public PrintingTemplate getInvoicePrintTemplate(Company company) throws AxelorException {
+    PrintingTemplate invoicePrintTemplate = getAccountConfig(company).getInvoicePrintTemplate();
+    if (ObjectUtils.isEmpty(invoicePrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return invoicePrintTemplate;
+  }
+
+  public Account getBillOfExchReceivAccount(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getBillOfExchReceivAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_BILL_OF_EXCHANGE_RECEIV_ACCOUNT),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getBillOfExchReceivAccount();
+  }
+
+  public Account getForeignExchangeAccount(AccountConfig accountConfig, boolean isGainAccount)
+      throws AxelorException {
+    Account account =
+        isGainAccount
+            ? accountConfig.getForeignExchangeGainsAccount()
+            : accountConfig.getForeignExchangeLossesAccount();
+
+    if (account == null) {
+      String message =
+          isGainAccount
+              ? I18n.get(
+                  AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT)
+              : I18n.get(
+                  AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_LOSSES_ACCOUNT);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          message,
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+
     return account;
   }
 }

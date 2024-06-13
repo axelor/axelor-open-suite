@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -51,7 +52,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
@@ -61,6 +62,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.app.service.AppService;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -74,15 +76,18 @@ public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
   protected AnalyticLineModelService analyticLineModelService;
+  protected TaxService taxService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
   public IntercoServiceImpl(
       PurchaseConfigService purchaseConfigService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      TaxService taxService) {
     this.purchaseConfigService = purchaseConfigService;
     this.analyticLineModelService = analyticLineModelService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -273,7 +278,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setPriceDiscounted(priceDiscounted);
 
     // tax
-    purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
+    purchaseOrderLine.setTaxLineSet(Sets.newHashSet(saleOrderLine.getTaxLineSet()));
 
     // analyticalDistribution
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
@@ -310,7 +315,8 @@ public class IntercoServiceImpl implements IntercoService {
 
     // compute price discounted
     BigDecimal priceDiscounted =
-        Beans.get(SaleOrderLineService.class).computeDiscount(saleOrderLine, saleOrder.getInAti());
+        Beans.get(SaleOrderLineComputeService.class)
+            .computeDiscount(saleOrderLine, saleOrder.getInAti());
     saleOrderLine.setPriceDiscounted(priceDiscounted);
 
     // delivery
@@ -318,7 +324,7 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setEstimatedDeliveryDate(purchaseOrderLine.getEstimatedReceiptDate());
 
     // tax
-    saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
+    saleOrderLine.setTaxLineSet(Sets.newHashSet(purchaseOrderLine.getTaxLineSet()));
 
     // analyticDistribution
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);

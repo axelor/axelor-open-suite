@@ -202,9 +202,15 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_STATEMENT_NOT_MATCHING = /*$$(*/
       "Current bank statement's initial balance does not match previous bank statement's final balance" /*)*/;
   public static final String BANK_STATEMENT_INCOHERENT_BALANCE = /*$$(*/
-      "The balances of the bank statement are incoherent and are not following. The bankStatement file can't be imported." /*)*/;
+      "Opening and closing balance don't match with the sum of movements." /*)*/;
   public static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
       "Current bank statement doesn't contain an initial line" /*)*/;
+
+  public static final String BANK_STATEMENT_NO_FINAL_LINE_ON_IMPORT = /*$$(*/
+      "Current bank statement doesn't contain a final line" /*)*/;
+
+  public static final String BANK_STATEMENT_IMPORT_ERROR = /*$$(*/
+      "Error while reading the csv file. Make sure that decimal values use a dot and not a comma." /*)*/;
 
   /*
    * Batch direct debit

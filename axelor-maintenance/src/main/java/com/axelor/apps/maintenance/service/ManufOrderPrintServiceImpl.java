@@ -19,18 +19,18 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.utils.PdfHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -49,18 +49,18 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
 
   protected AppBaseService appBaseService;
   protected ProductionConfigService productionConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
   protected ManufOrderRepository manufOrderRepository;
 
   @Inject
   public ManufOrderPrintServiceImpl(
       AppBaseService appBaseService,
       ProductionConfigService productionConfigService,
-      BirtTemplateService birtTemplateService,
+      PrintingTemplatePrintService printingTemplatePrintService,
       ManufOrderRepository manufOrderRepository) {
     this.appBaseService = appBaseService;
     this.productionConfigService = productionConfigService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
     this.manufOrderRepository = manufOrderRepository;
   }
 
@@ -89,44 +89,33 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
           I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
     String fileName = getManufOrdersFilename();
-    return PdfHelper.mergePdfToFileLink(printedManufOrders, fileName);
+    return PrintingTemplateHelper.mergeToFileLink(printedManufOrders, fileName);
   }
 
   @Override
   public String printManufOrder(ManufOrder manufOrder) throws AxelorException {
-    String fileName = getFileName(manufOrder);
-    return PdfHelper.getFileLinkFromPdfFile(print(manufOrder), fileName);
-  }
-
-  protected File print(ManufOrder manufOrder) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(manufOrder);
-    return reportSettings.generate().getFile();
+    return PrintingTemplateHelper.getFileLink(print(manufOrder));
   }
 
   @Override
-  public ReportSettings prepareReportSettings(ManufOrder manufOrder) throws AxelorException {
+  public File print(ManufOrder manufOrder) throws AxelorException {
     manufOrder = manufOrderRepository.find(manufOrder.getId());
     String title = getFileName(manufOrder);
     Company company = manufOrder.getCompany();
-    BirtTemplate maintenanceManufOrderBirtTemplate = null;
+    PrintingTemplate maintenanceManufOrderPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
-      maintenanceManufOrderBirtTemplate =
+      maintenanceManufOrderPrintTemplate =
           productionConfigService
               .getProductionConfig(company)
-              .getMaintenanceManufOrderBirtTemplate();
+              .getMaintenanceManufOrderPrintTemplate();
     }
-    if (maintenanceManufOrderBirtTemplate == null) {
+    if (maintenanceManufOrderPrintTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return birtTemplateService.generate(
-        maintenanceManufOrderBirtTemplate,
-        manufOrder,
-        null,
-        title,
-        maintenanceManufOrderBirtTemplate.getAttach(),
-        ReportSettings.FORMAT_PDF);
+    return printingTemplatePrintService.getPrintFile(
+        maintenanceManufOrderPrintTemplate, new PrintingGenFactoryContext(manufOrder), title);
   }
 
   @Override
@@ -136,17 +125,11 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
         + appBaseService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + ReportSettings.FORMAT_PDF;
+            .format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 
   @Override
   public String getFileName(ManufOrder manufOrder) {
-    return I18n.get("Manufacturing order")
-        + " "
-        + manufOrder.getManufOrderSeq()
-        + "."
-        + ReportSettings.FORMAT_PDF;
+    return I18n.get("Manufacturing order") + " " + manufOrder.getManufOrderSeq();
   }
 }

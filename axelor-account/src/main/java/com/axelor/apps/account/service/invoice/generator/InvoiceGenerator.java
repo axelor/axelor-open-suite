@@ -25,11 +25,10 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -47,11 +46,11 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -265,17 +264,10 @@ public abstract class InvoiceGenerator {
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    int atiChoice = accountConfig.getInvoiceInAtiSelect();
-
     if (inAti == null) {
       invoice.setInAti(accountConfigService.getInvoiceInAti(accountConfig));
-    } else if (atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT
-        || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT) {
-      invoice.setInAti(inAti);
-    } else if (atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS) {
-      invoice.setInAti(true);
     } else {
-      invoice.setInAti(false);
+      invoice.setInAti(inAti);
     }
     if (companyBankDetails == null) {
       fillCompanyBankDetails(accountingSituation, accountConfig);

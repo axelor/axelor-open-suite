@@ -13,7 +13,8 @@
     type="com.axelor.apps.sale.db.SaleOrderLine">
     <bind to="unit" column="unit" search="self.importId = :unit_importId"/>
     <bind to="product" column="product_importId" search="self.importId = :product_importId"/>
-    <bind to="taxLine" column="taxLine_importId" search="self.importId = :taxLine_importId"/>
+    <bind search="self.importId in :taxLineSet" to="taxLineSet" column="taxLineSet"
+      eval="taxLineSet.split('\\|') as List"/>
   </input>
 
 </csv-inputs>

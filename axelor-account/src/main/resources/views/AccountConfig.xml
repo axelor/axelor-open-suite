@@ -194,9 +194,12 @@
 
         </panel>
         <panel name="managePeriodPanel" title="Period closure" colSpan="12">
-          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
-          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
-          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+            placeholder="None"/>
+          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+            placeholder="None"/>
+          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+            placeholder="None"/>
         </panel>
         <panel name="reconcileDifferencesPanel" title="Reconcile differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
@@ -207,6 +210,15 @@
           <field name="cashPositionVariationCreditAccount"
             domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
             form-view="account-form" requiredIf="thresholdDistanceFromRegulation != 0"/>
+        </panel>
+        <panel name="foreignExchangeGainsLossesPanel" title="Foreign exchange gains/losses"
+          colSpan="12">
+          <field name="foreignExchangeGainsAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
+          <field name="foreignExchangeLossesAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
         </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
           colSpan="12">
@@ -272,6 +284,7 @@
         <field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
         <field name="invoiceInAtiSelect"/>
         <field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
+        <field name="isInvoiceCoefficientEnabled" widget="boolean-switch"/>
         <field name="invoiceAutomaticMail" widget="boolean-switch"/>
         <field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail"
           showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
@@ -510,9 +523,10 @@
         <field name="$isCanNew" type="boolean" hidden="true"/>
       </panel>
       <panel name="printingsPanel" title="Printings" colSpan="12">
-        <field name="invoiceBirtTemplate"/>
-        <field name="purchaseInvoicesDetailsBirtTemplate"/>
-        <field name="chequeDepositSlipBirtTemplate"/>
+        <field name="invoicePrintTemplate"/>
+        <field name="chequeDepositSlipPrintTemplate"/>
+        <field name="saleInvoicesDetailsPrintTemplate"/>
+        <field name="purchaseInvoicesDetailsPrintTemplate"/>
       </panel>
     </panel-tabs>
 

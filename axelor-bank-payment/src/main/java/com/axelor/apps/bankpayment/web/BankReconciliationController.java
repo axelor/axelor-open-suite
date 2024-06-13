@@ -263,16 +263,13 @@ public class BankReconciliationController {
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      String domain =
+      response.setAttr(
+          "bankDetails",
+          "domain",
           Beans.get(BankDetailsService.class)
               .getActiveCompanyBankDetails(
-                  bankReconciliation.getCompany(), bankReconciliation.getCurrency());
-      // if nothing was found for the domain, we set it at a default value.
-      if (domain.equals("")) {
-        response.setAttr("bankDetails", "domain", "self.id IN (0)");
-      } else {
-        response.setAttr("bankDetails", "domain", domain);
-      }
+                  bankReconciliation.getCompany(), bankReconciliation.getCurrency()));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -426,8 +423,7 @@ public class BankReconciliationController {
       }
 
       actionViewBuilder.add("form", "move-line-form");
-      actionViewBuilder.domain(
-          bankReconciliationQueryService.getRequestMoveLines(bankReconciliation));
+      actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines());
       if (bankReconciliation.getCompany() == null) {
         return;
       }
