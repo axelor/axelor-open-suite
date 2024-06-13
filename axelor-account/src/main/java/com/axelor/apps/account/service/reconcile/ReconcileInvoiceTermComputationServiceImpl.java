@@ -93,13 +93,6 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
     reconcileCheckService.checkCurrencies(debitMoveLine, creditMoveLine);
 
-    if (reconcile.getForeignExchangeMove() != null
-        && creditInvoice == null
-        && debitInvoice == null) {
-      creditInvoice = creditMove.getInvoice() != null ? creditMove.getInvoice() : null;
-      debitInvoice = debitMove.getInvoice() != null ? debitMove.getInvoice() : null;
-    }
-
     this.updatePayment(
         reconcile,
         debitMoveLine,
@@ -144,29 +137,19 @@ public class ReconcileInvoiceTermComputationServiceImpl
         }
       }
 
-      if (moveLine.getAccount().getUseForPartnerBalance()
+      if (invoicePayment == null
+          && moveLine.getAccount().getUseForPartnerBalance()
           && otherMoveLine.getAccount().getUseForPartnerBalance()) {
+
         BigDecimal invoicePaymentAmount = amount;
         if (!reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove)) {
           invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, false);
         }
 
-        InvoicePayment foreignExchangePayment =
-            invoicePaymentRepository.findByMove(reconcile.getForeignExchangeMove()).fetchOne();
-        if (foreignExchangePayment == null
-            && reconcile.getForeignExchangeMove() != null
-            && invoicePayment != null
-            && !reconcile.equals(invoicePayment.getReconcile())) {
-          invoicePayment =
-              invoicePaymentCreateService.createInvoicePayment(
-                  invoice, invoicePaymentAmount, reconcile.getForeignExchangeMove());
-          invoicePayment.setReconcile(reconcile);
-        } else if (invoicePayment == null) {
-          invoicePayment =
-              invoicePaymentCreateService.createInvoicePayment(
-                  invoice, invoicePaymentAmount, otherMove);
-          invoicePayment.setReconcile(reconcile);
-        }
+        invoicePayment =
+            invoicePaymentCreateService.createInvoicePayment(
+                invoice, invoicePaymentAmount, otherMove);
+        invoicePayment.setReconcile(reconcile);
       }
     } else if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
       amount = this.getTotal(moveLine, otherMoveLine, amount, false);

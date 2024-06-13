@@ -34,7 +34,6 @@ public class UnreconcileServiceImpl implements UnreconcileService {
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected MoveLineTaxService moveLineTaxService;
   protected PaymentMoveLineDistributionService paymentMoveLineDistributionService;
-  protected ForeignExchangeGapService foreignExchangeGapService;
   protected ReconcileRepository reconcileRepository;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoiceTermPaymentRepository invoiceTermPaymentRepository;
@@ -48,7 +47,6 @@ public class UnreconcileServiceImpl implements UnreconcileService {
       InvoicePaymentCancelService invoicePaymentCancelService,
       MoveLineTaxService moveLineTaxService,
       PaymentMoveLineDistributionService paymentMoveLineDistributionService,
-      ForeignExchangeGapService foreignExchangeGapService,
       ReconcileRepository reconcileRepository,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository) {
@@ -59,7 +57,6 @@ public class UnreconcileServiceImpl implements UnreconcileService {
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.moveLineTaxService = moveLineTaxService;
     this.paymentMoveLineDistributionService = paymentMoveLineDistributionService;
-    this.foreignExchangeGapService = foreignExchangeGapService;
     this.reconcileRepository = reconcileRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoiceTermPaymentRepository = invoiceTermPaymentRepository;
@@ -99,7 +96,6 @@ public class UnreconcileServiceImpl implements UnreconcileService {
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
-    this.reverseForeignExchangeMove(reconcile);
     if (invoice != null
         && invoice.getSubrogationRelease() != null
         && invoice.getSubrogationRelease().getStatusSelect()
@@ -146,9 +142,5 @@ public class UnreconcileServiceImpl implements UnreconcileService {
       return;
     }
     paymentMoveLineDistributionService.reversePaymentMoveLineDistributionList(reconcile);
-  }
-
-  protected void reverseForeignExchangeMove(Reconcile reconcile) throws AxelorException {
-    foreignExchangeGapService.unreconcileForeignExchangeMove(reconcile);
   }
 }

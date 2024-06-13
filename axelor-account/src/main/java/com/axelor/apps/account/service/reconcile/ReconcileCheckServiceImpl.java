@@ -87,24 +87,16 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    BigDecimal foreignExchangeAmount = this.getForeignExchangeAmount(reconcile);
-    if ((currencyScaleService.isGreaterThan(
+    if (currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
-            creditMoveLine
-                .getCredit()
-                .subtract(creditMoveLine.getAmountPaid())
-                .add(foreignExchangeAmount),
+            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
             creditMoveLine,
             false)
         || currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
-            debitMoveLine
-                .getDebit()
-                .subtract(debitMoveLine.getAmountPaid())
-                .add(foreignExchangeAmount),
+            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
             debitMoveLine,
-            false))) {
-
+            false)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -198,18 +190,4 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
         && it.getAccount().getIsTaxAuthorizedOnMoveLine();
   }
 
-  protected BigDecimal getForeignExchangeAmount(Reconcile reconcile) {
-    BigDecimal foreignExchangeAmount = BigDecimal.ZERO;
-    if (reconcile.getForeignExchangeMove() != null) {
-      foreignExchangeAmount =
-          reconcile.getForeignExchangeMove().getMoveLineList().stream()
-              .map(MoveLine::getDebit)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-      if (foreignExchangeAmount.compareTo(reconcile.getAmount()) == 0) {
-        return BigDecimal.ZERO;
-      }
-    }
-    return foreignExchangeAmount;
-  }
 }
