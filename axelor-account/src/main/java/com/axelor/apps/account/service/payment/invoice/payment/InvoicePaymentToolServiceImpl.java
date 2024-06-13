@@ -53,6 +53,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -155,13 +156,40 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                       .getFinancialDiscountAmount()
                       .add(invoicePayment.getFinancialDiscountTaxAmount()));
         }
-        amountPaid =
-            amountPaid.add(
-                currencyService.getAmountCurrencyConvertedAtDate(
-                    invoicePayment.getCurrency(),
-                    invoiceCurrency,
-                    paymentAmount,
-                    invoicePayment.getPaymentDate()));
+
+        if (currencyService.isSameCurrencyRate(
+            invoice.getInvoiceDate(),
+            invoicePayment.getPaymentDate(),
+            invoicePayment.getCurrency(),
+            invoiceCurrency)) {
+          BigDecimal computedPaidAmount = paymentAmount;
+          if (!Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)) {
+            BigDecimal currencyRate =
+                invoice
+                    .getCompanyInTaxTotal()
+                    .divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP);
+            computedPaidAmount =
+                Objects.equals(invoiceCurrency, invoice.getCompany().getCurrency())
+                    ? currencyService.getAmountCurrencyConvertedAtDate(
+                        invoicePayment.getCurrency(),
+                        invoiceCurrency,
+                        paymentAmount,
+                        invoicePayment.getPaymentDate())
+                    : paymentAmount.divide(
+                        currencyRate,
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP);
+          }
+          amountPaid = amountPaid.add(computedPaidAmount);
+        } else {
+          amountPaid =
+              amountPaid.add(
+                  currencyService.getAmountCurrencyConvertedAtDate(
+                      invoicePayment.getCurrency(),
+                      invoiceCurrency,
+                      paymentAmount,
+                      invoicePayment.getPaymentDate()));
+        }
       }
     }
 
@@ -265,21 +293,37 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       List<InvoiceTerm> invoiceTermList,
       LocalDate date,
       boolean manualChange,
-      Currency paymentCurrency) {
+      Currency paymentCurrency)
+      throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceTermList)) {
       return BigDecimal.ZERO;
     }
 
-    boolean isCompanyCurrency =
-        paymentCurrency.equals(invoiceTermList.get(0).getCompany().getCurrency());
-    return invoiceTermList.stream()
-        .map(
-            it ->
-                manualChange
-                    ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
-                    : isCompanyCurrency ? it.getCompanyAmountRemaining() : it.getAmountRemaining())
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+    Company company = invoiceTermList.get(0).getCompany();
+    Currency currency = invoiceTermList.get(0).getCurrency();
+
+    boolean isCompanyCurrency = company != null && paymentCurrency.equals(company.getCurrency());
+    boolean isTermMonoCurrency = company != null && Objects.equals(company.getCurrency(), currency);
+
+    BigDecimal amountRemaining =
+        invoiceTermList.stream()
+            .map(
+                it ->
+                    manualChange
+                        ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
+                        : isCompanyCurrency
+                            ? it.getCompanyAmountRemaining()
+                            : it.getAmountRemaining())
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (isTermMonoCurrency && !isCompanyCurrency) {
+      amountRemaining =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              currency, paymentCurrency, amountRemaining, date);
+    }
+
+    return amountRemaining;
   }
 
   @Override
