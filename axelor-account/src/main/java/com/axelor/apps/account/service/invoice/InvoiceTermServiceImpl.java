@@ -681,10 +681,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               currency,
               invoiceTerm.getCurrency(),
               invoiceTermPayment.getCompanyPaidAmount(),
-              Optional.ofNullable(invoicePayment)
-                  .map(InvoicePayment::getInvoice)
-                  .map(Invoice::getInvoiceDate)
-                  .orElse(null));
+              Optional.ofNullable(invoicePayment).map(InvoicePayment::getPaymentDate).orElse(null));
     }
 
     return paidAmount;

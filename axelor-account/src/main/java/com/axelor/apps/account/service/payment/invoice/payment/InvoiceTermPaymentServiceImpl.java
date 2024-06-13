@@ -318,7 +318,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             currencyService.getCurrencyConversionRate(
                 invoicePayment.getCompanyCurrency(),
                 invoicePayment.getCurrency(),
-                invoicePayment.getPaymentDate());
+                invoicePayment.getInvoice().getInvoiceDate());
       } else {
         if (!currencyService.isSameCurrencyRate(
             invoice.getInvoiceDate(),
@@ -329,7 +329,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
               currencyService.getCurrencyConversionRate(
                   invoicePayment.getCompanyCurrency(),
                   invoicePayment.getCurrency(),
-                  invoicePayment.getPaymentDate());
+                  invoicePayment.getInvoice().getInvoiceDate());
         } else {
           ratio =
               invoiceTerm
