@@ -24,7 +24,7 @@
       <panel name="menusConfig" title="Menus config" hidden="true"
         hideIf="!isCustomizeMenuEnabled">
         <field name="menus" onSelect="action-mobile-config-attrs-menus-domain"
-          canSelect="true" canEdit="false" canNew="false" colSpan="12"/>
+          canSelect="true" canNew="false" colSpan="12"/>
       </panel>
     </panel-tabs>
 

@@ -7,7 +7,7 @@
     model="com.axelor.apps.mobilesettings.db.MobileMenu">
     <field name="technicalName"/>
     <field name="name" readonly="true"/>
-    <field name="authorizedRoles"/>
+    <field name="authorizedRoles" widget="TagSelect"/>
     <field name="menuOrder"/>
   </grid>
 

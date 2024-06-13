@@ -226,8 +226,9 @@ public class MobileSettingsResponseComputeServiceImpl
       return mobileConfig.getMenus().stream()
           .filter(
               mobileMenu ->
-                  !UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
-                      AuthUtils.getUser(), mobileMenu.getAuthorizedRoles()))
+                  mobileMenu.getAuthorizedRoles().isEmpty()
+                      || UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+                          AuthUtils.getUser(), mobileMenu.getAuthorizedRoles()))
           .map(
               mobileMenu ->
                   new MobileMenuResponse(
