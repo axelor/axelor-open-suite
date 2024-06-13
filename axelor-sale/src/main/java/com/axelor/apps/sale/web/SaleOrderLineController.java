@@ -34,13 +34,13 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.db.mapper.Mapper;
@@ -62,7 +62,7 @@ public class SaleOrderLineController {
   public void compute(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     try {
       compute(response, saleOrder, saleOrderLine);
     } catch (Exception e) {
@@ -75,7 +75,7 @@ public class SaleOrderLineController {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     Map<String, BigDecimal> map =
         Beans.get(SaleOrderMarginService.class)
             .getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine);
@@ -93,9 +93,8 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       PricingService pricingService = Beans.get(PricingService.class);
-      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
 
       Product product = saleOrderLine.getProduct();
 
@@ -152,7 +151,7 @@ public class SaleOrderLineController {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
 
     response.setValue("taxEquiv", null);
 
@@ -171,7 +170,6 @@ public class SaleOrderLineController {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     SaleOrderLineDiscountService saleOrderLineDiscountService =
         Beans.get(SaleOrderLineDiscountService.class);
     SaleOrderLinePriceService saleOrderLinePriceService =
@@ -179,7 +177,7 @@ public class SaleOrderLineController {
     TaxService taxService = Beans.get(TaxService.class);
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
-    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
 
     if (saleOrder == null || saleOrderLine.getProduct() == null) {
       return;
@@ -316,7 +314,7 @@ public class SaleOrderLineController {
 
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
 
-    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
 
     if (saleOrder == null
         || saleOrderLine.getProduct() == null
@@ -373,8 +371,7 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
       BigDecimal maxDiscount =
           Beans.get(SaleOrderLineDiscountService.class)
               .computeMaxDiscount(saleOrder, saleOrderLine);
@@ -416,8 +413,7 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
       response.setAttr(
           "product",
           "domain",
@@ -432,8 +428,7 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
       Beans.get(SaleOrderLinePricingService.class).computePricingScale(saleOrderLine, saleOrder);
 
       response.setValues(saleOrderLine);

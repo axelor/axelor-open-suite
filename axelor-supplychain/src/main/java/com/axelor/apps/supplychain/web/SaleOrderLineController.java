@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -40,7 +41,6 @@ import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -104,8 +104,7 @@ public class SaleOrderLineController {
   public void checkStocks(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     try {
-      SaleOrder saleOrder =
-          Beans.get(SaleOrderLineServiceSupplyChainImpl.class).getSaleOrder(request.getContext());
+      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext());
       Product product = saleOrderLine.getProduct();
       StockLocation stockLocation = saleOrder.getStockLocation();
       Unit unit = saleOrderLine.getUnit();
@@ -128,7 +127,7 @@ public class SaleOrderLineController {
     SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
         Beans.get(SaleOrderLineServiceSupplyChain.class);
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLineServiceSupplyChain.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
 
     if (saleOrder != null) {
       if (saleOrderLine.getProduct() != null && saleOrder.getStockLocation() != null) {

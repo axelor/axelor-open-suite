@@ -28,7 +28,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -54,8 +53,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 
-public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
-    implements SaleOrderLineServiceSupplyChain {
+public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineServiceSupplyChain {
 
   protected AppSupplychainService appSupplychainService;
 

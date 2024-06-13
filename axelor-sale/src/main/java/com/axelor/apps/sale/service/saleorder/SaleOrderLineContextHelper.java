@@ -22,10 +22,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.rpc.Context;
 
-public class SaleOrderLineServiceImpl implements SaleOrderLineService {
+public class SaleOrderLineContextHelper {
 
-  @Override
-  public SaleOrder getSaleOrder(Context context) {
+  private SaleOrderLineContextHelper() {}
+
+  public static SaleOrder getSaleOrder(Context context) {
 
     Context parentContext = context.getParent();
 
