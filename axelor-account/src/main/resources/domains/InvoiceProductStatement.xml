@@ -8,7 +8,7 @@
   <entity name="InvoiceProductStatement">
     <string name="typeList" title="Type" selection="product.product.type.select"
       required="true"/>
-    <string name="statement" title="Statement" large="true"/>
+    <string name="statement" title="Statement" large="true" translatable="true"/>
     <many-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig"/>
   </entity>
 

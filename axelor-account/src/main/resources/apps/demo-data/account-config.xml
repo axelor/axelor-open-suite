@@ -368,4 +368,7 @@
       search="self.importId = :accountConfig_importId"/>
   </input>
 
+  <input file="meta_metaTranslation.csv" separator=";"
+    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language"/>
+
 </csv-inputs>
