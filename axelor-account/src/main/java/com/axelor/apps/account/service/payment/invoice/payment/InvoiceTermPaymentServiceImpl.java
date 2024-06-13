@@ -28,8 +28,12 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -67,15 +71,10 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       return invoicePayment;
     }
 
-    boolean isCompanyCurrency =
-        invoicePayment.getCurrency().equals(invoiceTermsToPay.get(0).getCompany().getCurrency());
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
       invoicePayment.addInvoiceTermPaymentListItem(
           createInvoiceTermPayment(
-              invoicePayment,
-              invoiceTerm,
-              invoiceTermService.getAmountRemaining(
-                  invoiceTerm, invoicePayment.getPaymentDate(), isCompanyCurrency)));
+              invoicePayment, invoiceTerm, invoiceTerm.getCompanyAmountRemaining()));
     }
 
     return invoicePayment;
@@ -128,9 +127,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     InvoiceTermPayment invoiceTermPayment;
     BigDecimal baseAvailableAmount = availableAmount;
     BigDecimal availableAmountUnchanged = availableAmount;
-
-    boolean isCompanyCurrency;
-
     if (invoicePayment != null) {
       invoicePayment.clearInvoiceTermPaymentList();
     }
@@ -140,23 +136,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       invoiceTermToPay =
           this.getInvoiceTermToPay(
               invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
+      BigDecimal invoiceTermCompanyAmount = invoiceTermToPay.getCompanyAmountRemaining();
 
-      isCompanyCurrency =
-          invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
-
-      BigDecimal invoiceTermAmount =
-          isCompanyCurrency
-              ? invoiceTermToPay.getAmountRemaining()
-              : invoiceTermToPay.getCompanyAmountRemaining();
-
-      if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
+      if (invoiceTermCompanyAmount.compareTo(availableAmount) >= 0) {
         invoiceTermPayment =
             createInvoiceTermPayment(invoicePayment, invoiceTermToPay, availableAmount);
         availableAmount = BigDecimal.ZERO;
       } else {
         invoiceTermPayment =
-            createInvoiceTermPayment(invoicePayment, invoiceTermToPay, invoiceTermAmount);
-        availableAmount = availableAmount.subtract(invoiceTermAmount);
+            createInvoiceTermPayment(invoicePayment, invoiceTermToPay, invoiceTermCompanyAmount);
+        availableAmount = availableAmount.subtract(invoiceTermCompanyAmount);
       }
 
       invoiceTermPaymentList.add(invoiceTermPayment);
@@ -213,8 +202,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       return invoiceTermsToPay.subList(counter, size).stream()
           .filter(
               it ->
-                  it.getAmount().compareTo(amount) == 0
-                      || it.getAmountRemaining().compareTo(amount) == 0)
+                  it.getCompanyAmount().compareTo(amount) == 0
+                      || it.getCompanyAmountRemaining().compareTo(amount) == 0)
           .findAny()
           .orElse(invoiceTermsToPay.get(counter));
     }
@@ -261,43 +250,52 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   protected InvoiceTermPayment initInvoiceTermPayment(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      BigDecimal paidAmount,
+      BigDecimal companyPaidAmount,
       boolean applyFinancialDiscount) {
     InvoiceTermPayment invoiceTermPayment = new InvoiceTermPayment();
+    try {
+      invoiceTermPayment.setInvoicePayment(invoicePayment);
+      invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
+      manageInvoiceTermFinancialDiscount(
+          invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
 
-    invoiceTermPayment.setInvoicePayment(invoicePayment);
-    invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
-    manageInvoiceTermFinancialDiscount(
-        invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
-
-    boolean isCompanyCurrency =
-        invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
-    invoiceTermPayment.setPaidAmount(
-        isCompanyCurrency ? paidAmount : this.computePaidAmount(invoiceTermToPay, paidAmount));
-    invoiceTermPayment.setCompanyPaidAmount(
-        isCompanyCurrency
-            ? this.computeCompanyPaidAmount(invoiceTermToPay, paidAmount)
-            : paidAmount);
+      invoiceTermPayment.setPaidAmount(
+          this.computePaidAmount(companyPaidAmount, invoicePayment, invoiceTermToPay));
+      invoiceTermPayment.setCompanyPaidAmount(companyPaidAmount);
+    } catch (AxelorException e) {
+      TraceBackService.trace(
+          new AxelorException(
+              e,
+              e.getCategory(),
+              I18n.get("Invoice") + " %s",
+              invoicePayment.getInvoice().getInvoiceId()),
+          ExceptionOriginRepository.INVOICE_ORIGIN);
+    }
 
     return invoiceTermPayment;
   }
 
-  protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
-    BigDecimal ratio =
-        invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+  protected BigDecimal computePaidAmount(
+      BigDecimal companyPaidAmount, InvoicePayment invoicePayment, InvoiceTerm invoiceTerm)
+      throws AxelorException {
+    Currency invoicePaymentCurrency = invoicePayment != null ? invoicePayment.getCurrency() : null;
+    Currency companyCurrency = invoiceTerm.getCompany().getCurrency();
 
-    return paidAmount
-        .multiply(ratio)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-  }
+    if (companyCurrency.equals(invoicePaymentCurrency)) {
+      return companyPaidAmount;
+    } else if (invoicePayment != null) {
+      BigDecimal ratio =
+          invoiceTerm
+              .getAmount()
+              .divide(
+                  invoiceTerm.getCompanyAmount(),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
 
-  protected BigDecimal computePaidAmount(InvoiceTerm invoiceTerm, BigDecimal companyPaidAmount) {
-    BigDecimal ratio =
-        invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
+      return companyPaidAmount.multiply(ratio);
+    }
 
-    return companyPaidAmount
-        .multiply(ratio)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    return BigDecimal.ZERO;
   }
 
   @Override
