@@ -124,7 +124,7 @@
           onClick="save,action-contract-method-waiting"/>
         <button name="ongoingBtn" title="Activate contract"
           showIf="id &amp;&amp; currentContractVersion.statusSelect == 2"
-          onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
+          onClick="action-contract-group-ongoing"/>
         <button if="__config__.app.getApp('contract')?.isRenewalManagement" name="renewBtn"
           title="Renew" hidden="true"
           showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
@@ -953,5 +953,11 @@
     <field name="$enableTradingNamesManagement"
       expr="eval: __config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-record>
+
+  <action-group name="action-contract-group-ongoing">
+    <action name="save"/>
+    <action name="action-contract-validate-on-going"/>
+    <action name="action-contract-method-ongoing"/>
+  </action-group>
 
 </object-views>
