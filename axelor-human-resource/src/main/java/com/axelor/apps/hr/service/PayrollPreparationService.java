@@ -48,6 +48,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PayrollPreparationService {
 
@@ -185,6 +186,9 @@ public class PayrollPreparationService {
     LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
     LocalDate toDate = payrollPreparation.getPeriod().getToDate();
     BigDecimal extraHoursNumber = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(payrollPreparation.getExtraHoursLineList())) {
+      payrollPreparation.getExtraHoursLineList().clear();
+    }
     for (ExtraHoursLine extraHoursLine :
         Beans.get(ExtraHoursLineRepository.class)
             .all()
@@ -203,6 +207,9 @@ public class PayrollPreparationService {
 
   public BigDecimal computeExpenseAmount(PayrollPreparation payrollPreparation) {
     BigDecimal expenseAmount = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(payrollPreparation.getExpenseList())) {
+      payrollPreparation.getExpenseList().clear();
+    }
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
             .all()
@@ -228,6 +235,9 @@ public class PayrollPreparationService {
 
   public BigDecimal computeLunchVoucherNumber(PayrollPreparation payrollPreparation) {
     BigDecimal lunchVoucherNumber = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(payrollPreparation.getLunchVoucherMgtLineList())) {
+      payrollPreparation.getLunchVoucherMgtLineList().clear();
+    }
     List<LunchVoucherMgtLine> lunchVoucherList =
         Beans.get(LunchVoucherMgtLineRepository.class)
             .all()
@@ -249,6 +259,9 @@ public class PayrollPreparationService {
 
   public BigDecimal computeEmployeeBonusAmount(PayrollPreparation payrollPreparation) {
     BigDecimal employeeBonusAmount = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(payrollPreparation.getEmployeeBonusMgtLineList())) {
+      payrollPreparation.getEmployeeBonusMgtLineList().clear();
+    }
     List<EmployeeBonusMgtLine> employeeBonusList =
         Beans.get(EmployeeBonusMgtLineRepository.class)
             .all()

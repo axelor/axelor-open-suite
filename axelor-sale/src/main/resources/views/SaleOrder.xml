@@ -397,13 +397,13 @@
 
         <field name="invoicedPartner"
           if="__config__.app.getApp('base')?.activatePartnerRelations" required="true"
-          hideIf="company == null" readonlyIf="statusSelect > 1"
+          hideIf="company == null || clientPartner == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-main-invoicing-address"
           onSelect="action-sale-order-supplychain-method-set-invoiced-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
         <field name="deliveredPartner"
           if="__config__.app.getApp('base')?.activatePartnerRelations" requiredIf="true"
-          hideIf="company == null" readonlyIf="statusSelect > 1"
+          hideIf="company == null || clientPartner == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-delivery-address"
           onSelect="action-sale-order-supplychain-method-set-delivered-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>

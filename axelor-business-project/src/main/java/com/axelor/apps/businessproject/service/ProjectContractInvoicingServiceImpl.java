@@ -24,65 +24,51 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
-import com.axelor.apps.contract.db.repo.ContractRepository;
-import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.AccountManagementContractService;
+import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.contract.service.ContractYearEndBonusService;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.google.inject.Inject;
 
-public class ProjectContractServiceImpl extends ContractServiceImpl {
+public class ProjectContractInvoicingServiceImpl extends ContractInvoicingServiceImpl {
 
   @Inject
-  public ProjectContractServiceImpl(
-      ContractLineService contractLineService,
-      ContractVersionService contractVersionService,
-      SequenceService sequenceService,
-      ContractVersionRepository contractVersionRepository,
+  public ProjectContractInvoicingServiceImpl(
       AppBaseService appBaseService,
-      ContractVersionService versionService,
+      ContractLineService contractLineService,
+      InvoiceRepository invoiceRepository,
+      ContractYearEndBonusService contractYearEndBonusService,
+      InvoiceService invoiceService,
       DurationService durationService,
       ContractLineRepository contractLineRepo,
-      ContractRepository contractRepository,
-      TaxService taxService,
-      InvoiceRepository invoiceRepository,
-      InvoiceService invoiceService,
-      AnalyticLineModelService analyticLineModelService,
-      ContractYearEndBonusService contractYearEndBonusService,
-      OpportunityRepository opportunityRepository,
-      ProductCompanyService productCompanyService,
       AccountManagementContractService accountManagementContractService,
-      FiscalPositionService fiscalPositionService) {
+      AnalyticLineModelService analyticLineModelService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService,
+      ProductCompanyService productCompanyService,
+      ContractVersionService versionService) {
     super(
-        contractLineService,
-        contractVersionService,
-        sequenceService,
-        contractVersionRepository,
         appBaseService,
-        versionService,
+        contractLineService,
+        invoiceRepository,
+        contractYearEndBonusService,
+        invoiceService,
         durationService,
         contractLineRepo,
-        contractRepository,
-        taxService,
-        invoiceRepository,
-        invoiceService,
-        analyticLineModelService,
-        contractYearEndBonusService,
-        opportunityRepository,
-        productCompanyService,
         accountManagementContractService,
-        fiscalPositionService);
+        analyticLineModelService,
+        fiscalPositionService,
+        taxService,
+        productCompanyService,
+        versionService);
   }
 
   @Override
