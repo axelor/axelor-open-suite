@@ -382,6 +382,11 @@
           <label
             title="A new record of fixed asset will be generated based on the split amount. Current fixed asset will be recalculated based on the remaining gross value amount."/>
         </panel>
+        <panel name="unitQtyPanel" showIf="splitTypeSelect == 3">
+          <field name="qty" title="Quantity to split" min="1" x-scale="0" type="decimal"/>
+          <label
+            title="X new records of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity."/>
+        </panel>
       </panel>
       <button name="splitBtn" title="Split" colSpan="4"
         readonlyIf="splitTypeSelect == null || splitTypeSelect &lt; 1"
