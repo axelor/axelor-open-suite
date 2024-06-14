@@ -799,7 +799,7 @@
     onLoad="action-stock-move-attrs-set-scale">
     <panel name="mainPanel" colSpan="12">
       <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of"
-        x-scale="2" x-precision="18" colSpan="6"/>
+        x-precision="18" colSpan="6"/>
       <button name="splitBtn" title="Split"
         onClick="action-stock-move-method-split-stock-move-lines-special" colSpan="6"/>
     </panel>
