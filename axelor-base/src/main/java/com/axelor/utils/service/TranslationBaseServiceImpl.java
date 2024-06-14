@@ -20,6 +20,7 @@ package com.axelor.utils.service;
 
 import com.axelor.apps.base.service.LocaleService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class TranslationBaseServiceImpl implements TranslationBaseService {
@@ -37,6 +38,7 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
   @Override
   public String getValueTranslation(String key) {
     String language = LocaleService.getLanguageFromLocaleCode(userService.getLocalizationCode());
-    return translationService.getValueTranslation(key, language);
+    String valueTranslation = translationService.getValueTranslation(key, language);
+    return key.equals(valueTranslation) ? I18n.get(key) : valueTranslation;
   }
 }

@@ -87,16 +87,24 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (currencyScaleService.isGreaterThan(
+    BigDecimal foreignExchangeAmount = this.getForeignExchangeAmount(reconcile);
+    if ((currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
-            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
+            creditMoveLine
+                .getCredit()
+                .subtract(creditMoveLine.getAmountPaid())
+                .add(foreignExchangeAmount),
             creditMoveLine,
             false)
         || currencyScaleService.isGreaterThan(
             reconcile.getAmount(),
-            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
+            debitMoveLine
+                .getDebit()
+                .subtract(debitMoveLine.getAmountPaid())
+                .add(foreignExchangeAmount),
             debitMoveLine,
-            false)) {
+            false))) {
+
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -176,15 +184,32 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (move.getMoveLineList().stream()
-        .anyMatch(
-            it ->
-                ObjectUtils.isEmpty(it.getTaxLineSet())
-                    && moveLineToolService.isMoveLineTaxAccount(it))) {
+    if (move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
           move.getReference());
     }
+  }
+
+  protected boolean isMissingTax(MoveLine it) {
+    return ObjectUtils.isEmpty(it.getTaxLineSet())
+        && moveLineToolService.isMoveLineTaxAccount(it)
+        && it.getAccount().getIsTaxAuthorizedOnMoveLine();
+  }
+
+  protected BigDecimal getForeignExchangeAmount(Reconcile reconcile) {
+    BigDecimal foreignExchangeAmount = BigDecimal.ZERO;
+    if (reconcile.getForeignExchangeMove() != null) {
+      foreignExchangeAmount =
+          reconcile.getForeignExchangeMove().getMoveLineList().stream()
+              .map(MoveLine::getDebit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (foreignExchangeAmount.compareTo(reconcile.getAmount()) == 0) {
+        return BigDecimal.ZERO;
+      }
+    }
+    return foreignExchangeAmount;
   }
 }

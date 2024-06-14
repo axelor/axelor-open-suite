@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="tax-equiv-grid" title="Taxes equivalences"
-    model="com.axelor.apps.account.db.TaxEquiv" orderBy="fromTaxSet.name">
+    model="com.axelor.apps.account.db.TaxEquiv">
     <field name="fromTaxSet" form-view="tax-form" grid-view="tax-grid" widget="TagSelect"/>
     <field name="toTaxSet" form-view="tax-form" grid-view="tax-grid" widget="TagSelect"/>
     <field name="reverseCharge" width="125px"/>

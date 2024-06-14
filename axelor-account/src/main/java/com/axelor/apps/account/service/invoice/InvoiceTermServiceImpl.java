@@ -90,6 +90,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected DMSFileRepository DMSFileRepo;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
+  protected AppBaseService appBaseService;
   protected InvoiceTermPfpUpdateService invoiceTermPfpUpdateService;
   protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
@@ -107,6 +108,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       DMSFileRepository DMSFileRepo,
       InvoiceTermPaymentService invoiceTermPaymentService,
       CurrencyService currencyService,
+      AppBaseService appBaseService,
       InvoiceTermPfpUpdateService invoiceTermPfpUpdateService,
       InvoiceTermToolService invoiceTermToolService,
       InvoiceTermPfpToolService invoiceTermPfpToolService) {
@@ -121,6 +123,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.DMSFileRepo = DMSFileRepo;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.currencyService = currencyService;
+    this.appBaseService = appBaseService;
     this.invoiceTermPfpUpdateService = invoiceTermPfpUpdateService;
     this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
@@ -686,12 +689,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     if (needConvert) {
+      // Date is null to get amount converted with today currency rate.
       paidAmount =
           currencyService.getAmountCurrencyConvertedAtDate(
               currency,
               invoiceTerm.getCurrency(),
               invoiceTermPayment.getCompanyPaidAmount(),
-              invoiceTerm.getDueDate());
+              Optional.ofNullable(invoicePayment)
+                  .map(InvoicePayment::getInvoice)
+                  .map(Invoice::getInvoiceDate)
+                  .orElse(null));
     }
 
     return paidAmount;
@@ -1495,7 +1502,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null) {
       return Optional.of(invoiceTerm.getInvoice()).map(Invoice::getCurrency).orElse(null);
     } else {
-      return Optional.of(invoiceTerm.getMoveLine())
+      return Optional.of(invoiceTerm)
+          .map(InvoiceTerm::getMoveLine)
           .map(MoveLine::getMove)
           .map(Move::getCurrency)
           .orElse(null);
@@ -1509,7 +1517,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           .map(Company::getCurrency)
           .orElse(null);
     } else {
-      return Optional.of(invoiceTerm.getMoveLine())
+      return Optional.of(invoiceTerm)
+          .map(InvoiceTerm::getMoveLine)
           .map(MoveLine::getMove)
           .map(Move::getCompany)
           .map(Company::getCurrency)
@@ -1548,7 +1557,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
-      BigDecimal currencyRate,
       Company company) {
     int companyScale = currencyScaleService.getCompanyCurrencyScale(company);
     BigDecimal moveLineAmountRemaining =
@@ -1561,10 +1569,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     BigDecimal invoiceCurrencyRate =
-        companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP);
+        currencyService.computeScaledExchangeRate(
+            companyAmountRemaining, invoiceTermAmountRemaining);
 
     if (!Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
-      if (BigDecimal.ONE.compareTo(invoiceCurrencyRate) != 0) {
+      if (BigDecimal.ONE.compareTo(invoiceCurrencyRate.abs()) != 0) {
         invoiceTermAmountRemaining =
             invoiceTermAmountRemaining.subtract(amountToPay).multiply(invoiceCurrencyRate);
       } else {
@@ -1637,6 +1646,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void payInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
+    if (ObjectUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (invoiceTerm != null) {
+        invoiceTerm.setIsPaid(true);
+        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+        invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
+        invoiceTermFinancialDiscountService.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+      }
+    }
+  }
+
   public List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm) {
     Move move =
         Optional.of(invoiceTerm).map(InvoiceTerm::getMoveLine).map(MoveLine::getMove).orElse(null);
@@ -1675,5 +1700,48 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     } else {
       return BigDecimal.ZERO;
     }
+  }
+
+  @Override
+  public void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+        || checkIfCustomizedInvoiceTerms(invoice)) {
+      return;
+    }
+    if (InvoiceToolService.isPurchase(invoice)) {
+      if (invoice.getOriginDate() != null) {
+        invoice = setDueDates(invoice, invoice.getOriginDate());
+      } else {
+        invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
+      }
+    } else {
+      if (invoice.getInvoiceDate() != null) {
+        invoice = setDueDates(invoice, invoice.getInvoiceDate());
+      } else {
+        invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
+      }
+    }
+    return;
+  }
+
+  @Override
+  public void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException {
+    if (invoice.getPaymentCondition() == null
+        || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      if (invoice.getInvoiceTermList() != null) {
+        invoice.getInvoiceTermList().clear();
+      } else {
+        invoice.setInvoiceTermList(new ArrayList<>());
+      }
+
+      return;
+    }
+
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+        || checkIfCustomizedInvoiceTerms(invoice)) {
+      return;
+    }
+
+    invoice = computeInvoiceTerms(invoice);
   }
 }

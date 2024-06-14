@@ -818,6 +818,10 @@
     <call class="com.axelor.apps.account.web.MoveController" method="showRelatedFixedAsset"/>
   </action-method>
 
+  <action-method name="action-move-method-journal-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectJournal"/>
+  </action-method>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-move-view-open-generate-reverse-wizard"

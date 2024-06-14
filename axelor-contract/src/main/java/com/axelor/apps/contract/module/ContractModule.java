@@ -19,6 +19,7 @@
 package com.axelor.apps.contract.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.contract.db.repo.ConsumptionLineManagementRepository;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
@@ -27,6 +28,8 @@ import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractLineManagementRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.service.AccountManagementContractService;
+import com.axelor.apps.contract.service.AccountManagementContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticLineModelFromContractService;
 import com.axelor.apps.contract.service.AnalyticLineModelFromContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl;
@@ -34,6 +37,10 @@ import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractFileService;
 import com.axelor.apps.contract.service.ContractFileServiceImpl;
+import com.axelor.apps.contract.service.ContractInvoicingService;
+import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
+import com.axelor.apps.contract.service.ContractLineContextToolService;
+import com.axelor.apps.contract.service.ContractLineContextToolServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractLineViewService;
@@ -99,5 +106,9 @@ public class ContractModule extends AxelorModule {
     bind(AnalyticLineModelFromContractService.class)
         .to(AnalyticLineModelFromContractServiceImpl.class);
     bind(ContractFileService.class).to(ContractFileServiceImpl.class);
+    bind(AccountManagementServiceAccountImpl.class).to(AccountManagementContractServiceImpl.class);
+    bind(AccountManagementContractService.class).to(AccountManagementContractServiceImpl.class);
+    bind(ContractLineContextToolService.class).to(ContractLineContextToolServiceImpl.class);
+    bind(ContractInvoicingService.class).to(ContractInvoicingServiceImpl.class);
   }
 }

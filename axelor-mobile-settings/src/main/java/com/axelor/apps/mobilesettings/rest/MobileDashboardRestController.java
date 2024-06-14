@@ -28,9 +28,7 @@ import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.Optional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -41,7 +39,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import wslite.json.JSONException;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/mobiledashboard")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

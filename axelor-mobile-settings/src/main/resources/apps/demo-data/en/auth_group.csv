@@ -1,0 +1,9 @@
+"importId";"code";"name";"navigation";"permissions";"technicalStaff";"roles";"isClient";"isSupplier";"menus_set"
+101;mobile.base;MOBILE BASE;;;"true";role.mobile.base;"false";"false";
+102;mobile.stock;MOBILE STOCK;;;"true";role.mobile.base|role.mobile.stock;"false";"false";
+103;mobile.manuf;MOBILE MANUFACTURING;;;"true";role.mobile.base|role.mobile.stock|role.mobile.manuf;"false";"false";
+104;mobile.crm;MOBILE CRM;;;"true";role.mobile.base|role.mobile.crm;"false";"false";
+105;mobile.helpdesk;MOBILE HELPDESK;;;"true";role.mobile.base|role.mobile.helpdesk;"false";"false";
+106;mobile.hr;MOBILE HR;;;"true";role.mobile.base|role.mobile.hr;"false";"false";
+107;mobile.quality;MOBILE QUALITY;;;"true";role.mobile.base|role.mobile.stock|role.mobile.manuf|role.mobile.crm|role.mobile.hr|role.mobile.quality;"false";"false";
+108;mobile.all;MOBILE;;;"true";role.mobile.base|role.mobile.stock|role.mobile.manuf|role.mobile.crm|role.mobile.helpdesk|role.mobile.hr|role.mobile.quality;"false";"false";

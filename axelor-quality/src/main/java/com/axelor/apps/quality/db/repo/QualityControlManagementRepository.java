@@ -28,7 +28,12 @@ import com.google.inject.Inject;
 
 public class QualityControlManagementRepository extends QualityControlRepository {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
+
+  @Inject
+  public QualityControlManagementRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   /**
    * Generate and set sequence in reference with predefined prefix.

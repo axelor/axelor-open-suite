@@ -176,6 +176,8 @@
   <action-group name="action-project-planning-time-group-default">
     <action name="action-project-planning-time-attrs-default"/>
     <action name="action-project-planning-time-method-get-company-config"/>
+    <action name="action-project-planning-time-method-get-default-planning-time"/>
+    <action name="action-project-planning-time-method-compute-planned-time"/>
   </action-group>
 
   <action-attrs name="action-project-planning-time-attrs-default">
@@ -291,6 +293,11 @@
     name="action-project-planning-time-method-compute-display-planned-time-restricted-domain">
     <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
       method="computeDisplayPlannedTimeRestrictedDomain"/>
+  </action-method>
+
+  <action-method name="action-project-planning-time-method-get-default-planning-time">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="getDefaultPlanningTime"/>
   </action-method>
 
 </object-views>

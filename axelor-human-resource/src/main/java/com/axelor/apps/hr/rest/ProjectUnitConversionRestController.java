@@ -14,9 +14,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -28,7 +26,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/project/conversion")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -69,7 +66,7 @@ public class ProjectUnitConversionRestController {
         ObjectFinder.find(Unit.class, requestBody.getStartingUnitId(), ObjectFinder.NO_VERSION);
     Unit endUnit =
         ObjectFinder.find(Unit.class, requestBody.getDestinationUnitId(), ObjectFinder.NO_VERSION);
-    BigDecimal value = BigDecimal.valueOf(requestBody.getStartingValue());
+    BigDecimal value = requestBody.getStartingValue();
 
     BigDecimal result =
         Beans.get(UnitConversionForProjectService.class)

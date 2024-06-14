@@ -34,6 +34,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
+import com.axelor.apps.hr.service.project.PlannedTimeValueService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
@@ -67,6 +68,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       TimesheetLineRepository timesheetLineRepository,
       AppProjectService appProjectService,
       ProjectConfigService projectConfigService,
+      PlannedTimeValueService plannedTimeValueService,
       UnitConversionForProjectService unitConversionForProjectService,
       UnitConversionRepository unitConversionRepository,
       AppBusinessProjectService appBusinessProjectService,
@@ -83,6 +85,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         timesheetLineRepository,
         appProjectService,
         projectConfigService,
+        plannedTimeValueService,
         iCalendarService,
         iCalendarEventRepository,
         unitConversionForProjectService,

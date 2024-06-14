@@ -18,14 +18,20 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.google.inject.Inject;
+import java.util.Collection;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermFilterBankPaymentServiceImpl extends InvoiceTermFilterServiceImpl
     implements InvoiceTermFilterBankPaymentService {
@@ -47,7 +53,22 @@ public class InvoiceTermFilterBankPaymentServiceImpl extends InvoiceTermFilterSe
       if (getAwaitingBankOrderLineOrigin(invoiceTerm) != null) {
         return false;
       }
+    } else if (invoiceTerm != null
+        && invoiceTerm.getInvoice() != null
+        && CollectionUtils.isNotEmpty(invoiceTerm.getInvoice().getInvoicePaymentList())) {
+      return invoiceTerm.getInvoice().getInvoicePaymentList().stream()
+          .filter(
+              it ->
+                  it.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING
+                      && (it.getBankOrder() == null
+                          || it.getBankOrder().getAccountingTriggerSelect()
+                              != PaymentModeRepository.ACCOUNTING_TRIGGER_NONE))
+          .map(InvoicePayment::getInvoiceTermPaymentList)
+          .flatMap(Collection::stream)
+          .map(InvoiceTermPayment::getInvoiceTerm)
+          .noneMatch(it -> it.getId().equals(invoiceTerm.getId()));
     }
+
     return super.isNotAwaitingPayment(invoiceTerm);
   }
 

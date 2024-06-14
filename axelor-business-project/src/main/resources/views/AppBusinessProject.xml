@@ -26,8 +26,12 @@
     <panel name="invoicingPanel" title="Invoicing" colSpan="12">
       <field name="productInvoicingProject" canEdit="false"/>
       <field name="enableToInvoiceTimesheet" widget="boolean-switch"/>
-      <field name="enableToInvoiceExpense" widget="boolean-switch"/>
-      <field name="automaticInvoicing" widget="boolean-switch"/>
+      <field name="enableToInvoiceExpense" widget="boolean-switch" colSpan="3"/>
+      <field name="isExpenseLineOnInvoiceGrouped" widget="boolean-switch"
+        showIf="enableToInvoiceExpense" colSpan="3"/>
+      <field name="groupingPeriodSelect"
+        showIf="enableToInvoiceExpense &amp;&amp; isExpenseLineOnInvoiceGrouped" colSpan="3"/>
+      <field name="automaticInvoicing" widget="boolean-switch" colSpan="3"/>
       <field name="preTaskStatusSet" widget="TagSelect"/>
       <field name="postTaskStatusSet" widget="TagSelect"/>
       <field name="excludeTaskInvoicing"/>
@@ -61,6 +65,15 @@
     <panel name="printingsPanel" title="Printings" colSpan="12">
       <field name="invoicingProjectAnnexPrintTemplate"/>
       <field name="invoicingAnnexPrintTemplate"/>
+      <field name="invoiceExpensePrintTemplate"/>
+    </panel>
+
+    <panel name="actionsPanel">
+      <button name="generateBusinessProjectConfigurationsBtn" colSpan="4"
+        title="Generate business project configurations"
+        onClick="action-business-project-group-generate-business-project-config"/>
+      <panel-dashlet name="businessProjectConfigPanel"
+        action="admin.root.conf.businessproject.config" colSpan="12"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -76,5 +89,23 @@
       if="!generateProjectOrder"/>
   </action-attrs>
 
+  <!-- ACTION VIEW -->
+  <action-view name="admin.root.conf.businessproject.config"
+    title="Business project configurations"
+    model="com.axelor.apps.businessproject.db.BusinessProjectConfig">
+    <view type="grid" name="business-project-config-grid"/>
+    <view type="form" name="business-project-config-form"/>
+  </action-view>
+
+  <action-group name="action-business-project-group-generate-business-project-config">
+    <action name="save"/>
+    <action name="action-business-project-method-generate-business-project-config"/>
+  </action-group>
+
+  <action-method
+    name="action-business-project-method-generate-business-project-config">
+    <call class="com.axelor.apps.businessproject.web.AppBusinessProjectController"
+      method="generateBusinessProjectConfigurations"/>
+  </action-method>
 
 </object-views>

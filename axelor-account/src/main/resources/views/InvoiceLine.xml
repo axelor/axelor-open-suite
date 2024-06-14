@@ -11,7 +11,6 @@
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="inTaxPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="coefficient"/>
     <field name="exTaxTotal" aggregate="sum"/>
@@ -179,7 +178,7 @@
         <field name="previousProgress" readonly="true"/>
         <field name="newProgress" readonly="true"/>
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
-          action="action-invoice-line-view-project-tasks" colSpan="12"/>
+          action="action-invoice-line-view-project-tasks" colSpan="12" showIf="id"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
         onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">

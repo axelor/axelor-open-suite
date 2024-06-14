@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
@@ -91,6 +92,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePrintService invoicePrintService,
       InvoiceTermPfpToolService invoiceTermPfpToolService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
@@ -111,6 +113,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceProductStatementService,
         templateMessageService,
         invoiceTermFilterService,
+        invoicePrintService,
         invoiceTermPfpToolService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;

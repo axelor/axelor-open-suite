@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -71,11 +72,12 @@ public class AccountingSituationGroupServiceImpl implements AccountingSituationG
   public Map<String, Map<String, Object>> getOnNewAttrsMap(
       AccountingSituation accountingSituation, Partner partner) throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    Company company = accountingSituation.getCompany();
 
     accountingSituationAttrsService.manageBankDetails(attrsMap);
-    accountingSituationAttrsService.managePfpValidatorUser(
-        accountingSituation.getCompany(), partner, attrsMap);
+    accountingSituationAttrsService.managePfpValidatorUser(company, partner, attrsMap);
     accountingSituationAttrsService.hideAccountsLinkToPartner(partner, attrsMap);
+    accountingSituationAttrsService.manageAnalyticAccountPanel(company, partner, attrsMap);
 
     return attrsMap;
   }

@@ -224,5 +224,8 @@ public interface MoveToolService {
 
   Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
 
+  List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException;
+
   List<InvoiceTerm> _getInvoiceTermList(Move move);
 }

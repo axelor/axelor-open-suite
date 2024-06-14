@@ -27,7 +27,7 @@ import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
-import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -43,16 +43,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class BatchContractInvoicing extends AbstractBatch {
 
   protected ContractRepository contractRepository;
-  protected ContractService contractService;
+  protected ContractInvoicingService contractInvoicingService;
   protected ContractBatchRepository contractBatchRepository;
 
   @Inject
   public BatchContractInvoicing(
       ContractRepository contractRepository,
-      ContractService contractService,
+      ContractInvoicingService contractInvoicingService,
       ContractBatchRepository contractBatchRepository) {
     this.contractRepository = contractRepository;
-    this.contractService = contractService;
+    this.contractInvoicingService = contractInvoicingService;
     this.contractBatchRepository = contractBatchRepository;
   }
 
@@ -103,11 +103,11 @@ public class BatchContractInvoicing extends AbstractBatch {
   @Transactional
   public void invoiceContracts(List<Contract> contractList) throws AxelorException {
     if (contractList.size() == 1) {
-      contractService.invoicingContract(contractList.get(0));
+      contractInvoicingService.invoicingContract(contractList.get(0));
     }
 
     if (contractList.size() > 1) {
-      contractService.invoicingContracts(contractList);
+      contractInvoicingService.invoicingContracts(contractList);
     }
   }
 

@@ -985,9 +985,12 @@
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+								{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
-							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{(typeSelect == 8 || typeSelect == 10) && <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect == 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect != 8 && typeSelect != 10 && typeSelect != 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 
 						{applyFinancialDiscount &&
@@ -1003,6 +1006,7 @@
 									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 									{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+									{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
 								</Box>
 								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
@@ -1120,7 +1124,7 @@
         readonlyIf="$reportType != 1"/>
       <field name="$localization" title="Localization" type="many-to-one"
         target="com.axelor.apps.base.db.Localization" showIf="$reportType ==1 || $reportType==3"/>
-      <button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close"
+      <button name="printBtn" title="Print" onClick="action-invoice-wizard-group-print"
         readonlyIf="$reportType==null || $invoicePrintTemplate == null"/>
     </panel>
   </form>
@@ -1321,9 +1325,12 @@
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+								{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
-							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{(typeSelect == 8 || typeSelect == 11) && <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect == 10 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect != 8 && typeSelect != 10 && typeSelect != 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 					</>
                 ]]>
@@ -1671,20 +1678,18 @@
 
   <action-group name="action-invoice-group-ventilate-button">
     <action name="action-invoice-group-before-ventilate"/>
-    <action name="action-invoice-method-ventilate"/>
     <action name="save"/>
+    <action name="action-invoice-method-ventilate"/>
   </action-group>
 
   <action-group name="action-invoice-group-before-ventilate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-validate-check-pfp-validator-user"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
-    <action name="save"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
   </action-group>
 
   <action-group name="action-invoice-group-pfp-validate">
@@ -1819,7 +1824,10 @@
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"
       if="company != null"/>
     <attribute name="hidden" for="inAti" expr="eval: true" if="company == null"/>
-
+    <attribute name="title" for="invoiceLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+    <attribute name="title" for="invoiceLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-display-line-coefficient">
@@ -2839,6 +2847,11 @@
   <action-group name="action-invoice-group-report-button">
     <action name="save"/>
     <action name="action-invoice-view-reports-wizard"/>
+  </action-group>
+
+  <action-group name="action-invoice-wizard-group-print">
+    <action name="action-invoice-group-report-print"/>
+    <action name="close"/>
   </action-group>
 
 </object-views>

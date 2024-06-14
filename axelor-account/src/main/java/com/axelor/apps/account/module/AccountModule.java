@@ -367,6 +367,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
@@ -385,6 +387,10 @@ import com.axelor.apps.account.service.period.PeriodControlService;
 import com.axelor.apps.account.service.period.PeriodControlServiceImpl;
 import com.axelor.apps.account.service.period.PeriodServiceAccount;
 import com.axelor.apps.account.service.period.PeriodServiceAccountImpl;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapService;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapServiceImpl;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsService;
+import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckService;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
@@ -706,6 +712,9 @@ public class AccountModule extends AxelorModule {
 
     bind(PaymentSessionValidateService.class).to(PaymentSessionValidateServiceImpl.class);
 
+    bind(PaymentSessionBillOfExchangeValidateService.class)
+        .to(PaymentSessionBillOfExchangeValidateServiceImpl.class);
+
     bind(PaymentSessionCancelService.class).to(PaymentSessionCancelServiceImpl.class);
 
     bind(PaymentSessionEmailService.class).to(PaymentSessionEmailServiceImpl.class);
@@ -924,6 +933,10 @@ public class AccountModule extends AxelorModule {
 
     bind(AdvancePaymentMoveLineCreateService.class)
         .to(AdvancePaymentMoveLineCreateServiceImpl.class);
+
+    bind(ForeignExchangeGapService.class).to(ForeignExchangeGapServiceImpl.class);
+
+    bind(ForeignExchangeGapToolsService.class).to(ForeignExchangeGapToolsServiceImpl.class);
 
     bind(InvoiceTermPfpUpdateService.class).to(InvoiceTermPfpUpdateServiceImpl.class);
 

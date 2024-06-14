@@ -113,6 +113,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoicePrintService invoicePrintService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
@@ -132,6 +133,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePrintService invoicePrintService,
       InvoiceTermPfpToolService invoiceTermPfpToolService) {
 
     this.validateFactory = validateFactory;
@@ -149,6 +151,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoicePrintService = invoicePrintService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
@@ -253,6 +256,26 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Transactional(rollbackOn = {Exception.class})
   protected void ventilateProcess(Invoice invoice) throws AxelorException {
+
+    this.checkPreconditions(invoice);
+    this.computeEstimatedPaymentDate(invoice);
+
+    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
+
+    ventilateFactory.getVentilator(invoice).process();
+
+    invoiceRepo.save(invoice);
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      invoicePrintService.printAndSave(
+          invoice,
+          InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
+          accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
+          null);
+    }
+  }
+
+  @Override
+  public void checkPreconditions(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -310,22 +333,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       throw new AxelorException(
           invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
-    }
-
-    this.computeEstimatedPaymentDate(invoice);
-
-    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
-
-    ventilateFactory.getVentilator(invoice).process();
-
-    invoiceRepo.save(invoice);
-    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
-      Beans.get(InvoicePrintService.class)
-          .printAndSave(
-              invoice,
-              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
-              accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
-              null);
     }
   }
 
