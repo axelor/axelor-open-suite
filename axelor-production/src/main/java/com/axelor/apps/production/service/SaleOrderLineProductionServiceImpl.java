@@ -1,20 +1,22 @@
-package com.axelor.apps.budget.service.saleorder;
+package com.axelor.apps.production.service;
 
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -26,16 +28,16 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
-public class SaleOrderLineGroupBudgetServiceImpl extends SaleOrderLineServiceSupplyChainImpl {
+public class SaleOrderLineProductionServiceImpl extends SaleOrderLineServiceSupplyChainImpl
+    implements SaleOrderLineProductionService {
 
-  protected BudgetToolsService budgetToolsService;
-  protected AppBudgetService appBudgetService;
+  protected AppProductionService appProductionService;
 
   @Inject
-  public SaleOrderLineGroupBudgetServiceImpl(
+  public SaleOrderLineProductionServiceImpl(
       CurrencyService currencyService,
       PriceListService priceListService,
       ProductMultipleQtyService productMultipleQtyService,
@@ -44,19 +46,20 @@ public class SaleOrderLineGroupBudgetServiceImpl extends SaleOrderLineServiceSup
       AccountManagementService accountManagementService,
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderService saleOrderService,
+      PricingService pricingService,
+      TaxService taxService,
+      SaleOrderMarginService saleOrderMarginService,
+      CurrencyScaleService currencyScaleService,
+      InternationalService internationalService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
-      PricingService pricingService,
-      TaxService taxService,
-      SaleOrderMarginService saleOrderMarginService,
       InvoiceLineRepository invoiceLineRepository,
       SaleInvoicingStateService saleInvoicingStateService,
       AnalyticLineModelService analyticLineModelService,
-      CurrencyScaleService currencyScaleService,
-      BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      BlockingService blockingService,
+      AppProductionService appProductionService) {
     super(
         currencyService,
         priceListService,
@@ -66,35 +69,47 @@ public class SaleOrderLineGroupBudgetServiceImpl extends SaleOrderLineServiceSup
         accountManagementService,
         saleOrderLineRepo,
         saleOrderService,
+        pricingService,
+        taxService,
+        saleOrderMarginService,
+        currencyScaleService,
+        internationalService,
         appAccountService,
         analyticMoveLineService,
         appSupplychainService,
         accountConfigService,
-        pricingService,
-        taxService,
-        saleOrderMarginService,
         invoiceLineRepository,
         saleInvoicingStateService,
         analyticLineModelService,
-        currencyScaleService);
-    this.budgetToolsService = budgetToolsService;
-    this.appBudgetService = appBudgetService;
+        blockingService);
+    this.appProductionService = appProductionService;
   }
 
   @Override
-  public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException {
+  public Map<String, Object> computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> saleOrderLineMap =
+        super.computeProductInformation(saleOrderLine, saleOrder);
+    saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine));
 
-    Map<String, BigDecimal> map = super.computeValues(saleOrder, saleOrderLine);
+    return saleOrderLineMap;
+  }
 
-    if (appBudgetService.isApp("budget")) {
-      saleOrderLine.setBudgetRemainingAmountToAllocate(
-          budgetToolsService.getBudgetRemainingAmountToAllocate(
-              saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
-      map.put(
-          "budgetRemainingAmountToAllocate", saleOrderLine.getBudgetRemainingAmountToAllocate());
+  @Override
+  public Map<String, Object> setBillOfMaterial(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    if (appProductionService.isApp("production")) {
+      Product product = saleOrderLine.getProduct();
+
+      if (product != null) {
+        if (product.getDefaultBillOfMaterial() != null) {
+          saleOrderLine.setBillOfMaterial(product.getDefaultBillOfMaterial());
+        } else if (product.getParentProduct() != null) {
+          saleOrderLine.setBillOfMaterial(product.getParentProduct().getDefaultBillOfMaterial());
+        }
+        saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
+      }
     }
-
-    return map;
+    return saleOrderLineMap;
   }
 }

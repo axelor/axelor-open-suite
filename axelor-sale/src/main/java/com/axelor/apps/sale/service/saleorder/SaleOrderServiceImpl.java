@@ -68,6 +68,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleConfigService saleConfigService;
   protected SaleOrderLineCreateService saleOrderLineCreateService;
+  protected SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService;
 
   @Inject
   public SaleOrderServiceImpl(
@@ -78,7 +79,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       SaleConfigService saleConfigService,
-      SaleOrderLineCreateService saleOrderLineCreateService) {
+      SaleOrderLineCreateService saleOrderLineCreateService,
+      SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService) {
     this.saleOrderLineService = saleOrderLineService;
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
@@ -87,6 +89,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleConfigService = saleConfigService;
     this.saleOrderLineCreateService = saleOrderLineCreateService;
+    this.saleOrderLineComplementaryProductService = saleOrderLineComplementaryProductService;
   }
 
   @Override
@@ -345,12 +348,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
           continue;
         }
         newComplementarySOLines.addAll(
-            saleOrderLineService.manageComplementaryProductSaleOrderLine(
+            saleOrderLineComplementaryProductService.manageComplementaryProductSaleOrderLine(
                 complementaryProduct, saleOrder, saleOrderLine));
       } else {
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
           newComplementarySOLines.addAll(
-              saleOrderLineService.manageComplementaryProductSaleOrderLine(
+              saleOrderLineComplementaryProductService.manageComplementaryProductSaleOrderLine(
                   complementaryProduct, saleOrder, saleOrderLine));
         }
       }
