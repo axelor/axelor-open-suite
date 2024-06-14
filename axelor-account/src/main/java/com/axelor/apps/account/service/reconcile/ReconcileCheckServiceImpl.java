@@ -189,5 +189,4 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
         && moveLineToolService.isMoveLineTaxAccount(it)
         && it.getAccount().getIsTaxAuthorizedOnMoveLine();
   }
-
 }
