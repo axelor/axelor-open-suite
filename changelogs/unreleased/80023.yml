@@ -1,3 +1,3 @@
 ---
-title: "BankReconciliation: Fixed a issue where move lines were not displayed even when they should"
+title: "Bank reconciliation: fixed an issue where move lines were not displayed even when they should."
 module: axelor-bank-payment
