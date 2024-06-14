@@ -622,7 +622,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     fixedAssetRepo.save(fixedAsset);
 
-    if (ObjectUtils.isEmpty(splittedFixedAssetList)) {
+    if (!ObjectUtils.isEmpty(splittedFixedAssetList)) {
       for (FixedAsset newFixedAsset : splittedFixedAssetList) {
         fixedAssetRepo.save(newFixedAsset);
       }
