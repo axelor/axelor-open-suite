@@ -34,8 +34,8 @@ import AssigneeSelection from '../form/AssigneeSelection';
 import Card from './Card';
 import { updateTask, getDMSFiles } from '../../Services/api';
 import { ConfirmationDialog, DatePicker } from '../../Components';
-import { TaskProgressSelect } from '../form/TaskComponents';
-import { getStatus, getCompletedStatus, translate } from '../../utils';
+import { TaskProgress } from '../form/TaskComponents';
+import { getStatus, translate } from '../../utils';
 import { useTaskEditor } from './Context';
 import 'moment/min/locales';
 import './css/react-context-menu.css';
@@ -331,7 +331,7 @@ const CardItem = React.forwardRef(function CardItem(
       if (isCompleted) {
         status = record.statusBeforeComplete;
       } else {
-        status = getCompletedStatus(selectedProject);
+        status = selectedProject?.completedTaskStatus;
       }
       let res = await updateTask({
         ...record,
@@ -507,7 +507,7 @@ const CardItem = React.forwardRef(function CardItem(
                     inputClassName={classes.inputClassName}
                     value={record.taskDate}
                     name="taskDate"
-                    label={translate('TaskEditor.taskDate')}
+                    label={translate('Start date')}
                     onChange={(value, e) => onColumnWidgetChange('taskDate', value, e)}
                   />
                 </div>
@@ -524,11 +524,10 @@ const CardItem = React.forwardRef(function CardItem(
                 {isShowProgress && (
                   <div className={classes.spacer}>
                     <FormControl variant="outlined" className={classes.formControl}>
-                      <TaskProgressSelect
-                        t={translate}
+                      <TaskProgress
                         className={classes.select}
-                        value={record.progressSelect}
-                        onChange={e => onColumnWidgetChange('progressSelect', e.target.value, e)}
+                        value={record.progress}
+                        onChange={(value, e) => onColumnWidgetChange('progress', value, e)}
                         size="small"
                       />
                     </FormControl>

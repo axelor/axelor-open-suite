@@ -1,0 +1,9 @@
+"importId";"name";"modelName";"statusSelect";"toAttach"
+"6";"Inventory PDF";"com.axelor.apps.stock.db.Inventory";"1";false
+"27";"StockLocation PDF";"com.axelor.apps.stock.db.StockLocation";"1";false
+"28";"StockMove";"com.axelor.apps.stock.db.StockMove";"2";false
+"71";"PickingStockMove";"com.axelor.apps.stock.db.StockMove";"1";false
+"72";"ConformityCertificate";"com.axelor.apps.stock.db.StockMove";"1";false
+"121";"Inventory XLSX";"com.axelor.apps.stock.db.Inventory";"1";false
+"122";"Inventory ODS";"com.axelor.apps.stock.db.Inventory";"1";false
+"123";"StockLocation XLSX";"com.axelor.apps.stock.db.StockLocation";"1";false

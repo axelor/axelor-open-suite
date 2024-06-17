@@ -280,4 +280,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
             dailyLimit,
             date.format(dateService.getDateFormat())));
   }
+
+  @Override
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    if (timesheetLine.getProduct() == null) {
+      return timesheetLine.getEmployee().getProduct();
+    }
+    return timesheetLine.getProduct();
+  }
 }

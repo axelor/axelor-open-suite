@@ -48,6 +48,9 @@ public final class ProductionExceptionMessage {
   public static final String BATCH_COMPUTE_VALUATION = /*$$(*/
       "* %s Computed work in progress valuation" /*)*/;
 
+  /** Batch Fill SOP real values */
+  public static final String BATCH_FILL_SOP = /*$$(*/ "* %s Filled SOP lines" /*)*/;
+
   public static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid" /*)*/;
 
   /** Bill of Materials Service */
@@ -84,6 +87,9 @@ public final class ProductionExceptionMessage {
 
   public static final String UNRECOGNIZED_CAPACITY_FOR_COMPANY_PRODUCTION_CONFIG = /*$$(*/
       "Unrecognized capacity for company %s production configuration" /*)*/;
+
+  public static final String PRODUCTION_RESIDUAL_STOCK_LOCATION_MISSING = /*$$(*/
+      "You must configure a residual products default stock location for company %s." /*)*/;
 
   /** Manuf Order Controller */
   public static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
@@ -302,11 +308,11 @@ public final class ProductionExceptionMessage {
 
   public static final String OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES =
       /*$$(*/
-      "No period has been found in the weekly planning for the operation order %s" /*)*/;
+      "No period has been found in the weekly planning for the manufacturing operation %s" /*)*/;
 
   public static final String OPERATION_ORDER_ALREADY_FINISHED =
       /*$$(*/
-      "The operation order is already finished and cannot be moved." /*)*/;
+      "The manufacturing operation is already finished and cannot be moved." /*)*/;
 
   public static final String GENERATE_MANUF_ORDER_BOM_MISSING_UNIT =
       /*$$(*/ "The unit of the bill of material %s is missing. Please correct it." /*)*/;
@@ -329,14 +335,14 @@ public final class ProductionExceptionMessage {
           /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders." /*)*/;
 
   public static final String PLAN_IS_BEFORE_TODAY_DATE =
-      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please adjust it." /*)*/;
+      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please adjust it. (Used date time %s)" /*)*/;
 
   public static final String INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION =
       /*$$(*/ "Invalid scheduling and capacity configuration." /*)*/;
 
   public static final String
       LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
-          "The last operation order planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
+          "The last manufacturing operation planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
 
   public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
       "There is no applicable bill of materials for %s" /*)*/;
@@ -358,4 +364,7 @@ public final class ProductionExceptionMessage {
 
   public static final String TOO_MANY_CALL_GETTING_END_DATE = /*$$(*/
       "Max loop call reached when trying to compute end date." /*)*/;
+
+  public static final String MANUF_ORDER_MISSING_COMPONENTS = /*$$(*/
+      "<b>Missing components</b> :<br/>%s" /*)*/;
 }

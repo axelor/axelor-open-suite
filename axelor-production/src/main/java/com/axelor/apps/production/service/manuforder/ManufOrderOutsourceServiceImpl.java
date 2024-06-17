@@ -41,6 +41,7 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
 
   protected ProdProcessOutsourceService prodProcessOutsourceService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
 
   protected StockMoveService stockMoveService;
   protected AppBaseService appBaseService;
@@ -52,12 +53,14 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
       ManufOrderStockMoveService manufOrderStockMoveService,
       StockMoveService stockMoveService,
       AppBaseService appBaseService,
-      ManufOrderRepository manufOrderRepository) {
+      ManufOrderRepository manufOrderRepository,
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     this.prodProcessOutsourceService = prodProcessOutsourceService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.stockMoveService = stockMoveService;
     this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
+    this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
   }
 
   @Override
@@ -143,7 +146,7 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
 
     // Generation stockMoveLine
     for (ProdProduct prodProduct : prodProductList) {
-      manufOrderStockMoveService._createStockMoveLine(
+      manufOrderCreateStockMoveLineService._createStockMoveLine(
           prodProduct,
           stockMove,
           StockMoveLineService.TYPE_OUT_PRODUCTIONS,

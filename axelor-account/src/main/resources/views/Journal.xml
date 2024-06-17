@@ -35,6 +35,8 @@
         onChange="action-journal-record-reset-valid-account-set,action-journal-record-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
       <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
+      <field name="authorizedRoleSet" grid-view="role-grid" form-view="role-form"
+        canNew="false" canEdit="false" widget="tag-select" placeholder="All"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
       <field name="$isReadOnly" readonly="true" hidden="true"/>
       <field name="company.currency.symbol" hidden="true"/>

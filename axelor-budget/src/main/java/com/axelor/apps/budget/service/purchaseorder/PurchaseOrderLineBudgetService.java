@@ -61,7 +61,8 @@ public interface PurchaseOrderLineBudgetService {
    * @param purchaseOrderLine, purchaseOrder
    * @return String
    */
-  public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
+  public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
+      throws AxelorException;
 
   /**
    * Take all budget distribution on this purchase order line and throw an error if the total amount
@@ -72,7 +73,4 @@ public interface PurchaseOrderLineBudgetService {
    */
   public void checkAmountForPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;
-
-  public void computeBudgetDistributionSumAmount(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 }

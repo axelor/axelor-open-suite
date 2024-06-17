@@ -7,17 +7,17 @@
 
   <entity name="ProductionConfig" cacheable="true">
 
-    <many-to-one name="maintenanceBillOfMaterialBirtTemplate"
-      title="Maintenance bill of materials template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="maintenanceManufOrderBirtTemplate"
-      title="Maintenance manuf order template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="maintenanceProdProcessBirtTemplate"
-      title="Maintenance prod process template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="maintenanceBillOfMaterialPrintTemplate"
+      title="Maintenance bill of materials template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="maintenanceManufOrderPrintTemplate"
+      title="Maintenance manuf order template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="maintenanceProdProcessPrintTemplate"
+      title="Maintenance prod process template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <track>
-      <field name="maintenanceBillOfMaterialBirtTemplate" on="UPDATE"/>
-      <field name="maintenanceManufOrderBirtTemplate" on="UPDATE"/>
-      <field name="maintenanceProdProcessBirtTemplate" on="UPDATE"/>
+      <field name="maintenanceBillOfMaterialPrintTemplate" on="UPDATE"/>
+      <field name="maintenanceManufOrderPrintTemplate" on="UPDATE"/>
+      <field name="maintenanceProdProcessPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

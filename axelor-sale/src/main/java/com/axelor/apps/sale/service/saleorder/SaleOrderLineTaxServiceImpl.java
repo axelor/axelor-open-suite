@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -91,8 +93,12 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
       Map<TaxLine, SaleOrderLineTax> map,
       boolean customerSpecificNote,
       Set<String> specificNotes) {
-    TaxLine taxLine = saleOrderLine.getTaxLine();
-    getOrCreateLine(saleOrder, saleOrderLine, map, taxLine);
+    Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      for (TaxLine taxLine : taxLineSet) {
+        getOrCreateLine(saleOrder, saleOrderLine, map, taxLine);
+      }
+    }
     orderLineTaxService.addTaxEquivSpecificNote(saleOrderLine, customerSpecificNote, specificNotes);
   }
 
@@ -122,6 +128,8 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
     saleOrderLineTax.setSaleOrder(saleOrder);
     saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
     saleOrderLineTax.setTaxLine(taxLine);
+    saleOrderLineTax.setTaxType(
+        Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
     return saleOrderLineTax;
   }
 
