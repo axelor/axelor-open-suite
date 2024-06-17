@@ -161,6 +161,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveDefaultService.setDefaultValues(move);
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setPeriod(move);
+
     moveRecordSetService.setFunctionalOriginSelect(move);
     moveRecordSetService.setOriginDate(move);
 
@@ -514,6 +515,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setCompanyBankDetails(move);
     moveDefaultService.setDefaultCurrency(move);
+    moveRecordSetService.setPeriod(move);
 
     if (move.getJournal() != null
         && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -527,6 +529,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+    valuesMap.put("period", move.getPeriod());
 
     if (move.getPartner() != null
         && move.getCompany() != null
