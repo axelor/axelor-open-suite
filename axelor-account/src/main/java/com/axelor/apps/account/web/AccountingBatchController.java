@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingReportPrintService;
@@ -34,18 +33,17 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchAutoMoveLettering;
+import com.axelor.apps.account.service.batch.BatchCloseAnnualAccounts;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
-import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -56,10 +54,8 @@ import com.axelor.studio.db.App;
 import com.google.inject.Singleton;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -406,37 +402,14 @@ public class AccountingBatchController {
   }
 
   @ErrorException
-  public void checkDaybookMovesOnFiscalYear(ActionRequest request, ActionResponse response)
+  public void checkDaybookMovesOnFiscalYearLabel(ActionRequest request, ActionResponse response)
       throws AxelorException {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
-    if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
-        != accountingBatch.getActionSelect()) {
-      return;
-    }
+    String warning =
+        Beans.get(BatchCloseAnnualAccounts.class).checkDaybookMovesOnFiscalYear(accountingBatch);
 
-    Set<Year> yearSet = new HashSet<>();
-    if (accountingBatch.getYear() != null) {
-      yearSet.add(accountingBatch.getYear());
-    }
-
-    int daybookMoveCount = 0;
-    if (accountingBatch.getCompany() != null
-        && Beans.get(AccountConfigService.class)
-            .getAccountConfig(accountingBatch.getCompany())
-            .getAccountingDaybook()) {
-      daybookMoveCount =
-          Beans.get(MoveToolService.class)
-              .findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK))
-              .size();
-    }
-
-    response.setAttr("daybookRemainingLabel", "hidden", daybookMoveCount == 0);
-    response.setAttr(
-        "daybookRemainingLabel",
-        "title",
-        I18n.get(
-            String.format(
-                ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL, daybookMoveCount)));
+    response.setAttr("daybookRemainingLabel", "hidden", StringUtils.isEmpty(warning));
+    response.setAttr("daybookRemainingLabel", "title", warning);
   }
 }

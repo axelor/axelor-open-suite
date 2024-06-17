@@ -549,7 +549,7 @@
 
   <action-method name="action-accounting-batch-close-open-method-check-daybook">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
-      method="checkDaybookMovesOnFiscalYear"/>
+      method="checkDaybookMovesOnFiscalYearLabel"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->
