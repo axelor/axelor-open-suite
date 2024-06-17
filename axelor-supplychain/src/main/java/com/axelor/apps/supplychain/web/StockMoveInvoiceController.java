@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
@@ -624,6 +625,8 @@ public class StockMoveInvoiceController {
       List<Map<String, Object>> stockMoveLines =
           Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
       response.setValue("$stockMoveLines", stockMoveLines);
+      response.setValue(
+          "$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
