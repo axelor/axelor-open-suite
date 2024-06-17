@@ -7,6 +7,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
+import com.axelor.utils.service.TranslationBaseService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
@@ -15,10 +16,13 @@ import java.util.Map;
 public class AddressAttrsServiceImpl implements AddressAttrsService {
 
   protected AddressMetaService addressMetaService;
+  protected TranslationBaseService translationBaseService;
 
   @Inject
-  public AddressAttrsServiceImpl(AddressMetaService addressMetaService) {
+  public AddressAttrsServiceImpl(
+      AddressMetaService addressMetaService, TranslationBaseService translationBaseService) {
     this.addressMetaService = addressMetaService;
+    this.translationBaseService = translationBaseService;
   }
 
   @Override
@@ -50,7 +54,12 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
     // Iterate through addressTemplateLineList and call addFieldTitle for each MetaField
     addressTemplateLineList.stream()
         .filter(line -> !StringUtils.isBlank(line.getTitle()))
-        .forEach(line -> addFieldTitle(line.getMetaField().getName(), line.getTitle(), attrsMap));
+        .forEach(
+            line ->
+                addFieldTitle(
+                    line.getMetaField().getName(),
+                    translationBaseService.getValueTranslation(line.getTitle()),
+                    attrsMap));
   }
 
   protected void addAllFieldsUnhide(

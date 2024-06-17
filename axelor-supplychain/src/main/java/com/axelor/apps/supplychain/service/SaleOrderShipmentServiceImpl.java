@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.stock.db.ShipmentMode;
@@ -43,17 +44,20 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderLineRepository saleOrderLineRepo;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineService saleOrderLineService,
-      SaleOrderLineRepository saleOrderLineRepo) {
+      SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderLineRepo = saleOrderLineRepo;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -159,7 +163,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
     shippingCostLine.setSaleOrder(saleOrder);
     shippingCostLine.setProduct(shippingCostProduct);
     saleOrderLineService.computeProductInformation(shippingCostLine, saleOrder);
-    saleOrderLineService.computeValues(saleOrder, shippingCostLine);
+    saleOrderLineComputeService.computeValues(saleOrder, shippingCostLine);
     return shippingCostLine;
   }
 

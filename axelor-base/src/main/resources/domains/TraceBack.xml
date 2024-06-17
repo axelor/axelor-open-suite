@@ -21,7 +21,7 @@
     <string name="ref" title="Reference"/>
     <long name="refId" title="Reference ID" nullable="true"/>
 
-    <string search="id,date" name="name" namecolumn="true">
+    <string name="name" namecolumn="true">
 
       return this.id + " : " + this.date;
 

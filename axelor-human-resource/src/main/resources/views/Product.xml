@@ -47,8 +47,9 @@
         <field name="expense" hidden="true"/>
       </panel>
       <panel name="categorizationPanel" title="Categorization" colSpan="12">
-        <field name="productFamily" colSpan="12" form-view="product-family-form"
+        <field name="productFamily" colSpan="6" form-view="product-family-form"
           grid-view="product-family-grid"/>
+        <field name="exportCode" colSpan="6"/>
       </panel>
     </panel>
     <panel-tabs name="productSpecificAttrsPanelTab" title="Product specific attributes">

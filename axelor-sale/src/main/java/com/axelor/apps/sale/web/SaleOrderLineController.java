@@ -20,13 +20,10 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PricingRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
@@ -36,11 +33,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.translation.ITranslation;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -103,8 +99,13 @@ public class SaleOrderLineController {
       }
 
       try {
-        product = Beans.get(ProductRepository.class).find(product.getId());
-        saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+        Map<String, Object> saleOrderLineMap =
+            saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+        saleOrderLineMap.putAll(
+            Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
+        // Beans.get(SaleOrderLineCheckService.class).check(saleOrderLine); throws exception
+        // response.setValues(Beans.get(SaleOrderLineDummyService.class).getDummies());
+        // response.setAttrs(Beans.get(SaleOrderLineViewService.class).getHiddenAttrs())
 
         if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
@@ -122,9 +123,7 @@ public class SaleOrderLineController {
                     defaultPricing.get().getName()));
           }
         }
-
-        response.setValue("saleSupplySelect", product.getSaleSupplySelect());
-        response.setValues(saleOrderLine);
+        response.setValues(saleOrderLineMap);
       } catch (Exception e) {
         resetProductInformation(response, saleOrderLine);
         TraceBackService.trace(response, e);
@@ -374,8 +373,8 @@ public class SaleOrderLineController {
   protected void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
 
-    Map<String, BigDecimal> map =
-        Beans.get(SaleOrderLineService.class).computeValues(saleOrder, orderLine);
+    Map<String, Object> map =
+        Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, orderLine);
 
     map.put("price", orderLine.getPrice());
     map.put("inTaxPrice", orderLine.getInTaxPrice());
@@ -386,7 +385,7 @@ public class SaleOrderLineController {
     response.setAttr(
         "priceDiscounted",
         "hidden",
-        map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
+        ((BigDecimal) map.getOrDefault("priceDiscounted", BigDecimal.ZERO))
                 .compareTo(saleOrder.getInAti() ? orderLine.getInTaxPrice() : orderLine.getPrice())
             == 0);
   }
@@ -421,40 +420,6 @@ public class SaleOrderLineController {
 
       response.setValues(saleOrderLine);
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      InternationalService internationalService = Beans.get(InternationalService.class);
-      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      Partner partner =
-          Beans.get(SaleOrderLineService.class).getSaleOrder(context).getClientPartner();
-      String userLanguage = AuthUtils.getUser().getLanguage();
-      Product product = saleOrderLine.getProduct();
-
-      if (product != null) {
-        Map<String, String> translation =
-            internationalService.getProductDescriptionAndNameTranslation(
-                product, partner, userLanguage);
-
-        String description = translation.get("description");
-        String productName = translation.get("productName");
-
-        if (description != null
-            && !description.isEmpty()
-            && productName != null
-            && !productName.isEmpty()) {
-          if (Boolean.TRUE.equals(
-              Beans.get(AppSaleService.class).getAppSale().getIsEnabledProductDescriptionCopy())) {
-            response.setValue("description", description);
-          }
-          response.setValue("productName", productName);
-        }
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

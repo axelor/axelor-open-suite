@@ -9,6 +9,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -54,6 +55,7 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
       MoveLineCreateService moveLineCreateService,
       AccountingSituationService accountingSituationService,
       CurrencyService currencyService,
+      InvoiceLineTaxToolService invoiceLineTaxToolService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderValidationService bankOrderValidationService,
       InvoicePaymentRepository invoicePaymentRepository) {
@@ -72,7 +74,8 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
         moveLineCreateService,
         accountingSituationService,
         currencyService,
-        invoicePaymentRepository);
+        invoicePaymentRepository,
+        invoiceLineTaxToolService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderValidationService = bankOrderValidationService;
   }

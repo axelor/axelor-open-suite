@@ -102,11 +102,11 @@
 
     <many-to-one name="lengthUnit" ref="com.axelor.apps.base.db.Unit"
       title="Unit of length"/>
-    <decimal name="length" title="Length" default="0"/>
-    <decimal name="width" title="Width" default="0"/>
-    <decimal name="height" title="Height" default="0"/>
-    <decimal name="diameter" title="Diameter"/>
-    <decimal name="articleVolume" title="Article volume"/>
+    <decimal name="length" title="Length" default="0" scale="3" precision="20"/>
+    <decimal name="width" title="Width" default="0" scale="3" precision="20"/>
+    <decimal name="height" title="Height" default="0" scale="3" precision="20"/>
+    <decimal name="diameter" title="Diameter" scale="3" precision="20"/>
+    <decimal name="articleVolume" title="Article volume" scale="10" precision="20"/>
     <decimal name="economicManufOrderQty" title="Economic manuf. qty" precision="20"
       scale="10"/>
 

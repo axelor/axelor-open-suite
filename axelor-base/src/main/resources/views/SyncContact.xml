@@ -21,7 +21,7 @@
       </panel>
       <panel name="connectionSettingsPanel" title="Connection settings" colSpan="12">
         <panel name="detailsPanel" colSpan="12">
-          <field name="cid"/>
+          <field name="clientId"/>
           <field name="googleApiKey" widget="password"/>
           <panel name="googleBtnPanel" colSpan="12">
             <field name="$googleButton" showTitle="false" showIf="id" readonly="true">

@@ -18,6 +18,10 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -43,14 +47,23 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
-public class ContractVersionServiceImpl extends ContractVersionRepository
-    implements ContractVersionService {
+public class ContractVersionServiceImpl implements ContractVersionService {
 
   protected AppBaseService appBaseService;
+  protected InvoiceRepository invoiceRepository;
+  protected InvoiceLineRepository invoiceLineRepository;
+  protected ContractVersionRepository contractVersionRepository;
 
   @Inject
-  public ContractVersionServiceImpl(AppBaseService appBaseService) {
+  public ContractVersionServiceImpl(
+      AppBaseService appBaseService,
+      InvoiceRepository invoiceRepository,
+      InvoiceLineRepository invoiceLineRepository,
+      ContractVersionRepository contractVersionRepository) {
     this.appBaseService = appBaseService;
+    this.invoiceRepository = invoiceRepository;
+    this.invoiceLineRepository = invoiceLineRepository;
+    this.contractVersionRepository = contractVersionRepository;
   }
 
   @Override
@@ -94,7 +107,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ContractExceptionMessage.CONTRACT_MISSING_FIRST_PERIOD));
     }
-    version.setStatusSelect(WAITING_VERSION);
+    version.setStatusSelect(ContractVersionRepository.WAITING_VERSION);
   }
 
   @Override
@@ -127,7 +140,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
     version.setActivationDateTime(dateTime);
     version.setActivatedByUser(AuthUtils.getUser());
-    version.setStatusSelect(ONGOING_VERSION);
+    version.setStatusSelect(ContractVersionRepository.ONGOING_VERSION);
 
     if (version.getVersion() != null
         && version.getVersion() >= 0
@@ -147,7 +160,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
           I18n.get("Please fill the first period end date and the invoice frequency."));
     }
 
-    save(version);
+    contractVersionRepository.save(version);
   }
 
   @Override
@@ -177,14 +190,14 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
     }
 
     version.setEndDateTime(dateTime);
-    version.setStatusSelect(TERMINATED_VERSION);
+    version.setStatusSelect(ContractVersionRepository.TERMINATED_VERSION);
 
-    save(version);
+    contractVersionRepository.save(version);
   }
 
   @Override
   public ContractVersion newDraft(Contract contract) {
-    return copy(contract);
+    return contractVersionRepository.copy(contract);
   }
 
   public void computeTotals(ContractVersion contractVersion) {
@@ -198,6 +211,39 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
       contractVersion.setYearlyExTaxTotalRevalued(
           contractLineList.stream()
               .map(ContractLine::getYearlyPriceRevalued)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+
+      List<InvoiceLine> invoiceLineList =
+          invoiceLineRepository
+              .all()
+              .filter("self.contractLine.contractVersion = :contractVersion")
+              .bind("contractVersion", contractVersion)
+              .fetch();
+      contractVersion.setTotalInvoicedAmount(
+          invoiceLineList.stream()
+              .filter(
+                  invoiceLine -> {
+                    if (invoiceLine != null && invoiceLine.getInvoice() != null) {
+                      return invoiceLine.getInvoice().getStatusSelect()
+                          == InvoiceRepository.STATUS_VENTILATED;
+                    }
+                    return false;
+                  })
+              .map(InvoiceLine::getInTaxTotal)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+      List<Invoice> invoiceList =
+          invoiceRepository
+              .all()
+              .filter(
+                  "self.contractSet.currentContractVersion = :contractVersion AND self.statusSelect = :ventilatedStatus")
+              .bind("contractVersion", contractVersion)
+              .bind("ventilatedStatus", InvoiceRepository.STATUS_VENTILATED)
+              .fetch();
+      contractVersion.setTotalPaidAmount(
+          invoiceList.stream()
+              .map(Invoice::getAmountPaid)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO));
     }

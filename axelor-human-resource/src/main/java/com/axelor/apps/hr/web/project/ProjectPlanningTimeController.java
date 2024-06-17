@@ -20,9 +20,11 @@ package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.hr.service.project.PlannedTimeValueService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -96,5 +98,86 @@ public class ProjectPlanningTimeController {
       response.setValue(
           "site", Optional.ofNullable(projectTask).map(ProjectTask::getSite).orElse(null));
     }
+  }
+
+  public void updateEvent(ActionRequest request, ActionResponse response) {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    Beans.get(ProjectPlanningTimeService.class).updateLinkedEvent(projectPlanningTime);
+  }
+
+  public void computePlannedTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setValue(
+        "plannedTime",
+        Beans.get(ProjectPlanningTimeService.class).computePlannedTime(projectPlanningTime));
+    if (Beans.get(ProjectConfigService.class)
+        .getProjectConfig(projectPlanningTime.getProject().getCompany())
+        .getIsSelectionOnDisplayPlannedTime()) {
+      if (projectPlanningTime.getDisplayPlannedTimeRestricted() != null) {
+        response.setValue(
+            "displayPlannedTime",
+            projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime());
+      }
+    } else {
+      response.setValue(
+          "displayPlannedTimeRestricted",
+          Beans.get(PlannedTimeValueService.class)
+              .createPlannedTimeValue(projectPlanningTime.getDisplayPlannedTime()));
+    }
+  }
+
+  public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response) {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setAttr(
+        "displayTimeUnit",
+        "domain",
+        Beans.get(ProjectPlanningTimeService.class)
+            .computeDisplayTimeUnitDomain(projectPlanningTime));
+  }
+
+  public void computeDisplayPlannedTimeRestrictedDomain(
+      ActionRequest request, ActionResponse response) throws AxelorException {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setAttr(
+        "displayPlannedTimeRestricted",
+        "domain",
+        Beans.get(ProjectPlanningTimeService.class)
+            .computeDisplayPlannedTimeRestrictedDomain(projectPlanningTime));
+  }
+
+  public void getCompanyConfig(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    response.setValue(
+        "$isSelectionOnDisplayPlannedTime",
+        Beans.get(ProjectConfigService.class)
+            .getProjectConfig(projectPlanningTime.getProject().getCompany())
+            .getIsSelectionOnDisplayPlannedTime());
+  }
+
+  public void getDefaultPlanningTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+    ProjectPlanningTimeService projectPlanningTimeService =
+        Beans.get(ProjectPlanningTimeService.class);
+
+    response.setValue(
+        "displayPlannedTime",
+        projectPlanningTimeService.getDefaultPlanningTime(projectPlanningTime));
+    response.setValue(
+        "displayPlannedTimeRestricted",
+        projectPlanningTimeService.getDefaultPlanningRestrictedTime(projectPlanningTime));
   }
 }

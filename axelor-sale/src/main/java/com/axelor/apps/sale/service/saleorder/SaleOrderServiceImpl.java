@@ -67,6 +67,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleConfigService saleConfigService;
+  protected SaleOrderLineCreateService saleOrderLineCreateService;
+  protected SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService;
 
   @Inject
   public SaleOrderServiceImpl(
@@ -76,7 +78,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderRepository saleOrderRepo,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
-      SaleConfigService saleConfigService) {
+      SaleConfigService saleConfigService,
+      SaleOrderLineCreateService saleOrderLineCreateService,
+      SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService) {
     this.saleOrderLineService = saleOrderLineService;
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
@@ -84,6 +88,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleConfigService = saleConfigService;
+    this.saleOrderLineCreateService = saleOrderLineCreateService;
+    this.saleOrderLineComplementaryProductService = saleOrderLineComplementaryProductService;
   }
 
   @Override
@@ -210,7 +216,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         continue;
       }
       soLine =
-          saleOrderLineService.createSaleOrderLine(
+          saleOrderLineCreateService.createSaleOrderLine(
               packLine, saleOrder, packQty, conversionRate, ++sequence);
       if (soLine != null) {
         soLine.setSaleOrder(saleOrder);
@@ -342,12 +348,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
           continue;
         }
         newComplementarySOLines.addAll(
-            saleOrderLineService.manageComplementaryProductSaleOrderLine(
+            saleOrderLineComplementaryProductService.manageComplementaryProductSaleOrderLine(
                 complementaryProduct, saleOrder, saleOrderLine));
       } else {
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
           newComplementarySOLines.addAll(
-              saleOrderLineService.manageComplementaryProductSaleOrderLine(
+              saleOrderLineComplementaryProductService.manageComplementaryProductSaleOrderLine(
                   complementaryProduct, saleOrder, saleOrderLine));
         }
       }

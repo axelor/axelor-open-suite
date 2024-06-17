@@ -5,8 +5,7 @@
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
-    <hilite if="$get('status.isCompleted') &amp;&amp; $get('status.isDefaultCompleted')"
-      color="success"/>
+    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
     <field name="ticketNumber"/>
@@ -20,8 +19,7 @@
       if="__config__.app.isApp('business-support')"/>
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <field name="status.isCompleted" hidden="true"/>
-    <field name="status.isDefaultCompleted" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
@@ -31,7 +29,8 @@
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check"
-        onClick="action-project-task-record-change-status,save" showIf="project.isShowStatus"/>
+        onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
+        showIf="project.isShowStatus"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -329,9 +328,8 @@
     <template>
 		<![CDATA[
 			<>
-				<h4>{name}</h4>
-				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
-				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<strong>{name}</strong>
+				<Box>{project.fullName}</Box>
 				<Box d="flex" justifyContent="space-between">
 					<Box>
 						<Icon icon="calendar" fontSize="15px"/>
@@ -354,9 +352,14 @@
 						{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 					</Box>
 				}
-         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
-         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
-         		</Box>
+			    <Box d="grid" gridTemplateColumns="auto auto" style={{ fontSize: "0.85rem", color: "grey" }} mt={2}>
+			        <Box d="flex" g={2}>
+			        	<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+			        </Box>
+			        <Box d="flex" justifyContent="flex-end">
+			        	{assignedTo && <Image src={$image('assignedTo', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+			        </Box>
+			    </Box>
 			</>
 		]]>
     </template>
@@ -375,9 +378,8 @@
     <template>
 		<![CDATA[
 			<>
-				<h4>{name}</h4>
-				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
-				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<strong>{name}</strong>
+				<Box>{project.fullName}</Box>
 				<Box d="flex" justifyContent="space-between">
 					<Box>
 						<Icon icon="calendar" fontSize="15px"/>
@@ -398,9 +400,14 @@
 				<Box mt={1}>
 					{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 				</Box>
-         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
-         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
-         		</Box>
+			    <Box d="grid" gridTemplateColumns="auto auto" style={{ fontSize: "0.85rem", color: "grey" }} mt={2}>
+			        <Box d="flex" g={2}>
+			        	<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+			        </Box>
+			        <Box d="flex" justifyContent="flex-end">
+			        	{assignedTo && <Image src={$image('assignedTo', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+			        </Box>
+			    </Box>
 			</>
 		]]>
     </template>
@@ -566,17 +573,12 @@
 
   <action-group name="action-project-task-group-progress-onchange">
     <action name="action-project-task-update-planned-progress"/>
-    <action name="action-project-task-method-update-progress-select"/>
   </action-group>
 
   <action-record name="action-project-task-update-planned-progress"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="plannedProgress" expr="eval: progress"/>
   </action-record>
-
-  <action-method name="action-project-task-method-update-progress-select">
-    <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillProgressSelect"/>
-  </action-method>
 
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -771,9 +773,7 @@
   <action-record name="action-project-task-record-change-status"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="statusBeforeComplete" expr="eval: status"/>
-    <field name="status"
-      expr="call:com.axelor.apps.project.service.ProjectTaskService:getDefaultCompletedStatus(project)"
-      if="project.isShowStatus"/>
+    <field name="status" expr="eval: project?.completedTaskStatus" if="project.isShowStatus"/>
   </action-record>
 
   <action-view name="action-project-view-per-section-kanban" title="Tasks"
@@ -829,6 +829,11 @@
     <attribute for="site" name="domain"
       expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
+
+  <action-validate name="action-project-task-validate-finish-status">
+    <error message="Please fill completed task status in Project configuration."
+      if="!project?.completedTaskStatus"/>
+  </action-validate>
 
   <search-filters name="project-task-filters"
     model="com.axelor.apps.project.db.ProjectTask" title="Project task filters">

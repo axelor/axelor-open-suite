@@ -33,12 +33,14 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Optional;
 
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
@@ -51,7 +53,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderComputeService saleOrderComputeService,
       MetaFieldRepository metaFieldRepository,
-      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService) {
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -60,7 +63,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         saleOrderLineRepository,
         saleOrderComputeService,
         metaFieldRepository,
-        configuratorMetaJsonFieldService);
+        configuratorMetaJsonFieldService,
+        saleOrderLineComputeService);
   }
 
   /**
@@ -120,8 +124,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
   }
 
   protected void setProductionInformation(SaleOrderLine saleOrderLine) {
-    saleOrderLine.setBillOfMaterial(getDefaultBOM(saleOrderLine));
-
+    BillOfMaterial defaultBOM = getDefaultBOM(saleOrderLine);
+    saleOrderLine.setBillOfMaterial(defaultBOM);
+    saleOrderLine.setProdProcess(
+        Optional.ofNullable(defaultBOM).map(BillOfMaterial::getProdProcess).orElse(null));
     if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE
         || saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE) {
       saleOrderLine.setStandardDelay(saleOrderLine.getProduct().getStandardDelay());
