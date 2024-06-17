@@ -1744,4 +1744,10 @@ public final class AccountExceptionMessage {
   public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
   public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
       "Duplicate from tax found for this fiscal position." /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_NOT_ACTIVATED = /*$$(*/
+      "Blocking customer with late payment issues is not activated for this company" /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
+      "Block customer with late payment issues batch's reporting :" /*)*/;
 }
