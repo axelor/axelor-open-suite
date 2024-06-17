@@ -21,6 +21,7 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
@@ -50,6 +51,11 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
       StockMove stockMove = stockMoveLine.getStockMove();
 
       populateTrackingNumberConfig(json, stockMoveLine);
+
+      json.put(
+          "$companyCurrencyNumberOfDecimals",
+          Beans.get(CurrencyScaleService.class)
+              .getCompanyCurrencyScale(stockMove != null ? stockMove.getCompany() : null));
       if (stockMove == null
           || (stockMoveLine.getFromStockLocation() != null
               && stockMoveLine.getFromStockLocation().getTypeSelect()
