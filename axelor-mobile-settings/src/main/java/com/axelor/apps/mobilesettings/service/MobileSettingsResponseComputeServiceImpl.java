@@ -21,10 +21,10 @@ package com.axelor.apps.mobilesettings.service;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.mobilesettings.db.MobileConfig;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
-import com.axelor.apps.mobilesettings.db.MobileMenu;
 import com.axelor.apps.mobilesettings.db.MobileShortcut;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
 import com.axelor.apps.mobilesettings.rest.dto.MobileConfigResponse;
+import com.axelor.apps.mobilesettings.rest.dto.MobileMenuResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileShortcutResponse;
 import com.axelor.auth.AuthUtils;
@@ -161,60 +161,80 @@ public class MobileSettingsResponseComputeServiceImpl
                 appMobileSettings.getIsStockAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_STOCK)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_STOCK)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_STOCK)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_STOCK)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_MANUFACTURING,
             checkConfigWithRoles(
                 appMobileSettings.getIsProductionAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_CRM,
             checkConfigWithRoles(
                 appMobileSettings.getIsCrmAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_CRM)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_CRM)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_CRM)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_CRM)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_HELPDESK,
             checkConfigWithRoles(
                 appMobileSettings.getIsHelpdeskAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HELPDESK)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HELPDESK)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HELPDESK)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HELPDESK)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_HR,
             checkConfigWithRoles(
                 appMobileSettings.getIsHRAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HR)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HR)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_QUALITY,
             checkConfigWithRoles(
                 appMobileSettings.getIsQualityAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_QUALITY)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_QUALITY)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_QUALITY)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_QUALITY)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_INTERVENTION,
             checkConfigWithRoles(
                 appMobileSettings.getIsInterventionAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)));
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)));
   }
 
-  protected List<String> getRestrictedMenusFromApp(String appSequence) {
+  protected List<MobileMenuResponse> getAccessibleMenusFromApp(String appSequence) {
     MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
     if (mobileConfig.getIsCustomizeMenuEnabled()) {
       return mobileConfig.getMenus().stream()
           .filter(
               mobileMenu ->
-                  !UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
-                      AuthUtils.getUser(), mobileMenu.getAuthorizedRoles()))
-          .map(MobileMenu::getTechnicalName)
+                  mobileMenu.getAuthorizedRoles().isEmpty()
+                      || UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+                          AuthUtils.getUser(), mobileMenu.getAuthorizedRoles()))
+          .map(
+              mobileMenu ->
+                  new MobileMenuResponse(
+                      mobileMenu.getName(),
+                      mobileMenu.getTechnicalName(),
+                      mobileMenu.getMenuOrder()))
           .collect(Collectors.toList());
     }
     return List.of();
