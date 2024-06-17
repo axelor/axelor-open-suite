@@ -7,18 +7,20 @@
   <grid name="stock-move-line-supplier-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
     <field name="product" readonly="true"/>
-    <field name="shippedQty" x-scale="2"/>
+    <field name="shippedQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" readonly="true"/>
     <field name="shippedDate"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="stock-move-line-supplier-form" title="Stock move line"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <panel name="mainPanel">
       <field name="product" readonly="true"/>
-      <field name="shippedQty"/>
+      <field name="shippedQty" x-scale="$nbDecimalDigitForQty"/>
       <field name="unit" readonly="true"/>
       <field name="shippedDate"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
 
