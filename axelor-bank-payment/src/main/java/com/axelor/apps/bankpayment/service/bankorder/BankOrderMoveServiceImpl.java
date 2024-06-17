@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -31,7 +32,8 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -84,6 +86,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected JournalRepository journalRepository;
   protected AccountRepository accountRepository;
   protected InvoiceTermRepository invoiceTermRepository;
+  protected AccountConfigService accountConfigService;
 
   protected PaymentMode paymentMode;
   protected Company senderCompany;
@@ -110,7 +113,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
       BankDetailsRepository bankDetailsRepository,
       JournalRepository journalRepository,
       AccountRepository accountRepository,
-      InvoiceTermRepository invoiceTermRepository) {
+      InvoiceTermRepository invoiceTermRepository,
+      AccountConfigService accountConfigService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -125,6 +129,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     this.journalRepository = journalRepository;
     this.accountRepository = accountRepository;
     this.invoiceTermRepository = invoiceTermRepository;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -235,11 +240,33 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
     senderMove.setPartnerBankDetails(getPartnerBankDetails(bankOrderLine));
 
+    Account bankAccount = senderBankAccount;
+    Account partnerAccount = null;
+
+    PaymentMode bankOrderLinePaymentMode =
+        Optional.ofNullable(bankOrderLine)
+            .map(BankOrderLine::getBankOrder)
+            .map(BankOrder::getPaymentMode)
+            .orElse(null);
+    if (bankOrderLinePaymentMode != null
+        && bankOrderLinePaymentMode.getTypeSelect() == PaymentModeRepository.TYPE_EXCHANGES) {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(senderCompany);
+      bankAccount =
+          paymentModeService.getPaymentModeAccount(
+              bankOrderLinePaymentMode,
+              senderCompany,
+              bankOrderLine.getBankOrder().getSenderBankDetails(),
+              false);
+      partnerAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
+    } else {
+      partnerAccount = getPartnerAccount(partner, senderCompany, senderCompany);
+    }
+
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
             senderMove,
             partner,
-            senderBankAccount,
+            bankAccount,
             bankOrderLine.getBankOrderAmount(),
             !isDebit,
             senderMove.getDate(),
@@ -252,7 +279,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         moveLineCreateService.createMoveLine(
             senderMove,
             partner,
-            getPartnerAccount(partner, senderCompany, senderCompany),
+            partnerAccount,
             bankOrderLine.getBankOrderAmount(),
             isDebit,
             senderMove.getDate(),

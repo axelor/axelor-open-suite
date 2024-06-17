@@ -651,7 +651,7 @@ export default function List() {
                     className={classnames(classes.toolbarHeader, classes.toolbarSortIconOnHover)}
                     onClick={() => handleSetSortColumnName(SORT_COLUMNS.find(v => v.code === 'taskDate'))}
                   >
-                    <Typography className={classes.menuTypography}>{translate('TaskEditor.taskDate')}</Typography>
+                    <Typography className={classes.menuTypography}>{translate('Start Date')}</Typography>
                     {sortColumnName && sortColumnName.code === 'taskDate' ? (
                       <ArrowDownwardIcon className={classes.toolbarSortIcon} />
                     ) : (
@@ -672,10 +672,10 @@ export default function List() {
                   {isShowProgress && (
                     <div
                       className={classnames(classes.toolbarHeader, classes.toolbarSortIconOnHover)}
-                      onClick={() => handleSetSortColumnName(SORT_COLUMNS.find(v => v.code === 'progressSelect'))}
+                      onClick={() => handleSetSortColumnName(SORT_COLUMNS.find(v => v.code === 'progress'))}
                     >
                       <Typography className={classes.menuTypography}>{translate('Progress')}</Typography>
-                      {sortColumnName && sortColumnName.code === 'progressSelect' ? (
+                      {sortColumnName && sortColumnName.code === 'progress' ? (
                         <ArrowDownwardIcon className={classes.toolbarSortIcon} />
                       ) : (
                         <ArrowDownwardIcon className="toolbarSortIcon" />

@@ -19,8 +19,6 @@
     onNew="action-lunch-voucher-record-default-onnew"
     onSave="action-lunch-voucher-group-form-onsave">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print" showIf="statusSelect &gt;= 2"
-        onClick="action-method-print-birt"/>
       <button name="exportBtn" title="Export CSV" icon="fa-file-text-o"
         showIf="statusSelect == 3 &amp;&amp; csvFile == null"
         onClick="action-lunch-voucher-method-export"/>

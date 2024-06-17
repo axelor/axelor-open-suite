@@ -19,16 +19,9 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.auth.db.User;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
-import java.util.List;
 
 public interface PurchaseOrderService {
 
@@ -46,7 +39,7 @@ public interface PurchaseOrderService {
    * @param purchaseOrder
    * @throws AxelorException
    */
-  void _populatePurchaseOrder(PurchaseOrder purchaseOrder);
+  void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
   /**
    * Calculer le montant d'une commande.
@@ -65,40 +58,12 @@ public interface PurchaseOrderService {
    */
   void initPurchaseOrderLineTax(PurchaseOrder purchaseOrder);
 
-  PurchaseOrder createPurchaseOrder(
-      User buyerUser,
-      Company company,
-      Partner contactPartner,
-      Currency currency,
-      LocalDate deliveryDate,
-      String internalReference,
-      String externalReference,
-      LocalDate orderDate,
-      PriceList priceList,
-      Partner supplierPartner,
-      TradingName tradingName)
-      throws AxelorException;
-
-  String getSequence(Company company, PurchaseOrder purchaseOrder) throws AxelorException;
-
-  public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException;
-
   @Transactional
   public Partner validateSupplier(PurchaseOrder purchaseOrder);
 
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException;
 
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
-
-  public PurchaseOrder mergePurchaseOrders(
-      List<PurchaseOrder> purchaseOrderList,
-      Currency currency,
-      Partner supplierPartner,
-      Company company,
-      Partner contactPartner,
-      PriceList priceList,
-      TradingName tradingName)
-      throws AxelorException;
 
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException;
 

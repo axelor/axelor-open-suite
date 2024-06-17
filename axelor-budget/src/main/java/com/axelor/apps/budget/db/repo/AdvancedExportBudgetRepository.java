@@ -21,7 +21,9 @@ package com.axelor.apps.budget.db.repo;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import java.util.List;
 
 public class AdvancedExportBudgetRepository extends AdvancedExportRepository {
 
@@ -40,5 +42,12 @@ public class AdvancedExportBudgetRepository extends AdvancedExportRepository {
     }
 
     super.remove(entity);
+  }
+
+  public List<AdvancedExport> findByMetaModelName(String modelName) {
+    return Query.of(AdvancedExport.class)
+        .filter("self.metaModel.name = :modelName")
+        .bind("modelName", modelName)
+        .fetch();
   }
 }

@@ -34,6 +34,8 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,8 +139,8 @@ public class AccountManagementServiceImpl implements AccountManagementService {
   public TaxEquiv getProductTaxEquiv(
       Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
       throws AxelorException {
-    Tax tax = getProductTax(product, company, isPurchase);
-    return fiscalPositionService.getTaxEquiv(fiscalPosition, tax);
+    Set<Tax> taxSet = getProductTax(product, company, isPurchase);
+    return fiscalPositionService.getTaxEquiv(fiscalPosition, taxSet);
   }
 
   /**
@@ -151,14 +153,14 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @return the tax defined for the product, according to the fiscal position
    * @throws AxelorException
    */
-  protected Tax getProductTax(
+  protected Set<Tax> getProductTax(
       Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
       throws AxelorException {
-    Tax generalTax = this.getProductTax(product, company, isPurchase);
-    Tax tax = fiscalPositionService.getTax(fiscalPosition, generalTax);
+    Set<Tax> generalTaxSet = this.getProductTax(product, company, isPurchase);
+    Set<Tax> taxSet = fiscalPositionService.getTaxSet(fiscalPosition, generalTaxSet);
 
-    if (tax != null) {
-      return tax;
+    if (CollectionUtils.isNotEmpty(taxSet)) {
+      return taxSet;
     }
 
     throw new AxelorException(
@@ -177,7 +179,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @return the tax defined for the product
    * @throws AxelorException
    */
-  protected Tax getProductTax(Product product, Company company, boolean isPurchase)
+  protected Set<Tax> getProductTax(Product product, Company company, boolean isPurchase)
       throws AxelorException {
 
     LOG.debug(
@@ -186,10 +188,10 @@ public class AccountManagementServiceImpl implements AccountManagementService {
         company.getName(),
         isPurchase);
 
-    Tax tax = this.getProductTax(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
+    Set<Tax> taxSet = this.getProductTax(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
 
-    if (tax != null) {
-      return tax;
+    if (CollectionUtils.isNotEmpty(taxSet)) {
+      return taxSet;
     }
 
     throw new AxelorException(
@@ -211,26 +213,26 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @return
    * @throws AxelorException
    */
-  protected Tax getProductTax(
+  protected Set<Tax> getProductTax(
       Product product, Company company, boolean isPurchase, int configObject) {
 
     AccountManagement accountManagement = this.getAccountManagement(product, company, configObject);
 
-    Tax tax = null;
+    Set<Tax> taxSet = null;
 
     if (accountManagement != null) {
       if (isPurchase) {
-        tax = accountManagement.getPurchaseTax();
+        taxSet = accountManagement.getPurchaseTaxSet();
       } else {
-        tax = accountManagement.getSaleTax();
+        taxSet = accountManagement.getSaleTaxSet();
       }
     }
 
-    if (tax == null && configObject == CONFIG_OBJECT_PRODUCT) {
+    if (CollectionUtils.isEmpty(taxSet) && configObject == CONFIG_OBJECT_PRODUCT) {
       return getProductTax(product, company, isPurchase, CONFIG_OBJECT_PRODUCT_FAMILY);
     }
 
-    return tax;
+    return taxSet;
   }
 
   /**
@@ -242,7 +244,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @throws AxelorException
    */
   @Override
-  public TaxLine getTaxLine(
+  public Set<TaxLine> getTaxLineSet(
       LocalDate date,
       Product product,
       Company company,
@@ -250,11 +252,11 @@ public class AccountManagementServiceImpl implements AccountManagementService {
       boolean isPurchase)
       throws AxelorException {
 
-    TaxLine taxLine =
-        taxService.getTaxLine(
+    Set<TaxLine> taxLineSet =
+        taxService.getTaxLineSet(
             this.getProductTax(product, company, fiscalPosition, isPurchase), date);
-    if (taxLine != null) {
-      return taxLine;
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      return taxLineSet;
     }
 
     throw new AxelorException(

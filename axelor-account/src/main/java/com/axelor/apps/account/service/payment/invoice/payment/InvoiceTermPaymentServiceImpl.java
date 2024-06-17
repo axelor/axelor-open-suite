@@ -27,7 +27,8 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
@@ -51,23 +52,26 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService {
 
   protected CurrencyService currencyService;
-  protected InvoiceTermService invoiceTermService;
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
+  protected InvoiceTermToolService invoiceTermToolService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public InvoiceTermPaymentServiceImpl(
       CurrencyService currencyService,
-      InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
-      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService) {
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
+      InvoiceTermToolService invoiceTermToolService,
+      InvoiceTermFilterService invoiceTermFilterService) {
     this.currencyService = currencyService;
-    this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
+    this.invoiceTermToolService = invoiceTermToolService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   @Override
@@ -115,7 +119,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
               .map(PayVoucherElementToPay::getInvoiceTerm)
               .collect(Collectors.toList());
     } else {
-      invoiceTerms = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+      invoiceTerms = invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoice);
     }
 
     if (CollectionUtils.isNotEmpty(invoiceTerms)) {
@@ -260,7 +264,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             .isEmpty()
         && (!invoiceTerm.getIsSelectedOnPaymentSession()
             || invoiceTerm.getApplyFinancialDiscountOnPaymentSession())
-        && !invoiceTermService.isPartiallyPaid(invoiceTerm)) {
+        && !invoiceTermToolService.isPartiallyPaid(invoiceTerm)) {
       invoicePayment.setApplyFinancialDiscount(
           invoiceTerm.getFinancialDiscountDeadlineDate() != null
               && invoiceTerm.getApplyFinancialDiscount()

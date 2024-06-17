@@ -216,7 +216,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             company,
             invoice.getCurrency(),
             invoice.getInvoiceDate(),
-            invoiceLine.getTaxLine(),
+            invoiceLine.getTaxLineSet(),
             false));
     productInformation.put(
         "inTaxPrice",
@@ -226,7 +226,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             company,
             invoice.getCurrency(),
             invoice.getInvoiceDate(),
-            invoiceLine.getTaxLine(),
+            invoiceLine.getTaxLineSet(),
             true));
   }
 

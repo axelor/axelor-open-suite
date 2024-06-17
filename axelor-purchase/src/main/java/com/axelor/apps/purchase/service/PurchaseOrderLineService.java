@@ -33,33 +33,23 @@ import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 
 public interface PurchaseOrderLineService {
 
   public BigDecimal getExTaxUnitPrice(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, Set<TaxLine> taxLineSet)
       throws AxelorException;
 
   public BigDecimal getInTaxUnitPrice(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, Set<TaxLine> taxLineSet)
       throws AxelorException;
 
   public BigDecimal getPurchaseMaxPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
-  public TaxLine getTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
-      throws AxelorException;
-
-  /**
-   * Get optional tax line.
-   *
-   * @param purchaseOrder
-   * @param purchaseOrderLine
-   * @return
-   */
-  Optional<TaxLine> getOptionalTaxLine(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
+  public Set<TaxLine> getTaxLineSet(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine);
 
@@ -103,9 +93,6 @@ public interface PurchaseOrderLineService {
       PurchaseOrderLine purchaseOrderLine,
       ActionResponse response)
       throws AxelorException;
-
-  public String[] getProductSupplierInfos(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   PurchaseOrderLine fill(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
       throws AxelorException;

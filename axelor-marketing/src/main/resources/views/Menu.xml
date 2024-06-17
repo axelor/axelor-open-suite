@@ -44,7 +44,7 @@
     title="Template">
     <view name="template-grid" type="grid"/>
     <view name="template-form" type="form"/>
-    <domain>self.mediaTypeSelect IN (4)</domain>
+    <domain>self.mediaTypeSelect IN (2)</domain>
     <context name="_mediaType" expr="eval:4"/>
   </action-view>
 

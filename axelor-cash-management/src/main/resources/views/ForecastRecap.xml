@@ -14,10 +14,6 @@
   <form name="forecast-recap-form" title="Forecast Recap"
     model="com.axelor.apps.cash.management.db.ForecastRecap"
     onNew="action-forecast-recap-group-on-new" width="large">
-    <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-method-print-birt"/>
-    </toolbar>
     <panel name="mainPanel">
       <panel name="seqPanel" colSpan="12">
         <field name="forecastRecapSeq" showTitle="false" colSpan="12"

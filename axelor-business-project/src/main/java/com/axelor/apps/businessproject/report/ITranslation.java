@@ -199,4 +199,33 @@ public interface ITranslation {
       "InvoicingProjectAnnex.status"; /*)*/
   public static final String INVOICING_PROJECT_ANNEX_PROGRESS = /*$$(*/
       "InvoicingProjectAnnex.progress"; /*)*/
+  public static final String INVOICE_PREVIOUS_PROGRESS = /*$$(*/ "Invoice.previousProgress"; /*)*/
+  public static final String INVOICE_NO_PREVIOUS_PROGRESS = /*$$(*/
+      "Invoice.noPreviousProgress"; /*)*/
+  public static final String INVOICE_NEW_PROGRESS = /*$$(*/ "Invoice.progressAt"; /*)*/
+
+  public static final String INVOICE_EXPENSE_JUSTIFICATION = /*$$(*/
+      "InvoiceExpense.expenseJustification"; /*)*/
+  public static final String INVOICE_EXPENSE_ON_INVOICE = /*$$(*/
+      "InvoiceExpense.expenseOnInvoice"; /*)*/
+  public static final String INVOICE_EXPENSE_PROJECT = /*$$(*/ "InvoiceExpense.project"; /*)*/
+  public static final String INVOICE_EXPENSE_CURRENCY = /*$$(*/ "InvoiceExpense.currency"; /*)*/
+  public static final String INVOICE_EXPENSE_TASK = /*$$(*/ "InvoiceExpense.task"; /*)*/
+  public static final String INVOICE_EXPENSE_EXPENSE_TYPE = /*$$(*/
+      "InvoiceExpense.expenseType"; /*)*/
+  public static final String INVOICE_EXPENSE_EXPENSE_DATE = /*$$(*/
+      "InvoiceExpense.expenseDate"; /*)*/
+  public static final String INVOICE_EXPENSE_KAP = /*$$(*/ "InvoiceExpense.kap"; /*)*/
+  public static final String INVOICE_EXPENSE_FROM_CITY = /*$$(*/ "InvoiceExpense.fromCity"; /*)*/
+  public static final String INVOICE_EXPENSE_TO_CITY = /*$$(*/ "InvoiceExpense.toCity"; /*)*/
+  public static final String INVOICE_EXPENSE_DISTANCE = /*$$(*/ "InvoiceExpense.distance"; /*)*/
+  public static final String INVOICE_EXPENSE_TOTAL_AMOUNT_WITH_TAX = /*$$(*/
+      "InvoiceExpense.totalAmount"; /*)*/
+  public static final String INVOICE_EXPENSE_TOTAL_TAX_EXPENSE = /*$$(*/
+      "InvoiceExpense.totalTaxExpense"; /*)*/
+  public static final String INVOICE_EXPENSE_AMOUNT = /*$$(*/ "InvoiceExpense.amount"; /*)*/
+  public static final String INVOICE_EXPENSE_TOTAL = /*$$(*/ "InvoiceExpense.total"; /*)*/
+  public static final String INVOICE_EXPENSE_COMMENTS = /*$$(*/ "InvoiceExpense.comments"; /*)*/
+  public static final String INVOICE_EXPENSE_EMPLOYEE = /*$$(*/ "InvoiceExpense.employee"; /*)*/
+  public static final String GROUPING_PERIOD_WEEK = /*$$(*/ "week"; /*)*/
 }

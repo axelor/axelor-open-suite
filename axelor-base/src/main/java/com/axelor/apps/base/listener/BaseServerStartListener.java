@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.base.listener;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.base.openapi.AosSwagger;
 import com.axelor.common.ObjectUtils;
 import com.axelor.event.Observes;
 import com.axelor.events.StartupEvent;
@@ -42,12 +40,6 @@ public class BaseServerStartListener {
   private static final String TIMEZONE_SELECT = "company.timezone.select";
 
   public void startUpEventListener(@Observes StartupEvent startupEvent) {
-    // Initialize swagger
-    if (Boolean.parseBoolean(AppSettings.get().get("aos.swagger.enable"))) {
-      Beans.get(AosSwagger.class).initSwagger();
-      log.info("Initialize swagger");
-    }
-
     // Add all timezones
     addTimezoneSelections();
   }

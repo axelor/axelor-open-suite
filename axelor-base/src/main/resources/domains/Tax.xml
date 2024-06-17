@@ -8,12 +8,14 @@
   <entity name="Tax" cacheable="true">
 
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="code" title="Code" required="true" unique="true" namecolumn="true"/>
     <many-to-one name="activeTaxLine" ref="com.axelor.apps.account.db.TaxLine"
       title="Tax active version"/>
 
     <one-to-many name="taxLineList" ref="com.axelor.apps.account.db.TaxLine"
       mappedBy="tax" title="Tax versions history"/>
+    <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
+      title="Tax type" required="true"/>
 
     <unique-constraint columns="code,name"/>
 

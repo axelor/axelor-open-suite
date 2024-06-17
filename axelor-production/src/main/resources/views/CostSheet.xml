@@ -58,7 +58,7 @@
       <field name="currency" readonly="true" grid-view="currency-grid"
         form-view="currency-form"/>
       <button name="printTheCostSheetLineDetailBtn" title="Print the cost sheet line detail"
-        readonly="false" onClick="action-method-print-birt,close"/>
+        readonly="false" onClick="action-method-print-template,close"/>
       <panel-dashlet name="costSheetLineTreePanel"
         action="action-cost-sheet-line-view-tree" readonly="true" colSpan="12" height="600"/>
     </panel>
