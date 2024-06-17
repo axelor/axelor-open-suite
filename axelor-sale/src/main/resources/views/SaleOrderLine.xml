@@ -649,9 +649,6 @@
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
     <action name="action-sale-order-line-method-get-product-information"/>
-    <!--action name="action-sale-order-line-get-production-information"/> <!-to be removed -->
-    <!--action name="action-sale-order-line-method-supplier-partner-default" if="__config__.app.isApp('supplychain')"/>
-      <!-to be removed -->
     <!--action name="action-sale-order-line-record-complementary-products-to-handle"/> <!-to be removed -->
 
     <action name="action-sale-order-line-method-fill-max-discount"/> <!-- dummy -->
@@ -746,19 +743,6 @@
     <field name="isHideUnitAmounts" expr="eval: false"/>
   </action-record>
 
-  <!-- TODO : should be splited per module -->
-  <action-record name="action-sale-order-line-get-production-information"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial"
-      if="__config__.app.isApp('production') &amp;&amp; (saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; product?.defaultBillOfMaterial != null"/>
-    <field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial"
-      if="__config__.app.isApp('production') &amp;&amp; (saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; product?.defaultBillOfMaterial == null"/>
-    <field name="standardDelay" expr="eval: product?.standardDelay"
-      if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect == 2 || saleSupplySelect == 3 || saleSupplySelect == 4"/>
-    <field name="standardDelay" expr="eval: 0"
-      if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4"/>
-  </action-record>
-
   <action-record name="action-sale-order-line-record-complementary-products-to-handle"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="isComplementaryProductsUnhandledYet" expr="eval: true"
@@ -811,12 +795,6 @@
 
   <action-method name="action-sale-order-line-method-get-discount">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getDiscount"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-supplier-partner-default"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
-      method="supplierPartnerDefault"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-check-qty">
