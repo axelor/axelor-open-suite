@@ -91,6 +91,13 @@ public class SaleOrderLineProductProductionServiceImpl
   }
 
   @Override
+  public Map<String, Object> getProductionInformation(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = super.getProductionInformation(saleOrderLine);
+    saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine));
+    return saleOrderLineMap;
+  }
+
+  @Override
   public Map<String, Object> setBillOfMaterial(SaleOrderLine saleOrderLine) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     if (appProductionService.isApp("production")) {
