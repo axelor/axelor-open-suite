@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
@@ -40,6 +41,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -58,6 +61,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -410,5 +414,21 @@ public class PartnerController {
     if (!partnerService.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
+  }
+
+  public void setPositiveBalance(ActionRequest request, ActionResponse response) {
+    BigDecimal balance = (BigDecimal) request.getContext().get("balance");
+    User user = AuthUtils.getUser();
+
+    if (balance == null) {
+      balance = BigDecimal.ZERO;
+    }
+
+    Map<String, Object> map = new HashMap<>();
+    map.put(
+        "$positiveBalanceBtn",
+        Beans.get(CurrencyScaleService.class)
+            .getCompanyScaledValue(user.getActiveCompany(), balance.abs()));
+    response.setValues(map);
   }
 }
