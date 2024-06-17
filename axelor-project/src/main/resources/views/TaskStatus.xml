@@ -4,20 +4,18 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="task-status-grid" title="Task status"
-    model="com.axelor.apps.project.db.TaskStatus" orderBy="sequence">
-    <field name="sequence"/>
+    model="com.axelor.apps.project.db.TaskStatus" orderBy="sequence" canMove="true">
     <field name="name"/>
     <field name="isCompleted"/>
-    <field name="isDefaultCompleted"/>
+    <field name="sequence" hidden="true"/>
   </grid>
 
   <form name="task-status-form" title="Task status"
     model="com.axelor.apps.project.db.TaskStatus">
     <panel name="mainPanel">
-      <field name="sequence"/>
       <field name="name"/>
       <field name="isCompleted"/>
-      <field name="isDefaultCompleted" showIf="isCompleted"/>
+      <field name="sequence" hidden="true"/>
     </panel>
   </form>
 

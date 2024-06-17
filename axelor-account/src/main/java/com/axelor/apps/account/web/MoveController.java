@@ -18,12 +18,15 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
@@ -35,13 +38,16 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
@@ -190,11 +196,11 @@ public class MoveController {
                 .fetch();
 
         if (!moveList.isEmpty()) {
-          PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
+          PeriodCheckService periodCheckService = Beans.get(PeriodCheckService.class);
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
+            if (!periodCheckService.isAuthorizedToAccountOnPeriod(move, user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -534,9 +540,13 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       LocalDate dueDate = this.extractDueDate(request);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
       response.setValues(
           Beans.get(MoveGroupService.class).getGenerateCounterpartOnClickValuesMap(move, dueDate));
+
+      Beans.get(MoveAttrsService.class).addThirdPartyPayerPartnerReadonly(move, attrsMap);
+      response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -677,6 +687,14 @@ public class MoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void onSelectJournal(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+
+    response.setAttrs(Beans.get(MoveGroupService.class).getJournalOnSelectAttrsMap(move));
   }
 
   public void onSelectThirdPartyPayerPartner(ActionRequest request, ActionResponse response) {
@@ -888,5 +906,37 @@ public class MoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void showRelatedFixedAsset(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+
+    if (move == null
+        || ObjectUtils.isEmpty(move.getMoveLineList())
+        || move.getId() == null
+        || move.getMoveLineList().stream()
+            .noneMatch(
+                ml ->
+                    Objects.equals(
+                        Optional.of(ml)
+                            .map(MoveLine::getAccount)
+                            .map(Account::getAccountType)
+                            .map(AccountType::getTechnicalTypeSelect)
+                            .orElse(""),
+                        AccountTypeRepository.TYPE_IMMOBILISATION))) {
+      return;
+    }
+
+    ActionView.ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get("Related fixed assets"));
+    actionViewBuilder.model(FixedAsset.class.getName());
+    actionViewBuilder.add("grid", "fixed-asset-move-grid");
+    actionViewBuilder.add("form", "fixed-asset-form");
+    actionViewBuilder.domain("self.purchaseAccountMove.id = :_moveId");
+    actionViewBuilder.context("_moveId", move.getId());
+
+    response.setView(actionViewBuilder.map());
   }
 }

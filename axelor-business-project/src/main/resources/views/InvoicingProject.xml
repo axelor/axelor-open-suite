@@ -85,6 +85,12 @@
           grid-view="project-task-invoicing-project-grid"
           showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0" readonlyIf="invoice"
           name="ProjectTaskSetPanel"/>
+
+        <panel-related field="stockMoveLineSet" colSpan="12" canNew="false"
+          canEdit="false" canSelect="false" form-view="stock-move-line-form"
+          grid-view="stock-move-line-grid"
+          showIf="stockMoveLineSet &amp;&amp; stockMoveLineSet.length &gt; 0" readonlyIf="invoice"
+          name="stockMoveLineSetPanel"/>
       </panel>
 
       <panel name="configurationsPanel" title="Configurations" readonlyIf="invoice">

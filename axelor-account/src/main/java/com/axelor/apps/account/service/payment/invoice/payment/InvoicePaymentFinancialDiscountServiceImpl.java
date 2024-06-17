@@ -21,9 +21,9 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
@@ -36,24 +36,24 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicePaymentFinancialDiscountServiceImpl
     implements InvoicePaymentFinancialDiscountService {
-  protected InvoiceTermService invoiceTermService;
-  protected InvoiceTermPaymentService invoiceTermPaymentService;
+  protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermPaymentToolService invoiceTermPaymentToolService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
-      InvoiceTermService invoiceTermService,
-      InvoiceTermPaymentService invoiceTermPaymentService,
+      InvoiceTermToolService invoiceTermToolService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
-      InvoiceTermPaymentToolService invoiceTermPaymentToolService) {
-    this.invoiceTermService = invoiceTermService;
-    this.invoiceTermPaymentService = invoiceTermPaymentService;
+      InvoiceTermPaymentToolService invoiceTermPaymentToolService,
+      InvoiceTermFilterService invoiceTermFilterService) {
+    this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermPaymentToolService = invoiceTermPaymentToolService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   @Override
@@ -86,7 +86,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
                 it ->
                     it.getInvoiceTerm() != null
                         && it.getInvoiceTerm().getApplyFinancialDiscount()
-                        && !invoiceTermService.isPartiallyPaid(it.getInvoiceTerm()))
+                        && !invoiceTermToolService.isPartiallyPaid(it.getInvoiceTerm()))
             .collect(Collectors.toList());
 
     if (CollectionUtils.isEmpty(invoiceTermPaymentList)) {
@@ -98,6 +98,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
     if (!invoicePayment.getManualChange()) {
       invoicePayment.setApplyFinancialDiscount(true);
     }
+
     invoicePayment.setFinancialDiscount(
         invoiceTermPaymentList.get(0).getInvoiceTerm().getFinancialDiscount());
     invoicePayment.setFinancialDiscountTotalAmount(
@@ -172,49 +173,5 @@ public class InvoicePaymentFinancialDiscountServiceImpl
         .map(InvoiceTerm::getFinancialDiscountDeadlineDate)
         .min(LocalDate::compareTo)
         .orElse(null);
-  }
-
-  @Override
-  public List<Long> computeDataForFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
-      throws AxelorException {
-    List<Long> invoiceTermIdList = null;
-
-    if (invoiceId > 0) {
-      invoiceTermIdList = initializeInvoiceTermPaymentWithoutDiscount(invoicePayment);
-
-      this.computeFinancialDiscount(invoicePayment);
-    }
-    return invoiceTermIdList;
-  }
-
-  @Override
-  public List<Long> applyFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
-      throws AxelorException {
-    List<Long> invoiceTermIdList = null;
-
-    if (invoiceId > 0) {
-      invoiceTermIdList = initializeInvoiceTermPaymentWithoutDiscount(invoicePayment);
-
-      this.computeFinancialDiscountFields(invoicePayment);
-    }
-    return invoiceTermIdList;
-  }
-
-  protected List<Long> initializeInvoiceTermPaymentWithoutDiscount(InvoicePayment invoicePayment)
-      throws AxelorException {
-    List<InvoiceTerm> invoiceTerms =
-        invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
-
-    List<Long> invoiceTermIdList =
-        invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
-
-    if (!invoicePayment.getApplyFinancialDiscount()) {
-      invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
-    }
-    invoicePayment.clearInvoiceTermPaymentList();
-    invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-        invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
-
-    return invoiceTermIdList;
   }
 }

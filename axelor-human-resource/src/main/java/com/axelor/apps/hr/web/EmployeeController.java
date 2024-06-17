@@ -19,11 +19,11 @@
 package com.axelor.apps.hr.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PrintFromBirtTemplateService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -64,17 +64,14 @@ public class EmployeeController {
         I18n.get("Annual expenses report") + " :  " + user.getFullName() + " (" + yearName + ")";
 
     Employee employee = Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId));
-    BirtTemplate annualReportBirtTemplate =
-        Beans.get(EmployeeService.class).getAnnualReportBirtTemplate(employee);
+    PrintingTemplate annualReportPrintTemplate =
+        Beans.get(EmployeeService.class).getAnnualReportPrintingTemplate(employee);
+    PrintingGenFactoryContext factoryContext =
+        new PrintingGenFactoryContext(EntityHelper.getEntity(employee));
+    factoryContext.setContext(Map.of("YearId", Long.valueOf(yearId)));
     String fileLink =
-        Beans.get(BirtTemplateService.class)
-            .generateBirtTemplateLink(
-                annualReportBirtTemplate,
-                EntityHelper.getEntity(employee),
-                Map.of("YearId", Long.valueOf(yearId)),
-                name,
-                annualReportBirtTemplate.getAttach(),
-                annualReportBirtTemplate.getFormat());
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintLink(annualReportPrintTemplate, factoryContext, name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
 
@@ -112,12 +109,13 @@ public class EmployeeController {
   public void printEmployeePhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    BirtTemplate employeePhoneBookBirtTemplate =
-        Beans.get(EmployeeService.class).getEmpPhoneBookBirtTemplate();
+    PrintingTemplate employeePhoneBookPrintTemplate =
+        Beans.get(EmployeeService.class).getEmpPhoneBookPrintingTemplate();
     String name = I18n.get("Employee PhoneBook");
 
     String fileLink =
-        Beans.get(PrintFromBirtTemplateService.class).print(employeePhoneBookBirtTemplate, null);
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintLink(employeePhoneBookPrintTemplate, null);
 
     LOG.debug("Printing " + name);
 

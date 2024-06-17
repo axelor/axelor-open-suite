@@ -131,7 +131,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
     }
 
     for (int i = 0; i < saleOrderLineList.size(); i++) {
-      saleOrderLineList.get(i).setSequence(i);
+      saleOrderLineList.get(i).setSequence(i + 1);
     }
 
     return saleOrderLineList;

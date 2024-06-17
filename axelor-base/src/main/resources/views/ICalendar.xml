@@ -54,7 +54,7 @@
             widget="boolean-switch"/>
           <field name="port"/>
           <field name="synchronizationSelect"/>
-          <field name="synchronizationDuration" widget="selection"/>
+          <field name="synchronizationDuration"/>
           <field name="keepRemote" widget="boolean-switch"/>
         </panel>
         <panel colSpan="12" name="loginInfoPanel">

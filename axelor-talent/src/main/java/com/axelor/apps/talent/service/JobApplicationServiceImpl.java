@@ -147,23 +147,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   }
 
   @Override
-  public String computeFullName(JobApplication jobApplication) {
-
-    String fullName = null;
-
-    if (jobApplication.getFirstName() != null) {
-      fullName = jobApplication.getFirstName();
-    }
-    if (fullName == null) {
-      fullName = jobApplication.getLastName();
-    } else {
-      fullName += " " + jobApplication.getLastName();
-    }
-
-    return fullName;
-  }
-
-  @Override
   @Transactional
   public void setDMSFile(JobApplication jobApplication) {
     MetaFile metaFile = jobApplication.getResume();

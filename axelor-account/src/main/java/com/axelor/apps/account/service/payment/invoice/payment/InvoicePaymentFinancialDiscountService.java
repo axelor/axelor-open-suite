@@ -19,17 +19,9 @@
 package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.base.AxelorException;
-import java.util.List;
 
 public interface InvoicePaymentFinancialDiscountService {
   void computeFinancialDiscount(InvoicePayment invoicePayment);
 
   void computeFinancialDiscountFields(InvoicePayment invoicePayment);
-
-  List<Long> computeDataForFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
-      throws AxelorException;
-
-  List<Long> applyFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
-      throws AxelorException;
 }

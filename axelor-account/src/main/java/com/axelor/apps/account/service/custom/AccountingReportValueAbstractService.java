@@ -24,7 +24,9 @@ import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.report.ITranslation;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -99,6 +101,7 @@ public abstract class AccountingReportValueAbstractService {
       BigDecimal result,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       String lineCode,
       int analyticCounter)
@@ -126,12 +129,18 @@ public abstract class AccountingReportValueAbstractService {
       groupNumber = groupAccountMap.get(parentTitle);
     }
 
+    int companyNumber =
+        companySet.size() == 1
+            ? companySet.iterator().next().getId().intValue()
+            : Integer.MAX_VALUE;
+
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
             groupNumber,
             columnNumber,
             lineNumber + AccountingReportValueServiceImpl.getLineOffset(),
             AccountingReportValueServiceImpl.getPeriodNumber(),
+            companyNumber,
             analyticCounter,
             this.getStyleSelect(groupColumn, column, line),
             groupColumn == null
@@ -143,6 +152,7 @@ public abstract class AccountingReportValueAbstractService {
             lineTitle,
             parentTitle,
             period,
+            this.getCompanyString(companySet),
             accountingReport,
             line,
             column,
@@ -231,6 +241,12 @@ public abstract class AccountingReportValueAbstractService {
     }
 
     return queryList;
+  }
+
+  protected String getCompanyString(Set<Company> companySet) {
+    return companySet.size() == 1
+        ? companySet.iterator().next().getName()
+        : I18n.get(ITranslation.ACCOUNTING_REPORT_3000_ALL_COMPANIES);
   }
 
   protected boolean areAllAnalyticAccountSetsEmpty(

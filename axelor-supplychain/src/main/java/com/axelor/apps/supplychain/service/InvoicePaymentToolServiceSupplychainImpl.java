@@ -22,7 +22,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
@@ -53,7 +54,6 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
       InvoicePaymentRepository invoicePaymentRepo,
-      InvoiceTermService invoiceTermService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       CurrencyService currencyService,
       PartnerSupplychainService partnerSupplychainService,
@@ -62,17 +62,20 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
       AppAccountService appAccountService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoiceTermToolService invoiceTermToolService,
       InvoiceTermPaymentToolService invoiceTermPaymentToolService) {
     super(
         invoiceRepo,
         moveToolService,
         invoicePaymentRepo,
-        invoiceTermService,
         invoiceTermPaymentService,
         currencyService,
         appAccountService,
         invoicePaymentFinancialDiscountService,
         currencyScaleService,
+        invoiceTermFilterService,
+        invoiceTermToolService,
         invoiceTermPaymentToolService);
     this.partnerSupplychainService = partnerSupplychainService;
     this.saleOrderComputeService = saleOrderComputeService;
