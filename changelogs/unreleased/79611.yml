@@ -1,3 +1,3 @@
 ---
-title: "Mass entry : Set new mass entry move line with Base module configuration"
+title: "Mass entry: fixed today date settings in dev mode not working with created lines from mass entry form."
 module: axelor-account
