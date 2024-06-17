@@ -28,6 +28,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.interfaces.Currenciable;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
@@ -86,6 +88,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   protected InvoiceLineRepository invoiceLineRepository;
 
   protected AppSupplychainService appSupplychainService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public StockMoveLineServiceSupplychainImpl(
@@ -106,7 +109,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       SupplyChainConfigService supplychainConfigService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
       InvoiceLineRepository invoiceLineRepository,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      CurrencyScaleService currencyScaleService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -126,6 +130,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     this.supplychainConfigService = supplychainConfigService;
     this.invoiceLineRepository = invoiceLineRepository;
     this.appSupplychainService = appSupplychainService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -569,9 +574,11 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal amountInCurrency = null;
     BigDecimal totalQty = null;
     BigDecimal notInvoicedQty = null;
+    Currenciable currenciable = null;
 
     if (isPurchase && purchaseOrderLine != null) {
       totalQty = purchaseOrderLine.getQty();
+      currenciable = purchaseOrderLine;
 
       notInvoicedQty =
           unitConversionService.convert(
@@ -588,6 +595,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       }
     } else if (!isPurchase && saleOrderLine != null) {
       totalQty = saleOrderLine.getQty();
+      currenciable = saleOrderLine;
 
       notInvoicedQty =
           unitConversionService.convert(
@@ -608,7 +616,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     }
 
     BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_UP);
-    return amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_UP);
+    return currencyScaleService.getScaledValue(currenciable, amountInCurrency.multiply(qtyRate));
   }
 
   @Override

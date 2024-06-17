@@ -90,7 +90,8 @@
       onChange="action-stock-move-line-group-real-qty-onchange"/>
     <field name="qtyInvoiced" readonly="true"/>
     <field name="unitPriceUntaxed" hidden="true" x-scale="2"/>
-    <field name="companyPurchasePrice" hidden="true" x-scale="2"/>
+    <field name="companyPurchasePrice" hidden="true"
+      x-scale="$companyCurrencyNumberOfDecimals"/>
     <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
@@ -103,6 +104,7 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
       <hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
     </field>
+    <field name="$companyCurrencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-cut-off-grid" title="Stock move lines concerned by cut off"
@@ -120,9 +122,11 @@
     <field name="realQty" x-scale="2"/>
     <field name="qtyInvoiced" x-scale="2"/>
     <field name="unitPriceUntaxed" x-scale="2"/>
-    <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal" x-scale="2"/>
+    <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal"
+      x-scale="$currencyNumberOfDecimals"/>
     <field name="stockMove.cutOffMoveGenerated" hidden="true"/>
     <field name="stockMove" hidden="true"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="allocated-qty-stock-move-line-form" title="Change allocated qty"
