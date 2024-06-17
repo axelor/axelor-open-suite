@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchAutoMoveLettering;
+import com.axelor.apps.account.service.batch.BatchCloseAnnualAccounts;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -42,6 +43,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -397,5 +399,18 @@ public class AccountingBatchController {
         "selection-in",
         Beans.get(MoveToolService.class)
             .getMoveStatusSelection(accountingBatch.getCompany(), journal));
+  }
+
+  @ErrorException
+  public void checkDaybookMovesOnFiscalYearWarning(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+
+    String warning =
+        Beans.get(BatchCloseAnnualAccounts.class).checkDaybookMovesOnFiscalYear(accountingBatch);
+
+    if (StringUtils.notEmpty(warning)) {
+      response.setAlert(warning);
+    }
   }
 }

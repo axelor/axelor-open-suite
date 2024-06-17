@@ -32,7 +32,9 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -55,9 +57,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -543,5 +547,41 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         return this.account.equals(other.account) && other.partner == null;
       }
     }
+  }
+
+  public String checkDaybookMovesOnFiscalYear(AccountingBatch accountingBatch)
+      throws AxelorException {
+    String warning = "";
+
+    if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
+            != accountingBatch.getActionSelect()
+        || accountingBatch.getYear() == null) {
+      return warning;
+    }
+
+    Set<Year> yearSet = new HashSet<>();
+    yearSet.add(accountingBatch.getYear());
+
+    int daybookMoveCount = 0;
+    if (accountingBatch.getCompany() != null
+        && accountConfigService
+            .getAccountConfig(accountingBatch.getCompany())
+            .getAccountingDaybook()) {
+      daybookMoveCount =
+          Beans.get(MoveToolService.class)
+              .findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK))
+              .size();
+    }
+
+    if (daybookMoveCount != 0) {
+      warning =
+          I18n.get(
+              String.format(
+                  ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL,
+                  accountingBatch.getYear().getName(),
+                  daybookMoveCount));
+    }
+
+    return warning;
   }
 }
