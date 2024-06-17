@@ -432,22 +432,16 @@ public class InvoiceToolService {
   }
 
   protected static void computeInvoiceAmounts(Invoice copy) throws AxelorException {
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     // Update invoice lines with new currency rate
     for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
-      computeInvoiceLine(invoiceLine, copy);
+      invoiceLine.setCompanyExTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), copy));
+      invoiceLine.setCompanyInTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), copy));
     }
 
     // Update invoice
     Beans.get(InvoiceService.class).compute(copy);
-  }
-
-  protected static void computeInvoiceLine(InvoiceLine invoiceLine, Invoice copy)
-      throws AxelorException {
-    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-
-    invoiceLine.setCompanyExTaxTotal(
-        invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), copy));
-    invoiceLine.setCompanyInTaxTotal(
-        invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), copy));
   }
 }
