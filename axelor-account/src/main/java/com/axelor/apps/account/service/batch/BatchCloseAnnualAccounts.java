@@ -82,6 +82,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected MoveValidateService moveValidateService;
   protected MoveSimulateService moveSimulateService;
   protected MoveRepository moveRepo;
+  protected MoveToolService moveToolService;
   protected boolean end = false;
   protected Move resultMove;
   protected BigDecimal resultMoveAmount;
@@ -98,7 +99,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       MoveSimulateService moveSimulateService,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      MoveToolService moveToolService) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
@@ -109,6 +111,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     this.moveValidateService = moveValidateService;
     this.moveSimulateService = moveSimulateService;
     this.moveRepo = moveRepo;
+    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -568,9 +571,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             .getAccountConfig(accountingBatch.getCompany())
             .getAccountingDaybook()) {
       daybookMoveCount =
-          Beans.get(MoveToolService.class)
-              .findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK))
-              .size();
+          moveToolService.findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK)).size();
     }
 
     if (daybookMoveCount != 0) {
