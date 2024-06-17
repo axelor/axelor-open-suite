@@ -18,88 +18,65 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BlockingService;
-import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
-import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SaleOrderLineProductionServiceImpl extends SaleOrderLineServiceSupplyChainImpl
-    implements SaleOrderLineProductionService {
+public class SaleOrderLineProductProductionServiceImpl
+    extends SaleOrderLineProductSupplychainServiceImpl
+    implements SaleOrderLineProductProductionService {
 
   protected AppProductionService appProductionService;
 
   @Inject
-  public SaleOrderLineProductionServiceImpl(
-      CurrencyService currencyService,
-      PriceListService priceListService,
-      ProductMultipleQtyService productMultipleQtyService,
-      AppBaseService appBaseService,
+  public SaleOrderLineProductProductionServiceImpl(
       AppSaleService appSaleService,
-      AccountManagementService accountManagementService,
-      SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderService saleOrderService,
-      PricingService pricingService,
-      TaxService taxService,
-      SaleOrderMarginService saleOrderMarginService,
-      CurrencyScaleService currencyScaleService,
+      AppBaseService appBaseService,
+      SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService,
       InternationalService internationalService,
-      AppAccountService appAccountService,
-      AnalyticMoveLineService analyticMoveLineService,
-      AppSupplychainService appSupplychainService,
-      AccountConfigService accountConfigService,
-      InvoiceLineRepository invoiceLineRepository,
-      SaleInvoicingStateService saleInvoicingStateService,
-      AnalyticLineModelService analyticLineModelService,
+      TaxService taxService,
+      AccountManagementService accountManagementService,
+      SaleOrderLinePricingService saleOrderLinePricingService,
+      SaleOrderLineDiscountService saleOrderLineDiscountService,
+      SaleOrderLinePriceService saleOrderLinePriceService,
+      SaleOrderLineTaxService saleOrderLineTaxService,
       BlockingService blockingService,
+      AnalyticLineModelService analyticLineModelService,
+      AppSupplychainService appSupplychainService,
       AppProductionService appProductionService) {
     super(
-        currencyService,
-        priceListService,
-        productMultipleQtyService,
-        appBaseService,
         appSaleService,
-        accountManagementService,
-        saleOrderLineRepo,
-        saleOrderService,
-        pricingService,
-        taxService,
-        saleOrderMarginService,
-        currencyScaleService,
+        appBaseService,
+        saleOrderLineComplementaryProductService,
         internationalService,
-        appAccountService,
-        analyticMoveLineService,
-        appSupplychainService,
-        accountConfigService,
-        invoiceLineRepository,
-        saleInvoicingStateService,
+        taxService,
+        accountManagementService,
+        saleOrderLinePricingService,
+        saleOrderLineDiscountService,
+        saleOrderLinePriceService,
+        saleOrderLineTaxService,
+        blockingService,
         analyticLineModelService,
-        blockingService);
+        appSupplychainService);
     this.appProductionService = appProductionService;
   }
 

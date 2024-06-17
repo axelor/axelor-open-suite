@@ -18,18 +18,18 @@ import java.util.Optional;
 public class SaleOrderLineComplementaryProductServiceImpl
     implements SaleOrderLineComplementaryProductService {
 
-  protected SaleOrderLineRepository saleOrderLineRepository;
-  protected SaleOrderLineService saleOrderLineService;
+  protected SaleOrderLineProductService saleOrderLineProductService;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
   public SaleOrderLineComplementaryProductServiceImpl(
-      SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderLineService saleOrderLineService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
-    this.saleOrderLineRepository = saleOrderLineRepository;
-    this.saleOrderLineService = saleOrderLineService;
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineRepository saleOrderLineRepository) {
+    this.saleOrderLineProductService = saleOrderLineProductService;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
   @Override
@@ -54,7 +54,7 @@ public class SaleOrderLineComplementaryProductServiceImpl
     complementarySOLine.setIsComplementaryPartnerProductsHandled(
         complementaryProduct.getGenerationTypeSelect()
             == ComplementaryProductRepository.GENERATION_TYPE_SALE_ORDER);
-    saleOrderLineService.computeProductInformation(complementarySOLine, saleOrder);
+    saleOrderLineProductService.computeProductInformation(complementarySOLine, saleOrder);
     saleOrderLineComputeService.computeValues(saleOrder, complementarySOLine);
     saleOrderLineRepository.save(complementarySOLine);
     return newComplementarySOLines;

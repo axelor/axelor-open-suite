@@ -38,19 +38,18 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected SaleOrderLineService saleOrderLineService;
-  protected SaleOrderLineTaxService saleOrderLineTaxService;
+  protected SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLinePackService saleOrderLinePackService;
 
   @Inject
   public SaleOrderComputeServiceImpl(
-      SaleOrderLineService saleOrderLineService,
-      SaleOrderLineTaxService saleOrderLineTaxService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
-
-    this.saleOrderLineService = saleOrderLineService;
-    this.saleOrderLineTaxService = saleOrderLineTaxService;
+      SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLinePackService saleOrderLinePackService) {
+    this.saleOrderLineCreateTaxLineService = saleOrderLineCreateTaxLineService;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLinePackService = saleOrderLinePackService;
   }
 
   @Override
@@ -108,7 +107,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       saleOrder
           .getSaleOrderLineTaxList()
           .addAll(
-              saleOrderLineTaxService.createsSaleOrderLineTax(
+              saleOrderLineCreateTaxLineService.createsSaleOrderLineTax(
                   saleOrder, saleOrder.getSaleOrderLineList()));
     }
   }
@@ -196,7 +195,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
 
     if (ObjectUtils.isEmpty(saleOrderLineList)
-        || !saleOrderLineService.hasEndOfPackTypeLine(saleOrderLineList)) {
+        || !saleOrderLinePackService.hasEndOfPackTypeLine(saleOrderLineList)) {
       return;
     }
     BigDecimal totalExTaxTotal = BigDecimal.ZERO;
