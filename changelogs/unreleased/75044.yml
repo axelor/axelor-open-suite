@@ -1,3 +1,3 @@
 ---
-title: "Mass entry : Fix critical error when we select a company and user haven't active company"
+title: "Mass entry: fixed error when a user without an active company is selecting a company."
 module: axelor-account
