@@ -26,9 +26,10 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -38,6 +39,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -58,6 +60,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected AccountingSituationService accountingSituationService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected InvoiceTermToolService invoiceTermToolService;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
@@ -68,7 +71,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       MoveLineToolService moveLineToolService,
       AccountingSituationService accountingSituationService,
       CurrencyScaleService currencyScaleService,
-      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      InvoiceTermToolService invoiceTermToolService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineService = moveLineService;
@@ -77,6 +81,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     this.accountingSituationService = accountingSituationService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.invoiceTermToolService = invoiceTermToolService;
   }
 
   @Override
@@ -197,7 +202,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (moveLine.getPartner() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount()) {
       moveLine.setFinancialDiscount(moveLine.getPartner().getFinancialDiscount());
-      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
     }
   }
 
@@ -274,6 +279,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   protected MoveLine getHoldbackMoveLine(MoveLine moveLine, Move move, Account holdbackAccount) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return null;
+    }
+
     return move.getMoveLineList().stream()
         .filter(
             it ->
@@ -406,7 +415,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   @Override
   public void recreateInvoiceTerms(Move move, MoveLine moveLine) throws AxelorException {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      if (!moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)) {
+      if (!moveLine.getInvoiceTermList().stream().allMatch(invoiceTermToolService::isNotReadonly)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE));

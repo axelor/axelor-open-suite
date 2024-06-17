@@ -74,6 +74,8 @@
       <field name="bank.country.alpha2Code" hidden="true"/>
       <field name="fullName" hidden="true"/>
     </panel>
+    <panel-related name="bankCardPanel" title="Bank cards" field="bankCardList"
+      colSpan="12" form-view="bank-card-form-from-bank-details" grid-view="bank-card-grid"/>
     <panel name="specificNotesPanel" title="Specific notes" colSpan="12"
       if-module="axelor-account">
       <field name="specificNoteOnInvoice" widget="html" colSpan="12"/>

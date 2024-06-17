@@ -28,6 +28,8 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
@@ -55,7 +57,9 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
-      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService) {
+      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderResidualProductService manufOrderResidualProductService) {
     super(
         manufOrderRepo,
         manufOrderService,
@@ -69,7 +73,9 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
         productionConfigService,
         appBaseService,
         appProductionService,
-        manufOrderCreatePurchaseOrderService);
+        manufOrderCreatePurchaseOrderService,
+        manufOrderPlanStockMoveService,
+        manufOrderResidualProductService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

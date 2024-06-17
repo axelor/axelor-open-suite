@@ -127,7 +127,8 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   }
 
   @Override
-  public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+  public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
+      throws AxelorException {
     Company company = null;
     LocalDate date = null;
     Set<GlobalBudget> globalBudgetSet = new HashSet<>();
@@ -153,7 +154,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
             .orElse(AccountTypeRepository.TYPE_CHARGE);
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, technicalTypeSelect, globalBudgetSet);
+        company, date, technicalTypeSelect, purchaseOrderLine.getAccount(), globalBudgetSet);
   }
 
   @Override
@@ -185,27 +186,5 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
             purchaseOrderLine.getProductCode());
       }
     }
-  }
-
-  @Override
-  public void computeBudgetDistributionSumAmount(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
-    List<BudgetDistribution> budgetDistributionList = purchaseOrderLine.getBudgetDistributionList();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = purchaseOrder.getOrderDate();
-
-    if (CollectionUtils.isNotEmpty(budgetDistributionList)) {
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            currencyScaleService.getCompanyScaledValue(
-                budgetDistribution,
-                budgetDistributionSumAmount.add(budgetDistribution.getAmount()));
-
-        budgetDistributionService.computeBudgetDistributionSumAmount(
-            budgetDistribution, computeDate);
-      }
-    }
-
-    purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 }

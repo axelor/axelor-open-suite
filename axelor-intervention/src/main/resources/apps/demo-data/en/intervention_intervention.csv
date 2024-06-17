@@ -1,0 +1,3 @@
+"importId";"statusSelect";"company.importId";"contract.importId";"deliveredPartner_importId";"requestSource.importId";"requestSubject.importId";"interventionCategory.importId";"interventionType.importId";"equipmentSet";"description";"contact.importId";"userInCharge.importId";"customerRequest.importId";"planningPreferenceSelect";"priority"
+1;10;1;1;132;1;2;2;1;10|11|12|13|14|15;"";133;17;3;2;"normal"
+2;10;1;;20;2;4;2;1;4|5|6;"Intervention triggered by a customer call";;;;;

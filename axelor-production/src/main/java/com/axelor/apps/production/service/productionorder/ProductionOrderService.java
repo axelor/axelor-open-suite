@@ -21,11 +21,8 @@ package com.axelor.apps.production.service.productionorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -43,7 +40,6 @@ public interface ProductionOrderService {
    *     material product (Product variant)
    * @param billOfMaterial
    * @param qtyRequested
-   * @param businessProject
    * @param startDate
    * @return
    * @throws AxelorException
@@ -55,44 +51,5 @@ public interface ProductionOrderService {
       LocalDateTime startDate)
       throws AxelorException;
 
-  /**
-   * @param productionOrder
-   * @param product
-   * @param billOfMaterial
-   * @param qtyRequested
-   * @param startDate
-   * @param endDate
-   * @param saleOrder
-   * @param saleOrderLine
-   * @param manufOrderOriginType
-   * @return
-   * @throws AxelorException
-   */
-  public ProductionOrder addManufOrder(
-      ProductionOrder productionOrder,
-      Product product,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      LocalDateTime endDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      ManufOrderOriginType manufOrderOriginType)
-      throws AxelorException;
-
   public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet);
-
-  ManufOrder generateManufOrder(
-      Product product,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      LocalDateTime endDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      ManufOrderOriginType manufOrderOriginType,
-      ManufOrder manufOrderParent)
-      throws AxelorException;
-
-  ProductionOrder addManufOrder(ProductionOrder productionOrder, ManufOrder manufOrder);
 }
