@@ -1,3 +1,3 @@
 ---
-title: "PaymentVoucher: fix technical error when the user's active company is null and there is more than one company in the app"
+title: "Payment voucher: fixed technical error when the user's active company is null and there are more than one company in the app."
 module: axelor-account
