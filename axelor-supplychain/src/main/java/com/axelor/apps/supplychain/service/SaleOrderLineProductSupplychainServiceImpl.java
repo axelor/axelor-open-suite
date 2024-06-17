@@ -88,11 +88,14 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
 
   protected Map<String, Object> setStandardDelay(SaleOrderLine saleOrderLine) {
     Integer lineSaleSupplySelect = saleOrderLine.getSaleSupplySelect();
+    Product product = saleOrderLine.getProduct();
     switch (lineSaleSupplySelect) {
       case SaleOrderLineRepository.SALE_SUPPLY_PURCHASE:
       case SaleOrderLineRepository.SALE_SUPPLY_PRODUCE:
       case SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE:
-        saleOrderLine.setStandardDelay(saleOrderLine.getProduct().getStandardDelay());
+        if (product != null) {
+          saleOrderLine.setStandardDelay(product.getStandardDelay());
+        }
         break;
       case SaleOrderLineRepository.SALE_SUPPLY_NONE:
       case SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK:
