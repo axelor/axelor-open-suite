@@ -33,18 +33,21 @@ import java.math.RoundingMode;
 
 public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateService {
 
-  protected SaleOrderLineService saleOrderLineService;
   protected AppSaleService appSaleService;
   protected AppBaseService appBaseService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLinePackService saleOrderLinePackService;
 
   @Inject
   public SaleOrderLineCreateServiceImpl(
-      SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
-      AppBaseService appBaseService) {
-    this.saleOrderLineService = saleOrderLineService;
+      AppBaseService appBaseService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLinePackService saleOrderLinePackService) {
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLinePackService = saleOrderLinePackService;
   }
 
   @Override
@@ -58,7 +61,7 @@ public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateServic
 
     if (packLine.getTypeSelect() == PackLineRepository.TYPE_START_OF_PACK
         || packLine.getTypeSelect() == PackLineRepository.TYPE_END_OF_PACK) {
-      return saleOrderLineService.createStartOfPackAndEndOfPackTypeSaleOrderLine(
+      return saleOrderLinePackService.createStartOfPackAndEndOfPackTypeSaleOrderLine(
           packLine.getPack(), saleOrder, packQty, packLine, packLine.getTypeSelect(), sequence);
     }
 
@@ -87,8 +90,8 @@ public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateServic
           soLine.setDescription(product.getDescription());
         }
         try {
-          saleOrderLineService.fillPriceFromPackLine(soLine, saleOrder);
-          saleOrderLineService.computeValues(saleOrder, soLine);
+          saleOrderLinePackService.fillPriceFromPackLine(soLine, saleOrder);
+          saleOrderLineComputeService.computeValues(saleOrder, soLine);
         } catch (AxelorException e) {
           TraceBackService.trace(e);
         }

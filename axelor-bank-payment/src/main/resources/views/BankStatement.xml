@@ -13,7 +13,7 @@
       <button name="printBtn" hidden="true" onClick=""/>
     </toolbar>
     <field name="id" hidden="false" width="120"/>
-    <field name="bankStatementFileFormat"/>
+    <field name="name"/>
     <field name="fromDate" width="120"/>
     <field name="toDate" width="120"/>
     <field name="statusSelect" title="Status" width="120"/>
