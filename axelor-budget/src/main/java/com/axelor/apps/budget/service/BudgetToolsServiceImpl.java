@@ -135,7 +135,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
       return null;
     }
 
-    if (budget.getGlobalBudget() != null) {
+    if (budget.getBudgetStructure() != null) {
       return budget.getBudgetStructure();
     }
     if (budget.getBudgetLevel() != null) {
@@ -151,7 +151,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
       return null;
     }
 
-    if (budgetLevel.getGlobalBudget() != null) {
+    if (budgetLevel.getBudgetStructure() != null) {
       return budgetLevel.getBudgetStructure();
     }
 
