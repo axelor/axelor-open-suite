@@ -46,6 +46,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MoveGroupServiceImpl implements MoveGroupService {
@@ -282,7 +283,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("dueDate", move.getDueDate());
     valuesMap.put(
         "moveLineList",
-        move.getMoveLineList().stream().map(Mapper::toMap).collect(Collectors.toList()));
+        Optional.ofNullable(move.getMoveLineList()).stream()
+            .map(Mapper::toMap)
+            .collect(Collectors.toList()));
     valuesMap.put("originDate", move.getOriginDate());
 
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
