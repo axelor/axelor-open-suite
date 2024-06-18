@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -302,6 +303,7 @@ public class InvoiceToolService {
     copy.setOriginalInvoice(null);
     copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
     copy.setAmountPaid(BigDecimal.ZERO);
+    computeInvoiceAmounts(copy);
     copy.setAmountRemaining(copy.getInTaxTotal());
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
@@ -427,5 +429,19 @@ public class InvoiceToolService {
     copy.setFinancialDiscountTotalAmount(financialDiscountTotalAmount);
     copy.setRemainingAmountAfterFinDiscount(remainingAmountAfterFinDiscount);
     copy.setLegalNotice(legalNotice);
+  }
+
+  protected static void computeInvoiceAmounts(Invoice copy) throws AxelorException {
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    // Update invoice lines with new currency rate
+    for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
+      invoiceLine.setCompanyExTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), copy));
+      invoiceLine.setCompanyInTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), copy));
+    }
+
+    // Update invoice
+    Beans.get(InvoiceService.class).compute(copy);
   }
 }
