@@ -14,7 +14,8 @@
   </grid>
 
   <form name="payroll-preparation-form" title="Payroll preparation"
-    model="com.axelor.apps.hr.db.PayrollPreparation" onNew="action-payroll-preparation-group-on-new">
+    model="com.axelor.apps.hr.db.PayrollPreparation" onNew="action-payroll-preparation-group-on-new"
+    onLoad="action-payroll-preparation-method-fill-in-leaves">
     <panel>
       <panel name="mainPanel" colSpan="12">
         <field name="company" onChange="action-payroll-preparation-record-company-onchange"
