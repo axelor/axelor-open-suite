@@ -436,7 +436,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
             cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
-            currencyAmount = moveToolService.computeCurrencyAmountSign(currencyAmount, false);
+            currencyAmount = moveLineToolService.computeCurrencyAmountSign(currencyAmount, false);
             cutOffMoveLine.setCurrencyAmount(currencyAmount);
           }
 
@@ -613,7 +613,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               null);
       boolean isDebit = productMoveLine.getDebit().signum() > 0;
 
-      currencyTaxAmount = moveToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);
+      currencyTaxAmount = moveLineToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);
 
       Integer vatSystem =
           taxAccountToolService.calculateVatSystem(

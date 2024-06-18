@@ -19,7 +19,6 @@
 package com.axelor.apps.budget.service.move;
 
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -29,9 +28,8 @@ import com.google.inject.Inject;
 public class MoveLineConsolidateBudgetServiceImpl extends MoveLineConsolidateServiceImpl {
 
   @Inject
-  public MoveLineConsolidateBudgetServiceImpl(
-      MoveLineToolService moveLineToolService, MoveToolService moveToolService) {
-    super(moveLineToolService, moveToolService);
+  public MoveLineConsolidateBudgetServiceImpl(MoveLineToolService moveLineToolService) {
+    super(moveLineToolService);
   }
 
   @Override
