@@ -37,7 +37,6 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -434,7 +433,6 @@ public class PurchaseOrderLineController {
       PurchaseOrder parent = this.getPurchaseOrder(context);
       Partner partner = parent.getSupplierPartner();
       Company company = parent.getCompany();
-      String userLanguage = AuthUtils.getUser().getLanguage();
       Product product = purchaseOrderLine.getProduct();
 
       SupplierCatalog supplierCatalog =
@@ -442,8 +440,7 @@ public class PurchaseOrderLineController {
 
       if (supplierCatalog == null && product != null) {
         Map<String, String> translation =
-            internationalService.getProductDescriptionAndNameTranslation(
-                product, partner, userLanguage);
+            internationalService.getProductDescriptionAndNameTranslation(product, partner);
 
         String description = translation.get("description");
         String productName = translation.get("productName");
