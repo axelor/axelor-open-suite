@@ -1,0 +1,3 @@
+---
+title: "Move: Fix circular injection on MoveLineControlService"
+module: axelor-axelor
