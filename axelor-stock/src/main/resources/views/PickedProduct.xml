@@ -16,6 +16,9 @@
     <field name="currentQty" readonly="true"/>
     <field name="unit" readonly="true"/>
     <field name="pickedQty"/>
+    <button name="realizePickingBtn" title="Realize picking"
+      onClick="save,action-picked-product-method-realize-picking" readonlyIf="stockMoveLine != null"
+      icon="fa-play"/>
   </grid>
 
   <form name="picked-product-form" title="Picked products"
@@ -87,6 +90,10 @@
   <action-group name="action-picked-product-group-onnew">
     <action name="action-picked-product-record-default-location"/>
   </action-group>
+
+  <action-method name="action-picked-product-method-realize-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="realizePicking"/>
+  </action-method>
 
 
 </object-views>

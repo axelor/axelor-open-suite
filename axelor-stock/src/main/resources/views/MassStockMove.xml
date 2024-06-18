@@ -18,8 +18,11 @@
     </panel>
     <panel name="pickedProductPanel">
       <panel-related field="pickedProductList" grid-view="picked-product-grid"
-        form-view="picked-product-form" colSpan="12" canNew="company != null"/>
+        form-view="picked-product-form" colSpan="12" canNew="company != null" onChange="save"/>
+      <button name="realizePickingBtn" title="Pick all / the rest"
+        onClick="save,action-mass-stock-move-method-realize-picking" icon="fa-play"/>
     </panel>
+
   </form>
 
   <action-method name="action-mass-stock-move-method-on-new">
@@ -30,5 +33,9 @@
     model="com.axelor.apps.stock.db.MassStockMove">
     <field name="cartStockLocation" expr="eval: company?.stockConfig?.cartStockLocation"/>
   </action-record>
+
+  <action-method name="action-mass-stock-move-method-realize-picking">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="realizeAllPicking"/>
+  </action-method>
 
 </object-views>
