@@ -220,7 +220,7 @@
 					<span>{_t('Fixed phone')}</span><span> : { fixedPhone }</span> <Box/>
 					<span>{_t('Mobile phone')}</span><span> : { mobilePhone }</span>
 					<Box mt={2}>
-						{dmsFile && <Link href={`#/ds/dms.file/edit/${dmsFile.id}`}>{_t('JobApplication.resume')}</Link>}
+						{dmsFile && <Link href={`#/ds/dms.file/edit/${dmsFile.id}`} target="_self">{_t('JobApplication.resume')}</Link>}
 					</Box>
 				</Box>
 			</>
