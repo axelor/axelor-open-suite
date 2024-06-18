@@ -22,6 +22,13 @@
     <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
+  <grid name="project-task-tree-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="name"/>
+    <field name="taskDate"/>
+    <field name="assignedTo"/>
+  </grid>
+
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
@@ -96,8 +103,8 @@
             if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
           <field name="project" colSpan="6"
             onChange="action-project-task-group-project-onchange"
-            domain="self.projectStatus.isCompleted = false" required="true"/>
-          <field name="parentTask" readonlyIf="project == null" colSpan="6"
+            domain="self.projectStatus.isCompleted = false" requiredIf="!parentTask"/>
+          <field name="parentTask" colSpan="6" requiredIf="!project"
             onSelect="action-project-task-attrs-project-parent-task-configurations"/>
           <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
             canView="false" canEdit="false"
@@ -559,6 +566,10 @@
     <field name="taskDate" expr="#{__config__.date}"/>
     <field name="project" expr="eval:_project"/>
     <field name="parentTask" expr="eval:_parentTask"/>
+    <field name="project" expr="eval: __parent__"
+      if="!_project &amp;&amp; __parent__?._model == 'com.axelor.apps.project.db.Project'"/>
+    <field name="parentTask" expr="eval: __parent__"
+      if="!_parentTask &amp;&amp; __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <field name="customerReferral" expr="eval: __user__"
       if="__user__?.roles.contains(__repo__(Role).all().filter('self.name=?','role.customer').fetchOne())"/>
     <field name="assignment" expr="eval:2"/>

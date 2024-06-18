@@ -156,8 +156,11 @@
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
           icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
-        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          colSpan="12" action="action-view-show-project-task-tree"/>
+        <panel-related name="projectTaskListPanel" colSpan="12"
+          title="Project Task Tree" field="projectTaskList" form-view="project-task-form"
+          grid-view="project-task-tree-grid" widget="tree-grid" x-tree-field="projectTaskList"
+          x-tree-field-title="Add a new child project task">
+        </panel-related>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           colSpan="12" showIf="isBusinessProject"
           action="action-dashlet-project-show-all-invoicing-task"
@@ -658,53 +661,6 @@
       <field name="toDate" as="toDate"/>
       <field name="imputable" as="imputable"/>
       <field name="projectStatus" as="projectStatus"/>
-    </node>
-
-  </tree>
-
-  <action-view name="action-view-show-project-task-tree" title="Project Task Tree"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="tree" name="project-project-task-tree"/>
-    <view type="form" name="project-task-form"/>
-    <domain>self.project.id = :_id AND self.parentTask = null</domain>
-    <context name="_id" expr="eval: id"/>
-  </action-view>
-
-  <tree name="project-project-task-tree" title="Tasks">
-
-    <column name="name" type="string"/>
-    <column name="taskDate" type="date"/>
-    <column name="assignedTo" type="reference"/>
-    <column name="openTaskBtn" type="button"/>
-    <column name="createSubtaskBtn" type="button"/>
-    <column name="deleteTaskBtn" type="button"/>
-
-    <node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id"
-      onClick="action-project-task-view-task" orderBy="taskDate">
-      <field name="name" as="name"/>
-      <field name="taskDate" as="taskDate"/>
-      <field name="assignedTo" as="assignedTo"/>
-      <field name="progress" as="progress"/>
-      <button name="createSubtaskBtn" icon="fa-plus"
-        onClick="save, action-project-view-add-subtask"/>
-      <button name="deleteTaskBtn" icon="fa-times"
-        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
-      <button name="openTaskBtn" icon="fa-external-link"
-        onClick="action-project-task-open-task"/>
-    </node>
-
-    <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
-      onClick="action-project-task-view-task" orderBy="taskDate">
-      <field name="name" as="name"/>
-      <field name="taskDate" as="taskDate"/>
-      <field name="assignedTo" as="assignedTo"/>
-      <field name="progress" as="progress"/>
-      <button name="createSubtaskBtn" icon="fa-plus"
-        onClick="save, action-project-view-add-subtask"/>
-      <button name="deleteTaskBtn" icon="fa-times"
-        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
-      <button name="openTaskBtn" icon="fa-external-link"
-        onClick="action-project-task-open-task"/>
     </node>
 
   </tree>
