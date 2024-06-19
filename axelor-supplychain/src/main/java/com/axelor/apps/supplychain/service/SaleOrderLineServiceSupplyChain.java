@@ -19,16 +19,16 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
+public interface SaleOrderLineServiceSupplyChain {
 
-  int SALE_ORDER_LINE_NOT_INVOICED = 1;
-  int SALE_ORDER_LINE_PARTIALLY_INVOICED = 2;
-  int SALE_ORDER_LINE_INVOICED = 3;
+  BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
+
+  BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
   /**
    * Compute undelivered quantity.

@@ -40,6 +40,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -215,5 +216,36 @@ public class BudgetDistributionController {
         .contains(request.getContext().getContextClass())) {
       response.setValue("budgetDistributionList", new ArrayList<>());
     }
+  }
+
+  @ErrorException
+  public void resetBudget(ActionRequest request, ActionResponse response) throws AxelorException {
+    if (Arrays.asList(
+            InvoiceLine.class, MoveLine.class, PurchaseOrderLine.class, SaleOrderLine.class)
+        .contains(request.getContext().getContextClass())) {
+      BigDecimal budgetRemainingAmountToAllocate =
+          getDefaultBudgetRemainingAmountToAllocate(request);
+      response.setValue("budgetRemainingAmountToAllocate", budgetRemainingAmountToAllocate);
+      response.setValue("budgetDistributionList", new ArrayList<>());
+      response.setValue("budget", null);
+      if (Arrays.asList(PurchaseOrderLine.class, SaleOrderLine.class)
+          .contains(request.getContext().getContextClass())) {
+        response.setValue("budgetStr", "");
+      }
+    }
+  }
+
+  protected BigDecimal getDefaultBudgetRemainingAmountToAllocate(ActionRequest request) {
+    if (InvoiceLine.class.equals(request.getContext().getContextClass())) {
+      return request.getContext().asType(InvoiceLine.class).getCompanyExTaxTotal();
+    } else if (MoveLine.class.equals(request.getContext().getContextClass())) {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      return moveLine.getCredit().max(moveLine.getDebit());
+    } else if (PurchaseOrderLine.class.equals(request.getContext().getContextClass())) {
+      return request.getContext().asType(PurchaseOrderLine.class).getCompanyExTaxTotal();
+    } else if (SaleOrderLine.class.equals(request.getContext().getContextClass())) {
+      return request.getContext().asType(SaleOrderLine.class).getCompanyExTaxTotal();
+    }
+    return BigDecimal.ZERO;
   }
 }

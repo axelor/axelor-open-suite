@@ -71,6 +71,13 @@
     <integer name="nextProjectTaskSequence" title="Next project sequence" hidden="true"
       default="1"/>
 
+    <many-to-one name="projectTimeUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Project time unit"
+      help="This will determine the unit used for project-wide reporting. If there are tasks using another unit, conversions will be made using &apos;Number of hours in a day&apos; value."/>
+
+
+    <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
+
     <!-- Configuration fields -->
     <boolean name="isShowStatus" title="Status?" default="true"/>
     <many-to-many name="projectTaskStatusSet"
@@ -93,6 +100,8 @@
     <boolean name="isShowCalendarPerStatus" title="Enable calendar view per status"/>
     <boolean name="isShowCalendarPerSection" title="Enable calendar view per section"/>
     <boolean name="isShowCalendarPerUser" title="Enable calendar view per user"/>
+    <many-to-one name="completedTaskStatus" title="Completed task status"
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
   </entity>

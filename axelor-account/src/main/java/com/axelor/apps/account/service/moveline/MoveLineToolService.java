@@ -23,8 +23,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.rpc.Context;
 import java.util.List;
 import java.util.Set;
@@ -67,4 +70,11 @@ public interface MoveLineToolService {
   boolean isCutOffActive(MoveLine moveLine);
 
   void setDecimals(MoveLine moveLine, Move move);
+
+  List<MoveLine> getMoveExcessDueList(
+      boolean excessPayment, Company company, Partner partner, Long invoiceId);
+
+  boolean isMoveLineTaxAccount(MoveLine moveLine);
+
+  void setIsNonDeductibleTax(MoveLine moveLine, Tax tax);
 }

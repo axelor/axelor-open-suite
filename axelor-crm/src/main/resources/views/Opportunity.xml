@@ -284,9 +284,8 @@
     <template>
             <![CDATA[
 	         <>
-	         	<h4>{opportunitySeq}</h4>
-	         	<h4>{name}</h4>
-	         	{user && <Image src={$image('user', 'image')}></Image>}
+	         	<strong>{opportunitySeq}</strong> <Box/>
+	         	<strong>{name}</strong>
 	         	<Box mt={4}/>
 	         	<dl>
 	         		{partner?.name &&
@@ -318,6 +317,9 @@
 	         			</Box>
 	         		</Box>
 	         	</dl>
+	         	<Box d="flex" justifyContent="flex-end">
+	         		{user && <Image src={$image('user', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+	         	</Box>
 	        	<Box className="card-summary popover">
 	       			<Box as="p" m={2}>
 	        			{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ wordBreak: "break-all", maxWidth: 250 }}></Box>}

@@ -18,12 +18,6 @@
     <option value="5">Canceled</option>
   </selection>
 
-  <selection name="sale.order.delivery.state">
-    <option value="1">Not delivered</option>
-    <option value="2">Partially delivered</option>
-    <option value="3">Delivered</option>
-  </selection>
-
   <selection name="message.related.to.select" id="sale.message.related.to.select">
     <option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
   </selection>
@@ -103,6 +97,10 @@
   <selection name="sale.sale.order.line.tree.select">
     <option value="1">View</option>
     <option value="2">Product</option>
+  </selection>
+
+  <selection name="base.pricing.type.select" id="sale.base.pricing.type.select">
+    <option value="Pricing">Sale.Pricing</option>
   </selection>
 
 </object-views>

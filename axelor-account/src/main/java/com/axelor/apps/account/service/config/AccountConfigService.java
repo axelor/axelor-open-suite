@@ -31,10 +31,12 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Template;
 import com.google.inject.servlet.RequestScoped;
@@ -735,5 +737,25 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return account;
+  }
+
+  public PrintingTemplate getInvoicePrintTemplate(Company company) throws AxelorException {
+    PrintingTemplate invoicePrintTemplate = getAccountConfig(company).getInvoicePrintTemplate();
+    if (ObjectUtils.isEmpty(invoicePrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return invoicePrintTemplate;
+  }
+
+  public Account getBillOfExchReceivAccount(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getBillOfExchReceivAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_BILL_OF_EXCHANGE_RECEIV_ACCOUNT),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getBillOfExchReceivAccount();
   }
 }

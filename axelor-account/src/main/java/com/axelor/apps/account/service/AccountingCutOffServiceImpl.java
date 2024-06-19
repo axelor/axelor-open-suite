@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -92,7 +93,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected CurrencyService currencyService;
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLineRepository moveLineRepository;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected int counter = 0;
 
   @Inject
@@ -117,7 +118,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
       MoveLineRepository moveLineRepository,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
     this.moveLineToolService = moveLineToolService;
@@ -138,7 +139,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.currencyService = currencyService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLineRepository = moveLineRepository;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -471,7 +472,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         cutOffMoveLine.clearAnalyticMoveLineList();
 
         // Copy analytic move lines
-        this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency);
+        this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency.abs());
 
         if (CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
           cutOffMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
@@ -608,7 +609,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           InvoiceLineManagement.computeAmount(
               productMoveLine.getCurrencyAmount(),
               taxLine.getValue().divide(new BigDecimal(100)),
-              currencyScaleServiceAccount.getScale(move),
+              currencyScaleService.getScale(move),
               null);
       boolean isDebit = productMoveLine.getDebit().signum() > 0;
 

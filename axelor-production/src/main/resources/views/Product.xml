@@ -7,10 +7,6 @@
     onNew="action-product-attrs-scale-and-precision-production"
     onLoad="action-product-attrs-scale-and-precision-production">
     <panel name="mainPanel" colSpan="12">
-      <field name="costSheetGroup" showIf="productSubTypeSelect == 3" canEdit="false"
-        form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
-        domain="self.costTypeSelect = 1"/>
-      <field name="economicManufOrderQty"/>
       <field name="defaultBillOfMaterial" canEdit="false"
         onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form"
         grid-view="bill-of-material-grid"
@@ -124,7 +120,7 @@
   </action-method>
 
   <action-group name="action-product-group-production-onnew">
-    <action name="action-group-base-product-onnew"/>
+    <action name="action-stock-product-group-on-new"/>
     <action name="action-product-method-bom-import-line-product-onnew"/>
   </action-group>
 

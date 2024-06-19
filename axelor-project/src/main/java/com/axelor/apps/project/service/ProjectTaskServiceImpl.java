@@ -116,7 +116,6 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     nextProjectTask.setFullName(projectTask.getFullName());
     nextProjectTask.setProject(projectTask.getProject());
     nextProjectTask.setProjectTaskCategory(projectTask.getProjectTaskCategory());
-    nextProjectTask.setProgressSelect(0);
     nextProjectTask.setProgress(BigDecimal.ZERO);
 
     projectTask.getMembersUserSet().forEach(nextProjectTask::addMembersUserSetItem);
@@ -187,19 +186,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     newProjectTask.setTaskDeadline(date);
     newProjectTask.setNextProjectTask(null);
     // Module 'project' fields
-    newProjectTask.setProgressSelect(0);
     newProjectTask.setProgress(BigDecimal.ZERO);
     newProjectTask.setTaskEndDate(date);
-  }
-
-  @Override
-  public TaskStatus getDefaultCompletedStatus(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
-        ? null
-        : project.getProjectTaskStatusSet().stream()
-            .filter(TaskStatus::getIsDefaultCompleted)
-            .findAny()
-            .orElse(null);
   }
 
   @Override
@@ -276,12 +264,5 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     projectTask.setPriority(parentTask.getPriority());
     projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
-  }
-
-  @Override
-  public int computeProgressSelect(ProjectTask projectTask) {
-    BigDecimal progress = projectTask.getProgress();
-    int newProgressSelect = progress.intValue() / 10;
-    return newProgressSelect * 10;
   }
 }

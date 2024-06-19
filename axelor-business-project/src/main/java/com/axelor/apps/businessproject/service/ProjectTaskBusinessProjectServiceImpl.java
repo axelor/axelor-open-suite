@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -40,6 +41,7 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -139,10 +141,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     task.setDescription(saleOrderLine.getDescription());
     task.setQuantity(saleOrderLine.getQty());
     task.setSaleOrderLine(saleOrderLine);
-    task.setToInvoice(
-        saleOrderLine.getSaleOrder() != null
-            ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
-            : false);
 
     if (isTimeUnitValid(orderLineUnit)) {
       task.setTimeUnit(orderLineUnit);
@@ -182,7 +180,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask updateDiscount(ProjectTask projectTask) {
     PriceList priceList = projectTask.getProject().getPriceList();
-    if (priceList == null) {
+    Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
+    if (frameworkCustomerContract != null || priceList == null) {
       this.emptyDiscounts(projectTask);
       return projectTask;
     }
@@ -271,6 +270,14 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       invoiceLineList.addAll(this.createInvoiceLine(invoice, projectTask, priority * 100 + count));
       count++;
     }
+
+    if (projectTaskList.stream()
+        .anyMatch(
+            task ->
+                task.getInvoicingType().equals(ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS))) {
+      invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_IN_PROGRESS_INVOICE);
+    }
+
     return invoiceLineList;
   }
 

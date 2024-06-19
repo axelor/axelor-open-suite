@@ -41,6 +41,8 @@ public interface MoveAttrsService {
 
   void addTradingNameDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
+  void addJournalDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
   void addWizardDefault(LocalDate moveDate, Map<String, Map<String, Object>> attrsMap);
 
   void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap);

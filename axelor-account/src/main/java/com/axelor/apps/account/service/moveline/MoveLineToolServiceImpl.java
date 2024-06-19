@@ -19,10 +19,12 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -30,7 +32,9 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -47,8 +51,11 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
@@ -56,7 +63,6 @@ import org.apache.commons.collections.CollectionUtils;
 @RequestScoped
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
-  protected static final int CURRENCY_RATE_SCALE = 5;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
@@ -299,10 +305,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (move.getMoveLineList().size() == 0 || moveLine.getCurrencyRate().signum() == 0) {
       try {
         moveLine.setCurrencyRate(
-            currencyService
-                .getCurrencyConversionRate(
-                    move.getCurrency(), move.getCompanyCurrency(), move.getDate())
-                .setScale(CURRENCY_RATE_SCALE, RoundingMode.HALF_UP));
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompanyCurrency(), move.getDate()));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);
       }
@@ -337,8 +341,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && Objects.equals(ml.getVatSystemSelect(), vatSystem)
         && !Objects.equals(ml.getId(), id)
         && ml.getAccount().getAccountType() != null
-        && AccountTypeRepository.TYPE_TAX.equals(
-            ml.getAccount().getAccountType().getTechnicalTypeSelect())
+        && this.isMoveLineTaxAccount(ml)
         && ml.getAccount().equals(account);
   }
 
@@ -409,6 +412,54 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (currency != null && companyCurrency != null) {
       moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
       moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
+    }
+  }
+
+  @Override
+  public List<MoveLine> getMoveExcessDueList(
+      boolean excessPayment, Company company, Partner partner, Long invoiceId) {
+    String filter = "";
+    if (excessPayment) {
+      filter = "self.credit > 0";
+    } else {
+      filter = "self.debit > 0";
+    }
+
+    filter =
+        filter.concat(
+            " AND self.move.company = :company AND (self.move.statusSelect = :statusAccounted OR self.move.statusSelect = :statusDaybook) "
+                + " AND self.move.ignoreInAccountingOk IN (false,null)"
+                + " AND self.account.accountType.technicalTypeSelect not in (:technicalTypesToExclude)"
+                + " AND self.account.useForPartnerBalance = true AND self.amountRemaining > 0 "
+                + " AND self.partner = :partner AND (self.move.invoice IS NULL OR self.move.invoice.id != :invoiceId) ORDER BY self.date ASC ");
+
+    Map<String, Object> bindings = new HashMap<>();
+    bindings.put("company", company);
+    bindings.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
+    bindings.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    bindings.put(
+        "technicalTypesToExclude",
+        Arrays.asList(AccountTypeRepository.TYPE_VIEW, AccountTypeRepository.TYPE_TAX));
+    bindings.put("partner", partner);
+    bindings.put("invoiceId", invoiceId);
+
+    return moveLineRepository.all().filter(filter).bind(bindings).fetch();
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_TAX.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
+
+  @Override
+  public void setIsNonDeductibleTax(MoveLine moveLine, Tax tax) {
+    if (tax.getIsNonDeductibleTax()) {
+      moveLine.setIsNonDeductibleTax(true);
     }
   }
 }

@@ -92,7 +92,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
 
         for (AnalyticAxisByCompany analyticAxisByCompany :
             accountConfig.getAnalyticAxisByCompanyList()) {
-          if (analyticAxisByCompany.getSequence() + 1 == i) {
+          if (analyticAxisByCompany.getSequence() == i) {
             analyticAxis = analyticAxisByCompany.getAnalyticAxis();
           }
         }

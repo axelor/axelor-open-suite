@@ -21,8 +21,6 @@ package com.axelor.apps.budget.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
-import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -37,8 +35,10 @@ import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -66,12 +66,12 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
       AppAccountService appAccountService,
       FixedAssetGenerationService fixedAssetGenerationService,
       MoveLineTaxService moveLineTaxService,
-      PeriodServiceAccount periodServiceAccount,
+      PeriodCheckService periodCheckService,
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
       CompanyConfigService companyConfigService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository,
       MoveBudgetService moveBudgetService,
@@ -91,12 +91,12 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
         appAccountService,
         fixedAssetGenerationService,
         moveLineTaxService,
-        periodServiceAccount,
+        periodCheckService,
         moveControlService,
         moveCutOffService,
         moveLineCheckService,
         companyConfigService,
-        currencyScaleServiceAccount,
+        currencyScaleService,
         moveLineFinancialDiscountService,
         expenseRepository,
         taxService);

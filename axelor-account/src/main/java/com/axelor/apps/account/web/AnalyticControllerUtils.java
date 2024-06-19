@@ -23,13 +23,12 @@ import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 
 public class AnalyticControllerUtils {
 
   public static AnalyticLine getParentWithContext(
-      ActionRequest request, ActionResponse response, AnalyticMoveLine analyticMoveLine) {
+      ActionRequest request, AnalyticMoveLine analyticMoveLine) {
     Context parentContext = request.getContext().getParent();
     AnalyticLine parent = null;
     if (parentContext != null) {

@@ -22,13 +22,14 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.AccountingSituationServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
@@ -49,20 +50,22 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   protected AppAccountService appAccountService;
   protected SaleOrderRepository saleOrderRepository;
   protected InvoicePaymentRepository invoicePaymentRepository;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public AccountingSituationSupplychainServiceImpl(
       AccountConfigService accountConfigService,
       PaymentModeService paymentModeService,
       AccountingSituationRepository accountingSituationRepo,
-      CompanyRepository companyRepo,
       AppAccountService appAccountService,
       SaleOrderRepository saleOrderRepository,
-      InvoicePaymentRepository invoicePaymentRepository) {
-    super(accountConfigService, paymentModeService, accountingSituationRepo, companyRepo);
+      InvoicePaymentRepository invoicePaymentRepository,
+      CurrencyScaleService currencyScaleService) {
+    super(accountConfigService, paymentModeService, accountingSituationRepo);
     this.appAccountService = appAccountService;
     this.saleOrderRepository = saleOrderRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -110,7 +113,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
     Partner partner = saleOrder.getClientPartner();
     List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
     for (AccountingSituation accountingSituation : accountingSituationList) {
-      if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
+      Company company = accountingSituation.getCompany();
+      if (company.equals(saleOrder.getCompany())) {
         // Update UsedCredit
         accountingSituation = this.computeUsedCredit(accountingSituation);
         if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
@@ -122,13 +126,14 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
                   .add(saleOrder.getInTaxTotal())
                   .subtract(inTaxInvoicedAmount);
 
-          accountingSituation.setUsedCredit(usedCredit);
+          accountingSituation.setUsedCredit(
+              currencyScaleService.getCompanyScaledValue(company, usedCredit));
         }
         boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation);
         if (usedCreditExceeded) {
           saleOrder.setBlockedOnCustCreditExceed(true);
           if (!saleOrder.getManualUnblock()) {
-            String message = accountingSituation.getCompany().getOrderBloquedMessage();
+            String message = company.getOrderBloquedMessage();
             if (Strings.isNullOrEmpty(message)) {
               message =
                   String.format(
@@ -148,25 +153,24 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation)
       throws AxelorException {
     BigDecimal sum = BigDecimal.ZERO;
+    Company company = accountingSituation.getCompany();
     List<SaleOrder> saleOrderList =
         saleOrderRepository
             .all()
             .filter(
                 "self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4",
-                accountingSituation.getCompany(),
+                company,
                 accountingSituation.getPartner(),
                 SaleOrderRepository.STATUS_DRAFT_QUOTATION,
-                SaleOrderRepository.STATUS_CANCELED)
+                SaleOrderRepository.STATUS_ORDER_COMPLETED)
             .fetch();
     for (SaleOrder saleOrder : saleOrderList) {
       sum = sum.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));
     }
     // subtract the amount of payments if there is no move created for
     // invoice payments
-    if (accountingSituation.getCompany() != null
-        && !accountConfigService
-            .getAccountConfig(accountingSituation.getCompany())
-            .getGenerateMoveForInvoicePayment()) {
+    if (company != null
+        && !accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
       List<InvoicePayment> invoicePaymentList =
           invoicePaymentRepository
               .all()
@@ -175,7 +179,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
                       + " AND self.invoice.partner = :partner"
                       + " AND self.statusSelect = :validated"
                       + " AND self.typeSelect != :imputation")
-              .bind("company", accountingSituation.getCompany())
+              .bind("company", company)
               .bind("partner", accountingSituation.getPartner())
               .bind("validated", InvoicePaymentRepository.STATUS_VALIDATED)
               .bind("imputation", InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION)
@@ -187,7 +191,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       }
     }
     sum = accountingSituation.getBalanceCustAccount().add(sum);
-    accountingSituation.setUsedCredit(sum.setScale(2, RoundingMode.HALF_UP));
+    accountingSituation.setUsedCredit(currencyScaleService.getCompanyScaledValue(company, sum));
 
     return accountingSituation;
   }

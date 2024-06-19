@@ -26,11 +26,13 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
+import org.apache.commons.io.FilenameUtils;
 
 public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
 
@@ -56,19 +58,17 @@ public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
 
   @Override
   public MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
-    MetaFile standardTemplateFile = null;
-    InputStream templateFileInputStream =
-        this.getClass().getResourceAsStream("/reports/" + templateFileName);
-
-    if (ObjectUtils.isEmpty(templateFileInputStream)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(BaseExceptionMessage.FILE_NOT_FOUND_IN_STANDARD_APPLICATION),
-              templateFileName));
-    }
-    standardTemplateFile = metaFiles.upload(templateFileInputStream, templateFileName);
-
-    return standardTemplateFile;
+    URL url =
+        MetaScanner.findAll(templateFileName).stream()
+            .filter(u -> templateFileName.equals(FilenameUtils.getName(u.getPath())))
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new AxelorException(
+                        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                        String.format(
+                            I18n.get(BaseExceptionMessage.FILE_NOT_FOUND_IN_STANDARD_APPLICATION),
+                            templateFileName)));
+    return metaFiles.upload(url.openStream(), templateFileName);
   }
 }

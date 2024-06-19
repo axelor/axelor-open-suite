@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.globalbudget;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
@@ -40,7 +41,6 @@ import com.axelor.apps.budget.service.BudgetScenarioLineService;
 import com.axelor.apps.budget.service.BudgetScenarioService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -64,7 +64,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected BudgetToolsService budgetToolsService;
   protected GlobalBudgetToolsService globalBudgetToolsService;
   protected BudgetScenarioLineService budgetScenarioLineService;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public GlobalBudgetServiceImpl(
@@ -78,7 +78,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       BudgetToolsService budgetToolsService,
       GlobalBudgetToolsService globalBudgetToolsService,
       BudgetScenarioLineService budgetScenarioLineService,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
+      CurrencyScaleService currencyScaleService) {
     this.budgetLevelService = budgetLevelService;
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetService = budgetService;
@@ -89,7 +89,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     this.budgetToolsService = budgetToolsService;
     this.globalBudgetToolsService = globalBudgetToolsService;
     this.budgetScenarioLineService = budgetScenarioLineService;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -135,7 +135,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     globalBudget.setRealizedWithNoPo(amountByField.get("realizedWithNoPo"));
     globalBudget.setRealizedWithPo(amountByField.get("realizedWithPo"));
     globalBudget.setTotalAmountAvailable(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             globalBudget,
             (amountByField
                     .get("totalAmountExpected")
@@ -145,7 +145,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     globalBudget.setTotalFirmGap(amountByField.get("totalFirmGap"));
     globalBudget.setSimulatedAmount(amountByField.get("simulatedAmount"));
     globalBudget.setAvailableAmountWithSimulated(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             globalBudget,
             (globalBudget.getTotalAmountAvailable().subtract(amountByField.get("simulatedAmount")))
                 .max(BigDecimal.ZERO)));
@@ -156,6 +156,10 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   public GlobalBudget changeBudgetVersion(
       GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException {
+    if (budgetVersion == null) {
+      return globalBudget;
+    }
+
     List<Budget> budgetList = globalBudgetToolsService.getAllBudgets(globalBudget);
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
         budgetVersion.getVersionExpectedAmountsLineList();
@@ -165,31 +169,12 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       budgetVersionRepo.save(oldBudgetVersion);
     }
 
-    for (Budget budget : budgetList) {
-      VersionExpectedAmountsLine versionExpectedAmountsLine =
-          versionExpectedAmountsLineList.stream()
-              .filter(version -> version.getBudget().equals(budget))
-              .findFirst()
-              .orElse(null);
-      if (versionExpectedAmountsLine != null) {
-        budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
-        budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
-        budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
-        if (needRecomputeBudgetLine) {
-          budget.setPeriodDurationSelect(BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME);
-          budget.clearBudgetLineList();
-          List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
-          if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
-            BudgetLine budgetLine = budgetLineList.get(0);
-            recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
-          }
-        }
-
-        budgetRepository.save(budget);
+    if (!ObjectUtils.isEmpty(budgetList)) {
+      for (Budget budget : budgetList) {
+        changeVersionLineOnBudget(versionExpectedAmountsLineList, budget, needRecomputeBudgetLine);
       }
     }
 
-    globalBudget.setBudgetList(budgetList);
     globalBudget.setActiveVersion(budgetVersion);
     budgetVersion.setIsActive(true);
     globalBudget = globalBudgetRepository.save(globalBudget);
@@ -344,5 +329,34 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     }
 
     return budgetScenarioLineList;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void changeVersionLineOnBudget(
+      List<VersionExpectedAmountsLine> versionExpectedAmountsLineList,
+      Budget budget,
+      boolean needRecomputeBudgetLine)
+      throws AxelorException {
+    VersionExpectedAmountsLine versionExpectedAmountsLine =
+        versionExpectedAmountsLineList.stream()
+            .filter(version -> version.getBudget().equals(budget))
+            .findFirst()
+            .orElse(null);
+    if (versionExpectedAmountsLine != null) {
+      budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
+      budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
+      budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
+      if (needRecomputeBudgetLine) {
+        budget.setPeriodDurationSelect(BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME);
+        budget.clearBudgetLineList();
+        List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
+        if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
+          BudgetLine budgetLine = budgetLineList.get(0);
+          recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
+        }
+      }
+
+      budgetRepository.save(budget);
+    }
   }
 }

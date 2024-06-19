@@ -49,7 +49,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
-import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -73,7 +73,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   @Inject
   public MrpLineServiceProductionImpl(
       AppBaseService appBaseService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -90,7 +90,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       ProductionConfigService productionConfigService) {
     super(
         appBaseService,
-        purchaseOrderSupplychainService,
+        purchaseOrderCreateSupplychainService,
         purchaseOrderService,
         purchaseOrderLineService,
         purchaseOrderRepo,
@@ -143,10 +143,15 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
     LocalDateTime plannedStartDateT = null;
     LocalDateTime plannedEndDateT = null;
+
+    BillOfMaterial billOfMaterial = mrpLine.getBillOfMaterial();
+    if (billOfMaterial == null) {
+      billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    }
+
     if (isAsapScheduling) {
       plannedStartDateT = maturityDate.atStartOfDay();
     } else {
-      BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
       // The +2 adds 2 minutes to the plannedEndDateT to avoid the overflowing of the calculated
       // plannedStartDateT on the current date time.
@@ -157,7 +162,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
               : maturityDate.atStartOfDay();
       plannedEndDateT =
           maturityDateTime.plusMinutes(
-              getTotalDurationInMinutes(defaultBillOfMaterial.getProdProcess(), qty));
+              getTotalDurationInMinutes(billOfMaterial.getProdProcess(), qty));
     }
 
     ManufOrder manufOrder =
@@ -166,7 +171,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             mrpLine.getQty(),
             ManufOrderService.DEFAULT_PRIORITY,
             ManufOrderService.IS_TO_INVOICE,
-            null,
+            billOfMaterial,
             plannedStartDateT,
             plannedEndDateT,
             ManufOrderOriginTypeProduction

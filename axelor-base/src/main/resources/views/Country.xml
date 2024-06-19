@@ -22,6 +22,8 @@
       <field name="bankDetailsTemplate" required="true"/>
       <field name="addressTemplate" grid-view="address-template-grid"
         form-view="address-template-form"/>
+      <field name="registrationNumberTemplate" grid-view="registration-number-template-grid"
+        form-view="registration-number-template-form"/>
     </panel>
     <panel name="attributesPanel" title="Attributes">
       <field name="cog"/>

@@ -95,7 +95,6 @@ public class SaleOrderLineTreeController {
     SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(id);
     saleOrder = Beans.get(SaleOrderLineTreeService.class).saveHasSubElement(saleOrder);
     response.setValues(saleOrder);
-    response.setReload(true);
   }
 
   public void removeSubElement(ActionRequest request, ActionResponse response)
