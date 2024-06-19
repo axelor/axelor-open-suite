@@ -702,7 +702,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
   @Override
   public Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException {
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
 
     Product product = invoiceLine.getProduct();
 
@@ -711,7 +711,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
 
     return internationalService.getProductDescriptionAndNameTranslation(
-        product, invoice.getPartner(), userLanguage);
+        product, invoice.getPartner());
   }
 
   @Override

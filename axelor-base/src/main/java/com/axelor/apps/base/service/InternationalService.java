@@ -26,6 +26,5 @@ public interface InternationalService {
 
   String translate(String source, String sourceLanguage, String targetLanguage);
 
-  Map<String, String> getProductDescriptionAndNameTranslation(
-      Product product, Partner partner, String userLanguage);
+  Map<String, String> getProductDescriptionAndNameTranslation(Product product, Partner partner);
 }
