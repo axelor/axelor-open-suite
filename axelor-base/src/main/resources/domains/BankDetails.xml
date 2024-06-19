@@ -13,7 +13,7 @@
       ref="com.axelor.apps.base.db.Bank" required="true"/>
     <many-to-one name="bankAddress" title="SWIFT address"
       ref="com.axelor.apps.base.db.BankAddress"/>
-    <string name="iban" title="IBAN / BBAN" required="true"/>
+    <string name="iban" title="IBAN / BBAN"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       massUpdate="true"/>
     <string name="bankCode" title="Bank Code" max="255"/>

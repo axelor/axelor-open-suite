@@ -271,7 +271,10 @@ public class BankOrderLineService {
     if (bankOrder.getBankOrderFileFormat() != null) {
       String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
       if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
-        domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
+        domain +=
+            " AND self.bank.country.bankDetailsTemplate.bankDetailsTypeSelect IN ("
+                + acceptedIdentifiers
+                + ")";
       }
     }
     // filter on the currency if it is set in bank order and in the bankdetails
