@@ -572,7 +572,8 @@
           <field name="carrierPartner"
             domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
             form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
-          <field name="forwarderPartner" domain=":company MEMBER OF self.companySet"
+          <field name="forwarderPartner"
+            domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
             form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
         </panel>
 
