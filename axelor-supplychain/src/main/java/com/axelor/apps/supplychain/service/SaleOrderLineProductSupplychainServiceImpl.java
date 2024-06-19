@@ -27,7 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLineProductServiceImpl {
+public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLineProductServiceImpl
+    implements SaleOrderLineProductSupplychainService {
 
   protected BlockingService blockingService;
   protected AnalyticLineModelService analyticLineModelService;
@@ -86,6 +87,13 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     return saleOrderLineMap;
   }
 
+  @Override
+  public Map<String, Object> getProductionInformation(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
+    return saleOrderLineMap;
+  }
+
   protected Map<String, Object> setStandardDelay(SaleOrderLine saleOrderLine) {
     Integer lineSaleSupplySelect = saleOrderLine.getSaleSupplySelect();
     Product product = saleOrderLine.getProduct();
@@ -108,7 +116,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     return saleOrderLineMap;
   }
 
-  protected Map<String, Object> setSupplierPartnerDefault(
+  @Override
+  public Map<String, Object> setSupplierPartnerDefault(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     if (saleOrderLine.getSaleSupplySelect() != SaleOrderLineRepository.SALE_SUPPLY_PURCHASE) {

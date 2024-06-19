@@ -52,7 +52,7 @@ public class GlobalBudgetToolsServiceImpl implements GlobalBudgetToolsService {
       }
     }
 
-    return budgetList;
+    return budgetList.stream().distinct().collect(Collectors.toList());
   }
 
   @Override

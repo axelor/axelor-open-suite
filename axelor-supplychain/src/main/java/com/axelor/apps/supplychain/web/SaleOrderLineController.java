@@ -40,6 +40,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.db.mapper.Mapper;
@@ -521,5 +522,18 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void saleSupplySelectOnChange(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService =
+        Beans.get(SaleOrderLineProductSupplychainService.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext());
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
+        saleOrderLineProductSupplychainService.getProductionInformation(saleOrderLine));
+    saleOrderLineMap.putAll(
+        saleOrderLineProductSupplychainService.setSupplierPartnerDefault(saleOrderLine, saleOrder));
+    response.setValues(saleOrderLineMap);
   }
 }

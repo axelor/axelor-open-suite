@@ -168,6 +168,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
@@ -387,5 +388,7 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineProductSupplychainServiceImpl.class);
     bind(PricingGroupSaleServiceImpl.class).to(PricingGroupSupplychainServiceImpl.class);
     bind(PricingSupplychainService.class).to(PricingSupplychainServiceImpl.class);
+    bind(SaleOrderLineProductSupplychainService.class)
+        .to(SaleOrderLineProductSupplychainServiceImpl.class);
   }
 }
