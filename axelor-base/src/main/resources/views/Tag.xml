@@ -14,8 +14,11 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="colorSelect" widget="SingleSelect" x-color-field="colorSelect"/>
-      <field name="companySet" if="__config__.app.getApp('base')?.getEnableMultiCompany()" colSpan="6" canNew="false" widget="TagSelect"/>
-      <field name="tradingNameSet" if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="6" canNew="false" widget="TagSelect"/>
+      <field name="companySet" if="__config__.app.getApp('base')?.getEnableMultiCompany()"
+        colSpan="6" canNew="false" widget="TagSelect"/>
+      <field name="tradingNameSet"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="6" canNew="false"
+        widget="TagSelect"/>
     </panel>
   </form>
 
