@@ -70,6 +70,9 @@
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
+        <field name="cartStockLocation"
+          if="__config__.app.getApp('stock')?.isMassStockMoveManaged"
+          domain="self.typeSelect != 3 AND self.company = :company" colSpan="4"/>
         <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
         <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
       </panel>
