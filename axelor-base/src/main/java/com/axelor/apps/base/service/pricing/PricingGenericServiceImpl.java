@@ -62,7 +62,7 @@ public class PricingGenericServiceImpl implements PricingGenericService {
       throws AxelorException {
 
     Model model = JPA.find((Class<T>) modelClass, modelId);
-    usePricings(company, model);
+    usePricings(company, model, PricingRepository.PRICING_TYPE_SELECT_DEFAULT);
   }
 
   @Override
@@ -76,15 +76,16 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   }
 
   @Override
-  public void usePricings(Company company, Model model) throws AxelorException {
-    computePricingsOnModel(company, model);
+  public void usePricings(Company company, Model model, String typeSelect) throws AxelorException {
+    computePricingsOnModel(company, model, typeSelect);
 
-    computePricingsOnChildren(company, model);
+    computePricingsOnChildren(company, model, typeSelect);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void computePricingsOnModel(Company company, Model model) throws AxelorException {
+  public void computePricingsOnModel(Company company, Model model, String typeSelect)
+      throws AxelorException {
     List<String> unavailableModels = getUnavailableModels();
     if (!ObjectUtils.isEmpty(unavailableModels)
         && unavailableModels.contains(model.getClass().getSimpleName())) {
@@ -95,37 +96,20 @@ public class PricingGenericServiceImpl implements PricingGenericService {
               I18n.get(model.getClass().getSimpleName())));
     }
 
-    List<Pricing> pricingList = getPricings(company, model);
-
-    if (ObjectUtils.isEmpty(pricingList)) {
-      return;
-    }
-
-    List<StringBuilder> logsList = new ArrayList<>();
-    for (Pricing pricing : pricingList) {
-      PricingComputer pricingComputer = PricingComputer.of(pricing, model);
-      pricingComputer.subscribe(pricingObserver);
-      pricingComputer.apply();
-
-      logsList.add(pricingObserver.getLogs());
-    }
+    List<StringBuilder> logsList = computePricingProcess(company, model, typeSelect);
 
     updatePricingScaleLogs(logsList, model);
 
-    JpaRepository.of(EntityHelper.getEntityClass(model)).save(model);
+    JpaRepository.of(EntityHelper.getEntityClass(model)).save(EntityHelper.getEntity(model));
   }
 
   @Override
-  public List<Pricing> getPricings(Company company, Model model) {
+  public List<Pricing> getPricings(Company company, Model model, String typeSelect) {
     List<Pricing> pricingList = new ArrayList<>();
     if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
-      pricingList =
-          pricingService.getPricings(
-              company, model, null, PricingRepository.PRICING_TYPE_SELECT_DEFAULT);
+      pricingList = pricingService.getPricings(company, model, null, typeSelect);
     } else {
-      List<Pricing> resultList =
-          pricingService.getAllPricings(
-              company, model, PricingRepository.PRICING_TYPE_SELECT_DEFAULT);
+      List<Pricing> resultList = pricingService.getAllPricings(company, model, typeSelect);
 
       Set<Long> pricingsPointedTo =
           resultList.stream()
@@ -146,7 +130,8 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   }
 
   @Override
-  public void computePricingsOnChildren(Company company, Model model) throws AxelorException {
+  public void computePricingsOnChildren(Company company, Model model, String typeSelect)
+      throws AxelorException {
     // overridden in other modules
   }
 
@@ -166,6 +151,28 @@ public class PricingGenericServiceImpl implements PricingGenericService {
         PricingRepository.PRICING_RESTRICT_MOVE_LINE,
         PricingRepository.PRICING_RESTRICT_INVOICE,
         PricingRepository.PRICING_RESTRICT_INVOICE_LINE);
+  }
+
+  @Override
+  public List<StringBuilder> computePricingProcess(Company company, Model model, String typeSelect)
+      throws AxelorException {
+    List<StringBuilder> logsList = new ArrayList<>();
+
+    List<Pricing> pricingList = getPricings(company, model, typeSelect);
+
+    if (ObjectUtils.isEmpty(pricingList)) {
+      return logsList;
+    }
+
+    for (Pricing pricing : pricingList) {
+      PricingComputer pricingComputer = PricingComputer.of(pricing, model);
+      pricingComputer.subscribe(pricingObserver);
+      pricingComputer.apply();
+
+      logsList.add(pricingObserver.getLogs());
+    }
+
+    return logsList;
   }
 
   protected String computePricingLogs(List<StringBuilder> logsList) {

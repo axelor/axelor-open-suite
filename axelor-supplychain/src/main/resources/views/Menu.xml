@@ -291,5 +291,33 @@
       self.saleOrder.statusSelect = 3
     </domain>
   </action-view>
+
+  <!-- Pricing menus -->
+
+  <menuitem title="Pricings" name="sc-root-supplychain-pricing" parent="account-conf"
+    order="1000"
+    if="__config__.app.getApp('base')?.enablePricingScale &amp;&amp; __config__.app.getApp('base')?.usePricingForFiscalPosition"/>
+
+  <menuitem title="Pricing" name="sc-pricing-supplychain-pricing"
+    parent="sc-root-supplychain-pricing" order="10" action="sc.root.supplychain.pricing"/>
+
+  <action-view name="sc.root.supplychain.pricing" title="Pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_FISCAL_POSITION_PRICING"/>
+  </action-view>
+
+  <menuitem title="Pricing rules" name="sc-pricing-supplychain-conf-pricing-rule"
+    parent="sc-root-supplychain-pricing" order="20" action="sc.root.supplychain.conf.pricing.rule"/>
+
+  <action-view name="sc.root.supplychain.conf.pricing.rule" title="Pricing rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.concernedModel.name IN ('SaleOrder')</domain>
+  </action-view>
 </object-views>
 

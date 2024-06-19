@@ -43,14 +43,15 @@ public class SalePricingGenericServiceImpl extends PricingGenericServiceImpl {
   }
 
   @Override
-  public void computePricingsOnChildren(Company company, Model model) throws AxelorException {
-    super.computePricingsOnChildren(company, model);
+  public void computePricingsOnChildren(Company company, Model model, String typeSelect)
+      throws AxelorException {
+    super.computePricingsOnChildren(company, model, typeSelect);
 
     if (SaleOrder.class.equals(EntityHelper.getEntityClass(model))) {
       SaleOrder saleOrder = (SaleOrder) model;
       if (!ObjectUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          computePricingsOnModel(company, saleOrderLine);
+          computePricingsOnModel(company, saleOrderLine, typeSelect);
         }
       }
     }

@@ -10,6 +10,16 @@
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
+
+    <extend target="//field[@name='mainInvoicingAddress']">
+      <attribute name="onChange"
+        value="action-sale-order-group-main-invoicing-address-onchange"/>
+    </extend>
+
+    <extend target="//field[@name='deliveryAddress']">
+      <attribute name="onChange" value="action-sale-order-group-delivery-address-onchange"/>
+    </extend>
+
     <extend target="//field[@name='versionNumber']">
       <insert position="after">
         <field colSpan="3" name="directOrderLocation"
@@ -140,6 +150,23 @@
     <action name="action-supplychain-so-generate-po-check-supplier-partner"/>
     <action
       name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-main-invoicing-address-onchange">
+    <action name="action-sale-order-method-address-str"/>
+    <action name="action-sale-order-group-fiscal-position-recompute"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-delivery-address-onchange">
+    <action name="action-sale-order-method-address-str"/>
+    <action name="action-sale-order-attrs-set-is-ispm-required"/>
+    <action name="action-sale-order-group-fiscal-position-recompute"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-fiscal-position-recompute">
+    <action name="action-sale-order-method-update-fiscal-position-using-pricing"/>
+    <action name="action-sale-order-method-fiscal-position-on-change"/>
+    <action name="action-sale-order-method-on-line-change"/>
   </action-group>
 
   <!-- ACTION METHOD -->
@@ -396,6 +423,11 @@
   <action-method name="action-sale-order-method-update-timetable-amounts">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="updateTimetableAmounts"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-update-fiscal-position-using-pricing">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateFiscalPositionUsingPricing"/>
   </action-method>
 
 </object-views>

@@ -198,4 +198,8 @@
     <option value="3">Delivered</option>
   </selection>
 
+  <selection name="base.pricing.type.select" id="supplychain.base.pricing.type.select">
+    <option value="FiscalPosition">Supplychain.FiscalPosition</option>
+  </selection>
+
 </object-views>
