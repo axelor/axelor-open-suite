@@ -1,0 +1,3 @@
+---
+title: "Expense line: orphan expense line are now also digitally signed if there is a justification file"
+module: axelor-human-resource
