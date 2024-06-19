@@ -1,0 +1,3 @@
+---
+title: "ManufOrder : Fix sequence management for manufacturing order per company"
+module: axelor-production

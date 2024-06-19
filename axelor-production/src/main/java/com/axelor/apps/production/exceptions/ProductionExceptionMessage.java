@@ -36,7 +36,7 @@ public final class ProductionExceptionMessage {
 
   /** Manuf order service */
   public static final String MANUF_ORDER_SEQ = /*$$(*/
-      "There's no configured sequence for fabrication's orders" /*)*/;
+      "You must configure a sequence for manufacturing order for company %s" /*)*/;
 
   public static final String CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES = /*$$(*/
       "You cannot delete realized stock move lines." /*)*/;
@@ -80,8 +80,6 @@ public final class ProductionExceptionMessage {
       "You must configure a finished products default stock location for company %s." /*)*/;
   public static final String PRODUCTION_CONFIG_5 = /*$$(*/
       "You must configure a component default stock location for company %s." /*)*/;
-  public static final String PRODUCTION_CONFIG_MISSING_MANUF_ORDER_SEQ = /*$$(*/
-      "You must configure a sequence for manufacturing order for company %s" /*)*/;
   public static final String PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING = /*$$(*/
       "Your production virtual stock location is not an outsourcing location." /*)*/;
 

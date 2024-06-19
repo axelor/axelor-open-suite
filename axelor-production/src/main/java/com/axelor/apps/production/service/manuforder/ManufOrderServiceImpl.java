@@ -22,10 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -42,7 +42,6 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
-import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -51,7 +50,6 @@ import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
@@ -465,24 +463,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   @Override
   public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException {
-
-    ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
-    ProductionConfig productionConfig =
-        productionConfigService.getProductionConfig(manufOrder.getCompany());
-    Sequence sequence =
-        productionConfigService.getManufOrderSequence(
-            productionConfig, manufOrder.getWorkshopStockLocation());
-
-    String seq =
-        sequenceService.getSequenceNumber(sequence, ManufOrder.class, "manufOrderSeq", manufOrder);
-
-    if (seq == null) {
+    Company company = manufOrder.getCompany();
+    String sequence =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.MANUF_ORDER, company, ManufOrder.class, "manufOrderSeq", manufOrder);
+    if (sequence == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.MANUF_ORDER_SEQ));
+          I18n.get(ProductionExceptionMessage.MANUF_ORDER_SEQ),
+          company.getName());
     }
-
-    return seq;
+    return sequence;
   }
 
   @Override

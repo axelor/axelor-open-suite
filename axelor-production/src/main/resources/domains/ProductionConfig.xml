@@ -11,8 +11,6 @@
 
     <integer name="stockMoveRealizeOrderSelect" default="1"
       selection="production.manuf.order.stock.move.realize.order.select"/>
-    <many-to-one name="manufOrderSequence" title="Default sequence"
-      ref="com.axelor.apps.base.db.Sequence"/>
     <one-to-many name="workshopSequenceConfigLineList" title="Sequence by workshop"
       mappedBy="productionConfig" ref="com.axelor.apps.production.db.WorkshopSequenceConfigLine"/>
 
@@ -51,7 +49,6 @@
     <track>
       <field name="company" on="UPDATE"/>
       <field name="stockMoveRealizeOrderSelect" on="UPDATE"/>
-      <field name="manufOrderSequence" on="UPDATE"/>
       <field name="finishMoAutomaticEmail" on="UPDATE"/>
       <field name="finishMoMessageTemplate" on="UPDATE"/>
       <field name="partFinishMoAutomaticEmail" on="UPDATE"/>
