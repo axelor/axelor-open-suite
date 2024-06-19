@@ -83,7 +83,7 @@
           readonlyIf="statusSelect > 1" colSpan="4"/>
         <field name="customerAccountNumberToCarrier" readonlyIf="statusSelect > 1" colSpan="4"/>
         <field name="forwarderPartner"
-          domain="(self.isCarrier = TRUE OR self.isSupplier = TRUE) AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
+          domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
           form-view="partner-form" grid-view="partner-grid" canEdit="false"
           readonlyIf="statusSelect > 1" colSpan="4"/>
         <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid"
