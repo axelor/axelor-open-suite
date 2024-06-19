@@ -84,4 +84,6 @@ public interface LeadService {
   public boolean computeIsLost(Lead lead) throws AxelorException;
 
   public void kanbanLeadOnMove(Lead lead) throws AxelorException;
+
+  public void resetLead(Lead lead) throws AxelorException;
 }
