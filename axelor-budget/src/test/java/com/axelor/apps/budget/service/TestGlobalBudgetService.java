@@ -41,7 +41,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class TestGlobalBudgetService extends BudgetTest {
@@ -52,7 +52,7 @@ class TestGlobalBudgetService extends BudgetTest {
   protected final BudgetScenarioRepository budgetScenarioRepository;
   protected final GlobalBudgetService globalBudgetService;
   protected final BudgetVersionService budgetVersionService;
-  protected final LoaderHelper loaderHelper;
+  protected static final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
 
   @Inject
   public TestGlobalBudgetService(
@@ -60,14 +60,12 @@ class TestGlobalBudgetService extends BudgetTest {
       BudgetRepository budgetRepository,
       BudgetStructureRepository budgetStructureRepository,
       BudgetScenarioRepository budgetScenarioRepository,
-      BudgetVersionService budgetVersionService,
-      LoaderHelper loaderHelper) {
+      BudgetVersionService budgetVersionService) {
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetRepository = budgetRepository;
     this.budgetStructureRepository = budgetStructureRepository;
     this.budgetScenarioRepository = budgetScenarioRepository;
     this.budgetVersionService = budgetVersionService;
-    this.loaderHelper = loaderHelper;
 
     //  We need to initialize this service like that because it is linked to a Request scoped
     // service
@@ -77,8 +75,8 @@ class TestGlobalBudgetService extends BudgetTest {
     }
   }
 
-  @BeforeEach
-  void setUp() {
+  @BeforeAll
+  static void setUp() {
     loaderHelper.importCsv("data/budget-input.xml");
     loaderHelper.importCsv("data/budget-template-input.xml");
   }
