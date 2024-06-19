@@ -29,6 +29,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.rpc.Context;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -77,4 +78,6 @@ public interface MoveLineToolService {
   boolean isMoveLineTaxAccount(MoveLine moveLine);
 
   void setIsNonDeductibleTax(MoveLine moveLine, Tax tax);
+
+  BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
 }
