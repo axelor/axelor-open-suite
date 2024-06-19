@@ -37,16 +37,19 @@ public class GlobalBudgetToolsServiceImpl implements GlobalBudgetToolsService {
   @Override
   public List<Budget> getAllBudgets(GlobalBudget globalBudget) {
     List<Budget> budgetList = new ArrayList<>();
-    if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
-      budgetList = globalBudget.getBudgetList();
+    if (globalBudget == null) {
+      return budgetList;
     }
+
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
         budgetList = getAllBudgets(budgetLevel, budgetList);
       }
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      budgetList.addAll(globalBudget.getBudgetList());
     }
 
-    return budgetList.stream().distinct().collect(Collectors.toList());
+    return budgetList;
   }
 
   @Override
