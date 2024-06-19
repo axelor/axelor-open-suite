@@ -270,7 +270,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               amountToInvoice.add(qtyToInvoice.multiply(priceMap.get(saleOrderLineId)));
         }
       }
+    } else if (isPercent) {
+      amountToInvoice =
+          saleOrder
+              .getExTaxTotal()
+              .multiply(amountToInvoice)
+              .divide(
+                  new BigDecimal(100),
+                  currencyScaleService.getCompanyScale(saleOrder),
+                  RoundingMode.HALF_UP);
     }
+
     return amountToInvoice;
   }
 
