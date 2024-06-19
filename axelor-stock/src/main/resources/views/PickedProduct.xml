@@ -30,8 +30,8 @@
       <field name="fromStockLocation"
         onSelect="action-picked-product-method-set-domain-from-stock-location"
         onChange="action-picked-product-record-set-tracking-number,action-picked-product-record-set-current-qty"/>
-      <field name="trackingNumber"
-        onSelect="action-picked-product-attrs-tracking-number-domain,action-picked-product-record-set-current-qty"/>
+      <field name="trackingNumber" onChange="action-picked-product-record-set-current-qty"
+        onSelect="action-picked-product-attrs-tracking-number-domain"/>
       <field name="currentQty" readonly="true"/>
       <field name="unit" readonly="true"/>
       <field name="pickedQty"/>
