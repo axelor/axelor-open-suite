@@ -22,7 +22,10 @@
       <button name="realizePickingBtn" title="Pick all / the rest"
         onClick="save,action-mass-stock-move-method-realize-picking" icon="fa-play"/>
     </panel>
-
+    <panel name="storedProductPanel">
+      <panel-related field="storedProductList" grid-view="stored-product-grid"
+        form-view="stored-product-form" colSpan="12" canNew="company != null"/>
+    </panel>
   </form>
 
   <action-method name="action-mass-stock-move-method-on-new">
