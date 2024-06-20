@@ -230,7 +230,7 @@
 
   <action-attrs name="action-invoice-payment-attrs-set-is-partial-payment">
     <attribute name="value" for="$isPartialPayment"
-      expr="call: com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService:isPartialPayment(__this__)"/>
+      expr="call: com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentToolService:isPartialPayment(__this__)"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-payment-attrs-currency-scale">
