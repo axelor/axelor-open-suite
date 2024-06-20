@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Account;
@@ -299,23 +317,21 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     companyPaymentAmount =
         companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
     BigDecimal currencyRate =
-        this.computeCurrencyRate(invoice, invoicePayment, companyPaymentAmount, paymentAmount);
-
+        this.computeCurrencyRate(
+            companyPaymentAmount,
+            paymentAmount,
+            invoice.getCurrency(),
+            invoicePayment.getCurrency(),
+            invoice.getCompany().getCurrency(),
+            invoice.getMove());
     companyPaymentAmount =
         invoiceTermService.adjustAmountInCompanyCurrency(
             invoice.getInvoiceTermList(),
             invoice.getCompanyInTaxTotalRemaining(),
             companyPaymentAmount,
             paymentAmount,
+            currencyRate,
             company);
-    companyPaymentAmount =
-        this.correctCompanyAmountWithForeignExchange(
-            invoice.getInvoiceDate(),
-            invoicePayment.getPaymentDate(),
-            invoicePayment.getCurrency(),
-            invoicePayment.getCompanyCurrency(),
-            paymentAmount,
-            companyPaymentAmount);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -395,31 +411,16 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   }
 
   protected BigDecimal computeCurrencyRate(
-      Invoice invoice,
-      InvoicePayment invoicePayment,
       BigDecimal companyPaymentAmount,
-      BigDecimal paymentAmount)
-      throws AxelorException {
-    Currency invoiceCurrency = invoice.getCurrency();
-    Currency paymentCurrency = invoicePayment.getCurrency();
-    Currency companyCurrency = invoice.getCompanyCurrency();
-    Move invoiceMove = invoice.getMove();
-
+      BigDecimal paymentAmount,
+      Currency invoiceCurrency,
+      Currency paymentCurrency,
+      Currency companyCurrency,
+      Move invoiceMove) {
     BigDecimal currencyRate =
         currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
 
     if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
-      BigDecimal newCurrencyRate =
-          currencyService.getCurrencyRate(
-              invoice.getInvoiceDate(),
-              invoicePayment.getPaymentDate(),
-              paymentCurrency,
-              companyCurrency,
-              currencyRate);
-      if (newCurrencyRate.compareTo(currencyRate) != 0) {
-        return newCurrencyRate;
-      }
-
       return invoiceMove != null
           ? invoiceMove.getMoveLineList().stream()
               .map(MoveLine::getCurrencyRate)
@@ -502,21 +503,5 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
         }
       }
     }
-  }
-
-  protected BigDecimal correctCompanyAmountWithForeignExchange(
-      LocalDate invoiceDate,
-      LocalDate paymentDate,
-      Currency startCurrency,
-      Currency endCurrency,
-      BigDecimal currencyAmount,
-      BigDecimal companyCurrencyAmount)
-      throws AxelorException {
-    if (!currencyService.isSameCurrencyRate(invoiceDate, paymentDate, startCurrency, endCurrency)) {
-      return currencyService.getAmountCurrencyConvertedAtDate(
-          startCurrency, endCurrency, currencyAmount, paymentDate);
-    }
-
-    return companyCurrencyAmount;
   }
 }
