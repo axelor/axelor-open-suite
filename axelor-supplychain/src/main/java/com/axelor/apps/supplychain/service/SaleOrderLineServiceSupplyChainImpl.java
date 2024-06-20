@@ -48,7 +48,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
@@ -220,6 +222,18 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
             stockMoveLine ->
                 stockMoveLine.setReservationDateTime(
                     saleOrderLine.getEstimatedShippingDate().atStartOfDay()));
+  }
+
+  @Override
+  public Map<String, Object> updateRequestedReservedQty(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    BigDecimal qty = saleOrderLine.getQty();
+    BigDecimal reservedQty = saleOrderLine.getReservedQty();
+    if (reservedQty.compareTo(qty) > 0 || saleOrderLine.getIsQtyRequested()) {
+      saleOrderLine.setRequestedReservedQty(BigDecimal.ZERO.max(qty));
+      saleOrderLineMap.put("requestedReservedQty", saleOrderLine.getRequestedReservedQty());
+    }
+    return saleOrderLineMap;
   }
 
   protected BigDecimal getInvoicedQty(SaleOrderLine saleOrderLine) {

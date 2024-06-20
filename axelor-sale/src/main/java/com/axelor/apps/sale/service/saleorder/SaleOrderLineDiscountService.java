@@ -8,10 +8,11 @@ import java.util.Map;
 
 public interface SaleOrderLineDiscountService {
 
+  Map<String, Object> getDiscount(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
+
   Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
-
-  int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
   /**
    * Finds max discount from product category and his parents, and returns it.

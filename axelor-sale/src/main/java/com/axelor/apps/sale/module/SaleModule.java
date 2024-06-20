@@ -97,6 +97,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceService;
@@ -196,5 +198,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineFiscalPositionService.class).to(SaleOrderLineFiscalPositionServiceImpl.class);
     bind(SaleOrderLineMultipleQtyService.class).to(SaleOrderLineMultipleQtyServiceImpl.class);
     bind(SaleOrderLinePriceService.class).to(SaleOrderLinePriceServiceImpl.class);
+    bind(SaleOrderLineOnChangeService.class).to(SaleOrderLineOnChangeServiceImpl.class);
   }
 }
