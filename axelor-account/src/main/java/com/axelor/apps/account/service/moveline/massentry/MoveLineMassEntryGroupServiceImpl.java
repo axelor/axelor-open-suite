@@ -90,7 +90,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
-            move.getMoveLineMassEntryList(), moveLine);
+            move.getMoveLineMassEntryList(), moveLine, move.getCompany());
     moveLineDefaultService.setAccountInformation(moveLine, move);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
 
@@ -375,7 +375,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
 
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
-            move.getMoveLineMassEntryList(), moveLine);
+            move.getMoveLineMassEntryList(), moveLine, move.getCompany());
 
     this.setAllMoveLineValuesMap(moveLine, valuesMap);
     return valuesMap;

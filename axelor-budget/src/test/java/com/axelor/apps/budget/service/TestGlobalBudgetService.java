@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
@@ -23,7 +41,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class TestGlobalBudgetService extends BudgetTest {
@@ -34,7 +52,7 @@ class TestGlobalBudgetService extends BudgetTest {
   protected final BudgetScenarioRepository budgetScenarioRepository;
   protected final GlobalBudgetService globalBudgetService;
   protected final BudgetVersionService budgetVersionService;
-  protected final LoaderHelper loaderHelper;
+  protected static final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
 
   @Inject
   public TestGlobalBudgetService(
@@ -42,14 +60,12 @@ class TestGlobalBudgetService extends BudgetTest {
       BudgetRepository budgetRepository,
       BudgetStructureRepository budgetStructureRepository,
       BudgetScenarioRepository budgetScenarioRepository,
-      BudgetVersionService budgetVersionService,
-      LoaderHelper loaderHelper) {
+      BudgetVersionService budgetVersionService) {
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetRepository = budgetRepository;
     this.budgetStructureRepository = budgetStructureRepository;
     this.budgetScenarioRepository = budgetScenarioRepository;
     this.budgetVersionService = budgetVersionService;
-    this.loaderHelper = loaderHelper;
 
     //  We need to initialize this service like that because it is linked to a Request scoped
     // service
@@ -59,8 +75,8 @@ class TestGlobalBudgetService extends BudgetTest {
     }
   }
 
-  @BeforeEach
-  void setUp() {
+  @BeforeAll
+  static void setUp() {
     loaderHelper.importCsv("data/budget-input.xml");
     loaderHelper.importCsv("data/budget-template-input.xml");
   }

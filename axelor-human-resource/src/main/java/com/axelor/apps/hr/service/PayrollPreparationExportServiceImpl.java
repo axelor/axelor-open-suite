@@ -1,8 +1,24 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
@@ -60,35 +76,6 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
     this.periodRepository = periodRepository;
     this.payrollPreparationService = payrollPreparationService;
     this.hrConfigService = hrConfigService;
-  }
-
-  /**
-   * If each employee's payroll preparation has been exported, close the pay period.
-   *
-   * @param payrollPreparation
-   */
-  @Override
-  @Transactional
-  public void closePayPeriodIfExported(PayrollPreparation payrollPreparation) {
-
-    Company company = payrollPreparation.getCompany();
-    Period payPeriod = payrollPreparation.getPeriod();
-
-    long nbNotExportedPayroll =
-        payrollPreparationRepository
-            .all()
-            .filter(
-                "self.company = :_company AND self.exported = false "
-                    + "AND self.period = :_period")
-            .bind("_company", company)
-            .bind("_period", payPeriod)
-            .count();
-
-    if (nbNotExportedPayroll == 0) {
-      payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-      payPeriod.setClosureDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
-    }
-    periodRepository.save(payPeriod);
   }
 
   @Transactional(rollbackOn = {Exception.class})

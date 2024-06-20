@@ -50,15 +50,18 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   protected AppBaseService appBaseService;
   protected MetaFiles metaFiles;
   protected TranslationBaseService translationBaseService;
+  protected PrintingTemplateComputeNameService templateComputeNameService;
 
   @Inject
   public PrintingTemplatePrintServiceImpl(
       AppBaseService appBaseService,
       MetaFiles metaFiles,
-      TranslationBaseService translationBaseService) {
+      TranslationBaseService translationBaseService,
+      PrintingTemplateComputeNameService templateComputeNameService) {
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
     this.translationBaseService = translationBaseService;
+    this.templateComputeNameService = templateComputeNameService;
   }
 
   @Override
@@ -170,6 +173,7 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
       PrintingGenFactoryContext context,
       boolean toAttach)
       throws AxelorException {
+    outputFileName = templateComputeNameService.computeFileName(outputFileName, context);
     List<File> printFiles = getPrintFilesList(prints);
     File file = PrintingTemplateHelper.mergeToFile(printFiles, outputFileName);
     if (toAttach && context != null && context.getModel() != null) {

@@ -36,8 +36,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockConfig;
@@ -79,7 +81,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
-      SaleOrderLineService saleOrderLineService,
       AppBaseService appBaseService,
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderRepository saleOrderRepo,
@@ -87,6 +88,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderMarginService saleOrderMarginService,
       SaleConfigService saleConfigService,
       SaleOrderLineCreateService saleOrderLineCreateService,
+      SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService,
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineDiscountService saleOrderLineDiscountService,
       AppSupplychainService appSupplychainService,
       SaleOrderStockService saleOrderStockService,
       PartnerStockSettingsService partnerStockSettingsService,
@@ -95,14 +99,16 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService) {
     super(
-        saleOrderLineService,
         appBaseService,
         saleOrderLineRepo,
         saleOrderRepo,
         saleOrderComputeService,
         saleOrderMarginService,
         saleConfigService,
-        saleOrderLineCreateService);
+        saleOrderLineCreateService,
+        saleOrderLineComplementaryProductService,
+        saleOrderLinePackService,
+        saleOrderLineDiscountService);
     this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
     this.partnerStockSettingsService = partnerStockSettingsService;

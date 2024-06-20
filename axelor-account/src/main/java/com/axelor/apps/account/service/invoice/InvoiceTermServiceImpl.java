@@ -675,16 +675,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     if (needConvert) {
-      // Date is null to get amount converted with today currency rate.
       paidAmount =
           currencyService.getAmountCurrencyConvertedAtDate(
               currency,
               invoiceTerm.getCurrency(),
               invoiceTermPayment.getCompanyPaidAmount(),
-              Optional.ofNullable(invoicePayment)
-                  .map(InvoicePayment::getInvoice)
-                  .map(Invoice::getInvoiceDate)
-                  .orElse(null));
+              invoiceTerm.getDueDate());
     }
 
     return paidAmount;
@@ -1564,6 +1560,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
+      BigDecimal currencyRate,
       Company company) {
     int companyScale = currencyScaleService.getCompanyCurrencyScale(company);
     BigDecimal moveLineAmountRemaining =
@@ -1576,8 +1573,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     BigDecimal invoiceCurrencyRate =
-        currencyService.computeScaledExchangeRate(
-            companyAmountRemaining, invoiceTermAmountRemaining);
+        companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP);
 
     if (!Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
       if (BigDecimal.ONE.compareTo(invoiceCurrencyRate.abs()) != 0) {
