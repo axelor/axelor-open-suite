@@ -47,6 +47,9 @@
       <button name="openBtn" title="Open period"
         onClick="save,action-method-period-status-open" hidden="true"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <form name="period-year-form" title="Period" model="com.axelor.apps.base.db.Period"

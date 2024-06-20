@@ -13,6 +13,23 @@
       title="Journals to close"/>
     <many-to-many ref="com.axelor.apps.account.db.Journal" name="openedJournalSet"
       title="Journals to keep opened"/>
+    <string name="closingJournalSetStr" title="Journals to close">
+    <![CDATA[
+            return getClosedJournalSet().stream()
+                        .map(Journal::getCode)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.joining(";"));
+    ]]>
+    </string>
+
+    <extra-imports>
+      import java.util.stream.Collectors;
+    </extra-imports>
+
+    <track>
+      <field name="closingJournalSetStr"/>
+    </track>
+
   </entity>
 
 </domain-models>
