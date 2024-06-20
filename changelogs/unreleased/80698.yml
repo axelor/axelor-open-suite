@@ -1,0 +1,2 @@
+title: "Move: fixed blocking message due to a wrong tax check preventing some accounting moves validation."
+module: axelor-account
