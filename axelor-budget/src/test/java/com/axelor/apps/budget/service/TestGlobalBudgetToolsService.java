@@ -38,25 +38,43 @@ public class TestGlobalBudgetToolsService extends BudgetTest {
   }
 
   @Test
-  void testGetAllBudgets() {
+  void testGlobalGetAllBudgets() {
     GlobalBudget globalBudget =
         globalBudgetRepository
             .all()
             .filter("self.importId = :importId")
             .bind("importId", 1011L)
             .fetchOne();
-    Assertions.assertEquals(globalBudgetToolsService.getAllBudgets(null).size(), 0);
-    Assertions.assertEquals(globalBudgetToolsService.getAllBudgets(globalBudget).size(), 4);
     Assertions.assertEquals(
+        0,
+        globalBudgetToolsService.getAllBudgets(null).size(),
+        "Budget list size without global budget");
+    Assertions.assertEquals(
+        4,
+        globalBudgetToolsService.getAllBudgets(globalBudget).size(),
+        "Budget list size with global budget");
+  }
+
+  @Test
+  void testLevelGetAllBudgets() {
+    GlobalBudget globalBudget =
+        globalBudgetRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", 1011L)
+            .fetchOne();
+    Assertions.assertEquals(
+        2,
         globalBudgetToolsService
             .getAllBudgets(globalBudget.getBudgetLevelList().get(0), new ArrayList<>())
             .size(),
-        2);
+        "Budget list size with the first budget level");
     Assertions.assertEquals(
+        2,
         globalBudgetToolsService
             .getAllBudgets(globalBudget.getBudgetLevelList().get(1), new ArrayList<>())
             .size(),
-        2);
+        "Budget list size with the second budget level");
   }
 
   @Test
@@ -67,27 +85,76 @@ public class TestGlobalBudgetToolsService extends BudgetTest {
             .filter("self.importId = :importId")
             .bind("importId", 1011L)
             .fetchOne();
-    Assertions.assertEquals(globalBudgetToolsService.getAllBudgetIds(null).get(0), 0L);
-    Assertions.assertEquals(globalBudgetToolsService.getAllBudgetIds(globalBudget).size(), 4);
-    Assertions.assertEquals(globalBudgetToolsService.getAllBudgetLineIds(globalBudget).size(), 8);
+    Assertions.assertEquals(
+        0L,
+        globalBudgetToolsService.getAllBudgetIds(null).get(0),
+        "Budget list ids size without global budget");
+    Assertions.assertEquals(
+        4,
+        globalBudgetToolsService.getAllBudgetIds(globalBudget).size(),
+        "Budget list ids size with global budget");
   }
 
   @Test
-  void testGetAllBudgetLevels() {
+  void testGetAllBudgetLineIds() {
     GlobalBudget globalBudget =
         globalBudgetRepository
             .all()
             .filter("self.importId = :importId")
             .bind("importId", 1011L)
             .fetchOne();
-    Assertions.assertEquals(globalBudgetToolsService.getAllBudgetLevels(null).size(), 0);
-    Assertions.assertEquals(globalBudgetToolsService.getAllBudgetLevels(globalBudget).size(), 4);
-    Assertions.assertEquals(globalBudgetToolsService.getAllBudgetLevelIds(globalBudget).size(), 4);
     Assertions.assertEquals(
+        8,
+        globalBudgetToolsService.getAllBudgetLineIds(globalBudget).size(),
+        "Budget line list ids size without global budget");
+  }
+
+  @Test
+  void testGlobalGetAllBudgetLevels() {
+    GlobalBudget globalBudget =
+        globalBudgetRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", 1011L)
+            .fetchOne();
+    Assertions.assertEquals(
+        0,
+        globalBudgetToolsService.getAllBudgetLevels(null).size(),
+        "Budget level list size without global budget");
+    Assertions.assertEquals(
+        4,
+        globalBudgetToolsService.getAllBudgetLevels(globalBudget).size(),
+        "Budget level list size with global budget");
+  }
+
+  @Test
+  void testGetAllBudgetLevelIds() {
+    GlobalBudget globalBudget =
+        globalBudgetRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", 1011L)
+            .fetchOne();
+    Assertions.assertEquals(
+        4,
+        globalBudgetToolsService.getAllBudgetLevelIds(globalBudget).size(),
+        "Budget level ids list size without global budget");
+  }
+
+  @Test
+  void testLevelGetAllBudgetLevels() {
+    GlobalBudget globalBudget =
+        globalBudgetRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", 1011L)
+            .fetchOne();
+    Assertions.assertEquals(
+        1,
         globalBudgetToolsService
             .getAllBudgetLevels(globalBudget.getBudgetLevelList().get(0), new ArrayList<>())
             .size(),
-        1);
+        "Budget level list size with the first budget level");
   }
 
   @Test
