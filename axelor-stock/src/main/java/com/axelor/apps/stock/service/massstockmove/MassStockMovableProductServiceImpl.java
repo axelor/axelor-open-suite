@@ -105,14 +105,14 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
         stockLocationLineRepository
             .all()
             .filter(
-                "self.stockLocation =?1 AND self.product =?2 AND self.currentQty =?3"
+                "self.stockLocation = :fromStockLocation AND self.product = :product AND self.currentQty = :qty"
                     + (movableProduct.getTrackingNumber() != null
-                        ? " AND self.trackingNumber =?4"
-                        : " AND self.detailsStockLocation = null"),
-                fromStockLocation,
-                movableProduct.getProduct(),
-                BigDecimal.ZERO,
-                movableProduct.getTrackingNumber())
+                        ? " AND self.trackingNumber = :trackingNumber"
+                        : " AND self.detailsStockLocation = null"))
+            .bind("fromStockLocation", fromStockLocation)
+            .bind("product", movableProduct.getProduct())
+            .bind("qty", BigDecimal.ZERO)
+            .bind("trackingNumber", movableProduct.getTrackingNumber())
             .fetchOne();
 
     if (stockLocationLine != null) {

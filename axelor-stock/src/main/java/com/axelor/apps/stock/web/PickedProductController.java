@@ -30,10 +30,11 @@ public class PickedProductController {
       throws AxelorException {
     var pickedProduct =
         Optional.of(request.getContext().asType(PickedProduct.class))
-            .map(pp -> Beans.get(PickedProductRepository.class).find(pp.getId()))
-            .orElse(null);
+            .map(pp -> Beans.get(PickedProductRepository.class).find(pp.getId()));
 
-    Beans.get(MassStockMovableProductService.class).realize(pickedProduct);
+    if (pickedProduct.isPresent()) {
+      Beans.get(MassStockMovableProductService.class).realize(pickedProduct.get());
+    }
 
     response.setReload(true);
   }

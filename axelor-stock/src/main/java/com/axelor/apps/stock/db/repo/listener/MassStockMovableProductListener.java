@@ -11,7 +11,7 @@ import javax.persistence.PreRemove;
 public class MassStockMovableProductListener {
 
   @PreRemove
-  private void onPreRemove(MassStockMovableProduct movedProduct) throws AxelorException {
+  protected void onPreRemove(MassStockMovableProduct movedProduct) throws AxelorException {
     if (movedProduct.getStockMoveLine() != null
         && movedProduct.getStockMoveLine().getStockMove() != null
         && movedProduct.getStockMoveLine().getStockMove().getStatusSelect()
