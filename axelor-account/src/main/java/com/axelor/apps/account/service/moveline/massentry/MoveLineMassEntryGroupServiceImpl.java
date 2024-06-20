@@ -90,7 +90,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
-            move.getMoveLineMassEntryList(), moveLine);
+            move.getMoveLineMassEntryList(), moveLine, move.getCompany());
     moveLineDefaultService.setAccountInformation(moveLine, move);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
 
@@ -109,7 +109,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
     moveLineToolService.setDecimals(moveLine, move);
 
     valuesMap.put("inputAction", moveLine.getInputAction());
@@ -178,7 +178,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
-    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -375,7 +375,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
 
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
-            move.getMoveLineMassEntryList(), moveLine);
+            move.getMoveLineMassEntryList(), moveLine, move.getCompany());
 
     this.setAllMoveLineValuesMap(moveLine, valuesMap);
     return valuesMap;

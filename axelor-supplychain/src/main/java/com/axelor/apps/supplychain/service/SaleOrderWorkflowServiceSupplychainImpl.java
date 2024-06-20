@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -33,9 +32,9 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -65,16 +64,15 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
-      SaleOrderLineService saleOrderLineService,
+      SaleOrderService saleOrderService,
+      SaleConfigService saleConfigService,
+      SaleOrderPrintService saleOrderPrintService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
-      SaleConfigService saleConfigService,
-      AnalyticToolSupplychainService analyticToolSupplychainService,
-      BirtTemplateService birtTemplateService,
-      SaleOrderService saleOrderService) {
+      AnalyticToolSupplychainService analyticToolSupplychainService) {
     super(
         sequenceService,
         partnerRepo,
@@ -82,10 +80,9 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
         appSaleService,
         appCrmService,
         userService,
-        saleOrderLineService,
-        birtTemplateService,
         saleOrderService,
-        saleConfigService);
+        saleConfigService,
+        saleOrderPrintService);
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychainService = appSupplychainService;
@@ -198,7 +195,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     List<StockMove> stockMoves =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter("self.saleOrder.id = ?", saleOrder.getId())
+            .filter("? MEMBER OF self.saleOrderSet", saleOrder.getId())
             .fetch();
     if (!stockMoves.isEmpty()) {
       for (StockMove stockMove : stockMoves) {
@@ -212,5 +209,6 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       }
     }
     super.completeSaleOrder(saleOrder);
+    accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 }

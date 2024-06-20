@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -29,6 +30,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -95,6 +97,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     this.moveSimulateService = moveSimulateService;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAndOpenAnnualAccount(
       Year year,
@@ -107,7 +110,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       boolean closeYear,
       boolean openYear,
       boolean allocatePerPartner,
-      boolean isSimulatedMove)
+      Integer moveStatus)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -127,7 +130,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               partner,
               false,
               allocatePerPartner,
-              isSimulatedMove);
+              moveStatus);
 
       if (closeYearMove == null) {
         return null;
@@ -147,7 +150,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               partner,
               true,
               allocatePerPartner,
-              isSimulatedMove);
+              moveStatus);
 
       if (openYearMove == null) {
         return null;
@@ -162,6 +165,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAnnualAccount(
       Year year,
@@ -173,7 +177,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String moveDescription,
       boolean closeYear,
       boolean allocatePerPartner,
-      boolean isSimulatedMove)
+      Integer moveStatus)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -192,7 +196,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               partner,
               false,
               allocatePerPartner,
-              isSimulatedMove);
+              moveStatus);
 
       if (closeYearMove == null) {
         return null;
@@ -203,6 +207,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateOpenAnnualAccount(
       Year year,
@@ -214,7 +219,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String moveDescription,
       boolean openYear,
       boolean allocatePerPartner,
-      boolean isSimulatedMove)
+      Integer moveStatus)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -233,7 +238,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               partner,
               true,
               allocatePerPartner,
-              isSimulatedMove);
+              moveStatus);
 
       if (openYearMove == null) {
         return null;
@@ -254,7 +259,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       Partner partner,
       boolean isReverse,
       boolean allocatePerPartner,
-      boolean isSimulatedMove)
+      Integer moveStatus)
       throws AxelorException {
 
     Company company = account.getCompany();
@@ -314,14 +319,18 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         originDate,
         balance);
 
-    if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
-      if (move.getJournal() != null
-          && accountConfig.getIsActivateSimulatedMove()
-          && isSimulatedMove
+    if (move.getMoveLineList() != null
+        && !move.getMoveLineList().isEmpty()
+        && move.getJournal() != null) {
+      if (accountConfig.getIsActivateSimulatedMove()
+          && moveStatus == MoveRepository.STATUS_SIMULATED
           && move.getJournal().getAuthorizeSimulatedMove()) {
-
         moveSimulateService.simulate(move);
-      } else {
+      } else if (accountConfig.getAccountingDaybook()
+          && move.getJournal().getAllowAccountingDaybook()) {
+        moveValidateService.accounting(move);
+      }
+      if (moveStatus == MoveRepository.STATUS_ACCOUNTED) {
         moveValidateService.accounting(move);
       }
     } else {
@@ -430,6 +439,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     }
   }
 
+  @Override
   public List<Long> getAllAccountOfYear(Set<Account> accountSet, Year year) {
 
     List<Long> accountIdList =
@@ -456,6 +466,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return result;
   }
 
+  @Override
   public List<Pair<Long, Long>> assignPartner(
       List<Long> accountIdList, Year year, boolean allocatePerPartner) {
 
@@ -490,5 +501,101 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     List<Long> result = q.getResultList();
 
     return result;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateResultMove(
+      Company company,
+      LocalDate date,
+      String description,
+      BankDetails bankDetails,
+      Integer generatedMoveStatusSelect,
+      BigDecimal amount)
+      throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    Journal journal = accountConfigService.getReportedBalanceJournal(accountConfig);
+
+    Move move =
+        moveCreateService.createMove(
+            journal,
+            company,
+            company.getCurrency(),
+            null,
+            date,
+            date,
+            null,
+            null,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+            false,
+            false,
+            false,
+            null,
+            description,
+            bankDetails);
+
+    Account accountCredit = null;
+    Account accountDebit = null;
+    if (amount.compareTo(BigDecimal.ZERO) < 0) {
+      accountCredit = accountConfig.getYearOpeningAccount();
+      accountDebit = accountConfig.getResultLossAccount();
+    } else {
+      accountCredit = accountConfig.getResultProfitAccount();
+      accountDebit = accountConfig.getYearOpeningAccount();
+    }
+
+    amount = amount.abs();
+
+    MoveLine credit =
+        moveLineCreateService.createMoveLine(
+            move,
+            null,
+            accountCredit,
+            amount,
+            amount,
+            null,
+            false,
+            date,
+            date,
+            date,
+            1,
+            null,
+            description);
+
+    MoveLine debit =
+        moveLineCreateService.createMoveLine(
+            move,
+            null,
+            accountDebit,
+            amount,
+            amount,
+            null,
+            true,
+            date,
+            date,
+            date,
+            2,
+            null,
+            description);
+    move.addMoveLineListItem(credit);
+    move.addMoveLineListItem(debit);
+
+    moveRepository.save(move);
+
+    if (move.getJournal() != null
+        && accountConfig.getIsActivateSimulatedMove()
+        && generatedMoveStatusSelect == MoveRepository.STATUS_SIMULATED
+        && move.getJournal().getAuthorizeSimulatedMove()) {
+      moveSimulateService.simulate(move);
+    } else if (move.getJournal() != null
+        && accountConfig.getAccountingDaybook()
+        && move.getJournal().getAllowAccountingDaybook()) {
+      moveValidateService.accounting(move);
+    }
+    if (generatedMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED) {
+      moveValidateService.accounting(move);
+    }
   }
 }

@@ -24,7 +24,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
@@ -35,8 +34,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
@@ -59,19 +58,18 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
-      SaleOrderLineService saleOrderLineService,
+      SaleOrderService saleOrderService,
+      SaleConfigService saleConfigService,
+      SaleOrderPrintService saleOrderPrintService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
-      SaleConfigService saleConfigService,
       AnalyticToolSupplychainService analyticToolSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      BirtTemplateService birtTemplateService,
-      SaleOrderService saleOrderService) {
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         sequenceService,
         partnerRepo,
@@ -79,18 +77,17 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
         appSaleService,
         appCrmService,
         userService,
-        saleOrderLineService,
+        saleOrderService,
+        saleConfigService,
+        saleOrderPrintService,
         saleOrderStockService,
         saleOrderPurchaseService,
         appSupplychainService,
         accountingSituationSupplychainService,
         partnerSupplychainService,
-        saleConfigService,
         analyticToolSupplychainService,
         productionOrderSaleOrderService,
-        appProductionService,
-        birtTemplateService,
-        saleOrderService);
+        appProductionService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 

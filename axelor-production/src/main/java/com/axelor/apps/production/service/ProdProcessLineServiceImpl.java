@@ -33,7 +33,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -91,6 +94,38 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
       totalDuration += this.computeEntireCycleDuration(null, prodProcessLine, qty);
     }
     return totalDuration;
+  }
+
+  @Override
+  public long computeLeadTimeDuration(ProdProcess prodProcess, BigDecimal qty)
+      throws AxelorException {
+
+    Map<Integer, Long> maxDurationPerPriority = new HashMap<>();
+    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+      Integer priority = prodProcessLine.getPriority();
+      Long duration = maxDurationPerPriority.get(priority);
+      Long computedDuration = this.computeEntireCycleDuration(null, prodProcessLine, qty);
+
+      if (duration == null || computedDuration > duration) {
+        maxDurationPerPriority.put(priority, computedDuration);
+      }
+    }
+
+    return maxDurationPerPriority.values().stream().mapToLong(l -> l).sum();
+  }
+
+  @Override
+  public Integer getNextPriority(ProdProcess prodProcess, Integer priority) {
+    if (priority == null
+        || prodProcess == null
+        || CollectionUtils.isEmpty(prodProcess.getProdProcessLineList())) {
+      return null;
+    }
+    return prodProcess.getProdProcessLineList().stream()
+        .filter(ppl -> ppl.getPriority() > priority)
+        .min(Comparator.comparingInt(ProdProcessLine::getPriority))
+        .map(ProdProcessLine::getPriority)
+        .orElse(null);
   }
 
   protected Pair<Long, BigDecimal> getDurationNbCyclesPair(

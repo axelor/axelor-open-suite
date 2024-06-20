@@ -20,6 +20,7 @@ package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -33,9 +34,9 @@ import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMove
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderTrackingNumberService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.inject.Beans;
@@ -57,12 +58,13 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
-      OperationOrderOutsourceService operationOrderOutsourceService) {
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      ProductService productService,
+      ManufOrderTrackingNumberService manufOrderTrackingNumberService) {
     super(
         operationOrderWorkflowService,
         manufOrderStockMoveService,
@@ -73,12 +75,13 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         operationOrderService,
         appProductionService,
         productionConfigService,
-        operationOrderPlanningService,
         manufOrderOutgoingStockMoveService,
         manufOrderService,
         sequenceService,
         manufOrderOutsourceService,
-        operationOrderOutsourceService);
+        operationOrderOutsourceService,
+        productService,
+        manufOrderTrackingNumberService);
   }
 
   @Override

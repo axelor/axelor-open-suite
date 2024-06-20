@@ -8,6 +8,7 @@
     <panel name="mainPanel">
       <field name="computeDistanceWithWebService" widget="boolean-switch"/>
       <field name="isOrphanExpenseLineManaged" widget="boolean-switch"/>
+      <field name="enableExpenseDeclaration" widget="boolean-switch"/>
     </panel>
 
     <panel-mail name="mailPanel">

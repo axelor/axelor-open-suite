@@ -16,14 +16,15 @@
 
   <form name="prod-process-line-form" title="Phase"
     model="com.axelor.apps.production.db.ProdProcessLine"
-    onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default"
-    onLoad="action-prod-process-line-attrs-default,action-prod-process-line-attrs-hide-duration"
+    onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default,action-prod-process-line-attrs-outsourcing"
+    onLoad="action-prod-process-line-attrs-default,action-prod-process-line-attrs-hide-duration,action-prod-process-line-attrs-outsourcing"
     width="large">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="priority" colSpan="3"/>
       <panel name="workCenterGroupPanel" colSpan="12">
-        <field name="workCenterTypeSelect"/>
+        <field name="workCenterTypeSelect"
+          onChange="action-prod-process-line-group-work-center-type-group-onchange"/>
         <field name="workCenterGroup" canNew="true" canEdit="true" colSpan="6"
           form-view="work-center-group-form" grid-view="work-center-group-grid"
           onChange="action-prod-process-line-group-work-center-group-onchange"
@@ -34,18 +35,18 @@
         onChange="action-prod-process-line-group-work-center-onchange"
         onSelect="action-prod-process-line-attrs-set-work-center-domain"/>
       <panel name="outsourcePanel" showTitle="false" colSpan="12">
-        <field name="outsourcing"
-          readonlyIf="!prodProcess.prodProcessLinesOutsourcable || outsourcable" colSpan="4"/>
-        <field name="outsourcable"
-          readonlyIf="!prodProcess.prodProcessLinesOutsourcable || outsourcing" colSpan="4"/>
-        <field name="outsourcingPartner"
-          showIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable" colSpan="4"
-          domain="self.isSubcontractor = true"
-          requiredIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable"/>
-        <field name="generatePurchaseOrderOnMoPlanning"
-          showIf="(outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing" colSpan="4"/>
-        <field name="useLineInGeneratedPurchaseOrder"
-          showIf="prodProcess.outsourcing || prodProcess.outsourcable || (prodProcess.prodProcessLinesOutsourcable &amp;&amp; (outsourcing || outsourcable))"/>
+        <field name="outsourcing" colSpan="4"
+          onChange="action-prod-process-line-attrs-outsourcing"/>
+        <field name="outsourcable" colSpan="4"
+          onChange="action-prod-process-line-attrs-outsourcing"/>
+        <field name="outsourcingDuration" showIf="outsourcing || outsourcable" colSpan="4"
+          widget="duration" x-big="true" x-seconds="true"/>
+        <field name="outsourcingPartner" colSpan="6" domain="self.isSubcontractor = true"/>
+        <field name="generatePurchaseOrderOnMoPlanning" colSpan="6"
+          onChange="action-prod-process-line-attrs-outsourcing"/>
+        <panel-related name="generatedPurchaseOrderProductPanel"
+          field="generatedPurchaseOrderProductSet" colSpan="12" canEdit="false" canNew="false"
+          canSelect="true"/>
       </panel>
 
       <field name="optional"/>
@@ -53,7 +54,8 @@
       <field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
       <field name="stockLocation"/>
-      <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
+      <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12"
+        hideIf="outsourcing">
         <field name="minCapacityPerCycle" colSpan="4"/>
         <field name="maxCapacityPerCycle" colSpan="4"/>
         <field name="durationPerCycleDecimal" colSpan="6"
@@ -165,6 +167,13 @@
     <field name="setupDuration" expr="eval: workCenter?.setupDuration"/>
   </action-record>
 
+  <action-record
+    name="action-prod-process-line-record-work-center-type-reset-work-center"
+    model="com.axelor.apps.production.db.ProdProcessLine">
+    <field name="workCenter" expr="eval: null"
+      if="workCenter?.workCenterTypeSelect != workCenterTypeSelect"/>
+  </action-record>
+
   <action-group name="action-prod-process-line-group-work-center-onchange">
     <action name="action-prod-process-line-record-update-from-workcenter"/>
     <action name="action-prod-process-line-method-capacity-settings"/>
@@ -180,6 +189,11 @@
 
   <action-group name="action-prod-process-line-group-work-center-group-onchange">
     <action name="action-prod-process-line-method-work-center-group-fill-work-center"/>
+    <action name="action-prod-process-line-group-work-center-onchange"/>
+  </action-group>
+
+  <action-group name="action-prod-process-line-group-work-center-type-group-onchange">
+    <action name="action-prod-process-line-record-work-center-type-reset-work-center"/>
     <action name="action-prod-process-line-group-work-center-onchange"/>
   </action-group>
 
@@ -200,15 +214,25 @@
       expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
     <attribute name="hidden" for="stockLocation"
       expr="eval: !__parent__?.isConsProOnOperation"/>
-    <attribute name="hidden" for="useLineInGeneratedPurchaseOrder"
-      expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)"
-      if="__parent__ != null"/>
     <attribute name="required" for="workCenter"
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="hidden" for="workCenterGroupPanel"
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+  </action-attrs>
 
-
+  <action-attrs name="action-prod-process-line-attrs-outsourcing">
+    <attribute name="readonly" for="outsourcing"
+      expr="eval: !__parent__?.prodProcessLinesOutsourcable || outsourcable"/>
+    <attribute name="readonly" for="outsourcable"
+      expr="eval: !__parent__?.prodProcessLinesOutsourcable || outsourcing"/>
+    <attribute name="hidden" for="outsourcingPartner"
+      expr="eval: !((outsourcing &amp;&amp; !__parent__?.outsourcing) || outsourcable)"/>
+    <attribute name="required" for="outsourcingPartner"
+      expr="eval: (outsourcing &amp;&amp; !__parent__?.outsourcing) || outsourcable"/>
+    <attribute name="hidden" for="generatePurchaseOrderOnMoPlanning"
+      expr="eval: !((outsourcing || outsourcable) &amp;&amp; !__parent__?.outsourcing)"/>
+    <attribute name="hidden" for="generatedPurchaseOrderProductSet"
+      expr="eval: !(((outsourcing || outsourcable) &amp;&amp; !__parent__.outsourcing) &amp;&amp; generatePurchaseOrderOnMoPlanning)"/>
   </action-attrs>
 
   <action-attrs name="action-prod-process-line-attrs-machine-tool-domain">
@@ -222,8 +246,10 @@
     <attribute name="domain" for="workCenter"
       expr="eval: 'self.id IN (' + workCenterGroup?.workCenterSet?.collect{ it.id }.join(',') + ')'"
       if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; workCenterGroup?.workCenterSet &amp;&amp; !workCenterGroup?.workCenterSet.isEmpty()"/>
+    <attribute name="domain" for="workCenter"
+      expr="eval: workCenterTypeSelect ? 'self.workCenterTypeSelect =  :workCenterTypeSelect' : 'self.id IS NOT NULL'"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; (!workCenterGroup || !workCenterGroup.workCenterSet  || workCenterGroup.workCenterSet.isEmpty())"/>
   </action-attrs>
-
 
 
 </object-views>

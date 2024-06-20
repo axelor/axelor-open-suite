@@ -22,15 +22,23 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
+
+  protected AppBusinessProjectService appBusinessProjectService;
+
+  @Inject
+  public SaleOrderProjectRepository(AppBusinessProjectService appBusinessProjectService) {
+    this.appBusinessProjectService = appBusinessProjectService;
+  }
+
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {
 
     SaleOrder copy = super.copy(entity, deep);
 
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+    if (appBusinessProjectService.isApp("business-project")) {
       copy.setProject(null);
       if (copy.getSaleOrderLineList() != null) {
         for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {

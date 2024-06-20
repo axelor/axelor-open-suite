@@ -27,11 +27,12 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -59,6 +60,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected MoveToolService moveToolService;
+  protected UnreconcileService unReconcileService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -70,7 +72,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      UnreconcileService unReconcileService) {
 
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
@@ -81,6 +84,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.moveToolService = moveToolService;
+    this.unReconcileService = unReconcileService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -160,12 +164,12 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             Beans.get(ReconcileRepository.class)
                 .all()
                 .filter(
-                    "self.statusSelect != ?1 AND (self.debitMoveLine = ?2 OR self.creditMoveLine = ?2)",
+                    "self.statusSelect != ?1 AND (self.debitMoveLine.id = ?2 OR self.creditMoveLine.id = ?2)",
                     ReconcileRepository.STATUS_CANCELED,
-                    moveLine)
+                    moveLine.getId())
                 .fetch();
         for (Reconcile reconcile : reconcileList) {
-          reconcileService.unreconcile(reconcile);
+          unReconcileService.unreconcile(reconcile);
         }
       } else {
         cancelInvoicePayment(move);

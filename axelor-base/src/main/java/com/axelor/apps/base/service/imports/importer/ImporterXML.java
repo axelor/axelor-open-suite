@@ -18,9 +18,15 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.xml.XMLImporter;
+import com.axelor.i18n.I18n;
+import com.google.common.io.Files;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -28,7 +34,7 @@ class ImporterXML extends Importer {
 
   @Override
   protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException {
+      throws IOException, AxelorException {
 
     XMLImporter importer = new XMLImporter(bind, data);
 
@@ -41,7 +47,18 @@ class ImporterXML extends Importer {
   }
 
   @Override
-  protected ImportHistory process(String bind, String data) throws IOException {
+  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
     return process(bind, data, null);
+  }
+
+  @Override
+  public void checkEntryFilesType(File bind, File data) throws AxelorException {
+    super.checkEntryFilesType(bind, data);
+    if (!Files.getFileExtension(data.getAbsolutePath()).equals("xml")
+        && !Files.getFileExtension(data.getAbsolutePath()).equals("zip")) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE));
+    }
   }
 }

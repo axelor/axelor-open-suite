@@ -21,8 +21,10 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.FindFixedAssetService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.interfaces.ArithmeticOperation;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -37,11 +39,14 @@ import java.util.stream.Collectors;
 
 public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
+  protected FindFixedAssetService findFixedAssetService;
 
   @Inject
-  public FixedAssetLineToolServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+  public FixedAssetLineToolServiceImpl(
+      CurrencyScaleService currencyScaleService, FindFixedAssetService findFixedAssetService) {
+    this.currencyScaleService = currencyScaleService;
+    this.findFixedAssetService = findFixedAssetService;
   }
 
   @Override
@@ -113,7 +118,7 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
       ArithmeticOperation arithmeticOperation) {
     return amount1 == null
         ? BigDecimal.ZERO
-        : currencyScaleServiceAccount.getCompanyScaledValue(
+        : currencyScaleService.getCompanyScaledValue(
             fixedAsset, arithmeticOperation.operate(amount1, amount2));
   }
 
@@ -121,7 +126,7 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
   public BigDecimal getCompanyScaledValue(BigDecimal amount1, FixedAsset fixedAsset) {
     return amount1 == null
         ? BigDecimal.ZERO
-        : currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, amount1);
+        : currencyScaleService.getCompanyScaledValue(fixedAsset, amount1);
   }
 
   @Override
@@ -130,7 +135,7 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
     return amount1 == null || amount2 == null || amount2.equals(BigDecimal.ZERO)
         ? BigDecimal.ZERO
         : amount1.divide(
-            amount2, currencyScaleServiceAccount.getCompanyScale(fixedAsset), RoundingMode.HALF_UP);
+            amount2, currencyScaleService.getCompanyScale(fixedAsset), RoundingMode.HALF_UP);
   }
 
   @Override
@@ -142,8 +147,7 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
       throws AxelorException {
     return amount1 == null
         ? BigDecimal.ZERO
-        : currencyScaleServiceAccount.getCompanyScaledValue(
-            fixedAssetLine, arithmeticOperation.operate(amount1, amount2));
+        : this.getCompanyScaledValue(arithmeticOperation.operate(amount1, amount2), fixedAssetLine);
   }
 
   @Override
@@ -151,22 +155,23 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
       throws AxelorException {
     return amount1 == null
         ? BigDecimal.ZERO
-        : currencyScaleServiceAccount.getCompanyScaledValue(fixedAssetLine, amount1);
+        : currencyScaleService.getCompanyScaledValue(
+            findFixedAssetService.getFixedAsset(fixedAssetLine), amount1);
   }
 
   @Override
   public boolean isGreaterThan(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset) {
-    amount1 = currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, amount1);
-    amount2 = currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, amount2);
-
-    return amount1 != null && (amount1.compareTo(amount2) > 0);
+    return currencyScaleService.isGreaterThan(amount1, amount2, fixedAsset, true);
   }
 
   @Override
   public boolean equals(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset) {
-    amount1 = currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, amount1);
-    amount2 = currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, amount2);
+    return currencyScaleService.equals(amount1, amount2, fixedAsset, true);
+  }
 
-    return amount1.compareTo(amount2) == 0;
+  @Override
+  public int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException {
+    FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
+    return currencyScaleService.getCompanyScale(fixedAsset);
   }
 }

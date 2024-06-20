@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid name="mass-stock-move-grid" title="Mass stock moves"
+    model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
+    <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
+    <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"/>
+  </grid>
+
+  <form title="Mass stock move" name="mass-stock-move-form"
+    model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
+    <panel name="identificationPanel">
+      <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
+      <field name="cartStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+    </panel>
+    <panel name="pickedProductPanel">
+      <panel-related field="pickedProductList" grid-view="picked-product-grid"
+        form-view="picked-product-form" colSpan="12" canNew="company != null"/>
+    </panel>
+  </form>
+
+  <action-method name="action-mass-stock-move-method-on-new">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="onNew"/>
+  </action-method>
+
+  <action-record name="action-mass-stock-move-record-company-on-change"
+    model="com.axelor.apps.stock.db.MassStockMove">
+    <field name="cartStockLocation" expr="eval: company?.stockConfig?.cartStockLocation"/>
+  </action-record>
+
+</object-views>

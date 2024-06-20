@@ -20,8 +20,10 @@ package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
@@ -173,35 +175,30 @@ public class PurchaseOrderLineController {
     }
   }
 
-  public void setBudgetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      String query = "self.id = 0";
+  @ErrorException
+  public void setBudgetDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    String query = "self.id = 0";
 
-      if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
-        query =
-            Beans.get(PurchaseOrderLineBudgetService.class)
-                .getBudgetDomain(purchaseOrderLine, purchaseOrder);
-      }
-      response.setAttr("budget", "domain", query);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
+      query =
+          Beans.get(PurchaseOrderLineBudgetService.class)
+              .getBudgetDomain(purchaseOrderLine, purchaseOrder);
     }
+    response.setAttr("budget", "domain", query);
   }
 
-  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+  public void computeBudgetRemainingAmountToAllocate(
+      ActionRequest request, ActionResponse response) {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-    if (purchaseOrder == null && request.getContext().getParent() != null) {
-      purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-    }
-
-    Beans.get(PurchaseOrderLineBudgetService.class)
-        .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
 
     response.setValue(
-        "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
-    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
+        "budgetRemainingAmountToAllocate",
+        Beans.get(BudgetToolsService.class)
+            .getBudgetRemainingAmountToAllocate(
+                purchaseOrderLine.getBudgetDistributionList(),
+                purchaseOrderLine.getCompanyExTaxTotal()));
   }
 }

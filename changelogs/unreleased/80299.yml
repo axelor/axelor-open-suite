@@ -1,0 +1,3 @@
+---
+title: "Budget: fixed an issue where the default budget structure was not fetched correctly on budget creation."
+module: axelor-budget

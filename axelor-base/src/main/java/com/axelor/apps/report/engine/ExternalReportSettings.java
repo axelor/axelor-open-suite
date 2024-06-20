@@ -46,12 +46,11 @@ public class ExternalReportSettings extends ReportSettings {
 
     super(rptdesign, outputName);
 
-    String localeCode = (String) this.params.get("Locale");
+    String localeCode = (String) this.params.get("__locale");
     if (Strings.isNullOrEmpty(localeCode)) {
       localeCode = ReportingTool.getCompanyLocale().toString();
+      this.addAxelorReportPath(rptdesign).addParam("__locale", localeCode);
     }
-
-    this.addAxelorReportPath(rptdesign).addParam("__locale", localeCode);
   }
 
   @Override

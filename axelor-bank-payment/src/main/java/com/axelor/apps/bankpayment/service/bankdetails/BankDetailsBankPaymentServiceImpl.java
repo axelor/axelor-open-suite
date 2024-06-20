@@ -18,11 +18,11 @@
  */
 package com.axelor.apps.bankpayment.service.bankdetails;
 
-import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
-import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineFetchAFB120Service;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -30,18 +30,18 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPaymentService {
-  protected BankStatementLineFetchAFB120Service bankStatementLineFetchAFB120Service;
+  protected BankStatementLineFetchService bankStatementLineFetchService;
   protected BankDetailsRepository bankDetailsRepository;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankDetailsBankPaymentServiceImpl(
-      BankStatementLineFetchAFB120Service bankStatementLineFetchAFB120Service,
+      BankStatementLineFetchService bankStatementLineFetchService,
       BankDetailsRepository bankDetailsRepository,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
-    this.bankStatementLineFetchAFB120Service = bankStatementLineFetchAFB120Service;
+      CurrencyScaleService currencyScaleService) {
+    this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankDetailsRepository = bankDetailsRepository;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -50,14 +50,12 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
     if (CollectionUtils.isEmpty(bankDetails)) {
       return;
     }
-    BankStatementLineAFB120 lastLine;
+    BankStatementLine lastLine;
     for (BankDetails bankDetail : bankDetails) {
-      lastLine =
-          bankStatementLineFetchAFB120Service.getLastBankStatementLineAFB120FromBankDetails(
-              bankDetail);
+      lastLine = bankStatementLineFetchService.getLastBankStatementLineFromBankDetails(bankDetail);
       if (lastLine != null) {
         bankDetail.setBalance(
-            currencyScaleServiceBankPayment.getScaledValue(
+            currencyScaleService.getScaledValue(
                 lastLine,
                 lastLine.getDebit().compareTo(BigDecimal.ZERO) > 0
                     ? lastLine.getDebit()
