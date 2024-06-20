@@ -41,7 +41,7 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
     saleOrderLineMap.putAll(saleOrderLineTaxService.setTaxEquiv(saleOrder, saleOrderLine));
-    saleOrderLineMap.putAll(saleOrderLinePriceService.convertUnitPrice(saleOrder, saleOrderLine));
+    saleOrderLineMap.putAll(saleOrderLinePriceService.computeInTaxPrice(saleOrder, saleOrderLine));
     saleOrderLineMap.putAll(saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine));
     return saleOrderLineMap;
   }

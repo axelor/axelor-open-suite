@@ -80,7 +80,7 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
   }
 
   @Override
-  public Map<String, Object> convertUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+  public Map<String, Object> computeInTaxPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     if (saleOrder == null
         || saleOrderLine.getProduct() == null
