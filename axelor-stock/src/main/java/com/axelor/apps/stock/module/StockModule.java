@@ -98,6 +98,10 @@ import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.WeightedAveragePriceServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactory;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactoryImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.PickedProductAttrsService;
@@ -156,5 +160,8 @@ public class StockModule extends AxelorModule {
         .to(TrackingNumberConfigurationProfileServiceImpl.class);
     bind(PickedProductAttrsService.class).to(PickedProductAttrsServiceImpl.class);
     bind(MassStockMoveRecordService.class).to(MassStockMoveRecordServiceImpl.class);
+    bind(MassStockMovableProductService.class).to(MassStockMovableProductServiceImpl.class);
+    bind(MassStockMovableProductServiceFactory.class)
+        .to(MassStockMovableProductServiceFactoryImpl.class);
   }
 }

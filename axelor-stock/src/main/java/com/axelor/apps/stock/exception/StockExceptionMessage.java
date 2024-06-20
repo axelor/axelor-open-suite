@@ -307,4 +307,18 @@ public final class StockExceptionMessage {
       "Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula." /*)*/;
   public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
       "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Moved qty is greater than current quantity (%s)" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE = /*$$(*/
+      "The product is not available in the stock location source indicated (%s)" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_MOVED_QUANTITY_IS_ZERO = /*$$(*/
+      "Moved quantity is equal to 0 (%s)" /*)*/;
+  public static final String STOCK_MOVE_MASS_STOCK_MOVE_LINE_CANT_DELETE = /*$$(*/
+      "Can't delete a line linked to a realized stock move line." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_FACTORY_UNKNOWN_OBJECT = /*$$(*/
+      "Unknown object, can not get service" /*)*/;
 }
