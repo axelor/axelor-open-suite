@@ -122,7 +122,7 @@ public class ProjectManagementRepository extends ProjectRepository {
         }
         project.setCode(seq);
       }
-      if(StringUtils.isBlank(project.getCode()) && !appProject.getGenerateProjectSequence()){
+      if (StringUtils.isBlank(project.getCode()) && !appProject.getGenerateProjectSequence()) {
         project.setCode("#" + project.getId());
       }
     } catch (AxelorException e) {
