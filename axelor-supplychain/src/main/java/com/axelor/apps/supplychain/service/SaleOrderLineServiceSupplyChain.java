@@ -23,6 +23,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface SaleOrderLineServiceSupplyChain {
 
@@ -86,4 +87,6 @@ public interface SaleOrderLineServiceSupplyChain {
    * @param saleOrderLine a sale order line managed by hibernate
    */
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  Map<String, Object> updateRequestedReservedQty(SaleOrderLine saleOrderLine);
 }

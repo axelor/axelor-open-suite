@@ -666,20 +666,17 @@
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-qty-onchange">
-    <action name="action-sale-order-line-method-compute-pricing-scale"/>
+    <action name="action-sale-order-line-method-compute-pricing-scale"/> <!-- Exclude pricing method because we can't include it in a map -->
+    <action name="action-sale-order-line-method-qty-onchange"/>
     <action name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty"
-      if="__config__.app.isApp('supplychain') &amp;&amp; saleOrder?.statusSelect == 3"/>
-    <action name="action-sale-order-line-method-get-discount"/>
-    <action name="action-sale-order-line-method-compute"/>
-    <action name="action-sale-order-line-method-compute-analytic-distribution"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; saleOrder?.statusSelect == 3"/> <!-- check -->
     <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/> <!-- check -->
     <action name="action-sale-order-line-method-check-qty"
-      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
-    <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
-    <action name="action-sale-order-line-record-complementary-products-to-handle"/>
+      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/> <!-- check -->
+    <!-- name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" if="__config__.app.isApp('supplychain')
+      &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/ --> <!-- to be removed -->
+    <!--action name="action-sale-order-line-record-complementary-products-to-handle"/ --> <!-- to be removed -->
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-unit-onchange">
@@ -791,10 +788,6 @@
   <action-method name="action-sale-order-line-method-get-product-information">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="getProductInformation"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-get-discount">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getDiscount"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-check-qty">
@@ -1065,5 +1058,9 @@
     <action name="action-sale-order-line-validate-check-coefficient-config"/>
     <action name="action-sale-order-line-attrs-to-invoice"/>
   </action-group>
+
+  <action-method name="action-sale-order-line-method-qty-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="qtyOnChange"/>
+  </action-method>
 
 </object-views>
