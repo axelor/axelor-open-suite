@@ -15,6 +15,8 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService {
@@ -75,6 +77,24 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
             saleOrder.getCompany().getCurrency(),
             (BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()),
             saleOrder.getCreationDate()));
+  }
+
+  @Override
+  public Map<String, Object> convertUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    if (saleOrder == null
+        || saleOrderLine.getProduct() == null
+        || saleOrderLine.getPrice() == null
+        || saleOrderLine.getInTaxPrice() == null) {
+      return saleOrderLineMap;
+    }
+
+    BigDecimal price = saleOrderLine.getPrice();
+    BigDecimal inTaxPrice =
+        price.add(price.multiply(taxService.getTotalTaxRate(saleOrderLine.getTaxLineSet())));
+    saleOrderLine.setInTaxPrice(inTaxPrice);
+    saleOrderLineMap.put("inTaxPrice", inTaxPrice);
+    return saleOrderLineMap;
   }
 
   /**

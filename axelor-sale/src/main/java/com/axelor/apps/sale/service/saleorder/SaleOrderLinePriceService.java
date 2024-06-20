@@ -5,6 +5,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
 
 public interface SaleOrderLinePriceService {
@@ -27,4 +28,6 @@ public interface SaleOrderLinePriceService {
 
   BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  Map<String, Object> convertUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 }
