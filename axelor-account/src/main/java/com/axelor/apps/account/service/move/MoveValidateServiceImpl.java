@@ -865,7 +865,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             .filter(
                 moveLine ->
                     moveLineTaxService.isGenerateMoveLineForAutoTax(
-                        moveLine.getAccount().getAccountType().getTechnicalTypeSelect()))
+                            moveLine.getAccount().getAccountType().getTechnicalTypeSelect())
+                        && moveLine.getTaxLine() != null)
             .map(this::getTaxAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -883,7 +884,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
-    if (linesTaxAmount.compareTo(taxLinesAmount) != 0
+    if (linesTaxAmount.signum() != 0
+        && linesTaxAmount.compareTo(taxLinesAmount) != 0
         && accountConfig.getAllowedTaxGap().compareTo(linesTaxAmount.subtract(taxLinesAmount).abs())
             < 0) {
       throw new AxelorException(
