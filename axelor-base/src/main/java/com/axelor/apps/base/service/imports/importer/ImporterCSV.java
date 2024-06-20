@@ -25,18 +25,43 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
 import com.google.common.io.Files;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 class ImporterCSV extends Importer {
 
+  @Inject
+  public ImporterCSV(ExcelToCSV excelToCSV, MetaFiles metaFiles) {
+    super(excelToCSV, metaFiles);
+  }
+
   @Override
   protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
       throws IOException, AxelorException {
+    return process(bind, data, getErrorDirectory(), importContext);
+  }
 
-    CSVImporter importer = new CSVImporter(bind, data);
+  @Override
+  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
+    return process(bind, data, getErrorDirectory());
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, String errorDir)
+      throws IOException, AxelorException {
+    return process(bind, data, errorDir, null);
+  }
+
+  @Override
+  protected ImportHistory process(
+      String bind, String data, String errorDir, Map<String, Object> importContext)
+      throws IOException, AxelorException {
+
+    CSVImporter importer = new CSVImporter(bind, data, errorDir);
 
     ImporterListener listener = new ImporterListener(getConfiguration().getName());
     importer.addListener(listener);
@@ -44,11 +69,6 @@ class ImporterCSV extends Importer {
     importer.run();
 
     return addHistory(listener);
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, null);
   }
 
   @Override

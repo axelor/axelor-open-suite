@@ -2132,6 +2132,7 @@
 "The geonames file type is invalid.",,,
 "The groovy condition result must be a boolean",,,
 "The import configuration executed successfully.",,,
+"The import configuration type is missing.",,,
 "The line cannot be imported (import : %s)",,,
 "The method '%s' doesn't exist in the Faker API.",,,
 "The pattern length should be equal to padding .",,,

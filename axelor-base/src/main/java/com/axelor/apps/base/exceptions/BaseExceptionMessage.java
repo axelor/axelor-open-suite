@@ -648,6 +648,9 @@ public final class BaseExceptionMessage {
   public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
       "The data file should be only an XML or ZIP file." /*)*/;
 
+  public static final String IMPORT_CONFIGURATION_TYPE_MISSING = /*$$(*/
+      "The import configuration type is missing." /*)*/;
+
   public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
 
   public static final String FACTORY_NO_FOUND = /*$$(*/

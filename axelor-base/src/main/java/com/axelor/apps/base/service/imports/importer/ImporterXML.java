@@ -25,15 +25,23 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
 import com.google.common.io.Files;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 class ImporterXML extends Importer {
 
+  @Inject
+  public ImporterXML(ExcelToCSV excelToCSV, MetaFiles metaFiles) {
+    super(excelToCSV, metaFiles);
+  }
+
   @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
+  protected ImportHistory process(
+      String bind, String data, String errorDir, Map<String, Object> importContext)
       throws IOException, AxelorException {
 
     XMLImporter importer = new XMLImporter(bind, data);
@@ -48,7 +56,19 @@ class ImporterXML extends Importer {
 
   @Override
   protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, null);
+    return process(bind, data, getErrorDirectory());
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
+      throws IOException, AxelorException {
+    return process(bind, data, getErrorDirectory(), importContext);
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, String errorDir)
+      throws IOException, AxelorException {
+    return process(bind, data, errorDir, null);
   }
 
   @Override

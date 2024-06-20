@@ -25,12 +25,13 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.FileUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.app.service.AppService;
 import com.google.common.base.Preconditions;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +40,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -48,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -58,15 +59,19 @@ import org.slf4j.LoggerFactory;
 public abstract class Importer {
 
   private static final File DEFAULT_WORKSPACE = createDefaultWorkspace();
-
-  protected Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private ImportConfiguration configuration;
   private File workspace;
 
-  @Inject ExcelToCSV excelToCSV;
+  protected ExcelToCSV excelToCSV;
+  protected MetaFiles metaFiles;
 
-  @Inject MetaFiles metaFiles;
+  @Inject
+  public Importer(ExcelToCSV excelToCSV, MetaFiles metaFiles) {
+    this.excelToCSV = excelToCSV;
+    this.metaFiles = metaFiles;
+  }
 
   public void setConfiguration(ImportConfiguration configuration) {
     this.configuration = configuration;
@@ -92,7 +97,7 @@ public abstract class Importer {
   public Importer init(ImportConfiguration configuration, File workspace) {
     setConfiguration(configuration);
     setWorkspace(workspace);
-    log.debug("Initialization of the import for the configuration {}", configuration.getName());
+    LOG.debug("Initialization of the import for the configuration {}", configuration.getName());
     return this;
   }
 
@@ -132,12 +137,19 @@ public abstract class Importer {
   protected abstract ImportHistory process(String bind, String data)
       throws IOException, AxelorException;
 
+  protected abstract ImportHistory process(String bind, String data, String errorDir)
+      throws IOException, AxelorException;
+
+  protected abstract ImportHistory process(
+      String bind, String data, String errorDir, Map<String, Object> importContext)
+      throws IOException, AxelorException;
+
   protected void deleteFinalWorkspace(File workspace) throws IOException {
 
     if (workspace.isDirectory()) {
       FileUtils.deleteDirectory(workspace);
     } else {
-      java.nio.file.Files.delete(workspace.toPath());
+      Files.delete(workspace.toPath());
     }
   }
 
@@ -150,10 +162,10 @@ public abstract class Importer {
     if (isZip(data)) {
       unZip(data, finalWorkspace);
     } else {
-      FileUtils.copyFile(data, new File(finalWorkspace, metaFile.getFileName()));
+      FileUtils.copyDirectory(data, new File(finalWorkspace, metaFile.getFileName()));
     }
 
-    if (Files.getFileExtension(data.getName()).equals("xlsx"))
+    if (FileUtils.getExtension(data.getName()).equals("xlsx"))
       importExcel(new File(finalWorkspace, metaFile.getFileName()));
 
     return finalWorkspace;
@@ -162,12 +174,12 @@ public abstract class Importer {
   protected String computeFinalWorkspaceName(File data) {
     return String.format(
         "%s-%s",
-        Files.getNameWithoutExtension(data.getName()),
+        FileUtils.stripExtension(data.getName()),
         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
   }
 
   protected boolean isZip(File file) {
-    return Files.getFileExtension(file.getName()).equals("zip");
+    return FileUtils.getExtension(file.getName()).equals("zip");
   }
 
   protected void unZip(File file, File directory) throws IOException {
@@ -196,11 +208,11 @@ public abstract class Importer {
               fileOutputStream.write(buffer, 0, bytesRead);
             }
           }
-          if (Files.getFileExtension(extractFile.getName()).equals("xlsx")) {
+          if (FileUtils.getExtension(extractFile.getName()).equals("xlsx")) {
             importExcel(extractFile);
           }
         } catch (IOException ioException) {
-          log.error(ioException.getMessage());
+          LOG.error(ioException.getMessage());
         }
       }
     }
@@ -234,9 +246,13 @@ public abstract class Importer {
   }
 
   private static File createDefaultWorkspace() {
-
-    File file = Files.createTempDir();
-    file.deleteOnExit();
+    File file = null;
+    try {
+      file = Files.createTempDirectory(null).toFile();
+      file.deleteOnExit();
+    } catch (IOException e) {
+      LOG.error(e.getMessage());
+    }
     return file;
   }
 
@@ -260,10 +276,15 @@ public abstract class Importer {
   }
 
   public void checkEntryFilesType(File bind, File data) throws AxelorException {
-    if (!Files.getFileExtension(bind.getAbsolutePath()).equals("xml")) {
+    if (!FileUtils.getExtension(bind.getAbsolutePath()).equals("xml")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE));
     }
+  }
+
+  protected String getErrorDirectory() {
+    String directory = AppService.getFileUploadDir();
+    return new File(directory, "import_errors/").toString();
   }
 }
