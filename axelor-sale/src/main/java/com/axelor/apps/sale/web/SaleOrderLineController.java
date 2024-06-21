@@ -319,4 +319,15 @@ public class SaleOrderLineController {
         Beans.get(SaleOrderLineOnChangeService.class).taxLineOnChange(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
   }
+
+  public void discountTypeSelectOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    Map<String, Object> saleOrderLineMap =
+        Beans.get(SaleOrderLineOnChangeService.class)
+            .discountTypeSelectOnChange(saleOrderLine, saleOrder);
+    response.setValues(saleOrderLineMap);
+  }
 }
