@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.bankpayment.service.bankdetails;
 
-import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
-import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineFetchAFB120Service;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -30,16 +30,16 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPaymentService {
-  protected BankStatementLineFetchAFB120Service bankStatementLineFetchAFB120Service;
+  protected BankStatementLineFetchService bankStatementLineFetchService;
   protected BankDetailsRepository bankDetailsRepository;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankDetailsBankPaymentServiceImpl(
-      BankStatementLineFetchAFB120Service bankStatementLineFetchAFB120Service,
+      BankStatementLineFetchService bankStatementLineFetchService,
       BankDetailsRepository bankDetailsRepository,
       CurrencyScaleService currencyScaleService) {
-    this.bankStatementLineFetchAFB120Service = bankStatementLineFetchAFB120Service;
+    this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankDetailsRepository = bankDetailsRepository;
     this.currencyScaleService = currencyScaleService;
   }
@@ -50,11 +50,9 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
     if (CollectionUtils.isEmpty(bankDetails)) {
       return;
     }
-    BankStatementLineAFB120 lastLine;
+    BankStatementLine lastLine;
     for (BankDetails bankDetail : bankDetails) {
-      lastLine =
-          bankStatementLineFetchAFB120Service.getLastBankStatementLineAFB120FromBankDetails(
-              bankDetail);
+      lastLine = bankStatementLineFetchService.getLastBankStatementLineFromBankDetails(bankDetail);
       if (lastLine != null) {
         bankDetail.setBalance(
             currencyScaleService.getScaledValue(

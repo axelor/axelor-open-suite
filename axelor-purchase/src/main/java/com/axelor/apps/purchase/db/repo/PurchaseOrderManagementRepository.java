@@ -25,12 +25,22 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
+
+  protected AppBaseService appBaseService;
+  protected PurchaseOrderSequenceService purchaseOrderSequenceService;
+
+  @Inject
+  public PurchaseOrderManagementRepository(
+      AppBaseService appBaseService, PurchaseOrderSequenceService purchaseOrderSequenceService) {
+    this.appBaseService = appBaseService;
+    this.purchaseOrderSequenceService = purchaseOrderSequenceService;
+  }
 
   @Override
   public PurchaseOrder copy(PurchaseOrder entity, boolean deep) {
@@ -43,7 +53,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
     copy.setEstimatedReceiptDate(null);
     copy.setValidatedByUser(null);
     copy.setValidationDateTime(null);
-    copy.setOrderDate(Beans.get(AppBaseService.class).getTodayDate(entity.getCompany()));
+    copy.setOrderDate(appBaseService.getTodayDate(entity.getCompany()));
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
         purchaseOrderLine.setDesiredReceiptDate(null);
@@ -58,7 +68,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 
     try {
       purchaseOrder = super.save(purchaseOrder);
-      Beans.get(PurchaseOrderService.class).setDraftSequence(purchaseOrder);
+      purchaseOrderSequenceService.setDraftSequence(purchaseOrder);
       return purchaseOrder;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

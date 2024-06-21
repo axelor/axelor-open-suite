@@ -119,9 +119,13 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   public List<Pricing> getPricings(Company company, Model model) {
     List<Pricing> pricingList = new ArrayList<>();
     if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
-      pricingList = pricingService.getPricings(company, model, null);
+      pricingList =
+          pricingService.getPricings(
+              company, model, null, PricingRepository.PRICING_TYPE_SELECT_DEFAULT);
     } else {
-      List<Pricing> resultList = pricingService.getAllPricings(company, model);
+      List<Pricing> resultList =
+          pricingService.getAllPricings(
+              company, model, PricingRepository.PRICING_TYPE_SELECT_DEFAULT);
 
       Set<Long> pricingsPointedTo =
           resultList.stream()

@@ -3,12 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
 
-  <input file="base_birtTemplateConfigLine.csv"
-    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
-    search="self.importId = :importId">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
-    <bind to="appBase" search="self.id = '1'"/>
-  </input>
-
+  <input file="studio_appProject.csv" separator=";" type="com.axelor.studio.db.AppProject"
+    search="self.app.code = :code"/>
 </csv-inputs>
-

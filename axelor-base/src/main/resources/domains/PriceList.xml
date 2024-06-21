@@ -30,6 +30,8 @@
                     // TYPE SELECT
 					public static final int TYPE_SALE = 1;
 					public static final int TYPE_PURCHASE = 2;
+					public static final int TYPE_CUSTOMER_CONTRACT = 3;
+					public static final int TYPE_SUPPLIER_CONTRACT = 4;
 
 					// BASED ON SELECT
 					public static final int BASED_ON_COST_PRICE = 1;

@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
+import com.axelor.apps.hr.service.PayrollPreparationExportService;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -86,13 +87,13 @@ public class PayrollPreparationController {
   public void exportPayrollPreparation(ActionRequest request, ActionResponse response)
       throws IOException, AxelorException {
 
-    PayrollPreparationService payrollPreparationService =
-        Beans.get(PayrollPreparationService.class);
+    PayrollPreparationExportService payrollPreparationExportService =
+        Beans.get(PayrollPreparationExportService.class);
     PayrollPreparation payrollPreparation =
         Beans.get(PayrollPreparationRepository.class)
             .find(request.getContext().asType(PayrollPreparation.class).getId());
 
-    String file = payrollPreparationService.exportPayrollPreparation(payrollPreparation);
+    String file = payrollPreparationExportService.exportPayrollPreparation(payrollPreparation);
     if (file != null) {
       FileExportTools.copyFileToExportDir(file);
       String[] filePath = file.split("/");

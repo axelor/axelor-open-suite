@@ -108,4 +108,48 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_TASK_REPORT_NO_ID_FOUND = /*$$(*/
       "Could not find the project task id." /*)*/;
+
+  public static final String PROJECT_TASK_TEMPLATE_QUANTITY_ERROR = /*$$(*/
+      "Quantity must be greater than 0 for task template %s." /*)*/;
+
+  public static final String PROJECT_TASK_FRAMEWORK_CONTRACT_PRODUCT_NOT_FOUND = /*$$(*/
+      "The product was not found on the linked framework contract." /*)*/;
+
+  public static final String PROJECT_TASK_FRAMEWORK_CONTRACT_PRODUCT_NB_ERROR = /*$$(*/
+      "Impossible to retrieve the price as several matching products were found. " /*)*/;
+
+  public static final String PROJECT_CLOSING_BLOCKING_MESSAGE = /*$$(*/
+      "You can not close this project :" /*)*/;
+
+  public static final String PROJECT_CLOSING_NON_BLOCKING_MESSAGE = /*$$(*/ "WARNING:" /*)*/;
+
+  public static final String PROJECT_CLOSING_SALE_ORDER_NOT_INVOICED = /*$$(*/
+      "- a linked sale order is not totally invoiced" /*)*/;
+
+  public static final String PROJECT_CLOSING_PURCHASE_ORDER_NOT_INVOICED = /*$$(*/
+      "- a linked purchase order is not totally invoiced" /*)*/;
+
+  public static final String PROJECT_CLOSING_PURCHASE_ORDER_NOT_RECEIVED = /*$$(*/
+      "- a linked purchase order is not totally received" /*)*/;
+
+  public static final String PROJECT_CLOSING_CONTRACT_IN_PROGRESS = /*$$(*/
+      "- a linked contract is still in progress" /*)*/;
+
+  public static final String PROJECT_CLOSING_TIMESHEET_LINE_NOT_INVOICED = /*$$(*/
+      "- a linked timesheet line is not invoiced" /*)*/;
+
+  public static final String PROJECT_CLOSING_EXPENSE_LINE_NOT_INVOICED = /*$$(*/
+      "- a linked expense line is not invoiced" /*)*/;
+
+  public static final String PROJECT_EMPLOYEE_PRODUCT_NOT_IN_CONTRACT = /*$$(*/
+      "The timesheet product defined on the employee is not available on contracts linked to the task." /*)*/;
+
+  /** Business Project Config Service */
+  public static final String BUSINESS_PROJECT_CONFIG_1 = /*$$(*/
+      "%s : You must configure Business project module for company %s" /*)*/;
+
+  public static final String BATCH_TRANSITION_BETWEEN_PAID_STATUS = /*$$(*/
+      "Transition between paid status for projects" /*)*/;
+  public static final String BATCH_TRANSITION_BETWEEN_PAID_STATUS_ERROR = /*$$(*/
+      "Error while trying to transition between paid status for project %s." /*)*/;
 }

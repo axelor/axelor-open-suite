@@ -53,6 +53,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService;
   protected PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain;
   protected PurchaseOrderService purchaseOrderService;
   protected PurchaseOrderRepository purchaseOrderRepository;
@@ -64,6 +65,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   @Inject
   public SaleOrderPurchaseServiceImpl(
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderRepository purchaseOrderRepository,
@@ -72,6 +74,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       PartnerPriceListService partnerPriceListService,
       SupplierCatalogService supplierCatalogService) {
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderCreateSupplychainService = purchaseOrderCreateSupplychainService;
     this.purchaseOrderLineServiceSupplychain = purchaseOrderLineServiceSupplychain;
     this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderRepository = purchaseOrderRepository;
@@ -152,7 +155,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   protected PurchaseOrder createPurchaseOrder(Partner supplierPartner, SaleOrder saleOrder)
       throws AxelorException {
     PurchaseOrder purchaseOrder =
-        purchaseOrderSupplychainService.createPurchaseOrder(
+        purchaseOrderCreateSupplychainService.createPurchaseOrder(
             AuthUtils.getUser(),
             saleOrder.getCompany(),
             supplierPartner.getContactPartnerSet().size() == 1
