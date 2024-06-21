@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -53,7 +52,6 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class SaleOrderLineController {
@@ -146,25 +144,6 @@ public class SaleOrderLineController {
     response.setValues(line);
   }
 
-  public void getTaxEquiv(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
-
-    response.setValue("taxEquiv", null);
-
-    if (saleOrder == null
-        || saleOrderLine == null
-        || saleOrder.getClientPartner() == null
-        || CollectionUtils.isEmpty(saleOrderLine.getTaxLineSet())) return;
-
-    response.setValue(
-        "taxEquiv",
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquivFromTaxLines(saleOrder.getFiscalPosition(), saleOrderLine.getTaxLineSet()));
-  }
-
   /**
    * Update the ex. tax unit price of an invoice line from its in. tax unit price.
    *
@@ -216,36 +195,6 @@ public class SaleOrderLineController {
                   taxLineSet,
                   exTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
-    } catch (Exception e) {
-      response.setInfo(e.getMessage());
-    }
-  }
-
-  public void convertUnitPrice(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
-
-    if (saleOrder == null
-        || saleOrderLine.getProduct() == null
-        || saleOrderLine.getPrice() == null
-        || saleOrderLine.getInTaxPrice() == null) {
-      return;
-    }
-
-    try {
-
-      BigDecimal price = saleOrderLine.getPrice();
-      BigDecimal inTaxPrice =
-          price.add(
-              price.multiply(
-                  Beans.get(TaxService.class).getTotalTaxRate(saleOrderLine.getTaxLineSet())));
-
-      response.setValue("inTaxPrice", inTaxPrice);
-
     } catch (Exception e) {
       response.setInfo(e.getMessage());
     }
@@ -358,6 +307,16 @@ public class SaleOrderLineController {
 
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).qtyOnChange(saleOrderLine, saleOrder);
+    response.setValues(saleOrderLineMap);
+  }
+
+  public void taxLineOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    Map<String, Object> saleOrderLineMap =
+        Beans.get(SaleOrderLineOnChangeService.class).taxLineOnChange(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
   }
 }

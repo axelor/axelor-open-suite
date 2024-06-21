@@ -8,4 +8,7 @@ import java.util.Map;
 public interface SaleOrderLineOnChangeService {
   Map<String, Object> qtyOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
+
+  Map<String, Object> taxLineOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 }
