@@ -84,7 +84,7 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
         && bankStatementCredit != null
         && bankStatementDebit != null) {
 
-      query = bankReconciliationQueryService.getRequestMoveLines(bankReconciliation);
+      query = bankReconciliationQueryService.getRequestMoveLines();
 
       if (bankReconciliation.getJournal() == null) {
         query =
