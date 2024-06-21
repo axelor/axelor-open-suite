@@ -1390,51 +1390,49 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   public String getDomainForWizard(
       BankReconciliation bankReconciliation,
       BigDecimal bankStatementCredit,
+      BigDecimal bankStatementDebit)
+      throws AxelorException {
+    String query =
+        getMultipleReconcileQuery(bankReconciliation, bankStatementCredit, bankStatementDebit);
+    List<MoveLine> authorizedMoveLines =
+        moveLineRepository
+            .all()
+            .filter(query)
+            .bind(getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+
+    return "self.id in (" + StringTool.getIdListString(authorizedMoveLines) + ")";
+  }
+
+  protected String getMultipleReconcileQuery(
+      BankReconciliation bankReconciliation,
+      BigDecimal bankStatementCredit,
       BigDecimal bankStatementDebit) {
+    String query = "";
+
     if (bankReconciliation != null
         && bankReconciliation.getCompany() != null
         && bankStatementCredit != null
         && bankStatementDebit != null) {
-      String query =
-          "self.move.company.id = "
-              + bankReconciliation.getCompany().getId()
-              + " AND self.move.currency.id = "
-              + bankReconciliation.getCurrency().getId()
-              + " AND (self.move.statusSelect = "
-              + MoveRepository.STATUS_ACCOUNTED
-              + " OR self.move.statusSelect = "
-              + MoveRepository.STATUS_DAYBOOK
-              + ")"
-              + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount) ";
 
-      if (bankStatementCredit.signum() > 0) {
-        query = query.concat(" AND self.debit > 0");
-      }
-      if (bankStatementDebit.signum() > 0) {
-        query = query.concat(" AND self.credit > 0");
-      }
-      if (bankReconciliation.getCashAccount() != null) {
-        query =
-            query.concat(" AND self.account.id = " + bankReconciliation.getCashAccount().getId());
-      } else {
-        query =
-            query.concat(
-                " AND self.account.accountType.technicalTypeSelect LIKE '"
-                    + AccountTypeRepository.TYPE_CASH
-                    + "'");
-      }
-      if (bankReconciliation.getJournal() != null) {
-        query =
-            query.concat(" AND self.move.journal.id = " + bankReconciliation.getJournal().getId());
-      } else {
+      query = getRequestMoveLines();
+
+      if (bankReconciliation.getJournal() == null) {
         query =
             query.concat(
                 " AND self.move.journal.journalType.technicalTypeSelect = "
                     + JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY);
       }
-      return query;
+
+      if (bankStatementCredit.signum() > 0) {
+        query = query.concat(" AND self.debit > 0");
+      }
+
+      if (bankStatementDebit.signum() > 0) {
+        query = query.concat(" AND self.credit > 0");
+      }
     }
-    return "self id in (0)";
+    return query;
   }
 
   @Override
