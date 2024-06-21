@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed an issue where the value of yearly ex tax total was not revalued."
+module: axelor-contract
