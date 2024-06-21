@@ -7,6 +7,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppSupplychain;
@@ -26,12 +28,18 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
   public SaleOrderLineOnChangeSupplychainServiceImpl(
       SaleOrderLineDiscountService saleOrderLineDiscountService,
       SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineTaxService saleOrderLineTaxService,
+      SaleOrderLinePriceService saleOrderLinePriceService,
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       AppSupplychainService appSupplychainService,
       SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService) {
-    super(saleOrderLineDiscountService, saleOrderLineComputeService);
+    super(
+        saleOrderLineDiscountService,
+        saleOrderLineComputeService,
+        saleOrderLineTaxService,
+        saleOrderLinePriceService);
     this.analyticLineModelService = analyticLineModelService;
     this.appAccountService = appAccountService;
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
@@ -52,6 +60,15 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
     saleOrderLineMap.putAll(
         saleOrderLineProductSupplychainService.setIsComplementaryProductsUnhandledYet(
             saleOrderLine));
+
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> taxLineOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> saleOrderLineMap = super.taxLineOnChange(saleOrderLine, saleOrder);
+    saleOrderLineMap.putAll(computeAnalyticDistribution(saleOrderLine, saleOrder));
 
     return saleOrderLineMap;
   }

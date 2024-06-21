@@ -85,7 +85,7 @@
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="taxLineSet" canEdit="false" colSpan="6"
       readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
-      onChange="action-group-sale-saleorderline-tax-line-onchange"
+      onChange="action-sale-order-line-method-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form" widget="TagSelect"/>
     <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -295,7 +295,7 @@
         <panel name="taxPanel" colSpan="12">
           <field name="taxLineSet" canEdit="false" colSpan="6"
             readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
-            onChange="action-group-sale-saleorderline-tax-line-onchange"
+            onChange="action-sale-order-line-method-tax-line-onchange"
             domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
             form-view="tax-line-form" widget="TagSelect"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"
@@ -484,7 +484,7 @@
         </panel>
       </panel>
       <field name="taxLineSet" canEdit="false" colSpan="4"
-        onChange="action-group-sale-saleorderline-tax-line-onchange"
+        onChange="action-sale-order-line-method-tax-line-onchange"
         domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form" widget="TagSelect"/>
       <field name="exTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
@@ -684,14 +684,6 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
   </action-group>
 
-  <action-group name="action-group-sale-saleorderline-tax-line-onchange">
-    <action name="action-sale-order-line-method-get-tax-equiv"/>
-    <action name="action-sale-order-line-method-convert-tax"/>
-    <action name="action-sale-order-line-method-compute"/>
-    <action name="action-sale-order-line-method-compute-analytic-distribution"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
-  </action-group>
-
   <action-group name="action-sale-order-line-group-discount-type-select-onchange">
     <action name="action-sale-order-line-method-compute"/>
     <action name="action-sale-order-line-attrs-discountamount-title"/>
@@ -781,10 +773,6 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="computeSubMargin"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-method-convert-tax">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="convertUnitPrice"/>
-  </action-method>
-
   <action-method name="action-sale-order-line-method-get-product-information">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="getProductInformation"/>
@@ -792,10 +780,6 @@
 
   <action-method name="action-sale-order-line-method-check-qty">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="checkQty"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-get-tax-equiv">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getTaxEquiv"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-onchange-price">
@@ -1061,6 +1045,10 @@
 
   <action-method name="action-sale-order-line-method-qty-onchange">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="qtyOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-tax-line-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="taxLineOnChange"/>
   </action-method>
 
 </object-views>
