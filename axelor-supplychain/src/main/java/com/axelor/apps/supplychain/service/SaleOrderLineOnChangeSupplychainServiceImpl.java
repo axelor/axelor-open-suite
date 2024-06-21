@@ -73,6 +73,16 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
     return saleOrderLineMap;
   }
 
+  @Override
+  public Map<String, Object> discountTypeSelectOnChange(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> saleOrderLineMap =
+        super.discountTypeSelectOnChange(saleOrderLine, saleOrder);
+    saleOrderLineMap.putAll(computeAnalyticDistribution(saleOrderLine, saleOrder));
+
+    return saleOrderLineMap;
+  }
+
   protected Map<String, Object> computeAnalyticDistribution(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
