@@ -2,7 +2,6 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLevel;
@@ -42,7 +41,11 @@ public class TestBudgetToolsService extends BudgetTest {
   protected final RoleRepository roleRepository;
   protected final AppBudgetRepository appBudgetRepository;
   protected final BudgetToolsService budgetToolsService;
-  protected static final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
+  private GlobalBudget globalBudget;
+  private Budget budget;
+  private BudgetLevel budgetLevel;
+  private Role role;
+  private User user;
 
   @Inject
   public TestBudgetToolsService(
@@ -67,214 +70,206 @@ public class TestBudgetToolsService extends BudgetTest {
 
   @BeforeAll
   static void setUp() {
+    final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
     loaderHelper.importCsv("data/base-config.xml");
     loaderHelper.importCsv("data/budget-input.xml");
     loaderHelper.importCsv("data/budget-template-input.xml");
   }
 
+  // If the user's roleSet and groupSet are empty, the method will return false
   @Test
-  void testCheckBudgetKeyAndRole() throws AxelorException {
-    GlobalBudget globalBudget =
-        globalBudgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1011L)
-            .fetchOne();
-    User user =
-        userRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", "ADMIN")
-            .fetchOne();
-    Role roleAcc =
-        roleRepository.all().filter("self.importId = :importId").bind("importId", "ACC").fetchOne();
-    Role roleHR =
-        roleRepository.all().filter("self.importId = :importId").bind("importId", "HR").fetchOne();
-    AccountConfig accountConfig = globalBudget.getCompany().getAccountConfig();
-
-    // If the user's roleSet and groupSet are empty, the method will return false
+  void testCheckBudgetKeyWithoutUserRoles() throws AxelorException {
+    givenGlobalRoleAndUser(1011L, "", "ADMIN");
     Assertions.assertFalse(
         budgetToolsService.checkBudgetKeyAndRole(globalBudget.getCompany(), user));
-    user.addRole(roleHR);
+  }
 
-    // If the user's roleSet and groupSet doesn't contains any roles in the config's roleSet, the
-    // method will return false
+  // If the user's roleSet and groupSet doesn't contains any roles in the config's roleSet, the
+  // method will return false
+  @Test
+  void testCheckBudgetKeyWithWrongRoles() throws AxelorException {
+    givenGlobalRoleAndUser(1011L, "HR", "ADMIN");
     Assertions.assertFalse(
         budgetToolsService.checkBudgetKeyAndRole(globalBudget.getCompany(), user));
-    user.addRole(roleAcc);
+  }
 
-    // If one of the config's roleSet are in the user's roles configured, the method will return
-    // true
-    Assertions.assertTrue(
-        budgetToolsService.checkBudgetKeyAndRole(globalBudget.getCompany(), user));
-    accountConfig.clearBudgetDistributionRoleSet();
-    user.clearRoles();
-
-    // If the config's roleSet is empty, the method will always return true
+  // If one of the config's roleSet are in the user's roles configured, the method will return
+  // true
+  @Test
+  void testCheckBudgetKeyWithRoles() throws AxelorException {
+    givenGlobalRoleAndUser(1011L, "ACC", "ADMIN");
     Assertions.assertTrue(
         budgetToolsService.checkBudgetKeyAndRole(globalBudget.getCompany(), user));
   }
 
+  // If the config's roleSet is empty, the method will always return true
   @Test
-  void testGetGlobalBudgetUsingBudget() {
-    Budget budget =
-        budgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1014L)
-            .fetchOne();
-    GlobalBudget globalBudget = budget.getGlobalBudget();
+  void testCheckBudgetKeyWithoutRoles() throws AxelorException {
+    givenGlobalRoleAndUser(1011L, "ACC", "ADMIN");
+    AccountConfig accountConfig = globalBudget.getCompany().getAccountConfig();
+    accountConfig.clearBudgetDistributionRoleSet();
+    user.clearRoles();
+    Assertions.assertTrue(
+        budgetToolsService.checkBudgetKeyAndRole(globalBudget.getCompany(), user));
+    accountConfig.addBudgetDistributionRoleSetItem(role);
+  }
 
+  @Test
+  void testGetGlobalBudgetUsingBudgetWithLinks() {
+    givenBudgetAndGlobalBudget(1014L, 1011L);
     Assertions.assertEquals(budgetToolsService.getGlobalBudgetUsingBudget(budget), globalBudget);
+  }
+
+  @Test
+  void testGetGlobalBudgetUsingBudgetWithoutGlobal() {
+    givenBudgetAndGlobalBudget(1014L, 1011L);
     budget.setGlobalBudget(null);
     Assertions.assertEquals(budgetToolsService.getGlobalBudgetUsingBudget(budget), globalBudget);
+  }
+
+  @Test
+  void testGetGlobalBudgetUsingBudgetWithoutLinks() {
+    givenBudgetAndGlobalBudget(1014L, 1011L);
+    budget.setGlobalBudget(null);
     budget.setBudgetLevel(null);
     Assertions.assertNull(budgetToolsService.getGlobalBudgetUsingBudget(budget));
   }
 
   @Test
-  void testGetGlobalBudgetUsingBudgetLevel() {
-    Budget budget =
-        budgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1013L)
-            .fetchOne();
-    GlobalBudget globalBudget = budget.getGlobalBudget();
-    BudgetLevel budgetLevel = budget.getBudgetLevel();
-
+  void testGetGlobalBudgetUsingBudgetLevelWithLinks() {
+    givenBudgetGlobalAndLevel(1013L, 1011L, 1015L);
     Assertions.assertEquals(
         budgetToolsService.getGlobalBudgetUsingBudgetLevel(budgetLevel), globalBudget);
-    budgetLevel.setParentBudgetLevel(null);
-    Assertions.assertNull(budgetToolsService.getGlobalBudgetUsingBudgetLevel(budgetLevel));
   }
 
   @Test
-  void testGetBudgetStructureUsingBudget() {
-    BudgetLevel budgetLevel =
-        budgetLevelRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1054L)
-            .fetchOne();
-    BudgetStructure budgetStructure = budgetLevel.getParentBudgetLevel().getBudgetStructure();
+  void testGetGlobalBudgetUsingBudgetLevelWithoutLinks() {
+    givenBudgetGlobalAndLevel(1013L, 1011L, 1015L);
+    BudgetLevel parent = budgetLevel.getParentBudgetLevel();
+    budgetLevel.setParentBudgetLevel(null);
+    Assertions.assertNull(budgetToolsService.getGlobalBudgetUsingBudgetLevel(budgetLevel));
+    budgetLevel.setParentBudgetLevel(parent);
+  }
 
+  @Test
+  void testGetBudgetStructureUsingBudgetWithLinks() {
+    givenBudgetLevel(1054L);
+    BudgetStructure budgetStructure = budgetLevel.getParentBudgetLevel().getBudgetStructure();
     Budget budget = new Budget("TEST", "TEST");
     budgetLevel.addBudgetListItem(budget);
     Assertions.assertEquals(
         budgetToolsService.getBudgetStructureUsingBudget(budget), budgetStructure);
+  }
+
+  @Test
+  void testGetBudgetStructureUsingBudgetWithoutLinks() {
+    Budget budget = new Budget("TEST", "TEST");
     budget.setBudgetLevel(null);
     Assertions.assertNull(budgetToolsService.getBudgetStructureUsingBudget(budget));
   }
 
   @Test
-  void testGetBudgetStructureUsingBudgetLevel() {
-    BudgetLevel budgetLevel =
-        budgetLevelRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1053L)
-            .fetchOne();
+  void testGetBudgetStructureUsingBudgetLevelWithLinks() {
+    givenBudgetLevel(1053L);
     BudgetStructure budgetStructure = budgetLevel.getParentBudgetLevel().getBudgetStructure();
-
     Assertions.assertEquals(
         budgetToolsService.getBudgetStructureUsingBudgetLevel(budgetLevel), budgetStructure);
+  }
+
+  @Test
+  void testGetBudgetStructureUsingBudgetLevelWithoutLinks() {
+    givenBudgetLevel(1053L);
     budgetLevel.setParentBudgetLevel(null);
     Assertions.assertNull(budgetToolsService.getBudgetStructureUsingBudgetLevel(budgetLevel));
   }
 
   @Test
-  void testCheckBudgetKeyInConfig() throws AxelorException {
-    GlobalBudget globalBudget =
-        globalBudgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1011L)
-            .fetchOne();
-    Company company = globalBudget.getCompany();
-
-    Assertions.assertTrue(budgetToolsService.checkBudgetKeyInConfig(company));
-    AccountConfig accountConfig = company.getAccountConfig();
-    accountConfig.setEnableBudgetKey(false);
-    Assertions.assertFalse(budgetToolsService.checkBudgetKeyInConfig(company));
+  void testCheckBudgetKeyInConfigWithConfig() throws AxelorException {
+    givenGlobalBudget(1011L);
+    Assertions.assertTrue(budgetToolsService.checkBudgetKeyInConfig(globalBudget.getCompany()));
   }
 
   @Test
-  void testGetAvailableAmountOnBudget() {
-    GlobalBudget globalBudget =
-        globalBudgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1011L)
-            .fetchOne();
-    Budget budget = globalBudget.getBudgetList().get(0);
+  void testCheckBudgetKeyInConfigWithoutConfig() throws AxelorException {
+    givenGlobalBudget(1011L);
+    AccountConfig accountConfig = globalBudget.getCompany().getAccountConfig();
+    accountConfig.setEnableBudgetKey(false);
+    Assertions.assertFalse(budgetToolsService.checkBudgetKeyInConfig(globalBudget.getCompany()));
+    accountConfig.setEnableBudgetKey(true);
+  }
 
+  @Test
+  void testGetAvailableAmountOnBudgetDefault() {
+    givenGetAvailableAmount(
+        1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE);
     Assertions.assertEquals(
         200, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
+  }
 
-    globalBudget.setCheckAvailableSelect(
-        GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE);
-    Assertions.assertEquals(
-        200, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
-
-    globalBudget.setCheckAvailableSelect(
-        GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET);
+  @Test
+  void testGetAvailableAmountOnBudgetBudget() {
+    givenGetAvailableAmount(1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET);
     Assertions.assertEquals(
         400, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
+  }
 
-    globalBudget.setCheckAvailableSelect(
-        GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET);
+  @Test
+  void testGetAvailableAmountOnBudgetGlobal() {
+    givenGetAvailableAmount(
+        1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET);
     Assertions.assertEquals(
         4300, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
   }
 
   @Test
-  void testGetBudgetControlLevel() {
-    Budget budget =
-        budgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1012L)
-            .fetchOne();
-
-    GlobalBudget globalBudget = budget.getGlobalBudget();
-    globalBudget.setCheckAvailableSelect(
-        GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE);
+  void testGetBudgetControlLevelDefault() {
+    givenGetAvailableAmount(
+        1012L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE);
     Assertions.assertEquals(
         budgetToolsService.getBudgetControlLevel(budget),
         GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET_LINE);
+  }
 
-    globalBudget.setCheckAvailableSelect(
-        GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET);
+  @Test
+  void testGetBudgetControlLevelGlobal() {
+    givenGetAvailableAmount(
+        1012L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET);
     Assertions.assertEquals(
         budgetToolsService.getBudgetControlLevel(budget),
         GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET);
+  }
 
-    disableCheckAvailableBudget();
+  @Test
+  void testGetBudgetControlLevelDisabled() {
+    givenGetAvailableAmount(
+        1012L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET);
+    changeCheckAvailableBudget(false);
     Assertions.assertNull(budgetToolsService.getBudgetControlLevel(budget));
   }
 
   @Test
-  void testGetBudgetRemainingAmountToAllocate() {
-    Budget budget =
-        budgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1011L)
-            .fetchOne();
-    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
+  void testGetBudgetRemainingAmountToAllocateDefault() {
+    List<BudgetDistribution> budgetDistributionList = givenBudgetAndBudgetDistribution(1011L, 0);
     Assertions.assertEquals(
         400,
         budgetToolsService
             .getBudgetRemainingAmountToAllocate(budgetDistributionList, budget.getAvailableAmount())
             .intValue());
-    fillBudgetDistributionList(budgetDistributionList, budget, new BigDecimal(100));
+  }
+
+  @Test
+  void testGetBudgetRemainingAmountToAllocateSubtract() {
+    List<BudgetDistribution> budgetDistributionList = givenBudgetAndBudgetDistribution(1011L, 100);
     Assertions.assertEquals(
         300,
         budgetToolsService
             .getBudgetRemainingAmountToAllocate(budgetDistributionList, budget.getAvailableAmount())
             .intValue());
-    fillBudgetDistributionList(budgetDistributionList, budget, new BigDecimal(350));
+  }
+
+  @Test
+  void testGetBudgetRemainingAmountToAllocateMax() {
+    List<BudgetDistribution> budgetDistributionList = givenBudgetAndBudgetDistribution(1011L, 450);
     Assertions.assertEquals(
         0,
         budgetToolsService
@@ -283,10 +278,12 @@ public class TestBudgetToolsService extends BudgetTest {
   }
 
   @Transactional
-  protected void disableCheckAvailableBudget() {
+  protected void changeCheckAvailableBudget(boolean checkAvailableBudget) {
     AppBudget appBudget = appBudgetRepository.all().fetchOne();
-    appBudget.setCheckAvailableBudget(false);
-    appBudgetRepository.save(appBudget);
+    if (appBudget.getCheckAvailableBudget() != checkAvailableBudget) {
+      appBudget.setCheckAvailableBudget(checkAvailableBudget);
+      appBudgetRepository.save(appBudget);
+    }
   }
 
   protected void fillBudgetDistributionList(
@@ -295,5 +292,81 @@ public class TestBudgetToolsService extends BudgetTest {
     budgetDistribution.setBudget(budget);
     budgetDistribution.setAmount(amount);
     budgetDistributionList.add(budgetDistribution);
+  }
+
+  private void givenGlobalBudget(Long importId) {
+    this.globalBudget =
+        globalBudgetRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", importId)
+            .fetchOne();
+  }
+
+  private void givenBudget(Long importId) {
+    this.budget =
+        budgetRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", importId)
+            .fetchOne();
+  }
+
+  private void givenBudgetLevel(Long importId) {
+    this.budgetLevel =
+        budgetLevelRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", importId)
+            .fetchOne();
+  }
+
+  private void givenBudgetAndGlobalBudget(Long budgetImportId, Long globalBudgetImportId) {
+    givenGlobalBudget(globalBudgetImportId);
+    givenBudget(budgetImportId);
+  }
+
+  private void givenBudgetGlobalAndLevel(
+      Long budgetImportId, Long globalBudgetImportId, Long budgetLevelImportId) {
+    givenGlobalBudget(globalBudgetImportId);
+    givenBudget(budgetImportId);
+    givenBudgetLevel(budgetLevelImportId);
+  }
+
+  private void givenGetAvailableAmount(Long budgetImportId, Integer availableCheck) {
+    changeCheckAvailableBudget(true);
+    givenBudget(budgetImportId);
+    givenGlobalBudget(1011L);
+    globalBudget.setCheckAvailableSelect(availableCheck);
+  }
+
+  private List<BudgetDistribution> givenBudgetAndBudgetDistribution(
+      Long importId, int distributionAmount) {
+    givenBudget(importId);
+    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
+    fillBudgetDistributionList(budgetDistributionList, budget, new BigDecimal(distributionAmount));
+    return budgetDistributionList;
+  }
+
+  private void givenGlobalRoleAndUser(
+      Long globalImportId, String roleImportId, String userImportId) {
+    givenGlobalBudget(globalImportId);
+    this.role =
+        roleRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", roleImportId)
+            .fetchOne();
+    User user =
+        userRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", userImportId)
+            .fetchOne();
+    user.clearRoles();
+    if (role != null) {
+      user.addRole(role);
+    }
+    this.user = user;
   }
 }
