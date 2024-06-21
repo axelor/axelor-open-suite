@@ -52,7 +52,6 @@ class TestGlobalBudgetService extends BudgetTest {
   protected final BudgetScenarioRepository budgetScenarioRepository;
   protected final GlobalBudgetService globalBudgetService;
   protected final BudgetVersionService budgetVersionService;
-  protected static final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
 
   @Inject
   public TestGlobalBudgetService(
@@ -77,6 +76,7 @@ class TestGlobalBudgetService extends BudgetTest {
 
   @BeforeAll
   static void setUp() {
+    final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
     loaderHelper.importCsv("data/budget-input.xml");
     loaderHelper.importCsv("data/budget-template-input.xml");
   }
