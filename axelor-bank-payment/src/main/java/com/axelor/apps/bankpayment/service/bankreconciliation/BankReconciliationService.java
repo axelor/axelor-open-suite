@@ -96,7 +96,8 @@ public interface BankReconciliationService {
   String getDomainForWizard(
       BankReconciliation bankReconciliation,
       BigDecimal bankStatementCredit,
-      BigDecimal bankStatementDebit);
+      BigDecimal bankStatementDebit)
+      throws AxelorException;
 
   BigDecimal getSelectedMoveLineTotal(
       BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet);
