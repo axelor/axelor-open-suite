@@ -34,7 +34,7 @@
   </action-group>
 
   <action-group name="action-contract-account-management-group-on-load">
-    <action name="action-account-management-group-on-load"/>
+    <action name="account-action-account-management-group-onload"/>
     <action name="action-account-management-attrs-global-accounting-cash-account-title"/>
     <action name="action-account-management-attrs-hide-yer-account"/>
   </action-group>
