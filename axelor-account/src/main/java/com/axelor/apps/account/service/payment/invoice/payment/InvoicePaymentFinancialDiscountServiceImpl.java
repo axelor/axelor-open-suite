@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -38,20 +39,40 @@ public class InvoicePaymentFinancialDiscountServiceImpl
   protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTermPaymentToolService invoiceTermPaymentToolService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
       InvoiceTermToolService invoiceTermToolService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      InvoiceTermPaymentToolService invoiceTermPaymentToolService,
+      InvoiceTermFilterService invoiceTermFilterService) {
     this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
+    this.invoiceTermPaymentToolService = invoiceTermPaymentToolService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   @Override
   public void computeFinancialDiscount(InvoicePayment invoicePayment) {
-    if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+
+    computeFinancialDiscountFields(invoicePayment);
+
+    if (invoicePayment.getFinancialDiscountDeadlineDate() == null
+        || invoicePayment
+            .getFinancialDiscountDeadlineDate()
+            .isBefore(invoicePayment.getPaymentDate())) {
+      this.resetFinancialDiscount(invoicePayment);
+    }
+  }
+
+  @Override
+  public void computeFinancialDiscountFields(InvoicePayment invoicePayment) {
+    if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())
+        || invoiceTermPaymentToolService.isPartialPayment(invoicePayment)) {
       if (invoicePayment.getApplyFinancialDiscount()) {
         this.resetFinancialDiscount(invoicePayment);
       }
@@ -69,7 +90,6 @@ public class InvoicePaymentFinancialDiscountServiceImpl
             .collect(Collectors.toList());
 
     if (CollectionUtils.isEmpty(invoiceTermPaymentList)) {
-      invoicePayment.setApplyFinancialDiscount(false);
       this.resetFinancialDiscount(invoicePayment);
 
       return;
@@ -95,16 +115,11 @@ public class InvoicePaymentFinancialDiscountServiceImpl
     LocalDate financialDiscountDeadlineDate =
         this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList);
 
-    if (invoicePayment.getFinancialDiscountDeadlineDate() == null
-        && financialDiscountDeadlineDate.isBefore(invoicePayment.getPaymentDate())) {
-      invoicePayment.setApplyFinancialDiscount(false);
-      this.resetFinancialDiscount(invoicePayment);
-    }
-
     invoicePayment.setFinancialDiscountDeadlineDate(financialDiscountDeadlineDate);
   }
 
   protected void resetFinancialDiscount(InvoicePayment invoicePayment) {
+    invoicePayment.setApplyFinancialDiscount(false);
     invoicePayment.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
     invoicePayment.setFinancialDiscountTaxAmount(BigDecimal.ZERO);
     invoicePayment.setFinancialDiscountAmount(BigDecimal.ZERO);
