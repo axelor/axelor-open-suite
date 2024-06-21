@@ -47,7 +47,7 @@
         grid-view="template-context-grid" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="contentPanel" title="Contenu">
+      <panel name="contentPanel" title="Content">
         <panel name="recipientAddressPanel" title="Recipient address"
           showIf="mediaTypeSelect == 1">
           <field name="addressBlock" showTitle="false" colSpan="12" height="5" widget="html"
