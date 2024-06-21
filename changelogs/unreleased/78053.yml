@@ -1,2 +1,2 @@
-title: "Bank reconciliation : fix move line filter when using multiple reconciliation"
+title: "Bank reconciliation: fixed move line filter when using multiple reconciliations."
 module: "axelor-bank-payment"
