@@ -135,7 +135,10 @@ public class ICalendarStore {
       Set<String> remoteUids,
       LocalDateTime startDate,
       LocalDateTime endDate)
-      throws IOException, DavException, ParserConfigurationException, ParserException,
+      throws IOException,
+          DavException,
+          ParserConfigurationException,
+          ParserException,
           ParseException {
     final List<VEvent> events = new ArrayList<>();
 
