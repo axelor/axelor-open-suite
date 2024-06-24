@@ -65,10 +65,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   public Map<String, Object> computeProductInformation(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    Map<String, Object> saleOrderLineMap = new HashMap<>();
-
-    // Reset fields which are going to recalculate in this method
-    resetProductInformation(saleOrderLine);
+    Map<String, Object> saleOrderLineMap = resetProductInformation(saleOrderLine);
 
     if (!saleOrderLine.getEnableFreezeFields()) {
       saleOrderLine.setProductName(saleOrderLine.getProduct().getName());
@@ -207,7 +204,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   }
 
   @Override
-  public SaleOrderLine resetProductInformation(SaleOrderLine line) {
+  public Map<String, Object> resetProductInformation(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
     if (!line.getEnableFreezeFields()) {
       line.setProductName(null);
       line.setPrice(null);
@@ -226,8 +224,27 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
+    line.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
     line.clearSelectedComplementaryProductList();
-    return line;
+
+    saleOrderLineMap.put("productName", line.getProductName());
+    saleOrderLineMap.put("price", line.getPrice());
+    saleOrderLineMap.put("unit", line.getUnit());
+    saleOrderLineMap.put("companyCostPrice", line.getCompanyCostPrice());
+    saleOrderLineMap.put("discountAmount", line.getDiscountAmount());
+    saleOrderLineMap.put("discountTypeSelect", line.getDiscountTypeSelect());
+    saleOrderLineMap.put("inTaxPrice", line.getInTaxPrice());
+    saleOrderLineMap.put("exTaxTotal", line.getExTaxTotal());
+    saleOrderLineMap.put("inTaxTotal", line.getInTaxTotal());
+    saleOrderLineMap.put("companyInTaxTotal", line.getCompanyInTaxTotal());
+    saleOrderLineMap.put("companyExTaxTotal", line.getCompanyExTaxTotal());
+    saleOrderLineMap.put("description", line.getDescription());
+    saleOrderLineMap.put("typeSelect", line.getTypeSelect());
+    saleOrderLineMap.put(
+        "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    saleOrderLineMap.put("taxLineSet", line.getTaxLineSet());
+    saleOrderLineMap.put("taxEquiv", line.getTaxEquiv());
+    return saleOrderLineMap;
   }
 
   @Override
