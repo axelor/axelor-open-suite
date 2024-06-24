@@ -18,20 +18,28 @@
  */
 package com.axelor.apps.mobilesettings.service;
 
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.mobilesettings.db.MobileConfig;
+import com.axelor.apps.mobilesettings.db.MobileDashboard;
 import com.axelor.apps.mobilesettings.db.MobileMenu;
+import com.axelor.apps.mobilesettings.db.MobileShortcut;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
 import com.axelor.apps.mobilesettings.rest.dto.MobileConfigResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsResponse;
+import com.axelor.apps.mobilesettings.rest.dto.MobileShortcutResponse;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppMobileSettings;
 import com.axelor.studio.db.repo.AppMobileSettingsRepository;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MobileSettingsResponseComputeServiceImpl
     implements MobileSettingsResponseComputeService {
@@ -89,25 +97,56 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
         appMobileSettings.getIsStockLocationManagementEnabled(),
+        appMobileSettings.getIsOneLineShortcut(),
         appMobileSettings.getMinimalRequiredMobileAppVersion(),
-        getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()));
+        getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()),
+        getAuthorizedDashboardIdList(appMobileSettings),
+        getAuthorizedShortcutList(appMobileSettings));
+  }
+
+  protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
+    List<MobileDashboard> mobileDashboardList = appMobileSettings.getMobileDashboardList();
+    if (CollectionUtils.isEmpty(mobileDashboardList)) {
+      return Collections.emptyList();
+    }
+    return mobileDashboardList.stream()
+        .filter(
+            dashboard ->
+                UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+                        AuthUtils.getUser(), dashboard.getAuthorizedRoleSet())
+                    || CollectionUtils.isEmpty(dashboard.getAuthorizedRoleSet()))
+        .map(MobileDashboard::getId)
+        .collect(Collectors.toList());
+  }
+
+  protected List<MobileShortcutResponse> getAuthorizedShortcutList(
+      AppMobileSettings appMobileSettings) {
+    List<MobileShortcut> mobileShortcutList = appMobileSettings.getMobileShortcutList();
+    if (CollectionUtils.isEmpty(mobileShortcutList)) {
+      return Collections.emptyList();
+    }
+
+    List<MobileShortcut> authorizedMobileShortcutList =
+        mobileShortcutList.stream()
+            .filter(
+                shortcut ->
+                    UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+                            AuthUtils.getUser(), shortcut.getAuthorizedRoleSet())
+                        || CollectionUtils.isEmpty(shortcut.getAuthorizedRoleSet()))
+            .collect(Collectors.toList());
+    List<MobileShortcutResponse> mobileShortcutResponseList = new ArrayList<>();
+    for (MobileShortcut mobileShortcut : authorizedMobileShortcutList) {
+      mobileShortcutResponseList.add(new MobileShortcutResponse(mobileShortcut));
+    }
+    return mobileShortcutResponseList;
   }
 
   protected Boolean checkConfigWithRoles(Boolean config, Set<Role> authorizedRoles) {
     if (!config) {
       return false;
     }
-    if (authorizedRoles == null || authorizedRoles.isEmpty()) {
-      return true;
-    }
-    return authorizedRoles.stream().anyMatch(AuthUtils.getUser().getRoles()::contains);
-  }
-
-  protected Boolean checkRestrictedMenuWithRoles(Set<Role> authorizedRoles) {
-    if (authorizedRoles == null || authorizedRoles.isEmpty()) {
-      return true;
-    }
-    return authorizedRoles.stream().noneMatch(AuthUtils.getUser().getRoles()::contains);
+    User user = AuthUtils.getUser();
+    return UserRoleToolService.checkUserRolesPermissionIncludingEmpty(user, authorizedRoles);
   }
 
   protected MobileConfig getMobileConfigFromAppSequence(String appSequence) {
@@ -157,14 +196,24 @@ public class MobileSettingsResponseComputeServiceImpl
                 appMobileSettings.getIsQualityAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_QUALITY)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_QUALITY)));
+            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_QUALITY)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_INTERVENTION,
+            checkConfigWithRoles(
+                appMobileSettings.getIsInterventionAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)
+                    .getAuthorizedRoles()),
+            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)));
   }
 
   protected List<String> getRestrictedMenusFromApp(String appSequence) {
     MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
     if (mobileConfig.getIsCustomizeMenuEnabled()) {
       return mobileConfig.getMenus().stream()
-          .filter(mobileMenu -> checkRestrictedMenuWithRoles(mobileMenu.getAuthorizedRoles()))
+          .filter(
+              mobileMenu ->
+                  !UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+                      AuthUtils.getUser(), mobileMenu.getAuthorizedRoles()))
           .map(MobileMenu::getTechnicalName)
           .collect(Collectors.toList());
     }

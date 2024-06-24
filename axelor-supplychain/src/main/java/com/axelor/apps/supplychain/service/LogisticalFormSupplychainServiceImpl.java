@@ -22,7 +22,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -52,13 +51,8 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
       return logisticalFormLine;
     }
 
-    StockMove stockMove =
-        logisticalFormLine.getStockMoveLine() != null
-            ? logisticalFormLine.getStockMoveLine().getStockMove()
-            : null;
-
-    if (stockMove != null) {
-      logisticalFormLine.setSaleOrder(stockMove.getSaleOrder());
+    if (stockMoveLine.getSaleOrderLine() != null) {
+      logisticalFormLine.setSaleOrder(stockMoveLine.getSaleOrderLine().getSaleOrder());
     }
 
     return logisticalFormLine;

@@ -43,7 +43,7 @@
       ref="com.axelor.apps.account.db.InvoiceTerm"
       title="Invoice term concerned by the debt recovery"/>
 
-    <string name="name" namecolumn="true" search="referenceDate,id" title="Name">
+    <string name="name" namecolumn="true" title="Name">
 	   	<![CDATA[
 	   		String name = "";
 	    	if(referenceDate != null)

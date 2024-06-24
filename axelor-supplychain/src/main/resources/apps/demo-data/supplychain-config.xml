@@ -87,6 +87,8 @@
     <bind to="estimatedReceiptDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedReceiptDate)"
       column="estimatedReceiptDate"/>
+    <bind search="self.importId in :taxLineSet_importId" to="taxLineSet"
+      column="taxLineSet_importId" eval="taxLineSet_importId.split('\\|') as List"/>
   </input>
 
   <input file="purchase_purchaseOrder.csv" separator=";" search="self.importId = :importId"

@@ -19,10 +19,11 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.quality.db.QIActionDistribution;
 import com.axelor.apps.quality.db.QIAnalysis;
 import com.axelor.apps.quality.db.QITask;
@@ -59,7 +60,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
   protected QualityConfigService qualityConfigService;
   protected QIActionDistributionService qiActionDistributionService;
   protected QIAnalysisRepository qiAnalysisRepository;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
   protected TemplateMessageService templateMessageService;
   protected MessageService messageService;
   protected MetaFiles metaFiles;
@@ -70,7 +71,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
       QualityConfigService qualityConfigService,
       QIActionDistributionService qiActionDistributionService,
       QIAnalysisRepository qiAnalysisRepository,
-      BirtTemplateService birtTemplateService,
+      PrintingTemplatePrintService printingTemplatePrintService,
       TemplateMessageService templateMessageService,
       MessageService messageService,
       MetaFiles metaFiles) {
@@ -78,7 +79,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
     this.qualityConfigService = qualityConfigService;
     this.qiActionDistributionService = qiActionDistributionService;
     this.qiAnalysisRepository = qiAnalysisRepository;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
     this.templateMessageService = templateMessageService;
     this.messageService = messageService;
     this.metaFiles = metaFiles;
@@ -173,15 +174,18 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
   protected DMSFile getGeneratedFile(Company company, QIActionDistribution qiActionDistribution)
       throws AxelorException, IOException {
     QualityConfig qualityConfig = qualityConfigService.getQualityConfig(company);
-    BirtTemplate qiActionDistributionBirtTemplate =
-        qualityConfig.getQiActionDistributionBirtTemplate();
-    if (qiActionDistributionBirtTemplate == null) {
+    PrintingTemplate qiActionDistributionPrintTemplate =
+        qualityConfig.getQiActionDistributionPrintTemplate();
+    if (qiActionDistributionPrintTemplate == null) {
       return null;
     }
     String fileName = getFileName(qiActionDistribution);
     File file =
-        birtTemplateService.generateBirtTemplateFile(
-            qiActionDistributionBirtTemplate, qiActionDistribution, fileName);
+        printingTemplatePrintService.getPrintFile(
+            qiActionDistributionPrintTemplate,
+            new PrintingGenFactoryContext(qiActionDistribution),
+            fileName);
+
     DMSFile generatedFile = null;
     if (file != null) {
       try (InputStream is = new FileInputStream(file)) {

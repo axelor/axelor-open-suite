@@ -94,4 +94,6 @@ public interface TimesheetLineService {
 
   boolean isExceedingDailyLimit(
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit);
+
+  Product getDefaultProduct(TimesheetLine timesheetLine);
 }

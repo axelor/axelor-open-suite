@@ -7,8 +7,8 @@
     model="com.axelor.apps.base.db.PrintingSettings" width="large">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="defaultMailBirtTemplate" form-view="birt-template-form"
-        grid-view="birt-template-grid"/>
+      <field name="defaultMailPrintTemplate" form-view="printing-template-form"
+        grid-view="printing-template-grid"/>
       <field name="logoPositionSelect"/>
       <field name="colorCode"/>
       <field name="addressPositionSelect"/>

@@ -156,6 +156,10 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   public GlobalBudget changeBudgetVersion(
       GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException {
+    if (budgetVersion == null) {
+      return globalBudget;
+    }
+
     List<Budget> budgetList = globalBudgetToolsService.getAllBudgets(globalBudget);
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
         budgetVersion.getVersionExpectedAmountsLineList();
@@ -165,31 +169,12 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       budgetVersionRepo.save(oldBudgetVersion);
     }
 
-    for (Budget budget : budgetList) {
-      VersionExpectedAmountsLine versionExpectedAmountsLine =
-          versionExpectedAmountsLineList.stream()
-              .filter(version -> version.getBudget().equals(budget))
-              .findFirst()
-              .orElse(null);
-      if (versionExpectedAmountsLine != null) {
-        budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
-        budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
-        budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
-        if (needRecomputeBudgetLine) {
-          budget.setPeriodDurationSelect(BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME);
-          budget.clearBudgetLineList();
-          List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
-          if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
-            BudgetLine budgetLine = budgetLineList.get(0);
-            recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
-          }
-        }
-
-        budgetRepository.save(budget);
+    if (!ObjectUtils.isEmpty(budgetList)) {
+      for (Budget budget : budgetList) {
+        changeVersionLineOnBudget(versionExpectedAmountsLineList, budget, needRecomputeBudgetLine);
       }
     }
 
-    globalBudget.setBudgetList(budgetList);
     globalBudget.setActiveVersion(budgetVersion);
     budgetVersion.setIsActive(true);
     globalBudget = globalBudgetRepository.save(globalBudget);
@@ -344,5 +329,34 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     }
 
     return budgetScenarioLineList;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void changeVersionLineOnBudget(
+      List<VersionExpectedAmountsLine> versionExpectedAmountsLineList,
+      Budget budget,
+      boolean needRecomputeBudgetLine)
+      throws AxelorException {
+    VersionExpectedAmountsLine versionExpectedAmountsLine =
+        versionExpectedAmountsLineList.stream()
+            .filter(version -> version.getBudget().equals(budget))
+            .findFirst()
+            .orElse(null);
+    if (versionExpectedAmountsLine != null) {
+      budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
+      budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
+      budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
+      if (needRecomputeBudgetLine) {
+        budget.setPeriodDurationSelect(BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME);
+        budget.clearBudgetLineList();
+        List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
+        if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
+          BudgetLine budgetLine = budgetLineList.get(0);
+          recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
+        }
+      }
+
+      budgetRepository.save(budget);
+    }
   }
 }
