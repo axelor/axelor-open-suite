@@ -28,6 +28,14 @@
 		public static final int STATUS_TEMPORARILY_CLOSED = 4;
 		public static final int STATUS_CLOSURE_IN_PROGRESS = 5;
 	]]></extra-code>
+
+    <track>
+      <field name="name"/>
+      <field name="code"/>
+      <field name="fromDate"/>
+      <field name="toDate"/>
+      <field name="statusSelect"/>
+    </track>
   </entity>
 
 </domain-models>

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Invoice;
@@ -96,13 +114,6 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
     reconcileCheckService.checkCurrencies(debitMoveLine, creditMoveLine);
 
-    if (reconcile.getForeignExchangeMove() != null
-        && creditInvoice == null
-        && debitInvoice == null) {
-      creditInvoice = creditMove.getInvoice() != null ? creditMove.getInvoice() : null;
-      debitInvoice = debitMove.getInvoice() != null ? debitMove.getInvoice() : null;
-    }
-
     this.updatePayment(
         reconcile,
         debitMoveLine,
@@ -147,29 +158,19 @@ public class ReconcileInvoiceTermComputationServiceImpl
         }
       }
 
-      if (moveLine.getAccount().getUseForPartnerBalance()
+      if (invoicePayment == null
+          && moveLine.getAccount().getUseForPartnerBalance()
           && otherMoveLine.getAccount().getUseForPartnerBalance()) {
+
         BigDecimal invoicePaymentAmount = amount;
         if (!reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove)) {
           invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, false);
         }
 
-        InvoicePayment foreignExchangePayment =
-            invoicePaymentRepository.findByMove(reconcile.getForeignExchangeMove()).fetchOne();
-        if (foreignExchangePayment == null
-            && reconcile.getForeignExchangeMove() != null
-            && invoicePayment != null
-            && !reconcile.equals(invoicePayment.getReconcile())) {
-          invoicePayment =
-              invoicePaymentCreateService.createInvoicePayment(
-                  invoice, invoicePaymentAmount, reconcile.getForeignExchangeMove());
-          invoicePayment.setReconcile(reconcile);
-        } else if (invoicePayment == null) {
-          invoicePayment =
-              invoicePaymentCreateService.createInvoicePayment(
-                  invoice, invoicePaymentAmount, otherMove);
-          invoicePayment.setReconcile(reconcile);
-        }
+        invoicePayment =
+            invoicePaymentCreateService.createInvoicePayment(
+                invoice, invoicePaymentAmount, otherMove);
+        invoicePayment.setReconcile(reconcile);
       }
     } else if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
       amount = this.getTotal(moveLine, otherMoveLine, amount, false);

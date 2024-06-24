@@ -602,7 +602,8 @@
           <field name="carrierPartner"
             domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
             form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
-          <field name="forwarderPartner" domain=":company MEMBER OF self.companySet"
+          <field name="forwarderPartner"
+            domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
             form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
         </panel>
 
@@ -658,6 +659,7 @@
             <field name="operationOrder" hidden="true" showIf="operationOrder != null"
               if-module="axelor-production"/>
             <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
+            <field name="massStockMove" hidden="true" showIf="massStockMove != null"/>
           </panel>
           <field name="saleOrderSet" hidden="true"
             showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"/>

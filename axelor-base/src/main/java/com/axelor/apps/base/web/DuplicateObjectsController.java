@@ -236,6 +236,7 @@ public class DuplicateObjectsController {
 
     return (Class<? extends Model>) JPA.model(model);
   }
+
   /**
    * call check duplicate wizard
    *

@@ -283,6 +283,7 @@ public interface InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
+      BigDecimal currencyRate,
       Company company);
 
   void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException;
