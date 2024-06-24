@@ -21,7 +21,9 @@ package com.axelor.apps.supplychain.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface SubscriptionInvoiceService {
 
@@ -30,4 +32,13 @@ public interface SubscriptionInvoiceService {
   public List<SaleOrder> getSubscriptionOrders(Integer limit);
 
   public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException;
+
+  Invoice generateSubscriptionInvoice(
+      SaleOrder saleOrder,
+      int operationSelect,
+      BigDecimal amount,
+      boolean isPercent,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      List<Long> timetableIdList)
+      throws AxelorException;
 }

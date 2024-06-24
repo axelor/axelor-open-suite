@@ -268,7 +268,14 @@ public class SaleOrderController {
       if (saleOrder.getSaleOrderTypeSelect() == SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION) {
         SubscriptionInvoiceService subscriptionInvoiceService =
             Beans.get(SubscriptionInvoiceService.class);
-        invoice = subscriptionInvoiceService.generateSubscriptionInvoice(saleOrder);
+        invoice =
+            subscriptionInvoiceService.generateSubscriptionInvoice(
+                saleOrder,
+                operationSelect,
+                amountToInvoice,
+                isPercent,
+                qtyToInvoiceMap,
+                timetableIdList);
       } else {
         invoice =
             saleOrderInvoiceService.generateInvoice(
