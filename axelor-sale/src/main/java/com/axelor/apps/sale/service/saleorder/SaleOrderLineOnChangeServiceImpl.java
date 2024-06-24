@@ -47,8 +47,8 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
   }
 
   @Override
-  public Map<String, Object> discountTypeSelectOnChange(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+  public Map<String, Object> compute(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine));
     return saleOrderLineMap;

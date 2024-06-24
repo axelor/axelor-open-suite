@@ -74,10 +74,9 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
   }
 
   @Override
-  public Map<String, Object> discountTypeSelectOnChange(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Object> saleOrderLineMap =
-        super.discountTypeSelectOnChange(saleOrderLine, saleOrder);
+  public Map<String, Object> compute(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> saleOrderLineMap = super.compute(saleOrderLine, saleOrder);
     saleOrderLineMap.putAll(computeAnalyticDistribution(saleOrderLine, saleOrder));
 
     return saleOrderLineMap;

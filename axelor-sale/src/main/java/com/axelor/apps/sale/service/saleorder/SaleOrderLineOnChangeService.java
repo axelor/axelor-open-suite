@@ -12,6 +12,6 @@ public interface SaleOrderLineOnChangeService {
   Map<String, Object> taxLineOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
-  Map<String, Object> discountTypeSelectOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  Map<String, Object> compute(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 }
