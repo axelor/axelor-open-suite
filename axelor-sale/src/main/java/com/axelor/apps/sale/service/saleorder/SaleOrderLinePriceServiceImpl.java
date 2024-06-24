@@ -80,7 +80,7 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
   }
 
   @Override
-  public Map<String, Object> computeInTaxPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+  public Map<String, Object> updateInTaxPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     if (saleOrder == null
         || saleOrderLine.getProduct() == null
@@ -90,10 +90,37 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
     }
 
     BigDecimal price = saleOrderLine.getPrice();
+
     BigDecimal inTaxPrice =
-        price.add(price.multiply(taxService.getTotalTaxRate(saleOrderLine.getTaxLineSet())));
+        taxService.convertUnitPrice(
+            false,
+            saleOrderLine.getTaxLineSet(),
+            price,
+            appSaleService.getNbDecimalDigitForUnitPrice());
     saleOrderLine.setInTaxPrice(inTaxPrice);
     saleOrderLineMap.put("inTaxPrice", inTaxPrice);
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> updatePrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    if (saleOrder == null
+        || saleOrderLine.getProduct() == null
+        || saleOrderLine.getPrice() == null
+        || saleOrderLine.getInTaxPrice() == null) {
+      return saleOrderLineMap;
+    }
+
+    BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
+    BigDecimal price =
+        taxService.convertUnitPrice(
+            true,
+            saleOrderLine.getTaxLineSet(),
+            inTaxPrice,
+            appSaleService.getNbDecimalDigitForUnitPrice());
+    saleOrderLine.setPrice(price);
+    saleOrderLineMap.put("price", price);
     return saleOrderLineMap;
   }
 

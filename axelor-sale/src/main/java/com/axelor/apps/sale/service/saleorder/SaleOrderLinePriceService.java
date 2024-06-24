@@ -29,5 +29,7 @@ public interface SaleOrderLinePriceService {
   BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  Map<String, Object> computeInTaxPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
+  Map<String, Object> updateInTaxPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
+
+  Map<String, Object> updatePrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 }

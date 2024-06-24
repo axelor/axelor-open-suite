@@ -30,7 +30,7 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
       throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(saleOrderLineDiscountService.getDiscount(saleOrderLine, saleOrder));
-    saleOrderLineMap.putAll(saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine));
+    saleOrderLineMap.putAll(compute(saleOrderLine, saleOrder));
 
     return saleOrderLineMap;
   }
@@ -41,8 +41,26 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
     saleOrderLineMap.putAll(saleOrderLineTaxService.setTaxEquiv(saleOrder, saleOrderLine));
-    saleOrderLineMap.putAll(saleOrderLinePriceService.computeInTaxPrice(saleOrder, saleOrderLine));
-    saleOrderLineMap.putAll(saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine));
+    saleOrderLineMap.putAll(saleOrderLinePriceService.updateInTaxPrice(saleOrder, saleOrderLine));
+    saleOrderLineMap.putAll(compute(saleOrderLine, saleOrder));
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> priceOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(saleOrderLinePriceService.updateInTaxPrice(saleOrder, saleOrderLine));
+    saleOrderLineMap.putAll(compute(saleOrderLine, saleOrder));
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> inTaxPriceOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(saleOrderLinePriceService.updatePrice(saleOrder, saleOrderLine));
+    saleOrderLineMap.putAll(compute(saleOrderLine, saleOrder));
     return saleOrderLineMap;
   }
 

@@ -12,6 +12,12 @@ public interface SaleOrderLineOnChangeService {
   Map<String, Object> taxLineOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
+  Map<String, Object> priceOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
+
+  Map<String, Object> inTaxPriceOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
+
   Map<String, Object> compute(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 }

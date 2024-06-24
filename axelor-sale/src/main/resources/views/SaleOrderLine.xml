@@ -73,7 +73,7 @@
       validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" colSpan="3"
       readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
-      onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
+      onChange="action-sale-order-line-method-onchange-price, action-sale-order-line-attrs-show-priceDiscounted"
       hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
@@ -259,11 +259,11 @@
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
-            onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
+            onChange="action-sale-order-line-method-onchange-price, action-sale-order-line-attrs-show-priceDiscounted"
             hidden="true"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
-            onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
+            onChange="action-sale-order-line-method-onchange-intaxprice, action-sale-order-line-attrs-show-priceDiscounted"
             hidden="true"/>
           <panel name="discountPanel" colSpan="12"
             readonlyIf="$isReadOnly !== false || deliveryState == 3">
@@ -469,16 +469,16 @@
         <field name="unit" canEdit="false" requiredIf="typeSelect == 0" form-view="unit-form"
           grid-view="unit-grid"/>
         <field name="price"
-          onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
+          onChange="action-sale-order-line-method-onchange-price, action-sale-order-line-attrs-show-priceDiscounted"
           colSpan="4" hidden="true"/>
         <field name="inTaxPrice"
-          onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
+          onChange="action-sale-order-line-method-onchange-intaxprice, action-sale-order-line-attrs-show-priceDiscounted"
           colSpan="4" hidden="true"/>
         <panel name="discountPanel" title="Discount">
           <field name="discountTypeSelect"
             onChange="action-sale-order-line-group-discount-type-select-onchange"/>
           <field name="discountAmount"
-            onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
+            onChange="action-sale-order-line-group-discount-amount-onchange"
             hideIf="discountTypeSelect == 0"/>
           <field name="priceDiscounted" colSpan="4" hidden="true"/>
         </panel>
@@ -767,10 +767,6 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="computePricingScale"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-method-compute">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="compute"/>
-  </action-method>
-
   <action-method name="action-sale-order-line-method-compute-subMargin">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="computeSubMargin"/>
   </action-method>
@@ -803,12 +799,6 @@
 
   <action-method name="action-sale-order-line-method-empty-line">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="emptyLine"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-compute-analytic-distribution"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
-      method="computeAnalyticDistribution" if="__config__.app.isApp('supplychain')"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-check-stock"
