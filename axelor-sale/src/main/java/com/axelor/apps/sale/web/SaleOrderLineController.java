@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.sale.web;
 
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
@@ -26,7 +25,6 @@ import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -51,21 +49,9 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @Singleton
 public class SaleOrderLineController {
-
-  public void compute(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
-    try {
-      compute(response, saleOrder, saleOrderLine);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 
   public void computeSubMargin(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -150,26 +136,13 @@ public class SaleOrderLineController {
    * @param request
    * @param response
    */
-  public void updatePrice(ActionRequest request, ActionResponse response) {
+  public void updatePrice(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
-
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
-    try {
-      BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
-      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
-
-      response.setValue(
-          "price",
-          Beans.get(TaxService.class)
-              .convertUnitPrice(
-                  true,
-                  taxLineSet,
-                  inTaxPrice,
-                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
-    } catch (Exception e) {
-      response.setInfo(e.getMessage());
-    }
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    Map<String, Object> saleOrderLineMap =
+        Beans.get(SaleOrderLineOnChangeService.class).inTaxPriceOnChange(saleOrderLine, saleOrder);
+    response.setValues(saleOrderLineMap);
   }
 
   /**
@@ -178,26 +151,14 @@ public class SaleOrderLineController {
    * @param request
    * @param response
    */
-  public void updateInTaxPrice(ActionRequest request, ActionResponse response) {
+  public void updateInTaxPrice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Context context = request.getContext();
-
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
-    try {
-      BigDecimal exTaxPrice = saleOrderLine.getPrice();
-      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
-
-      response.setValue(
-          "inTaxPrice",
-          Beans.get(TaxService.class)
-              .convertUnitPrice(
-                  false,
-                  taxLineSet,
-                  exTaxPrice,
-                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
-    } catch (Exception e) {
-      response.setInfo(e.getMessage());
-    }
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    Map<String, Object> saleOrderLineMap =
+        Beans.get(SaleOrderLineOnChangeService.class).priceOnChange(saleOrderLine, saleOrder);
+    response.setValues(saleOrderLineMap);
   }
 
   public void emptyLine(ActionRequest request, ActionResponse response) {
@@ -241,26 +202,6 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  protected void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
-      throws AxelorException {
-
-    Map<String, Object> map =
-        Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, orderLine);
-
-    map.put("price", orderLine.getPrice());
-    map.put("inTaxPrice", orderLine.getInTaxPrice());
-    map.put("companyCostPrice", orderLine.getCompanyCostPrice());
-    map.put("discountAmount", orderLine.getDiscountAmount());
-
-    response.setValues(map);
-    response.setAttr(
-        "priceDiscounted",
-        "hidden",
-        ((BigDecimal) map.getOrDefault("priceDiscounted", BigDecimal.ZERO))
-                .compareTo(saleOrder.getInAti() ? orderLine.getInTaxPrice() : orderLine.getPrice())
-            == 0);
   }
 
   /**

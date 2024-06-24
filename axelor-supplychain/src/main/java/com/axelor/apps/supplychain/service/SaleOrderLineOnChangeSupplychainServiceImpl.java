@@ -52,7 +52,6 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
       throws AxelorException {
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
     Map<String, Object> saleOrderLineMap = super.qtyOnChange(saleOrderLine, saleOrder);
-    saleOrderLineMap.putAll(computeAnalyticDistribution(saleOrderLine, saleOrder));
     if (appSupplychain.getManageStockReservation()) {
       saleOrderLineMap.putAll(
           saleOrderLineServiceSupplyChain.updateRequestedReservedQty(saleOrderLine));
@@ -60,15 +59,6 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
     saleOrderLineMap.putAll(
         saleOrderLineProductSupplychainService.setIsComplementaryProductsUnhandledYet(
             saleOrderLine));
-
-    return saleOrderLineMap;
-  }
-
-  @Override
-  public Map<String, Object> taxLineOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    Map<String, Object> saleOrderLineMap = super.taxLineOnChange(saleOrderLine, saleOrder);
-    saleOrderLineMap.putAll(computeAnalyticDistribution(saleOrderLine, saleOrder));
 
     return saleOrderLineMap;
   }
