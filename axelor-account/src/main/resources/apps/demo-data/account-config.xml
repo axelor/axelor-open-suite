@@ -368,4 +368,10 @@
       search="self.importId = :accountConfig_importId"/>
   </input>
 
+  <input file="account_bankDetails.csv" separator=";" search="self.importId = :importId"
+    update="true" type="com.axelor.apps.base.db.BankDetails">
+    <bind to="currency" column="currency_code" search="self.code=: currency_code"/>
+    <bind to="bankAccount" column="bankAccount_code" search="self.code = :bankAccount_code"/>
+    <bind to="journal" column="journal_code" search="self.code=:journal_code"/>
+  </input>
 </csv-inputs>
