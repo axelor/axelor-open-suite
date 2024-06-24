@@ -236,7 +236,8 @@ public class ImportMove {
         }
       }
 
-      importAnalyticInMoveService.fillAnalyticOnMoveLine(moveLine, move, values);
+      importAnalyticInMoveService.fillAnalyticOnMoveLine(moveLine, move, values, csvReference);
+
     } catch (AxelorException e) {
       TraceBackService.trace(e);
       throw e;
