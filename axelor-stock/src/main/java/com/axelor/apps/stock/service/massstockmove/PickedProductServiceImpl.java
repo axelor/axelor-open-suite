@@ -16,6 +16,7 @@ public class PickedProductServiceImpl implements PickedProductService {
     storedProduct.setStoredQty(BigDecimal.ZERO);
     storedProduct.setTrackingNumber(pickedProduct.getTrackingNumber());
     storedProduct.setUnit(pickedProduct.getUnit());
+    storedProduct.setCurrentQty(BigDecimal.ZERO);
     pickedProduct.addStoredProductListItem(storedProduct);
 
     return storedProduct;
