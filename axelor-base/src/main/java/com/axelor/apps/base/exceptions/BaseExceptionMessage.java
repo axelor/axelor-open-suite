@@ -655,4 +655,7 @@ public final class BaseExceptionMessage {
 
   public static final String FACTORY_NO_FOUND = /*$$(*/
       "Factory not found this type of generator" /*)*/;
+
+  public static final String PRINTING_TEMPLATE_SCRIPT_ERROR = /*$$(*/
+      "Error when computing the printing filename, using template %s: %s" /*)*/;
 }
