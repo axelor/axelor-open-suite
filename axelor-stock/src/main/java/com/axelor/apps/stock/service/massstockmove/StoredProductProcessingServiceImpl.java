@@ -1,6 +1,5 @@
 package com.axelor.apps.stock.service.massstockmove;
 
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.google.inject.Inject;
@@ -26,22 +25,13 @@ public class StoredProductProcessingServiceImpl
   }
 
   @Override
-  public StockLocation getFromStockLocation(StoredProduct movableProduct) {
-    Objects.requireNonNull(movableProduct);
-
-    return movableProduct.getMassStockMove().getCartStockLocation();
-  }
-
-  @Override
-  public StockLocation getToStockLocation(StoredProduct movableProduct) {
-    Objects.requireNonNull(movableProduct);
-    return movableProduct.getStockLocation();
-  }
-
-  @Override
   public void preRealize(StoredProduct movableProduct) {
-    Objects.requireNonNull(movableProduct);
+    // NOTHING
 
+  }
+
+  @Override
+  public void postRealize(StoredProduct movableProduct) {
     // Creating a new storedProduct line if not storing everything
     if (movableProduct.getStoredQty().compareTo(movableProduct.getCurrentQty()) < 0) {
       var newStoredProduct = storedProductRepository.copy(movableProduct, false);
@@ -49,12 +39,8 @@ public class StoredProductProcessingServiceImpl
       newStoredProduct.setCurrentQty(
           movableProduct.getCurrentQty().subtract(movableProduct.getStoredQty()));
       newStoredProduct.setMassStockMove(movableProduct.getMassStockMove());
+      newStoredProduct.setStockMoveLine(null);
       storedProductRepository.save(newStoredProduct);
     }
-  }
-
-  @Override
-  public void postRealize(StoredProduct movableProduct) {
-    // NOTHING
   }
 }
