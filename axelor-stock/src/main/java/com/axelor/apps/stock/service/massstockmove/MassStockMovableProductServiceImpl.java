@@ -109,9 +109,9 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       stockMoveService.realize(stockMove);
       movableProduct.setStockMoveLine(stockMoveLine);
 
-      processingService.save(movableProduct);
-
       processingService.postRealize(movableProduct);
+
+      processingService.save(movableProduct);
     }
   }
 
