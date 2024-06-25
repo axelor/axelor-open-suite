@@ -3,6 +3,7 @@ package com.axelor.apps.stock.service.massstockmove;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.PickedProduct;
+import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
 import com.google.inject.Inject;
@@ -11,12 +12,15 @@ import java.util.Objects;
 public class MassStockMovableProductServiceFactoryImpl
     implements MassStockMovableProductServiceFactory {
 
-  protected final PickedProductProcessingService pickedProductProcessingService;
+  protected final PickedProductProcessingServiceImpl pickedProductProcessingServiceImpl;
+  protected final StoredProductProcessingServiceImpl storedProductProcessingServiceImpl;
 
   @Inject
   public MassStockMovableProductServiceFactoryImpl(
-      PickedProductProcessingService pickedProductProcessingService) {
-    this.pickedProductProcessingService = pickedProductProcessingService;
+      PickedProductProcessingServiceImpl pickedProductProcessingServiceImpl,
+      StoredProductProcessingServiceImpl storedProductProcessingServiceImpl) {
+    this.pickedProductProcessingServiceImpl = pickedProductProcessingServiceImpl;
+    this.storedProductProcessingServiceImpl = storedProductProcessingServiceImpl;
   }
 
   @Override
@@ -27,7 +31,9 @@ public class MassStockMovableProductServiceFactoryImpl
     Objects.requireNonNull(movableProduct);
 
     if (movableProduct instanceof PickedProduct) {
-      return pickedProductProcessingService;
+      return pickedProductProcessingServiceImpl;
+    } else if (movableProduct instanceof StoredProduct) {
+      return storedProductProcessingServiceImpl;
     }
 
     throw new AxelorException(

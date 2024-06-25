@@ -60,9 +60,15 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
   public void realize(MassStockMovableProduct movableProduct) throws AxelorException {
     Objects.requireNonNull(movableProduct);
 
+    MassStockMovableProductProcessingService processingService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+            movableProduct);
+
+    processingService.preRealize(movableProduct);
+
     var massStockMove = movableProduct.getMassStockMove();
-    var fromStockLocation = movableProduct.getStockLocation();
-    var toStockLocation = massStockMove.getCartStockLocation();
+    var fromStockLocation = processingService.getFromStockLocation(movableProduct);
+    var toStockLocation = processingService.getToStockLocation(movableProduct);
     var todayDate = appBaseService.getTodayDate(massStockMove.getCompany());
 
     if (movableProduct.getStockMoveLine() == null) {
@@ -96,10 +102,9 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       stockMoveService.realize(stockMove);
       movableProduct.setStockMoveLine(stockMoveLine);
 
-      MassStockMovableProductProcessingService processingService =
-          massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
-              movableProduct);
       processingService.save(movableProduct);
+
+      processingService.postRealize(movableProduct);
     }
   }
 
