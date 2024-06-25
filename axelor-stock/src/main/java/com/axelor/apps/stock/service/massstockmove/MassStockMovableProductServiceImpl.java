@@ -183,7 +183,11 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
   public BigDecimal getCurrentAvailableQty(MassStockMovableProduct movableProduct)
       throws AxelorException {
 
-    var stockLocation = movableProduct.getStockLocation();
+    MassStockMovableProductProcessingService processingService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+            movableProduct);
+
+    var stockLocation = processingService.getFromStockLocation(movableProduct);
 
     if (movableProduct.getTrackingNumber() != null) {
       return stockLocationLineService.getTrackingNumberAvailableQty(

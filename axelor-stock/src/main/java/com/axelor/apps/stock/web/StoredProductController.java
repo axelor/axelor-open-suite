@@ -62,4 +62,12 @@ public class StoredProductController {
 
     response.setReload(true);
   }
+
+  public void setCurrentQty(ActionRequest request, ActionResponse response) throws AxelorException {
+    var storedProduct = request.getContext().asType(StoredProduct.class);
+
+    response.setValue(
+        "currentQty",
+        Beans.get(MassStockMovableProductService.class).getCurrentAvailableQty(storedProduct));
+  }
 }
