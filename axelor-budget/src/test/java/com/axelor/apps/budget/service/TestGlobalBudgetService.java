@@ -22,10 +22,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetScenario;
 import com.axelor.apps.budget.db.BudgetStructure;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetScenarioRepository;
 import com.axelor.apps.budget.db.repo.BudgetStructureRepository;
@@ -50,9 +52,16 @@ class TestGlobalBudgetService extends BudgetTest {
   protected final BudgetRepository budgetRepository;
   protected final BudgetStructureRepository budgetStructureRepository;
   protected final BudgetScenarioRepository budgetScenarioRepository;
+  protected final BudgetLevelRepository budgetLevelRepository;
   protected final GlobalBudgetService globalBudgetService;
   protected final BudgetVersionService budgetVersionService;
-  protected static final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
+  private GlobalBudget globalBudget;
+  private Budget budget;
+  private BudgetLevel budgetLevel;
+  private BudgetStructure budgetStructure;
+  private BudgetScenario budgetScenario;
+  private Year year;
+  private BudgetGenerator budgetGenerator;
 
   @Inject
   public TestGlobalBudgetService(
@@ -60,11 +69,13 @@ class TestGlobalBudgetService extends BudgetTest {
       BudgetRepository budgetRepository,
       BudgetStructureRepository budgetStructureRepository,
       BudgetScenarioRepository budgetScenarioRepository,
+      BudgetLevelRepository budgetLevelRepository,
       BudgetVersionService budgetVersionService) {
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetRepository = budgetRepository;
     this.budgetStructureRepository = budgetStructureRepository;
     this.budgetScenarioRepository = budgetScenarioRepository;
+    this.budgetLevelRepository = budgetLevelRepository;
     this.budgetVersionService = budgetVersionService;
 
     //  We need to initialize this service like that because it is linked to a Request scoped
@@ -77,101 +88,174 @@ class TestGlobalBudgetService extends BudgetTest {
 
   @BeforeAll
   static void setUp() {
+    final LoaderHelper loaderHelper = Beans.get(LoaderHelper.class);
     loaderHelper.importCsv("data/budget-input.xml");
     loaderHelper.importCsv("data/budget-template-input.xml");
   }
 
   @Test
   void testUpdateGlobalBudgetDates() throws AxelorException {
-    GlobalBudget globalBudget =
-        globalBudgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1011L)
-            .fetchOne();
-    globalBudget.setFromDate(LocalDate.of(2024, 1, 1));
+    givenBudgetAndGlobalBudgetWithDates(
+        1011L, 1011L, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
     globalBudgetService.updateGlobalBudgetDates(globalBudget);
-    Assertions.assertEquals(
-        globalBudget.getBudgetList().get(0).getFromDate(), LocalDate.of(2024, 1, 1));
+    Assertions.assertEquals(budget.getFromDate(), LocalDate.of(2024, 1, 1));
   }
 
   @Test
   void testValidateDates() {
-    GlobalBudget globalBudget =
-        globalBudgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1011L)
-            .fetchOne();
-    globalBudget.setToDate(LocalDate.of(2024, 1, 1));
+    givenBudgetAndGlobalBudgetWithDates(
+        null, 1011L, LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31));
     Assertions.assertThrows(
         AxelorException.class, () -> globalBudgetService.validateDates(globalBudget));
   }
 
   @Test
-  void testComputeBudgetLevelTotals() {
-    Budget budget =
-        budgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1011L)
-            .fetchOne();
-    budget.setTotalAmountExpected(new BigDecimal(1000));
-    globalBudgetService.computeBudgetLevelTotals(budget);
-
-    Assertions.assertEquals(4900, budget.getGlobalBudget().getTotalAmountExpected().intValue());
-    Assertions.assertEquals(1500, budget.getBudgetLevel().getTotalAmountExpected().intValue());
+  void testComputeBudgetLevelTotalsGlobal() {
+    givenBudgetGlobalAndLevelRecompute(1011L, 1011L, 1014L, new BigDecimal(1000));
+    Assertions.assertEquals(4900, globalBudget.getTotalAmountExpected().intValue());
   }
 
   @Test
-  void testChangeBudgetVersion() throws AxelorException {
-    GlobalBudget globalBudget =
-        globalBudgetRepository
-            .all()
-            .filter("self.importId = :importId")
-            .bind("importId", 1011L)
-            .fetchOne();
+  void testComputeBudgetLevelTotalsLevel() {
+    givenBudgetGlobalAndLevelRecompute(1011L, 1011L, 1014L, new BigDecimal(1000));
+    Assertions.assertEquals(1500, budgetLevel.getTotalAmountExpected().intValue());
+  }
 
+  @Test
+  void testChangeBudgetVersionWithoutVersion() throws AxelorException {
+    givenGlobalBudgetAndBudgetVersion(1011L, null);
     Assertions.assertNull(
         globalBudgetService.changeBudgetVersion(globalBudget, null, false).getActiveVersion());
-    BudgetVersion budgetVersion = budgetVersionService.createNewVersion(globalBudget, "version");
-    globalBudget = globalBudgetService.changeBudgetVersion(globalBudget, budgetVersion, false);
-    Assertions.assertNotNull(globalBudget.getActiveVersion());
+  }
+
+  @Test
+  void testChangeBudgetVersionWithVersion() throws AxelorException {
+    givenGlobalBudgetAndBudgetVersion(1011L, "version");
     Assertions.assertEquals(
-        globalBudget.getActiveVersion().getVersionExpectedAmountsLineList().size(), 4);
+        4, globalBudget.getActiveVersion().getVersionExpectedAmountsLineList().size());
+  }
+
+  @Test
+  void testChangeBudgetVersionActiveVersion() throws AxelorException {
+    givenGlobalBudgetAndBudgetVersion(1011L, "version");
+    Assertions.assertNotNull(globalBudget.getActiveVersion());
   }
 
   @Test
   void testGenerateGlobalBudget() throws AxelorException {
-    BudgetStructure budgetStructure =
+    givenGlobalBudgetFromStructure(1001L, 1L);
+    Assertions.assertNotNull(globalBudget);
+  }
+
+  private void givenGlobalBudget(Long importId) {
+    this.globalBudget =
+        globalBudgetRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", importId)
+            .fetchOne();
+  }
+
+  private void givenBudget(Long importId) {
+    this.budget =
+        budgetRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", importId)
+            .fetchOne();
+  }
+
+  private void givenBudgetLevel(Long importId) {
+    this.budgetLevel =
+        budgetLevelRepository
+            .all()
+            .filter("self.importId = :importId")
+            .bind("importId", importId)
+            .fetchOne();
+  }
+
+  private void givenBudgetAndGlobalBudget(Long budgetImportId, Long globalBudgetImportId) {
+    givenGlobalBudget(globalBudgetImportId);
+    givenBudget(budgetImportId);
+  }
+
+  private void givenBudgetAndGlobalBudgetWithDates(
+      Long budgetImportId, Long globalBudgetImportId, LocalDate fromDate, LocalDate toDate) {
+    givenBudgetAndGlobalBudget(budgetImportId, globalBudgetImportId);
+    globalBudget.setFromDate(fromDate);
+    globalBudget.setToDate(toDate);
+  }
+
+  private void givenBudgetGlobalAndLevelRecompute(
+      Long budgetImportId,
+      Long globalBudgetImportId,
+      Long budgetLevelImportId,
+      BigDecimal newAmount) {
+    givenBudget(budgetImportId);
+    givenGlobalBudget(globalBudgetImportId);
+    givenBudgetLevel(budgetLevelImportId);
+    budget.setTotalAmountExpected(new BigDecimal(1000));
+    globalBudgetService.computeBudgetLevelTotals(budget);
+  }
+
+  private void givenGlobalBudgetAndBudgetVersion(Long globalBudgetImportId, String versionName)
+      throws AxelorException {
+    givenGlobalBudget(globalBudgetImportId);
+    if (versionName == null) {
+      globalBudget.setActiveVersion(null);
+    } else {
+      BudgetVersion budgetVersion =
+          budgetVersionService.createNewVersion(globalBudget, versionName);
+      globalBudget = globalBudgetService.changeBudgetVersion(globalBudget, budgetVersion, false);
+    }
+  }
+
+  private void givenBudgetStructure(Long budgetStructureImportId) {
+    this.budgetStructure =
         budgetStructureRepository
             .all()
             .filter("self.importId = :importId")
-            .bind("importId", 1001L)
+            .bind("importId", budgetStructureImportId)
             .fetchOne();
-    BudgetScenario budgetScenario =
+  }
+
+  private void givenBudgetScenario(Long budgetScenarioImportId) {
+    this.budgetScenario =
         budgetScenarioRepository
             .all()
             .filter("self.importId = :importId")
-            .bind("importId", 1L)
+            .bind("importId", budgetScenarioImportId)
             .fetchOne();
+  }
 
+  private void givenBudgetGenerator() {
     BudgetGenerator budgetGenerator = new BudgetGenerator();
     budgetGenerator.setBudgetStructure(budgetStructure);
     budgetGenerator.setCode("GENERATOR");
     budgetGenerator.setName("GENERATOR");
+    this.budgetGenerator = budgetGenerator;
+  }
 
+  private void givenYear() {
     Year year = new Year();
     year.setCode("2024");
     year.setName("2024");
     year.setFromDate(LocalDate.of(2024, 1, 1));
     year.setToDate(LocalDate.of(2024, 12, 31));
+    this.year = year;
+  }
+
+  private void givenGlobalBudgetFromStructure(
+      Long budgetStructureImportId, Long budgetScenarioImportId) throws AxelorException {
+    givenBudgetStructure(budgetStructureImportId);
+    givenBudgetScenario(budgetScenarioImportId);
+    givenBudgetGenerator();
+    givenYear();
 
     budgetScenario.addYearSetItem(year);
     budgetGenerator.setBudgetScenario(budgetScenario);
     budgetGenerator.addYearSetItem(year);
 
-    GlobalBudget globalBudget = globalBudgetService.generateGlobalBudget(budgetGenerator, year);
-    Assertions.assertNotNull(globalBudget);
+    this.globalBudget = globalBudgetService.generateGlobalBudget(budgetGenerator, year);
   }
 }
