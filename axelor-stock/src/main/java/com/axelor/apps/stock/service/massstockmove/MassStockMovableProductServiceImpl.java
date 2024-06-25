@@ -35,7 +35,6 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       StockMoveLineService stockMoveLineService,
       StockLocationLineRepository stockLocationLineRepository,
       MassStockMovableProductServiceFactory massStockMovableProductServiceFactory,
-      StockLocationLineService stockLocationLineService,
       MassStockMovableProductQuantityService massStockMovableProductQuantityService) {
     this.stockMoveService = stockMoveService;
     this.appBaseService = appBaseService;
