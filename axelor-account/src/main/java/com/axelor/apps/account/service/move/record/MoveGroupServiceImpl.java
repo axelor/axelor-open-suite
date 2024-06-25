@@ -41,6 +41,7 @@ import com.axelor.db.mapper.Mapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,7 +264,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("dueDate", move.getDueDate());
     valuesMap.put(
         "moveLineList",
-        move.getMoveLineList().stream().map(Mapper::toMap).collect(Collectors.toList()));
+        move.getMoveLineList() != null
+            ? move.getMoveLineList().stream().map(Mapper::toMap).collect(Collectors.toList())
+            : new ArrayList<>());
     valuesMap.put("originDate", move.getOriginDate());
 
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
