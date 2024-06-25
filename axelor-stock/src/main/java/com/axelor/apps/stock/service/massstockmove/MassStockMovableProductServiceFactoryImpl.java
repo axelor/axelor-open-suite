@@ -6,22 +6,11 @@ import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 import java.util.Objects;
 
 public class MassStockMovableProductServiceFactoryImpl
     implements MassStockMovableProductServiceFactory {
-
-  protected final PickedProductProcessingServiceImpl pickedProductProcessingServiceImpl;
-  protected final StoredProductProcessingServiceImpl storedProductProcessingServiceImpl;
-
-  @Inject
-  public MassStockMovableProductServiceFactoryImpl(
-      PickedProductProcessingServiceImpl pickedProductProcessingServiceImpl,
-      StoredProductProcessingServiceImpl storedProductProcessingServiceImpl) {
-    this.pickedProductProcessingServiceImpl = pickedProductProcessingServiceImpl;
-    this.storedProductProcessingServiceImpl = storedProductProcessingServiceImpl;
-  }
 
   @Override
   public MassStockMovableProductProcessingService<? extends MassStockMovableProduct>
@@ -31,9 +20,26 @@ public class MassStockMovableProductServiceFactoryImpl
     Objects.requireNonNull(movableProduct);
 
     if (movableProduct instanceof PickedProduct) {
-      return pickedProductProcessingServiceImpl;
+      return Beans.get(PickedProductProcessingServiceImpl.class);
     } else if (movableProduct instanceof StoredProduct) {
-      return storedProductProcessingServiceImpl;
+      return Beans.get(StoredProductProcessingServiceImpl.class);
+    }
+
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        StockExceptionMessage.STOCK_MOVE_MASS_FACTORY_UNKNOWN_OBJECT);
+  }
+
+  @Override
+  public MassStockMovableProductLocationService<? extends MassStockMovableProduct>
+      getMassStockMovableProductLocationService(MassStockMovableProduct movableProduct)
+          throws AxelorException {
+    Objects.requireNonNull(movableProduct);
+
+    if (movableProduct instanceof PickedProduct) {
+      return Beans.get(PickedProductLocationServiceImpl.class);
+    } else if (movableProduct instanceof StoredProduct) {
+      return Beans.get(StoredProductLocationServiceImpl.class);
     }
 
     throw new AxelorException(
