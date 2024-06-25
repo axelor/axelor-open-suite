@@ -9,7 +9,8 @@
       required="true" onSelect="action-stored-product-method-stored-product-domain"/>
     <field name="toStockLocation"
       onSelect="action-stored-product-method-set-domain-from-stock-location"
-      onChange="action-stored-product-record-set-tracking-number,action-stored-product-record-set-current-qty"/>
+      onChange="action-stored-product-record-set-tracking-number,action-stored-product-record-set-current-qty"
+      required="true"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-stored-product-method-tracking-number-domain"
       onChange="action-stored-product-record-set-current-qty"/>
@@ -26,7 +27,8 @@
         onSelect="action-stored-product-method-stored-product-domain"/>
       <field name="toStockLocation"
         onSelect="action-stored-product-method-set-domain-from-stock-location"
-        onChange="action-stored-product-record-set-tracking-number,action-stored-product-record-set-current-qty"/>
+        onChange="action-stored-product-record-set-tracking-number,action-stored-product-record-set-current-qty"
+        required="true"/>
       <field name="trackingNumber"
         onSelect="action-stored-product-method-tracking-number-domain"
         onChange="action-stored-product-record-set-current-qty"/>

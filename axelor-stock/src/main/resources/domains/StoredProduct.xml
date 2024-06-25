@@ -13,7 +13,7 @@
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
       title="Tracking number"/>
     <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
-      title="Destination location" required="true"/>
+      title="Destination location"/>
     <decimal name="currentQty" title="Current qty" precision="20" scale="10"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="storedQty" title="Stored qty" required="true" precision="20" scale="10"/>
