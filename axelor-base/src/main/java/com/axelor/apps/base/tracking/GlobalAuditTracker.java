@@ -167,7 +167,9 @@ public class GlobalAuditTracker {
   }
 
   private Map<String, Object> getContext(Object obj)
-      throws IntrospectionException, InvocationTargetException, IllegalAccessException,
+      throws IntrospectionException,
+          InvocationTargetException,
+          IllegalAccessException,
           IllegalArgumentException {
     Map<String, Object> result = new HashMap<>();
     BeanInfo info = Introspector.getBeanInfo(obj.getClass());

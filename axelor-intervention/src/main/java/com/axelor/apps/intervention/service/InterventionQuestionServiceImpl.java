@@ -103,8 +103,10 @@ public class InterventionQuestionServiceImpl implements InterventionQuestionServ
 
   protected void fillAdvancedMonitoringOffice(InterventionQuestion interventionQuestion) {
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()) {
-      Optional.ofNullable(AuthUtils.getUser()).map(User::getTradingName)
-          .map(TradingName::getCompanySet).stream()
+      Optional.ofNullable(AuthUtils.getUser())
+          .map(User::getTradingName)
+          .map(TradingName::getCompanySet)
+          .stream()
           .flatMap(Collection::stream)
           .findFirst()
           .map(Company::getAddress)

@@ -90,8 +90,12 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
       FileInputStream inputStream,
       PDDocument doc,
       FileOutputStream outStream)
-      throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-          UnrecoverableKeyException, AxelorException {
+      throws KeyStoreException,
+          IOException,
+          NoSuchAlgorithmException,
+          CertificateException,
+          UnrecoverableKeyException,
+          AxelorException {
     KeyStore keyStore = KeyStore.getInstance("PKCS12");
     keyStore.load(inputStream, certificatePassword.toCharArray());
     String alias = keyStore.aliases().nextElement();

@@ -79,6 +79,7 @@ public interface OperationOrderService {
       List<ProdProduct> prodProductList,
       List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
+
   /**
    * Check the realized consumed stock move lines in operation order has not changed.
    *

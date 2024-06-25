@@ -37,6 +37,7 @@ public interface ProjectTaskService {
    * <p>This method DOES NOT update potential parent.
    */
   void updateNextTask(ProjectTask projectTask);
+
   /** Removes all next tasks of given {@link ProjectTask}. */
   void removeNextTasks(ProjectTask projectTask);
 

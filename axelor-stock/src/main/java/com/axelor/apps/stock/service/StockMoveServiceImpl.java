@@ -595,6 +595,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
     sendMailForStockMove(stockMove, template);
   }
+
   /**
    * Generate and send mail. Throws exception if the template is not found or if there is an error
    * while generating the message.

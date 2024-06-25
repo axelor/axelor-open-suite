@@ -121,13 +121,16 @@ public class CfonbToolService {
 
   /** "M" = Obligatoire (Mandatory) */
   public final String STATUS_MANDATORY = "M";
+
   /** "O" = Optionnel (Optional) */
   public final String STATUS_OPTIONAL = "O";
+
   /**
    * "D" = Dépendant (Dependent), la condition de présence de la donnée est précisée dans les
    * tableaux de description des enregistrements
    */
   public final String STATUS_DEPENDENT = "D";
+
   /**
    * "N" = Non utilisée (zone que le CFONB se réserve le droit d'utiliser ultérieurement qui doit
    * alors être à blanc, ou zone non utilisée pour ce type de remise qui est alors ignorée par la
@@ -137,8 +140,10 @@ public class CfonbToolService {
 
   /** "AN" = alphanumérique */
   public final String FORMAT_ALPHA_NUMERIC = "AN";
+
   /** "N" = numérique */
   public final String FORMAT_NUMERIC = "N";
+
   /** "A" = Alphabétique */
   public final String FORMAT_ALPHA = "A";
 

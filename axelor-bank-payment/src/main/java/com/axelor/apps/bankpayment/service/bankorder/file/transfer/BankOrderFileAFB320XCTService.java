@@ -65,11 +65,13 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    * (code opération "PI")
    */
   protected static final String OPERATION_CODE_PI = "PI";
+
   /**
    * "Remises informatisées d'ordres de paiement déplacé au format 320 caractères" (code opération
    * "RF")
    */
   protected static final String OPERATION_CODE_RF = "RF";
+
   /**
    * "Remises informatisées d'ordres de virement national France au format 320 caractères" (code
    * opération "VF")

@@ -35,6 +35,10 @@ public interface QIResolutionService {
   void sendQIDecisionDistributions(
       List<QIDecisionDistribution> qiDecisionDistributionList,
       Template qiDecisionDistributionMessageTemplate)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException;
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          IOException,
+          MessagingException;
 }
