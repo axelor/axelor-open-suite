@@ -38,4 +38,12 @@ public class PickedProductController {
 
     response.setReload(true);
   }
+
+  public void setCurrentQty(ActionRequest request, ActionResponse response) throws AxelorException {
+    var pickedProduct = request.getContext().asType(PickedProduct.class);
+
+    response.setValue(
+        "currentQty",
+        Beans.get(MassStockMovableProductService.class).getCurrentAvailableQty(pickedProduct));
+  }
 }
