@@ -109,9 +109,9 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       stockMoveService.realize(stockMove);
       movableProduct.setStockMoveLine(stockMoveLine);
 
-      processingService.save(movableProduct);
-
       processingService.postRealize(movableProduct);
+
+      processingService.save(movableProduct);
     }
   }
 
@@ -183,11 +183,11 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
   public BigDecimal getCurrentAvailableQty(MassStockMovableProduct movableProduct)
       throws AxelorException {
 
-    MassStockMovableProductProcessingService processingService =
-        massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+    MassStockMovableProductLocationService locationService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductLocationService(
             movableProduct);
 
-    var stockLocation = processingService.getFromStockLocation(movableProduct);
+    var stockLocation = locationService.getFromStockLocation(movableProduct);
 
     if (movableProduct.getTrackingNumber() != null) {
       return stockLocationLineService.getTrackingNumberAvailableQty(
