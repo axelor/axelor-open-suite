@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -48,6 +49,8 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected CurrencyService currencyService;
   protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
+  protected MoveLineToolService moveLineToolService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   @Inject
   public MoveLineRecordServiceImpl(
@@ -56,13 +59,17 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       FiscalPositionService fiscalPositionService,
       CurrencyService currencyService,
       CurrencyScaleService currencyScaleService,
-      TaxService taxService) {
+      TaxService taxService,
+      MoveLineToolService moveLineToolService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
     this.currencyService = currencyService;
     this.currencyScaleService = currencyScaleService;
     this.taxService = taxService;
+    this.moveLineToolService = moveLineToolService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
   @Override
@@ -210,5 +217,36 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
                 .orElse(0)
             : 0;
     moveLine.setCounter(counter + 1);
+  }
+
+  @Override
+  public void setMoveLineDates(Move move) throws AxelorException {
+    if (move.getDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        moveLine.setDate(move.getDate());
+        moveLineToolService.checkDateInPeriod(move, moveLine);
+        this.computeDate(moveLine, move);
+      }
+    }
+  }
+
+  @Override
+  public void setMoveLineOriginDates(Move move) throws AxelorException {
+    if (move.getOriginDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        moveLine.setOriginDate(move.getOriginDate());
+      }
+    }
+  }
+
+  @Override
+  public void computeDate(MoveLine moveLine, Move move) throws AxelorException {
+    if (move != null && move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      this.setOriginDate(moveLine);
+    }
+    moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+    if (move != null && move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveLineToolService.checkDateInPeriod(move, moveLine);
+    }
   }
 }
