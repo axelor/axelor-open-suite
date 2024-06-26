@@ -34,7 +34,6 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
@@ -49,7 +48,6 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       AppBaseService appBaseService,
       ConfiguratorFormulaService configuratorFormulaService,
       ProductRepository productRepository,
-      SaleOrderLineService saleOrderLineService,
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderComputeService saleOrderComputeService,
       MetaFieldRepository metaFieldRepository,
@@ -59,7 +57,6 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         appBaseService,
         configuratorFormulaService,
         productRepository,
-        saleOrderLineService,
         saleOrderLineRepository,
         saleOrderComputeService,
         metaFieldRepository,

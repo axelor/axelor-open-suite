@@ -57,7 +57,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected AppSaleService appSaleService;
   protected AppCrmService appCrmService;
   protected UserService userService;
-  protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderService saleOrderService;
   protected SaleConfigService saleConfigService;
   protected SaleOrderPrintService saleOrderPrintService;
@@ -70,7 +69,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
-      SaleOrderLineService saleOrderLineService,
       SaleOrderService saleOrderService,
       SaleConfigService saleConfigService,
       SaleOrderPrintService saleOrderPrintService) {
@@ -81,7 +79,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     this.appSaleService = appSaleService;
     this.appCrmService = appCrmService;
     this.userService = userService;
-    this.saleOrderLineService = saleOrderLineService;
     this.saleOrderService = saleOrderService;
     this.saleConfigService = saleConfigService;
     this.saleOrderPrintService = saleOrderPrintService;

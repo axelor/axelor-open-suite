@@ -191,8 +191,12 @@ public class DebtRecoveryActionService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void runManualAction(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
-          IllegalAccessException, JSONException {
+      throws AxelorException,
+          ClassNotFoundException,
+          IOException,
+          InstantiationException,
+          IllegalAccessException,
+          JSONException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
@@ -260,8 +264,12 @@ public class DebtRecoveryActionService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void runMessage(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
-          IllegalAccessException, JSONException {
+      throws AxelorException,
+          ClassNotFoundException,
+          IOException,
+          InstantiationException,
+          IllegalAccessException,
+          JSONException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
 
     for (Message message : messageSet) {

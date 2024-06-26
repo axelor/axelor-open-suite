@@ -819,8 +819,10 @@
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
         <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
           <field name="financialDiscountRate" readonly="true"/>
-          <field name="financialDiscountTotalAmount" readonly="true"/>
-          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
         </panel>
       </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
@@ -1746,7 +1748,7 @@
       if="statusSelect == 1 &amp;&amp; invoiceTermList?.isEmpty() &amp;&amp; invoiceLineList?.size() > 0 &amp;&amp; paymentCondition != null"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-record-due-date"/>
+    <action name="action-invoice-record-due-dates"/>
     <action name="action-invoice-method-update-unpaid-invoice-terms" if="statusSelect == 3"/>
     <action name="save"/>
     <action name="action-invoice-method-manage-pfp-status"

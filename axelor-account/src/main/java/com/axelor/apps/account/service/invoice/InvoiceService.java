@@ -223,6 +223,7 @@ public interface InvoiceService {
    * @return
    */
   List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
+
   /**
    * Filter a set of advance payment invoice. If the amount of the payment is greater than the total
    * of the invoice, we filter it. If there is no remaining amount in the move lines of the advance
