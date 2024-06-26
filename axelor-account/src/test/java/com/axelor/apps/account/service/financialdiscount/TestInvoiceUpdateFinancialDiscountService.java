@@ -86,14 +86,16 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
   void testUpdateFinancialDiscountMonoInvoiceTermWithDiscount_2WT_RemainingAmountAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.02), 1L, 1L);
-    thenVerifyRemainingAmountAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "remainingAmountAfterFinDiscount", "Remaining amount after fin discount");
   }
 
   @Test
   void testUpdateFinancialDiscountMonoInvoiceTermWithDiscount_2WT_AmountRemainingAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.02), 1L, 1L);
-    thenVerifyAmountRemainingAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "amountRemainingAfterFinDiscount", "Amount remaining after fin discount");
   }
 
   @Test
@@ -116,14 +118,16 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
   void testUpdateFinancialDiscountMonoInvoiceTermWithDiscount_3WT_RemainingAmountAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 2L, 1L);
-    thenVerifyRemainingAmountAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "remainingAmountAfterFinDiscount", "Remaining amount after fin discount");
   }
 
   @Test
   void testUpdateFinancialDiscountMonoInvoiceTermWithDiscount_3WT_AmountRemainingAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 2L, 1L);
-    thenVerifyAmountRemainingAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "amountRemainingAfterFinDiscount", "Amount remaining after fin discount");
   }
 
   @Test
@@ -146,14 +150,16 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
   void testUpdateFinancialDiscountMonoInvoiceTermWithDiscount_2ATI_RemainingAmountAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.02), 100L, 1L);
-    thenVerifyRemainingAmountAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "remainingAmountAfterFinDiscount", "Remaining amount after fin discount");
   }
 
   @Test
   void testUpdateFinancialDiscountMonoInvoiceTermWithDiscount_2ATI_AmountRemainingAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.02), 100L, 1L);
-    thenVerifyAmountRemainingAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "amountRemainingAfterFinDiscount", "Amount remaining after fin discount");
   }
 
   @Test
@@ -176,14 +182,16 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
   void testUpdateFinancialDiscountMonoInvoiceTermWithDiscount_3ATI_RemainingAmountAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 101L, 1L);
-    thenVerifyRemainingAmountAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "remainingAmountAfterFinDiscount", "Remaining amount after fin discount");
   }
 
   @Test
   void testUpdateFinancialDiscountMonoInvoiceTermWithDiscount_3ATI_AmountRemainingAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 101L, 1L);
-    thenVerifyAmountRemainingAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "amountRemainingAfterFinDiscount", "Amount remaining after fin discount");
   }
 
   @Test
@@ -238,14 +246,16 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
   void testUpdateFinancialDiscountMultiInvoiceTermWithDiscount_2WT_RemainingAmountAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.02), 1L, 1000L);
-    thenVerifyRemainingAmountAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "remainingAmountAfterFinDiscount", "Remaining amount after fin discount");
   }
 
   @Test
   void testUpdateFinancialDiscountMultiInvoiceTermWithDiscount_2WT_AmountRemainingAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.02), 1L, 1000L);
-    thenVerifyAmountRemainingAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "amountRemainingAfterFinDiscount", "Amount remaining after fin discount");
   }
 
   @Test
@@ -268,14 +278,16 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
   void testUpdateFinancialDiscountMultiInvoiceTermWithDiscount_3WT_RemainingAmountAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 2L, 1000L);
-    thenVerifyRemainingAmountAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "remainingAmountAfterFinDiscount", "Remaining amount after fin discount");
   }
 
   @Test
   void testUpdateFinancialDiscountMultiInvoiceTermWithDiscount_3WT_AmountRemainingAfterFinDiscount()
       throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 2L, 1000L);
-    thenVerifyAmountRemainingAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "amountRemainingAfterFinDiscount", "Amount remaining after fin discount");
   }
 
   @Test
@@ -299,7 +311,8 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
       testUpdateFinancialDiscountMultiInvoiceTermWithDiscount_2ATI_RemainingAmountAfterFinDiscount()
           throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.02), 100L, 1000L);
-    thenVerifyRemainingAmountAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "remainingAmountAfterFinDiscount", "Remaining amount after fin discount");
   }
 
   @Test
@@ -307,7 +320,8 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
       testUpdateFinancialDiscountMultiInvoiceTermWithDiscount_2ATI_AmountRemainingAfterFinDiscount()
           throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.02), 100L, 1000L);
-    thenVerifyAmountRemainingAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "amountRemainingAfterFinDiscount", "Amount remaining after fin discount");
   }
 
   @Test
@@ -331,7 +345,8 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
       testUpdateFinancialDiscountMultiInvoiceTermWithDiscount_3ATI_RemainingAmountAfterFinDiscount()
           throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 101L, 1000L);
-    thenVerifyRemainingAmountAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "remainingAmountAfterFinDiscount", "Remaining amount after fin discount");
   }
 
   @Test
@@ -339,7 +354,8 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
       testUpdateFinancialDiscountMultiInvoiceTermWithDiscount_3ATI_AmountRemainingAfterFinDiscount()
           throws AxelorException {
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 101L, 1000L);
-    thenVerifyAmountRemainingAfterFinDiscountWithRate();
+    thenVerifyAmountWithRate(
+        "amountRemainingAfterFinDiscount", "Amount remaining after fin discount");
   }
 
   @Test
@@ -348,6 +364,8 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
     givenUpdateFinancialDiscount(BigDecimal.valueOf(0.03), 101L, 1000L);
     thenVerifyApplyFinancialDiscountWithRate();
   }
+
+  // PREPARE DATA FOR TEST
 
   protected void givenUpdateFinancialDiscount(
       BigDecimal rate, Long financialDiscountImportId, Long paymentConditionId)
@@ -401,22 +419,13 @@ public class TestInvoiceUpdateFinancialDiscountService extends TestInvoiceFinanc
 
   private void thenVerifyAmountWithoutRate(String key, String message) {
     Assertions.assertEquals(0, amountByField.get(key).intValue(), message);
-  } // "remainingAmountAfterFinDiscount" "Remaining amount after fin discount" ou
-
-  // "amountRemainingAfterFinDiscount" "Amount remaining after fin discount"
-
-  private void thenVerifyRemainingAmountAfterFinDiscountWithRate() {
-    Assertions.assertEquals(
-        invoice.getExTaxTotal().multiply(BigDecimal.ONE.subtract(rate)).intValue(),
-        amountByField.get("remainingAmountAfterFinDiscount").intValue(),
-        "Remaining amount after fin discount");
   }
 
-  private void thenVerifyAmountRemainingAfterFinDiscountWithRate() {
+  private void thenVerifyAmountWithRate(String key, String message) {
     Assertions.assertEquals(
         invoice.getExTaxTotal().multiply(BigDecimal.ONE.subtract(rate)).intValue(),
-        amountByField.get("amountRemainingAfterFinDiscount").intValue(),
-        "Amount remaining after fin discount");
+        amountByField.get(key).intValue(),
+        message);
   }
 
   private void thenVerifyApplyFinancialDiscountWithoutRate() {
