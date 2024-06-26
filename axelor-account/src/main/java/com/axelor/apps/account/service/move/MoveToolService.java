@@ -195,7 +195,7 @@ public interface MoveToolService {
 
   List<Move> getMovesWithDuplicatedOrigin(Move move);
 
-  List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
+  List<Move> findMoveByYear(Set<Year> yearList, List<Integer> statusList);
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
