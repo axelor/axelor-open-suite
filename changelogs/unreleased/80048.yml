@@ -1,0 +1,3 @@
+---
+title: "Employee bonus management: Fixed computation process when there is no user linked with employee."
+module: axelor-human-resource
