@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryCo
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.Templates;
 import com.axelor.utils.service.TranslationBaseService;
@@ -50,7 +51,6 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
 
   @Override
   public String computeFileName(String name, PrintingGenFactoryContext factoryContext) {
-    name = translationBaseService.getValueTranslation(name);
 
     if (factoryContext == null) {
       return name;
@@ -63,16 +63,44 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
       Class<?> klass = EntityHelper.getEntityClass(model);
       templatesContext.put(klass.getSimpleName(), Mapper.toMap(model));
     }
-    ZonedDateTime todayDateTime = appBaseService.getTodayDateTime();
-    templatesContext.put("date", todayDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-    templatesContext.put("time", todayDateTime.format(DateTimeFormatter.ofPattern("HHmmss")));
-    templatesContext.put(
-        "datetime", todayDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-
+    FormatHelper formatHelper = new FormatHelper();
+    templatesContext.put("__datetime__", formatHelper);
+    templatesContext.put("__i18n__", new TranslationHelper());
+    templatesContext.put("date", formatHelper.date);
     return getTemplateEngine().fromText(name).make(templatesContext).render();
   }
 
   protected Templates getTemplateEngine() {
     return groovyTemplates;
+  }
+
+  class FormatHelper {
+
+    private final ZonedDateTime zonedDateT;
+    public final String date;
+    public final String time;
+    public final String dateT;
+
+    public FormatHelper() {
+      this.zonedDateT = appBaseService.getTodayDateTime();
+      this.date = this.zonedDateT.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+      this.time = this.zonedDateT.format(DateTimeFormatter.ofPattern("HHmmss"));
+      this.dateT = this.zonedDateT.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+    }
+
+    public String format(String pattern) {
+      return zonedDateT.format(DateTimeFormatter.ofPattern(pattern));
+    }
+  }
+
+  class TranslationHelper {
+
+    public String get(String key) {
+      return I18n.get(key);
+    }
+
+    public String getValue(String key) {
+      return translationBaseService.getValueTranslation(key);
+    }
   }
 }
