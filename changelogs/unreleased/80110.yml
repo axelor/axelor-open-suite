@@ -1,0 +1,3 @@
+---
+title: "PurchaseOrder/SaleOrder Line: Remove onChange managing analytic on budget account field"
+module: axelor-budget
