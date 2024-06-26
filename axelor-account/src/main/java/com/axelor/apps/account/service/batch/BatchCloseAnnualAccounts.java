@@ -46,6 +46,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -570,17 +571,26 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         && accountConfigService
             .getAccountConfig(accountingBatch.getCompany())
             .getAccountingDaybook()) {
-      daybookMoveCount =
-          moveToolService.findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK)).size();
+      List<Move> moveList =
+          moveToolService.findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK));
+      if (!ObjectUtils.isEmpty(moveList)) {
+        daybookMoveCount =
+            (int)
+                moveList.stream()
+                    .filter(
+                        m ->
+                            m.getFunctionalOriginSelect()
+                                != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+                    .count();
+      }
     }
 
     if (daybookMoveCount != 0) {
       warning =
-          I18n.get(
-              String.format(
-                  ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL,
-                  accountingBatch.getYear().getName(),
-                  daybookMoveCount));
+          String.format(
+              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL),
+              accountingBatch.getYear().getName(),
+              daybookMoveCount);
     }
 
     return warning;
