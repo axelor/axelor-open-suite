@@ -116,12 +116,10 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
       PurchaseOrder purchaseOrder, PrintingTemplate purchaseOrderPrintTemplate, boolean toAttach)
       throws AxelorException {
     purchaseOrderService.checkPrintingSettings(purchaseOrder);
-    String title = getFileName(purchaseOrder);
 
     return printingTemplatePrintService.getPrintFile(
         purchaseOrderPrintTemplate,
         new PrintingGenFactoryContext(EntityHelper.getEntity(purchaseOrder)),
-        title + " - ${date}",
         toAttach);
   }
 

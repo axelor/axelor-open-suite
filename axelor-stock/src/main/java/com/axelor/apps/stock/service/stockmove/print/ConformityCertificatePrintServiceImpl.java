@@ -90,11 +90,8 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    String title = getFileName(stockMove);
     return printingTemplatePrintService.getPrintFile(
-        conformityCertificatePrintTemplate,
-        new PrintingGenFactoryContext(stockMove),
-        title + " - ${date}");
+        conformityCertificatePrintTemplate, new PrintingGenFactoryContext(stockMove));
   }
 
   @Override
