@@ -160,9 +160,6 @@
     <extend target="//panel[@name='settingsPanel']">
       <replace/>
     </extend>
-    <extend target="//panel[@name='paymentPanel']">
-      <attribute name="hideIf" value="isProspect"/>
-    </extend>
     <extend target="//button[@name='showAllEventsBtn']">
       <insert position="after">
         <field name="lastEventDateT" readonly="true" colSpan="3"/>
