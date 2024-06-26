@@ -12,7 +12,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
@@ -35,7 +35,7 @@ public class SaleOrderLineComputeBudgetServiceImpl
       SaleOrderMarginService saleOrderMarginService,
       CurrencyService currencyService,
       PriceListService priceListService,
-      SaleOrderLineService saleOrderLineService,
+      SaleOrderLinePackService saleOrderLinePackService,
       AppBaseService appBaseService,
       AppSupplychainService appSupplychainService,
       AppAccountService appAccountService,
@@ -50,7 +50,7 @@ public class SaleOrderLineComputeBudgetServiceImpl
         saleOrderMarginService,
         currencyService,
         priceListService,
-        saleOrderLineService,
+        saleOrderLinePackService,
         appBaseService,
         appSupplychainService,
         appAccountService,

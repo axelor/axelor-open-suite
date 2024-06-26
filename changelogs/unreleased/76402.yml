@@ -1,0 +1,3 @@
+---
+title: "Account config: improve the interface to prevent customer blocking if 'Late payment account blocking' configuration is disabled."
+module: axelor-account
