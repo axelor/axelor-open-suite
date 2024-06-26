@@ -47,7 +47,10 @@ public class ProjectDashboardBusinessSupportServiceImpl extends ProjectDashboard
     List<Map<String, Object>> newsList = new ArrayList<>();
     List<ProjectAnnouncement> announcementList = new ArrayList<>();
 
-    projectRepo.all().filter("self.id IN ?1", projectService.getContextProjectIds()).fetch()
+    projectRepo
+        .all()
+        .filter("self.id IN ?1", projectService.getContextProjectIds())
+        .fetch()
         .stream()
         .forEach(subProject -> announcementList.addAll(subProject.getAnnouncementList()));
 
