@@ -1,0 +1,3 @@
+---
+title: "Block customers with late payment batch: fixed an issue where the batch did not block some partners."
+module: axelor-account
