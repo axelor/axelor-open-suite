@@ -312,6 +312,14 @@
     <view type="form" name="site-form"/>
   </action-view>
 
+  <menuitem title="Tags" name="referential-tags" parent="referential-root"
+    action="referential.tags" order="310"/>
+
+  <action-view name="referential.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
+    <view type="grid" name="tag-grid"/>
+    <view type="form" name="tag-form"/>
+  </action-view>
+
   <menuitem title="Address templates" name="referential-conf-address-template"
     parent="referential-conf" action="referential.conf.address.templates" order="650"/>
 
