@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -69,6 +70,7 @@ public class ImportMove {
   @Inject private AppAccountService appAccountService;
   @Inject private PeriodService periodService;
   @Inject private FECImportRepository fecImportRepository;
+  @Inject private ImportAnalyticInMoveService importAnalyticInMoveService;
 
   private String lastImportDate;
 
@@ -233,6 +235,9 @@ public class ImportMove {
           moveLine.setCurrencyAmount(currencyAmount.negate());
         }
       }
+
+      importAnalyticInMoveService.fillAnalyticOnMoveLine(moveLine, move, values, csvReference);
+
     } catch (AxelorException e) {
       TraceBackService.trace(e);
       throw e;
