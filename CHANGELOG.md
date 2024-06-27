@@ -1,3 +1,61 @@
+## [8.0.9] (2024-06-27)
+
+### Fixes
+#### Base
+
+* App base: removed admin module reference from modules field.
+* Partner: fixed number of decimals displayed on debit balance.
+* Template: fixed translation for content panel title.
+* Partner: fixed merging duplicates not working correctly.
+* BIRT Template: fixed wrong report used when getting report from source.
+
+#### Account
+
+* Move: fixed error popup changing date on unsaved move.
+* Invoice payment: fixed wrong scale for prices in form view.
+* Mass entry: fixed error when a user without an active company is selecting a company.
+* Payment voucher: fixed technical error when the user's active company is null and there are more than one company in the app.
+* Move: fixed blocking message due to a wrong tax check preventing some accounting moves validation.
+* Invoice/MoveLine: fixed financial discount amount and currency amount scaling.
+* Mass entry: fixed today date settings in dev mode not working with created lines from mass entry form.
+* Move/Analytic: fixed negative analytic amounts when generating cut off moves.
+* Invoice: fixed foreign currency invoice duplication when current currency rate is different from the currency rate in the original invoice.
+* Invoice: fixed an issue where due date was not updated correctly when saving an invoice.
+
+#### Bank Payment
+
+* Bank statement line: prevent user from creating a new bank statement line manually.
+* Bank reconciliation: fixed move line filter when using multiple reconciliations.
+
+#### Budget
+
+* Budget: fixed an issue where the default budget structure was not fetched correctly on budget creation.
+
+#### Contract
+
+* Contract: fixed an issue where the value of yearly ex tax total was not revalued.
+* Contract: fixed tax error message related to supplier contracts.
+
+#### Human Resource
+
+* Payroll Preparation: fixed an issue were leaves were not always displayed.
+* Increment leave batch: fixed an issue where the batch did not update some employees.
+
+#### Purchase
+
+* Purchase order: fixed purchase order lines not displayed on 'Historical' menu.
+
+#### Supply Chain
+
+* Fixed forwarder partner domain filter.
+
+
+### Developer
+
+#### Base
+
+Replaced `action-partner-record-set-positive-balance` by `action-partner-method-set-positive-balance` in Partner form.
+
 ## [8.0.8] (2024-06-07)
 
 ### Fixes
@@ -775,6 +833,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.9]: https://github.com/axelor/axelor-open-suite/compare/v8.0.8...v8.0.9
 [8.0.8]: https://github.com/axelor/axelor-open-suite/compare/v8.0.7...v8.0.8
 [8.0.7]: https://github.com/axelor/axelor-open-suite/compare/v8.0.6...v8.0.7
 [8.0.6]: https://github.com/axelor/axelor-open-suite/compare/v8.0.5...v8.0.6
