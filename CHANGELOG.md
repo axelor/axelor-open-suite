@@ -1,3 +1,46 @@
+## [7.1.24] (2024-06-27)
+
+### Fixes
+#### Base
+
+* App base: removed admin module reference from modules field.
+* Template: fixed translation for content panel title.
+* Partner: fixed merging duplicates not working correctly.
+* Birt Template: fixed wrong report used when getting report from source.
+
+#### Account
+
+* Move: fixed error popup changing date on unsaved move.
+* Mass entry: fixed error when a user without an active company is selecting a company.
+* Payment voucher: fixed technical error when the user's active company is null and there are more than one company in the app.
+* Move: fixed blocking message due to a wrong tax check preventing some accounting moves validation.
+* Mass entry: fixed today date settings in dev mode not working with created lines from mass entry form.
+* Move/Analytic: fixed negative analytic amounts when generating cut off moves.
+* Invoice: fixed foreign currency invoice duplication when current currency rate is different from the currency rate in the original invoice.
+* Invoice: fixed an issue where due date was not updated correctly when saving an invoice.
+
+#### Bank Payment
+
+* Bank statement line: prevent user from creating a new bank statement line manually.
+* Bank reconciliation: fixed move line filter when using multiple reconciliations.
+
+#### Contract
+
+* Contract: fixed an issue where the value of yearly ex tax total was not revalued.
+* Contract: fixed wrong tax check on supplier contract.
+
+#### Human Resource
+
+* Payroll Preparation: fixed an issue were leaves were not always displayed.
+
+#### Purchase
+
+* Purchase order: fixed purchase order lines not displayed on 'Historical' menu.
+
+#### Supply Chain
+
+* Fixed forwarder partner domain filter.
+
 ## [7.1.23] (2024-06-07)
 
 ### Fixes
@@ -1200,6 +1243,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.24]: https://github.com/axelor/axelor-open-suite/compare/v7.1.23...v7.1.24
 [7.1.23]: https://github.com/axelor/axelor-open-suite/compare/v7.1.22...v7.1.23
 [7.1.22]: https://github.com/axelor/axelor-open-suite/compare/v7.1.21...v7.1.22
 [7.1.21]: https://github.com/axelor/axelor-open-suite/compare/v7.1.20...v7.1.21
