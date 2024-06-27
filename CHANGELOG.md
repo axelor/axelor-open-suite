@@ -1,3 +1,39 @@
+## [6.5.36] (2024-06-27)
+
+### Fixes
+#### Base
+
+* Template: fixed translation for content panel title.
+* Partner: fixed merging duplicates not working correctly.
+
+#### Account
+
+* Payment voucher: fixed technical error when the user's active company is null and there are more than one company in the app.
+* Invoice: fixed foreign currency invoice duplication when current currency rate is different from the currency rate in the original invoice.
+* Invoice: fixed an issue where due date was not updated correctly when saving an invoice.
+
+#### Bank Payment
+
+* Bank statement line: prevent user from creating a new bank statement line manually.
+* Bank reconciliation: fixed an issue where move lines were not displayed even when they should.
+* Bank reconciliation: fixed move line filter when using multiple reconciliations.
+
+#### Contract
+
+* Contract: fixed wrong tax check on supplier contract.
+
+#### Human Resource
+
+* Payroll Preparation: fixed an issue were leaves were not always displayed.
+
+#### Purchase
+
+* Purchase order: Fixed purchase order lines not displayed on 'Historical' menu.
+
+#### Supply Chain
+
+* Fixed forwarder partner domain filter.
+
 ## [6.5.35] (2024-06-07)
 
 ### Fixes
@@ -1405,6 +1441,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.36]: https://github.com/axelor/axelor-open-suite/compare/v6.5.35...v6.5.36
 [6.5.35]: https://github.com/axelor/axelor-open-suite/compare/v6.5.34...v6.5.35
 [6.5.34]: https://github.com/axelor/axelor-open-suite/compare/v6.5.33...v6.5.34
 [6.5.33]: https://github.com/axelor/axelor-open-suite/compare/v6.5.32...v6.5.33
