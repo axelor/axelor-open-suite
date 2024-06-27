@@ -43,16 +43,15 @@ public class GlobalBudgetToolsServiceImpl implements GlobalBudgetToolsService {
       return budgetList;
     }
 
-    if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
-      budgetList = globalBudget.getBudgetList();
-    }
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
         budgetList = getAllBudgets(budgetLevel, budgetList);
       }
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      budgetList.addAll(globalBudget.getBudgetList());
     }
 
-    return budgetList.stream().distinct().collect(Collectors.toList());
+    return budgetList;
   }
 
   @Override

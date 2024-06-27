@@ -118,6 +118,9 @@
     <many-to-one name="stockLocationPrintTemplate" title="Stock location template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
+    <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Transition location (cart)"/>
+
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
 		public static final int VALUATION_TYPE_ACCOUNTING_VALUE = 2;
@@ -183,6 +186,7 @@
       <field name="conformityCertificatePrintTemplate" on="UPDATE"/>
       <field name="inventoryPrintTemplate" on="UPDATE"/>
       <field name="stockLocationPrintTemplate" on="UPDATE"/>
+      <field name="cartStockLocation" on="UPDATE"/>
     </track>
   </entity>
 

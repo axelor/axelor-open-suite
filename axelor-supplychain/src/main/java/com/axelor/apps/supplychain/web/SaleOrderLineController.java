@@ -63,27 +63,6 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderLineController {
 
-  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder =
-          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
-      AnalyticLineModelService analyticLineModelService = Beans.get(AnalyticLineModelService.class);
-
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
-      if (analyticLineModelService.productAccountManageAnalytic(analyticLineModel)) {
-
-        analyticLineModelService.computeAnalyticDistribution(analyticLineModel);
-
-        response.setValue(
-            "analyticDistributionTemplate", analyticLineModel.getAnalyticDistributionTemplate());
-        response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
     try {
