@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed foreign currency invoice duplication when current currency rate is different from the currency rate in the original invoice."
-module: axelor-account
