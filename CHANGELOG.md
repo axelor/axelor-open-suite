@@ -1,3 +1,70 @@
+## [8.1.1] (2024-06-27)
+
+### Fixes
+#### Base
+
+* App base: removed admin module reference from modules field.
+* Partner: fixed number of decimals displayed on debit balance.
+* Template: Fixed translation for content panel title.
+* BIRT Template: fixed default BIRT parameter templates so they can be used in mail templates.
+* Partner: fixed merging duplicates not working correctly.
+* BIRT Template: fixed wrong report used when getting report from source.
+
+#### Account
+
+* Move: fixed error popup changing date on unsaved move.
+* Move: fixed blocking message due to a wrong tax check preventing some accounting moves validation.
+* Invoice payment: fixed wrong scale for prices in form view.
+* Mass entry: fixed error when a user without an active company is selecting a company.
+* Payment voucher: fixed technical error when the user's active company is null and there are more than one company in the app.
+* Invoice/MoveLine: fixed financial discount amount and currency amount scaling.
+* Mass entry: fixed today date settings in dev mode not working with created lines from mass entry form.
+* Tax: fixed display of non deductible tax fields on account management form.
+* Account config: improve the interface to prevent customer blocking if 'Late payment account blocking' configuration is disabled.
+* Move/Analytic: fixed negative analytic amounts when generating cut off moves.
+* Invoice: fixed foreign currency invoice duplication when current currency rate is different from the currency rate in the original invoice.
+* Invoice: fixed an issue where due date was not updated correctly when saving an invoice.
+
+#### Bank Payment
+
+* Bank statement line: prevent user from creating a new bank statement line manually.
+* Bank reconciliation: fixed move line filter when using multiple reconciliations.
+
+#### Budget
+
+* Budget: fixed an issue where the default budget structure was not fetched correctly on budget creation.
+
+#### Contract
+
+* Contract: fixed an issue where the value of yearly ex tax total was not revalued.
+* Contract: fixed missing Contract type select in Contract template english demo data.
+* Contract: fixed a bug where it was impossible to activate a contract when automatic invoicing is enabled.
+* Contract: fixed tax error message related to supplier contracts.
+
+#### Human Resource
+
+* Payroll Preparation: fixed an issue were leaves were not always displayed.
+* Increment leave batch: fixed an issue where the batch did not update some employees.
+
+#### Purchase
+
+* Purchase order: Fixed purchase order lines not displayed on 'Historical' menu.
+
+#### Supply Chain
+
+* Fixed forwarder partner domain filter.
+
+#### Intervention
+
+* Sequence: fixed sequence import in intervention demo data.
+
+
+### Developer
+
+#### Base
+
+Replaced `action-partner-record-set-positive-balance` by `action-partner-method-set-positive-balance` in Partner form.
+
 ## [8.1.0] (2024-06-14)
 
 ### Features
@@ -144,4 +211,5 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.1]: https://github.com/axelor/axelor-open-suite/compare/v8.1.0...v8.1.1
 [8.1.0]: https://github.com/axelor/axelor-open-suite/compare/v8.0.8...v8.1.0
