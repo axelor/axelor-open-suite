@@ -123,8 +123,7 @@ public class ProductController {
             .getPrintLink(
                 productCatalogPGQLPrintTemplate,
                 new PrintingGenFactoryContext(
-                    Map.of("ProductIds", getSelectedOrAllRecordIds(request))),
-                name + "-${date}");
+                    Map.of("ProductIds", getSelectedOrAllRecordIds(request))));
     logger.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
