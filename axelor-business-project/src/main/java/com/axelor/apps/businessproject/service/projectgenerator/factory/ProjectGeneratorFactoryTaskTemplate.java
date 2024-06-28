@@ -25,6 +25,8 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
@@ -62,6 +64,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   private final ProductCompanyService productCompanyService;
 
   private final AppBusinessProjectService appBusinessProjectService;
+  protected final SequenceService sequenceService;
 
   @Inject
   public ProjectGeneratorFactoryTaskTemplate(
@@ -71,7 +74,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       ProjectTaskRepository projectTaskRepository,
       ProductTaskTemplateService productTaskTemplateService,
       ProductCompanyService productCompanyService,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      SequenceService sequenceService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
@@ -79,12 +83,20 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     this.productTaskTemplateService = productTaskTemplateService;
     this.productCompanyService = productCompanyService;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.sequenceService = sequenceService;
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
+    project = projectRepository.save(project);
+    try {
+      project.setCode(sequenceService.getDraftSequenceNumber(project));
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
     return project;
   }
 
