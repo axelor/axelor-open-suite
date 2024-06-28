@@ -38,8 +38,10 @@ import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -846,7 +848,7 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       response.setValue(
           "pfpValidatorUser",
-          Beans.get(InvoiceTermService.class)
+          Beans.get(InvoiceTermPfpToolService.class)
               .getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -1010,7 +1012,7 @@ public class InvoiceController {
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
-      Beans.get(InvoiceService.class).validatePfp(invoice.getId());
+      Beans.get(InvoicePfpValidateService.class).validatePfp(invoice.getId());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

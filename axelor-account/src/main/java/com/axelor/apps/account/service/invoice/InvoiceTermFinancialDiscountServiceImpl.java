@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -38,15 +37,18 @@ public class InvoiceTermFinancialDiscountServiceImpl
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineToolService moveLineToolService;
+  protected InvoiceTermToolService invoiceTermToolService;
 
   @Inject
   public InvoiceTermFinancialDiscountServiceImpl(
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      InvoiceTermToolService invoiceTermToolService) {
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineToolService = moveLineToolService;
+    this.invoiceTermToolService = invoiceTermToolService;
   }
 
   @Override
@@ -95,7 +97,8 @@ public class InvoiceTermFinancialDiscountServiceImpl
     if (appAccountService.getAppAccount().getManageFinancialDiscount()
         && financialDiscount != null) {
       BigDecimal percentage =
-          this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
+          invoiceTermToolService
+              .computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
               .divide(
                   BigDecimal.valueOf(100),
                   AppBaseService.COMPUTATION_SCALING,
@@ -123,18 +126,6 @@ public class InvoiceTermFinancialDiscountServiceImpl
       invoiceTerm.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
       invoiceTerm.setAmountRemainingAfterFinDiscount(BigDecimal.ZERO);
     }
-  }
-
-  @Override
-  public BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal) {
-    BigDecimal percentage = BigDecimal.ZERO;
-    if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-      percentage =
-          amount
-              .multiply(new BigDecimal(100))
-              .divide(inTaxTotal, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-    }
-    return percentage;
   }
 
   @Override
