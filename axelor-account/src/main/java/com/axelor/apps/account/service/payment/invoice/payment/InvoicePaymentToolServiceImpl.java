@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -76,7 +75,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermFilterService invoiceTermFilterService;
   protected InvoiceTermToolService invoiceTermToolService;
-  protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -91,8 +89,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
       InvoiceTermFilterService invoiceTermFilterService,
-      InvoiceTermToolService invoiceTermToolService,
-      ForeignExchangeGapToolsService foreignExchangeGapToolsService) {
+      InvoiceTermToolService invoiceTermToolService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
@@ -104,7 +101,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermFilterService = invoiceTermFilterService;
     this.invoiceTermToolService = invoiceTermToolService;
-    this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
   }
 
   @Override
@@ -129,7 +125,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               .map(InvoiceTerm::getCompanyAmountRemaining)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
-
       if (currencyAmount.signum() >= 0 || (currencyAmount.signum() == 0 && amount.signum() == 0)) {
         return currencyAmount;
       }
@@ -161,52 +156,49 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
 
       if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
-        if (!foreignExchangeGapToolsService
-            .getForeignExchangeTypes()
-            .contains(invoicePayment.getTypeSelect())) {
-          log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 
-          BigDecimal paymentAmount = invoicePayment.getAmount();
-          if (invoicePayment.getApplyFinancialDiscount()) {
-            paymentAmount =
-                paymentAmount.add(
-                    invoicePayment
-                        .getFinancialDiscountAmount()
-                        .add(invoicePayment.getFinancialDiscountTaxAmount()));
-          }
+        log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 
-          if (currencyService.isSameCurrencyRate(
-              invoice.getInvoiceDate(),
-              invoicePayment.getPaymentDate(),
-              invoicePayment.getCurrency(),
-              invoiceCurrency)) {
-            BigDecimal computedPaidAmount = paymentAmount;
-            if (!Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)) {
-              BigDecimal currencyRate =
-                  currencyService.computeScaledExchangeRate(
-                      invoice.getCompanyInTaxTotal(), invoice.getInTaxTotal());
-              computedPaidAmount =
-                  Objects.equals(invoiceCurrency, invoice.getCompany().getCurrency())
-                      ? currencyService.getAmountCurrencyConvertedAtDate(
-                          invoicePayment.getCurrency(),
-                          invoiceCurrency,
-                          paymentAmount,
-                          invoicePayment.getPaymentDate())
-                      : paymentAmount.divide(
-                          currencyRate,
-                          AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                          RoundingMode.HALF_UP);
-            }
-            amountPaid = amountPaid.add(computedPaidAmount);
-          } else {
-            amountPaid =
-                amountPaid.add(
-                    currencyService.getAmountCurrencyConvertedAtDate(
+        BigDecimal paymentAmount = invoicePayment.getAmount();
+        if (invoicePayment.getApplyFinancialDiscount()) {
+          paymentAmount =
+              paymentAmount.add(
+                  invoicePayment
+                      .getFinancialDiscountAmount()
+                      .add(invoicePayment.getFinancialDiscountTaxAmount()));
+        }
+
+        if (currencyService.isSameCurrencyRate(
+            invoice.getInvoiceDate(),
+            invoicePayment.getPaymentDate(),
+            invoicePayment.getCurrency(),
+            invoiceCurrency)) {
+          BigDecimal computedPaidAmount = paymentAmount;
+          if (!Objects.equals(invoicePayment.getCurrency(), invoiceCurrency)) {
+            BigDecimal currencyRate =
+                currencyService.computeScaledExchangeRate(
+                    invoice.getCompanyInTaxTotal(), invoice.getInTaxTotal());
+            computedPaidAmount =
+                Objects.equals(invoiceCurrency, invoice.getCompany().getCurrency())
+                    ? currencyService.getAmountCurrencyConvertedAtDate(
                         invoicePayment.getCurrency(),
                         invoiceCurrency,
                         paymentAmount,
-                        invoicePayment.getPaymentDate()));
+                        invoicePayment.getPaymentDate())
+                    : paymentAmount.divide(
+                        currencyRate,
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP);
           }
+          amountPaid = amountPaid.add(computedPaidAmount);
+        } else {
+          amountPaid =
+              amountPaid.add(
+                  currencyService.getAmountCurrencyConvertedAtDate(
+                      invoicePayment.getCurrency(),
+                      invoiceCurrency,
+                      paymentAmount,
+                      invoicePayment.getPaymentDate()));
         }
       }
     }
@@ -245,7 +237,9 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return remainingAmount.compareTo(pendingAmount) <= 0;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   @Override
   public List<BankDetails> findCompatibleBankDetails(
       Company company, InvoicePayment invoicePayment) {
@@ -427,8 +421,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (!CollectionUtils.isEmpty(invoiceTerms)) {
 
         BigDecimal companyAmount =
-            this.computeCompanyAmount(
-                invoicePayment.getAmount(), invoicePayment, invoicePayment.getInvoice());
+            this.computeCompanyAmount(invoicePayment.getAmount(), invoicePayment);
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
@@ -522,14 +515,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   protected BigDecimal computeCompanyAmount(
-      BigDecimal amountInCurrency, InvoicePayment invoicePayment, Invoice invoice)
-      throws AxelorException {
+      BigDecimal amountInCurrency, InvoicePayment invoicePayment) throws AxelorException {
     if (!invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())) {
       return currencyService.getAmountCurrencyConvertedAtDate(
           invoicePayment.getCurrency(),
           invoicePayment.getCompanyCurrency(),
           amountInCurrency,
-          invoice.getInvoiceDate());
+          invoicePayment.getPaymentDate());
     }
 
     return amountInCurrency;

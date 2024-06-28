@@ -43,6 +43,7 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.db.mapper.Mapper;
@@ -70,6 +71,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
+  protected AppSaleService appSaleService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -83,7 +85,8 @@ public class ContractLineServiceImpl implements ContractLineService {
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
-      TaxService taxService) {
+      TaxService taxService,
+      AppSaleService appSaleService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
@@ -95,6 +98,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
     this.taxService = taxService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
@@ -213,7 +217,7 @@ public class ContractLineServiceImpl implements ContractLineService {
               product,
               contract.getCompany(),
               contractLine.getFiscalPosition(),
-              false);
+              contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT);
     }
 
     return taxLineSet;
@@ -365,5 +369,26 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     return priceListService.getPriceListLine(
         contractLine.getProduct(), contractLine.getQty(), priceList, price);
+  }
+
+  @Override
+  public String computeProductDomain(Contract contract) {
+    String domain =
+        "self.isModel = false"
+            + " and (self.endDate = null or self.endDate > :__date__)"
+            + " and self.dtype = 'Product'";
+
+    if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && appSaleService.getAppSale().getEnableSalesProductByTradName()
+        && contract != null
+        && contract.getTradingName() != null
+        && contract.getCompany() != null
+        && contract.getCompany().getTradingNameSet() != null
+        && !contract.getCompany().getTradingNameSet().isEmpty()) {
+      domain +=
+          " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
+    }
+
+    return domain;
   }
 }
