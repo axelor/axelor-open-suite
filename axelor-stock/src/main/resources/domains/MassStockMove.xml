@@ -12,6 +12,8 @@
       title="Transition location (cart)" required="true"/>
     <one-to-many name="pickedProductList" ref="com.axelor.apps.stock.db.PickedProduct"
       title="Picked products" mappedBy="massStockMove"/>
+    <one-to-many name="storedProductList" ref="com.axelor.apps.stock.db.StoredProduct"
+      title="Stored products" mappedBy="massStockMove"/>
   </entity>
 
 

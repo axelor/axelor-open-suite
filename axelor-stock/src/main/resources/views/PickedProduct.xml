@@ -9,10 +9,10 @@
       onChange="action-picked-product-group-product-onchange" required="true"/>
     <field name="fromStockLocation"
       onSelect="action-picked-product-method-set-domain-from-stock-location"
-      onChange="action-picked-product-record-set-tracking-number,action-picked-product-record-set-current-qty"/>
+      onChange="action-picked-product-record-set-tracking-number,action-picked-product-method-set-current-qty"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-picked-product-attrs-tracking-number-domain"
-      onChange="action-picked-product-record-set-current-qty"/>
+      onChange="action-picked-product-method-set-current-qty"/>
     <field name="currentQty" readonly="true"/>
     <field name="unit" readonly="true"/>
     <field name="pickedQty"/>
@@ -29,22 +29,19 @@
         onChange="action-picked-product-group-product-onchange"/>
       <field name="fromStockLocation"
         onSelect="action-picked-product-method-set-domain-from-stock-location"
-        onChange="action-picked-product-record-set-tracking-number,action-picked-product-record-set-current-qty"/>
+        onChange="action-picked-product-record-set-tracking-number,action-picked-product-method-set-current-qty"/>
       <field name="trackingNumber"
-        onSelect="action-picked-product-attrs-tracking-number-domain,action-picked-product-record-set-current-qty"/>
+        onSelect="action-picked-product-attrs-tracking-number-domain"
+        onChange="action-picked-product-method-set-current-qty"/>
       <field name="currentQty" readonly="true"/>
       <field name="unit" readonly="true"/>
       <field name="pickedQty"/>
     </panel>
   </form>
 
-  <action-record name="action-picked-product-record-set-current-qty"
-    model="com.axelor.apps.stock.db.PickedProduct">
-    <field if="fromStockLocation != null" name="currentQty"
-      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.stockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.currentQty"/>
-    <field if="fromStockLocation != null &amp;&amp; trackingNumber != null" name="currentQty"
-      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2 AND self.trackingNumber = ?3', pickedProduct, fromStockLocation, trackingNumber)?.fetchOne()?.currentQty"/>
-  </action-record>
+  <action-method name="action-picked-product-method-set-current-qty">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="setCurrentQty"/>
+  </action-method>
 
 
   <action-record name="action-picked-product-record-set-tracking-number"
@@ -62,7 +59,7 @@
     <action name="action-picked-product-record-set-unit"/>
     <action name="action-picked-product-attrs-tracking-number-required"/>
     <action name="action-picked-product-record-set-tracking-number"/>
-    <action name="action-picked-product-record-set-current-qty"/>
+    <action name="action-picked-product-method-set-current-qty"/>
   </action-group>
 
   <action-record name="action-picked-product-record-set-unit"

@@ -9,6 +9,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.i18n.I18n;
@@ -25,6 +26,7 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
   protected final StockMoveLineService stockMoveLineService;
   protected final StockLocationLineRepository stockLocationLineRepository;
   protected final MassStockMovableProductServiceFactory massStockMovableProductServiceFactory;
+  protected final StockLocationLineService stockLocationLineService;
 
   @Inject
   public MassStockMovableProductServiceImpl(
@@ -32,12 +34,14 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       AppBaseService appBaseService,
       StockMoveLineService stockMoveLineService,
       StockLocationLineRepository stockLocationLineRepository,
-      MassStockMovableProductServiceFactory massStockMovableProductServiceFactory) {
+      MassStockMovableProductServiceFactory massStockMovableProductServiceFactory,
+      StockLocationLineService stockLocationLineService) {
     this.stockMoveService = stockMoveService;
     this.appBaseService = appBaseService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.massStockMovableProductServiceFactory = massStockMovableProductServiceFactory;
+    this.stockLocationLineService = stockLocationLineService;
   }
 
   @Override
@@ -46,19 +50,32 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       throws AxelorException {
     Objects.requireNonNull(massStockMovableProducts);
 
-    for (MassStockMovableProduct massStockMovableProduct : massStockMovableProducts) {
-      realize(massStockMovableProduct);
+    if (!massStockMovableProducts.isEmpty()) {
+      MassStockMovableProductProcessingService processingService =
+          massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+              massStockMovableProducts.get(0));
+      MassStockMovableProductLocationService locationService =
+          massStockMovableProductServiceFactory.getMassStockMovableProductLocationService(
+              massStockMovableProducts.get(0));
+
+      for (MassStockMovableProduct massStockMovableProduct : massStockMovableProducts) {
+        realize(massStockMovableProduct, processingService, locationService);
+      }
     }
   }
 
-  @Override
   @Transactional(rollbackOn = Exception.class)
-  public void realize(MassStockMovableProduct movableProduct) throws AxelorException {
-    Objects.requireNonNull(movableProduct);
+  protected void realize(
+      MassStockMovableProduct movableProduct,
+      MassStockMovableProductProcessingService processingService,
+      MassStockMovableProductLocationService locationService)
+      throws AxelorException {
+
+    processingService.preRealize(movableProduct);
 
     var massStockMove = movableProduct.getMassStockMove();
-    var fromStockLocation = movableProduct.getStockLocation();
-    var toStockLocation = massStockMove.getCartStockLocation();
+    var fromStockLocation = locationService.getFromStockLocation(movableProduct);
+    var toStockLocation = locationService.getToStockLocation(movableProduct);
     var todayDate = appBaseService.getTodayDate(massStockMove.getCompany());
 
     if (movableProduct.getStockMoveLine() == null) {
@@ -92,11 +109,25 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       stockMoveService.realize(stockMove);
       movableProduct.setStockMoveLine(stockMoveLine);
 
-      MassStockMovableProductProcessingService processingService =
-          massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
-              movableProduct);
+      processingService.postRealize(movableProduct);
+
       processingService.save(movableProduct);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void realize(MassStockMovableProduct movableProduct) throws AxelorException {
+    Objects.requireNonNull(movableProduct);
+
+    MassStockMovableProductProcessingService processingService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+            movableProduct);
+    MassStockMovableProductLocationService locationService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductLocationService(
+            movableProduct);
+
+    realize(movableProduct, processingService, locationService);
   }
 
   protected void checkQty(MassStockMovableProduct movableProduct, StockLocation fromStockLocation)
@@ -123,6 +154,16 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
           movableProduct.getProduct().getFullName());
     }
 
+    var availableQty = getCurrentAvailableQty(movableProduct);
+
+    if (movableProduct.getMovedQty().compareTo(availableQty) > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              StockExceptionMessage.STOCK_MOVE_MASS_PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE),
+          movableProduct.getProduct().getFullName());
+    }
+
     if (movableProduct.getMovedQty().compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -136,5 +177,23 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
           I18n.get(StockExceptionMessage.STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY),
           movableProduct.getProduct().getFullName());
     }
+  }
+
+  @Override
+  public BigDecimal getCurrentAvailableQty(MassStockMovableProduct movableProduct)
+      throws AxelorException {
+
+    MassStockMovableProductLocationService locationService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductLocationService(
+            movableProduct);
+
+    var stockLocation = locationService.getFromStockLocation(movableProduct);
+
+    if (movableProduct.getTrackingNumber() != null) {
+      return stockLocationLineService.getTrackingNumberAvailableQty(
+          stockLocation, movableProduct.getTrackingNumber());
+    }
+
+    return stockLocationLineService.getAvailableQty(stockLocation, movableProduct.getProduct());
   }
 }
