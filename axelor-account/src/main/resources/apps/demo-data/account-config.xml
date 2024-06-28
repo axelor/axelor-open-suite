@@ -372,6 +372,6 @@
     update="true" type="com.axelor.apps.base.db.BankDetails">
     <bind to="currency" column="currency_code" search="self.code=: currency_code"/>
     <bind to="bankAccount" column="bankAccount_code" search="self.code = :bankAccount_code"/>
-    <bind to="journal" column="journal_code" search="self.code=:journal_code"/>
+    <bind to="journal" column="journal_code" search="self.code=:journal_code" if="journal_code"/>
   </input>
 </csv-inputs>
