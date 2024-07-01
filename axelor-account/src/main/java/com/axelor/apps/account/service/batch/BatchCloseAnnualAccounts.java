@@ -563,10 +563,23 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       return warning;
     }
 
+    Integer daybookMoveCount = getDaybookMoveCount(accountingBatch);
+
+    if (daybookMoveCount != 0) {
+      warning =
+          String.format(
+              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_ERROR_LABEL),
+              accountingBatch.getYear().getName(),
+              daybookMoveCount);
+    }
+
+    return warning;
+  }
+
+  protected Integer getDaybookMoveCount(AccountingBatch accountingBatch) throws AxelorException {
     Set<Year> yearSet = new HashSet<>();
     yearSet.add(accountingBatch.getYear());
 
-    int daybookMoveCount = 0;
     if (accountingBatch.getCompany() != null
         && accountConfigService
             .getAccountConfig(accountingBatch.getCompany())
@@ -574,25 +587,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       List<Move> moveList =
           moveToolService.findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK));
       if (!ObjectUtils.isEmpty(moveList)) {
-        daybookMoveCount =
-            (int)
-                moveList.stream()
-                    .filter(
-                        m ->
-                            m.getFunctionalOriginSelect()
-                                != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
-                    .count();
+        return (int)
+            moveList.stream()
+                .filter(
+                    m -> m.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+                .count();
       }
     }
-
-    if (daybookMoveCount != 0) {
-      warning =
-          String.format(
-              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL),
-              accountingBatch.getYear().getName(),
-              daybookMoveCount);
-    }
-
-    return warning;
+    return 0;
   }
 }

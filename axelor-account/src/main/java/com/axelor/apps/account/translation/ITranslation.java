@@ -38,6 +38,6 @@ public interface ITranslation {
   public static final String FIXED_ASSET_IMPORT_BTN_IMPORT = /*$$(*/
       "Define origin as Imported/Transferred" /*)*/;
   public static final String FIXED_ASSET_IMPORT_BTN_MANUAL = /*$$(*/ "Reset origin" /*)*/;
-  public static final String CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL =
-      /*$$(*/ "The selected fiscal year %s still contains %d entry/ies in Daybook which will distort the calculations of the balances to be carried forward." /*)*/;
+  public static final String CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_ERROR_LABEL =
+      /*$$(*/ "The fiscal year %s still contains %s entry/ies in Daybook which will distort the calculations of the balances to be carried forward. Please post those entries or close definitely the periods before to proceed to the closure. Do you still wish to continue ?" /*)*/;
 }
