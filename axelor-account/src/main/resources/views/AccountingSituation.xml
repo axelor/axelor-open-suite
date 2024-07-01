@@ -79,6 +79,7 @@
       showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)">
       <field name="vatSystemSelect"
         showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)"/>
+      <field name="partner.isInternal" hidden="true"/>
     </panel>
     <panel name="analyticsPanel" title="Analytics" colSpan="12" hidden="true">
       <field name="analyticDistributionTemplate"
