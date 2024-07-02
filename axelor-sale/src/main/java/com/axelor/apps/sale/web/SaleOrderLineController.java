@@ -78,18 +78,19 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       PricingService pricingService = Beans.get(PricingService.class);
       SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+      SaleOrderLineProductService saleOrderLineProductService =
+          Beans.get(SaleOrderLineProductService.class);
 
       Product product = saleOrderLine.getProduct();
 
       if (saleOrder == null || product == null) {
-        resetProductInformation(response, saleOrderLine);
+        response.setValues(saleOrderLineProductService.resetProductInformation(saleOrderLine));
         return;
       }
 
       try {
         Map<String, Object> saleOrderLineMap =
-            Beans.get(SaleOrderLineProductService.class)
-                .computeProductInformation(saleOrderLine, saleOrder);
+            saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
         // Beans.get(SaleOrderLineCheckService.class).check(saleOrderLine); throws exception
@@ -115,19 +116,12 @@ public class SaleOrderLineController {
         }
         response.setValues(saleOrderLineMap);
       } catch (Exception e) {
-        resetProductInformation(response, saleOrderLine);
+        response.setValues(saleOrderLineProductService.resetProductInformation(saleOrderLine));
         TraceBackService.trace(response, e);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void resetProductInformation(ActionResponse response, SaleOrderLine line) {
-    Beans.get(SaleOrderLineProductService.class).resetProductInformation(line);
-    response.setValue("saleSupplySelect", null);
-    response.setValue("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
-    response.setValues(line);
   }
 
   /**

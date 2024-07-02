@@ -7,7 +7,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -17,6 +16,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -65,10 +65,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   public Map<String, Object> computeProductInformation(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    Map<String, Object> saleOrderLineMap = new HashMap<>();
-
-    // Reset fields which are going to recalculate in this method
-    resetProductInformation(saleOrderLine);
+    Map<String, Object> saleOrderLineMap = resetProductInformation(saleOrderLine);
 
     if (!saleOrderLine.getEnableFreezeFields()) {
       saleOrderLine.setProductName(saleOrderLine.getProduct().getName());
@@ -207,27 +204,32 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   }
 
   @Override
-  public SaleOrderLine resetProductInformation(SaleOrderLine line) {
-    if (!line.getEnableFreezeFields()) {
-      line.setProductName(null);
-      line.setPrice(null);
-    }
-    line.setTaxLineSet(Sets.newHashSet());
-    line.setTaxEquiv(null);
-    line.setUnit(null);
-    line.setCompanyCostPrice(null);
-    line.setDiscountAmount(null);
-    line.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
-    line.setInTaxPrice(null);
-    line.setExTaxTotal(null);
-    line.setInTaxTotal(null);
-    line.setCompanyInTaxTotal(null);
-    line.setCompanyExTaxTotal(null);
-    if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
-      line.setDescription(null);
-    }
+  public Map<String, Object> resetProductInformation(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+
+    saleOrderLineMap.put("productName", null);
+    saleOrderLineMap.put("price", null);
+    saleOrderLineMap.put("unit", null);
+    saleOrderLineMap.put("companyCostPrice", null);
+    saleOrderLineMap.put("discountAmount", null);
+    saleOrderLineMap.put("discountTypeSelect", null);
+    saleOrderLineMap.put("inTaxPrice", null);
+    saleOrderLineMap.put("exTaxTotal", null);
+    saleOrderLineMap.put("inTaxTotal", null);
+    saleOrderLineMap.put("companyInTaxTotal", null);
+    saleOrderLineMap.put("companyExTaxTotal", null);
+    saleOrderLineMap.put("description", null);
+    saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
     line.clearSelectedComplementaryProductList();
-    return line;
+    saleOrderLineMap.put(
+        "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    saleOrderLineMap.put("taxLineSet", Sets.newHashSet());
+    saleOrderLineMap.put("taxEquiv", null);
+
+    for (Map.Entry<String, Object> entry : saleOrderLineMap.entrySet()) {
+      Mapper.of(SaleOrderLine.class).set(line, entry.getKey(), entry.getValue());
+    }
+    return saleOrderLineMap;
   }
 
   @Override

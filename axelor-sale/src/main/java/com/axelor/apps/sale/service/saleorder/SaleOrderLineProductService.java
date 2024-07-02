@@ -17,7 +17,7 @@ public interface SaleOrderLineProductService {
   Map<String, Object> computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
-  SaleOrderLine resetProductInformation(SaleOrderLine line);
+  Map<String, Object> resetProductInformation(SaleOrderLine line);
 
   /**
    * Fill price for standard line.

@@ -22,6 +22,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.db.mapper.Mapper;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -157,6 +158,18 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     }
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.put("isComplementaryProductsUnhandledYet", true);
+
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> resetProductInformation(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = super.resetProductInformation(line);
+    saleOrderLineMap.put("saleSupplySelect", null);
+
+    for (Map.Entry<String, Object> entry : saleOrderLineMap.entrySet()) {
+      Mapper.of(SaleOrderLine.class).set(line, entry.getKey(), entry.getValue());
+    }
 
     return saleOrderLineMap;
   }
