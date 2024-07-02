@@ -1560,7 +1560,7 @@
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
-    <action name="action-invoice-attrs-hide-cancel-button"/>
+    <action name="action-invoice-method-hide-cancel-button"/>
     <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
     <action name="action-invoice-attrs-in-ati"/>
     <action name="action-invoice-attrs-printing-fields"/>
@@ -1606,7 +1606,7 @@
 
   <action-group name="action-group-account-invoice-company-onchange">
     <action name="action-invoice-method-fill-company-bank-details"/>
-    <action name="action-invoice-attrs-hide-cancel-button"/>
+    <action name="action-invoice-method-hide-cancel-button"/>
     <action name="action-invoice-record-update-info-company"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-attrs-in-ati"/>
@@ -2027,11 +2027,6 @@
       if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
   </action-attrs>
 
-  <action-attrs name="action-invoice-attrs-hide-cancel-button">
-    <attribute name="hidden" for="cancelBtn"
-      expr="((operationSubTypeSelect == 2) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
-  </action-attrs>
-
   <action-attrs name="action-set-partner-domain">
     <attribute for="contactPartner" name="domain" expr="eval: &quot;self = null&quot;"/>
     <attribute for="contactPartner" name="domain"
@@ -2448,6 +2443,10 @@
 
   <action-method name="action-invoice-method-manage-refund-titles">
     <call class="com.axelor.apps.account.web.InvoiceController" method="manageRefundFields"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-hide-cancel-button">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="hideCancelButton"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
