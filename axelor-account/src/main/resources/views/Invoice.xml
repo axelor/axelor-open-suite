@@ -2027,11 +2027,6 @@
       if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
   </action-attrs>
 
-  <action-attrs name="action-invoice-attrs-hide-cancel-button">
-    <attribute name="hidden" for="cancelBtn"
-      expr="((operationSubTypeSelect == 2) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
-  </action-attrs>
-
   <action-attrs name="action-set-partner-domain">
     <attribute for="contactPartner" name="domain" expr="eval: &quot;self = null&quot;"/>
     <attribute for="contactPartner" name="domain"
