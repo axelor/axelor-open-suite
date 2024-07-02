@@ -1,14 +1,13 @@
 package com.axelor.apps.stock.service.massstockmove;
 
 import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import java.util.Objects;
 
-public class PickedProductAttrsServiceImpl implements PickedProductAttrsService {
+public class MassStockMovableProductAttrsServiceImpl
+    implements MassStockMovableProductAttrsService {
   @Override
-  public String getStockLocationDomain(PickedProduct pickedProduct, MassStockMove massStockMove) {
-    Objects.requireNonNull(pickedProduct);
+  public String getStockLocationDomain(MassStockMove massStockMove) {
     Objects.requireNonNull(massStockMove);
 
     if (massStockMove.getCompany() != null) {
