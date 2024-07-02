@@ -20,7 +20,9 @@ package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
@@ -31,9 +33,11 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.common.ObjectUtils;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -137,5 +141,31 @@ public class ReconcileToolServiceImpl implements ReconcileToolService {
     if (CollectionUtils.isNotEmpty(invoiceTermPaymentList)) {
       invoiceTermService.updateInvoiceTermsAmountRemaining(invoiceTermPaymentList);
     }
+
+    if (!validateInvoiceTermAmounts(reconcile.getCreditMoveLine())) {
+      invoiceTermService.updateInvoiceTermsAmountRemainingWithoutPayment(
+          reconcile, reconcile.getCreditMoveLine());
+    }
+    if (!validateInvoiceTermAmounts(reconcile.getDebitMoveLine())) {
+      invoiceTermService.updateInvoiceTermsAmountRemainingWithoutPayment(
+          reconcile, reconcile.getDebitMoveLine());
+    }
+  }
+
+  protected boolean validateInvoiceTermAmounts(MoveLine moveLine) {
+    List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
+
+    if (!moveLine.getAccount().getUseForPartnerBalance() || ObjectUtils.isEmpty(invoiceTermList)) {
+      return true;
+    }
+
+    BigDecimal moveLineAmountRemaining = moveLine.getAmountRemaining().abs();
+    BigDecimal invoiceTermAmountRemaining =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmountRemaining)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    return moveLineAmountRemaining.compareTo(invoiceTermAmountRemaining) == 0;
   }
 }

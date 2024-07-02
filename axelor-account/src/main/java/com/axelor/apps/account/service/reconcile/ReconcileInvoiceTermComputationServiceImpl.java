@@ -43,7 +43,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -284,7 +283,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
             invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
       } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-        invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+        invoiceTermsToPay =
+            invoiceTermService.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
 
       } else {
         return null;
@@ -302,27 +302,5 @@ public class ReconcileInvoiceTermComputationServiceImpl
         return invoiceTermsToPay;
       }
     }
-  }
-
-  protected List<InvoiceTerm> getInvoiceTermsFromMoveLine(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream()
-        .filter(it -> !it.getIsPaid())
-        .sorted(this::compareInvoiceTerm)
-        .collect(Collectors.toList());
-  }
-
-  protected int compareInvoiceTerm(InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2) {
-    LocalDate date1, date2;
-
-    if (invoiceTerm1.getEstimatedPaymentDate() != null
-        && invoiceTerm2.getEstimatedPaymentDate() != null) {
-      date1 = invoiceTerm1.getEstimatedPaymentDate();
-      date2 = invoiceTerm2.getEstimatedPaymentDate();
-    } else {
-      date1 = invoiceTerm1.getDueDate();
-      date2 = invoiceTerm2.getDueDate();
-    }
-
-    return date1.compareTo(date2);
   }
 }
