@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
+    onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
+    onSave="action-project-method-check-resource-availibility">
+    <menubar>
+      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
+        <item name="myOpenTasks" title="My open tasks"
+          action="save,action-project-method-my-open-tasks" showIf="id &amp;&amp; isShowStatus"/>
+        <item name="tasksCreatedByMe" title="Tasks created by me"
+          action="save,action-project-method-my-tasks" showIf="id &amp;&amp; isShowStatus"/>
+        <item name="allOpenTasks" title="All open tasks"
+          action="save,action-project-method-all-open-tasks" showIf="id"/>
+        <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks"
+          showIf="id"/>
+      </menu>
+      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+        <item name="ganttItem" title="Gantt" showIf="id &amp;&amp; isShowGantt"
+          action="save,action-project-open-gantt"/>
+        <item name="bookResourceItem" title="Book resource"
+          if=" __config__.app.getApp('project')?.resourceManagement"
+          action="save,action-project-book-resource"/>
+        <item name="taskEditorItem" action="save,action-project-open-task-editor"
+          title="Task editor"/>
+        <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
+        <item name="topic" title="Topic" action="save,project.topic.all"
+          showIf="id &amp;&amp; isShowTopic"/>
+        <item name="perStatusKanban" title="Per status kanban"
+          action="save,action-project-method-view-per-status-kanban"
+          showIf="id &amp;&amp; isShowKanbanPerStatus"/>
+        <item name="perStatusCalendar" title="Per status calendar"
+          action="save,action-project-view-per-status-calendar"
+          showIf="id &amp;&amp; isShowCalendarPerStatus"/>
+        <item name="perSectionKanban" title="Per section kanban"
+          action="save,action-project-view-per-section-kanban"
+          showIf="id &amp;&amp; isShowKanbanPerSection"/>
+        <item name="perSectionCalendar" title="Per section calendar"
+          action="save,action-project-view-per-section-calendar"
+          showIf="id &amp;&amp; isShowCalendarPerSection"/>
+        <item name="perUserCalendar" title="Per user calendar"
+          action="save,action-project-view-per-user-calendar"
+          showIf="id &amp;&amp; isShowCalendarPerUser"/>
+      </menu>
+    </menubar>
+    <panel name="mainPanel">
+      <panel name="detailsPanel" colSpan="12">
+        <panel name="statusPanel" stacked="true" colSpan="8">
+          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
+        </panel>
+      </panel>
+
+      <panel name="informationPanel" colSpan="10">
+        <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
+          <editor x-show-titles="false">
+            <panel name="seq" colSpan="3">
+              <field name="code" showTitle="false" colSpan="12" readonly="true"
+                if="__config__.app.getApp('project')?.generateProjectSequence"
+                css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
+              <field name="code" showTitle="false" colSpan="12" required="true"
+                if="!__config__.app.getApp('project')?.generateProjectSequence"
+                css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
+            </panel>
+            <field name="name" showTitle="false" colSpan="6" required="true"
+              css="label-bold bold large"/>
+          </editor>
+        </field>
+      </panel>
+    </panel>
+    <panel name="detailsPanel">
+      <field name="description" colSpan="12" widget="html"/>
+      <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"
+        domain="self.isUsableOnProject = true"/>
+    </panel>
+
+    <panel-tabs name="mainPanelTab">
+      <panel title="Task Tree" name="taskTreePanel">
+        <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
+          icon="fa-plus" onClick="save,action-project-add-task"/>
+        <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
+          icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
+          colSpan="12" action="action-view-show-project-task-tree"/>
+      </panel>
+      <panel title="Members" name="membersPanel">
+        <field name="team" title="Team" readonlyIf="synchronize || extendsMembersFromParent"
+          colSpan="6" canNew="false" canEdit="false"/>
+        <field name="synchronize" readonlyIf="extendsMembersFromParent" colSpan="2"
+          widget="boolean-switch"/>
+        <field name="extendsMembersFromParent" hidden="true" colSpan="3"
+          widget="boolean-switch"/>
+        <field name="membersUserSet" colSpan="12" widget="TagSelect" canNew="false"
+          form-view="user-form" grid-view="user-grid"/>
+        <button name="importMemberBtn" title="Import all members" showIf="team != null"
+          readonlyIf="extendsMembersFromParent" colSpan="3"
+          onClick="action-project-method-import-members"/>
+      </panel>
+      <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
+        if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+        <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
+          x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
+          canSearch="true"/>
+      </panel>
+      <panel title="HoldBacks" name="projectHoldBacksPanel">
+        <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
+          title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
+          grid-view="project-hold-back-line-grid" editable="true"/>
+      </panel>
+      <panel title="Log Times" name="logTimesPanel" if="__config__.app.isApp('timesheet')"
+        if-module="axelor-human-resource" showIf="isShowTimeSpent">
+        <panel-dashlet name="validatedTimesheetsPanel"
+          if="__config__.app.getApp('timesheet')?.needValidation"
+          action="action-project-dashlet-validated-timesheet-lines"
+          title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
+        <panel-dashlet name="waitingTimesheetLinesPanel"
+          if="__config__.app.getApp('timesheet')?.needValidation"
+          action="action-project-dashlet-project-waiting-timesheet-lines"
+          title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
+        <panel-dashlet name="allTimesheetsLinesPanel"
+          if="!__config__.app.getApp('timesheet')?.needValidation"
+          action="action-project-dashlet-project-all-timesheet-lines"
+          title="TimesheetLine.timeSpent" colSpan="12" canSearch="true"
+          help="To create new timespent lines, you need to do it via project task or via the HR &quot;Complete my Timesheet&quot; menu."/>
+      </panel>
+      <panel name="resourceBookingListPanel" title="Resource booking"
+        if="__config__.app.getApp('project')?.resourceManagement">
+        <panel-related name="resourceBookingListPanel" field="resourceBookingList"
+          form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
+          colSpan="12"/>
+      </panel>
+      <panel title="Wiki" name="wikiPanel">
+        <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
+          form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
+      </panel>
+      <panel title="Configurations" name="configurationsPanel">
+        <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+          name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
+          domain="self.isActivity = true AND self.dtype = 'Product'"
+          form-view="product-activity-form" grid-view="product-activity-grid"/>
+        <field name="projectTimeUnit"/>
+        <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
+          if-module="axelor-human-resource"/>
+        <field name="childProjectList" hidden="true"/>
+        <field name="sequence" hidden="true"/>
+        <field name="imputable" colSpan="4" widget="boolean-switch"
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
+          if-module="axelor-human-resource"
+          onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
+        <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
+          <field name="isShowStatus" widget="inline-checkbox"
+            onChange="action-project-record-status-reset-values"/>
+          <field name="completedTaskStatus" grid-view="task-status-grid"
+            form-view="task-status-form" showIf="isShowStatus" requiredIf="isShowStatus"
+            onSelect="action-project-attrs-set-completed-task-status-domain"/>
+          <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12"
+            showIf="isShowStatus" requiredIf="isShowStatus"
+            onChange="action-project-record-reset-completed-task-status"/>
+          <field name="isShowPriority" colSpan="4" widget="inline-checkbox"
+            onChange="action-project-record-priority-reset-values"/>
+          <field name="projectTaskPrioritySet" widget="TagSelect" colSpan="12"
+            showIf="isShowPriority" requiredIf="isShowPriority"/>
+          <spacer colSpan="12" showIf="isShowPriority"/>
+          <field name="isShowTaskCategory" colSpan="4" widget="inline-checkbox"
+            onChange="action-project-record-category-reset-values"/>
+          <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"
+            showIf="isShowTaskCategory"/>
+          <field name="isShowProgress" colSpan="4" widget="inline-checkbox"/>
+          <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
+          <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
+          <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
+            onChange="action-project-record-is-show-timespent-reset-values"
+            if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
+          <field name="isShowSection" colSpan="4" widget="inline-checkbox"
+            onChange="action-project-record-section-reset-values"/>
+          <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
+          <field name="isShowGantt" colSpan="4" widget="inline-checkbox"/>
+          <field name="isShowKanbanPerStatus" colSpan="4" widget="inline-checkbox"
+            showIf="isShowStatus"/>
+          <field name="isShowKanbanPerSection" colSpan="4" widget="inline-checkbox"
+            showIf="isShowSection"/>
+          <field name="isShowCalendarPerStatus" colSpan="4" widget="inline-checkbox"/>
+          <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
+            showIf="isShowSection"/>
+          <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
+        </panel>
+      </panel>
+      <panel title="Custom fields" name="customFieldConfigPanel">
+        <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
+          form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
+      </panel>
+      <panel title="Activities" name="activityPanel"
+        onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
+        <panel-include view="project-activity-dashboard-form"/>
+      </panel>
+    </panel-tabs>
+    <panel name="attrsPanel">
+      <field name="attrs" colSpan="12"/>
+    </panel>
+    <panel name="actionsPanel" colSpan="2" sidebar="true">
+      <button name="finishBtn" title="Finish" colSpan="12" icon="fa-check"
+        showIf="!projectStatus.isCompleted" onClick="action-project-group-finish-project"
+        hidden="true"/>
+      <button name="cancelBtn" title="Cancel" colSpan="12" css="btn-danger"
+        hideIf="projectStatus.id == $canceledProjectStatusId" icon="fa-times-circle"
+        onClick="action-project-group-status-canceled"/>
+      <button name="resetBtn" title="Reset" hidden="true"
+        showIf="projectStatus.id == $canceledProjectStatusId" colSpan="12" css="btn-danger"
+        icon="fa-file" onClick="action-project-record-status-new,save"/>
+      <field name="projectStatus.isCompleted" hidden="true"/>
+    </panel>
+    <panel name="characteristicsPanel" title="Characteristics" colSpan="12" sidebar="true"
+      canCollapse="true">
+      <panel name="configPanel" colSpan="12">
+        <field name="isShowPhasesElements" colSpan="12" widget="boolean-switch"/>
+      </panel>
+      <panel name="projectPanel" colSpan="12">
+        <field name="parentProject" canEdit="false" form-view="project-form"
+          grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
+        <spacer name="childProjectSpacer" colSpan="6"/>
+        <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form"
+          grid-view="project-child-grid" showIf="isShowPhasesElements"/>
+      </panel>
+    </panel>
+    <panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true"
+      canCollapse="true">
+      <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
+        canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
+        grid-view="user-grid"/>
+    </panel>
+    <panel name="datePanel" title="Dates" colSpan="12" sidebar="true" canCollapse="true">
+      <field name="fromDate" colSpan="6"/>
+      <field name="toDate" colSpan="6"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-group name="action-project-on-load-group">
+    <action name="action-project-attrs-on-new-load"/>
+  </action-group>
+
+  <action-group name="action-project-group-on-new-project">
+    <action name="action-project-defaults"/>
+    <action name="action-project-record-status-new"/>
+    <action name="action-project-attrs-on-new-load"/>
+  </action-group>
+
+  <action-record name="action-project-record-status-new"
+    model="com.axelor.apps.project.db.Project">
+    <field name="projectStatus"
+      expr="eval: __repo__(ProjectStatus).all().order('sequence').fetchOne()"/>
+    <field name="projectTaskStatusSet"
+      expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"/>
+    <field name="projectTaskPrioritySet"
+      expr="eval: __config__.app.getApp('project')?.getDefaultPrioritySet()"/>
+    <field name="completedTaskStatus"
+      expr="eval: __config__.app.getApp('project')?.completedTaskStatus"/>
+  </action-record>
+
+  <action-attrs name="action-project-attrs-on-new-load">
+    <attribute name="selection-in" for="projectStatus"
+      expr="eval: __repo__(ProjectStatus).all()?.fetch()?.collect{it.id}?.join(',')"/>
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-defaults"
+    model="com.axelor.apps.project.db.Project">
+    <attribute name="value" for="fromDate" expr="eval: __datetime__"/>
+    <attribute name="value" for="assignedTo" expr="eval: __user__"/>
+    <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
+    <attribute name="value" for="parentProject"
+      expr="eval:__repo__(Project).find(_parentProjectId)" if="_parentProjectId != null"/>
+    <attribute name="value" for="siteSet"
+      expr="eval: __config__.app.getApp('base')?.defaultSitesSet"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+  </action-attrs>
+
+  <action-method name="action-project-method-check-resource-availibility">
+    <call class="com.axelor.apps.project.web.ProjectController" method="checkIfResourceBooked"/>
+  </action-method>
+
+  <search-filters name="project-filters" model="com.axelor.apps.project.db.Project"
+    title="Project filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="resourceBookingList" hidden="true"
+      if="!__config__.app.getApp('project')?.resourceManagement"/>
+    <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
+  </search-filters>
+</object-views>

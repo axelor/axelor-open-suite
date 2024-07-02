@@ -34,7 +34,7 @@
     <field name="code"/>
   </grid>
 
-  <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
+  <form name="business-project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility">
     <menubar>
