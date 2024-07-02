@@ -767,6 +767,8 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.acquisition"; /*)*/
   public static final String ACCOUNTING_REPORT_17_ASSET_DISPOSAL =
       /*$$(*/ "AccountingReportType17.asset_disposal"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ASSET_SCRAP =
+      /*$$(*/ "AccountingReportType17.asset_scrap"; /*)*/
   public static final String ACCOUNTING_REPORT_17_YEAR_END_VALUE =
       /*$$(*/ "AccountingReportType17.year_end_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION =
