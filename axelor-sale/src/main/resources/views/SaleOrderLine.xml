@@ -417,7 +417,7 @@
         title="Business Project" readonlyIf="$isReadOnly !== false"
         if-module="axelor-business-project">
         <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-attrs-domain-project" form-view="project-form"
+          onSelect="action-sale-order-line-attrs-domain-project" form-view="business-project-form"
           grid-view="project-grid"/>
         <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
@@ -520,7 +520,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
         title="Project/Task" if-module="axelor-business-project">
         <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-attrs-domain-project" form-view="project-form"
+          onSelect="action-sale-order-line-attrs-domain-project" form-view="business-project-form"
           grid-view="project-grid"/>
         <field name="progress" readonly="true" widget="SelectProgress"/>
       </panel>

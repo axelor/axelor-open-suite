@@ -576,7 +576,7 @@
         <field name="contract" readonly="true" hidden="true" showIf="contract"
           form-view="contract-form" grid-view="contract-grid"/>
         <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
-          form-view="project-form" grid-view="project-grid" edit-window="blank"
+          form-view="business-project-form" grid-view="project-grid" edit-window="blank"
           onChange="action-business-project-sale-order-method-update-lines"/>
 
         <panel name="projectAndTaskGenerationPanel" title="Project and task generation"
@@ -988,7 +988,8 @@
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" form-view="project-form" grid-view="project-grid" colSpan="12"/>
+        <field name="project" form-view="business-project-form" grid-view="project-grid"
+          colSpan="12"/>
       </panel>
 
     </panel-tabs>
