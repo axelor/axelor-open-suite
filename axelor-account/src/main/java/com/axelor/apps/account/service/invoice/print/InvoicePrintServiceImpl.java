@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.PfxCertificate;
@@ -120,14 +119,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     int copyNumber = invoice.getInvoicesCopySelect();
     copyNumber = copyNumber == 0 ? 1 : copyNumber;
     File fileCopies = file;
-    if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))) {
+    String fileName = file.getName();
+    if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(fileName))) {
       Path path = PdfHelper.printCopiesToFile(file, copyNumber).toPath();
       fileCopies =
-          Files.move(
-                  path,
-                  path.resolveSibling(
-                      getInvoiceReportTitle(invoice) + "." + ReportSettings.FORMAT_PDF),
-                  StandardCopyOption.REPLACE_EXISTING)
+          Files.move(path, path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
               .toFile();
     }
     return fileCopies;
@@ -184,8 +180,6 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           invoice);
     }
 
-    String title = getInvoiceReportTitle(invoice);
-
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
       String userLocalizationCode =
@@ -219,17 +213,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     PrintingGenFactoryContext factoryContext =
         new PrintingGenFactoryContext(EntityHelper.getEntity(invoice));
     factoryContext.setContext(paramMap);
-    return printingTemplatePrintService.getPrintFile(
-        invoicePrintTemplate, factoryContext, title + " - ${date}", false);
-  }
-
-  protected String getInvoiceReportTitle(Invoice invoice) throws AxelorException {
-    String title =
-        I18n.get(InvoiceToolService.isRefund(invoice) ? "Credit note" : "Invoice").replace(" ", "");
-    if (invoice.getInvoiceId() != null) {
-      title += " " + invoice.getInvoiceId();
-    }
-    return title;
+    return printingTemplatePrintService.getPrintFile(invoicePrintTemplate, factoryContext);
   }
 
   public File printAndSave(

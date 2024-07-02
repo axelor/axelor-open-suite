@@ -52,17 +52,16 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
 
   @Override
   public String computeFileName(String name, PrintingGenFactoryContext factoryContext) {
+    Map<String, Object> templatesContext = new HashMap<>();
 
-    if (factoryContext == null) {
-      return name;
-    }
+    if (factoryContext != null) {
+      templatesContext.putAll(factoryContext.getContext());
+      Model model = factoryContext.getModel();
 
-    Map<String, Object> templatesContext = new HashMap<>(factoryContext.getContext());
-    Model model = factoryContext.getModel();
-
-    if (model != null) {
-      model = EntityHelper.getEntity(model);
-      templatesContext.put(model.getClass().getSimpleName(), model);
+      if (model != null) {
+        model = EntityHelper.getEntity(model);
+        templatesContext.put(model.getClass().getSimpleName(), model);
+      }
     }
     FormatHelper formatHelper = new FormatHelper();
     templatesContext.put("__datetime__", formatHelper);

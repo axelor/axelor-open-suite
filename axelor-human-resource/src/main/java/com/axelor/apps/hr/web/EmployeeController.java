@@ -68,10 +68,10 @@ public class EmployeeController {
         Beans.get(EmployeeService.class).getAnnualReportPrintingTemplate(employee);
     PrintingGenFactoryContext factoryContext =
         new PrintingGenFactoryContext(EntityHelper.getEntity(employee));
-    factoryContext.setContext(Map.of("YearId", Long.valueOf(yearId)));
+    factoryContext.setContext(Map.of("YearId", Long.valueOf(yearId), "year", yearName));
     String fileLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(annualReportPrintTemplate, factoryContext, name);
+            .getPrintLink(annualReportPrintTemplate, factoryContext);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
 
