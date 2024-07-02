@@ -10,7 +10,7 @@
   <action-view name="business.project.all" title="Business projects"
     model="com.axelor.apps.project.db.Project">
     <view type="grid" name="business-project-grid"/>
-    <view type="form" name="project-form"/>
+    <view type="form" name="business-project-form"/>
     <view type="calendar" name="project-calendar"/>
     <view-param name="search-filters" value="project-filters"/>
     <domain>self.isBusinessProject = true</domain>

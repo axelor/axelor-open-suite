@@ -222,7 +222,7 @@ public class ProjectServiceImpl implements ProjectService {
           .model(Project.class.getName())
           .add("form", "project-form")
           .add("grid", "project-grid")
-          .param("search-filters", "project-filters")
+          .param("search-filters", "project-project-filters")
           .context("_showRecord", project.getId())
           .map();
     }

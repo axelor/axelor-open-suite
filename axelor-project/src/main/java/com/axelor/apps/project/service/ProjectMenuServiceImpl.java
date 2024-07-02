@@ -93,7 +93,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("grid", "project-grid")
             .add("form", "project-form")
             .add("kanban", "project-kanban")
-            .param("search-filters", "project-filters");
+            .param("search-filters", "project-project-filters");
 
     return builder.map();
   }

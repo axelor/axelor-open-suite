@@ -239,7 +239,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()"
         title="Business Project" if-module="axelor-business-project">
         <field name="project" domain="self.isBusinessProject = true" title="Business Project"
-          requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="project-form"
+          requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="business-project-form"
           grid-view="project-grid" canEdit="false"/>
         <field name="toInvoice"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()"

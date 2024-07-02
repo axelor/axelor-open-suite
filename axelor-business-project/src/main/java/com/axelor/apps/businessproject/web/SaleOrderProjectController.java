@@ -76,7 +76,7 @@ public class SaleOrderProjectController {
       response.setView(
           ActionView.define(I18n.get("Project"))
               .model(Project.class.getName())
-              .add("form", "project-form")
+              .add("form", "business-project-form")
               .param("forceEdit", "true")
               .context(CONTEXT_SHOW_RECORD, String.valueOf(project.getId()))
               .map());

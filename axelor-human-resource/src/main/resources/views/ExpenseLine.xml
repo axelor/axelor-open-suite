@@ -117,7 +117,7 @@
     <panel name="mainPanel" title="Main" colSpan="12">
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-        form-view="project-form" grid-view="project-grid"/>
+        form-view="business-project-form" grid-view="project-grid"/>
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
@@ -195,7 +195,7 @@
     <panel name="kilometricAllowancePanel" title="Kilometric Allowance" colSpan="12">
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-        form-view="project-form" grid-view="project-grid"/>
+        form-view="business-project-form" grid-view="project-grid"/>
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"

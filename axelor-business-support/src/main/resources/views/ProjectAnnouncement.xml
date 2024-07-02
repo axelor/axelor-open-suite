@@ -16,7 +16,7 @@
     onNew="action-project-record-project-announcement-onnew,action-business-support-attrs-project-default">
     <panel name="mainPanel">
       <field name="title" colSpan="12" required="true"/>
-      <field name="project" form-view="project-form" grid-view="project-grid"
+      <field name="project" form-view="" grid-view="project-grid"
         onSelect="action-project-attrs-project-announcement-project-domain"/>
       <field name="date"/>
       <field name="content" widget="html" colSpan="12"/>

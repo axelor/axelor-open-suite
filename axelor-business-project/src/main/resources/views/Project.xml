@@ -19,7 +19,7 @@
     <field name="clientPartner"/>
   </grid>
 
-  <form id="business-project-project-form" name="project-form" title="Project"
+  <form id="business-project-project-form" name="business-project-form" title="Project"
     model="com.axelor.apps.project.db.Project" extension="true">
     <extend target="/">
       <attribute name="onNew" value="action-business-project-project-group-on-new"/>

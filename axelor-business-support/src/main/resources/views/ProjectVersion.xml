@@ -19,7 +19,7 @@
       <field name="testingServerDate"/>
       <field name="productionServerDate"/>
       <field name="content" widget="HTML" colSpan="12"/>
-      <field name="projectSet" grid-view="project-grid" form-view="project-form"
+      <field name="projectSet" grid-view="project-grid" form-view="business-project-form"
         onSelect="action-version-attrs-project-domain" colSpan="12"/>
     </panel>
     <panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
