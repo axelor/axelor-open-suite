@@ -1884,7 +1884,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 <structure>
                     <property name="name">credit</property>
                     <text-property name="displayName">credit</text-property>
-                    <expression name="expression" type="javascript">Formatter.format(dataSetRow["credit"], dataSetRow["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((dataSetRow["number_of_decimals"] || 2)+1).join("0"))</expression>
+                    <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
