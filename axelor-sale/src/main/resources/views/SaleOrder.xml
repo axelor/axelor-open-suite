@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -397,13 +397,13 @@
 
         <field name="invoicedPartner"
           if="__config__.app.getApp('base')?.activatePartnerRelations" required="true"
-          hideIf="company == null" readonlyIf="statusSelect > 1"
+          hideIf="company == null || clientPartner == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-main-invoicing-address"
           onSelect="action-sale-order-supplychain-method-set-invoiced-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
         <field name="deliveredPartner"
           if="__config__.app.getApp('base')?.activatePartnerRelations" requiredIf="true"
-          hideIf="company == null" readonlyIf="statusSelect > 1"
+          hideIf="company == null || clientPartner == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-delivery-address"
           onSelect="action-sale-order-supplychain-method-set-delivered-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
@@ -529,8 +529,8 @@
           domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="forwarderPartner" canEdit="false"
-          domain=":company MEMBER OF self.companySet" form-view="partner-form"
-          grid-view="partner-grid"/>
+          domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
+          form-view="partner-form" grid-view="partner-grid"/>
         <field name="incoterm" canEdit="false" form-view="incoterm-form"
           grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
         <field name="isNeedingConformityCertificate" colSpan="3"/>

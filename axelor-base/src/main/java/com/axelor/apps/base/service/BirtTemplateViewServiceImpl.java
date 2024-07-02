@@ -32,7 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import org.apache.commons.io.FilenameUtils;
 
 public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
 
@@ -58,18 +58,17 @@ public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
 
   @Override
   public MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
-    MetaFile standardTemplateFile = null;
-    List<URL> urls = MetaScanner.findAll(templateFileName);
-
-    if (ObjectUtils.isEmpty(urls)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(BaseExceptionMessage.FILE_NOT_FOUND_IN_STANDARD_APPLICATION),
-              templateFileName));
-    }
-    standardTemplateFile = metaFiles.upload(urls.get(0).openStream(), templateFileName);
-
-    return standardTemplateFile;
+    URL url =
+        MetaScanner.findAll(templateFileName).stream()
+            .filter(u -> templateFileName.equals(FilenameUtils.getName(u.getPath())))
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new AxelorException(
+                        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                        String.format(
+                            I18n.get(BaseExceptionMessage.FILE_NOT_FOUND_IN_STANDARD_APPLICATION),
+                            templateFileName)));
+    return metaFiles.upload(url.openStream(), templateFileName);
   }
 }

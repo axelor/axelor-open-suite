@@ -24,7 +24,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -39,21 +40,23 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
   public SaleOrderOnLineChangeSupplyChainServiceImpl(
       AppSaleService appSaleService,
       SaleOrderService saleOrderService,
-      SaleOrderLineService saleOrderLineService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineProductService saleOrderLineProductService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService) {
     super(
         appSaleService,
         saleOrderService,
-        saleOrderLineService,
         saleOrderMarginService,
         saleOrderComputeService,
         saleOrderLineRepository,
-        saleOrderLineComputeService);
+        saleOrderLineComputeService,
+        saleOrderLinePackService,
+        saleOrderLineProductService);
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderShipmentService = saleOrderShipmentService;
   }

@@ -27,13 +27,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
@@ -58,9 +56,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected AppSaleService appSaleService;
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
-  protected DMSService dmsService;
-  protected SaleOrderLineRepository saleOrderLineRepository;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleOrderLinePriceService saleOrderLinePriceService;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -69,18 +67,17 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       AppSaleService appSaleService,
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
-      DMSService dmsService,
-      SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
-
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderLinePriceService saleOrderLinePriceService) {
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
-    this.dmsService = dmsService;
-    this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLineProductService = saleOrderLineProductService;
+    this.saleOrderLinePriceService = saleOrderLinePriceService;
   }
 
   @Override
@@ -231,13 +228,12 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getProduct() != null) {
           if (!saleOrder.getTemplate()) {
-            saleOrderLineService.resetPrice(saleOrderLine);
+            saleOrderLinePriceService.resetPrice(saleOrderLine);
           }
-          saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
+          saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
           saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
         }
       }

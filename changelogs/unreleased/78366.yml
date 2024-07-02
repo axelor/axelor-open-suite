@@ -1,2 +1,0 @@
-title: "Invoice payment: fixed payment remaining 'Pending' while bank order has been realized (while no accounting entry generated)."
-module: axelor-bank-payment

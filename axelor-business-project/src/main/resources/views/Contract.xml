@@ -2,29 +2,29 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="contract-form" id="business-project-contract-form" title="Contract"
     model="com.axelor.apps.contract.db.Contract" extension="true">
-    <extend target="//panel[@name='currentVersionEditorPanel']">
-      <insert position="inside">
-        <panel name="projectSetPanel" colSpan="12">
-          <field name="frameworkContractProjectSet" widget="TagSelect" colSpan="12"
-            domain="self.isBusinessProject = true"/>
-        </panel>
+    <extend target="//panel[@name='configPanel']">
+      <insert position="after">
+        <panel-dashlet name="frameworkProjectRelatedPanel" title="Projects"
+          action="action-businessproject-contract-show-related-framework-projects"
+          showIf="contractTypeSelect == 2" colSpan="12"/>
       </insert>
     </extend>
   </form>
 
-  <action-view name="action-view-contract-add-version"
-    id="business-rpoject-action-view-contract-add-version" title="New version"
-    model="com.axelor.apps.contract.db.ContractVersion">
-    <view type="form" name="contract-version-next-form"/>
-    <view type="grid" name="contract-version-next-grid"/>
-    <view-param name="forceEdit" value="true"/>
-    <context name="_xContractId" expr="eval: id"/>
-    <context name="_xIsNextVersion" expr="true"/>
-    <context name="_xProjectSet"
-      expr="eval: currentContractVersion?.frameworkContractProjectSet"/>
+  <action-view name="action-businessproject-contract-show-related-framework-projects"
+    title="Projects" model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="project-form"/>
+    <domain>self.isBusinessProject IS TRUE AND self.allowToGetPricesFromFrameworkContract IS TRUE
+      AND (:paramContractId
+      MEMBER OF self.frameworkCustomerContractSet OR :paramContractId MEMBER OF
+      self.frameworkSupplierContractSet)
+    </domain>
+    <context name="paramContractId" expr="eval: __this__.id"/>
   </action-view>
+
 </object-views>

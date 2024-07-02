@@ -60,7 +60,6 @@ import wslite.json.JSONException;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-  protected SaleOrderLineService saleOrderLineService;
   protected AppBaseService appBaseService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderRepository saleOrderRepo;
@@ -69,10 +68,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   protected SaleConfigService saleConfigService;
   protected SaleOrderLineCreateService saleOrderLineCreateService;
   protected SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService;
+  protected SaleOrderLinePackService saleOrderLinePackService;
+  protected SaleOrderLineDiscountService saleOrderLineDiscountService;
 
   @Inject
   public SaleOrderServiceImpl(
-      SaleOrderLineService saleOrderLineService,
       AppBaseService appBaseService,
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderRepository saleOrderRepo,
@@ -80,8 +80,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderMarginService saleOrderMarginService,
       SaleConfigService saleConfigService,
       SaleOrderLineCreateService saleOrderLineCreateService,
-      SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService) {
-    this.saleOrderLineService = saleOrderLineService;
+      SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService,
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineDiscountService saleOrderLineDiscountService) {
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderRepo = saleOrderRepo;
@@ -90,6 +91,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     this.saleConfigService = saleConfigService;
     this.saleOrderLineCreateService = saleOrderLineCreateService;
     this.saleOrderLineComplementaryProductService = saleOrderLineComplementaryProductService;
+    this.saleOrderLinePackService = saleOrderLinePackService;
+    this.saleOrderLineDiscountService = saleOrderLineDiscountService;
   }
 
   @Override
@@ -195,14 +198,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     if (Boolean.FALSE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
-      if (saleOrderLineService.getPackLineTypes(packLineList) == null
-          || !saleOrderLineService
+      if (saleOrderLinePackService.getPackLineTypes(packLineList) == null
+          || !saleOrderLinePackService
               .getPackLineTypes(packLineList)
               .contains(PackLineRepository.TYPE_START_OF_PACK)) {
         sequence++;
       }
       soLines =
-          saleOrderLineService.createNonStandardSOLineFromPack(
+          saleOrderLinePackService.createNonStandardSOLineFromPack(
               pack, saleOrder, packQty, soLines, sequence);
     }
 
@@ -243,12 +246,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         BigDecimal maxDiscountAuthorized =
-            saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
+            saleOrderLineDiscountService.computeMaxDiscount(saleOrder, saleOrderLine);
         if (saleOrderLine.getDiscountDerogation() != null && maxDiscountAuthorized != null) {
           maxDiscountAuthorized = saleOrderLine.getDiscountDerogation().max(maxDiscountAuthorized);
         }
         if (maxDiscountAuthorized != null
-            && saleOrderLineService.isSaleOrderLineDiscountGreaterThanMaxDiscount(
+            && saleOrderLineDiscountService.isSaleOrderLineDiscountGreaterThanMaxDiscount(
                 saleOrderLine, maxDiscountAuthorized)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,

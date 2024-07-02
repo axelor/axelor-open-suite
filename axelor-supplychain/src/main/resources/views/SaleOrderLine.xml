@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
@@ -301,14 +301,11 @@
   <action-group
     name="supplychain-action-sale-order-line-group-sale-supply-select-onchange"
     if-module="axelor-production">
-    <action name="action-sale-order-line-get-production-information"
-      if="__config__.app.isApp('production')"/>
-    <action name="action-sale-order-line-method-supplier-partner-default"
-      if="__config__.app.isApp('production')"/>
+    <action name="action-sale-order-line-method-sale-supply-select-onchange"/>
     <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
-      if="__config__.app.isApp('production')"/>
+      if="__config__.app.isApp('production')"/> <!-- view -->
     <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/> <!-- check -->
   </action-group>
 
   <action-group name="action-sale-order-line-group-mass-invoicing">
@@ -489,6 +486,11 @@
   <action-method name="action-sale-order-line-method-generate-invoice">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="generateInvoicesFromSelectedLines"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-sale-supply-select-onchange">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+      method="saleSupplySelectOnChange"/>
   </action-method>
 
 </object-views>
