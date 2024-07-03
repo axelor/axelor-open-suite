@@ -1,0 +1,3 @@
+---
+title: "Printing Template : refactor to be able to extend in other modules"
+module: axelor-base
