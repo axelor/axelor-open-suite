@@ -202,6 +202,5 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoicePrintServiceImpl.class).to(InvoicePrintBusinessProjectServiceImpl.class);
     bind(InvoicePrintBusinessProjectService.class).to(InvoicePrintBusinessProjectServiceImpl.class);
     bind(ProjectMenuServiceImpl.class).to(ProjectMenuBusinessServiceImpl.class);
-    bind(BusinessProjectService.class).to(BusinessProjectServiceImpl.class);
   }
 }
