@@ -18,7 +18,7 @@
     model="com.axelor.apps.mobilesettings.db.MobileMenu" width="large">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="technicalName" readonly="false"/>
+      <field name="technicalName"/>
       <field name="authorizedRoles" placeholder="All" colSpan="12" canNew="false"
         canEdit="false" widget="TagSelect"/>
       <field name="menuOrder"/>
