@@ -7,6 +7,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -218,10 +219,11 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
 
     saleOrderLineMap.put("productName", null);
     saleOrderLineMap.put("price", null);
+    saleOrderLineMap.put("priceDiscounted", null);
     saleOrderLineMap.put("unit", null);
     saleOrderLineMap.put("companyCostPrice", null);
     saleOrderLineMap.put("discountAmount", null);
-    saleOrderLineMap.put("discountTypeSelect", null);
+    saleOrderLineMap.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
     saleOrderLineMap.put("inTaxPrice", null);
     saleOrderLineMap.put("exTaxTotal", null);
     saleOrderLineMap.put("inTaxTotal", null);
