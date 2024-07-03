@@ -20,7 +20,6 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Pricing;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -78,18 +77,12 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       PricingService pricingService = Beans.get(PricingService.class);
       SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
-
-      Product product = saleOrderLine.getProduct();
-
-      if (saleOrder == null || product == null) {
-        resetProductInformation(response, saleOrderLine);
-        return;
-      }
+      SaleOrderLineProductService saleOrderLineProductService =
+          Beans.get(SaleOrderLineProductService.class);
 
       try {
         Map<String, Object> saleOrderLineMap =
-            Beans.get(SaleOrderLineProductService.class)
-                .computeProductInformation(saleOrderLine, saleOrder);
+            saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
         // Beans.get(SaleOrderLineCheckService.class).check(saleOrderLine); throws exception
@@ -115,19 +108,12 @@ public class SaleOrderLineController {
         }
         response.setValues(saleOrderLineMap);
       } catch (Exception e) {
-        resetProductInformation(response, saleOrderLine);
+        response.setValues(saleOrderLineProductService.resetProductInformation(saleOrderLine));
         TraceBackService.trace(response, e);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void resetProductInformation(ActionResponse response, SaleOrderLine line) {
-    Beans.get(SaleOrderLineProductService.class).resetProductInformation(line);
-    response.setValue("saleSupplySelect", null);
-    response.setValue("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
-    response.setValues(line);
   }
 
   /**
