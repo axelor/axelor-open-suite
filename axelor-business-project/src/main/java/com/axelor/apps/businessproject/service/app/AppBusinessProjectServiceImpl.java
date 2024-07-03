@@ -19,9 +19,15 @@
 package com.axelor.apps.businessproject.service.app;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.businessproject.db.BusinessProjectConfig;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectConfigRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
@@ -35,7 +41,9 @@ import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Singleton
@@ -43,6 +51,8 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
     implements AppBusinessProjectService {
 
   protected AppBusinessProjectRepository appBusinessProjectRepo;
+  protected BusinessProjectConfigRepository businessProjectConfigRepository;
+  protected CompanyRepository companyRepository;
 
   @Inject
   public AppBusinessProjectServiceImpl(
@@ -53,7 +63,9 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
-      AppBusinessProjectRepository appBusinessProjectRepo) {
+      AppBusinessProjectRepository appBusinessProjectRepo,
+      BusinessProjectConfigRepository businessProjectConfigRepository,
+      CompanyRepository companyRepository) {
     super(
         appRepo,
         metaFiles,
@@ -63,6 +75,8 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
         metaModuleRepo,
         metaFileRepo);
     this.appBusinessProjectRepo = appBusinessProjectRepo;
+    this.businessProjectConfigRepository = businessProjectConfigRepository;
+    this.companyRepository = companyRepository;
   }
 
   @Override
@@ -104,5 +118,31 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
     }
     return hoursUnit;
+  }
+
+  @Override
+  public PrintingTemplate getInvoicingAnnexPrintTemplate() throws AxelorException {
+    PrintingTemplate invoicingAnnexPrintTemplate =
+        getAppBusinessProject().getInvoicingAnnexPrintTemplate();
+    if (invoicingAnnexPrintTemplate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return invoicingAnnexPrintTemplate;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateBusinessProjectConfigurations() {
+
+    List<Company> companies =
+        companyRepository.all().filter("self.businessProjectConfig is null").fetch();
+
+    for (Company company : companies) {
+      BusinessProjectConfig businessProjectConfig = new BusinessProjectConfig();
+      businessProjectConfig.setCompany(company);
+      businessProjectConfigRepository.save(businessProjectConfig);
+    }
   }
 }

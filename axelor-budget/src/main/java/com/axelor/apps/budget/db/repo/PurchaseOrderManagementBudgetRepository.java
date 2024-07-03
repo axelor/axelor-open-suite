@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -27,8 +28,10 @@ import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,12 @@ import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupplychainRepository {
+
+  @Inject
+  public PurchaseOrderManagementBudgetRepository(
+      AppBaseService appBaseService, PurchaseOrderSequenceService purchaseOrderSequenceService) {
+    super(appBaseService, purchaseOrderSequenceService);
+  }
 
   @Override
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {

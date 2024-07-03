@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="tracking-number-configuration-profile-grid"
+    title="Tracking Number Configuration profiles"
+    model="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile"
+    onNew="action-tracking-number-configuration-profile-set-defaults-field-formula">
+    <field name="name"/>
+    <field name="titleOfDimension0"/>
+    <field name="titleOfDimension1"/>
+    <field name="titleOfDimension2"/>
+    <field name="titleOfDimension3"/>
+  </grid>
+
+  <form name="tracking-number-configuration-profile-form"
+    title="Tracking Number Configuration profile"
+    model="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile">
+    <panel name="namePanel" colSpan="12">
+      <field name="name"/>
+    </panel>
+    <panel name="dimensionsPanel" title="Dimensions title" colSpan="12">
+      <field name="titleOfDimension0" colSpan="6"/>
+      <field name="titleOfDimension1" colSpan="6"/>
+      <field name="titleOfDimension2" colSpan="6"/>
+      <field name="titleOfDimension3" colSpan="6"/>
+    </panel>
+    <panel-related field="profileFieldFormulaSet" title="Field's formula"
+      grid-view="tracking-number-configuration-profile-field-formula-grid"
+      form-view="tracking-number-configuration-profile-field-formula-form" colSpan="12"/>
+  </form>
+
+
+</object-views>

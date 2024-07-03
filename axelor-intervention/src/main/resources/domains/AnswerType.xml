@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="AnswerType">
+    <string name="name" title="Name" required="true"/>
+    <string name="answerTypeSelect" title="Answer type" selection="answer.type.select"
+      required="true"/>
+    <one-to-many name="answerValueList" title="Answer values"
+      ref="com.axelor.apps.intervention.db.AnswerValue" mappedBy="answerType" orderBy="sequence"/>
+    <string name="defaultTextValue" title="Default text value"/>
+    <many-to-one name="desiredUnit" title="Desired unit"
+      ref="com.axelor.apps.base.db.Unit"/>
+    <string name="checkboxName" title="Checkbox name"/>
+    <string name="indicationText" title="Indication text" large="true"/>
+
+    <extra-code>
+      <![CDATA[
+        public static final String ANSWER_TYPE_VALUE_LIST = "list";
+        public static final String ANSWER_TYPE_TEXT = "text";
+        public static final String ANSWER_TYPE_DATE = "date";
+        public static final String ANSWER_TYPE_PICTURE = "picture";
+        public static final String ANSWER_TYPE_MEASURE = "measure";
+        public static final String ANSWER_TYPE_CHECKBOX = "checkbox";
+        public static final String ANSWER_TYPE_INDICATION = "indication";
+        public static final String ANSWER_TYPE_SIGNATURE = "signature";
+        public static final String ANSWER_TYPE_ADVANCED_MONITORING = "advancedMonitoring";
+      ]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

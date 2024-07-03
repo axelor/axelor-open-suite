@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -508,7 +508,12 @@
           readonly="true"/>
         <field name="counter" title="Selected quantity"
           readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
+        <field name="hasWarranty"/>
         <field name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
+        <field name="isPerishable"/>
+        <field name="perishableExpirationDate" title="Perishable expiration date"
+          readonly="false"/>
+        <field name="checkExpirationDateAtStockMoveRealization"/>
         <field name="origin" title="Origin" readonly="true"/>
         <field name="note" title="Note" colSpan="12" readonly="true"/>
       </panel-related>

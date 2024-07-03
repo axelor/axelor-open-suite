@@ -20,10 +20,12 @@ package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +39,16 @@ public class GlobalBudgetToolsServiceImpl implements GlobalBudgetToolsService {
   @Override
   public List<Budget> getAllBudgets(GlobalBudget globalBudget) {
     List<Budget> budgetList = new ArrayList<>();
-    if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
-      budgetList = globalBudget.getBudgetList();
+    if (globalBudget == null) {
+      return budgetList;
     }
+
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
         budgetList = getAllBudgets(budgetLevel, budgetList);
       }
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      budgetList.addAll(globalBudget.getBudgetList());
     }
 
     return budgetList;
@@ -69,13 +74,85 @@ public class GlobalBudgetToolsServiceImpl implements GlobalBudgetToolsService {
 
   @Override
   public List<Long> getAllBudgetIds(GlobalBudget globalBudget) {
-    List<Long> budgetIdList =
-        getAllBudgets(globalBudget).stream().map(Budget::getId).collect(Collectors.toList());
-    if (ObjectUtils.isEmpty(budgetIdList)) {
+    List<Budget> budgetList = getAllBudgets(globalBudget);
+    List<Long> budgetIdList = new ArrayList<>();
+
+    if (!ObjectUtils.isEmpty(budgetList)) {
+      budgetIdList = budgetList.stream().map(Budget::getId).collect(Collectors.toList());
+    } else {
       budgetIdList.add(0L);
     }
 
     return budgetIdList;
+  }
+
+  @Override
+  public List<Long> getAllBudgetLineIds(GlobalBudget globalBudget) {
+    List<Long> budgetLineIdList = new ArrayList<>();
+    List<Budget> budgetList = getAllBudgets(globalBudget);
+
+    if (!ObjectUtils.isEmpty(budgetList)) {
+      budgetLineIdList =
+          budgetList.stream()
+              .map(Budget::getBudgetLineList)
+              .flatMap(Collection::stream)
+              .map(BudgetLine::getId)
+              .collect(Collectors.toList());
+    }
+    if (ObjectUtils.isEmpty(budgetLineIdList)) {
+      budgetLineIdList.add(0L);
+    }
+
+    return budgetLineIdList;
+  }
+
+  @Override
+  public List<BudgetLevel> getAllBudgetLevels(GlobalBudget globalBudget) {
+    List<BudgetLevel> budgetLevelList = new ArrayList<>();
+    if (globalBudget == null) {
+      return budgetLevelList;
+    }
+
+    if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      budgetLevelList.addAll(globalBudget.getBudgetLevelList());
+
+      for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
+        budgetLevelList = getAllBudgetLevels(budgetLevel, budgetLevelList);
+      }
+    }
+
+    return budgetLevelList;
+  }
+
+  @Override
+  public List<BudgetLevel> getAllBudgetLevels(
+      BudgetLevel budgetLevel, List<BudgetLevel> budgetLevelList) {
+    if (budgetLevel == null) {
+      return budgetLevelList;
+    }
+
+    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      budgetLevelList.addAll(budgetLevel.getBudgetLevelList());
+      for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
+        getAllBudgetLevels(child, budgetLevelList);
+      }
+    }
+
+    return budgetLevelList;
+  }
+
+  @Override
+  public List<Long> getAllBudgetLevelIds(GlobalBudget globalBudget) {
+    List<Long> budgetLevelIdList = new ArrayList<>();
+    List<BudgetLevel> budgetLevelList = getAllBudgetLevels(globalBudget);
+    if (!ObjectUtils.isEmpty(budgetLevelList)) {
+      budgetLevelIdList =
+          budgetLevelList.stream().map(BudgetLevel::getId).collect(Collectors.toList());
+    } else {
+      budgetLevelIdList.add(0L);
+    }
+
+    return budgetLevelIdList;
   }
 
   @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="opportunity-grid" title="Opportunities"
     model="com.axelor.apps.crm.db.Opportunity"
@@ -284,9 +284,8 @@
     <template>
             <![CDATA[
 	         <>
-	         	<h4>{opportunitySeq}</h4>
-	         	<h4>{name}</h4>
-	         	{user && <Image src={$image('user', 'image')}></Image>}
+	         	<strong>{opportunitySeq}</strong> <Box/>
+	         	<strong>{name}</strong>
 	         	<Box mt={4}/>
 	         	<dl>
 	         		{partner?.name &&
@@ -318,6 +317,9 @@
 	         			</Box>
 	         		</Box>
 	         	</dl>
+	         	<Box d="flex" justifyContent="flex-end">
+	         		{user && <Image src={$image('user', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+	         	</Box>
 	        	<Box className="card-summary popover">
 	       			<Box as="p" m={2}>
 	        			{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ wordBreak: "break-all", maxWidth: 250 }}></Box>}

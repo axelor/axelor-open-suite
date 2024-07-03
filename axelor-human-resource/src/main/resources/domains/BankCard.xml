@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="BankCard">
+    <string name="name" title="Name"/>
+    <many-to-one name="employee" title="Employee" ref="com.axelor.apps.hr.db.Employee"/>
+    <many-to-one name="bankDetails" title="Bank details"
+      ref="com.axelor.apps.base.db.BankDetails"/>
+  </entity>
+
+</domain-models>

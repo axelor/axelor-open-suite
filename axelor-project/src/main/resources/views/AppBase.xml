@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="app-base-config-form" id="project-app-base-config-form" title="App base"
+    model="com.axelor.studio.db.AppBase" extension="true">
+    <extend target="//panel[@name='siteManagementPanel']">
+      <insert position="inside">
+        <separator title="Project" colSpan="12"/>
+        <field name="enableSiteManagementForProject" widget="boolean-switch"
+          if="__config__.app.isApp('project')"/>
+        <field name="defaultSitesSet" widget="TagSelect" hidden="true"
+          showIf="enableSiteManagementForProject" if="__config__.app.isApp('project')"
+          domain="self.isUsableOnProject = true"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

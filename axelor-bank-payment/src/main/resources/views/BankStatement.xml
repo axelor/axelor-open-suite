@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bank-statement-grid" title="Bank Statements"
     model="com.axelor.apps.bankpayment.db.BankStatement" orderBy="-toDate,name" canDelete="false">
@@ -10,6 +10,7 @@
         onClick="account-bank-statement-view-bank-statement-lines"/>
       <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
         onClick="action-bank-statement-method-delete-multiple-statement"/>
+      <button name="printBtn" hidden="true" onClick=""/>
     </toolbar>
     <field name="id" hidden="false" width="120"/>
     <field name="bankStatementFileFormat"/>
@@ -23,7 +24,7 @@
     model="com.axelor.apps.bankpayment.db.BankStatement" width="large" canDelete="false">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
-        onClick="action-bank-statement-validate-file-format,action-method-print-birt"/>
+        onClick="action-bank-statement-validate-file-format,action-method-print-template"/>
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation"
         readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-method-run-bank-reconciliation"/>

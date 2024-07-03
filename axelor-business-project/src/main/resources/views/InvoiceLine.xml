@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line"
     name="invoice-line-form" extension="true" id="project-invoice-line-form">
     <extend target="//field[@name='project']">
       <attribute name="onChange" value="action-method-change-project-for-analytic-lines"/>
+    </extend>
+    <extend target="//field[@name='purchaseOrderLine']">
+      <insert position="after">
+        <field name="expenseLine" grid-view="expense-line-grid" form-view="expense-line-form"
+          showIf="expenseLine" if="__config__.app.isApp('business-project')"/>
+      </insert>
     </extend>
   </form>
 

@@ -46,20 +46,17 @@ import org.slf4j.LoggerFactory;
 public class BankOrderCreateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected BankOrderRepository bankOrderRepo;
-  protected BankOrderService bankOrderService;
+  protected BankOrderRepository bankOrderRepository;
   protected BankOrderLineService bankOrderLineService;
   protected InvoiceService invoiceService;
 
   @Inject
   public BankOrderCreateService(
-      BankOrderRepository bankOrderRepo,
-      BankOrderService bankOrderService,
+      BankOrderRepository bankOrderRepository,
       BankOrderLineService bankOrderLineService,
       InvoiceService invoiceService) {
 
-    this.bankOrderRepo = bankOrderRepo;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderRepository = bankOrderRepository;
     this.bankOrderLineService = bankOrderLineService;
     this.invoiceService = invoiceService;
   }
@@ -171,7 +168,7 @@ public class BankOrderCreateService {
     bankOrder.addBankOrderLineListItem(bankOrderLine);
     invoicePayment.setBankOrder(bankOrder);
 
-    bankOrder = bankOrderRepo.save(bankOrder);
+    bankOrder = bankOrderRepository.save(bankOrder);
 
     return bankOrder;
   }

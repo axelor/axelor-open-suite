@@ -19,12 +19,15 @@
 package com.axelor.apps.contract.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerLinkService;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
@@ -34,9 +37,14 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.contract.service.ContractPurchaseOrderGeneration;
+import com.axelor.apps.contract.service.ContractSaleOrderGeneration;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -110,7 +118,7 @@ public class ContractController {
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
     try {
-      Invoice invoice = Beans.get(ContractService.class).invoicingContract(contract);
+      Invoice invoice = Beans.get(ContractInvoicingService.class).invoicingContract(contract);
       response.setReload(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
@@ -306,7 +314,8 @@ public class ContractController {
     try {
       Contract contract = request.getContext().asType(Contract.class);
       Partner partner =
-          Beans.get(PartnerLinkSupplychainService.class).getPartnerIfOnlyOne(contract.getPartner());
+          Beans.get(PartnerLinkSupplychainService.class)
+              .getDefaultInvoicedPartner(contract.getPartner());
       if (partner != null) {
         response.setValue("invoicedPartner", partner);
       }
@@ -337,5 +346,56 @@ public class ContractController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void generateSaleOrderFromContract(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Contract contract = this.getContract(request);
+
+    SaleOrder saleOrder =
+        Beans.get(ContractSaleOrderGeneration.class)
+            .generateSaleOrder(JPA.find(Contract.class, contract.getId()));
+
+    response.setView(
+        ActionView.define(I18n.get("Generated sale order"))
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .add("grid", "sale-order-grid")
+            .param("forceTitle", "true")
+            .param("forceEdit", "true")
+            .context("_showRecord", saleOrder.getId())
+            .map());
+  }
+
+  public void generatePurchaseOrderFromContract(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Contract contract = this.getContract(request);
+    PurchaseOrder purchaseOrder =
+        Beans.get(ContractPurchaseOrderGeneration.class)
+            .generatePurchaseOrder(JPA.find(Contract.class, contract.getId()));
+
+    response.setView(
+        ActionView.define(I18n.get("Generated purchase order"))
+            .model(PurchaseOrder.class.getName())
+            .add("form", "purchase-order-form")
+            .add("grid", "purchase-order-grid")
+            .param("forceTitle", "true")
+            .param("forceEdit", "true")
+            .context("_showRecord", purchaseOrder.getId())
+            .map());
+  }
+
+  public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+    Contract contract = request.getContext().asType(Contract.class);
+    int targetType;
+    if (contract.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT) {
+      targetType = PriceListRepository.TYPE_CUSTOMER_CONTRACT;
+    } else {
+      targetType = PriceListRepository.TYPE_SUPPLIER_CONTRACT;
+    }
+    String domain =
+        Beans.get(PartnerPriceListService.class)
+            .getPriceListDomain(contract.getPartner(), targetType);
+    response.setAttr("priceList", "domain", domain);
   }
 }

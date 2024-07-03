@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="mobile-web-view-grid" title="Mobile web views"
+    model="com.axelor.apps.mobilesettings.db.MobileWebView">
+    <field name="name"/>
+    <field name="appName"/>
+    <field name="authorizedRoleSet" widget="tag-select"/>
+  </grid>
+
+  <form name="mobile-web-view-form" title="Mobile web view"
+    model="com.axelor.apps.mobilesettings.db.MobileWebView" width="large">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="appName" required="true" colSpan="5"/>
+      <field name="isAosWebView" widget="boolean-switch" colSpan="1"/>
+      <field name="menuTitle" colSpan="4"/>
+      <field name="iconName" colSpan="4"/>
+      <field name="menuOrder" colSpan="4"/>
+      <field name="authorizedRoleSet" grid-view="role-grid" form-view="role-form" colSpan="12"
+        canNew="false" canEdit="false" widget="tag-select" placeholder="All"/>
+      <field name="url" showIf="!isAosWebView" requiredIf="!isAosWebView"/>
+      <field name="metaAction" grid-view="meta-action-grid" form-view="meta-action-form"
+        domain="self.type = 'action-view'" showIf="isAosWebView" requiredIf="isAosWebView"/>
+    </panel>
+  </form>
+
+</object-views>

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="invoice-line-tax-grid" title="Tax Lines"
     model="com.axelor.apps.account.db.InvoiceLineTax">
     <field name="taxLine" width="400%" grid-view="tax-line-grid" form-view="tax-line-form"/>
+    <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"/>
     <field name="exTaxBase"/>
     <field name="taxTotal" aggregate="sum"/>
     <field name="vatSystemSelect"/>
+    <field name="imputedAccount"/>
   </grid>
 
   <form name="invoice-line-tax-form" title="Tax Line"
@@ -18,16 +20,14 @@
     <panel name="mainPanel">
       <field name="taxLine" canEdit="false" grid-view="tax-line-grid"
         form-view="tax-line-form"/>
+      <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"/>
       <field name="taxLine.tax.name"/>
       <field name="taxLine.value"/>
       <field name="exTaxBase"/>
       <field name="taxTotal"/>
       <field name="inTaxTotal"/>
+      <field name="imputedAccount"/>
       <field name="vatSystemSelect" readonly="true"/>
-      <field name="subTotalExcludingFixedAssets" hidden="true"/>
-      <field name="subTotalOfFixedAssets" hidden="true"/>
-      <field name="companySubTotalExcludingFixedAssets" hidden="true"/>
-      <field name="companySubTotalOfFixedAssets" hidden="true"/>
     </panel>
   </form>
 

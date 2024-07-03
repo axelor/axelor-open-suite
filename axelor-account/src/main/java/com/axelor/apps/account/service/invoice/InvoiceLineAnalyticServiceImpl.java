@@ -34,7 +34,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.utils.helpers.ListHelper;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -49,7 +48,6 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AnalyticToolService analyticToolService;
   protected AccountConfigService accountConfigService;
-  protected ListHelper listHelper;
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
 
@@ -59,14 +57,12 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListHelper listHelper,
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService) {
     this.analyticAccountRepository = analyticAccountRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
-    this.listHelper = listHelper;
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
   }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="duration-intervention-grid" title="Durations"
+    model="com.axelor.apps.base.db.Duration">
+    <field name="value"/>
+    <field name="typeSelect" title="Duration in"/>
+  </grid>
+
+  <form name="duration-intervention-form" title="Duration"
+    model="com.axelor.apps.base.db.Duration" onNew="action-duration-application-type-select-record">
+    <panel name="mainPanel">
+      <field name="value"/>
+      <field name="typeSelect" title="Duration in"/>
+      <field name="applicationTypeSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-record id="intervention-action-duration-application-type-select-record"
+    name="action-duration-application-type-select-record" model="com.axelor.apps.base.db.Duration">
+    <field name="applicationTypeSelect" expr="1"
+      if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.sale.db.SaleOrder'"/>
+    <field name="applicationTypeSelect" expr="2"
+      if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.contract.db.ContractVersion'"/>
+    <field name="applicationTypeSelect" expr="3"
+      if="__parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.intervention.db.Intervention'"/>
+    <field name="applicationTypeSelect" expr="eval: _applicatioTypeSelect"
+      if="__parent__ == null &amp;&amp; _applicatioTypeSelect != null"/>
+  </action-record>
+
+</object-views>

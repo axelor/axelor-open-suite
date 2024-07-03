@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service.app;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppBusinessProject;
@@ -33,4 +34,8 @@ public interface AppBusinessProjectService extends AppBaseService {
   public Unit getHoursUnit() throws AxelorException;
 
   BigDecimal getDefaultHoursADay() throws AxelorException;
+
+  public PrintingTemplate getInvoicingAnnexPrintTemplate() throws AxelorException;
+
+  void generateBusinessProjectConfigurations();
 }
