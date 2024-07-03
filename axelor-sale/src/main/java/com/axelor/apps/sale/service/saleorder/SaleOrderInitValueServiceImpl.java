@@ -102,10 +102,6 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
       saleOrderMap.put("currency", company.getCurrency());
     }
 
-    for (Map.Entry<String, Object> entry : saleOrderMap.entrySet()) {
-      Mapper.of(SaleOrder.class).set(saleOrder, entry.getKey(), entry.getValue());
-    }
-
     return saleOrderMap;
   }
 
