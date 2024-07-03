@@ -1768,8 +1768,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     List<InvoiceTerm> invoiceTermList =
         moveLine.getInvoiceTermList().stream()
-            .sorted(this::compareInvoiceTerm)
-            .sorted(Collections.reverseOrder())
+            .sorted(Collections.reverseOrder(this::compareInvoiceTerm))
             .collect(Collectors.toList());
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       if (reconciledAmount.signum() > 0
