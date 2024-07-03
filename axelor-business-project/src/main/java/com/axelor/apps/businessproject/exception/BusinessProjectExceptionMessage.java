@@ -152,4 +152,7 @@ public final class BusinessProjectExceptionMessage {
       "Transition between paid status for projects" /*)*/;
   public static final String BATCH_TRANSITION_BETWEEN_PAID_STATUS_ERROR = /*$$(*/
       "Error while trying to transition between paid status for project %s." /*)*/;
+
+  public static final String PROJECT_BUSINESS_PROJECT_MISSING_CLIENT_PARTNER_COMPANY = /*$$(*/
+      "Please fill the company and the client partner before conversion." /*)*/;
 }
