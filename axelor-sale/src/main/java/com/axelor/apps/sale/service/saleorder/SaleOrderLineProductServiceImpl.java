@@ -205,6 +205,15 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
 
   @Override
   public Map<String, Object> resetProductInformation(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = resetProductInformationMap(line);
+
+    for (Map.Entry<String, Object> entry : saleOrderLineMap.entrySet()) {
+      Mapper.of(SaleOrderLine.class).set(line, entry.getKey(), entry.getValue());
+    }
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> resetProductInformationMap(SaleOrderLine line) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
     saleOrderLineMap.put("productName", null);
@@ -226,9 +235,6 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("taxLineSet", Sets.newHashSet());
     saleOrderLineMap.put("taxEquiv", null);
 
-    for (Map.Entry<String, Object> entry : saleOrderLineMap.entrySet()) {
-      Mapper.of(SaleOrderLine.class).set(line, entry.getKey(), entry.getValue());
-    }
     return saleOrderLineMap;
   }
 
