@@ -55,6 +55,15 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
   }
 
   protected Map<String, Object> saleOrderDefaultValues(SaleOrder saleOrder) {
+    Map<String, Object> saleOrderMap = saleOrderDefaultValuesMap(saleOrder);
+    for (Map.Entry<String, Object> entry : saleOrderMap.entrySet()) {
+      Mapper.of(SaleOrder.class).set(saleOrder, entry.getKey(), entry.getValue());
+    }
+
+    return saleOrderMap;
+  }
+
+  protected Map<String, Object> saleOrderDefaultValuesMap(SaleOrder saleOrder) {
     Map<String, Object> saleOrderMap = new HashMap<>();
     AppSale appSale = appSaleService.getAppSale();
     Company company = getCompany();

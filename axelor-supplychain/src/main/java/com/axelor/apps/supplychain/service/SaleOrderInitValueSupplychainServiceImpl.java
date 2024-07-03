@@ -18,7 +18,6 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -62,17 +61,13 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
   }
 
   @Override
-  protected Map<String, Object> saleOrderDefaultValues(SaleOrder saleOrder) {
-    Map<String, Object> saleOrderMap = super.saleOrderDefaultValues(saleOrder);
+  protected Map<String, Object> saleOrderDefaultValuesMap(SaleOrder saleOrder) {
+    Map<String, Object> saleOrderMap = super.saleOrderDefaultValuesMap(saleOrder);
 
     TradingName tradingName = saleOrder.getTradingName();
     saleOrderMap.put("amountInvoiced", BigDecimal.ZERO);
     if (tradingName != null) {
       saleOrderMap.put("stockLocation", tradingName.getShippingDefaultStockLocation());
-    }
-
-    for (Map.Entry<String, Object> entry : saleOrderMap.entrySet()) {
-      Mapper.of(SaleOrder.class).set(saleOrder, entry.getKey(), entry.getValue());
     }
 
     return saleOrderMap;
