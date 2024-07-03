@@ -71,9 +71,14 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     Map<String, Object> saleOrderLineMap =
         super.computeProductInformation(saleOrderLine, saleOrder);
 
+    Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      return saleOrderLineMap;
+    }
+
     if (appSupplychainService.isApp("supplychain")) {
-      saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
-      saleOrderLineMap.put("saleSupplySelect", saleOrderLine.getProduct().getSaleSupplySelect());
+      saleOrderLine.setSaleSupplySelect(product.getSaleSupplySelect());
+      saleOrderLineMap.put("saleSupplySelect", product.getSaleSupplySelect());
 
       saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
       saleOrderLineMap.putAll(setSupplierPartnerDefault(saleOrderLine, saleOrder));

@@ -68,9 +68,13 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
 
     Map<String, Object> saleOrderLineMap = resetProductInformation(saleOrderLine);
 
+    Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      return saleOrderLineMap;
+    }
     if (!saleOrderLine.getEnableFreezeFields()) {
-      saleOrderLine.setProductName(saleOrderLine.getProduct().getName());
-      saleOrderLineMap.put("productName", saleOrderLine.getProduct().getName());
+      saleOrderLine.setProductName(product.getName());
+      saleOrderLineMap.put("productName", product.getName());
     }
     saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine));
     saleOrderLineMap.put("unit", saleOrderLine.getUnit());

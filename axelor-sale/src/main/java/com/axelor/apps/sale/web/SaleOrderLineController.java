@@ -20,7 +20,6 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Pricing;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -80,13 +79,6 @@ public class SaleOrderLineController {
       SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
       SaleOrderLineProductService saleOrderLineProductService =
           Beans.get(SaleOrderLineProductService.class);
-
-      Product product = saleOrderLine.getProduct();
-
-      if (saleOrder == null || product == null) {
-        response.setValues(saleOrderLineProductService.resetProductInformation(saleOrderLine));
-        return;
-      }
 
       try {
         Map<String, Object> saleOrderLineMap =
