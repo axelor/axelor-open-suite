@@ -112,13 +112,7 @@
 
   <action-group name="action-group-supplychain-saleorder-onnew">
     <action name="action-group-sale-saleorder-onnew"/>
-    <action name="action-sale-order-record-payment-mode"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
     <action name="action-sale-order-attrs-interco"/>
-    <action name="action-sale-order-record-interco"/>
-    <action name="supplychain-action-create-shipment-cost-line"/>
-    <action name="action-sale-order-record-set-default-tax-number"/>
   </action-group>
 
   <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
@@ -190,15 +184,6 @@
   <action-record name="action-record-load-dummy-supplier-partner"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(supplierPartnerId)"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-payment-mode"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
-      if="clientPartner?.inPaymentMode != null"/>
-    <field name="paymentMode"
-      expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode"
-      if="clientPartner?.inPaymentMode == null"/>
   </action-record>
 
   <action-record name="action-sale-order-record-interco"
