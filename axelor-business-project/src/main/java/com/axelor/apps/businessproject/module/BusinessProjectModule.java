@@ -30,6 +30,8 @@ import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectReposit
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServiceImpl;
+import com.axelor.apps.businessproject.service.BusinessProjectService;
+import com.axelor.apps.businessproject.service.BusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ContractLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseInvoiceLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseLineCreateServiceProjectImpl;
