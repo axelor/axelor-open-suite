@@ -9,10 +9,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -39,10 +41,19 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
       AppSaleService appSaleService,
       UserService userService,
       BankDetailsService bankDetailsService,
+      SaleConfigService saleConfigService,
+      CompanyService companyService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       AppSupplychainService appSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService) {
-    super(appBaseService, companyRepository, appSaleService, userService, bankDetailsService);
+    super(
+        appBaseService,
+        companyRepository,
+        appSaleService,
+        userService,
+        bankDetailsService,
+        saleConfigService,
+        companyService);
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderShipmentService = saleOrderShipmentService;
@@ -61,7 +72,8 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
   }
 
   @Override
-  protected Map<String, Object> saleOrderDefaultValuesMap(SaleOrder saleOrder) {
+  protected Map<String, Object> saleOrderDefaultValuesMap(SaleOrder saleOrder)
+      throws AxelorException {
     Map<String, Object> saleOrderMap = super.saleOrderDefaultValuesMap(saleOrder);
 
     TradingName tradingName = saleOrder.getTradingName();
