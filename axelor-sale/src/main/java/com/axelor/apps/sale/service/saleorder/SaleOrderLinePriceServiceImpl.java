@@ -15,6 +15,8 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService {
@@ -75,6 +77,51 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
             saleOrder.getCompany().getCurrency(),
             (BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()),
             saleOrder.getCreationDate()));
+  }
+
+  @Override
+  public Map<String, Object> updateInTaxPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    if (saleOrder == null
+        || saleOrderLine.getProduct() == null
+        || saleOrderLine.getPrice() == null
+        || saleOrderLine.getInTaxPrice() == null) {
+      return saleOrderLineMap;
+    }
+
+    BigDecimal price = saleOrderLine.getPrice();
+
+    BigDecimal inTaxPrice =
+        taxService.convertUnitPrice(
+            false,
+            saleOrderLine.getTaxLineSet(),
+            price,
+            appSaleService.getNbDecimalDigitForUnitPrice());
+    saleOrderLine.setInTaxPrice(inTaxPrice);
+    saleOrderLineMap.put("inTaxPrice", inTaxPrice);
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> updatePrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    if (saleOrder == null
+        || saleOrderLine.getProduct() == null
+        || saleOrderLine.getPrice() == null
+        || saleOrderLine.getInTaxPrice() == null) {
+      return saleOrderLineMap;
+    }
+
+    BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
+    BigDecimal price =
+        taxService.convertUnitPrice(
+            true,
+            saleOrderLine.getTaxLineSet(),
+            inTaxPrice,
+            appSaleService.getNbDecimalDigitForUnitPrice());
+    saleOrderLine.setPrice(price);
+    saleOrderLineMap.put("price", price);
+    return saleOrderLineMap;
   }
 
   /**

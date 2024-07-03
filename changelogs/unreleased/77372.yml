@@ -1,5 +1,0 @@
----
-title: "Partner: fixed number of decimals displayed on debit balance."
-module: axelor-base
-developer: |
-  Replaced `action-partner-record-set-positive-balance` by `action-partner-method-set-positive-balance` in Partner form.

@@ -188,7 +188,7 @@ public class PartnerController {
 
     String fileLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(clientSituationPrintTemplate, factoryContext, name + "-${date}");
+            .getPrintLink(clientSituationPrintTemplate, factoryContext);
 
     LOG.debug("Printing " + name);
 

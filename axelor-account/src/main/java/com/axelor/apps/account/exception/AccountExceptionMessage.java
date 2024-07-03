@@ -72,6 +72,7 @@ public final class AccountExceptionMessage {
   public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
       /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
   public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
+
   /** Bank statement service */
   public static final String BANK_STATEMENT_1 = /*$$(*/
       "%s : Computed balance and Ending Balance must be equal" /*)*/;
@@ -207,6 +208,7 @@ public final class AccountExceptionMessage {
   /** AnalyticJournal service */
   public static final String NOT_UNIQUE_NAME_ANALYTIC_JOURNAL =
       /*$$(*/ "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
+
   /** Move line export service */
   public static final String MOVE_LINE_EXPORT_1 = /*$$(*/
       "%s : Error : You must configure a sale interface sequence for the company %s" /*)*/;
@@ -370,6 +372,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
+
   /** Move service */
   public static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
@@ -885,6 +888,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PFP_VALIDATOR_USER_MISSING = /*$$(*/
       "At least one pfp validator is missing, do you wish to continue ?" /*)*/;
+
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;
@@ -1099,6 +1103,9 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
       "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;
 
+  public static final String INVOICE_TERM_PFP_REFUSED = /*$$(*/
+      "A payment on invoice term %s is being attempted but its PFP has been refused." /*)*/;
+
   public static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
       "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already awaiting a payment or maybe, if activated, they didn't pass the PFP process." /*)*/;
   public static final String RECONCILE_NOT_ENOUGH_AMOUNT = /*$$(*/
@@ -1225,7 +1232,8 @@ public final class AccountExceptionMessage {
       "Please set a reported balance date on fiscal year" /*)*/;
 
   public static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
-      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
+  ;
 
   public static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;

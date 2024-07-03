@@ -38,6 +38,7 @@ import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoiceTermService {
@@ -98,7 +99,8 @@ public interface InvoiceTermService {
   public void updateInvoiceTermsPaidAmount(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      InvoiceTermPayment invoiceTermPayment)
+      InvoiceTermPayment invoiceTermPayment,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException;
 
   /**
@@ -222,8 +224,6 @@ public interface InvoiceTermService {
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
 
-  public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
-
   void setCustomizedAmounts(InvoiceTerm invoiceTerm);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
@@ -234,10 +234,6 @@ public interface InvoiceTermService {
   InvoiceTerm updateInvoiceTermsAmountsSessionPart(InvoiceTerm invoiceTerm, boolean isRefund);
 
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
-
-  public User getPfpValidatorUser(Partner partner, Company company);
-
-  boolean checkPfpValidatorUser(InvoiceTerm invoiceTerm);
 
   public String getPfpValidatorUserDomain(Partner partner, Company company);
 
@@ -263,7 +259,8 @@ public interface InvoiceTermService {
       List<InvoiceTerm> invoiceTermList,
       InvoicePayment invoicePayment,
       BigDecimal amount,
-      Reconcile reconcile)
+      Reconcile reconcile,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException;
 
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(

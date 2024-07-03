@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
@@ -310,6 +310,14 @@
     model="com.axelor.apps.base.db.Site">
     <view type="grid" name="site-grid"/>
     <view type="form" name="site-form"/>
+  </action-view>
+
+  <menuitem title="Tags" name="referential-tags" parent="referential-root"
+    action="referential.tags" order="310"/>
+
+  <action-view name="referential.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
+    <view type="grid" name="tag-grid"/>
+    <view type="form" name="tag-form"/>
   </action-view>
 
   <menuitem title="Address templates" name="referential-conf-address-template"

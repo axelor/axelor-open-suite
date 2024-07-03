@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -38,7 +37,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
-import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
@@ -55,7 +53,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
-import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -71,6 +68,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -93,6 +91,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
   protected AppBaseService appBaseService;
+  protected InvoiceTermPfpUpdateService invoiceTermPfpUpdateService;
+  protected InvoiceTermToolService invoiceTermToolService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -107,7 +108,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       DMSFileRepository DMSFileRepo,
       InvoiceTermPaymentService invoiceTermPaymentService,
       CurrencyService currencyService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      InvoiceTermPfpUpdateService invoiceTermPfpUpdateService,
+      InvoiceTermToolService invoiceTermToolService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -120,6 +124,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
+    this.invoiceTermPfpUpdateService = invoiceTermPfpUpdateService;
+    this.invoiceTermToolService = invoiceTermToolService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -167,7 +174,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
         sum =
             sum.add(
-                invoiceTermFinancialDiscountService.computeCustomizedPercentageUnscaled(
+                invoiceTermToolService.computeCustomizedPercentageUnscaled(
                     invoiceTerm.getAmount(), total));
       }
     }
@@ -180,7 +187,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           for (InvoiceTerm invoiceTerm : moveLineIt.getInvoiceTermList()) {
             sum =
                 sum.add(
-                    invoiceTermFinancialDiscountService.computeCustomizedPercentageUnscaled(
+                    invoiceTermToolService.computeCustomizedPercentageUnscaled(
                         invoiceTerm.getAmount(), total));
           }
         }
@@ -247,7 +254,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     User pfpUser = null;
     if (getPfpValidatorUserCondition(invoice, null)) {
-      pfpUser = getPfpValidatorUser(invoice.getPartner(), invoice.getCompany());
+      pfpUser =
+          invoiceTermPfpToolService.getPfpValidatorUser(invoice.getPartner(), invoice.getCompany());
     }
 
     InvoiceTerm invoiceTerm =
@@ -598,21 +606,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     this.updateInvoiceTermsPaidAmount(
-        invoicePayment.getInvoiceTermPaymentList(), invoicePayment.getPaymentMode());
+        invoicePayment.getInvoiceTermPaymentList(), invoicePayment.getPaymentMode(), null);
   }
 
   @Override
   public void updateInvoiceTermsPaidAmount(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      InvoiceTermPayment invoiceTermPayment)
+      InvoiceTermPayment invoiceTermPayment,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
     this.updateInvoiceTermsPaidAmount(
-        Collections.singletonList(invoiceTermPayment), invoiceTermToPay.getPaymentMode());
+        Collections.singletonList(invoiceTermPayment),
+        invoiceTermToPay.getPaymentMode(),
+        invoiceTermPfpValidateStatusSelectMap);
   }
 
   protected void updateInvoiceTermsPaidAmount(
-      List<InvoiceTermPayment> invoiceTermPaymentList, PaymentMode paymentMode)
+      List<InvoiceTermPayment> invoiceTermPaymentList,
+      PaymentMode paymentMode,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
@@ -653,6 +666,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPaymentMode(paymentMode);
 
       invoiceTermFinancialDiscountService.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+      invoiceTermPfpUpdateService.updatePfp(invoiceTerm, invoiceTermPfpValidateStatusSelectMap);
     }
   }
 
@@ -917,13 +931,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       return null;
     }
-  }
-
-  @Override
-  public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal) {
-    return invoiceTermFinancialDiscountService
-        .computeCustomizedPercentageUnscaled(amount, inTaxTotal)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -1224,7 +1231,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       List<InvoiceTerm> invoiceTermList,
       InvoicePayment invoicePayment,
       BigDecimal amount,
-      Reconcile reconcile)
+      Reconcile reconcile,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (invoiceTermList != null) {
@@ -1234,7 +1242,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
         this.updateInvoiceTermsPaidAmount(
-            invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+            invoicePayment,
+            invoiceTermPayment.getInvoiceTerm(),
+            invoiceTermPayment,
+            invoiceTermPfpValidateStatusSelectMap);
 
         if (invoicePayment == null) {
           invoiceTermPayment.addReconcileListItem(reconcile);
@@ -1352,25 +1363,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .divide(total, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_DOWN);
 
     return percentageUp.compareTo(percentageDown) != 0;
-  }
-
-  @Override
-  public User getPfpValidatorUser(Partner partner, Company company) {
-    AccountingSituation accountingSituation =
-        Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
-    if (accountingSituation == null) {
-      return null;
-    }
-    return accountingSituation.getPfpValidatorUser();
-  }
-
-  @Override
-  public boolean checkPfpValidatorUser(InvoiceTerm invoiceTerm) {
-    return invoiceTerm != null
-        && invoiceTerm.getPfpValidatorUser() != null
-        && Objects.equals(
-            invoiceTerm.getPfpValidatorUser(),
-            this.getPfpValidatorUser(invoiceTerm.getPartner(), invoiceTerm.getCompany()));
   }
 
   @Override
@@ -1542,7 +1534,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal percentageTotal = BigDecimal.ZERO;
 
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      BigDecimal percentage = this.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+      BigDecimal percentage =
+          invoiceTermToolService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
 
       invoiceTerm.setPercentage(percentage);
       percentageTotal = percentageTotal.add(percentage);
@@ -1687,7 +1680,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return;
     }
 
-    BigDecimal percentage = this.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+    BigDecimal percentage =
+        invoiceTermToolService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
 
     invoiceTerm.setPercentage(percentage);
     invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());

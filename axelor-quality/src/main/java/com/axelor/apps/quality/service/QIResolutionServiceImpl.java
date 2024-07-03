@@ -150,8 +150,12 @@ public class QIResolutionServiceImpl implements QIResolutionService {
   public void sendQIDecisionDistributions(
       List<QIDecisionDistribution> qiDecisionDistributionList,
       Template qiDecisionDistributionMessageTemplate)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException {
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          IOException,
+          MessagingException {
     for (QIDecisionDistribution qiDecisionDistribution : qiDecisionDistributionList) {
       qiDecisionDistribution =
           qiDecisionDistributionRepository.find(qiDecisionDistribution.getId());
@@ -165,8 +169,12 @@ public class QIResolutionServiceImpl implements QIResolutionService {
   }
 
   public void sendEmail(Template template, QIDecisionDistribution qiDecisionDistribution)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException {
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          IOException,
+          MessagingException {
     Message message = templateMessageService.generateMessage(qiDecisionDistribution, template);
     message.addToEmailAddressSetItem(
         qiDecisionDistribution.getRecipientPartner().getEmailAddress());

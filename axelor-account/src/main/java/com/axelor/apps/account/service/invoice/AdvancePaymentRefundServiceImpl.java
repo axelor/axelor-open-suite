@@ -191,7 +191,7 @@ public class AdvancePaymentRefundServiceImpl implements AdvancePaymentRefundServ
     if (!ObjectUtils.isEmpty(imputationPayment.getInvoiceTermPaymentList())) {
       for (InvoiceTermPayment invoiceTermPayment : imputationPayment.getInvoiceTermPaymentList()) {
         invoiceTermService.updateInvoiceTermsPaidAmount(
-            imputationPayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+            imputationPayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment, null);
       }
     }
 
