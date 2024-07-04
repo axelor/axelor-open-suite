@@ -59,6 +59,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected MoveToolService moveToolService;
+  protected MoveInvoiceTermService moveInvoiceTermService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -70,7 +71,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      MoveInvoiceTermService moveInvoiceTermService) {
 
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
@@ -81,6 +83,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.moveToolService = moveToolService;
+    this.moveInvoiceTermService = moveInvoiceTermService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -154,6 +157,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       }
 
       newMove.addMoveLineListItem(newMoveLine);
+
+      if (newMove.getPaymentCondition() == null) {
+        newMove.setPaymentCondition(move.getPaymentCondition());
+      }
+      moveInvoiceTermService.generateInvoiceTerms(newMove);
 
       if (isUnreconcileOriginalMove) {
         List<Reconcile> reconcileList =
