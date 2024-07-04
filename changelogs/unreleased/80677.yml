@@ -2,4 +2,4 @@
 title: "Sale order: Fixed project generated with empty code which could trigger a exception"
 module: axelor-project
 developer: |
-  "The fix requires to run the following sql request in order to fully work: `UPDATE project_project SET code = id where code IS NULL;`"
+  "If you have the issue on project generation from sale order, the fix requires to run the following sql request in order to fully work: `UPDATE project_project SET code = id where code IS NULL;`"
