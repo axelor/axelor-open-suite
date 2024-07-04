@@ -58,7 +58,7 @@
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
-    <field name="typeSelect" onChange="action-sale-order-line-method-empty-line"/>
+    <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
     <field name="product" canEdit="false"
       onChange="action-group-sale-saleorderline-product-onchange"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
@@ -160,7 +160,7 @@
     <panel name="productPanel" showIf="typeSelect > 0">
       <field name="productName" colSpan="9" title="Title"/>
       <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3"
-        onChange="action-sale-order-line-method-empty-line"/>
+        onChange="action-sale-order-line-method-type-select-onchange"/>
       <field name="isShowTotal" colSpan="3"
         onChange="action-sale-order-line-record-reset-is-hide-unit-amounts"
         if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3"/>
@@ -244,7 +244,7 @@
             grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
           <field name="enableFreezeFields" colSpan="2"/>
           <field name="typeSelect" colSpan="2"
-            onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati"/>
+            onChange="action-sale-order-line-method-type-select-onchange"/>
           <field name="productName" colSpan="12"/>
           <field name="oldQty"/>
         </panel>
@@ -450,7 +450,7 @@
     <panel name="product1Panel" showIf="typeSelect == 1">
       <field name="productName" colSpan="9" title="Title"/>
       <panel name="typeSelect1Panel" colSpan="3">
-        <field name="typeSelect" onChange="action-sale-order-line-method-empty-line"
+        <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"
           colSpan="12"/>
       </panel>
     </panel>
@@ -460,7 +460,7 @@
         onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
         grid-view="product-grid"/>
       <panel name="typeSelect2Panel" colSpan="3">
-        <field name="typeSelect" onChange="action-sale-order-line-method-empty-line"
+        <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"
           colSpan="12"/>
       </panel>
       <field name="productName"/>
@@ -797,8 +797,8 @@
       method="computeProductDomain"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-method-empty-line">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="emptyLine"/>
+  <action-method name="action-sale-order-line-method-type-select-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="typeSelectOnChange"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-check-stock"

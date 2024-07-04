@@ -3,7 +3,12 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.translation.ITranslation;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,10 +70,32 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
   }
 
   @Override
+  public Map<String, Object> typeSelectOnChange(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+      saleOrderLineMap.putAll(emptyLine(saleOrderLine));
+    }
+    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
+      saleOrderLine.setProductName(I18n.get(ITranslation.SALE_ORDER_LINE_END_OF_PACK));
+      saleOrderLineMap.put("productName", saleOrderLine.getProductName());
+    }
+    return saleOrderLineMap;
+  }
+
+  @Override
   public Map<String, Object> compute(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine));
     return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> emptyLine(SaleOrderLine saleOrderLine) {
+    Map<String, Object> newSaleOrderLine = Mapper.toMap(new SaleOrderLine());
+    newSaleOrderLine.put("qty", BigDecimal.ZERO);
+    newSaleOrderLine.put("id", saleOrderLine.getId());
+    newSaleOrderLine.put("version", saleOrderLine.getVersion());
+    newSaleOrderLine.put("typeSelect", saleOrderLine.getTypeSelect());
+    return newSaleOrderLine;
   }
 }
