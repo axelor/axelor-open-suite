@@ -334,6 +334,9 @@
         showIf="statusSelect == 4" if-module="axelor-supplychain"
         onClick="save,action-purchase-order-method-set-status-to-validated"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"/>
+      <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
+        showIf="statusSelect == 1"
+        onClick="save,action-purchase-order-method-separate-in-new-quotation"/>
     </panel>
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
@@ -1055,6 +1058,11 @@
     name="action-purchase-order-method-convert-selected-lines-to-merge-lines">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
       method="convertSelectedLinesToMergeLines"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-separate-in-new-quotation">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="separateInNewQuotation"/>
   </action-method>
 
 </object-views>
