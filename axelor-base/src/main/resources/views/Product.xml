@@ -183,7 +183,8 @@
         </panel>
         <panel name="inAtiExpensePanel" colSpan="12">
           <field name="inAti" colSpan="6"
-            onChange="action-product-attrs-change-title-based-on-inAti"/>
+            onChange="action-product-attrs-change-title-based-on-inAti"
+            if="__config__.app.getApp('base')?.getProductInAtiSelect() == 3 || __config__.app.getApp('base')?.getProductInAtiSelect() == 4"/>
           <field name="expense" hidden="true" if-module="axelor-human-resource"/>
         </panel>
         <panel name="BarcodePanel" readonlyIf="barCode != null"
@@ -590,7 +591,6 @@
     <action name="action-product-group-default-new"/>
     <action name="action-product-record-sale-supply-select"/>
     <action name="action-product-record-in-ati"/>
-    <action name="action-product-attrs-in-ati"/>
     <action name="action-product-record-default-production"/>
     <action name="action-product-record-sellable"/>
     <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
@@ -634,7 +634,6 @@
     <action name="action-product-attrs-scale-and-precision-production"/>
     <action name="action-product-attrs-scale-and-precision-stock"/>
     <action name="action-product-attrs-title-unit"/>
-    <action name="action-product-attrs-in-ati"/>
     <action name="action-product-attrs-change-title-based-on-inAti"/>
     <action name="action-product-set-stock"/>
     <action name="action-product-set-total-variants"/>
@@ -670,15 +669,6 @@
     model="com.axelor.apps.base.db.Product">
     <field name="controlOnReceipt" expr="eval: productApproval?.controlOnReceipt"/>
   </action-record>
-
-  <action-attrs name="action-product-attrs-in-ati">
-    <attribute name="hidden" for="inAti"
-      expr=" eval: __config__.app.getApp('base')?.getProductInAtiSelect() == 1 || __config__.app.getApp('base')?.getProductInAtiSelect() == 2"/>
-    <attribute
-      if=" __config__.app.getApp('base')?.getProductInAtiSelect() == 1 || __config__.app.getApp('base')?.getProductInAtiSelect() == 2"
-      name="value" for="inAti"
-      expr="eval: __config__.app.getApp('base')?.getProductInAtiSelect() == 2"/>
-  </action-attrs>
 
   <action-attrs name="action-product-attrs-change-title-based-on-inAti">
     <attribute name="title" for="salePrice,productCompanyList.salePrice"
