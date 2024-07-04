@@ -51,6 +51,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
@@ -59,6 +60,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.common.ObjectUtils;
@@ -95,8 +97,13 @@ public class SaleOrderController {
   public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Map<String, Object> saleOrderMap = new HashMap<>();
+
     saleOrderMap.putAll(Beans.get(SaleOrderInitValueService.class).getOnNewInitValues(saleOrder));
+    saleOrderMap.putAll(Beans.get(SaleOrderDummyService.class).getOnNewDummies(saleOrder));
     response.setValues(saleOrderMap);
+    Map<String, Map<String, Object>> attrsMap =
+        Beans.get(SaleOrderViewService.class).getOnNewAttrs(saleOrder);
+    response.setAttrs(attrsMap);
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
