@@ -6,7 +6,6 @@
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
     <extend target="/">
-      <attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
@@ -24,7 +23,7 @@
 
   <form name="sale-order-form-partner" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
-    onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
+    onNew="action-sale-order-method-onnew,action-group-partner-saleorder-onnew"
     onLoad="action-group-supplychain-saleorder-onload" onSave="action-supplychain-saleorder-onsave">
 
     <panel-include view="sale-order-form" from="axelor-sale"/>
@@ -44,8 +43,7 @@
 
   <form name="sale-order-form-client" id="supplychain-sale-order-form-client"
     title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
-    onNew="action-group-supplychain-saleorder-onnew"
-    onSave="save,action-sale-order-method-compute,save"
+    onNew="action-sale-order-method-onnew" onSave="save,action-sale-order-method-compute,save"
     onLoad="action-group-supplychain-saleorder-onload" width="large">
     <panel name="mainPanel" colSpan="4">
       <panel-include view="sale-order-form-client" from="axelor-sale"/>
@@ -57,7 +55,7 @@
     extension="true">
     <extend target="/">
       <attribute name="onNew"
-        value="action-group-sale-saleorder-onnew,action-saleorder-record-template"/>
+        value="action-sale-order-method-onnew,action-saleorder-record-template"/>
     </extend>
   </form>
 
@@ -108,11 +106,6 @@
     <action name="action-method-sale-order-validate-changes"/>
     <action name="action-sale-order-method-notify-stock-move-created"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
-  </action-group>
-
-  <action-group name="action-group-supplychain-saleorder-onnew">
-    <action name="action-group-sale-saleorder-onnew"/>
-    <action name="action-sale-order-attrs-interco"/>
   </action-group>
 
   <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
