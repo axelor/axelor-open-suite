@@ -15,10 +15,10 @@
       <field name="name"/>
       <field name="colorSelect" widget="SingleSelect" x-color-field="colorSelect"/>
       <field name="companySet" if="__config__.app.getApp('base')?.getEnableMultiCompany()"
-        colSpan="6" canNew="false" widget="TagSelect"/>
+        colSpan="6" canNew="false" widget="TagSelect" placeholder="All"/>
       <field name="tradingNameSet"
         if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="6" canNew="false"
-        widget="TagSelect"/>
+        widget="TagSelect" placeholder="All"/>
     </panel>
   </form>
 
