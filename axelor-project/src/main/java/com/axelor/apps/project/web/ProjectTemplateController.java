@@ -44,7 +44,7 @@ public class ProjectTemplateController {
     try {
       ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
       Map<String, Object> projectTemplateView =
-          Beans.get(ProjectService.class).createProjectFromTemplateView(projectTemplate);
+          Beans.get(ProjectTemplateService.class).createProjectFromTemplateView(projectTemplate);
       response.setView(projectTemplateView);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);

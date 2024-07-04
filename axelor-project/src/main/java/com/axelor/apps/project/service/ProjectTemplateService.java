@@ -18,9 +18,14 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.ProjectTemplate;
+import java.util.Map;
 
 public interface ProjectTemplateService {
 
   ProjectTemplate addParentTaskTemplate(ProjectTemplate projectTemplate);
+
+  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
+      throws AxelorException;
 }

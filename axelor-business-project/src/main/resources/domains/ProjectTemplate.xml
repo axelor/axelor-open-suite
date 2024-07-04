@@ -11,6 +11,7 @@
     <string name="invoicingComment" title="Invoicing comment" large="true"/>
     <many-to-many name="projectFolderSet"
       ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
+    <boolean name="isBusinessProject" title="Business project"/>
   </entity>
 
 </domain-models>
