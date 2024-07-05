@@ -226,7 +226,16 @@ public class MobileSettingsResponseComputeServiceImpl
                     .getAuthorizedRoles()),
             getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_SALE)
                 .getIsCustomizeMenuEnabled(),
-            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_SALE)));
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_SALE)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_PROJECT,
+            checkConfigWithRoles(
+                appMobileSettings.getIsProjectAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PROJECT)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PROJECT)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PROJECT)));
   }
 
   protected List<MobileMenuResponse> getAccessibleMenusFromApp(String appSequence) {
