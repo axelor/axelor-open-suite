@@ -64,6 +64,17 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//panel[@name='logTimesPanel']">
+      <insert position="before">
+        <panel title="HoldBacks" name="projectHoldBacksPanel"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          showIf="isBusinessProject">
+          <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
+            title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
+            grid-view="project-hold-back-line-grid" editable="true"/>
+        </panel>
+      </insert>
+    </extend>
     <extend target="//panel[@name='salesPanel']">
       <insert position="before">
         <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
