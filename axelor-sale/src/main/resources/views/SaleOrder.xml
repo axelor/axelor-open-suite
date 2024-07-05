@@ -1445,15 +1445,6 @@
     <action name="action-sale-order-record-set-default-tax-number"/>
   </action-group>
 
-  <action-group name="action-sale-group-onchange-client-partner">
-    <action name="action-sale-order-record-partner"/>
-    <action name="action-sale-order-method-set-advance-payment"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-    <action name="action-partner-attrs-hide-contact-partner"/>
-    <action name="action-sale-order-method-fill-company-bank-details"/>
-    <action name="action-sale-method-printing-settings-default-values"/>
-  </action-group>
-
   <action-record name="action-sale-order-record-get-trading-names-management-config"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="$enableTradingNamesManagement"
@@ -1491,7 +1482,7 @@
   </action-group>
 
   <action-group name="action-sale-order-group-client-partner-change">
-    <action name="action-sale-order-record-partner"/>
+    <action name="action-sale-order-method-client-partner-onchange"/>
     <action name="action-sale-order-method-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-sale-order-method-address-str"/>
@@ -1501,8 +1492,6 @@
     <action name="action-sale-order-attrs-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-set-contact-partner"/>
-    <action name="action-sale-order-record-partner-supplychain"
-      if="__config__.app.isApp('supplychain')"/>
     <action name="action-supplychain-sale-order-method-get-stock-location"
       if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.shippingDefaultStockLocation == null || stockLocation == null)"/>
     <action name="action-supplychain-sale-order-method-get-to-stock-location"
@@ -2090,6 +2079,10 @@
 
   <action-method name="action-sale-order-method-onnew">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-client-partner-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="clientPartnerOnChange"/>
   </action-method>
 
   <action-validate name="action-sale-order-validate-check-on-confirm">

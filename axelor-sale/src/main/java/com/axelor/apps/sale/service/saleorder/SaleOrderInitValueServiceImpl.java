@@ -2,7 +2,6 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -13,14 +12,11 @@ import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -31,28 +27,28 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
 
   protected AppBaseService appBaseService;
   protected CompanyRepository companyRepository;
-  protected AppSaleService appSaleService;
   protected UserService userService;
   protected BankDetailsService bankDetailsService;
   protected SaleConfigService saleConfigService;
   protected CompanyService companyService;
+  protected SaleOrderUserService saleOrderUserService;
 
   @Inject
   public SaleOrderInitValueServiceImpl(
       AppBaseService appBaseService,
       CompanyRepository companyRepository,
-      AppSaleService appSaleService,
       UserService userService,
       BankDetailsService bankDetailsService,
       SaleConfigService saleConfigService,
-      CompanyService companyService) {
+      CompanyService companyService,
+      SaleOrderUserService saleOrderUserService) {
     this.appBaseService = appBaseService;
     this.companyRepository = companyRepository;
-    this.appSaleService = appSaleService;
     this.userService = userService;
     this.bankDetailsService = bankDetailsService;
     this.saleConfigService = saleConfigService;
     this.companyService = companyService;
+    this.saleOrderUserService = saleOrderUserService;
   }
 
   @Override
@@ -77,9 +73,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
   protected Map<String, Object> saleOrderDefaultValuesMap(SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
-    AppSale appSale = appSaleService.getAppSale();
     Company company = companyService.getDefaultCompany(null);
-    int salesPersonSelect = appSale.getSalespersonSelect();
     User user = AuthUtils.getUser();
     PrintingSettings printingSettings =
         Optional.ofNullable(user)
@@ -97,7 +91,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     saleOrderMap.put("statusSelect", SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrderMap.put("company", company);
 
-    saleOrderMap.put("salespersonUser", getUser(saleOrder, salesPersonSelect));
+    saleOrderMap.put("salespersonUser", saleOrderUserService.getUser(saleOrder));
     saleOrderMap.put("team", userService.getUserActiveTeam());
     saleOrderMap.put("printingSettings", printingSettings);
     if (user != null) {
@@ -143,18 +137,5 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     saleOrder.setGroupProductsOnPrintings(appBase.getIsRegroupProductsOnPrintings());
     saleOrderMap.put("companyBankDetails", saleOrder.getGroupProductsOnPrintings());
     return saleOrderMap;
-  }
-
-  protected User getUser(SaleOrder saleOrder, int salesPersonSelect) {
-    User user = null;
-    Partner clientPartner = saleOrder.getClientPartner();
-    if (salesPersonSelect == AppSaleRepository.APP_SALE_CURRENT_LOGIN_USER) {
-      user = AuthUtils.getUser();
-    }
-    if (salesPersonSelect == AppSaleRepository.APP_SALE_USER_ASSIGNED_TO_CUSTOMER
-        && clientPartner != null) {
-      user = clientPartner.getUser();
-    }
-    return user;
   }
 }
