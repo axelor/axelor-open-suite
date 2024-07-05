@@ -1,0 +1,3 @@
+---
+title: "Fix demo data for partners when two partners have the same address."
+module: axelor-base
