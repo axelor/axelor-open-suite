@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoiceTermPaymentService {
@@ -35,7 +36,7 @@ public interface InvoiceTermPaymentService {
    * @return
    */
   public InvoicePayment initInvoiceTermPayments(
-      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay);
+      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay, LocalDate paymentDate);
 
   /**
    * Method to init invoiceTermPayments based on invoiceTerm to pay and inserted amount
@@ -69,7 +70,10 @@ public interface InvoiceTermPaymentService {
    * @return
    */
   public InvoiceTermPayment createInvoiceTermPayment(
-      InvoicePayment invoicePayment, InvoiceTerm invoiceTermToPay, BigDecimal paidAmount);
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTermToPay,
+      BigDecimal paidAmount,
+      LocalDate paymentDate);
 
   /**
    * Method to compute total paid amount of invoiceTermPayments

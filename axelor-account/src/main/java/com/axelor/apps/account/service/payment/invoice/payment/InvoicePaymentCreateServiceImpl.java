@@ -383,7 +383,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setManualChange(true);
     invoice.addInvoicePaymentListItem(invoicePayment);
 
-    invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTermList);
+    invoiceTermPaymentService.initInvoiceTermPayments(
+        invoicePayment, invoiceTermList, invoicePayment.getPaymentDate());
     invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
     invoicePayment.setAmount(
