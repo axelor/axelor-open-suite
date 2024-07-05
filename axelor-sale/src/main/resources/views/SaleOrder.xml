@@ -481,7 +481,6 @@
           x-tree-field="saleOrderLineList" x-tree-field-title="Add a new sale order line"
           onChange="action-sale-order-method-on-line-change"
           if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()">
-          <field name="typeSelect"/>
           <field name="product"/>
           <field name="productName"/>
           <field name="qty"/>
