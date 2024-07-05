@@ -47,6 +47,10 @@
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(hireDate)"/>
     <bind to="leavingDate" column="leavingDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(leavingDate)"/>
+    <bind to="seniorityDate" column="seniorityDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(seniorityDate)"/>
+    <bind to="birthDate" column="birthDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(birthDate)"/>
   </input>
 
   <input file="hr_contract.csv" separator=";" type="com.axelor.apps.hr.db.EmploymentContract"
@@ -59,6 +63,10 @@
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(hireDate)"/>
     <bind to="leavingDate" column="leavingDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(leavingDate)"/>
+    <bind to="seniorityDate" column="seniorityDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(seniorityDate)"/>
+    <bind to="birthDate" column="birthDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(birthDate)"/>
   </input>
 
   <input file="auth_user.csv" separator=";" search="self.importId = :importId"
