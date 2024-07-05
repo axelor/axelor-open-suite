@@ -159,22 +159,18 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         BigDecimal invoiceTermCompanyAmount =
             currencyScaleService.getCompanyScaledValue(
                 invoiceTermToPay, invoiceTermToPay.getCompanyAmountRemaining());
-
+        LocalDate date =
+            invoicePayment != null
+                ? invoicePayment.getPaymentDate()
+                : invoiceTermToPay.getDueDate();
         if (invoiceTermCompanyAmount.compareTo(availableAmount) >= 0) {
           invoiceTermPayment =
-              createInvoiceTermPayment(
-                  invoicePayment,
-                  invoiceTermToPay,
-                  availableAmount,
-                  invoicePayment.getPaymentDate());
+              createInvoiceTermPayment(invoicePayment, invoiceTermToPay, availableAmount, date);
           availableAmount = BigDecimal.ZERO;
         } else {
           invoiceTermPayment =
               createInvoiceTermPayment(
-                  invoicePayment,
-                  invoiceTermToPay,
-                  invoiceTermCompanyAmount,
-                  invoicePayment.getPaymentDate());
+                  invoicePayment, invoiceTermToPay, invoiceTermCompanyAmount, date);
           availableAmount = availableAmount.subtract(invoiceTermCompanyAmount);
         }
 
