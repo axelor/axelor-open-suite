@@ -54,7 +54,7 @@ public interface CommonInvoiceService {
    * @throws AxelorException
    */
   List<InvoiceLine> createInvoiceLinesFromOrder(
-      Invoice invoice, BigDecimal inTaxTotal, Product invoicingProduct, BigDecimal percentToInvoice)
+      Invoice invoice, Product invoicingProduct, BigDecimal lineAmountToInvoice)
       throws AxelorException;
 
   BigDecimal computeSumInvoices(List<Invoice> invoices);

@@ -572,9 +572,10 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
                     purchaseOrderLine.getQty().multiply(purchaseOrderLine.getPriceDiscounted()))
             .reduce(BigDecimal.ZERO, (bd1, bd2) -> bd1.add(bd2));
 
-    BigDecimal percentToInvoice =
+    amountToInvoice =
         commonInvoiceService.computeAmountToInvoicePercent(
             purchaseOrder, amountToInvoice, isPercent, total);
+
     AccountConfig accountConfig = accountConfigService.getAccountConfig(purchaseOrder.getCompany());
     Account advancePaymentAccount = accountConfig.getSupplierAdvancePaymentAccount();
     Product advancePaymentProduct = accountConfig.getAdvancePaymentProduct();
@@ -598,7 +599,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             purchaseOrder,
             purchaseOrder.getPurchaseOrderLineTaxList(),
             advancePaymentProduct,
-            percentToInvoice,
+            amountToInvoice,
             InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
             advancePaymentAccount);
 
@@ -623,7 +624,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       PurchaseOrder purchaseOrder,
       List<PurchaseOrderLineTax> taxLineList,
       Product invoicingProduct,
-      BigDecimal percentToInvoice,
+      BigDecimal lineAmountToInvoice,
       int operationSubTypeSelect,
       Account partnerAccount)
       throws AxelorException {
@@ -639,9 +640,9 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
                     .filter(polt -> !polt.getReverseCharged())
                     .collect(Collectors.toList()),
                 invoicingProduct,
-                percentToInvoice)
+                lineAmountToInvoice)
             : commonInvoiceService.createInvoiceLinesFromOrder(
-                invoice, purchaseOrder.getInTaxTotal(), invoicingProduct, percentToInvoice);
+                invoice, invoicingProduct, lineAmountToInvoice);
 
     invoiceGenerator.populate(invoice, invoiceLinesList);
 
@@ -664,7 +665,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       Invoice invoice,
       List<PurchaseOrderLineTax> taxLineList,
       Product invoicingProduct,
-      BigDecimal percentToInvoice)
+      BigDecimal amountToInvoice)
       throws AxelorException {
 
     List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
@@ -672,7 +673,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       for (PurchaseOrderLineTax purchaseOrderLineTax : taxLineList) {
         InvoiceLineGenerator invoiceLineGenerator =
             invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice, invoicingProduct, percentToInvoice, purchaseOrderLineTax);
+                invoice, invoicingProduct, amountToInvoice, purchaseOrderLineTax);
 
         List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
         // link to the created invoice line the first line of the sale order.

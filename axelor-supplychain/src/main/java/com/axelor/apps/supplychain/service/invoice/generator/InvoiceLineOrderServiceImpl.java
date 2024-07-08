@@ -49,23 +49,20 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
   public InvoiceLineGenerator getInvoiceLineGeneratorWithComputedTaxPrice(
       Invoice invoice,
       Product invoicingProduct,
-      BigDecimal percentToInvoice,
+      BigDecimal amountToInvoice,
       OrderLineTax orderLineTax) {
 
     TaxLine taxLine = orderLineTax.getTaxLine();
     int scale = appBaseService.getNbDecimalDigitForUnitPrice();
 
-    BigDecimal price =
-        percentToInvoice
-            .multiply(orderLineTax.getExTaxBase())
-            .divide(
-                new BigDecimal("100"), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-
-    BigDecimal lineAmountToInvoice = price.setScale(scale, RoundingMode.HALF_UP);
+    BigDecimal lineAmountToInvoice = amountToInvoice.setScale(scale, RoundingMode.HALF_UP);
 
     BigDecimal lineAmountToInvoiceInclTax =
         taxService.convertUnitPrice(
-            invoicingProduct.getInAti(), Sets.newHashSet(orderLineTax.getTaxLine()), price, scale);
+            invoicingProduct.getInAti(),
+            Sets.newHashSet(orderLineTax.getTaxLine()),
+            amountToInvoice,
+            scale);
 
     return new InvoiceLineGenerator(
         invoice,
