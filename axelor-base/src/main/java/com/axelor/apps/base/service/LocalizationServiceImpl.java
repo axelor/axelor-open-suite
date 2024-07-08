@@ -26,7 +26,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 import org.apache.commons.lang3.LocaleUtils;
 
@@ -60,29 +60,7 @@ public class LocalizationServiceImpl implements LocalizationService {
 
   @Override
   public String getDateFormat(String localizationCode) {
-    LocalDate date = LocalDate.of(2024, 4, 17);
-
-    // Format for en_CA: yyyy-MM-dd
-    String formattedDateCanada = formatDate(date, new Locale("en", "CA"));
-    System.out.println("Formatted Date (en_CA): " + formattedDateCanada);
-    System.out.println("DateFormat for CA :" + DateFormat.getDateInstance(DateFormat.SHORT, new Locale("en", "CA")));
-
-    // Format for en_US: MM/dd/yyyy
-    String formattedDateUS = formatDate(date, Locale.US);
-    System.out.println("Formatted Date (en_US): " + formattedDateUS);
-    System.out.println("DateFormat for US :" + DateFormat.getDateInstance(DateFormat.SHORT, Locale.US));
-
-    // Format for fr_FR: dd/MM/yyyy
-    String formattedDateFrance = formatDate(date, Locale.FRANCE);
-    System.out.println("Formatted Date (fr_FR): " + formattedDateFrance);
-    System.out.println("DateFormat for FR :" + DateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE));
-    return null;
-  }
-
-  public static String formatDate(LocalDate date, Locale locale) {
-    // Create a date formatter with the default date style for the given locale
-    DateFormat formatter = DateFormat.getDateInstance(DateFormat.SHORT, locale);
-    // Format the date using the formatter
-    return formatter.format(java.sql.Date.valueOf(date));
+    Locale locale = LocaleService.computeLocaleByLocaleCode(localizationCode);
+    return ((SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT, locale)).toPattern();
   }
 }

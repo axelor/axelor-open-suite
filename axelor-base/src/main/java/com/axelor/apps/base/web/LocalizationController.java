@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.service.LocalizationService;
@@ -36,11 +37,22 @@ public class LocalizationController {
     }
   }
 
-  public void computeLocalePattern(ActionRequest request, ActionResponse response) {
+  public void computeDateAndNumbersFormatPattern(ActionRequest request, ActionResponse response) {
     Localization localization = request.getContext().asType(Localization.class);
-    String numberFormat =
-        Beans.get(LocalizationService.class).getNumberFormat(localization.getCode());
-    Beans.get(LocalizationService.class).getDateFormat(localization.getCode());
-    response.setValue("numbersFormat", numberFormat);
+    // validate locale first
+    if (localization.getCountry() == null || localization.getLanguage() == null) {
+      return;
+    }
+    LocalizationService localizationService = Beans.get(LocalizationService.class);
+    try {
+      localizationService.validateLocale(localization);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      return;
+    }
+    String numbersFormat = localizationService.getNumberFormat(localization.getCode());
+    String dateFormat = localizationService.getDateFormat(localization.getCode());
+    response.setValue("dateFormat", dateFormat);
+    response.setValue("numbersFormat", numbersFormat);
   }
 }
