@@ -64,9 +64,14 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
     }
   }
 
-  protected void signJustificationFile(ExpenseLine expenseLine) throws AxelorException {
+  @Override
+  public void signJustificationFile(ExpenseLine expenseLine) throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
     PfxCertificate pfxCertificate = appBase.getPfxCertificate();
+    if (expenseLine.getIsJustificationFileDigitallySigned()
+        && expenseLine.getJustificationMetaFile() != null) {
+      return;
+    }
     if (pfxCertificate != null) {
       convertProofFileToPdf(pfxCertificate, expenseLine);
       signPdf(pfxCertificate, expenseLine);
