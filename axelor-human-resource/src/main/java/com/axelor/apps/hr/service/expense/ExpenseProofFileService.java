@@ -28,4 +28,6 @@ public interface ExpenseProofFileService {
 
   void convertProofFileToPdf(PfxCertificate pfxCertificate, ExpenseLine expenseLine)
       throws AxelorException;
+
+  void signJustificationFile(ExpenseLine expenseLine) throws AxelorException;
 }

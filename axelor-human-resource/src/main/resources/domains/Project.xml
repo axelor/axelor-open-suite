@@ -11,7 +11,8 @@
       ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="project"/>
     <decimal name="totalRealHrs" title="Total real hours"/>
     <!-- Readonly in timesheet line editor -->
-    <boolean name="excludeTimesheetEditor" title="Exclude timesheet editor"/>
+    <boolean name="excludeTimesheetEditor" title="Exclude timesheet editor"
+      help="When the checkbox is true, it enables to choose the project when filling timesheet lines VIA THE DYNAMIC EDITOR of the HR timesheet app."/>
 
   </entity>
 
