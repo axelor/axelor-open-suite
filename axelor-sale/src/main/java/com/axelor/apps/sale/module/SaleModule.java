@@ -142,6 +142,8 @@ import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsServiceIm
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingServiceImpl;
 
 public class SaleModule extends AxelorModule {
 
@@ -214,5 +216,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderDummyService.class).to(SaleOrderDummyServiceImpl.class);
     bind(SaleOrderOnChangeService.class).to(SaleOrderOnChangeServiceImpl.class);
     bind(SaleOrderUserService.class).to(SaleOrderUserServiceImpl.class);
+    bind(SaleOrderProductPrintingService.class).to(SaleOrderProductPrintingServiceImpl.class);
   }
 }
