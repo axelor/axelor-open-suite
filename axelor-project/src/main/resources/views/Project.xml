@@ -466,17 +466,6 @@
     <attribute name="readonly" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
   </action-attrs>
 
-  <action-attrs name="action-attrs-domain-on-contact-partner">
-    <attribute for="contactPartner"
-      if="clientPartner != null &amp;&amp; !clientPartner.contactPartnerSet.empty" name="domain"
-      expr="eval: &quot;self.id IN (${clientPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
-    <attribute for="contactPartner"
-      if="clientPartner != null &amp;&amp; clientPartner.contactPartnerSet.empty" name="domain"
-      expr="eval: &quot;self.id IN (0)&quot;"/>
-    <attribute for="contactPartner" if="clientPartner == null" name="domain"
-      expr="eval: &quot;self.isContact = true AND :company member of self.companySet&quot;"/>
-  </action-attrs>
-
   <action-attrs name="action-business-support-attrs-project-default">
     <attribute name="hidden" for="project" expr="eval:true"
       if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>

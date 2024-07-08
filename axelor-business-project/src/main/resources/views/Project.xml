@@ -642,6 +642,17 @@
     <attribute name="value" for="invoicingSequenceSelect" expr="eval: null"/>
   </action-attrs>
 
+  <action-attrs name="action-attrs-domain-on-contact-partner">
+    <attribute for="contactPartner"
+      if="clientPartner != null &amp;&amp; !clientPartner.contactPartnerSet.empty" name="domain"
+      expr="eval: &quot;self.id IN (${clientPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
+    <attribute for="contactPartner"
+      if="clientPartner != null &amp;&amp; clientPartner.contactPartnerSet.empty" name="domain"
+      expr="eval: &quot;self.id IN (0)&quot;"/>
+    <attribute for="contactPartner" if="clientPartner == null" name="domain"
+      expr="eval: &quot;self.isContact = true AND :company member of self.companySet&quot;"/>
+  </action-attrs>
+
   <action-view name="action-dashlet-project-show-all-invoicing-task"
     title="Task Invoicing" model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="business-project-project-task-grid"/>
