@@ -64,7 +64,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -107,6 +106,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected SaleInvoicingStateService saleInvoicingStateService;
   protected CurrencyScaleService currencyScaleService;
   protected SaleOrderComputeService saleOrderComputeService;
+  protected TimetableRepository timetableRepository;
+  protected AccountConfigService accountConfigService;
+  protected FiscalPositionAccountService fiscalPositionAccountService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -124,7 +127,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
-      SaleOrderComputeService saleOrderComputeService) {
+      SaleOrderComputeService saleOrderComputeService,
+      TimetableRepository timetableRepository,
+      AccountConfigService accountConfigService,
+      FiscalPositionAccountService fiscalPositionAccountService,
+      AppAccountService appAccountService) {
 
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -141,6 +148,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.saleInvoicingStateService = saleInvoicingStateService;
     this.currencyScaleService = currencyScaleService;
     this.saleOrderComputeService = saleOrderComputeService;
+    this.timetableRepository = timetableRepository;
+    this.accountConfigService = accountConfigService;
+    this.fiscalPositionAccountService = fiscalPositionAccountService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -170,7 +181,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
       case SaleOrderRepository.INVOICE_TIMETABLES:
         BigDecimal percentSum = BigDecimal.ZERO;
-        TimetableRepository timetableRepo = Beans.get(TimetableRepository.class);
         List<Timetable> timetableList = new ArrayList<>();
         if (timetableIdList == null || timetableIdList.isEmpty()) {
           throw new AxelorException(
@@ -179,7 +189,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               I18n.get(SupplychainExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
         }
         for (Long timetableId : timetableIdList) {
-          Timetable timetable = timetableRepo.find(timetableId);
+          Timetable timetable = timetableRepository.find(timetableId);
           timetableList.add(timetable);
           percentSum = percentSum.add(timetable.getPercentage());
         }
@@ -190,7 +200,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         if (!timetableList.isEmpty()) {
           for (Timetable timetable : timetableList) {
             timetable.setInvoice(invoice);
-            timetableRepo.save(timetable);
+            timetableRepository.save(timetable);
           }
         }
 
@@ -284,7 +294,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public Invoice generateAdvancePayment(
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<SaleOrderLineTax> taxLineList = saleOrder.getSaleOrderLineTaxList();
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
     amountToInvoice = computeAmountToInvoicePercent(saleOrder, amountToInvoice, isPercent);
     Product invoicingProduct =
@@ -355,9 +364,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         fiscalPosition = saleOrder.getFiscalPosition();
       }
       if (fiscalPosition != null) {
-        partnerAccount =
-            Beans.get(FiscalPositionAccountService.class)
-                .getAccount(fiscalPosition, partnerAccount);
+        partnerAccount = fiscalPositionAccountService.getAccount(fiscalPosition, partnerAccount);
       }
       invoice.setPartnerAccount(partnerAccount);
     }
@@ -859,7 +866,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Override
   public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
     boolean manageAdvanceInvoice =
-        Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
+        appAccountService.getAppAccount().getManageAdvancePaymentInvoice();
+
     boolean allowTimetableInvoicing =
         appSupplychainService.getAppSupplychain().getAllowTimetableInvoicing();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();

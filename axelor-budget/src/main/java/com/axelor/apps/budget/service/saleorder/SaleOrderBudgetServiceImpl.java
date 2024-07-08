@@ -21,6 +21,9 @@ package com.axelor.apps.budget.service.saleorder;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -43,6 +46,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -95,6 +99,10 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       SaleOrderLineBudgetService saleOrderLineBudgetService,
       CurrencyScaleService currencyScaleService,
       SaleOrderComputeService saleOrderComputeService,
+      TimetableRepository timetableRepository,
+      AccountConfigService accountConfigService,
+      FiscalPositionAccountService fiscalPositionAccountService,
+      AppAccountService appAccountService,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService,
       InvoiceToolBudgetService invoiceToolBudgetService) {
@@ -114,6 +122,10 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         saleInvoicingStateService,
         currencyScaleService,
         saleOrderComputeService,
+        timetableRepository,
+        accountConfigService,
+        fiscalPositionAccountService,
+        appAccountService,
         appBusinessProjectService);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;

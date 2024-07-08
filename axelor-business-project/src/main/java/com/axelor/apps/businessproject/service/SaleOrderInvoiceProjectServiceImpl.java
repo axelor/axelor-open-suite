@@ -24,6 +24,9 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -44,6 +47,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
@@ -78,6 +82,10 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
       SaleOrderComputeService saleOrderComputeService,
+      TimetableRepository timetableRepository,
+      AccountConfigService accountConfigService,
+      FiscalPositionAccountService fiscalPositionAccountService,
+      AppAccountService appAccountService,
       AppBusinessProjectService appBusinessProjectService) {
 
     super(
@@ -95,7 +103,11 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
         invoiceLineOrderService,
         saleInvoicingStateService,
         currencyScaleService,
-        saleOrderComputeService);
+        saleOrderComputeService,
+        timetableRepository,
+        accountConfigService,
+        fiscalPositionAccountService,
+        appAccountService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

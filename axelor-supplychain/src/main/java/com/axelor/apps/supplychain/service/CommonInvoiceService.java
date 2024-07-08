@@ -47,9 +47,8 @@ public interface CommonInvoiceService {
    * creating a advance payment or supplier advance payment where there is only one line generated.
    *
    * @param invoice
-   * @param inTaxTotal of the Order
    * @param invoicingProduct
-   * @param percentToInvoice
+   * @param lineAmountToInvoice
    * @return
    * @throws AxelorException
    */
