@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -216,6 +216,7 @@
 		// Split type
 		public static final int SPLIT_TYPE_QUANTITY = 1;
 		public static final int SPLIT_TYPE_AMOUNT = 2;
+		public static final int SPLIT_TYPE_UNIT_QUANTITY = 3;
 
 		// Moves generation exception
 		public static final int MOVE_GENERATION_EXCEPTION_NONE = 0;

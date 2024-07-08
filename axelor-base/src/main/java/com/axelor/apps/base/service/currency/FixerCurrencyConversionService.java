@@ -107,7 +107,9 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
           rate = 1.0f / rate;
         }
 
-        currentRate = BigDecimal.valueOf(rate).setScale(8, RoundingMode.HALF_UP);
+        currentRate =
+            BigDecimal.valueOf(rate)
+                .setScale(AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
 
         if (currentRate.compareTo(new BigDecimal(-1)) == 0) {
           throw new AxelorException(
@@ -172,7 +174,9 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
       if (rt == null) {
         rt = 1.0f / this.validateAndGetRate(1, currencyTo, currencyFrom, date); // reverse
       }
-      rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_UP);
+      rate =
+          BigDecimal.valueOf(rt)
+              .setScale(AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
       LOG.trace("Currerncy conversion rate: {}", rate);
       return Pair.of(pair.getLeft(), rate);
     } else LOG.trace("Currency from and to must be filled to get rate");

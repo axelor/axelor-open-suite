@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Invoice;
@@ -34,7 +52,6 @@ public class UnreconcileServiceImpl implements UnreconcileService {
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected MoveLineTaxService moveLineTaxService;
   protected PaymentMoveLineDistributionService paymentMoveLineDistributionService;
-  protected ForeignExchangeGapService foreignExchangeGapService;
   protected ReconcileRepository reconcileRepository;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoiceTermPaymentRepository invoiceTermPaymentRepository;
@@ -48,7 +65,6 @@ public class UnreconcileServiceImpl implements UnreconcileService {
       InvoicePaymentCancelService invoicePaymentCancelService,
       MoveLineTaxService moveLineTaxService,
       PaymentMoveLineDistributionService paymentMoveLineDistributionService,
-      ForeignExchangeGapService foreignExchangeGapService,
       ReconcileRepository reconcileRepository,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository) {
@@ -59,7 +75,6 @@ public class UnreconcileServiceImpl implements UnreconcileService {
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.moveLineTaxService = moveLineTaxService;
     this.paymentMoveLineDistributionService = paymentMoveLineDistributionService;
-    this.foreignExchangeGapService = foreignExchangeGapService;
     this.reconcileRepository = reconcileRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoiceTermPaymentRepository = invoiceTermPaymentRepository;
@@ -99,7 +114,6 @@ public class UnreconcileServiceImpl implements UnreconcileService {
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
-    this.reverseForeignExchangeMove(reconcile);
     if (invoice != null
         && invoice.getSubrogationRelease() != null
         && invoice.getSubrogationRelease().getStatusSelect()
@@ -146,9 +160,5 @@ public class UnreconcileServiceImpl implements UnreconcileService {
       return;
     }
     paymentMoveLineDistributionService.reversePaymentMoveLineDistributionList(reconcile);
-  }
-
-  protected void reverseForeignExchangeMove(Reconcile reconcile) throws AxelorException {
-    foreignExchangeGapService.unreconcileForeignExchangeMove(reconcile);
   }
 }
