@@ -45,6 +45,14 @@
     <boolean name="isDiscountEnabledOnEditableGrid"
       title="Enable discount on editable lines"/>
 
+    <extra-code>
+      <![CDATA[
+        // SALESPERSON SELECT
+		public static final int APP_SALE_CURRENT_LOGIN_USER = 1;
+		public static final int APP_SALE_USER_ASSIGNED_TO_CUSTOMER = 2;
+      ]]>
+    </extra-code>
+
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>
       <field name="printingOnSOFinalization" on="UPDATE"/>
