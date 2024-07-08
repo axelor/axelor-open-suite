@@ -643,7 +643,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       BigDecimal companyAmountRemaining;
 
-      if (amountRemaining.compareTo(BigDecimal.ZERO) == 0) {
+      boolean isSameCurrencyRate = true;
+      if (invoicePayment != null) {
+        isSameCurrencyRate =
+            currencyService.isSameCurrencyRate(
+                invoiceTerm.getInvoice().getInvoiceDate(),
+                invoicePayment.getPaymentDate(),
+                invoiceTerm.getCurrency(),
+                invoiceTerm.getCompanyCurrency());
+      }
+
+      if (amountRemaining.compareTo(BigDecimal.ZERO) == 0 && isSameCurrencyRate) {
         companyAmountRemaining = BigDecimal.ZERO;
       } else {
         companyAmountRemaining =
