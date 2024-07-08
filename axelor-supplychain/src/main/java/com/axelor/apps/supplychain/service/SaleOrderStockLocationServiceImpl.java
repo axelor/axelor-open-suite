@@ -28,7 +28,7 @@ public class SaleOrderStockLocationServiceImpl implements SaleOrderStockLocation
         Optional.ofNullable(saleOrder.getTradingName())
             .map(TradingName::getShippingDefaultStockLocation)
             .orElse(null);
-    if (shippingDefaultStockLocation == null || saleOrder.getStockLocation() == null) {
+    if (shippingDefaultStockLocation != null && saleOrder.getStockLocation() != null) {
       return saleOrderMap;
     }
     Partner clientPartner = saleOrder.getClientPartner();
