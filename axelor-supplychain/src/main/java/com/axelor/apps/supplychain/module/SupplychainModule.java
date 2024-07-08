@@ -69,6 +69,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
@@ -168,6 +170,8 @@ import com.axelor.apps.supplychain.service.SaleOrderComputeServiceSupplychainImp
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderInitValueSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderIntercoService;
+import com.axelor.apps.supplychain.service.SaleOrderIntercoServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
@@ -189,6 +193,8 @@ import com.axelor.apps.supplychain.service.SaleOrderReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.SaleOrderShipmentServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderStockLocationService;
+import com.axelor.apps.supplychain.service.SaleOrderStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
@@ -397,5 +403,8 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderInitValueServiceImpl.class).to(SaleOrderInitValueSupplychainServiceImpl.class);
     bind(SaleOrderViewServiceImpl.class).to(SaleOrderViewSupplychainServiceImpl.class);
     bind(SaleOrderOnChangeServiceImpl.class).to(SaleOrderOnChangeSupplychainServiceImpl.class);
+    bind(SaleOrderIntercoService.class).to(SaleOrderIntercoServiceImpl.class);
+    bind(SaleOrderProductPrintingService.class).to(SaleOrderProductPrintingServiceImpl.class);
+    bind(SaleOrderStockLocationService.class).to(SaleOrderStockLocationServiceImpl.class);
   }
 }
