@@ -18,21 +18,48 @@
  */
 package com.axelor.apps.base.service.printing.template;
 
-import com.axelor.apps.base.db.repo.PrintingTemplateLineRepository;
-import java.util.HashMap;
-import java.util.Map;
+import com.axelor.meta.MetaScanner;
+import com.axelor.meta.MetaStore;
+import com.axelor.meta.schema.views.Selection.Option;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import java.util.Optional;
+import org.apache.commons.lang3.ClassUtils;
 
 public class PrintingGeneratorFactoryProviderImpl implements PrintingGeneratorFactoryProvider {
 
+  protected static final String SELECT_ATTR_PRINT_FACTORY = "print-factory";
+  protected static final String PRINTING_TEMPLATE_TYPE_SELECT =
+      "base.printing.template.type.select";
+
+  protected static final Cache<Integer, Class<? extends PrintingGeneratorFactory>> CACHE =
+      CacheBuilder.newBuilder().maximumSize(100).weakValues().build();
+
   @Override
   public Class<? extends PrintingGeneratorFactory> get(Integer type) {
-    Map<Integer, Class<? extends PrintingGeneratorFactory>> data = new HashMap<>();
-    data.put(
-        PrintingTemplateLineRepository.PRINTING_TEMPLATE_LINE_TYPE_SELECT_BIRT,
-        PrintingGeneratorFactoryBirt.class);
-    data.put(
-        PrintingTemplateLineRepository.PRINTING_TEMPLATE_LINE_TYPE_SELECT_FILE,
-        PrintingGeneratorFactoryFile.class);
-    return data.get(type);
+    Class<? extends PrintingGeneratorFactory> klass = CACHE.getIfPresent(type);
+    if (klass != null) {
+      return klass;
+    }
+    Option option = MetaStore.getSelectionItem(PRINTING_TEMPLATE_TYPE_SELECT, type.toString());
+    klass =
+        Optional.ofNullable(option)
+            .map(Option::getData)
+            .map(map -> map.get(SELECT_ATTR_PRINT_FACTORY))
+            .map(Object::toString)
+            .map(this::findClass)
+            .orElse(null);
+    if (klass != null) {
+      CACHE.put(type, klass);
+    }
+    return klass;
+  }
+
+  protected Class<? extends PrintingGeneratorFactory> findClass(String klassName) {
+    return MetaScanner.findSubTypesOf(PrintingGeneratorFactory.class)
+        .within(ClassUtils.getPackageName(klassName)).find().stream()
+        .filter(c -> c.getName().equals(klassName))
+        .findFirst()
+        .orElse(null);
   }
 }

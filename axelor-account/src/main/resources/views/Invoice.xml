@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -819,8 +819,10 @@
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
         <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
           <field name="financialDiscountRate" readonly="true"/>
-          <field name="financialDiscountTotalAmount" readonly="true"/>
-          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
         </panel>
       </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
