@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -49,10 +49,14 @@
 
     <boolean name="isBusinessProject" title="Business project"/>
 
-    <boolean name="toInvoice" title="Packaged task invoicing"/>
-    <boolean name="isInvoicingTimesheet" title="Invoicing timesheet"/>
-    <boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
-    <boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
+    <boolean name="toInvoice" title="Packaged task invoicing"
+      help="Valid for fixed price tasks: it will be possible to choose (from the billing sequence of the case) which tasks to bill according to their status. The correspondences between invoicing sequences are in the configurations of the business module. For example, if you choose post-task, for completed tasks, the system will propose to invoice all completed tasks when invoicing the job."/>
+    <boolean name="isInvoicingTimesheet" title="Invoicing timesheet"
+      help="When this checkbox is true: will set field 'To invoice' as true by default on all timesheets associated to the project."/>
+    <boolean name="isInvoicingExpenses" title="Invoicing Expenses"
+      help="When this checkbox is true: will set field 'To invoice' as true by default on all expenses associated to the project."/>
+    <boolean name="isInvoicingPurchases" title="Invoicing Purchases"
+      help="When this checkbox is true: will set field 'To invoice' as true by default on all purchases orders associated to the project."/>
     <boolean name="consolidatePhaseWhenInvoicing" title="Consolidate phase invoicing"
       default="true"/>
 

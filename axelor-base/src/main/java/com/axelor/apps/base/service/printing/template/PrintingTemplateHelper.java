@@ -94,7 +94,7 @@ public class PrintingTemplateHelper {
   public static String getFileLink(File file) throws AxelorException {
     String originalName = file.getName();
     originalName = translateFileName(originalName);
-    String safeName = FileUtils.safeFileName(originalName);
+    String safeName = FileUtils.safeFileName(originalName).replaceAll("[^\\p{ASCII}]", "");
 
     try {
       if (!originalName.equals(safeName)) {
