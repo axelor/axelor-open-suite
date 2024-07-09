@@ -105,7 +105,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
   protected ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
-    return productionOrderService.createProductionOrder(saleOrder);
+    return productionOrderService.createProductionOrder(saleOrder, null);
   }
 
   @Override

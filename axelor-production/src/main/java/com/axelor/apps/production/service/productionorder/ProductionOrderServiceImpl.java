@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service.productionorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -41,6 +42,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -63,22 +65,27 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     this.productionConfigService = productionConfigService;
   }
 
-  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public ProductionOrder createProductionOrder(SaleOrder saleOrder, BillOfMaterial billOfMaterial)
+      throws AxelorException {
 
     ProductionOrder productionOrder = new ProductionOrder();
     if (saleOrder != null) {
       productionOrder.setClientPartner(saleOrder.getClientPartner());
       productionOrder.setSaleOrder(saleOrder);
     }
-    productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder));
+    Company company =
+        Optional.ofNullable(billOfMaterial).map(BillOfMaterial::getCompany).orElse(null);
+    productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder, company));
     return productionOrder;
   }
 
-  public String getProductionOrderSeq(ProductionOrder productionOrder) throws AxelorException {
+  public String getProductionOrderSeq(ProductionOrder productionOrder, Company company)
+      throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
             SequenceRepository.PRODUCTION_ORDER,
+            company,
             ProductionOrder.class,
             "productionOrderSeq",
             productionOrder);
@@ -111,7 +118,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       LocalDateTime startDate)
       throws AxelorException {
 
-    ProductionOrder productionOrder = this.createProductionOrder(null);
+    ProductionOrder productionOrder = this.createProductionOrder(null, billOfMaterial);
 
     this.addManufOrder(
         productionOrder,

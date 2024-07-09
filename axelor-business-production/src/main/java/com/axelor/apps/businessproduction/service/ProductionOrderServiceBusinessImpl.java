@@ -59,7 +59,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
       SaleOrderLine saleOrderLine)
       throws AxelorException {
 
-    ProductionOrder productionOrder = this.createProductionOrder(saleOrder);
+    ProductionOrder productionOrder = this.createProductionOrder(saleOrder, billOfMaterial);
     productionOrder.setProject(project);
 
     this.addManufOrder(
