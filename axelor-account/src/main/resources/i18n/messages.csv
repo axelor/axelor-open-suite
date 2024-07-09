@@ -445,6 +445,7 @@
 "AccountingReportType17.acquisition_date",,,
 "AccountingReportType17.asset_disposal",,,
 "AccountingReportType17.asset_name",,,
+"AccountingReportType17.asset_scrap",,,
 "AccountingReportType17.company",,,
 "AccountingReportType17.computation_method",,,
 "AccountingReportType17.currency",,,
