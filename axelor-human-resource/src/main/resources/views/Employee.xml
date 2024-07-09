@@ -382,7 +382,7 @@
     </panel>
 
     <panel name="personalInfoPanel" title="Personal information" colSpan="12"
-      showIf="stepByStepSelect == 5" canCollapse="true" collapseIf="true">
+      showIf="stepByStepSelect == 5" canCollapse="true">
       <field name="birthDate" colSpan="4"/>
       <field name="maritalStatus" colSpan="4"/>
       <field name="sexSelect" colSpan="4"/>
@@ -414,7 +414,7 @@
     <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 5">
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12"
-          canCollapse="true" collapseIf="true">
+          canCollapse="true">
           <field name="hireDate" colSpan="4"
             onChange="action-employee-attrs-set-seniority-date"/>
           <field name="seniorityDate" colSpan="4"/>
