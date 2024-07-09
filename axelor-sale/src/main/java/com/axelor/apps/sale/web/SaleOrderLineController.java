@@ -39,7 +39,6 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.translation.ITranslation;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -425,13 +424,11 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       Partner partner =
           Beans.get(SaleOrderLineService.class).getSaleOrder(context).getClientPartner();
-      String userLanguage = AuthUtils.getUser().getLanguage();
       Product product = saleOrderLine.getProduct();
 
       if (product != null) {
         Map<String, String> translation =
-            internationalService.getProductDescriptionAndNameTranslation(
-                product, partner, userLanguage);
+            internationalService.getProductDescriptionAndNameTranslation(product, partner);
 
         String description = translation.get("description");
         String productName = translation.get("productName");
