@@ -6,6 +6,7 @@
   <grid title="Tag" name="tag-grid" model="com.axelor.apps.base.db.Tag" editable="true">
     <field name="name"/>
     <field name="colorSelect" widget="SingleSelect" x-color-field="colorSelect"/>
+    <field name="concernedModelSet" widget="TagSelect" canNew="false"/>
     <field name="companySet" widget="TagSelect" canNew="false"/>
     <field name="tradingNameSet" widget="TagSelect" canNew="false"/>
   </grid>
@@ -13,13 +14,21 @@
   <form title="Tag" name="tag-form" model="com.axelor.apps.base.db.Tag">
     <panel name="mainPanel" colSpan="12">
       <field name="name"/>
+      <field name="concernedModelSet" placeholder="All" form-view="meta-model-form"
+        grid-view="meta-model-grid" widget="TagSelect" canNew="false"
+        onSelect="action-tag-method-concerned-model-onselect"/>
       <field name="colorSelect" widget="SingleSelect" x-color-field="colorSelect"/>
       <field name="companySet" if="__config__.app.getApp('base')?.getEnableMultiCompany()"
-        colSpan="6" canNew="false" widget="TagSelect" placeholder="All"/>
+        colSpan="6" canNew="false" widget="TagSelect" placeholder="All" form-view="company-form"
+        grid-view="company-grid"/>
       <field name="tradingNameSet"
         if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="6" canNew="false"
-        widget="TagSelect" placeholder="All"/>
+        widget="TagSelect" placeholder="All" grid-view="trading-name-grid"
+        form-view="trading-name-form"/>
     </panel>
   </form>
 
+  <action-method name="action-tag-method-concerned-model-onselect">
+    <call class="com.axelor.apps.base.web.TagController" method="setConcernedModelsDomain"/>
+  </action-method>
 </object-views>
