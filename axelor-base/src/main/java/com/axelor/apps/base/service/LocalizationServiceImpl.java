@@ -61,6 +61,21 @@ public class LocalizationServiceImpl implements LocalizationService {
   @Override
   public String getDateFormat(String localizationCode) {
     Locale locale = LocaleService.computeLocaleByLocaleCode(localizationCode);
-    return ((SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT, locale)).toPattern();
+    String dateFormatString =
+        ((SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT, locale)).toPattern();
+    return convertToFourDigitYear(dateFormatString);
+  }
+
+  /**
+   * For Java defined date format Strings, some have only one y, such as y-MM-dd. This method
+   * converts it to yyyy-MM-dd, to make it more readable for a user.
+   *
+   * @param dateFormatString the date format String that may have only one 'y'
+   */
+  protected String convertToFourDigitYear(String dateFormatString) {
+    if (dateFormatString.chars().filter(c -> c == 'y').count() == 1) {
+      dateFormatString = dateFormatString.replace("y", "yyyy");
+    }
+    return dateFormatString;
   }
 }
