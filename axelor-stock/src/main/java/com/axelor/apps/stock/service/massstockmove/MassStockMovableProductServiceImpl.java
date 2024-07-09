@@ -26,7 +26,7 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
   protected final StockMoveLineService stockMoveLineService;
   protected final StockLocationLineRepository stockLocationLineRepository;
   protected final MassStockMovableProductServiceFactory massStockMovableProductServiceFactory;
-  protected final StockLocationLineService stockLocationLineService;
+  protected final MassStockMovableProductQuantityService massStockMovableProductQuantityService;
 
   @Inject
   public MassStockMovableProductServiceImpl(
@@ -35,13 +35,14 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       StockMoveLineService stockMoveLineService,
       StockLocationLineRepository stockLocationLineRepository,
       MassStockMovableProductServiceFactory massStockMovableProductServiceFactory,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineService stockLocationLineService,
+      MassStockMovableProductQuantityService massStockMovableProductQuantityService) {
     this.stockMoveService = stockMoveService;
     this.appBaseService = appBaseService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.massStockMovableProductServiceFactory = massStockMovableProductServiceFactory;
-    this.stockLocationLineService = stockLocationLineService;
+    this.massStockMovableProductQuantityService = massStockMovableProductQuantityService;
   }
 
   @Override
@@ -154,7 +155,9 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
           movableProduct.getProduct().getFullName());
     }
 
-    var availableQty = getCurrentAvailableQty(movableProduct);
+    var availableQty =
+        massStockMovableProductQuantityService.getCurrentAvailableQty(
+            movableProduct, fromStockLocation);
 
     if (movableProduct.getMovedQty().compareTo(availableQty) > 0) {
       throw new AxelorException(
@@ -177,19 +180,5 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
           I18n.get(StockExceptionMessage.STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY),
           movableProduct.getProduct().getFullName());
     }
-  }
-
-  @Override
-  public BigDecimal getCurrentAvailableQty(MassStockMovableProduct movableProduct)
-      throws AxelorException {
-
-    var stockLocation = movableProduct.getStockLocation();
-
-    if (movableProduct.getTrackingNumber() != null) {
-      return stockLocationLineService.getTrackingNumberAvailableQty(
-          stockLocation, movableProduct.getTrackingNumber());
-    }
-
-    return stockLocationLineService.getAvailableQty(stockLocation, movableProduct.getProduct());
   }
 }
