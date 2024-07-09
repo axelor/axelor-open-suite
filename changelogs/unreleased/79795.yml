@@ -1,0 +1,3 @@
+---
+title: "Invoice: removed time table link when we merge or delete invoices, fixing an issue preventing invoice merge."
+module: axelor-supplychain

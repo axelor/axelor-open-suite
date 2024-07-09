@@ -36,4 +36,6 @@ public interface TimetableService {
   public List<Timetable> applyTemplate(
       TimetableTemplate template, BigDecimal exTaxTotal, LocalDate computationDate)
       throws AxelorException;
+
+  void deleteInvoiceTimeTable(Invoice invoice);
 }
