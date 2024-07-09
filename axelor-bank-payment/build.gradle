@@ -132,4 +132,5 @@ task xjc_bankstatement() {
 	}
 }
 
+compileJava.dependsOn xjc_bankstatement
 generateCode.finalizedBy xjc_bankstatement
