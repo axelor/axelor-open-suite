@@ -31,6 +31,7 @@ import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.apps.supplychain.db.TimetableTemplateLine;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -43,7 +44,17 @@ import java.util.List;
 
 public class TimetableServiceImpl implements TimetableService {
 
-  @Inject SaleOrderInvoiceService saleOrderInvoiceService;
+  SaleOrderInvoiceService saleOrderInvoiceService;
+  TimetableRepository timetableRepository;
+
+  public static final int FETCH_LIMIT = 10;
+
+  @Inject
+  public TimetableServiceImpl(
+      SaleOrderInvoiceService saleOrderInvoiceService, TimetableRepository timetableRepository) {
+    this.saleOrderInvoiceService = saleOrderInvoiceService;
+    this.timetableRepository = timetableRepository;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -120,5 +131,14 @@ public class TimetableServiceImpl implements TimetableService {
 
     timetables.sort(Comparator.comparing(Timetable::getEstimatedDate));
     return timetables;
+  }
+
+  @Override
+  public void deleteInvoiceTimeTable(Invoice invoice) {
+    JPA.em()
+        .createQuery(
+            "UPDATE Timetable self SET self.invoice = NULL WHERE self.invoice.id = :invoiceId")
+        .setParameter("invoiceId", invoice.getId())
+        .executeUpdate();
   }
 }
