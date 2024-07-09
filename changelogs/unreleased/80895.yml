@@ -1,3 +1,3 @@
 ---
-title: "ContractLine: fixed analyticDistribution panel never hidden."
+title: "Contract line: fixed an issue where analytic distribution panel was never hidden."
 module: axelor-contract
