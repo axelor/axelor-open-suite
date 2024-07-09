@@ -48,7 +48,7 @@ public class TimesheetLineBusinessProductionServiceImpl
   protected TimesheetRepository timesheetRepository;
 
   @Inject
-  public void TimesheetBusinessProductionServiceImpl(
+  public TimesheetLineBusinessProductionServiceImpl(
       EmployeeService employeeService,
       TimesheetFetchService timesheetFetchService,
       TimesheetRepository timesheetRepository) {
