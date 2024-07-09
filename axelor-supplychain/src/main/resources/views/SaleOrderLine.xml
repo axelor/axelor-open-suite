@@ -259,6 +259,12 @@
 
   <action-group name="supplychain-action-sale-order-line-group-onnew">
     <action name="action-group-sale-saleorderline-onnew"/>
+    <action name="action-supplychain-sale-order-line-attrs-hide-button"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.isApp('production')"/>
     <action name="action-record-sale-order-line-fill-request-qty"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
     <action name="action-sale-order-line-group-manage-analytic"/>
@@ -271,6 +277,17 @@
 
   <action-group name="supplychain-action-sale-order-line-group-onload">
     <action name="action-group-sale-saleorderline-onload"/>
+    <action name="action-supplychain-sale-order-line-attrs-hide-button"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <action name="action-sale-order-line-attrs-reserved-qty-visibility"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-attrs-show-availabilty-request"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.isApp('production')"/>
+    <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
     <action name="action-sale-order-line-group-manage-analytic"/>
@@ -279,6 +296,9 @@
   <action-group name="supplychain-action-sale-order-line-group-product-onchange">
     <action name="action-group-sale-saleorderline-product-onchange"/>
     <action name="action-sale-order-line-group-manage-analytic"/>
+    <action name="action-method-sale-order-line-available-and-allocated-stock"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.isApp('production')"/>
   </action-group>
 
   <action-group name="action-sale-order-line-group-manage-analytic">
@@ -355,15 +375,6 @@
     <attribute for="reservedQty" name="value" expr="eval: qty" if="reservedQty &gt; qty"/>
   </action-attrs>
 
-  <action-attrs name="action-sale-order-line-attrs-reserved-qty-visibility">
-    <attribute for="reservedQty" name="hidden"
-      expr="eval: __parent__.statusSelect != 3 || product?.productTypeSelect == 'service'"
-      if="__parent__"/>
-    <attribute for="reservedQty" name="hidden"
-      expr="eval: saleOrder.statusSelect != 3 || product?.productTypeSelect == 'service'"
-      if="saleOrder"/>
-  </action-attrs>
-
   <action-attrs name="action-sale-order-line-attrs-is-requested-qty-readonly">
     <attribute for="requestedReservedQty" name="readonly"
       expr="eval: __parent__.statusSelect &gt; 2" if="__parent__"/>
@@ -387,6 +398,37 @@
   <action-attrs name="action-sale-order-line-attrs-set-saleOrderLineListToInvoice">
     <attribute for="$saleOrderLineListToInvoice" name="value"
       expr="eval: _saleOrderLineListToInvoice"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-reserved-qty-visibility">
+    <attribute for="reservedQty" name="hidden"
+      expr="eval: __parent__.statusSelect != 3 || product?.productTypeSelect == 'service'"
+      if="__parent__"/>
+    <attribute for="reservedQty" name="hidden"
+      expr="eval: saleOrder.statusSelect != 3 || product?.productTypeSelect == 'service'"
+      if="saleOrder"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-show-availabilty-request">
+    <attribute name="value" for="$availabiltyRequest"
+      expr="eval:  id &amp;&amp; __repo__(StockMoveLine).all().filter('self.saleOrderLine.id = ? AND self.stockMove.availabilityRequest = TRUE AND self.stockMove.statusSelect = 2', __self__?.id).count() > 0"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
+    if-module="axelor-production">
+    <attribute name="hidden" for="billOfMaterial"
+      expr="eval: (saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4) || product?.productTypeSelect == 'service' "
+      if="__config__.app.isApp('production')"/>
+    <attribute name="hidden" for="customizeBOMBtn"
+      expr="eval: (saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4) || product?.productTypeSelect == 'service' "
+      if="__config__.app.isApp('production')"/>
+    <attribute name="hidden" for="prodProcess"
+      expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "
+      if="__config__.app.isApp('production')"/>
+    <attribute name="hidden" for="customizeProdProcessBtn"
+      expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "
+      if="__config__.app.isApp('production')"/>
   </action-attrs>
 
   <!-- ACTION VALIDATE -->

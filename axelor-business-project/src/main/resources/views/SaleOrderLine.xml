@@ -5,10 +5,25 @@
 
   <form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line"
     name="sale-order-line-form" extension="true" id="project-sale-order-line-form">
+
+    <extend target="/">
+      <attribute name="onNew" value="business-project-action-sale-order-line-group-onnew"/>
+      <attribute name="onLoad"
+        value="business-project-action-sale-order-line-group-onload"/>
+    </extend>
+
     <extend target="//field[@name='project']">
       <attribute name="onChange" value="action-sale-order-line-method-update-distribution"/>
     </extend>
   </form>
+
+  <grid name="sale-order-line-editable-grid" title="SO lines"
+    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true" id="project-sale-order-line-form">
+    <extend target="/">
+      <attribute name="onNew"
+        value="business-project-action-sale-order-line-group-onnew-editable"/>
+    </extend>
+  </grid>
 
   <form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line"
     name="sale-order-line-template-form" extension="true" id="project-sale-order-line-template-form">
@@ -43,6 +58,40 @@
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="invoiced" hidden="true"/>
   </grid>
+
+  <action-group name="business-project-action-sale-order-line-group-onnew">
+    <action name="supplychain-action-sale-order-line-group-onnew"/>
+    <action name="action-sale-order-line-record-project"
+      if="__config__.app.isApp('business-project')"/>
+    <action name="action-sale-order-line-attrs-title-project"
+      if="__config__.app.isApp('business-project')"/>
+  </action-group>
+
+  <action-group name="business-project-action-sale-order-line-group-onnew-editable">
+    <action name="action-sale-order-line-method-onnew-editable"/>
+    <action name="action-sale-order-line-record-project"
+      if="__config__.app.isApp('business-project')"/>
+  </action-group>
+
+  <action-group name="business-project-action-sale-order-line-group-onload">
+    <action name="supplychain-action-sale-order-line-group-onload"/>
+    <action name="action-sale-order-line-attrs-title-project"
+      if="__config__.app.isApp('business-project')"/>
+  </action-group>
+
+  <action-record name="action-sale-order-line-record-project"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="project" expr="eval: __parent__?.project"/>
+  </action-record>
+
+  <action-attrs name="action-sale-order-line-attrs-title-project">
+    <attribute name="title" for="project"
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project')?.getProjectLabel())"/>
+    <attribute name="title" for="projectPanel"
+      expr="eval:  __config__.app.getApp('project')?.getProjectLabel()"
+      if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project')?.getProjectLabel())"/>
+  </action-attrs>
 
   <action-method name="action-sale-order-line-method-set-project">
     <call class="com.axelor.apps.businessproject.web.SaleOrderLineProjectController"

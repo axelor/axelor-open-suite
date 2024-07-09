@@ -28,14 +28,19 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.db.mapper.Mapper;
@@ -46,18 +51,75 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Singleton
 public class SaleOrderLineController {
 
+  public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+    response.setAttrs(
+        Beans.get(SaleOrderLineFireService.class).getOnNewAttrs(saleOrderLine, saleOrder));
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineDummyService.class).getOnNewDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class).onNewInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
+  }
+
+  public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+    response.setAttrs(
+        Beans.get(SaleOrderLineFireService.class).getOnLoadAttrs(saleOrderLine, saleOrder));
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineDummyService.class).getOnLoadDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class).onLoadInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
+
+    // Check
+    AppSaleService appSaleService = Beans.get(AppSaleService.class);
+    if (appSaleService.getAppSale() != null
+        && appSaleService.getAppSale().getManageMultipleSaleQuantity()) {
+      Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
+    }
+  }
+
+  public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+    response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineDummyService.class)
+            .getOnNewEditableDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class)
+            .onNewEditableInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
+  }
+
   public void computeSubMargin(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
     Map<String, BigDecimal> map =
         Beans.get(SaleOrderMarginService.class)
             .getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine);
@@ -76,7 +138,7 @@ public class SaleOrderLineController {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       PricingService pricingService = Beans.get(PricingService.class);
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+      SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
       SaleOrderLineProductService saleOrderLineProductService =
           Beans.get(SaleOrderLineProductService.class);
 
@@ -125,10 +187,12 @@ public class SaleOrderLineController {
   public void updatePrice(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).inTaxPriceOnChange(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
+    response.setAttrs(
+        Beans.get(SaleOrderLineViewService.class).hidePriceDiscounted(saleOrder, saleOrderLine));
   }
 
   /**
@@ -141,10 +205,12 @@ public class SaleOrderLineController {
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).priceOnChange(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
+    response.setAttrs(
+        Beans.get(SaleOrderLineViewService.class).hidePriceDiscounted(saleOrder, saleOrderLine));
   }
 
   public void emptyLine(ActionRequest request, ActionResponse response) {
@@ -180,7 +246,7 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+      SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
       BigDecimal maxDiscount =
           Beans.get(SaleOrderLineDiscountService.class)
               .computeMaxDiscount(saleOrder, saleOrderLine);
@@ -202,7 +268,7 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+      SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
       response.setAttr(
           "product",
           "domain",
@@ -217,7 +283,7 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+      SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
       Beans.get(SaleOrderLinePricingService.class).computePricingScale(saleOrderLine, saleOrder);
 
       response.setValues(saleOrderLine);
@@ -230,18 +296,20 @@ public class SaleOrderLineController {
   public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
 
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).qtyOnChange(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
+    response.setAttrs(
+        Beans.get(SaleOrderLineViewService.class).hidePriceDiscounted(saleOrder, saleOrderLine));
   }
 
   public void taxLineOnChange(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).taxLineOnChange(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
@@ -251,7 +319,7 @@ public class SaleOrderLineController {
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).compute(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
@@ -261,9 +329,18 @@ public class SaleOrderLineController {
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).compute(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
+    response.setAttrs(
+        Beans.get(SaleOrderLineViewService.class).hidePriceDiscounted(saleOrder, saleOrderLine));
+  }
+
+  public void hideAti(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    response.setAttrs(Beans.get(SaleOrderLineViewService.class).hideAti(saleOrder));
   }
 }

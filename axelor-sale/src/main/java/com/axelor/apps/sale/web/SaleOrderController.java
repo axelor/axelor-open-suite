@@ -54,7 +54,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
