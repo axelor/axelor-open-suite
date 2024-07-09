@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service.productionorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -32,9 +33,10 @@ import java.util.Set;
 
 public interface ProductionOrderService {
 
-  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
+  public ProductionOrder createProductionOrder(SaleOrder saleOrder, BillOfMaterial billOfMaterial)
+      throws AxelorException;
 
-  public String getProductionOrderSeq() throws AxelorException;
+  public String getProductionOrderSeq(Company company) throws AxelorException;
 
   /**
    * Generate a Production Order
