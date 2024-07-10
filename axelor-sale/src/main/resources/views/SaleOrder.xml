@@ -226,7 +226,7 @@
 
   <form name="sale-order-form-wizard" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder"
-    onNew="action-group-sale-saleorder-onnew,action-sale-order-method-create-order,action-sale-order-record-hide-discount"
+    onNew="action-sale-order-method-onnew,action-sale-order-method-create-order,action-sale-order-record-hide-discount"
     onLoad="action-group-sale-saleorder-onload">
 
     <panel-include view="sale-order-form"/>
@@ -234,7 +234,7 @@
 
   <form name="sale-order-form-partner" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder"
-    onNew="action-group-sale-saleorder-onnew,action-group-partner-saleorder-onnew"
+    onNew="action-sale-order-method-onnew,action-group-partner-saleorder-onnew"
     onLoad="action-group-sale-saleorder-onload">
 
     <panel-include view="sale-order-form"/>
@@ -242,7 +242,7 @@
 
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
-    onNew="action-group-sale-saleorder-onnew"
+    onNew="action-sale-order-method-onnew"
     onSave="action-sale-order-line-tree-method-update-hasTree">
     <toolbar>
       <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
@@ -386,8 +386,7 @@
           form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
           colSpan="3"/>
         <field name="clientPartner" required="true" hideIf="company == null"
-          readonlyIf="statusSelect > 1"
-          onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date"
+          readonlyIf="statusSelect > 1" onChange="action-sale-order-group-client-partner-change"
           onSelect="action-sale-order-method-set-client-partner-domain" form-view="partner-form"
           grid-view="partner-grid" colSpan="3"/>
         <field name="contactPartner" colSpan="3" hideIf="company == null"
@@ -898,7 +897,7 @@
 
   <form name="sale-order-template-form-wizard" title="Template"
     model="com.axelor.apps.sale.db.SaleOrder"
-    onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+    onNew="action-sale-order-method-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
     onLoad="action-group-sale-saleorder-onload">
 
     <panel-include view="sale-order-template-form"/>
@@ -906,7 +905,7 @@
 
   <form name="sale-order-template-form" title="Template"
     model="com.axelor.apps.sale.db.SaleOrder"
-    onNew="action-group-sale-saleorder-onnew,action-sale-order-template-hide-allocated-qty"
+    onNew="action-sale-order-method-onnew,action-sale-order-template-hide-allocated-qty"
     onLoad="action-group-sale-saleorder-onload,action-sale-order-template-hide-allocated-qty">
     <panel name="overviewPanel">
       <field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12"
@@ -1072,7 +1071,7 @@
   <form name="sale-order-form-client" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form-client"
     onLoad="action-group-sale-saleorder-onload" onSave="save,action-sale-order-method-compute,save"
-    onNew="action-group-sale-saleorder-onnew" width="large">
+    onNew="action-sale-order-method-onnew" width="large">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-sale-order-method-show-sale-order"/>
@@ -1446,53 +1445,6 @@
     <action name="action-sale-order-record-set-default-tax-number"/>
   </action-group>
 
-  <action-group name="action-sale-group-onchange-client-partner">
-    <action name="action-sale-order-record-partner"/>
-    <action name="action-sale-order-method-set-advance-payment"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-    <action name="action-partner-attrs-hide-contact-partner"/>
-    <action name="action-sale-order-method-fill-company-bank-details"/>
-    <action name="action-sale-method-printing-settings-default-values"/>
-  </action-group>
-
-  <action-group name="action-group-sale-saleorder-onnew">
-    <action name="action-sale-order-record-default"/>
-    <action name="action-sale-order-record-company-configuration"/>
-    <action name="action-sale-order-record-currency"/>
-    <action name="action-sale-order-attrs-collapse-specific-settings-group"/>
-    <action name="action-sale-order-record-in-ati"/>
-    <action name="action-sale-order-attrs-in-ati"/>
-    <action name="action-sale-order-attrs-hidden-bank-details"/>
-    <action name="action-sale-order-method-fill-company-bank-details"/>
-    <action name="action-sale-order-attrs-external-reference"/>
-    <action name="action-sale-order-attrs-availability"/>
-    <action name="action-sale-order-group-set-defualts-from-opportunity"
-      if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.crm.db.Opportunity'"/>
-    <action name="action-sale-order-record-get-trading-names-management-config"/>
-    <action name="action-sale-order-record-set-group-product-on-printing"/>
-    <action name="action-sale-order-method-get-last-version"/>
-    <action name="action-sale-order-attrs-set-save-actual-version"/>
-    <action name="action-sale-order-attrs-list-selection-in-type-select"/>
-    <action name="action-sale-order-attrs-editable-display-discount-amount"/>
-  </action-group>
-
-  <action-group name="action-sale-order-group-set-defualts-from-opportunity">
-    <action name="action-sale-order-record-set-clientPartner-from-opportunity"/>
-    <action name="action-sale-order-group-client-partner-change" if="clientPartner != null"/>
-    <action name="action-sale-order-record-set-salemanuser-from-opportunity"/>
-  </action-group>
-
-  <action-record name="action-sale-order-record-set-clientPartner-from-opportunity"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="clientPartner"
-      expr="eval: __parent__?.partner ? __repo__(Partner).find(__parent__?.partner?.id) : null"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-set-salemanuser-from-opportunity"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="salespersonUser" expr="eval: __parent__?.user"/>
-  </action-record>
-
   <action-record name="action-sale-order-record-get-trading-names-management-config"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="$enableTradingNamesManagement"
@@ -1530,32 +1482,9 @@
   </action-group>
 
   <action-group name="action-sale-order-group-client-partner-change">
-    <action name="action-sale-order-record-partner"/>
-    <action name="action-sale-order-method-set-advance-payment"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-    <action name="action-sale-order-method-address-str"/>
-    <action name="action-sale-order-method-fill-price-list"
-      if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
-    <action name="action-sale-order-record-hide-discount"/>
+    <action name="action-sale-order-method-client-partner-onchange"/>
     <action name="action-sale-order-attrs-interco" if="__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-record-interco" if="__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-record-set-contact-partner"/>
-    <action name="action-sale-order-record-partner-supplychain"
-      if="__config__.app.isApp('supplychain')"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.shippingDefaultStockLocation == null || stockLocation == null)"/>
-    <action name="action-supplychain-sale-order-method-get-to-stock-location"
-      if="__config__.app.isApp('supplychain')"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
-    <action name="action-sale-order-method-update-sale-order-line-list" if="template"/>
-    <action name="action-sale-order-attrs-set-is-ispm-required"
-      if="__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-record-set-group-product-on-printing"/>
-    <action
-      name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
-      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
-    <action name="action-sale-order-method-fiscal-position-on-change"/>
-    <action name="action-sale-order-method-compute"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1603,12 +1532,6 @@
       expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
   </action-attrs>
 
-  <action-record name="action-sale-order-record-set-contact-partner"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="contactPartner"
-      expr="eval: clientPartner?.contactPartnerSet?.size() == 1 ? clientPartner.contactPartnerSet.collect{it}[0] : null"/>
-  </action-record>
-
   <action-record name="action-sale-order-record-from-partner"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.id)"
@@ -1619,20 +1542,6 @@
     <field name="contactPartner"
       expr="eval: _partner?.contactPartnerSet?.size() == 1 ? _partner?.contactPartnerSet[0] : null"
       if="_partner.isContact == false"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-set-group-product-on-printing"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="groupProductsOnPrintings"
-      expr="eval: clientPartner?.groupProductsOnPrintings"
-      if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-in-ati"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="inAti"
-      expr="eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
-    									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
   </action-record>
 
   <action-method
@@ -1767,39 +1676,6 @@
     <field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
     <field name="locationToCheck" expr="eval: contextLocationToCheck"/>
     <field name="partnerId" expr="eval: contextPartnerId"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-currency"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="currency" expr="eval: company?.currency" if="!template"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-default"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="exTaxTotal" expr="eval: 0"/>
-    <field name="taxTotal" expr="eval: 0"/>
-    <field name="inTaxTotal" expr="eval: 0"/>
-    <field name="amountInvoiced" expr="eval: 0"/>
-    <field name="advanceTotal" expr="eval: 0"/>
-    <field name="creationDate" expr="eval:__config__.date" if="__user__.activeCompany != null"/>
-    <field name="statusSelect" expr="eval: 1"/>
-    <field name="company" expr="eval:__user__.activeCompany"
-      if="__user__.activeCompany != null"/>
-    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-    <field name="salespersonUser" expr="eval:__user__"
-      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
-    <field name="salespersonUser" expr="eval: clientPartner?.getUser()"
-      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 2"/>
-    <field name="team"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
-      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
-    <field name="template" expr="eval:_template"/>
-    <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
-      if="__user__.activeCompany != null"/>
-    <field name="tradingName" expr="eval: __user__?.tradingName"/>
-    <field name="stockLocation"
-      expr="eval: __user__?.tradingName?.shippingDefaultStockLocation"/>
   </action-record>
 
   <action-record name="action-sale-order-record-company-configuration"
@@ -2165,6 +2041,14 @@
   <action-method name="action-sale-method-printing-settings-default-values">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="fillDefaultPrintingSettings"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-onnew">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-client-partner-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="clientPartnerOnChange"/>
   </action-method>
 
   <action-validate name="action-sale-order-validate-check-on-confirm">
