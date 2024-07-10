@@ -18,26 +18,26 @@
  */
 package com.axelor.apps.stock.service.batch.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class StockMoveGroup {
 
-  private final LocalDate realDate;
+  private final LocalDateTime realDateTime;
   private final Long idFromStockLocation;
   private final Long idToStockLocation;
   private final int statusSelect;
 
   public StockMoveGroup(
-      LocalDate realDate, Long fromStockLocation, Long toStockLocation, int statusSelect) {
-    this.realDate = realDate;
+      LocalDateTime realDateTime, Long fromStockLocation, Long toStockLocation, int statusSelect) {
+    this.realDateTime = realDateTime;
     this.idFromStockLocation = Objects.requireNonNull(fromStockLocation);
     this.idToStockLocation = Objects.requireNonNull(toStockLocation);
     this.statusSelect = statusSelect;
   }
 
-  public LocalDate getRealDate() {
-    return realDate;
+  public LocalDateTime getRealDateTime() {
+    return realDateTime;
   }
 
   public Long getFromStockLocation() {

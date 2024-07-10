@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -197,10 +197,10 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">real_date</property>
+                    <property name="columnName">real_date_time</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">real_date</text-property>
-                    <text-property name="heading">real_date</text-property>
+                    <text-property name="displayName">real_date_time</text-property>
+                    <text-property name="heading">real_date_time</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">type_select</property>
@@ -391,8 +391,8 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">real_date</property>
-                        <property name="dataType">date</property>
+                        <property name="name">real_date_time</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
@@ -558,10 +558,10 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">real_date</property>
-                    <property name="nativeName">real_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="name">real_date_time</property>
+                    <property name="nativeName">real_date_time</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
@@ -740,7 +740,7 @@ else row["last_modified_by"]</expression>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id, MetaFile.file_path as logo_path, Company.height as logo_height,
-Company.width as logo_width, StockMove.real_date, StockMove.type_select,
+Company.width as logo_width, StockMove.real_date_time, StockMove.type_select,
 StockMove.stock_move_seq,
 Partner.title_select, Partner.name, Partner.first_name, Partner.partner_type_select,
 StockMove.from_address_str, StockMove.to_address_str, StockMove.is_ispm_required,
@@ -1363,12 +1363,6 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">real_date</property>
-                            <text-property name="displayName">real_date</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["real_date"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
                             <property name="name">type_select</property>
                             <text-property name="displayName">type_select</text-property>
                             <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
@@ -1499,6 +1493,12 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                             <text-property name="displayName">user_name</text-property>
                             <expression name="expression" type="javascript">dataSetRow["user_name"]</expression>
                             <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">real_date_time</property>
+                            <text-property name="displayName">real_date_time</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["real_date_time"]</expression>
+                            <property name="dataType">date-time</property>
                         </structure>
                     </list-property>
                     <column id="4236"/>
@@ -1678,12 +1678,6 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <text-property name="displayName">logo_path</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">real_date</property>
-                    <text-property name="displayName">real_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["real_date"]</expression>
-                    <property name="dataType">date</property>
                 </structure>
                 <structure>
                     <property name="name">type_select</property>
@@ -1866,6 +1860,12 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <text-property name="displayName">display_ext_ref_on_certificate_of_conformity_printing</text-property>
                     <expression name="expression" type="javascript">dataSetRow["display_ext_ref_on_certificate_of_conformity_printing"]</expression>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">real_date_time</property>
+                    <text-property name="displayName">real_date_time</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["real_date_time"]</expression>
+                    <property name="dataType">date-time</property>
                 </structure>
             </list-property>
             <column id="3343">
@@ -2334,12 +2334,12 @@ row["first_name"]
                     <property name="borderLeftStyle">none</property>
                     <property name="borderRightStyle">none</property>
                     <property name="borderTopStyle">none</property>
-                    <data id="5376">
+                    <data id="5379">
                         <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
+                            <property name="category">Custom</property>
+                            <property name="pattern">dd/MM/yyyy HH:mm</property>
                         </structure>
-                        <property name="resultSetColumn">real_date</property>
+                        <property name="resultSetColumn">real_date_time</property>
                     </data>
                 </cell>
             </row>

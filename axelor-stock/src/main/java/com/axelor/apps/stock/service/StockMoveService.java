@@ -33,6 +33,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.message.db.Template;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,7 +49,7 @@ public interface StockMoveService {
    * @param clientPartner
    * @param fromStockLocation
    * @param toStockLocation
-   * @param realDate
+   * @param realDateTime
    * @param estimatedDate
    * @param note
    * @param shipmentMode
@@ -67,7 +68,7 @@ public interface StockMoveService {
       Partner clientPartner,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
-      LocalDate realDate,
+      LocalDateTime realDateTime,
       LocalDate estimatedDate,
       String note,
       ShipmentMode shipmentMode,
@@ -86,7 +87,7 @@ public interface StockMoveService {
    * @param company
    * @param fromStockLocation
    * @param toStockLocation
-   * @param realDate
+   * @param realDateTime
    * @param estimatedDate
    * @param note
    * @param typeSelect
@@ -99,7 +100,7 @@ public interface StockMoveService {
       Company company,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
-      LocalDate realDate,
+      LocalDateTime realDateTime,
       LocalDate estimatedDate,
       String note,
       int typeSelect)
@@ -111,7 +112,7 @@ public interface StockMoveService {
       Company company,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
-      LocalDate realDate,
+      LocalDateTime realDateTime,
       LocalDate estimatedDate,
       int typeSelect,
       MassStockMove massStockMove)

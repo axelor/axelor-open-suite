@@ -54,8 +54,10 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ImportSupplyChain {
 
@@ -120,6 +122,11 @@ public class ImportSupplyChain {
         purchaseOrderWorkflowService.validatePurchaseOrder(purchaseOrder);
       }
 
+      LocalDateTime estimatedReceiptDateTime =
+          Optional.ofNullable(purchaseOrder.getEstimatedReceiptDate())
+              .map(date -> LocalDateTime.of(date, LocalTime.now()))
+              .orElse(null);
+
       if (status == PurchaseOrderRepository.STATUS_FINISHED) {
         List<Long> idList =
             purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
@@ -127,7 +134,7 @@ public class ImportSupplyChain {
           StockMove stockMove = stockMoveRepo.find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
-          stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
+          stockMove.setRealDateTime(estimatedReceiptDateTime);
         }
         purchaseOrder.setValidationDateTime(purchaseOrder.getOrderDate().atStartOfDay());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
@@ -209,7 +216,7 @@ public class ImportSupplyChain {
             stockMoveService.copyQtyToRealQty(stockMove);
             stockMoveService.realize(stockMove);
             if (saleOrder.getConfirmationDateTime() != null) {
-              stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+              stockMove.setRealDateTime(saleOrder.getConfirmationDateTime());
             }
           }
         }

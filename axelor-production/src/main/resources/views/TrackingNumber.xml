@@ -42,7 +42,7 @@
       <field name="currentQty" title="Real/Current Quantity" type="decimal"/>
       <field name="stockLocation" title="Stock location" type="string"/>
       <field name="moveLine" title="Stock move line" type="string"/>
-      <field name="date" type="date"/>
+      <field name="date" type="datetime"/>
       <field name="origin" title="Origin" type="string"/>
     </result-fields>
 
@@ -53,7 +53,7 @@
       <field name="stockMoveLineList.productName" as="moveLine"/>
       <field name="stockMoveLineList.realQty" as="currentQty"/>
       <field name="stockMoveLineList.qty" as="futureQty"/>
-      <field name="stockMoveLineList.stockMove.realDate" as="date"/>
+      <field name="stockMoveLineList.stockMove.realDateTime" as="date"/>
       <field name="stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
         <input name="trackingNumber" field="stockMoveLineList.trackingNumber"/>
@@ -77,7 +77,7 @@
       <field name="inStockMoveList.stockMoveLineList.productName" as="moveLine"/>
       <field name="inStockMoveList.stockMoveLineList.realQty" as="currentQty"/>
       <field name="inStockMoveList.stockMoveLineList.qty" as="futureQty"/>
-      <field name="inStockMoveList.stockMoveLineList.stockMove.realDate" as="date"/>
+      <field name="inStockMoveList.stockMoveLineList.stockMove.realDateTime" as="date"/>
       <field name="inStockMoveList.stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
         <input name="trackingNumber" field="inStockMoveList.stockMoveLineList.trackingNumber"/>
@@ -90,7 +90,7 @@
       <field name="outStockMoveList.stockMoveLineList.productName" as="moveLine"/>
       <field name="outStockMoveList.stockMoveLineList.realQty" as="currentQty"/>
       <field name="outStockMoveList.stockMoveLineList.qty" as="futureQty"/>
-      <field name="outStockMoveList.stockMoveLineList.stockMove.realDate" as="date"/>
+      <field name="outStockMoveList.stockMoveLineList.stockMove.realDateTime" as="date"/>
       <field name="outStockMoveList.stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
         <input name="trackingNumber" field="outStockMoveList.stockMoveLineList.trackingNumber"/>

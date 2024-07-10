@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -698,15 +699,19 @@ public class CostSheetServiceImpl implements CostSheetService {
               != stockMoveLine.getStockMove().getStatusSelect()) {
         continue;
       }
+      LocalDate realDate =
+          Optional.ofNullable(stockMove.getRealDateTime())
+              .map(realDateTime -> realDateTime.toLocalDate())
+              .orElse(null);
 
       if ((calculationType == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION
               || calculationType == CostSheetRepository.CALCULATION_END_OF_PRODUCTION)
           && previousCostSheetDate != null
-          && !previousCostSheetDate.isBefore(stockMove.getRealDate())) {
+          && !previousCostSheetDate.isBefore(realDate)) {
         continue;
 
       } else if (calculationType == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS
-          && calculationDate.isBefore(stockMove.getRealDate())) {
+          && calculationDate.isBefore(realDate)) {
         continue;
       }
 

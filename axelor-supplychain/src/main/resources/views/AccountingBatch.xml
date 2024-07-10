@@ -82,7 +82,7 @@
       (:_accountingCutOffTypeSelect = 2 AND
       self.stockMove.typeSelect = 2))
       AND
-      self.stockMove.realDate &lt;= :_moveDate
+      DATE(self.stockMove.realDateTime) &lt;= :_moveDate
       AND
       self.stockMove.company.id =
       :_company

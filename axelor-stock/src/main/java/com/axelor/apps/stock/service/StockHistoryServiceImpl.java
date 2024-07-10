@@ -215,8 +215,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
         "self.product.id = :productId "
             + "AND self.stockMove.statusSelect = :realized "
             + "AND self.stockMove.company.id = :companyId "
-            + "AND self.stockMove.realDate >= :beginDate "
-            + "AND self.stockMove.realDate < :endDate "
+            + "AND DATE(self.stockMove.realDateTime) >= :beginDate "
+            + "AND DATE(self.stockMove.realDateTime) < :endDate "
             + "AND self.fromStockLocation.id IN :stockLocationIdList ";
 
     List<StockMoveLine> stockMoveLineList =
@@ -264,8 +264,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
         "self.product.id = :productId "
             + "AND self.stockMove.statusSelect = :realized "
             + "AND self.stockMove.company.id = :companyId "
-            + "AND self.stockMove.realDate >= :beginDate "
-            + "AND self.stockMove.realDate < :endDate ";
+            + "AND DATE(self.stockMove.realDateTime) >= :beginDate "
+            + "AND DATE(self.stockMove.realDateTime) < :endDate ";
 
     if (incoming) {
       filter += "AND self.toStockLocation.id IN :stockLocationIdList ";

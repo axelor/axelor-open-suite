@@ -142,12 +142,13 @@ public class ClientViewServiceImpl implements ClientViewService {
   /* StockMove Indicators */
   protected String getLastDeliveryIndicator(User user) {
     List<Filter> filters = getLastDeliveryOfUser(user);
-    StockMove stockMove = Filter.and(filters).build(StockMove.class).order("-realDate").fetchOne();
+    StockMove stockMove =
+        Filter.and(filters).build(StockMove.class).order("-realDateTime").fetchOne();
     if (stockMove == null) {
       return I18n.get(CLIENT_PORTAL_NO_DATE);
     }
-    return stockMove.getRealDate() != null
-        ? L10n.getInstance().format(stockMove.getRealDate())
+    return stockMove.getRealDateTime() != null
+        ? L10n.getInstance().format(stockMove.getRealDateTime())
         : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 

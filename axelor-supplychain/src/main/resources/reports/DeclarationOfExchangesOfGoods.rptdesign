@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1223,7 +1223,7 @@ left join base_country ToStockLocationCountry on ToStockLocationAddress.country 
 left join base_city ToStockLocationCity on ToStockLocationAddress.city = ToStockLocationCity.id
 left join base_department ToStockLocationDepartment on ToStockLocationCity.department = ToStockLocationDepartment.id
 where
-StockMove.real_date between Period.from_date and Period.to_date
+DATE(StockMove.real_date_time) between Period.from_date and Period.to_date
 and Product.product_type_select = DeclarationOfExchanges.product_type_select
 and Product.used_indeb = true
 and StockMove.type_select = DeclarationOfExchanges.stock_move_type_select
@@ -1238,7 +1238,7 @@ and coalesce(FromCountry.economic_area, FromStockLocationCountry.economic_area)
 = coalesce(ToCountry.economic_area, ToStockLocationCountry.economic_area) 
 AND round(StockMoveLine.company_unit_price_untaxed * StockMoveLine.real_qty) > 0
 
-order by StockMove.real_date, StockMoveLine.id]]></xml-property>
+order by StockMove.real_date_time, StockMoveLine.id]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

@@ -37,6 +37,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -183,6 +184,10 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
       offSet += FETCH_LIMIT;
     }
+    LocalDate realDate =
+        Optional.ofNullable(group.getRealDateTime())
+            .map(realDateTime -> realDateTime.toLocalDate())
+            .orElse(null);
 
     for (Entry<TrackProduct, StockMoveLineOrigin> entry : stockMoveLinesMap.entrySet()) {
       stockMoveLineService.updateLocations(
@@ -191,7 +196,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
           Collections.singletonList(entry.getValue().getStockMoveLine()),
           null,
           false,
-          group.getRealDate(),
+          realDate,
           entry.getValue().getOrigin(),
           true);
     }
@@ -218,16 +223,16 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
                 + " AND self.toStockLocation.id = :toStockLocation"
                 + " AND self.statusSelect = :status");
 
-    if (stockMoveGroup.getRealDate() == null) {
-      query.append(" AND self.realDate is NULL");
+    if (stockMoveGroup.getRealDateTime() == null) {
+      query.append(" AND self.realDateTime is NULL");
     } else {
-      query.append(" AND self.realDate = :realDate");
+      query.append(" AND self.realDateTime = :realDateTime");
     }
 
     return stockMoveRepository
         .all()
         .filter(query.toString())
-        .bind("realDate", stockMoveGroup.getRealDate())
+        .bind("realDateTime", stockMoveGroup.getRealDateTime())
         .bind("fromStockLocation", stockMoveGroup.getFromStockLocation())
         .bind("toStockLocation", stockMoveGroup.getToStockLocation())
         .bind("status", stockMoveGroup.getStatusSelect());
@@ -242,16 +247,16 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
                 + " AND self.toStockLocation.id = :toStockLocation"
                 + " AND self.stockMove.statusSelect = :status");
 
-    if (stockMoveGroup.getRealDate() == null) {
-      query.append(" AND self.stockMove.realDate is NULL");
+    if (stockMoveGroup.getRealDateTime() == null) {
+      query.append(" AND self.stockMove.realDateTime is NULL");
     } else {
-      query.append(" AND self.stockMove.realDate = :realDate");
+      query.append(" AND self.stockMove.realDateTime = :realDateTime");
     }
 
     return stockMoveLineRepository
         .all()
         .filter(query.toString())
-        .bind("realDate", stockMoveGroup.getRealDate())
+        .bind("realDateTime", stockMoveGroup.getRealDateTime())
         .bind("fromStockLocation", stockMoveGroup.getFromStockLocation())
         .bind("toStockLocation", stockMoveGroup.getToStockLocation())
         .bind("status", stockMoveGroup.getStatusSelect());
@@ -263,15 +268,15 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
         JPA.em()
             .createQuery(
                 "SELECT "
-                    + "self.realDate,"
+                    + "self.realDateTime,"
                     + " self.fromStockLocation.id,"
                     + " self.toStockLocation.id,"
                     + " self.statusSelect,"
                     + " self.toStockLocation.typeSelect"
                     + " FROM StockMove self "
                     + " GROUP BY"
-                    + " self.realDate, self.fromStockLocation.id, self.toStockLocation.id, self.statusSelect, self.toStockLocation.typeSelect"
-                    + " ORDER BY self.realDate, self.toStockLocation.typeSelect");
+                    + " self.realDateTime, self.fromStockLocation.id, self.toStockLocation.id, self.statusSelect, self.toStockLocation.typeSelect"
+                    + " ORDER BY self.realDateTime, self.toStockLocation.typeSelect");
 
     List<Object[]> resultList = query.getResultList();
     for (Object[] result : resultList) {
@@ -282,13 +287,13 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
   }
 
   protected StockMoveGroup createStockMoveGroup(Object[] result) {
-    LocalDate realDate = null;
+    LocalDateTime realDateTime = null;
     Long fromStockLocation = null;
     Long toStockLocation = null;
     Integer status = null;
 
     if (result[0] != null) {
-      realDate = (LocalDate) result[0];
+      realDateTime = (LocalDateTime) result[0];
     }
 
     if (result[1] != null) {
@@ -303,7 +308,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
       status = (Integer) result[3];
     }
 
-    return new StockMoveGroup(realDate, fromStockLocation, toStockLocation, status);
+    return new StockMoveGroup(realDateTime, fromStockLocation, toStockLocation, status);
   }
 
   @Override
