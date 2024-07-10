@@ -918,7 +918,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .fetch();
 
     BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
-    sumInvoices = sumInvoices.add(amountToInvoice);
+    if (isPercent) {
+      BigDecimal hundred = new BigDecimal(100);
+      sumInvoices =
+          sumInvoices.add(
+              amountToInvoice
+                  .multiply(saleOrder.getExTaxTotal())
+                  .divide(hundred, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP));
+    } else {
+      sumInvoices = sumInvoices.add(amountToInvoice);
+    }
+
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
