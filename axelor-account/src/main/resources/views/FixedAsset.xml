@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="fixed-asset-grid" title="Fixed assets"
     model="com.axelor.apps.account.db.FixedAsset" orderBy="company.code,-fixedAssetSeq,-reference">
@@ -369,8 +369,6 @@
     <panel name="mainPanel">
       <field name="splitTypeSelect" title="Split type" type="integer"
         selection="account.fixed.asset.split.type.select"/>
-      <label
-        title="Please select the type of split to be realized. A new record of fixed asset will be generated based on the split quantity or the split amount. Current fixed asset will be recalculated based on the remaining quantity/amount."/>
       <panel name="qtyGrossValuePanel" stacked="true" colSpan="12" itemSpan="12">
         <panel name="qtyPanel" showIf="splitTypeSelect == 1">
           <field name="qty" title="Quantity to split" min="0.01" type="decimal"/>
@@ -381,6 +379,11 @@
           <field name="grossValue" title="Gross value" type="decimal"/>
           <label
             title="A new record of fixed asset will be generated based on the split amount. Current fixed asset will be recalculated based on the remaining gross value amount."/>
+        </panel>
+        <panel name="unitQtyPanel" showIf="splitTypeSelect == 3">
+          <field name="qty" title="Quantity to split" min="1" x-scale="0" type="decimal"/>
+          <label
+            title="X new records of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity."/>
         </panel>
       </panel>
       <button name="splitBtn" title="Split" colSpan="4"

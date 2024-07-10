@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeService {
+
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected TaxService taxService;
@@ -28,7 +29,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   protected SaleOrderMarginService saleOrderMarginService;
   protected CurrencyService currencyService;
   protected PriceListService priceListService;
-  protected SaleOrderLineService saleOrderLineService;
+  protected SaleOrderLinePackService saleOrderLinePackService;
 
   @Inject
   public SaleOrderLineComputeServiceImpl(
@@ -38,14 +39,14 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
       SaleOrderMarginService saleOrderMarginService,
       CurrencyService currencyService,
       PriceListService priceListService,
-      SaleOrderLineService saleOrderLineService) {
+      SaleOrderLinePackService saleOrderLinePackService) {
     this.taxService = taxService;
     this.currencyScaleService = currencyScaleService;
     this.productCompanyService = productCompanyService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
-    this.saleOrderLineService = saleOrderLineService;
+    this.saleOrderLinePackService = saleOrderLinePackService;
   }
 
   @Override
@@ -173,7 +174,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
       return saleOrderLineMap;
     }
-    saleOrderLineService.fillPriceFromPackLine(saleOrderLine, saleOrder);
+    saleOrderLinePackService.fillPriceFromPackLine(saleOrderLine, saleOrder);
     saleOrderLineMap.putAll(computeValues(saleOrder, saleOrderLine));
     return saleOrderLineMap;
   }

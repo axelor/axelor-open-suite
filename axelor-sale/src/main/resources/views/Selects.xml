@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -16,12 +16,6 @@
     <option value="3">Order confirmed</option>
     <option value="4">Order completed</option>
     <option value="5">Canceled</option>
-  </selection>
-
-  <selection name="sale.order.delivery.state">
-    <option value="1">Not delivered</option>
-    <option value="2">Partially delivered</option>
-    <option value="3">Delivered</option>
   </selection>
 
   <selection name="message.related.to.select" id="sale.message.related.to.select">

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.intervention.service;
 
 import com.axelor.apps.account.db.Invoice;
@@ -9,6 +27,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
@@ -36,6 +55,7 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
       ContractLineRepository contractLineRepo,
       ContractRepository contractRepository,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
+      ContractInvoicingService contractInvoicingService,
       EquipmentRepository equipmentRepository) {
     super(
         contractLineService,
@@ -47,7 +67,8 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
         durationService,
         contractLineRepo,
         contractRepository,
-        partnerLinkSupplychainService);
+        partnerLinkSupplychainService,
+        contractInvoicingService);
     this.equipmentRepository = equipmentRepository;
   }
 

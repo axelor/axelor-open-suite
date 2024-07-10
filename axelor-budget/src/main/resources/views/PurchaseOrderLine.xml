@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid id="budget-purchase-order-line-purchase-order-grid"
     name="purchase-order-line-purchase-order-grid" extension="true" title="PO lines"
@@ -64,7 +64,7 @@
           </field>
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
-            onChange="action-budget-purchase-orderline-group-account-onchange"/>
+            onChange="action-reset-budget-method"/>
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
             showIf="product != null"
             onSelect="action-budget-purchase-order-line-method-budget-domain"
@@ -97,18 +97,6 @@
     <action name="action-budget-distribution-attrs-currency-symbol"
       if="__config__.app.isApp('budget')"/>
   </action-group>
-
-  <action-group name="action-budget-purchase-orderline-group-account-onchange">
-    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
-    <action name="action-reset-budget-method"/>
-  </action-group>
-
-  <action-attrs
-    name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"
-    id="action-budget-purchase-order-line-attrs-hidden-analytic-distribution-panel">
-    <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; account &amp;&amp; !account.analyticDistributionAuthorized)"/>
-  </action-attrs>
 
   <action-record name="action-budget-purchase-orderline-record-set-global-budget"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">

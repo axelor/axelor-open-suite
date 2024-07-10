@@ -54,7 +54,10 @@ public class DebtRecoveryHistoryServiceImpl implements DebtRecoveryHistoryServic
         Query.of(DMSFile.class)
             .filter(
                 "self.relatedId IN (:ids) AND self.relatedModel = :model AND self.isDirectory = false AND self.fileName LIKE '%.pdf'")
-            .bind("ids", ids).bind("model", DebtRecoveryHistory.class.getName()).fetch().stream()
+            .bind("ids", ids)
+            .bind("model", DebtRecoveryHistory.class.getName())
+            .fetch()
+            .stream()
             .map(dmsFile -> MetaFiles.getPath(dmsFile.getMetaFile()).toFile())
             .collect(Collectors.toList());
 
@@ -82,7 +85,10 @@ public class DebtRecoveryHistoryServiceImpl implements DebtRecoveryHistoryServic
         Query.of(DMSFile.class)
             .filter(
                 "self.relatedId IN (:ids) AND self.relatedModel = :model AND self.isDirectory = false AND self.fileName LIKE '%.pdf'")
-            .bind("ids", ids).bind("model", DebtRecoveryHistory.class.getName()).fetch().stream()
+            .bind("ids", ids)
+            .bind("model", DebtRecoveryHistory.class.getName())
+            .fetch()
+            .stream()
             .map(dmsFile -> MetaFiles.getPath(dmsFile.getMetaFile()).toFile())
             .collect(Collectors.toList());
 

@@ -72,7 +72,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       DurationService durationService,
       ContractLineRepository contractLineRepo,
       ContractRepository contractRepository,
-      PartnerLinkSupplychainService partnerLinkSupplychainService) {
+      PartnerLinkSupplychainService partnerLinkSupplychainService,
+      ContractInvoicingService contractInvoicingService) {
     super(contractLineService, contractVersionService, sequenceService, contractVersionRepository);
     this.appBaseService = appBaseService;
     this.versionService = versionService;
@@ -80,6 +81,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.contractLineRepo = contractLineRepo;
     this.contractRepository = contractRepository;
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
+    this.contractInvoicingService = contractInvoicingService;
   }
 
   @Override

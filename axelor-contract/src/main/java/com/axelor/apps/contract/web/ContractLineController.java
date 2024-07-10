@@ -31,6 +31,7 @@ import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineContextToolService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
+import com.axelor.apps.contract.service.ContractYearEndBonusService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
@@ -147,7 +148,8 @@ public class ContractLineController {
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
       Contract contract = this.getContractFromContext(request);
 
-      if (contract == null) {
+      if (contract == null
+          || Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
         return;
       }
 
@@ -168,6 +170,10 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
 
+      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+        return;
+      }
+
       response.setValues(
           Beans.get(AnalyticGroupService.class)
               .getAnalyticAccountValueMap(
@@ -186,6 +192,10 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+        return;
+      }
 
       Beans.get(AnalyticAttrsSupplychainService.class)
           .addAnalyticDistributionPanelHiddenAttrs(analyticLineContractModel, attrsMap);
