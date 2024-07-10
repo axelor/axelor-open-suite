@@ -249,6 +249,10 @@
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
         onClick="action-send-by-email-with-template"/>
+      <button name="recomputePricesBtn" title="Recompute prices"
+        onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
+        icon="fa-calculator"
+        if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools">
@@ -270,9 +274,6 @@
           action="save,action-sale-order-method-cancel-reservation"
           showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
           if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
-        <item title="Recompute prices" action="action-sale-order-group-recompute-prices-btn"
-          showIf="statusSelect == 1"
-          if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
