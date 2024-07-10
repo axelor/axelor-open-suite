@@ -74,7 +74,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
             contract.getPartner(),
             null);
     purchaseOrder.setPaymentMode(contract.getCurrentContractVersion().getPaymentMode());
-    purchaseOrder.setPaymentCondition(contract.getPartner().getPaymentCondition());
+    purchaseOrder.setPaymentCondition(contract.getPartner().getOutPaymentCondition());
     purchaseOrder.setContract(contract);
     purchaseOrder.setTradingName(contract.getTradingName());
 
