@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+
+  <grid id="production-product-reservation-grid" name="product-reservation-grid"
+    title="Product reservation" model="com.axelor.apps.supplychain.db.ProductReservation"
+    extension="true">
+    <extend target="//field[@name='originSaleOrderLine']">
+      <insert position="after">
+        <field name="originManufOrder"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="production-product-reservation-form" name="product-reservation-form"
+    title="Reservations / allocations" model="com.axelor.apps.supplychain.db.ProductReservation"
+    extension="true">
+
+    <extend target="//field[@name='originSaleOrderLine']">
+      <insert position="after">
+        <field name="originManufOrder"
+          onSelect="action-product-reservation-attrs-set-domain-origin-manuf-order"
+          requiredIf="typeOfUsageTypeSelect &gt; 1 || ( typeSelect == 2 &amp;&amp; !originSaleOrderLine )"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='product']">
+      <attribute name="onChange" value="action-product-reservation-group-onchange-product"/>
+    </extend>
+
+    <extend target="//field[@name='typeOfUsageTypeSelect']">
+      <attribute name="onChange"
+        value="action-product-reservation-record-onchange-type-of-usage-type-select-clear-fields"/>
+    </extend>
+
+    <extend target="//field[@name='originSaleOrderLine']">
+      <attribute name="requiredIf"
+        value="typeOfUsageTypeSelect == 1 || ( typeSelect == 2 &amp;&amp; !originManufOrder ) "/>
+    </extend>
+
+  </form>
+
+  <action-record name="action-product-reservation-record-on-change-clear-fields"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <field name="stockLocation" expr="eval:null" if="stockLocation"/>
+    <field name="originSaleOrderLine" expr="eval:null" if="originSaleOrderLine"/>
+    <field name="originManufOrder" expr="eval:null" if="originManufOrder"/>
+    <field name="trackingNumber" expr="eval:null" if="trackingNumber"/>
+    <field name="priorityReservationDateTime" expr="eval:null"
+      if="priorityReservationDateTime"/>
+    <field name="reservationTypeSelect" expr="eval:null" if="reservationTypeSelect"/>
+    <field name="typeOfUsageTypeSelect" expr="eval:null" if="typeOfUsageTypeSelect"/>
+  </action-record>
+
+  <action-group name="action-product-reservation-group-onchange-product"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <action name="action-product-reservation-record-on-change-clear-fields"/>
+    <action name="action-product-reservation-attrs-show-tracking-number"/>
+  </action-group>
+
+  <action-attrs name="action-product-reservation-attrs-set-domain-origin-manuf-order">
+    <attribute for="originManufOrder" name="domain"
+      expr="eval: &quot;self.product.id = :product AND self.statusSelect not in (1,2)&quot;"
+      if="typeOfUsageTypeSelect != '3'"/>
+    <attribute for="originManufOrder" name="domain"
+      expr="eval: &quot; self.id IN (SELECT mo.id FROM ManufOrder mo  JOIN mo.toConsumeProdProductList ppl WHERE ppl.product.id = :product AND mo.statusSelect not in(1,2))&quot;"
+      if="typeOfUsageTypeSelect == '3'"/>
+  </action-attrs>
+
+  <action-record
+    name="action-product-reservation-record-onchange-type-of-usage-type-select-clear-fields"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <field name="stockLocation" expr="eval:null" if="stockLocation"/>
+    <field name="originSaleOrderLine" expr="eval:null" if="originSaleOrderLine"/>
+    <field name="originManufOrder" expr="eval:null" if="originManufOrder"/>
+    <field name="trackingNumber" expr="eval:null" if="trackingNumber"/>
+    <field name="priorityReservationDateTime" expr="eval:null"
+      if="priorityReservationDateTime"/>
+    <field name="reservationTypeSelect" expr="eval:null" if="reservationTypeSelect"/>
+  </action-record>
+
+</object-views>

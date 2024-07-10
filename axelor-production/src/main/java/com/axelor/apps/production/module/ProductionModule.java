@@ -71,6 +71,7 @@ import com.axelor.apps.production.service.ProdProcessLineServiceImpl;
 import com.axelor.apps.production.service.ProdProcessOutsourceService;
 import com.axelor.apps.production.service.ProdProcessOutsourceServiceImpl;
 import com.axelor.apps.production.service.ProductVariantServiceProductionImpl;
+import com.axelor.apps.production.service.ProductionProductReservationServiceImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
@@ -179,6 +180,7 @@ import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
+import com.axelor.apps.supplychain.service.ProductReservationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
@@ -285,6 +287,7 @@ public class ProductionModule extends AxelorModule {
         .to(OperationOrderPlanningInfiniteCapacityServiceImpl.class);
     bind(BillOfMaterialMrpLineService.class).to(BillOfMaterialMrpLineServiceImpl.class);
     bind(StockMoveLineServiceSupplychainImpl.class).to(StockMoveLineProductionServiceImpl.class);
+    bind(ProductReservationServiceImpl.class).to(ProductionProductReservationServiceImpl.class);
     bind(ManufOrderTrackingNumberService.class).to(ManufOrderTrackingNumberServiceImpl.class);
     bind(PurchaseOrderMergingServiceSupplyChainImpl.class)
         .to(PurchaseOrderMergingServiceProductionImpl.class);
