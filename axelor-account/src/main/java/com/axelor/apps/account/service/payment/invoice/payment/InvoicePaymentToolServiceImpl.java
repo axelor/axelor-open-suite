@@ -466,6 +466,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     List<Long> invoiceTermIdList = null;
     if (invoiceId > 0) {
       Invoice invoice = invoiceRepo.find(invoiceId);
+      LocalDate invoiceDate = invoice.getInvoiceDate();
       invoicePayment.setInvoice(invoice);
 
       List<InvoiceTerm> invoiceTerms =
@@ -491,7 +492,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             invoicePayment.getPaymentDate());
       }
 
-      invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
+      invoicePayment =
+          invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment, invoice);
 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
