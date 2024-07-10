@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="InvoicingPaymentSituation">
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
+    <one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr"
+      mappedBy="invoicingPaymentSituation" title="UMR List"/>
+    <many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr"
+      title="Active UMR"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+
+    <finder-method name="findByCompanyAndPartner" using="company,partner"/>
+
+    <track>
+      <field name="activeUmr" on="UPDATE"/>
+    </track>
+  </entity>
+
+</domain-models>

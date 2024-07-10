@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.1.xsd">
+
+  <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
+    <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
+    <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
+    <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+    <bind to="resetDate"
+      eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
+  </input>
+
+  <input file="contract_contract.csv" separator=";"
+    type="com.axelor.apps.contract.db.Contract"
+    call="com.axelor.csv.script.ImportContract:importContract">
+    <bind to="startDate" column="startDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"/>
+    <bind to="nextAnnualVisitDate" column="nextAnnualVisitDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(nextAnnualVisitDate)"/>
+    <bind to="lastMaintenanceVisitDateDone" column="lastMaintenanceVisitDateDone"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(lastMaintenanceVisitDateDone)"/>
+    <bind to="currentContractVersion">
+      <bind to="statusSelect" column="currentVersion_status"/>
+      <bind to="activatedByUser" column="currentVersion_activatedByUser"
+        search="self.code = :currentVersion_activatedByUser"/>
+      <bind to="activationDateTime" column="currentVersion_activationDateTime"
+        eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(currentVersion_activationDateTime)"/>
+    </bind>
+  </input>
+
+  <input file="intervention_equipmentFamily.csv" separator=";"
+    type="com.axelor.apps.intervention.db.EquipmentFamily"/>
+
+  <input file="intervention_equipment.csv" separator=";"
+    type="com.axelor.apps.intervention.db.Equipment">
+    <bind to="commissioningDate" column="commissioningDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(commissioningDate)"/>
+    <bind to="customerWarrantyOnPartEndDate" column="customerWarrantyOnPartEndDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(customerWarrantyOnPartEndDate)"/>
+  </input>
+
+  <input file="intervention_equipmentLine.csv" separator=";"
+    type="com.axelor.apps.intervention.db.EquipmentLine"/>
+  <input file="intervention_parkModel.csv" separator=";"
+    type="com.axelor.apps.intervention.db.ParkModel"/>
+  <input file="intervention_equipmentModel.csv" separator=";"
+    type="com.axelor.apps.intervention.db.EquipmentModel"/>
+
+  <input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration"/>
+
+  <input file="intervention_requestSubject.csv" separator=";"
+    type="com.axelor.apps.intervention.db.RequestSubject"/>
+  <input file="intervention_requestSource.csv" separator=";"
+    type="com.axelor.apps.intervention.db.RequestSource"/>
+  <input file="intervention_interventionCategory.csv" separator=";"
+    type="com.axelor.apps.intervention.db.InterventionCategory"/>
+  <input file="intervention_answerType.csv" separator=";"
+    type="com.axelor.apps.intervention.db.AnswerType"/>
+  <input file="intervention_answerValue.csv" separator=";"
+    type="com.axelor.apps.intervention.db.AnswerValue"/>
+
+  <input file="intervention_interventionType.csv" separator=";"
+    type="com.axelor.apps.intervention.db.InterventionType">
+    <bind to="companySet" column="companySet" search="self.importId in :companySet"
+      eval="companySet.split('\\|') as List"/>
+  </input>
+
+  <input file="intervention_question.csv" separator=";"
+    type="com.axelor.apps.intervention.db.Question"/>
+
+  <input file="intervention_rangeType.csv" separator=";"
+    type="com.axelor.apps.intervention.db.RangeType">
+    <bind to="equipmentFamilySet" column="equipmentFamilySet"
+      search="self.importId in :equipmentFamilySet" eval="equipmentFamilySet.split('\\|') as List"/>
+  </input>
+
+  <input file="intervention_range.csv" separator=";"
+    type="com.axelor.apps.intervention.db.Range"/>
+  <input file="intervention_rangeQuestion.csv" separator=";"
+    type="com.axelor.apps.intervention.db.RangeQuestion"/>
+  <input file="intervention_orderedRange.csv" separator=";"
+    type="com.axelor.apps.intervention.db.OrderedRange"/>
+
+  <input file="intervention_customerRequest.csv" separator=";"
+    type="com.axelor.apps.intervention.db.CustomerRequest"
+    call="com.axelor.csv.script.ImportCustomerRequest:importCustomerRequest">
+    <bind to="requestDateTime" column="requestDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(requestDateTime)"/>
+    <bind to="equipmentSet" column="equipmentSet" search="self.importId in :equipmentSet"
+      eval="equipmentSet.split('\\|') as List"/>
+  </input>
+
+  <input file="intervention_intervention.csv" separator=";"
+    type="com.axelor.apps.intervention.db.Intervention"
+    call="com.axelor.csv.script.ImportIntervention:importIntervention">
+    <bind to="equipmentSet" column="equipmentSet" search="self.importId in :equipmentSet"
+      eval="equipmentSet.split('\\|') as List"/>
+  </input>
+
+</csv-inputs>

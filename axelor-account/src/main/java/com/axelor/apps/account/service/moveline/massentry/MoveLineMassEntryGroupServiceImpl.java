@@ -90,7 +90,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
-            move.getMoveLineMassEntryList(), moveLine);
+            move.getMoveLineMassEntryList(), moveLine, move.getCompany());
     moveLineDefaultService.setAccountInformation(moveLine, move);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
 
@@ -132,7 +132,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
     valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
     valuesMap.put("account", moveLine.getAccount());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("debit", moveLine.getDebit());
     valuesMap.put("credit", moveLine.getCredit());
     valuesMap.put("currencyRate", moveLine.getCurrencyRate());
@@ -246,7 +246,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("isCutOffGenerated", moveLine.getCutOffEndDate());
     valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
@@ -327,7 +327,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
     valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
     valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("currencyCode", moveLine.getCurrencyCode());
     valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
@@ -375,7 +375,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
 
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
-            move.getMoveLineMassEntryList(), moveLine);
+            move.getMoveLineMassEntryList(), moveLine, move.getCompany());
 
     this.setAllMoveLineValuesMap(moveLine, valuesMap);
     return valuesMap;
@@ -409,7 +409,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
     valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
     valuesMap.put("account", moveLine.getAccount());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("description", moveLine.getDescription());
     valuesMap.put("debit", moveLine.getDebit());
     valuesMap.put("credit", moveLine.getCredit());

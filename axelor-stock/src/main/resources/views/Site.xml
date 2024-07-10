@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form title="Site" name="site-form" id="stock-site-form" model="com.axelor.apps.base.db.Site"
+    extension="true">
+    <extend target="//panel[@name='basePanel']">
+      <insert position="after">
+        <panel-dashlet action="action-site-view-show-stock-location" name="stockPanel"
+          title="Stock" showIf="id &amp;&amp; !_isFromProject"
+          if="__config__.app.getApp('base')?.enableSiteManagementForStock"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-site-view-show-stock-location" title="Stock locations"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="grid" name="stock-location-grid"/>
+    <view type="form" name="stock-location-form"/>
+    <domain>self.site.id = :id</domain>
+  </action-view>
+
+</object-views>

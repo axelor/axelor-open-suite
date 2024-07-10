@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface LeaveRequestComputeDurationService {
   BigDecimal computeDuration(LeaveRequest leave) throws AxelorException;
@@ -42,5 +43,9 @@ public interface LeaveRequestComputeDurationService {
 
   BigDecimal computeLeaveDaysByLeaveRequest(
       LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee)
+      throws AxelorException;
+
+  BigDecimal computeTotalLeaveHours(
+      LocalDate date, BigDecimal dayValueInHours, List<LeaveRequest> leaveList)
       throws AxelorException;
 }

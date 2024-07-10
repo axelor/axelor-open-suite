@@ -216,7 +216,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             company,
             invoice.getCurrency(),
             invoice.getInvoiceDate(),
-            invoiceLine.getTaxLine(),
+            invoiceLine.getTaxLineSet(),
             false));
     productInformation.put(
         "inTaxPrice",
@@ -226,16 +226,16 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             company,
             invoice.getCurrency(),
             invoice.getInvoiceDate(),
-            invoiceLine.getTaxLine(),
+            invoiceLine.getTaxLineSet(),
             true));
   }
 
   @Override
   public Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException {
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+      return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine);
     }
 
     Product product = invoiceLine.getProduct();
@@ -247,7 +247,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       return Collections.emptyMap();
     }
 
-    return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+    return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine);
   }
 
   public void checkMinQty(

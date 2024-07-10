@@ -30,6 +30,9 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.Group;
+import com.axelor.auth.db.Permission;
+import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
@@ -39,6 +42,8 @@ import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaPermission;
+import com.axelor.meta.db.MetaPermissionRule;
 import com.axelor.studio.db.AppBase;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
@@ -50,9 +55,13 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import javax.validation.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -170,7 +179,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public MetaFile getUserActiveCompanyLogo() {
 
-    final Company company = this.getUserActiveCompany();
+    final Company company = AuthUtils.getUser() != null ? this.getUserActiveCompany() : null;
 
     if (company == null) {
       return null;
@@ -182,7 +191,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public String getUserActiveCompanyLogoLink() {
 
-    final Company company = this.getUserActiveCompany();
+    final Company company = AuthUtils.getUser() != null ? this.getUserActiveCompany() : null;
 
     if (company == null) {
       return null;
@@ -273,16 +282,6 @@ public class UserServiceImpl implements UserService {
 
     user.setPartner(partner);
     userRepo.save(user);
-  }
-
-  @Override
-  public String getLanguage() {
-    String appLanguage = AppSettings.get().get("application.locale");
-    User user = getUser();
-    if (user != null && !Strings.isNullOrEmpty(user.getLanguage())) {
-      return user.getLanguage();
-    }
-    return Strings.isNullOrEmpty(appLanguage) ? DEFAULT_LOCALE : appLanguage;
   }
 
   @Override
@@ -436,5 +435,92 @@ public class UserServiceImpl implements UserService {
     }
 
     return user.getTradingName();
+  }
+
+  @Override
+  public List<Permission> getPermissions(User user) {
+    List<Permission> permissionList = new ArrayList<>();
+    Optional.ofNullable(user.getPermissions()).ifPresent(permissionList::addAll);
+    Optional.ofNullable(user.getGroup())
+        .ifPresent(group -> permissionList.addAll(group.getPermissions()));
+    Optional.ofNullable(user.getRoles())
+        .map(
+            roles ->
+                roles.stream()
+                    .map(Role::getPermissions)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toList()))
+        .ifPresent(permissionList::addAll);
+    Optional.ofNullable(user.getGroup())
+        .map(Group::getRoles)
+        .map(
+            roles ->
+                roles.stream()
+                    .map(Role::getPermissions)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toList()))
+        .ifPresent(permissionList::addAll);
+
+    return permissionList;
+  }
+
+  @Override
+  public List<MetaPermissionRule> getMetaPermissionRules(User user) {
+    List<MetaPermissionRule> metaPermissionRuleList = new ArrayList<>();
+    Optional.ofNullable(user.getMetaPermissions())
+        .ifPresent(
+            metaPermissions ->
+                metaPermissionRuleList.addAll(
+                    metaPermissions.stream()
+                        .map(MetaPermission::getRules)
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())));
+    Optional.ofNullable(user.getGroup())
+        .map(Group::getMetaPermissions)
+        .ifPresent(
+            metaPermissions ->
+                metaPermissionRuleList.addAll(
+                    metaPermissions.stream()
+                        .map(MetaPermission::getRules)
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())));
+    Optional.ofNullable(user.getRoles())
+        .map(
+            roles ->
+                roles.stream()
+                    .map(Role::getMetaPermissions)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toList()))
+        .ifPresent(
+            metaPermissions ->
+                metaPermissionRuleList.addAll(
+                    metaPermissions.stream()
+                        .map(MetaPermission::getRules)
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())));
+    Optional.ofNullable(user.getGroup())
+        .map(Group::getRoles)
+        .map(
+            roles ->
+                roles.stream()
+                    .map(Role::getMetaPermissions)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toList()))
+        .ifPresent(
+            metaPermissions ->
+                metaPermissionRuleList.addAll(
+                    metaPermissions.stream()
+                        .map(MetaPermission::getRules)
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())));
+
+    return metaPermissionRuleList;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setActiveCompany(User user, Company company) {
+    user.setActiveCompany(company);
+    userRepo.save(user);
   }
 }

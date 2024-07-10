@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid id="budget-purchase-order-line-purchase-order-grid"
     name="purchase-order-line-purchase-order-grid" extension="true" title="PO lines"
@@ -49,22 +49,22 @@
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
             hidden="false" x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="companyExTaxTotal,$currencySymbol">
+            <viewer depends="companyExTaxTotal">
               <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
             </viewer>
           </field>
-          <field name="budgetDistributionSumAmount" colSpan="6"
+          <field name="budgetRemainingAmountToAllocate" colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
             x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="budgetDistributionSumAmount">
+            <viewer depends="budgetRemainingAmountToAllocate">
               <![CDATA[
-				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
               ]]>
             </viewer>
           </field>
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
-            onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+            onChange="action-reset-budget-method"/>
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
             showIf="product != null"
             onSelect="action-budget-purchase-order-line-method-budget-domain"
@@ -85,6 +85,7 @@
     <action name="supplychain-action-purchase-purchase-order-line-group-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-reset-budget-method"/>
   </action-group>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onnew">
@@ -96,13 +97,6 @@
     <action name="action-budget-distribution-attrs-currency-symbol"
       if="__config__.app.isApp('budget')"/>
   </action-group>
-
-  <action-attrs
-    name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"
-    id="action-budget-purchase-order-line-attrs-hidden-analytic-distribution-panel">
-    <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; account &amp;&amp; !account.analyticDistributionAuthorized)"/>
-  </action-attrs>
 
   <action-record name="action-budget-purchase-orderline-record-set-global-budget"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -140,6 +134,7 @@
   <action-group
     name="action-group-budget-purchase-order-line-budget-distribution-onchange">
     <action name="action-method-purchase-order-line-budget-distribution-validate-amount"/>
+    <action name="action-purchase-order-method-compute-budget-remaining-amount-to-allocate"/>
     <action name="action-budget-purchase-order-line-method-fill-budget-str"/>
   </action-group>
 
@@ -164,9 +159,9 @@
   </action-method>
 
   <action-method
-    name="action-purchase-order-method-compute-budget-distribution-sum-amount">
+    name="action-purchase-order-method-compute-budget-remaining-amount-to-allocate">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="computeBudgetDistributionSumAmount"/>
+      method="computeBudgetRemainingAmountToAllocate"/>
   </action-method>
 
 </object-views>

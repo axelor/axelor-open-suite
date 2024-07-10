@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/domain-models"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="InterventionRange">
+    <long name="orderSeq" title="Order" default="0"/>
+    <string name="name" title="Name" large="true" readonly="true">
+      <![CDATA[
+        StringJoiner stringJoiner = new StringJoiner(" - ");
+        if (intervention != null && StringUtils.notBlank(intervention.getName())) {
+          stringJoiner.add(intervention.getName());
+        }
+        if (rangeVal != null && StringUtils.notBlank(rangeVal.getTitle())) {
+          stringJoiner.add(rangeVal.getTitle());
+        }
+        if (equipment != null && StringUtils.notBlank(equipment.getName())) {
+          stringJoiner.add(equipment.getName());
+        }
+        return stringJoiner.toString();
+      ]]>
+    </string>
+    <many-to-one name="intervention" title="Intervention"
+      ref="com.axelor.apps.intervention.db.Intervention"/>
+    <many-to-one name="rangeVal" title="Range"
+      ref="com.axelor.apps.intervention.db.Range"/>
+    <many-to-one name="equipment" title="Equipment"
+      ref="com.axelor.apps.intervention.db.Equipment"/>
+    <one-to-many name="interventionQuestionList" title="Intervention questions"
+      ref="com.axelor.apps.intervention.db.InterventionQuestion" mappedBy="interventionRange"/>
+
+    <unique-constraint columns="intervention,rangeVal,equipment"/>
+
+    <finder-method name="find" using="intervention,rangeVal,equipment"
+      filter="self.intervention = :intervention AND self.rangeVal = :rangeVal AND (:equipment IS NULL OR self.equipment = :equipment)"/>
+
+    <extra-imports>
+      import com.axelor.common.StringUtils;
+      import java.util.StringJoiner;
+    </extra-imports>
+
+    <track>
+      <field name="intervention"/>
+      <field name="rangeVal"/>
+      <field name="equipment"/>
+    </track>
+
+  </entity>
+
+</domain-models>

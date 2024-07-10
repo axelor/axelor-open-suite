@@ -24,8 +24,9 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -37,22 +38,25 @@ public class BankStatementLinePrintAFB120ServiceImpl
   protected BankPaymentBankStatementLineAFB120Repository
       bankPaymentBankStatementLineAFB120Repository;
   protected BankPaymentConfigService bankPaymentConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   @Inject
   public BankStatementLinePrintAFB120ServiceImpl(
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
       BankPaymentConfigService bankPaymentConfigService,
-      BirtTemplateService birtTemplateService) {
+      PrintingTemplatePrintService printingTemplatePrintService) {
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
     this.bankPaymentConfigService = bankPaymentConfigService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
   public String print(
-      LocalDate fromDate, LocalDate toDate, BankDetails bankDetails, String exportType)
+      LocalDate fromDate,
+      LocalDate toDate,
+      BankDetails bankDetails,
+      PrintingTemplate bankStatementLinesPrintTemplate)
       throws AxelorException {
     String fileLink = null;
 
@@ -72,19 +76,20 @@ public class BankStatementLinePrintAFB120ServiceImpl
             bankDetails);
     if (ObjectUtils.notEmpty(initalBankStatementLine)
         && ObjectUtils.notEmpty(finalBankStatementLine)) {
-      BirtTemplate bankStatementLinesBirtTemplate =
-          bankPaymentConfigService.getBankStatementLineBirtTemplate(bankDetails.getCompany());
+      if (bankStatementLinesPrintTemplate == null) {
+        bankStatementLinesPrintTemplate =
+            bankPaymentConfigService.getBankStatementLinePrintTemplate(bankDetails.getCompany());
+      }
       fromDate = initalBankStatementLine.getOperationDate();
       toDate = finalBankStatementLine.getOperationDate();
 
       fileLink =
-          birtTemplateService.generateBirtTemplateLink(
-              bankStatementLinesBirtTemplate,
-              null,
-              Map.of("FromDate", fromDate, "ToDate", toDate, "BankDetails", bankDetails.getId()),
-              "Bank statement lines - " + fromDate + " to " + toDate,
-              bankStatementLinesBirtTemplate.getAttach(),
-              exportType);
+          printingTemplatePrintService.getPrintLink(
+              bankStatementLinesPrintTemplate,
+              new PrintingGenFactoryContext(
+                  Map.of(
+                      "FromDate", fromDate, "ToDate", toDate, "BankDetails", bankDetails.getId())),
+              "Bank statement lines - " + fromDate + " to " + toDate);
     }
     return fileLink;
   }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form title="Pricing" name="contract-line-pricing-form"
+    model="com.axelor.apps.base.db.Pricing" onNew="action-pricing-group-contract-line-onnew"
+    onLoad="action-pricing-group-contract-line-onload">
+    <panel name="mainPanel" readonlyIf="$usedInContract">
+      <field name="$usedInContract" type="boolean" hidden="true"
+        showIf="$readonly() &amp;&amp; $usedInContract" showTitle="false">
+        <viewer>
+                    <![CDATA[<><Badge as="span" bg="danger">{_t('This pricing is already used by another contract line.')}</Badge></>]]>
+        </viewer>
+      </field>
+      <panel-include view="pricing-form"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-pricing-attrs-set-readonly">
+    <attribute for="$usedInContract" name="value"
+      expr="eval: __parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.contract.db.ContractLine'
+&amp;&amp;  __repo__(ContractLine).all().filter('self.pricing = ?', __this__).count() > 1"/>
+  </action-attrs>
+
+  <action-method name="action-pricing-method-set-readonly">
+    <call class="com.axelor.apps.contract.web.PricingController" method="setPricingReadonly"/>
+  </action-method>
+
+  <action-attrs name="action-pricing-attrs-fill-concerned-model">
+    <attribute for="concernedModel" name="value"
+      expr="eval: __repo__(MetaModel).all().filter('self.name = \'InvoiceLine\'').fetchOne()"
+      if="eval: !__parent__?.pricing"/>
+    <attribute for="typeSelect" name="value"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_CONTRACT_YEB_YER"/>
+  </action-attrs>
+
+  <action-method name="action-pricing-method-copy-pricing">
+    <call class="com.axelor.apps.contract.web.PricingController" method="copyPricing"/>
+  </action-method>
+
+  <action-group name="action-pricing-group-contract-line-onnew">
+    <action name="action-pricing-method-copy-pricing"/>
+    <action name="action-pricing-group-attrs-pricing-line-list"/>
+    <action name="action-pricing-attrs-fill-concerned-model"/>
+  </action-group>
+
+  <action-group name="action-pricing-group-contract-line-onload">
+    <action name="action-pricing-method-set-readonly"/>
+    <action name="action-pricing-group-attrs-pricing-line-list"/>
+  </action-group>
+</object-views>

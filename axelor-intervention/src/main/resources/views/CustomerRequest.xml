@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.CustomerRequest" title="Customer requests"
+    name="customer-request-grid">
+    <hilite background="yellow"
+      if="_xGitStatusIndicator == 'alert' || _xGrtStatusIndicator == 'alert'"/>
+    <hilite background="orange"
+      if="_xGitStatusIndicator == 'urgent' || _xGrtStatusIndicator == 'urgent'"/>
+    <hilite background="red"
+      if="_xGitStatusIndicator == 'fail' || _xGrtStatusIndicator == 'fail' || _xGitStatusIndicator == 'nonRespected' || _xGrtStatusIndicator == 'nonRespected'"/>
+    <field name="sequence"/>
+    <field name="name"/>
+    <field name="statusSelect"/>
+    <field name="company"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+    <field name="deliveredPartner"/>
+    <field name="interventionAddress"/>
+    <field name="contact"/>
+    <field name="contract"/>
+    <field name="priority"/>
+    <field name="requestDateTime"/>
+    <field name="userInCharge"/>
+    <field name="onCallPlanning"/>
+    <field name="_xInProgressInterventions" title="In progress interventions" type="long"/>
+    <field name="_xFinishedInterventions" title="Finished interventions" type="long"/>
+    <field name="_xGitStatusIndicator" hidden="true"/>
+    <field name="_xGrtStatusIndicator" hidden="true"/>
+    <button name="createIntervention" icon="fa-plus"
+      showIf="statusSelect == 20 || statusSelect ==
+      30"
+      onClick="action-customer-request-method-create-an-intervention"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.CustomerRequest" title="Customer request"
+    name="customer-request-form" width="large" onNew="action-customer-request-record-default-values">
+    <menubar>
+      <menu name="customerRequestToolsMenu" title="Tools" icon="fa-wrench">
+        <item if-module="axelor-message" name="sendEmailItem" title="Send email"
+          readonlyIf="id == null" action="save,action-send-by-email-with-template"/>
+      </menu>
+    </menubar>
+    <panel name="mainPanel">
+      <field name="sequence" showTitle="false" hidden="true" showIf="sequence"
+        css="label-bold bold large"/>
+      <field name="$viewerTag" showTitle="false" readonly="true">
+        <viewer depends="product.isUnrenewed,product.isPrototype">
+          <![CDATA[
+            <h4 class="text-right">
+              <span class="label label-default" style="background-color: #4caf50;" ng-show="record.gitStatusIndicator === 'ok'"><span x-translate>GIT</span>: <span x-translate>Ok</span></span>
+              <span class="label label-default" style="background-color: #f44336;" ng-show="record.gitStatusIndicator === 'fail'"><span x-translate>GIT</span>: <span x-translate>Fail</span></span>
+              <span class="label label-default" style="background-color: #ffeb3b; color: #333333" ng-show="record.gitStatusIndicator === 'alert'"><span x-translate>GIT</span>: <span x-translate>On alert</span></span>
+              <span class="label label-default" style="background-color: #ff9800;" ng-show="record.gitStatusIndicator === 'urgent'"><span x-translate>GIT</span>: <span x-translate>URGENT</span></span>
+              <span class="label label-default" style="background-color: #4caf50;" ng-show="record.gitStatusIndicator === 'respected'"><span x-translate>GIT</span>: <span x-translate>Respected</span></span>
+              <span class="label label-default" style="background-color: #f44336;" ng-show="record.gitStatusIndicator === 'nonRespected'"><span x-translate>GIT</span>: <span x-translate>Non respected</span></span>
+              <span class="label label-default" style="background-color: #4caf50;" ng-show="record.grtStatusIndicator === 'ok'"><span x-translate>GRT</span>: <span x-translate>Ok</span></span>
+              <span class="label label-default" style="background-color: #f44336;" ng-show="record.grtStatusIndicator === 'fail'"><span x-translate>GRT</span>: <span x-translate>Fail</span></span>
+              <span class="label label-default" style="background-color: #ffeb3b; color: #333333" ng-show="record.grtStatusIndicator === 'alert'"><span x-translate>GRT</span>: <span x-translate>On alert</span></span>
+              <span class="label label-default" style="background-color: #ff9800;" ng-show="record.grtStatusIndicator === 'urgent'"><span x-translate>GRT</span>: <span x-translate>URGENT</span></span>
+              <span class="label label-default" style="background-color: #4caf50;" ng-show="record.grtStatusIndicator === 'respected'"><span x-translate>GRT</span>: <span x-translate>Respected</span></span>
+              <span class="label label-default" style="background-color: #f44336;" ng-show="record.grtStatusIndicator === 'nonRespected'"><span x-translate>GRT</span>: <span x-translate>Non respected</span></span>
+            </h4>
+          ]]>
+        </viewer>
+      </field>
+
+      <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
+
+      <separator title="Contact details" colSpan="12"/>
+      <field name="company" grid-view="company-grid" form-view="company-form"
+        onChange="action-customer-request-group-company-change" colSpan="4"/>
+      <field name="tradingName" grid-view="trading-name-grid" form-view="trading-name-form"
+        domain=":company MEMBER OF self.companySet"
+        onChange="action-customer-request-record-emptying-delivered-partner"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" colSpan="4"/>
+
+      <field name="deliveredPartner" grid-view="partner-grid" form-view="partner-form"
+        onSelect="action-customer-request-attrs-set-delivered-partner-domain"
+        onChange="action-customer-request-group-delivered-partner-change" colSpan="4"/>
+      <field name="interventionAddress" grid-view="address-grid" form-view="address-form"
+        onSelect="action-customer-request-attrs-intervention-address-on-select-domain" colSpan="4"/>
+      <field name="contact" widget="SuggestBox" colSpan="4"
+        domain="self.isContact IS TRUE AND self in :deliveredPartner$contactPartnerSet"
+        form-view="partner-contact-form"/>
+      <separator title="Request details" colSpan="12"/>
+      <field name="equipmentSet" grid-view="equipment-grid" form-view="equipment-form"
+        widget="TagSelect" canNew="false"
+        domain="self.partner = :deliveredPartner AND self.typeSelect = 'equipment'"
+        onChange="action-customer-request-group-equipments-change"/>
+      <field name="contract" grid-view="contract-grid" form-view="contract-form"
+        domain="self.partner = :deliveredPartner AND self.statusSelect = 2"
+        onChange="action-customer-request-record-contract-change" edit-window="blank"/>
+      <field name="requestSource" grid-view="request-source-grid"
+        form-view="request-source-form"/>
+      <field name="requestSubject" grid-view="request-subject-grid"
+        form-view="request-subject-form"/>
+      <field name="interventionCategory" grid-view="intervention-category-grid"
+        form-view="intervention-category-form" colSpan="3"/>
+      <field name="priority" colSpan="3"/>
+      <field name="requestDateTime" readonlyIf="statusSelect >= 20" colSpan="3"/>
+      <field name="userInCharge" grid-view="user-grid" form-view="user-form" colSpan="3"/>
+      <field name="description" colSpan="12"/>
+    </panel>
+    <panel name="sidebarPanel" sidebar="true">
+      <panel name="actionsPanel" colSpan="12" itemSpan="12">
+        <button name="generateSaleOrder" title="Generate sale order"
+          onClick="save,action-customer-request-method-generate-sale-order"
+          showIf="[10,20,30].includes(statusSelect) &amp;&amp; saleQuotations == null"/>
+        <button name="takeIntoAccount" title="Take into account" hidden="true"
+          showIf="statusSelect == 10" onClick="save,action-client-request-method-take-into-account"/>
+        <button name="createIntervention" title="Create an intervention" hidden="true"
+          showIf="statusSelect ==
+          20 || statusSelect == 30"
+          onClick="save,action-customer-request-method-create-an-intervention"/>
+        <button name="finishManually" title="Finish manually" hidden="true"
+          showIf="statusSelect == 30"
+          onClick="save,action-customer-request-record-finish-manually,save"/>
+        <button name="cancel" title="Cancel" hidden="true"
+          showIf="statusSelect == 20 || statusSelect == 30"
+          onClick="save,action-customer-request-record-cancel,save"/>
+        <button name="draft" title="Draft" hidden="true" showIf="statusSelect == 50"
+          onClick="save,action-customer-request-record-draft,save"/>
+      </panel>
+      <panel name="informationsPanel" colSpan="12" itemSpan="12">
+        <field name="createdOn"/>
+        <field name="saleQuotations" colSpan="6"/>
+        <field name="saleQuotations.statusSelect" colSpan="6"/>
+        <field name="onCallManagement" widget="BooleanSelect"/>
+        <field name="onCallPlanning" grid-view="weekly-planning-grid"
+          form-view="weekly-planning-form"/>
+      </panel>
+    </panel>
+    <panel-tabs>
+      <panel-dashlet action="action-customer-request-view-linked-interventions"
+        title="Linked interventions" canEdit="true"/>
+      <panel name="gitGrtPanel" title="GIT / GRT">
+        <field name="maxGitDateTime"/>
+        <field name="maxGrtDateTime"/>
+        <field name="realGit" widget="duration" x-big="true"/>
+        <field name="realGrt" widget="duration" x-big="true"/>
+        <field name="gitStatusIndicator" hidden="true"/>
+        <field name="grtStatusIndicator" hidden="true"/>
+      </panel>
+    </panel-tabs>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-record name="action-customer-request-record-default-values"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="tradingName" expr="eval: __user__.tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+    <field name="requestDateTime" expr="eval: __datetime__"/>
+  </action-record>
+
+  <action-group name="action-customer-request-group-equipments-change">
+    <action name="action-customer-request-record-equipments-change"/>
+    <action name="action-customer-request-record-contract-change"/>
+  </action-group>
+
+  <action-record name="action-customer-request-record-equipments-change"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="contract"
+      expr="eval: com.google.common.collect.Iterables.getLast(equipmentSet)?.contract"
+      if="equipmentSet?.size() > 0 &amp;&amp; contract == null"/>
+  </action-record>
+
+  <action-record name="action-customer-request-record-contract-change"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="onCallManagement" expr="eval: contract?.onCallManagement"/>
+    <field name="onCallPlanning"
+      expr="eval: contract?.onCallPlanning != null ? contract?.onCallPlanning : company?.weeklyPlanning"/>
+  </action-record>
+
+  <action-view name="action-customer-request-view-linked-interventions"
+    title="Linked interventions" model="com.axelor.apps.intervention.db.Intervention">
+    <view type="grid" name="intervention-grid"/>
+    <view type="form" name="intervention-form"/>
+    <domain>self.customerRequest.id = :customerRequestId</domain>
+    <context name="customerRequestId" expr="eval: id == null ? 0 : id"/>
+  </action-view>
+
+  <action-method name="action-client-request-method-take-into-account">
+    <call class="com.axelor.apps.intervention.web.CustomerRequestController"
+      method="takeIntoAccount"/>
+  </action-method>
+
+  <action-method name="action-customer-request-method-create-an-intervention">
+    <call class="com.axelor.apps.intervention.web.CustomerRequestController"
+      method="createAnIntervention"/>
+  </action-method>
+
+  <action-record name="action-customer-request-record-finish-manually"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="statusSelect"
+      expr="eval: __repo__(CustomerRequest).CUSTOMER_REQUEST_STATUS_FINISHED"/>
+  </action-record>
+
+  <action-record name="action-customer-request-record-cancel"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="statusSelect"
+      expr="eval: __repo__(CustomerRequest).CUSTOMER_REQUEST_STATUS_CANCELLED"/>
+  </action-record>
+
+  <action-record name="action-customer-request-record-draft"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="statusSelect"
+      expr="eval: __repo__(CustomerRequest).CUSTOMER_REQUEST_STATUS_DRAFT"/>
+  </action-record>
+
+  <action-attrs
+    name="action-customer-request-attrs-intervention-address-on-select-domain">
+    <attribute for="interventionAddress" name="domain"
+      expr="eval: &quot; self.id IN (${deliveredPartner?.partnerAddressList == null || deliveredPartner?.partnerAddressList.size() == 0 ? 0 : deliveredPartner?.partnerAddressList?.address?.id.join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-group name="action-customer-request-group-delivered-partner-change">
+    <action name="action-customer-request-record-delivered-partner-change"/>
+    <action name="action-customer-request-group-equipments-change"/>
+  </action-group>
+
+  <action-record name="action-customer-request-record-delivered-partner-change"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="interventionAddress"
+      expr="eval: deliveredPartner?.partnerAddressList?.find{it.isDeliveryAddr &amp;&amp; it.isDefaultAddr}?.address"/>
+    <field name="contact" expr="eval: null"/>
+    <field name="equipmentSet" expr="eval: null"/>
+  </action-record>
+
+  <action-group name="action-customer-request-group-company-change">
+    <action name="action-customer-request-record-emptying-trading-name"/>
+    <action name="action-customer-request-record-emptying-delivered-partner"/>
+    <action name="action-customer-request-record-contract-change"/>
+  </action-group>
+
+  <action-record name="action-customer-request-record-emptying-trading-name"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="tradingName"
+      expr="eval: __repo__(TradingName).all().filter('self.company.id = ? AND (self.archived = null OR self.archived = false)', company?.id).count() == 1 ? __repo__(TradingName).all().filter('self.company.id = ? AND (self.archived = null OR self.archived = false)', company?.id).fetchOne() : null"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+  </action-record>
+
+  <action-record name="action-customer-request-record-emptying-delivered-partner"
+    model="com.axelor.apps.intervention.db.CustomerRequest">
+    <field name="deliveredPartner" expr="eval: null"/>
+  </action-record>
+
+  <action-method name="action-customer-request-method-generate-sale-order">
+    <call class="com.axelor.apps.intervention.web.CustomerRequestController"
+      method="generateSaleOrder"/>
+  </action-method>
+
+  <action-attrs name="action-customer-request-attrs-set-delivered-partner-domain">
+    <attribute for="deliveredPartner" name="domain"
+      expr="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE AND self.tradingName = :tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+    <attribute for="deliveredPartner" name="domain"
+      expr="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE"
+      if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+  </action-attrs>
+
+</object-views>

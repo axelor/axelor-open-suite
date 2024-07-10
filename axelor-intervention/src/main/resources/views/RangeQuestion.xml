@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.RangeQuestion" title="Range question"
+    name="range-question-grid" orderBy="orderSeq">
+    <field name="question" grid-view="question-grid" form-view="question-form"/>
+    <field name="isRequired"/>
+    <field name="isPrivate"/>
+    <field name="isConditional"/>
+    <field name="orderSeq" hidden="true"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.RangeQuestion" title="Range question"
+    name="range-question-form" onNew="action-range-question-record-fill-default-value"
+    onSave="action-range-question-condition-check-order-seq">
+    <panel name="mainPanel">
+      <panel name="mainFieldsPanel" itemSpan="12" colSpan="8">
+        <field name="question" grid-view="question-grid" form-view="question-form"/>
+        <panel name="conditionalPanel" hidden="true" showIf="isConditional" colSpan="12">
+          <field name="conditionalRangeQuestion" grid-view="range-question-grid"
+            form-view="range-question-form" requiredIf="isConditional"
+            onSelect="action-range-question-attrs-set-conditional-question-domain"/>
+          <field name="conditionalAnswerValueSet" grid-view="answer-value-grid"
+            form-view="answer-value-form" hidden="true" showIf="conditionalRangeQuestion"
+            requiredIf="isConditional" canNew="false" widget="TagSelect" colSpan="12"
+            onSelect="action-range-question-attrs-set-conditional-answer-domain"
+            validIf="isConditional === null || isConditional === false || conditionalAnswerValueSet.length > 0"/>
+        </panel>
+      </panel>
+      <panel name="configsPanel" itemSpan="12" colSpan="4">
+        <field name="orderSeq"/>
+        <field name="isRequired" widget="inline-checkbox"/>
+        <field name="isPrivate" widget="inline-checkbox"/>
+        <field name="isConditional" widget="inline-checkbox"/>
+        <field name="summary" widget="inline-checkbox"/>
+      </panel>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="rangeVal"/>
+    </panel>
+  </form>
+
+  <action-record name="action-range-question-record-fill-default-value"
+    model="com.axelor.apps.intervention.db.RangeQuestion">
+    <field name="rangeVal" expr="eval: _rangeVal" if="_rangeVal != null"/>
+  </action-record>
+
+  <action-attrs name="action-range-question-attrs-set-conditional-question-domain">
+    <attribute name="domain" for="conditionalRangeQuestion"
+      expr="eval: &quot;self.question.answerType.answerTypeSelect = 'list' AND self.rangeVal.id = ${rangeVal?.id} AND self.id != ${id}&quot;"
+      if="__parent__ == null || __parent__._model != 'com.axelor.apps.intervention.db.RangeQuestion'"/>
+    <attribute name="domain" for="conditionalRangeQuestion"
+      expr="eval: &quot;self.question.answerType.answerTypeSelect = 'list' AND self.rangeVal.id = ${__parent__?.id} AND self.id != ${id}&quot;"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.intervention.db.RangeQuestion'"/>
+  </action-attrs>
+
+  <action-attrs name="action-range-question-attrs-set-conditional-answer-domain">
+    <attribute name="domain" for="conditionalAnswerValueSet"
+      expr="eval: &quot;self.id IN (${conditionalRangeQuestion?.question?.answerType?.answerValueList?.collect{it.id}.join(',').isEmpty() ?
+		 0 : conditionalRangeQuestion?.question?.answerType?.answerValueList?.collect{it.id}.join(',')})&quot;"
+      if="conditionalRangeQuestion"/>
+  </action-attrs>
+
+  <action-condition name="action-range-question-condition-check-order-seq">
+    <check field="orderSeq"
+      if="isConditional &amp;&amp; (conditionalRangeQuestion == null || orderSeq &lt;= conditionalRangeQuestion.orderSeq)"
+      error="The order must be strictly greater than the conditional question's order"/>
+  </action-condition>
+
+</object-views>

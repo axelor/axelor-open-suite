@@ -149,7 +149,7 @@ public class PriceListService {
   public BigDecimal getDiscountAmount(PriceListLine priceListLine, BigDecimal unitPrice) {
 
     switch (priceListLine.getTypeSelect()) {
-      case PriceListLineRepository.TYPE_ADDITIONNAL:
+      case PriceListLineRepository.TYPE_INCREASE:
         return priceListLine.getAmount().negate();
 
       case PriceListLineRepository.TYPE_DISCOUNT:
@@ -166,7 +166,7 @@ public class PriceListService {
   public BigDecimal getUnitPriceDiscounted(PriceListLine priceListLine, BigDecimal unitPrice) {
 
     switch (priceListLine.getTypeSelect()) {
-      case PriceListLineRepository.TYPE_ADDITIONNAL:
+      case PriceListLineRepository.TYPE_INCREASE:
         if (priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
           return unitPrice.add(priceListLine.getAmount());
         } else if (priceListLine.getAmountTypeSelect()

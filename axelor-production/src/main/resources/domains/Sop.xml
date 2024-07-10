@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="Sop">
 
+    <string name="name" title="Name" namecolumn="true"/>
     <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
       title="Category"/>
     <one-to-many name="sopLineList" ref="com.axelor.apps.production.db.SopLine"

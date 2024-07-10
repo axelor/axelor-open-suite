@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid title="Files" name="file-grid" model="com.axelor.apps.base.db.File">
+    <field name="fileType"/>
+    <field name="metaFile"/>
+    <field name="dmsFile"/>
+    <field name="recordDate"/>
+    <field name="expirationDate"/>
+    <field name="fullName"/>
+    <field name="fileDescription"/>
+  </grid>
+
+  <form title="File" name="file-form" model="com.axelor.apps.base.db.File"
+    onLoad="action-base-file-group-file-onload">
+    <panel name="mainPanel">
+      <field name="fileType" colSpan="3"
+        onChange="action-base-file-record-set-expiration-date"/>
+      <field name="metaFile" widget="binary-link" colSpan="3"
+        onChange="action-base-file-group-file-onchange"/>
+      <field name="recordDate" colSpan="3" readonly="true"/>
+      <field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>
+      <field name="fileType.hasExpirationDate" hidden="true"/>
+      <field name="fileDescription" colSpan="12" widget="html"/>
+      <field name="fileTypeSelect" hidden="true"/>
+    </panel>
+
+    <panel name="filePanel" title="File" height="500" showIf="$inlineUrl &amp;&amp; metaFile"
+      hidden="true">
+      <field name="$inlineUrl" hidden="true"/>
+      <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
+        <viewer depends="$inlineUrl">
+          <![CDATA[
+              <>
+                  <Box as="iframe" height="900" border="0" src={$inlineUrl}></Box>
+              </>
+            ]]>
+        </viewer>
+      </field>
+    </panel>
+  </form>
+
+  <action-record name="action-base-file-record-set-record-date"
+    model="com.axelor.apps.base.db.File">
+    <field name="recordDate" expr="eval: metaFile?__config__.date:null"/>
+  </action-record>
+
+  <action-record name="action-base-file-record-set-expiration-date"
+    model="com.axelor.apps.base.db.File">
+    <field name="expirationDate" expr="eval: null" if="!fileType?.hasExpirationDate"/>
+  </action-record>
+
+  <action-method name="action-base-file-method-set-dms-file">
+    <call class="com.axelor.apps.base.web.FileController" method="setDMSFile"/>
+  </action-method>
+
+  <action-method name="action-base-file-method-set-inline-url">
+    <call class="com.axelor.apps.base.web.FileController" method="setInlineUrl"/>
+  </action-method>
+
+  <action-group name="action-base-file-group-file-onchange">
+    <action name="action-base-file-record-set-record-date"/>
+    <action name="save"/>
+    <action name="action-base-file-method-set-dms-file"/>
+    <action name="action-base-file-method-set-inline-url"/>
+  </action-group>
+
+  <action-group name="action-base-file-group-file-onload">
+    <action name="action-base-file-method-set-dms-file"
+      if="metaFile &amp;&amp; dmsFile == null"/>
+    <action name="action-base-file-method-set-inline-url"/>
+  </action-group>
+
+</object-views>

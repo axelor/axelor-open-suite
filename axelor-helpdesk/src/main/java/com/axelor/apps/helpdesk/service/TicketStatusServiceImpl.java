@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.helpdesk.service;
 
+import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
 import com.axelor.studio.db.AppHelpdesk;
@@ -55,5 +56,27 @@ public class TicketStatusServiceImpl implements TicketStatusService {
   public TicketStatus findClosedStatus() {
 
     return appHelpdesk.getClosedTicketStatus();
+  }
+
+  @Override
+  public boolean isNewTicket(Ticket ticket) {
+
+    return ticket.getTicketStatus() != null && ticket.getTicketStatus().equals(findDefaultStatus());
+  }
+
+  @Override
+  public boolean isInProgressTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null && ticket.getTicketStatus().equals(findOngoingStatus());
+  }
+
+  @Override
+  public boolean isResolvedTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(findResolvedStatus());
+  }
+
+  @Override
+  public boolean isClosedTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null && ticket.getTicketStatus().equals(findClosedStatus());
   }
 }
