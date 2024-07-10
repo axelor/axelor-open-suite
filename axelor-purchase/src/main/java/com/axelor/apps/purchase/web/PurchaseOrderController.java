@@ -32,7 +32,6 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -391,7 +390,6 @@ public class PurchaseOrderController {
     }
   }
 
-  @HandleExceptionResponse
   public void separateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
