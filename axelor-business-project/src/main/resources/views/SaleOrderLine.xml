@@ -18,7 +18,8 @@
   </form>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true" id="project-sale-order-line-form">
+    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true"
+    id="project-sale-order-line-editable-grid">
     <extend target="/">
       <attribute name="onNew"
         value="business-project-action-sale-order-line-group-onnew-editable"/>
