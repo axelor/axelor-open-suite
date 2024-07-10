@@ -63,4 +63,7 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING = /*$$(*/
       "Please set the completed paid project status in the project configuration." /*)*/;
+
+  public static final String PROJECT_CODE_ERROR =
+      /*$$(*/ "Project code is already used. Please provide unique code" /*)*/;
 }
