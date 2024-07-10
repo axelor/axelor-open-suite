@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="app-intervention-config-form" title="App Intervention"
+    model="com.axelor.studio.db.AppIntervention" width="large">
+    <panel name="mainPanel">
+      <panel name="interventionsPanel" title="Interventions" colSpan="12">
+        <field name="defaultRequestSource"/>
+        <field name="defaultRequestSubject"/>
+        <field name="defaultInterventionCategory"/>
+      </panel>
+      <panel name="contractInterPanel" title="Contracts" colSpan="12">
+        <field name="defaultTypeForInterventionsFromContracts"/>
+        <field name="defaultRequestSourceBatchContract"/>
+        <field name="defaultRequestSubjectBatchContract"/>
+        <field name="defaultInterventionCategoryBatchContract"/>
+        <field name="defaultInterventionDescription" colSpan="12"/>
+      </panel>
+    </panel>
+
+  </form>
+
+
+</object-views>

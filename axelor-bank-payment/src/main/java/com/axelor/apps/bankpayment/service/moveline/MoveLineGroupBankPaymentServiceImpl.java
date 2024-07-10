@@ -36,6 +36,8 @@ import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +64,9 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
       MoveCutOffService moveCutOffService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
-      MoveLineRecordBankPaymentService moveLineRecordBankPaymentService) {
+      MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -77,7 +81,9 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
         moveAttrsService,
         analyticAttrsService,
         moveCutOffService,
-        moveLineFinancialDiscountService);
+        moveLineFinancialDiscountService,
+        fiscalPositionService,
+        taxService);
     this.moveLineCheckBankPaymentService = moveLineCheckBankPaymentService;
     this.moveLineRecordBankPaymentService = moveLineRecordBankPaymentService;
   }

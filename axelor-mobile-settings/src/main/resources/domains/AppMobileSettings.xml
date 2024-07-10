@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -15,6 +15,7 @@
     <boolean name="isHelpdeskAppEnabled" title="Helpdesk" default="false"/>
     <boolean name="isHRAppEnabled" title="HR" default="false"/>
     <boolean name="isQualityAppEnabled" title="Quality" default="false"/>
+    <boolean name="isInterventionAppEnabled" title="Intervention" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -102,6 +103,9 @@
 
     <one-to-many name="mobileDashboardList" title="Mobile dashboard list"
       ref="com.axelor.apps.mobilesettings.db.MobileDashboard" mappedBy="appMobileSettings"/>
+    <one-to-many name="mobileShortcutList" title="Mobile shortcut list"
+      ref="com.axelor.apps.mobilesettings.db.MobileShortcut" mappedBy="appMobileSettings"/>
+    <boolean name="isOneLineShortcut" title="Shortcuts display" default="false"/>
 
     <extra-code>
       <![CDATA[
@@ -122,6 +126,7 @@
       <field name="isHelpdeskAppEnabled" on="UPDATE"/>
       <field name="isHRAppEnabled" on="UPDATE"/>
       <field name="isQualityAppEnabled" on="UPDATE"/>
+      <field name="isInterventionAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>

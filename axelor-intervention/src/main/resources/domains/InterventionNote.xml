@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="InterventionNote">
+    <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="type" title="Type"
+      ref="com.axelor.apps.intervention.db.InterventionNoteType" required="true"/>
+    <string name="description" large="true" multiline="true"/>
+    <many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile"/>
+  </entity>
+
+</domain-models>
+

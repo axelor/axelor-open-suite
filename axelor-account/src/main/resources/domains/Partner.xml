@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -30,10 +30,9 @@
     <boolean name="isThirdPartyPayer" title="Third-party payer" default="false"/>
 
     <!-- PAGE SEPA -->
-    <one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner"
-      title="UMR List"/>
-    <many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr"
-      title="Active UMR" index="false"/>
+    <one-to-many name="invoicingPaymentSituationList"
+      ref="com.axelor.apps.account.db.InvoicingPaymentSituation" mappedBy="partner"
+      title="Invoicing/payment situations"/>
 
     <string name="specificTaxNote" title="Specific tax note" large="true"/>
 
@@ -69,7 +68,6 @@
       <field name="financialDiscount" on="UPDATE"/>
       <field name="das2Activity" on="UPDATE"/>
       <field name="paymentCondition" on="UPDATE"/>
-      <field name="activeUmr" on="UPDATE"/>
     </track>
 
   </entity>

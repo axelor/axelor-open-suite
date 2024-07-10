@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="print-template-grid" title="Print templates"
     model="com.axelor.apps.base.db.PrintTemplate">
@@ -54,8 +54,8 @@
       <panel-related name="printTemplateLineListPanel" field="printTemplateLineList"
         grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12"
         orderBy="sequence" canMove="true"/>
-      <field name="birtTemplateSet" widget="TagSelect" grid-view="birt-template-grid"
-        form-view="birt-template-form" colSpan="12"/>
+      <field name="printingTemplateSet" widget="TagSelect" grid-view="printing-template-grid"
+        form-view="printing-template-form" colSpan="12"/>
       <panel-related name="printTemplateSetPanel" field="printTemplateSet"
         grid-view="print-template-grid" form-view="print-template-form" colSpan="12"/>
     </panel>

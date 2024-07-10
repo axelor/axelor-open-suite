@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -41,6 +41,8 @@
     <many-to-one name="currentPricing" ref="com.axelor.apps.base.db.Pricing"
       title="Current pricing"/>
     <many-to-one name="historizedBy" ref="com.axelor.auth.db.User" title="Historized by"/>
+    <string name="typeSelect" title="Type" selection="base.pricing.type.select"
+      default="Default" required="true"/>
 
     <extra-code><![CDATA[
 	   	// RESTRICT PRICING
@@ -51,6 +53,9 @@
 		public static final String PRICING_RESTRICT_MOVE_LINE = "MoveLine";
 		public static final String PRICING_RESTRICT_INVOICE = "Invoice";
 		public static final String PRICING_RESTRICT_INVOICE_LINE = "InvoiceLine";
+
+		// TYPE SELECT
+		public static final String PRICING_TYPE_SELECT_DEFAULT = "Default";
 	]]></extra-code>
   </entity>
 

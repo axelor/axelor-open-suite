@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -43,7 +43,7 @@
       ref="com.axelor.apps.account.db.InvoiceTerm"
       title="Invoice term concerned by the debt recovery"/>
 
-    <string name="name" namecolumn="true" search="referenceDate,id" title="Name">
+    <string name="name" namecolumn="true" title="Name">
 	   	<![CDATA[
 	   		String name = "";
 	    	if(referenceDate != null)

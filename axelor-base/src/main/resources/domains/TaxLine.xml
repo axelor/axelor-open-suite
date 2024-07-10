@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -15,9 +15,17 @@
     <string name="name" namecolumn="true" title="Name">
 	    <![CDATA[
 	    	String name = "";
-	    	if(tax != null)  { name += tax.getName();  }
-	    	name += " : " + value;
-			name += " : " + startDate;
+	    	if(tax != null)  { name += tax.getCode();  }
+	    	name += " : " + value.setScale(2);
+	    	return name;
+	   	]]>
+    </string>
+    <string name="fullName" title="Full name">
+      <![CDATA[
+	    	String name = "";
+	    	if(tax != null)  { name += tax.getCode();  }
+	    	name += " : " + value.setScale(2);
+	    	name += " : " + startDate;
 			if (endDate != null) { name += " - " + endDate; }
 	    	return name;
 	   	]]>

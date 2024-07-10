@@ -30,18 +30,19 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface InvoiceLineService {
 
-  TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
+  Set<TaxLine> getTaxLineSet(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException;
 
   BigDecimal getExTaxUnitPrice(
-      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      Invoice invoice, InvoiceLine invoiceLine, Set<TaxLine> taxLineSet, boolean isPurchase)
       throws AxelorException;
 
   BigDecimal getInTaxUnitPrice(
-      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      Invoice invoice, InvoiceLine invoiceLine, Set<TaxLine> taxLineSet, boolean isPurchase)
       throws AxelorException;
 
   BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
@@ -115,7 +116,7 @@ public interface InvoiceLineService {
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
   BigDecimal getInTaxPrice(InvoiceLine invoiceLine);
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="debt-recovery-history-grid" title="Debt recovery history"
     model="com.axelor.apps.account.db.DebtRecoveryHistory" canNew="false">
@@ -35,13 +35,6 @@
 
   <form name="debt-recovery-history-form" title="Debt recovery history"
     model="com.axelor.apps.account.db.DebtRecoveryHistory" width="large">
-    <menubar>
-      <menu name="debtRecovryHistoryReportsMenu" title="Reports" icon="fa-files-o"
-        showTitle="true">
-        <item name="printReminderItem" action="save,action-method-print-birt"
-          title="Print payment reminder"/>
-      </menu>
-    </menubar>
     <panel name="debtRecoverySettingsPanel" title="Debt recovery settings">
       <field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
       <field name="debtRecoveryMethod" widget="SuggestBox"

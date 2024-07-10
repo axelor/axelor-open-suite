@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppIntervention" cacheable="true">
+    <one-to-one name="app" ref="com.axelor.studio.db.App" unique="true"/>
+
+    <many-to-one name="defaultRequestSource"
+      ref="com.axelor.apps.intervention.db.RequestSource" title="Default request source"/>
+    <many-to-one name="defaultRequestSubject"
+      ref="com.axelor.apps.intervention.db.RequestSubject" title="Default request subject"/>
+    <many-to-one name="defaultInterventionCategory"
+      ref="com.axelor.apps.intervention.db.InterventionCategory"
+      title="Default intervention category"/>
+
+    <!-- CONTRACT -->
+    <string name="defaultInterventionDescription" title="Default intervention description"
+      large="true" multiline="true"/>
+
+    <many-to-one name="defaultTypeForInterventionsFromContracts"
+      title="Default type for interventions from contracts"
+      ref="com.axelor.apps.intervention.db.InterventionType"/>
+    <many-to-one name="defaultRequestSourceBatchContract"
+      ref="com.axelor.apps.intervention.db.RequestSource"
+      title="Default request source from contract batch"/>
+    <many-to-one name="defaultRequestSubjectBatchContract"
+      ref="com.axelor.apps.intervention.db.RequestSubject"
+      title="Default request subject from contract batch"/>
+    <many-to-one name="defaultInterventionCategoryBatchContract"
+      ref="com.axelor.apps.intervention.db.InterventionCategory"
+      title="Default intervention category from contract batch"/>
+
+  </entity>
+</domain-models>

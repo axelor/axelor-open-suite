@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form id="contract-opportunity-form" name="opportunity-form" title="Opportunity"
+    model="com.axelor.apps.crm.db.Opportunity" extension="true">
+    <extend target="//item[@name='convertIntoQuotationItem']">
+      <insert position="after">
+        <item name="createContractMenuItem" title="Generate a contract"
+          action="save,action-contract-group-generate-contract"
+          if="__config__.app.isApp('contract')"/>
+      </insert>
+    </extend>
+    <extend target="//panel-related[@name='saleOrderListPanel']">
+      <insert position="after">
+        <panel-dashlet name="contractListPanel" title="Contracts"
+          action="action-opportunity-view-contract-list" readonly="true"
+          if="__config__.app.isApp('contract')"/>
+      </insert>
+    </extend>
+  </form>
+
+  <form title="Pick a template" name="generate-contract-wizard-form"
+    model="com.axelor.utils.db.Wizard" canNew="false" canSave="false">
+    <panel name="mainPanel">
+      <field name="$contractTemplate" colSpan="6" title="Contract template" type="many-to-one"
+        target="com.axelor.apps.contract.db.ContractTemplate" domain="self.targetTypeSelect = 1"/>
+      <button name="generateContractBtn" colSpan="6" title="Generate contract"
+        onClick="action-contract-method-generate-contract"/>
+    </panel>
+  </form>
+
+  <action-view name="action-contract-view-open-generate-contract-wizard"
+    title="Pick a template" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="generate-contract-wizard-form"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-contract-list" title="Contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
+    <domain>self.opportunity.id = :_id</domain>
+  </action-view>
+
+  <action-validate name="action-contract-validate-create-client">
+    <error message="Please select a customer to be able to convert opportunity into contract."
+      if="partner == null"/>
+  </action-validate>
+
+  <action-method name="action-contract-method-generate-contract">
+    <call class="com.axelor.apps.contract.web.OpportunityContractController"
+      method="generateContract"/>
+  </action-method>
+
+  <action-method name="action-contract-method-check-generated-contract">
+    <call class="com.axelor.apps.contract.web.OpportunityContractController"
+      method="checkContractIsGenerated"/>
+  </action-method>
+
+  <action-group name="action-contract-group-generate-contract">
+    <action name="action-contract-validate-create-client"/>
+    <action name="action-contract-method-check-generated-contract"/>
+    <action name="action-contract-view-open-generate-contract-wizard"/>
+  </action-group>
+
+</object-views>

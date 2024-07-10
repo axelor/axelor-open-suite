@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
   <grid name="manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-method-print-birt-list"/>
       <button name="mergeBtn" title="Merge" icon="back"
         onClick="action-manuf-order-group-merge"/>
     </toolbar>
@@ -43,7 +41,8 @@
       readonlyIf="statusSelect != 4"/>
     <button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel"
       readonlyIf="statusSelect == 2"/>
-    <button name="printBtn" title="Print" icon="fa-print" onClick="action-method-print-birt"/>
+    <button name="printBtn" title="Print" icon="fa-print"
+      onClick="action-method-print-template"/>
   </grid>
 
 
@@ -86,8 +85,6 @@
     <!-- TODO avec propagation -->
     <menubar>
       <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-method-print-birt"
-          showIf="statusSelect > 1"/>
         <item name="printProductionProcessItem" title="Print Production Process"
           action="save,action-production-process-method-print"/>
       </menu>
@@ -109,20 +106,7 @@
         <field name="$viewerIsOutsourcing" showTitle="false" readonly="true"
           showIf="$readonly()" colSpan="2" depends="outsourcing">
           <viewer>
-					<![CDATA[
-						<>
-							<Box d="flex" justifyContent="flex-end">
-								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
-							</Box>
-						</>
-					]]>
-          </viewer>
-        </field>
-        <field name="$areLinesOutsourced" hidden="true" type="boolean"/>
-        <field name="$viewerAreLinesOutsourced" showTitle="false" readonly="true"
-          showIf="$readonly()" colSpan="2" depends="$areLinesOutsourced">
-          <viewer>
-            <![CDATA[
+                        <![CDATA[
 						<>
 							<Box d="flex" justifyContent="flex-end">
 								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
@@ -147,7 +131,7 @@
         <field name="$viewerIsPermanent" showTitle="false" colSpan="2"
           showIf="typeSelect == 2 &amp;&amp; $readonly()">
           <viewer depends="typeSelect">
-			<![CDATA[<><Badge style={{ backgroundColor: "green" }}>{_t('Permanent')}</Badge></>]]>
+                        <![CDATA[<><Badge style={{ backgroundColor: "green" }}>{_t('Permanent')}</Badge></>]]>
           </viewer>
         </field>
         <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
@@ -176,7 +160,7 @@
           edit-window="blank"/>
         <field name="qty" hideIf="typeSelect != 1"
           readonlyIf="statusSelect &gt; 1 || typeSelect == 2" validIf="typeSelect == 2 || qty > 0"
-          colSpan="3"/>
+          colSpan="3" onChange="action-manuf-order-method-compute-missing-components-label"/>
         <field name="product.economicManufOrderQty" colSpan="3"/>
         <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
@@ -230,6 +214,7 @@
         <button name="draftBtn" icon="fa-eraser " title="Return to draft status" colSpan="12"
           showIf="statusSelect == 2" onClick="action-manuf-order-record-set-status-to-draft,save"
           hidden="true"/>
+        <label name="missingComponentsLabel" hidden="true" css="label-danger" colSpan="12"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
@@ -244,6 +229,8 @@
           <field name="plannedEndDateT" title="End date"
             onChange="action-manuf-order-validate-planned-end-date" requiredIf="statusSelect > 1"/>
           <field name="$totalPlannedDuration" title="Total Planned Duration" type="long"
+            readonly="true" widget="duration" x-seconds="true" x-big="true"/>
+          <field name="$totalLeadTimeDuration" title="Total lead time duration" type="long"
             readonly="true" widget="duration" x-seconds="true" x-big="true"/>
           <field name="cancelReason" hidden="true" grid-view="cancel-reason-grid"
             form-view="cancel-reason-form"/>
@@ -367,6 +354,11 @@
           onChange="action-manuf-order-group-on-change-produced-stock-move-line"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-produced-production-grid"/>
+        <panel-related name="residualStockMoveLineListPanel"
+          field="residualStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12"
+          form-view="stock-move-line-production-form"
+          onChange="action-manuf-order-group-on-change-residual-stock-move-line"
+          grid-view="stock-move-line-produced-production-grid"/>
         <panel-related name="wasteProdProductListPanel" field="wasteProdProductList"
           colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
         <panel name="descriptionPanel" title="Waste description" colSpan="12">
@@ -396,12 +388,6 @@
           <field name="moCommentFromSaleOrderLine" showTitle="false" colSpan="12"
             widget="Html"/>
         </panel>
-      </panel>
-      <panel name="residualProductsPanel" title="Residual products"
-        showIf="billOfMaterial != null &amp;&amp; billOfMaterial.prodResidualProductList.length > 0"
-        if="__config__.app.getApp('production')?.getManageResidualProductOnBom()">
-        <field name="billOfMaterial.prodResidualProductList" title="Residual products"
-          colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
       </panel>
       <panel name="outsourcingPanel" title="Outsourcing"
         showIf="outsourcing || $areLinesOutsourced">
@@ -631,6 +617,13 @@
     <action name="action-manuf-order-method-update-produced-stock-move"/>
   </action-group>
 
+  <action-group name="action-manuf-order-group-on-change-residual-stock-move-line">
+    <action name="action-manuf-order-method-check-residual-stock-move"/>
+    <action name="action-manuf-order-method-set-stock-location-residual-sml"/>
+    <action name="save"/>
+    <action name="action-manuf-order-method-update-residual-stock-move"/>
+  </action-group>
+
   <action-group name="action-manuf-order-group-on-change-consumed-stock-move-line">
     <action name="action-manuf-order-method-check-consumed-stock-move"/>
     <action name="action-manuf-order-method-set-stock-location-consumed-sml"/>
@@ -760,6 +753,8 @@
     <action name="action-manuf-order-attrs-scale-and-precision"/>
     <action name="action-production-attrs-hide-purchaseOrder"/>
     <action name="action-manuf-order-method-compute-producible-qty" if="statusSelect == 1"/>
+    <action name="action-manuf-order-method-compute-missing-components-label"
+      if="statusSelect == 1"/>
     <action name="action-manuf-order-method-update-lines-outsourced"/>
   </action-group>
 
@@ -794,6 +789,7 @@
     <action name="action-production-attrs-set-outsourcing-value"/>
     <action name="action-production-attrs-hide-purchaseOrder"/>
     <action name="action-manuf-order-method-compute-producible-qty"/>
+    <action name="action-manuf-order-method-compute-missing-components-label"/>
   </action-group>
 
   <action-group name="action-manuf-order-group-cancel-confirm">
@@ -812,6 +808,11 @@
   <action-method name="action-manuf-order-method-set-stock-location-produced-sml">
     <call class="com.axelor.apps.production.web.ManufOrderController"
       method="setProducedStockMoveLineStockLocation"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-set-stock-location-residual-sml">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="setResidualStockMoveLineStockLocation"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-set-stock-location-consumed-sml">
@@ -878,9 +879,19 @@
       method="checkProducedStockMoveLineList"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-check-residual-stock-move">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="checkResidualStockMoveLineList"/>
+  </action-method>
+
   <action-method name="action-manuf-order-method-update-produced-stock-move">
     <call class="com.axelor.apps.production.web.ManufOrderController"
       method="updateProducedStockMoveFromManufOrder"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-update-residual-stock-move">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="updateResidualStockMoveFromManufOrder"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-allocate-all">
@@ -978,6 +989,9 @@
     <attribute name="value" for="$totalPlannedDuration"
       expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()"
       if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
+    <attribute name="value" for="$totalLeadTimeDuration"
+      expr="eval: java.time.Duration.between(plannedStartDateT,plannedEndDateT).toSeconds()"
+      if="plannedEndDateT != null &amp;&amp; plannedStartDateT != null"/>
     <attribute name="value" for="$totalRealDuration"
       expr="eval: operationOrderList.collect{it->it.realDuration}.sum()"
       if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
@@ -1071,6 +1085,11 @@
   <action-method name="action-manuf-order-method-compute-producible-qty">
     <call class="com.axelor.apps.production.web.ManufOrderController"
       method="computeProducibleQty"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-compute-missing-components-label">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="computeMissingComponentsLabel"/>
   </action-method>
 
   <search-filters name="manuf-order-filters"

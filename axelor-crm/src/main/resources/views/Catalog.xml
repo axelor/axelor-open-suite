@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <cards name="catalog-cards" title="Catalogs" model="com.axelor.apps.crm.db.Catalog">
     <field name="name"/>
@@ -49,7 +49,7 @@
         <field name="name"/>
         <field name="catalogType" required="true"/>
         <field name="pdfFile" widget="binary-link" form-view="meta-files-form"
-          grid-view="meta-files-grid"/>
+          grid-view="meta-files-grid" x-accept=".pdf"/>
         <button name="showPdfButton" title="Show PDF"
           onClick="save, action-crm-method-catalog-show-pdf" readonlyIf="!pdfFile"/>
         <field name="description" colSpan="12"/>

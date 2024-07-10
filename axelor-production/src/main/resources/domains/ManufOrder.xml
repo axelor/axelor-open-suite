@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -15,7 +15,7 @@
 
     <one-to-many name="operationOrderList"
       ref="com.axelor.apps.production.db.OperationOrder" mappedBy="manufOrder"
-      title="Operation orders" orderBy="priority"/>
+      title="Manufacturing operations" orderBy="priority"/>
 
     <decimal name="qty" title="Qty" initParam="true" precision="20" scale="10"/>
 
@@ -51,6 +51,9 @@
       title="Produced products" orphanRemoval="false"/>
     <one-to-many name="wasteProdProductList"
       ref="com.axelor.apps.production.db.ProdProduct" mappedBy="wasteManufOrder" title="Waste"/>
+    <one-to-many name="residualStockMoveLineList"
+      ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="residualManufOrder"
+      title="Residual products" orphanRemoval="false"/>
 
 
     <boolean name="isConsProOnOperation" title="Manage consumed products on operations"
@@ -117,7 +120,8 @@
 
     <!-- Added this field to identify unsaved manufacturing orders in multi-level planning -->
     <string name="manualMOSeq" transient="true"/>
-    <integer name="operationOrderMaxPriority" title="Operation orders maximum priority"/>
+    <integer name="operationOrderMaxPriority"
+      title="Manufacturing operations maximum priority"/>
 
 
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"

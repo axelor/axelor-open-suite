@@ -18,23 +18,30 @@
  */
 package com.axelor.apps.mobilesettings.rest;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.mobilesettings.db.MobileMenu;
+import com.axelor.apps.mobilesettings.db.MobileScreen;
+import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsCreationPostRequest;
+import com.axelor.apps.mobilesettings.service.MobileMenuCreateService;
+import com.axelor.apps.mobilesettings.service.MobileScreenCreateService;
 import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeService;
+import com.axelor.apps.mobilesettings.translation.MobileSettingsTranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppMobileSettings;
 import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/mobilesettings")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -42,6 +49,7 @@ public class MobileSettingsRestController {
   @Operation(
       summary = "Get mobile settings",
       tags = {"Mobile Settings"})
+  @Path("/")
   @GET
   @HttpExceptionHandler
   public Response getMobileSettings() {
@@ -51,5 +59,25 @@ public class MobileSettingsRestController {
         Response.Status.OK,
         "Response of the query for settings",
         Beans.get(MobileSettingsResponseComputeService.class).computeMobileSettingsResponse());
+  }
+
+  @Operation(
+      summary = "Create mobile menu and screen",
+      tags = {"Mobile Settings"})
+  @Path("/navigation")
+  @POST
+  @HttpExceptionHandler
+  public Response createMobileMenuScreen(MobileSettingsCreationPostRequest requestBody)
+      throws AxelorException {
+    new SecurityCheck().createAccess(MobileMenu.class).createAccess(MobileScreen.class).check();
+    RequestValidator.validateBody(requestBody);
+
+    Beans.get(MobileMenuCreateService.class).createMobileMenus(requestBody.getMobileMenuList());
+    Beans.get(MobileScreenCreateService.class)
+        .createMobileScreens(requestBody.getMobileScreenList());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(MobileSettingsTranslation.MOBILE_MENU_SCREEN_CREATION_SUCCESS));
   }
 }

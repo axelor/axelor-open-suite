@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="TrackingNumberConfigurationProfile" cacheable="true">
+    <string name="name" title="Name" namecolumn="true" required="true"/>
+
+    <string name="titleOfDimension0" title="Title of dimension name (0)"/>
+    <string name="titleOfDimension1" title="Title of dimension name (1)"/>
+    <string name="titleOfDimension2" title="Title of dimension name (2)"/>
+    <string name="titleOfDimension3" title="Title of dimension name (3)"/>
+
+
+    <many-to-many name="profileFieldFormulaSet"
+      ref="com.axelor.apps.stock.db.TrackingNumberConfigurationProfileFieldFormula"
+      title="Fields formula"/>
+
+
+  </entity>
+
+</domain-models>

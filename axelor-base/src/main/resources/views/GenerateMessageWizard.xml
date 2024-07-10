@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="generate-message-wizard-form" model="com.axelor.utils.db.Wizard"
     id="base-generate-message-wizard-form" title="Generate message"
@@ -22,7 +22,8 @@
     <attribute for="_xTemplate" name="value" expr="eval: null"/>
   </action-attrs>
 
-  <action-method name="action-method-template-domain" if-module="axelor-base">
+  <action-method id="base-action-method-template-domain"
+    name="action-method-template-domain" if-module="axelor-base">
     <call class="com.axelor.apps.base.web.GenerateMessageController" method="templateDomain"/>
   </action-method>
 
