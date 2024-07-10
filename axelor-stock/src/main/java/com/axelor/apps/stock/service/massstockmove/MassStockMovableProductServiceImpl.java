@@ -9,7 +9,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
-import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.i18n.I18n;
@@ -113,6 +112,16 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
 
       processingService.save(movableProduct);
     }
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void realizeAndUpdateQty(
+      MassStockMovableProduct movableProduct,
+      MassStockMovableProductProcessingService processingService,
+      MassStockMovableProductLocationService locationService)
+      throws AxelorException {
+
+    this.realize(movableProduct, processingService, locationService);
   }
 
   @Override

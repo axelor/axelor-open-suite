@@ -1,5 +1,6 @@
 package com.axelor.apps.stock.service.massstockmove;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
 
 public interface MassStockMovableProductProcessingService<T extends MassStockMovableProduct> {
@@ -8,5 +9,5 @@ public interface MassStockMovableProductProcessingService<T extends MassStockMov
 
   void preRealize(T movableProduct);
 
-  void postRealize(T movableProduct);
+  void postRealize(T movableProduct) throws AxelorException;
 }

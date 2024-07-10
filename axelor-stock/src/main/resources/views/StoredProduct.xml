@@ -29,7 +29,7 @@
       <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
         onSelect="action-stored-product-method-stored-product-domain"/>
       <field name="toStockLocation"
-        onSelect="action-stored-product-method-set-domain-from-stock-location"
+        onSelect="action-stored-product-method-set-domain-to-stock-location"
         onChange="action-stored-product-record-set-tracking-number,action-stored-product-method-set-current-qty"
         required="true"/>
       <field name="trackingNumber"
@@ -52,9 +52,9 @@
     <field name="trackingNumber" expr="eval: null"/>
   </action-record>
 
-  <action-method name="action-stored-product-method-set-domain-from-stock-location">
+  <action-method name="action-stored-product-method-set-domain-to-stock-location">
     <call class="com.axelor.apps.stock.web.StoredProductController"
-      method="setFromStockLocationDomain"/>
+      method="setToStockLocationDomain"/>
   </action-method>
 
   <action-group name="action-stored-product-group-product-onchange">
