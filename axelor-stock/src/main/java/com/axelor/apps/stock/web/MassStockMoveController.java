@@ -27,4 +27,13 @@ public class MassStockMoveController {
 
     response.setReload(true);
   }
+
+  public void realizeAllStoring(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    var massStockMove = request.getContext().asType(MassStockMove.class);
+
+    Beans.get(MassStockMovableProductService.class).realize(massStockMove.getStoredProductList());
+
+    response.setReload(true);
+  }
 }

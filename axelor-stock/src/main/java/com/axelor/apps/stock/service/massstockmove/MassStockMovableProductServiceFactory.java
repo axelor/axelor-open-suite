@@ -8,4 +8,8 @@ public interface MassStockMovableProductServiceFactory {
   MassStockMovableProductProcessingService<? extends MassStockMovableProduct>
       getMassStockMovableProductProcessingService(MassStockMovableProduct movableProduct)
           throws AxelorException;
+
+  MassStockMovableProductLocationService<? extends MassStockMovableProduct>
+      getMassStockMovableProductLocationService(MassStockMovableProduct movableProduct)
+          throws AxelorException;
 }

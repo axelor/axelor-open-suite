@@ -5,6 +5,7 @@ import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -43,6 +44,7 @@ public class PickedProductController {
 
     response.setValue(
         "currentQty",
-        Beans.get(MassStockMovableProductService.class).getCurrentAvailableQty(pickedProduct));
+        Beans.get(MassStockMovableProductQuantityService.class)
+            .getCurrentAvailableQty(pickedProduct, pickedProduct.getFromStockLocation()));
   }
 }

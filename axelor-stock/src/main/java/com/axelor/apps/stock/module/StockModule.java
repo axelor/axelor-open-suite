@@ -100,12 +100,16 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactory;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactoryImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.PickedProductService;
+import com.axelor.apps.stock.service.massstockmove.PickedProductServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
@@ -167,5 +171,8 @@ public class StockModule extends AxelorModule {
     bind(MassStockMovableProductServiceFactory.class)
         .to(MassStockMovableProductServiceFactoryImpl.class);
     bind(StoredProductAttrsService.class).to(StoredProductAttrsServiceImpl.class);
+    bind(PickedProductService.class).to(PickedProductServiceImpl.class);
+    bind(MassStockMovableProductQuantityService.class)
+        .to(MassStockMovableProductQuantityServiceImpl.class);
   }
 }
