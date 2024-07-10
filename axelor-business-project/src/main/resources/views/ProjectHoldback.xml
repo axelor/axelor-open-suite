@@ -4,14 +4,14 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="project-hold-back-grid" title="HoldBacks"
-    model="com.axelor.apps.project.db.ProjectHoldBack">
+    model="com.axelor.apps.businessproject.db.ProjectHoldBack">
     <field name="name"/>
     <field name="defaultPercentage"/>
     <field name="projectHoldBackProduct"/>
   </grid>
 
   <form name="project-hold-back-form" title="HoldBack"
-    model="com.axelor.apps.project.db.ProjectHoldBack">
+    model="com.axelor.apps.businessproject.db.ProjectHoldBack">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="defaultPercentage">
