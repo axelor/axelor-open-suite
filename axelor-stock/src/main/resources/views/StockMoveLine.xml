@@ -30,9 +30,6 @@
     <field name="realQty" aggregate="sum" width="100px" x-scale="2"
       onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3 || lineTypeSelect == 1"/>
-    <field name="requestedReservedQty" if-module="axelor-supplychain" readonly="true"
-      x-scale="2" if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
-      aggregate="sum"/>
     <field name="reservedQty" if-module="axelor-supplychain"
       if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
       readonly="true" x-scale="2"/>
