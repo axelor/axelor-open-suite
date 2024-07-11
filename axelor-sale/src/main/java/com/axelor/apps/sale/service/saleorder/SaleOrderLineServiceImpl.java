@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -514,10 +515,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
       throws AxelorException {
 
+    Company company = saleOrder.getCompany();
+
     return currencyService
         .getAmountCurrencyConvertedAtDate(
             saleOrder.getCurrency(),
-            saleOrder.getCompany().getCurrency(),
+            company != null ? company.getCurrency() : null,
             exTaxTotal,
             saleOrder.getCreationDate())
         .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
@@ -528,13 +531,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
 
     Product product = saleOrderLine.getProduct();
+    Company company = saleOrder.getCompany();
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-            (Currency)
-                productCompanyService.get(product, "purchaseCurrency", saleOrder.getCompany()),
-            saleOrder.getCompany().getCurrency(),
-            (BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()),
+            (Currency) productCompanyService.get(product, "purchaseCurrency", company),
+            company != null ? company.getCurrency() : null,
+            (BigDecimal) productCompanyService.get(product, "costPrice", company),
             saleOrder.getCreationDate())
         .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
