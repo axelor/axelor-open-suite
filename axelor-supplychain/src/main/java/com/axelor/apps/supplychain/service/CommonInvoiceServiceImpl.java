@@ -26,6 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -39,24 +40,22 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
   @Override
   public BigDecimal computeAmountToInvoicePercent(
       Model model, BigDecimal amount, boolean isPercent, BigDecimal total) throws AxelorException {
-    if (total.compareTo(BigDecimal.ZERO) == 0) {
-      if (amount.compareTo(BigDecimal.ZERO) == 0) {
-        return BigDecimal.ZERO;
-      } else {
-        throw new AxelorException(
-            model,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(SupplychainExceptionMessage.SO_INVOICE_AMOUNT_MAX));
-      }
-    }
-    if (!isPercent) {
-      amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_UP);
-    }
-    if (amount.compareTo(new BigDecimal("100")) > 0) {
+    if ((isPercent && amount.compareTo(new BigDecimal("100")) > 0)
+        || (total.compareTo(BigDecimal.ZERO) == 0 && amount.compareTo(BigDecimal.ZERO) != 0)) {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.SO_INVOICE_AMOUNT_MAX));
+    } else if (total.compareTo(BigDecimal.ZERO) == 0 && amount.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal hundred = new BigDecimal(100);
+    if (isPercent) {
+      amount =
+          amount
+              .multiply(total)
+              .divide(hundred, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     }
 
     return amount;
@@ -68,19 +67,15 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
       throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    BigDecimal lineAmountToInvoice =
-        percentToInvoice
-            .multiply(inTaxTotal)
-            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
             invoicingProduct,
             invoicingProduct.getName(),
-            lineAmountToInvoice,
-            lineAmountToInvoice,
-            lineAmountToInvoice,
+            percentToInvoice,
+            percentToInvoice,
+            percentToInvoice,
             invoicingProduct.getDescription(),
             BigDecimal.ONE,
             invoicingProduct.getUnit(),
@@ -88,7 +83,7 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
             InvoiceLineGenerator.DEFAULT_SEQUENCE,
             BigDecimal.ZERO,
             PriceListLineRepository.AMOUNT_TYPE_NONE,
-            lineAmountToInvoice,
+            percentToInvoice,
             null,
             false) {
           @Override

@@ -572,7 +572,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
                     purchaseOrderLine.getQty().multiply(purchaseOrderLine.getPriceDiscounted()))
             .reduce(BigDecimal.ZERO, (bd1, bd2) -> bd1.add(bd2));
 
-    BigDecimal percentToInvoice =
+    amountToInvoice =
         commonInvoiceService.computeAmountToInvoicePercent(
             purchaseOrder, amountToInvoice, isPercent, total);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(purchaseOrder.getCompany());
@@ -598,7 +598,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             purchaseOrder,
             purchaseOrder.getPurchaseOrderLineTaxList(),
             advancePaymentProduct,
-            percentToInvoice,
+            amountToInvoice,
             InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
             advancePaymentAccount);
 
