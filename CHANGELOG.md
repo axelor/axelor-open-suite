@@ -1,3 +1,31 @@
+## [6.5.37] (2024-07-11)
+
+### Fixes
+#### Base
+
+* Product: fixed NPE when duplicating and saving a product.
+
+#### Account
+
+* Block customers with late payment batch: fixed an issue where the batch did not block some partners.
+* Accounting situation: fixed VAT system display when partner is internal.
+
+#### CRM
+
+* Catalog: fixed an issue where the user could upload files other than PDF.
+
+#### Sale
+
+* Sale order template: fixed NPE when company is empty.
+
+#### Stock
+
+* Sales dashboard: Fixed stock location for customer deliveries.
+
+#### Supply Chain
+
+* Invoice: removed time table link when we merge or delete invoices, fixing an issue preventing invoice merge.
+
 ## [6.5.36] (2024-06-27)
 
 ### Fixes
@@ -1441,6 +1469,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.37]: https://github.com/axelor/axelor-open-suite/compare/v6.5.36...v6.5.37
 [6.5.36]: https://github.com/axelor/axelor-open-suite/compare/v6.5.35...v6.5.36
 [6.5.35]: https://github.com/axelor/axelor-open-suite/compare/v6.5.34...v6.5.35
 [6.5.34]: https://github.com/axelor/axelor-open-suite/compare/v6.5.33...v6.5.34
