@@ -18,7 +18,7 @@
   <action-view name="action-businessproject-contract-show-related-framework-projects"
     title="Projects" model="com.axelor.apps.project.db.Project">
     <view type="grid" name="business-project-grid"/>
-    <view type="form" name="project-form"/>
+    <view type="form" name="business-project-form"/>
     <domain>self.isBusinessProject IS TRUE AND self.allowToGetPricesFromFrameworkContract IS TRUE
       AND (:paramContractId
       MEMBER OF self.frameworkCustomerContractSet OR :paramContractId MEMBER OF

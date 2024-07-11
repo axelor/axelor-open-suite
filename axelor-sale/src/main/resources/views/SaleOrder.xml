@@ -249,6 +249,10 @@
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
         onClick="action-send-by-email-with-template"/>
+      <button name="recomputePricesBtn" title="Recompute prices"
+        onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
+        icon="fa-calculator"
+        if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools">
@@ -575,7 +579,7 @@
         <field name="contract" readonly="true" hidden="true" showIf="contract"
           form-view="contract-form" grid-view="contract-grid"/>
         <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
-          form-view="project-form" grid-view="project-grid" edit-window="blank"
+          form-view="business-project-form" grid-view="project-grid" edit-window="blank"
           onChange="action-business-project-sale-order-method-update-lines"/>
 
         <panel name="projectAndTaskGenerationPanel" title="Project and task generation"
@@ -743,9 +747,6 @@
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
       <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
         showIf="statusSelect == 1" onClick="save,action-sale-order-method-separate-in-new-quotation"/>
-      <button name="computeBtn" title="Compute lines with pricing scale"
-        onClick="action-sale-order-group-compute-pricing-scale-btn" showIf="statusSelect == 1"
-        if="__config__.app.getApp('base')?.getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
@@ -987,7 +988,8 @@
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" form-view="project-form" grid-view="project-grid" colSpan="12"/>
+        <field name="project" form-view="business-project-form" grid-view="project-grid"
+          colSpan="12"/>
       </panel>
 
     </panel-tabs>
@@ -1069,7 +1071,7 @@
 
   <form name="sale-order-form-client" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form-client"
-    onLoad="action-group-sale-saleorder-onload" onSave="save,action-sale-order-method-compute,save"
+    onLoad="action-group-sale-saleorder-onload" onSave="action-group-sale-order-onsave"
     onNew="action-sale-order-method-onnew" width="large">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
@@ -1227,6 +1229,12 @@
         readonlyIf="$reportType == null || $saleOrderPrintTemplate == null"/>
     </panel>
   </form>
+
+  <action-group name="action-group-sale-order-onsave">
+    <action name="save"/>
+    <action name="action-sale-order-method-compute"/>
+    <action name="save"/>
+  </action-group>
 
   <action-view name="action-sale-order-view-reports-wizard" title="Reports"
     model="com.axelor.utils.db.Wizard">
@@ -2142,9 +2150,9 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateSaleOrderLineList"/>
   </action-method>
 
-  <action-group name="action-sale-order-group-compute-pricing-scale-btn">
+  <action-group name="action-sale-order-group-recompute-prices-btn">
     <action name="action-sale-order-method-update-sale-order-line-list"/>
-    <action name="action-sale-order-method-compute"/>
+    <action name="action-group-sale-order-onsave"/>
   </action-group>
 
   <action-attrs name="action-sale-order-attrs-template-deafult-currency">

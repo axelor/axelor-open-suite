@@ -56,7 +56,7 @@ public class InternationalServiceImpl implements InternationalService {
             .map(Language::getCode)
             .orElse(null);
     String partnerLanguage =
-        Optional.of(partner)
+        Optional.ofNullable(partner)
             .map(Partner::getLocalization)
             .map(Localization::getLanguage)
             .map(Language::getCode)

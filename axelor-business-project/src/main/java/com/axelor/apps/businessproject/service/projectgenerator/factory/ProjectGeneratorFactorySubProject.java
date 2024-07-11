@@ -122,7 +122,7 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
     return ActionView.define(String.format("Project%s generated", (projects.size() > 1 ? "s" : "")))
         .model(Project.class.getName())
         .add("grid", "project-grid")
-        .add("form", "project-form")
+        .add("form", "business-project-form")
         .param("search-filters", "project-filters")
         .domain(String.format("self.id in (%s)", StringHelper.getIdListString(projects)));
   }
