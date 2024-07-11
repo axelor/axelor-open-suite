@@ -1,0 +1,3 @@
+---
+title: "Sale order template: fixed NPE when company is empty."
+module: axelor-sale
