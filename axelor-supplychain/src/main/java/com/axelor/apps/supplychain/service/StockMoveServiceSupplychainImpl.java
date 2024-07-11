@@ -71,6 +71,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -657,7 +658,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       Company company,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
-      LocalDate realDate,
+      LocalDateTime realDateTime,
       LocalDate estimatedDate,
       String note,
       int typeSelect)
@@ -669,7 +670,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             company,
             fromStockLocation,
             toStockLocation,
-            realDate,
+            realDateTime,
             estimatedDate,
             note,
             typeSelect);

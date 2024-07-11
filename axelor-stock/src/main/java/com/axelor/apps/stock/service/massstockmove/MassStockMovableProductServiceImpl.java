@@ -78,6 +78,8 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
     var fromStockLocation = locationService.getFromStockLocation(movableProduct);
     var toStockLocation = locationService.getToStockLocation(movableProduct);
     var todayDate = appBaseService.getTodayDate(massStockMove.getCompany());
+    var todayDateTime =
+        appBaseService.getTodayDateTime(massStockMove.getCompany()).toLocalDateTime();
 
     if (movableProduct.getStockMoveLine() == null) {
       checkQty(movableProduct, fromStockLocation);
@@ -89,7 +91,7 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
               massStockMove.getCompany(),
               fromStockLocation,
               toStockLocation,
-              todayDate,
+              todayDateTime,
               todayDate,
               StockMoveRepository.TYPE_INTERNAL,
               massStockMove);

@@ -101,10 +101,12 @@
     <view type="grid" name="stock-move-line-declaration-exchanges-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>
-      self.stockMove.realDate BETWEEN :fromDate AND :toDate
-      AND self.product.productTypeSelect
+      DATE(self.stockMove.realDateTime) BETWEEN :fromDate AND :toDate
+      AND
+      self.product.productTypeSelect
       = :productTypeSelect
-      AND self.stockMove.typeSelect = :stockMoveTypeSelect
+      AND self.stockMove.typeSelect =
+      :stockMoveTypeSelect
       AND
       self.stockMove.statusSelect = 3
       AND self.stockMove.company = :company

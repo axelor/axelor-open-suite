@@ -178,7 +178,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
     String queryStr =
         "self.invoicingStatusSelect != :stockMoveInvoiced "
-            + "AND self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
+            + "AND self.statusSelect = :stockMoveStatusRealized and DATE(self.realDateTime) <= :moveDate "
             + "AND self.typeSelect = :stockMoveType ";
 
     if (company != null) {

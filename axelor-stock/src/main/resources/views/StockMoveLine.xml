@@ -303,7 +303,7 @@
     model="com.axelor.apps.stock.db.StockMoveLine"
     orderBy="stockMove.statusSelect,-stockMove.estimatedDate" canNew="false" canDelete="false">
     <field name="name" width="120"/>
-    <field name="stockMove.realDate"/>
+    <field name="stockMove.realDateTime"/>
     <field name="stockMove.estimatedDate"/>
     <field name="reservationDateTime" if-module="axelor-supplychain"
       if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
@@ -382,7 +382,7 @@
       </panel>
       <panel colSpan="12">
         <field name="stockMove.estimatedDate" colSpan="4"/>
-        <field name="stockMove.realDate" colSpan="4"/>
+        <field name="stockMove.realDateTime" colSpan="4"/>
         <field name="reservationDateTime" colSpan="4"
           if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
       </panel>
