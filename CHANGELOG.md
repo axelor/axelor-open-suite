@@ -1,3 +1,69 @@
+## [8.0.10] (2024-07-11)
+
+### Fixes
+#### Base
+
+* Fixed an issue where the logo defined in properties was not used in the login page.
+* Product: fixed NPE when duplicating and saving a product.
+
+#### Account
+
+* Accounting report: fixed missing assets and disposal column value on 'Gross value and depreciations' report.
+* Accounting report : Fixed Summary table of VAT Statement on invoices report which was not displaying all data.
+* Block customers with late payment batch: fixed an issue where the batch did not block some partners.
+* Analytic/InvoiceLine: remove analytic when account does not allow analytic in all configuration.
+* Accounting situation: fixed VAT system display when partner is internal.
+* MoveReverse: fixed imputation on reverse move invoice terms.
+* Accounting report: fixed summary table on the first page of the VAT Statement on payments displaying wrong values.
+
+#### CRM
+
+* Catalog: fixed an issue where the user could upload files other than PDF.
+
+#### Human Resource
+
+* Expense line: orphan expense line are now also digitally signed if there is a justification file
+
+#### Production
+
+* Production order: fixed production order sequence generated from product form not using the correct sequence in a multi company configuration.
+
+#### Project
+
+* Sale order: Fixed project generated with empty code which could trigger a exception
+
+#### Sale
+
+* Sale order template: fixed NPE when company is empty.
+* Sale order template: Fixed NPE when currency or partner is empty.
+
+#### Stock
+
+* Sales dashboard: Fixed stock location for customer deliveries.
+
+#### Supply Chain
+
+* Invoice: removed time table link when we merge or delete invoices, fixing an issue preventing invoice merge.
+* Translation: fixed alert message related to partner language always showing due to localization.
+
+
+### Developer
+
+#### Account
+
+To fix existing data if you reversed a move related to an invoice, you can run the following script:
+
+```sql
+UPDATE account_invoice_term AS it 
+SET amount_remaining = 0, company_amount_remaining = 0, is_paid = true
+FROM account_move_line ml JOIN account_move m ON m.id = ml.move
+WHERE ml.id = it.move_line AND ml.amount_remaining = 0 AND m.invoice IS NULL;
+```
+
+#### Project
+
+If you have the issue on project generation from sale order, the fix requires to run the following sql request in order to fully work: `UPDATE project_project SET code = id where code IS NULL;`
+
 ## [8.0.9] (2024-06-27)
 
 ### Fixes
@@ -833,6 +899,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.10]: https://github.com/axelor/axelor-open-suite/compare/v8.0.9...v8.0.10
 [8.0.9]: https://github.com/axelor/axelor-open-suite/compare/v8.0.8...v8.0.9
 [8.0.8]: https://github.com/axelor/axelor-open-suite/compare/v8.0.7...v8.0.8
 [8.0.7]: https://github.com/axelor/axelor-open-suite/compare/v8.0.6...v8.0.7
