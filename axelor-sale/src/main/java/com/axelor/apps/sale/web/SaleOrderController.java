@@ -37,7 +37,6 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -616,7 +615,6 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  @HandleExceptionResponse
   public void separateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
