@@ -1,3 +1,43 @@
+## [7.1.25] (2024-07-11)
+
+### Fixes
+#### Base
+
+* Fixed an issue where the logo defined in properties was not used in the login page.
+* Product: fixed NPE when duplicating and saving a product.
+
+#### Account
+
+* Block customers with late payment batch: fixed an issue where the batch did not block some partners.
+* Accounting situation: fixed VAT system display when partner is internal.
+
+#### CRM
+
+* Catalog: fixed an issue where the user could upload files other than PDF.
+
+#### Project
+
+* Sale order: fixed project generated with empty code which could trigger a exception.
+
+#### Sale
+
+* Sale order template: fixed NPE when company is empty.
+
+#### Stock
+
+* Sales dashboard: Fixed stock location for customer deliveries.
+
+#### Supply Chain
+
+* Invoice: removed time table link when we merge or delete invoices, fixing an issue preventing invoice merge.
+
+
+### Developer
+
+#### Project
+
+If you have the issue on project generation from sale order, the fix requires to run the following sql request in order to fully work: `UPDATE project_project SET code = id where code IS NULL;`
+
 ## [7.1.24] (2024-06-27)
 
 ### Fixes
@@ -1243,6 +1283,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.25]: https://github.com/axelor/axelor-open-suite/compare/v7.1.24...v7.1.25
 [7.1.24]: https://github.com/axelor/axelor-open-suite/compare/v7.1.23...v7.1.24
 [7.1.23]: https://github.com/axelor/axelor-open-suite/compare/v7.1.22...v7.1.23
 [7.1.22]: https://github.com/axelor/axelor-open-suite/compare/v7.1.21...v7.1.22
