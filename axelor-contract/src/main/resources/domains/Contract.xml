@@ -23,7 +23,7 @@
     <string name="note" multiline="true" large="true" title="Notes"/>
     <string name="contractId" title="Contract N°" readonly="true"/>
 
-    <boolean name="isInvoicingManagement" title="Product management"/>
+    <boolean name="isInvoicingManagement" title="Invoicing management"/>
     <boolean name="isGroupedInvoicing" title="Grouped Invoicing" default="false"/>
     <boolean name="isConsumptionManagement" title="Consumption management"/>
     <boolean name="isAdditionaBenefitManagement" title="Additional benefit management"/>
