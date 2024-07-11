@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid title="Report types" name="accounting-report-type-grid"
     model="com.axelor.apps.account.db.AccountingReportType">
     <field name="name"/>
     <field name="reportExportTypeSelect"/>
     <field name="typeSelect"/>
-    <field name="company"/>
+    <field name="companySet" widget="TagSelect"/>
+    <field name="company" hidden="true"/>
   </grid>
 
   <form title="Report type" name="accounting-report-type-form"
@@ -21,7 +22,10 @@
     </toolbar>
     <panel name="accountingReportTypeMainPanel">
       <field name="name"/>
-      <field name="company" required="true"/>
+      <panel stacked="true">
+        <field name="company" showIf="typeSelect != 3000" requiredIf="typeSelect != 3000"/>
+        <field name="companySet" showIf="typeSelect == 3000" widget="TagSelect"/>
+      </panel>
       <field name="reportExportTypeSelect" validIf="reportExportTypeSelect > 0"
         onChange="action-accounting-report-type-record-typeselect-onchange"/>
       <field name="modelAccountingReport" showIf="reportExportTypeSelect == 1"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -13,7 +13,7 @@
       ref="com.axelor.apps.production.db.OperationOrder"/>
     <many-to-one name="manufOrder" title="Manufacturing order"
       ref="com.axelor.apps.production.db.ManufOrder" copy="false"/>
-    <many-to-one name="operationOrder" title="Operation order"
+    <many-to-one name="operationOrder" title="Manufacturing operation"
       ref="com.axelor.apps.production.db.OperationOrder" copy="false"/>
     <many-to-one name="outsourcingManufOrder"
       ref="com.axelor.apps.production.db.ManufOrder"/>

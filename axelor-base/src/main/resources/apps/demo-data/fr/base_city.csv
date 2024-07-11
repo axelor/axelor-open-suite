@@ -1,14 +1,14 @@
 "importId";"inseeCode";"name";"nbInhCommune";"canton.code";"department.code";"region.code";"name_delivery";"name_standardized";"zip";"artmin"
-"1988";"06088";"Nice";"343629";"062";"06";"93";"Nice";"Nice";"06000";
-"4463";"13201";"Marseille";"38972";"133";"13";"93";"Marseille";"Marseille";"13001";
-"12167";"31555";"Toulouse";"453317";"313";"31";"76";"Toulouse";"Toulouse";"31000";
-"12729";"33063";"Bordeaux";"241287";"332";"33";"75";"Bordeaux";"Bordeaux";"33000";
-"22832";"59350";"Lille";"228652";"595";"59";"32";"Lille";"Lille";"59000";
-"27291";"67482";"Strasbourg";"274394";"678";"67";"44";"Strasbourg";"Strasbourg";"67000";
-"30088";"75101";"Paris";"17100";;"75";"11";"Paris";"Paris";"75001";
-"30905";"77083";"Champs-sur-Marne";"24663";"775";"77";"11";"Champs sur Marne";"Champs sur Marne";"77420";
+"1988";"06088";"NICE";"343629";"062";"06";"93";"NICE";"NICE";"06000";
+"4463";"13201";"MARSEILLE";"38972";"133";"13";"93";"MARSEILLE";"MARSEILLE";"13001";
+"12167";"31555";"TOULOUSE";"453317";"313";"31";"76";"TOULOUSE";"TOULOUSE";"31000";
+"12729";"33063";"BORDEAUX";"241287";"332";"33";"75";"BORDEAUX";"BORDEAUX";"33000";
+"22832";"59350";"LILLE";"228652";"595";"59";"32";"LILLE";"LILLE";"59000";
+"27291";"67482";"STRASBOURG";"274394";"678";"67";"44";"STRASBOURG";"STRASBOURG";"67000";
+"30088";"75101";"PARIS";"17100";;"75";"11";"PARIS";"PARIS";"75001";
+"30905";"77083";"CHAMPS-SUR-MARNE";"24663";"775";"77";"11";"CHAMPS SUR MARNE";"CHAMPS SUR MARNE";"77420";
 "35576";"94028";"CRETEIL";"89845";;"94";"11";"CRETEIL";"CRETEIL";"94000";
-"35647";"95127";"Cergy";"60528";"953";"95";"11";"Cergy";"Cergy";"95000";
+"35647";"95127";"CERGY";"60528";"953";"95";"11";"CERGY";"CERGY";"95000";
 "49";"01053";"BOURG-EN-BRESSE";"40171";;"01";"84";"BOURG EN BRESSE";"BOURG EN BRESSE";"01000";
 "803";"02408";"LAON";"25317";;"02";"32";"LAON";"LAON";"02000";
 "1589";"04070";"DIGNE-LES-BAINS";"16844";;"04";"93";"DIGNE LES BAINS";"DIGNE LES BAINS";"04000";

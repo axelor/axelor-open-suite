@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form id="budget-invoice-line-form" name="invoice-line-form" title="Invoice line"
     model="com.axelor.apps.account.db.InvoiceLine" extension="true">
@@ -9,6 +9,19 @@
     <extend target="/">
       <attribute name="onLoad" value="action-group-budget-invoice-line-onload"/>
       <attribute name="onNew" value="action-group-budget-invoice-line-onnew"/>
+    </extend>
+
+    <extend target="//panel[@name='customerInvoicePanel']/field[@name='product']">
+      <attribute name="onChange"
+        value="action-budget-group-account-invoice-line-product-onchange"/>
+    </extend>
+    <extend target="//panel[@name='supplierInvoicePanel']/field[@name='product']">
+      <attribute name="onChange"
+        value="action-budget-group-account-invoice-line-product-onchange"/>
+    </extend>
+
+    <extend target="//field[@name='account']">
+      <attribute name="onChange" value="action-budget-invoice-line-group-account-onchange"/>
     </extend>
 
     <extend target="//panel[@name='accountingPanel']">
@@ -21,12 +34,12 @@
               <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
             </viewer>
           </field>
-          <field name="budgetDistributionSumAmount" colSpan="6"
+          <field name="budgetRemainingAmountToAllocate" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true" x-scale="$companyCurrencyScale" x-currency="$currencySymbol">
-            <viewer depends="budgetDistributionSumAmount">
+            <viewer depends="budgetRemainingAmountToAllocate">
               <![CDATA[
-				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
               ]]>
             </viewer>
           </field>
@@ -48,13 +61,22 @@
 
   <action-group name="action-group-budget-invoice-line-budget-distribution-onchange">
     <action name="action-method-invoice-line-budget-distribution-validate-amount"/>
-    <action name="action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+    <action name="action-invoice-line-method-compute-budget-remaining-amount"/>
   </action-group>
 
-  <action-method
-    name="action-invoice-order-method-compute-budget-distribution-sum-amount">
+  <action-group name="action-budget-group-account-invoice-line-product-onchange">
+    <action name="action-group-account-invoice-line-product-onchange"/>
+    <action name="action-reset-budget-method"/>
+  </action-group>
+
+  <action-group name="action-budget-invoice-line-group-account-onchange">
+    <action name="action-invoice-line-group-account-onchange"/>
+    <action name="action-reset-budget-method"/>
+  </action-group>
+
+  <action-method name="action-invoice-line-method-compute-budget-remaining-amount">
     <call class="com.axelor.apps.budget.web.InvoiceLineController"
-      method="computeBudgetDistributionSumAmount"/>
+      method="computeBudgetRemainingAmountToAllocate"/>
   </action-method>
 
   <action-method name="action-method-invoice-line-budget-distribution-validate-amount">

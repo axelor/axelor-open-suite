@@ -32,7 +32,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,7 +44,6 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountConfigService accountConfigService;
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected ListHelper listHelper;
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
@@ -55,14 +53,12 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       AnalyticMoveLineService analyticMoveLineService,
       AccountConfigService accountConfigService,
       AnalyticAccountRepository analyticAccountRepository,
-      ListHelper listHelper,
       AnalyticToolService analyticToolService,
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
-    this.listHelper = listHelper;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;

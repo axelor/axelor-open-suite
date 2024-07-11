@@ -68,7 +68,7 @@ public class StockRulesSupplychainServiceImpl implements StockRulesSupplychainSe
   protected PurchaseOrderService purchaseOrderService;
   protected AppSupplychainService appSupplychainService;
   protected AppBaseService appBaseService;
-  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService;
   protected PartnerPriceListService partnerPriceListService;
 
   @Inject
@@ -83,7 +83,7 @@ public class StockRulesSupplychainServiceImpl implements StockRulesSupplychainSe
       PurchaseOrderService purchaseOrderService,
       AppSupplychainService appSupplychainService,
       AppBaseService appBaseService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PartnerPriceListService partnerPriceListService) {
     this.stockRulesService = stockRulesService;
     this.purchaseOrderLineService = purchaseOrderLineService;
@@ -95,7 +95,7 @@ public class StockRulesSupplychainServiceImpl implements StockRulesSupplychainSe
     this.purchaseOrderService = purchaseOrderService;
     this.appSupplychainService = appSupplychainService;
     this.appBaseService = appBaseService;
-    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderCreateSupplychainService = purchaseOrderCreateSupplychainService;
     this.partnerPriceListService = partnerPriceListService;
   }
 
@@ -135,7 +135,7 @@ public class StockRulesSupplychainServiceImpl implements StockRulesSupplychainSe
       LocalDate today = appBaseService.getTodayDate(company);
       PurchaseOrder purchaseOrder =
           purchaseOrderRepo.save(
-              purchaseOrderSupplychainService.createPurchaseOrder(
+              purchaseOrderCreateSupplychainService.createPurchaseOrder(
                   AuthUtils.getUser(),
                   company,
                   null,
@@ -148,6 +148,7 @@ public class StockRulesSupplychainServiceImpl implements StockRulesSupplychainSe
                   partnerPriceListService.getDefaultPriceList(
                       supplierPartner, PriceListRepository.TYPE_PURCHASE),
                   supplierPartner,
+                  null,
                   null));
 
       purchaseOrder.addPurchaseOrderLineListItem(

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid title="Invoicing/payment situations" name="invoicing-payment-situation-grid"
+    model="com.axelor.apps.account.db.InvoicingPaymentSituation">
+    <field name="company"/>
+    <field name="activeUmr"/>
+  </grid>
+
+  <form title="Invoicing/payment situation" name="invoicing-payment-situation-form"
+    model="com.axelor.apps.account.db.InvoicingPaymentSituation"
+    onNew="action-invoicing-payment-situation-method-onnew">
+    <panel name="mainPanel" colSpan="12">
+      <field name="company" readonlyIf="activeUmr || (umrList &amp;&amp; umrList.length != 0)"
+        onSelect="action-method-invoicing-payment-situation-company-onselect"/>
+      <panel name="sepaDirectDebitPanel" title="SEPA Direct Debit" colSpan="12"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment">
+        <field name="activeUmr"
+          onSelect="action-method-invoicing-payment-situation-umr-onselect"
+          onChange="action-method-invoicing-payment-situation-umr-onchange" canNew="true"/>
+        <panel-related name="umrListPanel" readonly="true" field="umrList"
+          title="History" colSpan="12"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-method name="action-method-invoicing-payment-situation-company-onselect">
+    <call class="com.axelor.apps.account.web.InvoicingPaymentSituationController"
+      method="setCompanyDomain"/>
+  </action-method>
+
+  <action-method name="action-method-invoicing-payment-situation-umr-onselect">
+    <call class="com.axelor.apps.account.web.InvoicingPaymentSituationController"
+      method="setActiveUmrDomain"/>
+  </action-method>
+
+  <action-method name="action-method-invoicing-payment-situation-umr-onchange">
+    <call class="com.axelor.apps.account.web.InvoicingPaymentSituationController"
+      method="addUmrInList"/>
+  </action-method>
+
+  <action-method name="action-invoicing-payment-situation-method-onnew">
+    <call class="com.axelor.apps.account.web.InvoicingPaymentSituationController"
+      method="onNew"/>
+  </action-method>
+
+</object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -9,6 +9,8 @@
 
     <many-to-one name="billOfMaterial"
       ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
+    <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess"
+      title="Production process"/>
 
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder"
       mappedBy="saleOrderLine" copy="false"/>

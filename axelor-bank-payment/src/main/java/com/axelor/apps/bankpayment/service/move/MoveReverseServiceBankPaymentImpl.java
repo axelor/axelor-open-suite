@@ -24,14 +24,16 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
@@ -74,7 +76,9 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
       BankReconciliationLineService bankReconciliationLineService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      UnreconcileService unReconcileService,
+      MoveInvoiceTermService moveInvoiceTermService) {
     super(
         moveCreateService,
         reconcileService,
@@ -84,7 +88,9 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         extractContextMoveService,
         invoicePaymentRepository,
         invoicePaymentCancelService,
-        moveToolService);
+        moveToolService,
+        unReconcileService,
+        moveInvoiceTermService);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;

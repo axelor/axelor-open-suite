@@ -31,9 +31,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
@@ -80,7 +83,10 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
     Account accountingAccount =
         moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
 
-    if (accountingAccount != null) {
+    if (accountingAccount != null
+        && (ObjectUtils.isEmpty(move.getMoveLineList())
+            || move.getMoveLineList().size() == 1
+                && Objects.equals(move.getMoveLineList().get(0), moveLine))) {
       moveLine.setAccount(accountingAccount);
 
       AnalyticDistributionTemplate analyticDistributionTemplate =
@@ -92,8 +98,9 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
       }
     }
 
-    TaxLine taxLine = moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
-    moveLine.setTaxLine(taxLine);
+    Set<TaxLine> taxLineSet =
+        moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount);
+    moveLine.setTaxLineSet(taxLineSet);
   }
 
   @Override

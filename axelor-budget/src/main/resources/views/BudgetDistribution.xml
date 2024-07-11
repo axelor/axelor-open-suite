@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="budget-distribution-grid" title="Budget distributions"
     model="com.axelor.apps.budget.db.BudgetDistribution">
@@ -424,6 +424,10 @@
   <action-method name="action-reset-budget-distribution-list-method">
     <call class="com.axelor.apps.budget.web.BudgetDistributionController"
       method="resetBudgetDistributionList"/>
+  </action-method>
+
+  <action-method name="action-reset-budget-method">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController" method="resetBudget"/>
   </action-method>
 
   <action-attrs name="action-purchase-order-line-attrs-dashlet-onload">

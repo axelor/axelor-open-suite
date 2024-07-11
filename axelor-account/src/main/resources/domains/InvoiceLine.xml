@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -24,7 +24,8 @@
     <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
     <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20"/>
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Taxes"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
     <date name="cutOffStartDate" title="From date"/>
@@ -110,6 +111,9 @@
 	    ]]>
     </many-to-one>
 
+    <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
+      min="0" max="1" nullable="true"/>
+
     <extra-code>
 		<![CDATA[
 			// TYPE SELECT
@@ -124,7 +128,6 @@
       <field name="unit"/>
       <field name="qty"/>
       <field name="price"/>
-      <field name="taxLine"/>
       <field name="account"/>
       <field name="analyticDistributionTemplate"/>
     </track>

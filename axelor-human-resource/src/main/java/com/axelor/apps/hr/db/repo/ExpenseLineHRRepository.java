@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
@@ -51,6 +52,8 @@ public class ExpenseLineHRRepository extends ExpenseLineRepository {
           expenseLine.setTotalAmount(BigDecimal.ZERO);
         }
       }
+
+      Beans.get(ExpenseProofFileService.class).signJustificationFile(expenseLine);
       return super.save(expenseLine);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

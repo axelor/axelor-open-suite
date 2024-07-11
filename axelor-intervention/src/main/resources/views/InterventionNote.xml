@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+
+  <grid name="intervention-note-grid" title="Intervention notes"
+    model="com.axelor.apps.intervention.db.InterventionNote">
+    <field name="type"/>
+    <field name="description"/>
+    <field name="metaFile"/>
+    <field name="createdBy"/>
+    <field name="createdOn"/>
+    <field name="updatedBy"/>
+    <field name="updatedOn"/>
+  </grid>
+
+  <form name="intervention-note-form" title="Intervention note"
+    model="com.axelor.apps.intervention.db.InterventionNote" width="large">
+    <panel name="mainPanel">
+      <field name="type"/>
+      <field name="description" colSpan="12" widget="html" hidden="true"
+        showIf="!type.attachedFile" requiredIf="!type.attachedFile"/>
+      <field name="metaFile" widget="BinaryLink" colSpan="12" hidden="true"
+        showIf="type.attachedFile" requiredIf="type.attachedFile"/>
+      <field name="createdBy" readonly="true" colSpan="3"/>
+      <field name="createdOn" readonly="true" colSpan="3"/>
+      <field name="updatedBy" readonly="true" colSpan="3"/>
+      <field name="updatedOn" readonly="true" colSpan="3"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="type.attachedFile"/>
+    </panel>
+  </form>
+
+</object-views>

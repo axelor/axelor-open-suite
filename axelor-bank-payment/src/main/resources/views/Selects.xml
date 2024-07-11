@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <selection name="bankpayment.bank.reconciliation.type.select">
@@ -136,6 +136,8 @@
     <option value="pain.002.001.01.ara">pain.002.001.01.ara</option>
     <option value="pain.002.001.02.ara">pain.002.001.02.ara</option>
     <option value="pain.002.001.02.ack">pain.002.001.02.ack</option>
+    <option value="csv.jma.dot">csv.jma.dot</option>
+    <option value="csv.ymd.dot">csv.ymd.dot</option>
   </selection>
 
 
@@ -166,7 +168,7 @@
     <option value="3">Bank order generation</option>
   </selection>
 
-  <selection name="bankpayment.bank.statement.line.afb.120.line.type.select">
+  <selection name="bankpayment.bank.statement.line.line.type.select">
     <option value="1">Initial balance</option>
     <option value="2">Movement</option>
     <option value="3">Final balance</option>
@@ -202,7 +204,7 @@
     <option value="com.axelor.apps.account.db.Reimbursement" data-grid="reimbursement-grid"
       data-form="reimbursement-form">Reimbursement</option>
     <option value="com.axelor.apps.account.db.InvoiceTerm"
-      data-grid="invoice-term-move-line-grid" data-form="invoice-term-move-line-form">Invoice term</option>
+      data-grid="invoice-term-move-line-grid" data-form="invoice-term-related-form">Invoice term</option>
     <option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid"
       data-form="expense-form">Expense</option>
   </selection>

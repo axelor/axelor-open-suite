@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <sequence name="range.question.sequence" increment="1" initial="1" padding="0"
+    prefix="RQ"/>
+
+  <entity name="RangeQuestion">
+    <string name="sequence" title="Sequence" sequence="range.question.sequence" unique="true"/>
+    <long name="orderSeq" title="Order" default="0"/>
+    <many-to-one name="question" title="Question"
+      ref="com.axelor.apps.intervention.db.Question" required="true"/>
+    <string name="title" title="Title" large="true" namecolumn="true">
+      <![CDATA[
+        return question == null ? null : question.getTitle();
+      ]]>
+    </string>
+    <boolean name="isRequired" title="Is required ?"/>
+    <boolean name="isPrivate" title="Is private ?"/>
+    <boolean name="isConditional" title="Is conditional ?"/>
+    <boolean name="summary" title="Recap"/>
+    <many-to-one name="conditionalRangeQuestion" title="Conditional range question"
+      ref="com.axelor.apps.intervention.db.RangeQuestion"/>
+    <many-to-many name="conditionalAnswerValueSet" title="Conditional answer values"
+      ref="com.axelor.apps.intervention.db.AnswerValue"/>
+    <many-to-one name="rangeVal" title="Range"
+      ref="com.axelor.apps.intervention.db.Range"/>
+
+    <finder-method name="findBySeq" using="sequence"/>
+  </entity>
+
+</domain-models>
