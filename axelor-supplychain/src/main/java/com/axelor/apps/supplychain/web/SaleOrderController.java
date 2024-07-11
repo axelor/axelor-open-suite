@@ -70,7 +70,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -79,7 +78,6 @@ public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
   private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
-  private final String SO_LINES_WIZARD_INVOICE_ALL_FIELD = "invoiceAll";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -303,12 +301,7 @@ public class SaleOrderController {
         BigDecimal qtyToInvoiceItem =
             new BigDecimal(
                 map.get(SaleOrderInvoiceService.SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
-        boolean invoiceAllItem =
-            Boolean.parseBoolean(
-                map.getOrDefault(SO_LINES_WIZARD_INVOICE_ALL_FIELD, false).toString());
-        if ((qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0
-                || Objects.equals(SaleOrderLineRepository.TYPE_TITLE, map.get("typeSelect")))
-            && invoiceAllItem) {
+        if (qtyToInvoiceItem.signum() != 0) {
           Long soLineId = Long.valueOf((Integer) map.get("id"));
           qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
           BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
