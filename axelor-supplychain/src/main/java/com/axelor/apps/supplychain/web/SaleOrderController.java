@@ -306,9 +306,9 @@ public class SaleOrderController {
         boolean invoiceAllItem =
             Boolean.parseBoolean(
                 map.getOrDefault(SO_LINES_WIZARD_INVOICE_ALL_FIELD, false).toString());
-        if ((qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0
-                || Objects.equals(SaleOrderLineRepository.TYPE_TITLE, map.get("typeSelect")))
-            && invoiceAllItem) {
+        if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0
+            || (Objects.equals(SaleOrderLineRepository.TYPE_TITLE, map.get("typeSelect"))
+                && invoiceAllItem)) {
           Long soLineId = Long.valueOf((Integer) map.get("id"));
           qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
           BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
