@@ -107,6 +107,7 @@ import com.axelor.apps.budget.service.move.MoveLineGroupBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveReverseServiceBudgetImpl;
 import com.axelor.apps.budget.service.move.MoveValidateBudgetServiceImpl;
+import com.axelor.apps.budget.service.observer.SaleOrderLineObserver;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderInvoiceBudgetServiceImpl;
@@ -118,6 +119,9 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineComputeBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineDummyBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineViewBudgetService;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineViewBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
@@ -132,6 +136,7 @@ import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineDummySupplychainServiceImpl;
 import java.util.concurrent.Callable;
 
 public class BudgetModule extends AxelorModule {
@@ -206,5 +211,10 @@ public class BudgetModule extends AxelorModule {
     bind(ReconcileToolBudgetService.class).to(ReconcileToolBudgetServiceImpl.class);
     bind(SaleOrderLineComputeSupplychainServiceImpl.class)
         .to(SaleOrderLineComputeBudgetServiceImpl.class);
+
+    bind(SaleOrderLineObserver.class);
+    bind(SaleOrderLineDummySupplychainServiceImpl.class)
+        .to(SaleOrderLineDummyBudgetServiceImpl.class);
+    bind(SaleOrderLineViewBudgetService.class).to(SaleOrderLineViewBudgetServiceImpl.class);
   }
 }

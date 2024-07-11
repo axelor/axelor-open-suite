@@ -11,6 +11,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
+import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
 import com.google.inject.Inject;
@@ -62,6 +63,7 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     attrs.putAll(getPriceAndQtyScale());
     attrs.putAll(getTypeSelectSelection());
     attrs.putAll(hideDeliveredQty(saleOrder));
+    attrs.putAll(hideClientPanels());
     return attrs;
   }
 
@@ -167,6 +169,19 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
                     SaleOrderRepository.STATUS_DRAFT_QUOTATION,
                     SaleOrderRepository.STATUS_FINALIZED_QUOTATION)
                 .contains(saleOrder.getStatusSelect())));
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> hideClientPanels() {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    boolean isHidden =
+        Optional.ofNullable(AuthUtils.getUser())
+            .map(User::getGroup)
+            .map(Group::getIsClient)
+            .orElse(false);
+    attrs.put("toInvoice", Map.of(HIDDEN_ATTR, isHidden));
+    attrs.put("allPanelTab", Map.of(HIDDEN_ATTR, isHidden));
+    attrs.put("marginPanel", Map.of(HIDDEN_ATTR, isHidden));
     return attrs;
   }
 }
