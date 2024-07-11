@@ -15,6 +15,7 @@
     <integer name="nbInhCommune" title="Nb. of Inhabitants"/>
     <string name="zip" title="Zip code"/>
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+    <string name="countrySubDivision" title="Country sub division"/>
     <string name="fullName" namecolumn="true" title="Concatenation of city name and zip code"
       search="name,zip">
       <![CDATA[

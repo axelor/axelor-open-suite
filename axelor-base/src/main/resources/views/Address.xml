@@ -203,6 +203,8 @@
     <field name="zip" expr="eval: city?.zip"/>
     <field name="street" expr="eval: null"/>
     <field name="townName" expr="eval: city?.name"/>
+    <field name="countrySubDivision" if="city?.countrySubDivision"
+      expr="eval: city?.countrySubDivision"/>
   </action-record>
 
   <action-record name="action-base-address-set-address-used"
