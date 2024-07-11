@@ -132,6 +132,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     // Populate fields from pricing scale before starting process of fillPrice
     if (appBaseService.getAppBase().getEnablePricingScale()) {
       saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder);
+      saleOrderLineMap.put("pricingScaleLogs", saleOrderLine.getPricingScaleLogs());
     }
 
     saleOrderLineMap.putAll(fillTaxInformation(saleOrderLine, saleOrder));
