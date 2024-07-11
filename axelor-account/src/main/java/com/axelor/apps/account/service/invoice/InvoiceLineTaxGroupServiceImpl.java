@@ -19,9 +19,11 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineTaxAttrsService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.util.HashMap;
 import java.util.Map;
 
 public class InvoiceLineTaxGroupServiceImpl implements InvoiceLineTaxGroupService {
@@ -39,7 +41,17 @@ public class InvoiceLineTaxGroupServiceImpl implements InvoiceLineTaxGroupServic
     if (invoice != null && ObjectUtils.notEmpty(invoice.getInvoiceLineTaxList())) {
       invoiceLineTaxAttrsService.addExTaxBaseScale(invoice, attrsMap, prefix);
       invoiceLineTaxAttrsService.addTaxTotalScale(invoice, attrsMap, prefix);
+      invoiceLineTaxAttrsService.addPercentageTaxTotalScale(invoice, attrsMap, prefix);
       invoiceLineTaxAttrsService.addInTaxTotalScale(invoice, attrsMap, prefix);
     }
+  }
+
+  @Override
+  public Map<String, Object> recomputeAmounts(InvoiceLineTax invoiceLineTax) {
+    Map<String, Object> values = new HashMap<>();
+
+    // Need to recompute all fields of invoiceLineTax
+
+    return values;
   }
 }

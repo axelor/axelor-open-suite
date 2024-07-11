@@ -19,6 +19,8 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
@@ -26,6 +28,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class InvoiceLineTaxController {
 
@@ -44,5 +47,21 @@ public class InvoiceLineTaxController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void recomputeAmounts(ActionRequest request, ActionResponse response) {
+    InvoiceLineTax invoiceLineTax = request.getContext().asType(InvoiceLineTax.class);
+    if (!Optional.of(invoiceLineTax)
+        .map(InvoiceLineTax::getTaxLine)
+        .map(TaxLine::getTax)
+        .map(Tax::getManageByAmount)
+        .orElse(false)) {
+      return;
+    }
+
+    Map<String, Object> values =
+        Beans.get(InvoiceLineTaxGroupService.class).recomputeAmounts(invoiceLineTax);
+
+    response.setValues(values);
   }
 }

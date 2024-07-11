@@ -278,6 +278,7 @@ public class TaxInvoiceLine extends TaxGenerator {
               null);
 
       invoiceLineTax.setTaxTotal(taxTotal);
+      invoiceLineTax.setPercentageTaxTotal(taxTotal);
       invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
 
       // Dans la devise de la société
