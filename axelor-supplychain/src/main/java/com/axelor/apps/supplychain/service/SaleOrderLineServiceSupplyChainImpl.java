@@ -61,7 +61,9 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
   protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
-  public SaleOrderLineServiceSupplyChainImpl(AppSupplychainService appSupplychainService, StockLocationLineFetchService stockLocationLineFetchService) {
+  public SaleOrderLineServiceSupplyChainImpl(
+      AppSupplychainService appSupplychainService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.appSupplychainService = appSupplychainService;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
