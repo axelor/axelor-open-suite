@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- ACCOUNTING REPORT -->
 
@@ -186,9 +186,6 @@
         <panel name="amountsPanel" title="Amounts" colSpan="12" canCollapse="true"
           stacked="true"
           hideIf="[2,5,6,10,11,12,15,16,21,22,2000,3000].indexOf(reportType.typeSelect) != -1">
-          <field name="globalByDate"
-            hideIf="[2,3,4,5,6,10,11,12,13,14,15,16,17,21,23,24,22,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
-            onChange="action-accounting-report-record-global-by-date" widget="inline-checkbox"/>
           <field name="globalByPartner"
             showIf="[3,7,13,23,24].indexOf(reportType.typeSelect) != -1"
             onChange="action-accounting-report-record-global-by-partner" widget="inline-checkbox"/>
@@ -419,14 +416,6 @@
 
   <action-record name="action-accounting-report-record-global"
     model="com.axelor.apps.account.db.AccountingReport">
-    <field name="globalByDate" expr="eval: false"/>
-    <field name="globalByPartner" expr="eval: false"/>
-    <field name="detailed" expr="eval: false"/>
-  </action-record>
-
-  <action-record name="action-accounting-report-record-global-by-date"
-    model="com.axelor.apps.account.db.AccountingReport">
-    <field name="global" expr="eval: false"/>
     <field name="globalByPartner" expr="eval: false"/>
     <field name="detailed" expr="eval: false"/>
   </action-record>
@@ -434,14 +423,12 @@
   <action-record name="action-accounting-report-record-global-by-partner"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="global" expr="eval: false"/>
-    <field name="globalByDate" expr="eval: false"/>
     <field name="detailed" expr="eval: false"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-detailed"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="global" expr="eval: false"/>
-    <field name="globalByDate" expr="eval: false"/>
     <field name="globalByPartner" expr="eval: false"/>
   </action-record>
 
@@ -487,7 +474,6 @@
     <field name="paymentMode" expr="eval: null"/>
     <field name="partnerSet" expr="eval: null"/>
     <field name="global" expr="eval: null"/>
-    <field name="globalByDate" expr="eval: null"/>
     <field name="globalByPartner" expr="eval: null"/>
     <field name="detailed" expr="eval: null"/>
     <field name="year" expr="eval: null"/>

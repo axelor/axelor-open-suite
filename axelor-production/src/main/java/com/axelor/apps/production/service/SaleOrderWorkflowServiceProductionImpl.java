@@ -29,7 +29,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
@@ -56,18 +55,17 @@ public class SaleOrderWorkflowServiceProductionImpl
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
-      SaleOrderLineService saleOrderLineService,
+      SaleOrderService saleOrderService,
+      SaleConfigService saleConfigService,
+      SaleOrderPrintService saleOrderPrintService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
-      SaleConfigService saleConfigService,
       AnalyticToolSupplychainService analyticToolSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
-      AppProductionService appProductionService,
-      SaleOrderService saleOrderService,
-      SaleOrderPrintService saleOrderPrintService) {
+      AppProductionService appProductionService) {
     super(
         sequenceService,
         partnerRepo,
@@ -75,16 +73,15 @@ public class SaleOrderWorkflowServiceProductionImpl
         appSaleService,
         appCrmService,
         userService,
-        saleOrderLineService,
+        saleOrderService,
+        saleConfigService,
+        saleOrderPrintService,
         saleOrderStockService,
         saleOrderPurchaseService,
         appSupplychainService,
         accountingSituationSupplychainService,
         partnerSupplychainService,
-        saleConfigService,
-        analyticToolSupplychainService,
-        saleOrderService,
-        saleOrderPrintService);
+        analyticToolSupplychainService);
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;
   }

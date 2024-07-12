@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
@@ -31,6 +32,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.InvoiceJournalService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -78,6 +81,8 @@ public class VentilateState extends WorkflowInvoice {
 
   protected AccountingSituationService accountingSituationService;
   protected InvoiceJournalService invoiceJournalService;
+  protected InvoicePfpValidateService invoicePfpValidateService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public VentilateState(
@@ -91,7 +96,9 @@ public class VentilateState extends WorkflowInvoice {
       FixedAssetGenerationService fixedAssetGenerationService,
       InvoiceTermService invoiceTermService,
       AccountingSituationService accountingSituationService,
-      InvoiceJournalService invoiceJournalService) {
+      InvoiceJournalService invoiceJournalService,
+      InvoicePfpValidateService invoicePfpValidateService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
@@ -103,6 +110,8 @@ public class VentilateState extends WorkflowInvoice {
     this.invoiceTermService = invoiceTermService;
     this.accountingSituationService = accountingSituationService;
     this.invoiceJournalService = invoiceJournalService;
+    this.invoicePfpValidateService = invoicePfpValidateService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -259,13 +268,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected void setInvoiceTermDueDates() throws AxelorException {
 
-    if (InvoiceToolService.isPurchase(invoice)) {
-
-      invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
-    } else {
-
-      invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
-    }
+    invoiceTermService.computeInvoiceTermsDueDates(invoice);
   }
 
   protected void setMove() throws AxelorException {
@@ -280,6 +283,16 @@ public class VentilateState extends WorkflowInvoice {
     if (move != null) {
 
       moveCreateFromInvoiceService.createMoveUseExcessPaymentOrDue(invoice);
+
+      // Update invoice pfp status
+      if (invoice != null
+          && invoice.getInvoiceTermList().stream()
+              .allMatch(
+                  it ->
+                      invoiceTermPfpToolService.getPfpValidateStatusSelect(it)
+                          == InvoiceTermRepository.PFP_STATUS_VALIDATED)) {
+        invoicePfpValidateService.validatePfp(invoice.getId());
+      }
     }
   }
 

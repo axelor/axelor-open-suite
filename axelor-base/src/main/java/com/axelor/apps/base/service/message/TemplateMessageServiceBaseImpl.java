@@ -25,12 +25,17 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServi
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.EmailAddressRepository;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.MailAccountService;
 import com.axelor.message.service.MailMessageActionService;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateContextService;
 import com.axelor.message.service.TemplateMessageServiceImpl;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.text.GroovyTemplates;
 import com.axelor.text.Templates;
 import com.google.inject.Inject;
 import java.io.File;
@@ -54,11 +59,24 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   @Inject
   public TemplateMessageServiceBaseImpl(
+      EmailAddressRepository emailAddressRepository,
+      GroovyTemplates groovyTemplates,
+      MessageRepository messageRepository,
+      TemplateRepository templateRepository,
+      MailAccountService mailAccountService,
       MessageService messageService,
       TemplateContextService templateContextService,
       MailMessageActionService mailMessageActionService,
       PrintingTemplatePrintService printTemplatePrintService) {
-    super(messageService, templateContextService, mailMessageActionService);
+    super(
+        emailAddressRepository,
+        groovyTemplates,
+        messageRepository,
+        templateRepository,
+        mailAccountService,
+        messageService,
+        templateContextService,
+        mailMessageActionService);
     this.printTemplatePrintService = printTemplatePrintService;
   }
 

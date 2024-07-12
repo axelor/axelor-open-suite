@@ -20,9 +20,8 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -31,6 +30,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +38,13 @@ public class MoveDueService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private MoveLineRepository moveLineRepository;
-
   protected InvoiceService invoiceService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
-  public MoveDueService(MoveLineRepository moveLineRepository, InvoiceService invoiceService) {
+  public MoveDueService(InvoiceService invoiceService, MoveLineToolService moveLineToolService) {
     this.invoiceService = invoiceService;
-    this.moveLineRepository = moveLineRepository;
+    this.moveLineToolService = moveLineToolService;
   }
 
   public MoveLine getOrignalInvoiceFromRefund(Invoice invoice) {
@@ -84,40 +83,14 @@ public class MoveDueService {
     // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
     List<? extends MoveLine> othersDebitMoveLines = null;
     if (useOthersInvoiceDue) {
-      if (debitMoveLines != null && debitMoveLines.size() != 0) {
-        othersDebitMoveLines =
-            moveLineRepository
-                .all()
-                .filter(
-                    "self.move.company = ?1 AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) AND self.move.ignoreInAccountingOk IN (false,null)"
-                        + " AND self.account.useForPartnerBalance = ?4 AND self.debit > 0 AND self.amountRemaining > 0 "
-                        + " AND self.partner = ?5 AND self NOT IN (?6) ORDER BY self.date ASC ",
-                    company,
-                    MoveRepository.STATUS_ACCOUNTED,
-                    MoveRepository.STATUS_DAYBOOK,
-                    true,
-                    partner,
-                    debitMoveLines)
-                .fetch();
-      } else {
-        othersDebitMoveLines =
-            moveLineRepository
-                .all()
-                .filter(
-                    "self.move.company = ?1 AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) AND self.move.ignoreInAccountingOk IN (false,null)"
-                        + " AND self.account.useForPartnerBalance = ?4 AND self.debit > 0 AND self.amountRemaining > 0 "
-                        + " AND self.partner = ?5 ORDER BY self.date ASC ",
-                    company,
-                    MoveRepository.STATUS_ACCOUNTED,
-                    MoveRepository.STATUS_DAYBOOK,
-                    true,
-                    partner)
-                .fetch();
-      }
+      othersDebitMoveLines =
+          moveLineToolService.getMoveExcessDueList(
+              false, company, invoice.getPartner(), invoice.getId());
       debitMoveLines.addAll(othersDebitMoveLines);
     }
 
     log.debug("Number of lines to pay with the credit note : {}", debitMoveLines.size());
+    debitMoveLines = debitMoveLines.stream().distinct().collect(Collectors.toList());
 
     return debitMoveLines;
   }

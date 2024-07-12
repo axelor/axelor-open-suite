@@ -31,8 +31,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -55,9 +53,6 @@ import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class MoveLineControlServiceImpl implements MoveLineControlService {
-
-  protected MoveLineToolService moveLineToolService;
-  protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
@@ -68,15 +63,11 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   @Inject
   public MoveLineControlServiceImpl(
-      MoveLineToolService moveLineToolService,
-      MoveLineService moveLineService,
       InvoiceTermService invoiceTermService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       InvoiceTermFilterService invoiceTermFilterService) {
-    this.moveLineToolService = moveLineToolService;
-    this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
@@ -198,7 +189,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
       if (!isCompanyAmount) {
         if (invoiceAttached == null) {
-          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
         } else {
           invoiceTermList.forEach(
               it ->
@@ -244,27 +235,6 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
                 .count()
             >= 2;
     return (hasInvoiceTermAndInvoice && containsInvoiceTerm) || hasInvoiceTermMoveLines;
-  }
-
-  @Override
-  public Move setMoveLineDates(Move move) throws AxelorException {
-    if (move.getDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        moveLine.setDate(move.getDate());
-        moveLineToolService.checkDateInPeriod(move, moveLine);
-      }
-    }
-    return move;
-  }
-
-  @Override
-  public Move setMoveLineOriginDates(Move move) throws AxelorException {
-    if (move.getOriginDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        moveLine.setOriginDate(move.getOriginDate());
-      }
-    }
-    return move;
   }
 
   @Override

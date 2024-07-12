@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
@@ -310,6 +310,14 @@
     model="com.axelor.apps.base.db.Site">
     <view type="grid" name="site-grid"/>
     <view type="form" name="site-form"/>
+  </action-view>
+
+  <menuitem title="Tags" name="referential-tags" parent="referential-root"
+    action="referential.tags" order="310"/>
+
+  <action-view name="referential.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
+    <view type="grid" name="tag-grid"/>
+    <view type="form" name="tag-form"/>
   </action-view>
 
   <menuitem title="Address templates" name="referential-conf-address-template"
@@ -822,7 +830,7 @@
   </action-view>
 
   <menuitem name="admin-root-calendars" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Calendars" order="1300"/>
+    if="__config__.app.isApp('base')" title="Calendars" order="1200"/>
 
   <menuitem name="admin-root-calendars-icalendars" title="iCalendars"
     parent="admin-root-calendars" action="admin.root.calendars.icalendars" order="100"/>
@@ -1040,16 +1048,8 @@
   <menuitem id="admin-menu-admin-app-management" name="menu-admin-app-management"
     parent="admin-root" order="100" title="Apps management" action="menu.admin.app.management"/>
 
-  <menuitem name="admin-root-api-documentation" parent="admin-root"
-    if="__config__.app.isApp('base') &amp;&amp; __config__.swagger" title="API Documentation"
-    order="1100" action="admin.root.api.documentation"/>
-
-  <action-view name="admin.root.api.documentation" title="API Documentation">
-    <view type="html" name="swagger/"/>
-  </action-view>
-
   <menuitem name="admin-root-maintenance" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Technical maintenance" order="1200"/>
+    if="__config__.app.isApp('base')" title="Technical maintenance" order="1100"/>
 
   <menuitem name="admin-root-data-backup" parent="admin-root-maintenance" title="Backup"
     order="1300"/>
@@ -1120,7 +1120,7 @@
 
   <!-- Pricing menus -->
 
-  <menuitem title="Pricings" name="root-base-pricing" parent="admin-root" order="1500"
+  <menuitem title="Pricings" name="root-base-pricing" parent="admin-root" order="1300"
     if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <menuitem title="Pricings" name="base-pricing" parent="root-base-pricing" order="10"

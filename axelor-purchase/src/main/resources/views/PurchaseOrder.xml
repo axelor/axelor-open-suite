@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
@@ -253,8 +253,8 @@
         title="Business project" colSpan="12" if-module="axelor-business-project">
         <field name="contract" readonly="true" hidden="true" showIf="contract"
           form-view="contract-form" grid-view="contract-grid"/>
-        <field name="project" domain="self.isBusinessProject = true" form-view="project-form"
-          grid-view="project-grid" colSpan="6"/>
+        <field name="project" domain="self.isBusinessProject = true"
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
@@ -334,6 +334,9 @@
         showIf="statusSelect == 4" if-module="axelor-supplychain"
         onClick="save,action-purchase-order-method-set-status-to-validated"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"/>
+      <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
+        showIf="statusSelect == 1"
+        onClick="save,action-purchase-order-method-separate-in-new-quotation"/>
     </panel>
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
@@ -1055,6 +1058,11 @@
     name="action-purchase-order-method-convert-selected-lines-to-merge-lines">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
       method="convertSelectedLinesToMergeLines"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-separate-in-new-quotation">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="separateInNewQuotation"/>
   </action-method>
 
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -12,9 +12,12 @@
       help="By activating this option, the user will only be able to enter a planned time from this selection. Be careful to define the associated values. If the configuration is not activated, no constraints will be applied to the time."/>
     <one-to-many name="plannedTimeValueList" title="Planned time values"
       ref="com.axelor.apps.project.db.PlannedTimeValue" mappedBy="projectConfig"/>
+    <decimal name="valueByDefaultOnDisplayPlannedTime"
+      title="Value by default on display planned time"/>
 
     <track>
       <field name="isSelectionOnDisplayPlannedTime" on="UPDATE"/>
+      <field name="valueByDefaultOnDisplayPlannedTime" on="UPDATE"/>
     </track>
   </entity>
 

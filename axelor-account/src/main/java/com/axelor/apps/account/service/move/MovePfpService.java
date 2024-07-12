@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
 
 public interface MovePfpService {
-  void validatePfp(Long moveId);
 
   void refusalToPay(Move move, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 

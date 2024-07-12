@@ -28,17 +28,18 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -53,34 +54,34 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
-  protected MoveLineService moveLineService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected InvoiceTermToolService invoiceTermToolService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
       AppAccountService appAccountService,
       InvoiceTermService invoiceTermService,
-      MoveLineService moveLineService,
       MoveLineCreateService moveLineCreateService,
       MoveLineToolService moveLineToolService,
       AccountingSituationService accountingSituationService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
-      InvoiceTermToolService invoiceTermToolService) {
+      InvoiceTermToolService invoiceTermToolService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
-    this.moveLineService = moveLineService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.invoiceTermToolService = invoiceTermToolService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -201,7 +202,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (moveLine.getPartner() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount()) {
       moveLine.setFinancialDiscount(moveLine.getPartner().getFinancialDiscount());
-      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
     }
   }
 
@@ -278,6 +279,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   protected MoveLine getHoldbackMoveLine(MoveLine moveLine, Move move, Account holdbackAccount) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return null;
+    }
+
     return move.getMoveLineList().stream()
         .filter(
             it ->
@@ -343,7 +348,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (invoiceTermService.getPfpValidatorUserCondition(move.getInvoice(), moveLine)) {
       Partner partner = move.getInvoice() != null ? move.getPartner() : moveLine.getPartner();
 
-      pfpUser = invoiceTermService.getPfpValidatorUser(partner, move.getCompany());
+      pfpUser = invoiceTermPfpToolService.getPfpValidatorUser(partner, move.getCompany());
     }
 
     return invoiceTermService.createInvoiceTerm(
@@ -363,7 +368,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
   protected void recomputePercentages(InvoiceTerm invoiceTerm, BigDecimal total) {
     invoiceTerm.setPercentage(
-        invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total));
+        invoiceTermToolService.computeCustomizedPercentage(invoiceTerm.getAmount(), total));
   }
 
   protected void updateMoveLine(MoveLine moveLine, BigDecimal amount, boolean subtract) {

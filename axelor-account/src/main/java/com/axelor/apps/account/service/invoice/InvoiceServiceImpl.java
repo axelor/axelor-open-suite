@@ -64,7 +64,6 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -111,10 +110,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppBaseService appBaseService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
-  protected TaxService taxService;
   protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoicePrintService invoicePrintService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -130,10 +130,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePrintService invoicePrintService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -147,10 +148,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
-    this.taxService = taxService;
     this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoicePrintService = invoicePrintService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   // WKF
@@ -254,6 +256,26 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Transactional(rollbackOn = {Exception.class})
   protected void ventilateProcess(Invoice invoice) throws AxelorException {
+
+    this.checkPreconditions(invoice);
+    this.computeEstimatedPaymentDate(invoice);
+
+    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
+
+    ventilateFactory.getVentilator(invoice).process();
+
+    invoiceRepo.save(invoice);
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      invoicePrintService.printAndSave(
+          invoice,
+          InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
+          accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
+          null);
+    }
+  }
+
+  @Override
+  public void checkPreconditions(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -311,22 +333,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       throw new AxelorException(
           invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
-    }
-
-    this.computeEstimatedPaymentDate(invoice);
-
-    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
-
-    ventilateFactory.getVentilator(invoice).process();
-
-    invoiceRepo.save(invoice);
-    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
-      Beans.get(InvoicePrintService.class)
-          .printAndSave(
-              invoice,
-              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
-              accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
-              null);
     }
   }
 
@@ -1113,23 +1119,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && invoice
             .getPfpValidatorUser()
             .equals(
-                invoiceTermService.getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
-  }
-
-  @Transactional
-  public void validatePfp(Long invoiceId) {
-    Invoice invoice = invoiceRepo.find(invoiceId);
-    User pfpValidatorUser =
-        invoice.getPfpValidatorUser() != null ? invoice.getPfpValidatorUser() : AuthUtils.getUser();
-
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTermPfpService.validatePfp(invoiceTerm, pfpValidatorUser);
-    }
-
-    invoice.setPfpValidatorUser(pfpValidatorUser);
-    invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
-    invoice.setDecisionPfpTakenDateTime(
-        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
+                invoiceTermPfpToolService.getPfpValidatorUser(
+                    invoice.getPartner(), invoice.getCompany()));
   }
 
   @Override

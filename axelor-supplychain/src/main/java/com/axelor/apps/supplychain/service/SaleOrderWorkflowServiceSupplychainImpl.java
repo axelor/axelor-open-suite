@@ -32,7 +32,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
@@ -65,16 +64,15 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
-      SaleOrderLineService saleOrderLineService,
+      SaleOrderService saleOrderService,
+      SaleConfigService saleConfigService,
+      SaleOrderPrintService saleOrderPrintService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
-      SaleConfigService saleConfigService,
-      AnalyticToolSupplychainService analyticToolSupplychainService,
-      SaleOrderService saleOrderService,
-      SaleOrderPrintService saleOrderPrintService) {
+      AnalyticToolSupplychainService analyticToolSupplychainService) {
     super(
         sequenceService,
         partnerRepo,
@@ -82,7 +80,6 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
         appSaleService,
         appCrmService,
         userService,
-        saleOrderLineService,
         saleOrderService,
         saleConfigService,
         saleOrderPrintService);

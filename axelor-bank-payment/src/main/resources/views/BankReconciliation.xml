@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bank-reconciliation-grid" title="Bank reconciliations"
     model="com.axelor.apps.bankpayment.db.BankReconciliation"
@@ -94,7 +94,7 @@
         showIf="statusSelect == 3" colSpan="12"/>
       <panel-related name="bankReconciliationLineListPanel" colSpan="12"
         field="bankReconciliationLineList" form-view="bank-reconciliation-line-form"
-        grid-view="bank-reconciliation-line-grid" editable="true"
+        grid-view="bank-reconciliation-line-bank-reconciliation-grid" editable="true"
         onChange="action-group-bankreconciliation-compute-click" x-can-copy="true"
         orderBy="effectDate" height="12"/>
       <button name="autoReconcileBtn" title="Auto reconcile"

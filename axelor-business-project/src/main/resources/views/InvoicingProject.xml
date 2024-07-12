@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="invoicing-project-grid" title="Invoicing business projects"
     model="com.axelor.apps.businessproject.db.InvoicingProject">
@@ -14,7 +14,7 @@
       </menu>
     </menubar>
     <field name="invoice" width="120"/>
-    <field name="project" form-view="project-form" grid-view="project-grid"/>
+    <field name="project" form-view="business-project-form" grid-view="project-grid"/>
     <field name="deadlineDate" massUpdate="true"/>
     <field name="createdOn"/>
     <field name="comments"/>
@@ -28,8 +28,8 @@
     <panel name="mainPanel">
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"
         readonly="true"/>
-      <field name="project" domain="self.isBusinessProject = true" form-view="project-form"
-        grid-view="project-grid"
+      <field name="project" domain="self.isBusinessProject = true"
+        form-view="business-project-form" grid-view="project-grid"
         onChange="action-invoicing-project-record-set-consolidate-phase-when-invoicing,action-invoicing-project-method-fill-in"/>
       <field name="deadlineDate" readonlyIf="invoice"
         onChange="action-invoicing-project-method-fill-in"/>

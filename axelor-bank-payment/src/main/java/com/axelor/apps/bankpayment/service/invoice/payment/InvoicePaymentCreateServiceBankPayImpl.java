@@ -18,9 +18,14 @@
  */
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -32,12 +37,15 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RequestScoped
 public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreateServiceImpl {
@@ -51,7 +59,9 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      PfpService pfpService) {
+      PfpService pfpService,
+      ReconcileRepository reconcileRepository,
+      InvoiceRepository invoiceRepository) {
 
     super(
         invoicePaymentRepository,
@@ -61,7 +71,9 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
         invoiceTermPaymentService,
         invoiceTermService,
         invoiceService,
-        pfpService);
+        pfpService,
+        reconcileRepository,
+        invoiceRepository);
   }
 
   @Override
@@ -96,5 +108,38 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
     }
     return invoicePaymentList;
+  }
+
+  @Override
+  public InvoicePayment createInvoicePayment(Invoice invoice, BigDecimal amount, Move paymentMove)
+      throws AxelorException {
+    InvoicePayment invoicePayment = null;
+    if (invoice != null && !ObjectUtils.isEmpty(invoice.getInvoicePaymentList())) {
+      invoicePayment =
+          invoice.getInvoicePaymentList().stream()
+              .filter(
+                  it ->
+                      (it.getAmount().compareTo(amount) == 0
+                          && it.getMove() == null
+                          && it.getReconcile() == null
+                          && Objects.equals(paymentMove.getCurrency(), it.getCurrency())
+                          && it.getBankOrder() != null
+                          && it.getBankOrder().getAccountingTriggerSelect()
+                              == PaymentModeRepository.ACCOUNTING_TRIGGER_NONE))
+              .findFirst()
+              .orElse(null);
+    }
+
+    if (invoicePayment == null) {
+      return super.createInvoicePayment(invoice, amount, paymentMove);
+    }
+
+    invoicePayment.setMove(paymentMove);
+    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+
+    invoicePaymentToolService.updateAmountPaid(invoice);
+    invoicePaymentRepository.save(invoicePayment);
+
+    return invoicePayment;
   }
 }

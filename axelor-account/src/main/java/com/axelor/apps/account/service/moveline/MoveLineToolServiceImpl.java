@@ -32,7 +32,9 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -49,7 +51,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -106,6 +110,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     }
     return moveLines;
   }
+
   /**
    * Method that returns all credit move lines of a move that are not completely lettered
    *
@@ -409,6 +414,37 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
       moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
     }
+  }
+
+  @Override
+  public List<MoveLine> getMoveExcessDueList(
+      boolean excessPayment, Company company, Partner partner, Long invoiceId) {
+    String filter = "";
+    if (excessPayment) {
+      filter = "self.credit > 0";
+    } else {
+      filter = "self.debit > 0";
+    }
+
+    filter =
+        filter.concat(
+            " AND self.move.company = :company AND (self.move.statusSelect = :statusAccounted OR self.move.statusSelect = :statusDaybook) "
+                + " AND self.move.ignoreInAccountingOk IN (false,null)"
+                + " AND self.account.accountType.technicalTypeSelect not in (:technicalTypesToExclude)"
+                + " AND self.account.useForPartnerBalance = true AND self.amountRemaining > 0 "
+                + " AND self.partner = :partner AND (self.move.invoice IS NULL OR self.move.invoice.id != :invoiceId) ORDER BY self.date ASC ");
+
+    Map<String, Object> bindings = new HashMap<>();
+    bindings.put("company", company);
+    bindings.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
+    bindings.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    bindings.put(
+        "technicalTypesToExclude",
+        Arrays.asList(AccountTypeRepository.TYPE_VIEW, AccountTypeRepository.TYPE_TAX));
+    bindings.put("partner", partner);
+    bindings.put("invoiceId", invoiceId);
+
+    return moveLineRepository.all().filter(filter).bind(bindings).fetch();
   }
 
   @Override

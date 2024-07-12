@@ -26,5 +26,7 @@ dependencies {
 
   implementation libs.ical4j
   implementation libs.iban4j
+
+  implementation "com.axelor:axelor-test:7.0.0"
   testImplementation libs.mockito
 }
