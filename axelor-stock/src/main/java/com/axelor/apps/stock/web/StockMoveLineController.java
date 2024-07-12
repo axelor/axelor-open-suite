@@ -38,7 +38,6 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -109,6 +108,8 @@ public class StockMoveLineController {
       newStockMoveLine.put("id", stockMoveLine.getId());
       newStockMoveLine.put("version", stockMoveLine.getVersion());
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
+      newStockMoveLine.put("toStockLocation", stockMoveLine.getToStockLocation());
+      newStockMoveLine.put("fromStockLocation", stockMoveLine.getFromStockLocation());
       response.setValues(newStockMoveLine);
     }
   }
@@ -338,13 +339,11 @@ public class StockMoveLineController {
       if (parentContext != null && parentContext.getContextClass().equals(StockMove.class)) {
         StockMove stockMove = parentContext.asType(StockMove.class);
         Partner partner = stockMove.getPartner();
-        String userLanguage = AuthUtils.getUser().getLanguage();
         Product product = stockMoveLine.getProduct();
 
         if (product != null) {
           Map<String, String> translation =
-              internationalService.getProductDescriptionAndNameTranslation(
-                  product, partner, userLanguage);
+              internationalService.getProductDescriptionAndNameTranslation(product, partner);
 
           String description = translation.get("description");
           String productName = translation.get("productName");
@@ -403,12 +402,12 @@ public class StockMoveLineController {
     Context context = request.getContext();
     StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
     StockMove stockMove =
-        context.getParent() != null
+        context.getParent() != null && context.getParent().getContextClass() == StockMove.class
             ? context.getParent().asType(StockMove.class)
             : stockMoveLine.getStockMove();
 
     try {
-      if (stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) {
+      if (stockMove == null || stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) {
         Beans.get(StockMoveLineService.class)
             .fillRealQuantities(stockMoveLine, stockMove, stockMoveLine.getQty());
         response.setValue("realQty", stockMoveLine.getRealQty());

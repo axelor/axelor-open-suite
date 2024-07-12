@@ -22,7 +22,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineService;
+import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
@@ -76,7 +76,7 @@ public class SaleOrderProjectController {
       response.setView(
           ActionView.define(I18n.get("Project"))
               .model(Project.class.getName())
-              .add("form", "project-form")
+              .add("form", "business-project-form")
               .param("forceEdit", "true")
               .context(CONTEXT_SHOW_RECORD, String.valueOf(project.getId()))
               .map());

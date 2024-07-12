@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -118,6 +118,9 @@
     <many-to-one name="stockLocationPrintTemplate" title="Stock location template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
+    <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Transition location (cart)"/>
+
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
 		public static final int VALUATION_TYPE_ACCOUNTING_VALUE = 2;
@@ -183,6 +186,7 @@
       <field name="conformityCertificatePrintTemplate" on="UPDATE"/>
       <field name="inventoryPrintTemplate" on="UPDATE"/>
       <field name="stockLocationPrintTemplate" on="UPDATE"/>
+      <field name="cartStockLocation" on="UPDATE"/>
     </track>
   </entity>
 

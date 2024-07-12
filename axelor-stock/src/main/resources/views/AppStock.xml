@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-stock-config-form" title="App stock" model="com.axelor.studio.db.AppStock"
     canDelete="false" canNew="false" width="large">
@@ -14,6 +14,7 @@
       <field name="isManageStockLocationOnStockMoveLine" widget="boolean-switch" colSpan="4"
         onChange="action-app-stock-validate-config-error"/>
       <field name="isIncotermEnabled" widget="boolean-switch" colSpan="4"/>
+      <field name="isMassStockMoveManaged" widget="boolean-switch" colSpan="4"/>
     </panel>
     <panel name="barCodePanel" title="Barcode">
       <panel name="trackingNumberBarCodePanel" title="Tracking number" colSpan="12">

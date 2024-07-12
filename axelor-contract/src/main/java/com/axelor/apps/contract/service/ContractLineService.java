@@ -95,4 +95,6 @@ public interface ContractLineService {
       Contract contract, ContractLine contractLine, BigDecimal price);
 
   PriceListLine getPriceListLine(ContractLine contractLine, PriceList priceList, BigDecimal price);
+
+  String computeProductDomain(Contract contract);
 }

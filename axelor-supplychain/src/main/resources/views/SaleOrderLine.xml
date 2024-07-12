@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
@@ -148,7 +148,7 @@
 
   <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
     model="com.axelor.apps.sale.db.SaleOrderLine" edit-icon="false" groupBy="saleOrder"
-    canNew="false" canEdit="false">
+    canNew="false" canEdit="false" canDelete="false" canArchive="false">
     <toolbar>
       <button name="openSolToInvoiceFormBtn" title="Invoice selected lines"
         onClick="action-sale-order-line-group-mass-invoicing"/>
@@ -301,14 +301,11 @@
   <action-group
     name="supplychain-action-sale-order-line-group-sale-supply-select-onchange"
     if-module="axelor-production">
-    <action name="action-sale-order-line-get-production-information"
-      if="__config__.app.isApp('production')"/>
-    <action name="action-sale-order-line-method-supplier-partner-default"
-      if="__config__.app.isApp('production')"/>
+    <action name="action-sale-order-line-method-sale-supply-select-onchange"/>
     <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
-      if="__config__.app.isApp('production')"/>
+      if="__config__.app.isApp('production')"/> <!-- view -->
     <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/> <!-- check -->
   </action-group>
 
   <action-group name="action-sale-order-line-group-mass-invoicing">
@@ -375,8 +372,10 @@
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
-    <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
+    <attribute name="readonly" for="analyticMoveLineList" if="__parent__"
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__?.company)?.analyticDistributionTypeSelect != 1"/>
+    <attribute name="readonly" for="analyticMoveLineList" if="saleOrder"
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(saleOrder?.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
   <action-attrs
@@ -487,6 +486,11 @@
   <action-method name="action-sale-order-line-method-generate-invoice">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="generateInvoicesFromSelectedLines"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-sale-supply-select-onchange">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+      method="saleSupplySelectOnChange"/>
   </action-method>
 
 </object-views>

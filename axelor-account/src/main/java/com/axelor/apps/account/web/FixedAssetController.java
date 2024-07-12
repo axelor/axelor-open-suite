@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGroupService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
@@ -57,6 +58,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -325,14 +327,14 @@ public class FixedAssetController {
       BigDecimal amount =
           new BigDecimal(
               context
-                  .get(splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY ? "qty" : "grossValue")
+                  .get(splitType != FixedAssetRepository.SPLIT_TYPE_AMOUNT ? "qty" : "grossValue")
                   .toString());
 
       // Check values
       fixedAssetService.checkFixedAssetBeforeSplit(fixedAsset, splitType, amount);
 
       // Do the split
-      FixedAsset createdFixedAsset =
+      List<FixedAsset> createdFixedAssetList =
           fixedAssetService.splitAndSaveFixedAsset(
               fixedAsset,
               splitType,
@@ -340,18 +342,34 @@ public class FixedAssetController {
               Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
               fixedAsset.getComments());
 
-      // Open in view
-      if (createdFixedAsset != null) {
-        response.setView(
-            ActionView.define(I18n.get("Fixed asset"))
-                .model(FixedAsset.class.getName())
-                .add("form", "fixed-asset-form")
-                .context("_showRecord", createdFixedAsset.getId())
-                .map());
-
-        response.setCanClose(true);
-        response.setReload(true);
+      if (!ObjectUtils.isEmpty(createdFixedAssetList)) {
+        // Open in view
+        if (createdFixedAssetList.size() == 1) {
+          response.setView(
+              ActionView.define(I18n.get("Fixed asset"))
+                  .model(FixedAsset.class.getName())
+                  .add("form", "fixed-asset-form")
+                  .context("_showRecord", createdFixedAssetList.get(0).getId())
+                  .map());
+        } else {
+          String createdFixedAssetIds =
+              createdFixedAssetList.stream()
+                  .map(FixedAsset::getId)
+                  .map(Objects::toString)
+                  .collect(Collectors.joining(","));
+          response.setView(
+              ActionView.define(I18n.get("Fixed assets"))
+                  .model(FixedAsset.class.getName())
+                  .add("grid", "fixed-asset-grid")
+                  .add("form", "fixed-asset-form")
+                  .domain(String.format("self.id IN (%s)", createdFixedAssetIds))
+                  .map());
+        }
       }
+
+      response.setCanClose(true);
+      response.setReload(true);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -509,6 +527,20 @@ public class FixedAssetController {
               disposal, fixedAsset, disposalTypeSelect));
       response.setAttrs(
           fixedAssetGroupService.getDisposalWizardAttrsMap(disposalTypeSelect, fixedAsset));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void changeOriginBtnTitle(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      String btnTitle = ITranslation.FIXED_ASSET_IMPORT_BTN_IMPORT;
+      if (fixedAsset.getOriginSelect() != null
+          && fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT) {
+        btnTitle = ITranslation.FIXED_ASSET_IMPORT_BTN_MANUAL;
+      }
+      response.setAttr("changeOriginBtn", "title", I18n.get(btnTitle));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

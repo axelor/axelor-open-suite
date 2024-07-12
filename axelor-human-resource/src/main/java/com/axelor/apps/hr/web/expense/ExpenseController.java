@@ -101,7 +101,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author axelor */
+/**
+ * @author axelor
+ */
 @Singleton
 public class ExpenseController {
 
@@ -702,13 +704,7 @@ public class ExpenseController {
         return;
       }
 
-      Expense expense = expenseLine.getExpense();
-
-      if (expense == null) {
-        expense = context.getParent().asType(Expense.class);
-      }
-
-      Employee employee = expense.getEmployee();
+      Employee employee = expenseLine.getEmployee();
 
       if (employee == null) {
         throw new AxelorException(

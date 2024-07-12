@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -159,9 +160,10 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .filter(it -> it.getAccount() != null && it.getAccount().getUseForPartnerBalance())
               .collect(Collectors.toList());
 
-      return moveLinesWithInvoiceTerms.size() <= 1
-          && (moveLinesWithInvoiceTerms.size() == 0
-              || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() <= 1);
+      return ObjectUtils.isEmpty(moveLinesWithInvoiceTerms)
+          || (moveLinesWithInvoiceTerms.size() == 1
+              && (ObjectUtils.isEmpty(moveLinesWithInvoiceTerms.get(0).getInvoiceTermList())
+                  || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() == 1));
     }
 
     return true;
@@ -268,14 +270,22 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   public String checkInvoiceTermInPaymentVoucher(List<InvoiceTerm> invoiceTermList) {
     if (!CollectionUtils.isEmpty(invoiceTermList)) {
       List<String> paymentVoucherRefList =
-          payVoucherElementToPayRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
-              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+          payVoucherElementToPayRepository
+              .all()
+              .filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList)
+              .fetch()
+              .stream()
               .map(PayVoucherElementToPay::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList());
       paymentVoucherRefList.addAll(
-          payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
-              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+          payVoucherDueElementRepository
+              .all()
+              .filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList)
+              .fetch()
+              .stream()
               .map(PayVoucherDueElement::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList()));

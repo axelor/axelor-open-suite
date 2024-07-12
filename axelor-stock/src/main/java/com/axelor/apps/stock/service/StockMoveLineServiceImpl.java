@@ -1256,7 +1256,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     startUnit = product.getMassUnit();
     if (startUnit == null) {
 
-      if (!checkMassesRequired(stockMove, stockMoveLine)) {
+      if (stockMove == null || !checkMassesRequired(stockMove, stockMoveLine)) {
         return product.getNetMass();
       }
 

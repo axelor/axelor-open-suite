@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="sale-order-form" id="budget-sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" extension="true">
 
     <extend target="/">
       <attribute name="onSave" value="action-budget-sale-order-group-on-save"/>
-      <attribute name="onNew" value="action-group-budget-saleorder-onnew"/>
       <attribute name="onLoad" value="action-group-budget-saleorder-onload"/>
     </extend>
 
@@ -64,12 +63,6 @@
       action-budget-sale-order-method-update-budget-lines "
       if="__config__.app.isApp('budget')"/>
     <action name="action-sale-order-line-tree-method-update-hasTree"/>
-  </action-group>
-
-  <action-group name="action-group-budget-saleorder-onnew">
-    <action name="action-group-supplychain-saleorder-onnew"/>
-    <action name="action-budget-sale-order-record-load-budget-key-config"
-      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-group-sale-order-compute-budget-distribution">

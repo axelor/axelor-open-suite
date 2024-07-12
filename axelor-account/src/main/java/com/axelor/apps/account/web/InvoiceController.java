@@ -38,8 +38,10 @@ import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -61,7 +63,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.address.AddressService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
@@ -79,7 +80,6 @@ import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -98,7 +98,7 @@ public class InvoiceController {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
-   * Fonction appeler par le bouton calculer
+   * Called from invoice form view, to recompute all values linked to the invoice.
    *
    * @param request
    * @param response
@@ -117,7 +117,7 @@ public class InvoiceController {
   }
 
   /**
-   * Fonction appeler par le bouton valider
+   * Called from invoice form view, on clicking validate button.
    *
    * @param request
    * @param response
@@ -276,25 +276,11 @@ public class InvoiceController {
   public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getPaymentCondition() == null
-          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
-        if (invoice.getInvoiceTermList() != null) {
-          invoice.getInvoiceTermList().clear();
-        } else {
-          invoice.setInvoiceTermList(new ArrayList<>());
-        }
-
-        response.setValues(invoice);
-        return;
-      }
 
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-      if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
-        return;
-      }
 
-      invoice = invoiceTermService.computeInvoiceTerms(invoice);
+      invoiceTermService.checkAndComputeInvoiceTerms(invoice);
+
       if (invoice != null) {
         response.setValues(invoice);
       } else {
@@ -309,27 +295,7 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
-        return;
-      }
-      if (InvoiceToolService.isPurchase(invoice)) {
-        if (invoice.getOriginDate() != null) {
-          invoice = invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
-        } else {
-          invoice =
-              invoiceTermService.setDueDates(
-                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
-        }
-      } else {
-        if (invoice.getInvoiceDate() != null) {
-          invoice = invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
-        } else {
-          invoice =
-              invoiceTermService.setDueDates(
-                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
-        }
-      }
+      invoiceTermService.computeInvoiceTermsDueDates(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
     } catch (Exception e) {
@@ -388,7 +354,7 @@ public class InvoiceController {
   }
 
   /**
-   * Fonction appeler par le bouton générer un avoir.
+   * Called from invoice form view, on clicking create refund button.
    *
    * @param request
    * @param response
@@ -882,7 +848,7 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       response.setValue(
           "pfpValidatorUser",
-          Beans.get(InvoiceTermService.class)
+          Beans.get(InvoiceTermPfpToolService.class)
               .getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -1046,7 +1012,7 @@ public class InvoiceController {
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
-      Beans.get(InvoiceService.class).validatePfp(invoice.getId());
+      Beans.get(InvoicePfpValidateService.class).validatePfp(invoice.getId());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -1386,6 +1352,33 @@ public class InvoiceController {
       PrintingTemplate invoicePrintTemplate =
           Beans.get(AccountConfigService.class).getInvoicePrintTemplate(invoice.getCompany());
       response.setValue("$invoicePrintTemplate", invoicePrintTemplate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setSupplierInvoiceNbAndOriginDate(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      String supplierInvoiceNb = invoice.getSupplierInvoiceNb();
+      LocalDate originDate = invoice.getOriginDate();
+
+      if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+              || invoice.getOperationTypeSelect()
+                  == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
+          && (supplierInvoiceNb == null || originDate == null)) {
+        response.setView(
+            ActionView.define(I18n.get("Supplier invoice"))
+                .model(Invoice.class.getName())
+                .add("form", "supplier-invoice-wizard-form")
+                .param("popup", "reload")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .context("_showRecord", invoice.getId())
+                .context("_supplierInvoiceNb", supplierInvoiceNb)
+                .context("_originDate", originDate)
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

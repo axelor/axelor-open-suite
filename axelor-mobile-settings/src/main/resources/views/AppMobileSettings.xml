@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-mobile-settings-config-form" title="App mobile"
     model="com.axelor.studio.db.AppMobileSettings" width="large"
@@ -71,7 +71,8 @@
         <field name="isOneLineShortcut" widget="boolean-radio" x-true-text="Line"
           x-false-text="isOneLineShortcut.Grid"/>
         <field name="mobileShortcutList" title="Shortcut management" colSpan="12"/>
-        <field name="mobileDashboardList" title="Dashboard management" colSpan="12"/>
+        <field name="mobileDashboardList" title="Dashboard management" colSpan="12"
+          canSelect="true"/>
       </panel>
       <panel name="stockValidationPanel" title="Stock" hideIf="!isStockAppEnabled">
         <field name="isStockLocationManagementEnabled" widget="boolean-switch" colSpan="12"/>

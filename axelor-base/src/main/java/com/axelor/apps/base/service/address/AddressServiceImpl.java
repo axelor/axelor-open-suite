@@ -115,7 +115,10 @@ public class AddressServiceImpl implements AddressService {
     address.setFloor(floor);
     address.setStreetName(streetName);
     address.setPostBox(postBox);
+    address.setCity(city);
+    address.setZip(zip);
     address.setCountry(country);
+    autocompleteAddress(address);
 
     return address;
   }

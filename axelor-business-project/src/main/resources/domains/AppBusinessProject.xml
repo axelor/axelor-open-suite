@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -62,6 +62,12 @@
       title="Invoicing project annex template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <many-to-one name="invoicingAnnexPrintTemplate" title="Invoicing annex template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="invoiceExpensePrintTemplate" title="Invoice expense template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <boolean name="isExpenseLineOnInvoiceGrouped" title="Group expense on invoice"
+      help="This configuration allows you to group expenses by period on the project's invoice and to attach separate receipts for these expenses."/>
+    <string name="groupingPeriodSelect" title="Grouping period"
+      selection="business.project.invoice.grouping.period.select" default="month"/>
 
     <extra-code><![CDATA[
 		public static final int CLOSING_PROJECT_RULE_NONE = 0;
@@ -82,6 +88,8 @@
 
       <field name="enableToInvoiceTimesheet" on="UPDATE"/>
       <field name="enableToInvoiceExpense" on="UPDATE"/>
+      <field name="isExpenseLineOnInvoiceGrouped" on="UPDATE"/>
+      <field name="groupingPeriodSelect" on="UPDATE"/>
       <field name="generateProjectOrder" on="UPDATE"/>
       <field name="automaticProject" on="UPDATE"/>
       <field name="projectSaleOrderLines" on="UPDATE"/>
@@ -92,6 +100,7 @@
       <field name="excludeTaskInvoicing" on="UPDATE"/>
       <field name="invoicingProjectAnnexPrintTemplate" on="UPDATE"/>
       <field name="invoicingAnnexPrintTemplate" on="UPDATE"/>
+      <field name="invoiceExpensePrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

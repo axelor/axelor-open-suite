@@ -32,6 +32,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
@@ -52,14 +53,16 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       PriceListService priceListService,
       UnitConversionService unitConversionService,
       UnitConversionForProjectService unitConversionForProjectService,
-      TimesheetProjectService timesheetProjectService) {
+      TimesheetProjectService timesheetProjectService,
+      TimesheetLineService timesheetLineService) {
     super(
         appHumanResourceService,
         partnerPriceListService,
         productCompanyService,
         priceListService,
         unitConversionService,
-        unitConversionForProjectService);
+        unitConversionForProjectService,
+        timesheetLineService);
     this.timesheetProjectService = timesheetProjectService;
   }
 
@@ -83,6 +86,9 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[8];
       Product product = timesheetLine.getProduct();
+      if (product == null) {
+        product = timesheetLineService.getDefaultProduct(timesheetLine);
+      }
       Employee employee = timesheetLine.getEmployee();
 
       // forced prices if framework customer contract set on task
@@ -91,14 +97,9 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
 
       ProjectTask projectTask = timesheetLine.getProjectTask();
       if (projectTask != null && projectTask.getFrameworkCustomerContract() != null) {
-        product = projectTask.getProduct();
-        forcedUnitPrice = product != null ? projectTask.getUnitPrice() : null;
-        forcedPriceDiscounted = product != null ? projectTask.getPriceDiscounted() : null;
-      }
-
-      // if no product set on task, get the employee product
-      if (product == null) {
-        product = employee.getProduct();
+        forcedUnitPrice = projectTask.getProduct() != null ? projectTask.getUnitPrice() : null;
+        forcedPriceDiscounted =
+            projectTask.getProduct() != null ? projectTask.getPriceDiscounted() : null;
       }
 
       tabInformations[0] = product;

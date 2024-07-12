@@ -29,6 +29,7 @@ import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
+import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionStockRepository;
@@ -42,8 +43,11 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberManagementRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.db.repo.massstockmove.PickedProductManagementRepository;
+import com.axelor.apps.stock.db.repo.massstockmove.StoredProductManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestService;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
@@ -98,6 +102,20 @@ import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.WeightedAveragePriceServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactory;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactoryImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.PickedProductService;
+import com.axelor.apps.stock.service.massstockmove.PickedProductServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
@@ -150,5 +168,17 @@ public class StockModule extends AxelorModule {
     bind(TrackingNumberService.class).to(TrackingNumberServiceImpl.class);
     bind(TrackingNumberConfigurationProfileService.class)
         .to(TrackingNumberConfigurationProfileServiceImpl.class);
+    bind(MassStockMovableProductAttrsService.class)
+        .to(MassStockMovableProductAttrsServiceImpl.class);
+    bind(MassStockMoveRecordService.class).to(MassStockMoveRecordServiceImpl.class);
+    bind(MassStockMovableProductService.class).to(MassStockMovableProductServiceImpl.class);
+    bind(MassStockMovableProductServiceFactory.class)
+        .to(MassStockMovableProductServiceFactoryImpl.class);
+    bind(StoredProductAttrsService.class).to(StoredProductAttrsServiceImpl.class);
+    bind(PickedProductService.class).to(PickedProductServiceImpl.class);
+    bind(MassStockMovableProductQuantityService.class)
+        .to(MassStockMovableProductQuantityServiceImpl.class);
+    bind(StoredProductRepository.class).to(StoredProductManagementRepository.class);
+    bind(PickedProductRepository.class).to(PickedProductManagementRepository.class);
   }
 }

@@ -31,16 +31,16 @@ import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.servlet.RequestScoped;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -48,29 +48,26 @@ import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class MoveLineControlServiceImpl implements MoveLineControlService {
-
-  protected MoveLineToolService moveLineToolService;
-  protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected InvoiceTermFilterService invoiceTermFilterService;
 
+  private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   @Inject
   public MoveLineControlServiceImpl(
-      MoveLineToolService moveLineToolService,
-      MoveLineService moveLineService,
       InvoiceTermService invoiceTermService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       InvoiceTermFilterService invoiceTermFilterService) {
-    this.moveLineToolService = moveLineToolService;
-    this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
@@ -192,7 +189,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
       if (!isCompanyAmount) {
         if (invoiceAttached == null) {
-          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
         } else {
           invoiceTermList.forEach(
               it ->
@@ -241,27 +238,6 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   }
 
   @Override
-  public Move setMoveLineDates(Move move) throws AxelorException {
-    if (move.getDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        moveLine.setDate(move.getDate());
-        moveLineToolService.checkDateInPeriod(move, moveLine);
-      }
-    }
-    return move;
-  }
-
-  @Override
-  public Move setMoveLineOriginDates(Move move) throws AxelorException {
-    if (move.getOriginDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        moveLine.setOriginDate(move.getOriginDate());
-      }
-    }
-    return move;
-  }
-
-  @Override
   public void checkAccountCompany(MoveLine moveLine) throws AxelorException {
 
     Optional<Company> optMoveCompany =
@@ -297,12 +273,30 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   }
 
   public boolean canReconcile(MoveLine moveLine) {
-    return (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+
+    LOG.debug("Checking if can reconcile {}", moveLine);
+    if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0
-        && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
-            || moveLine.getInvoiceTermList().stream()
-                .allMatch(invoiceTermFilterService::isNotAwaitingPayment));
+        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0) {
+      boolean isNotWaitingPayment =
+          (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
+              || moveLine.getInvoiceTermList().stream()
+                  .allMatch(invoiceTermFilterService::isNotAwaitingPayment));
+
+      if (!isNotWaitingPayment) {
+        LOG.debug(
+            "MoveLine {} can not be reconciled because of pending payment", moveLine.getName());
+        TraceBackService.trace(
+            new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(AccountExceptionMessage.CANNOT_BE_RECONCILED_WAITING_PAYMENT),
+                moveLine.getName()));
+      }
+
+      return isNotWaitingPayment;
+    }
+    LOG.debug("MoveLine {} can be reconciled", moveLine.getName());
+    return false;
   }
 
   @Override

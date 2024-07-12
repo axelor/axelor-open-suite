@@ -50,12 +50,19 @@ import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.common.ObjectUtils;
@@ -73,6 +80,7 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +95,21 @@ import org.slf4j.LoggerFactory;
 public class SaleOrderController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
+    SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(request.getContext());
+    boolean isTemplate = (boolean) request.getContext().get("_template");
+    SaleOrderInitValueService saleOrderInitValueService =
+        Beans.get(SaleOrderInitValueService.class);
+    Map<String, Object> saleOrderMap = new HashMap<>();
+    saleOrderMap.putAll(saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate));
+    saleOrderMap.putAll(saleOrderInitValueService.getOnNewInitValues(saleOrder));
+    saleOrderMap.putAll(Beans.get(SaleOrderDummyService.class).getOnNewDummies(saleOrder));
+    response.setValues(saleOrderMap);
+    Map<String, Map<String, Object>> attrsMap =
+        Beans.get(SaleOrderViewService.class).getOnNewAttrs(saleOrder);
+    response.setAttrs(attrsMap);
+  }
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -581,7 +604,7 @@ public class SaleOrderController {
   public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     if (Boolean.FALSE.equals(Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())
-        || !Beans.get(SaleOrderLineService.class)
+        || !Beans.get(SaleOrderLinePackService.class)
             .isStartOfPackTypeLineQtyChanged(saleOrder.getSaleOrderLineList())) {
       return;
     }
@@ -659,7 +682,7 @@ public class SaleOrderController {
   /**
    * Called from sale order form view upon changing the fiscalPosition (directly or via changing the
    * taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
-   * SaleOrderLineService#fillPrice(SaleOrderLine, SaleOrder)}.
+   * SaleOrderLineContextHelper#fillPrice(SaleOrderLine, SaleOrder)}.
    *
    * @param request
    * @param response
@@ -668,7 +691,8 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       if (saleOrder.getSaleOrderLineList() != null) {
-        Beans.get(SaleOrderLineService.class).updateLinesAfterFiscalPositionChange(saleOrder);
+        Beans.get(SaleOrderLineFiscalPositionService.class)
+            .updateLinesAfterFiscalPositionChange(saleOrder);
       }
       response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
@@ -691,7 +715,7 @@ public class SaleOrderController {
 
       Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
 
-      response.setValues(saleOrder);
+      response.setValues(Mapper.toMap(saleOrder));
       response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -751,5 +775,13 @@ public class SaleOrderController {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
     }
     response.setReload(true);
+  }
+
+  public void clientPartnerOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Map<String, Object> saleOrderMap = new HashMap<>();
+    saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).partnerOnChange(saleOrder));
+    response.setValues(saleOrderMap);
   }
 }
