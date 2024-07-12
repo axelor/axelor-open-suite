@@ -29,6 +29,7 @@ import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
+import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionStockRepository;
@@ -42,8 +43,11 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberManagementRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.db.repo.massstockmove.PickedProductManagementRepository;
+import com.axelor.apps.stock.db.repo.massstockmove.StoredProductManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestService;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
@@ -174,5 +178,7 @@ public class StockModule extends AxelorModule {
     bind(PickedProductService.class).to(PickedProductServiceImpl.class);
     bind(MassStockMovableProductQuantityService.class)
         .to(MassStockMovableProductQuantityServiceImpl.class);
+    bind(StoredProductRepository.class).to(StoredProductManagementRepository.class);
+    bind(PickedProductRepository.class).to(PickedProductManagementRepository.class);
   }
 }

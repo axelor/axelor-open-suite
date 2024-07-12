@@ -5,6 +5,7 @@ import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
 import com.axelor.inject.Beans;
@@ -14,12 +15,12 @@ import java.util.Optional;
 
 public class StoredProductController {
 
-  public void setFromStockLocationDomain(ActionRequest request, ActionResponse response) {
+  public void setToStockLocationDomain(ActionRequest request, ActionResponse response) {
     var massStockMove = request.getContext().getParent().asType(MassStockMove.class);
 
     if (massStockMove != null) {
       response.setAttr(
-          "fromStockLocation",
+          "toStockLocation",
           "domain",
           Beans.get(MassStockMovableProductAttrsService.class)
               .getStockLocationDomain(massStockMove));
@@ -61,5 +62,15 @@ public class StoredProductController {
     }
 
     response.setReload(true);
+  }
+
+  public void setCurrentQty(ActionRequest request, ActionResponse response) throws AxelorException {
+    var storedProduct = request.getContext().asType(StoredProduct.class);
+    var massStockMove = request.getContext().getParent().asType(MassStockMove.class);
+
+    response.setValue(
+        "currentQty",
+        Beans.get(MassStockMovableProductQuantityService.class)
+            .getCurrentAvailableQty(storedProduct, massStockMove.getCartStockLocation()));
   }
 }
