@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
@@ -15,18 +33,21 @@ import java.math.RoundingMode;
 
 public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateService {
 
-  protected SaleOrderLineService saleOrderLineService;
   protected AppSaleService appSaleService;
   protected AppBaseService appBaseService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLinePackService saleOrderLinePackService;
 
   @Inject
   public SaleOrderLineCreateServiceImpl(
-      SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
-      AppBaseService appBaseService) {
-    this.saleOrderLineService = saleOrderLineService;
+      AppBaseService appBaseService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLinePackService saleOrderLinePackService) {
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLinePackService = saleOrderLinePackService;
   }
 
   @Override
@@ -40,7 +61,7 @@ public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateServic
 
     if (packLine.getTypeSelect() == PackLineRepository.TYPE_START_OF_PACK
         || packLine.getTypeSelect() == PackLineRepository.TYPE_END_OF_PACK) {
-      return saleOrderLineService.createStartOfPackAndEndOfPackTypeSaleOrderLine(
+      return saleOrderLinePackService.createStartOfPackAndEndOfPackTypeSaleOrderLine(
           packLine.getPack(), saleOrder, packQty, packLine, packLine.getTypeSelect(), sequence);
     }
 
@@ -69,8 +90,8 @@ public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateServic
           soLine.setDescription(product.getDescription());
         }
         try {
-          saleOrderLineService.fillPriceFromPackLine(soLine, saleOrder);
-          saleOrderLineService.computeValues(saleOrder, soLine);
+          saleOrderLinePackService.fillPriceFromPackLine(soLine, saleOrder);
+          saleOrderLineComputeService.computeValues(saleOrder, soLine);
         } catch (AxelorException e) {
           TraceBackService.trace(e);
         }

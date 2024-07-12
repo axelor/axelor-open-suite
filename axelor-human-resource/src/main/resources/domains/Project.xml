@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -11,7 +11,8 @@
       ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="project"/>
     <decimal name="totalRealHrs" title="Total real hours"/>
     <!-- Readonly in timesheet line editor -->
-    <boolean name="excludeTimesheetEditor" title="Exclude timesheet editor"/>
+    <boolean name="excludeTimesheetEditor" title="Exclude timesheet editor"
+      help="When the checkbox is true, it enables to choose the project when filling timesheet lines VIA THE DYNAMIC EDITOR of the HR timesheet app."/>
 
   </entity>
 

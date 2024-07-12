@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product"
     orderBy="code,name" x-row-height="80">
@@ -203,8 +203,8 @@
         <panel name="subSalePanel" title="Sales" colSpan="6">
           <field name="sellable" colSpan="6"/>
           <field name="tradingNameSellerSet"
-            if="__config__.app.getApp('sale')?.getEnableSalesProductByTradName() || __config__.app.getApp('contract')?.getEnableContractsProductByTradName()"
-            colSpan="12" showIf="sellable" canNew="false" canSelect="true"/>
+            if="__config__.app.getApp('sale')?.getEnableSalesProductByTradName()" colSpan="12"
+            showIf="sellable" canNew="false" canSelect="true"/>
           <field name="productSynchronizedInPrestashop" colSpan="6"
             if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
           <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"

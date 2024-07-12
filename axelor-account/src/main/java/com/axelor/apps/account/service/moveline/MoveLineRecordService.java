@@ -45,4 +45,10 @@ public interface MoveLineRecordService {
   void resetPartnerFields(MoveLine moveLine);
 
   void setCounter(MoveLine moveLine, Move move);
+
+  void setMoveLineDates(Move move) throws AxelorException;
+
+  void setMoveLineOriginDates(Move move) throws AxelorException;
+
+  void computeDate(MoveLine moveLine, Move move) throws AxelorException;
 }
