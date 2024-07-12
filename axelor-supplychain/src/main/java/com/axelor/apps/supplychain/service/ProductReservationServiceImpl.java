@@ -1,6 +1,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.ProductReservation;
 import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProductReservationServiceImpl implements ProductReservationService {
 
@@ -63,12 +65,11 @@ public class ProductReservationServiceImpl implements ProductReservationService 
               .fetchStream()
               .map(ProductReservation::getQty)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
-      BigDecimal realQty =
-          productReservation.getStockLocation().getDetailsStockLocationLineList().stream()
+      Optional<StockLocationLine> optionalLine = productReservation.getStockLocation()
+              .getDetailsStockLocationLineList().stream()
               .filter(it -> it.getTrackingNumber().equals(productReservation.getTrackingNumber()))
-              .findFirst()
-              .get()
-              .getCurrentQty();
+              .findFirst();
+      BigDecimal realQty = optionalLine.map(StockLocationLine::getCurrentQty).orElse(BigDecimal.ZERO);
       BigDecimal availableQty =
           realQty.subtract(alreadyAllocatedQty).setScale(2, RoundingMode.HALF_UP);
 
