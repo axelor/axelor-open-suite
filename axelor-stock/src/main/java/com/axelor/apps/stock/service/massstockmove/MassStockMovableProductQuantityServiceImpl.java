@@ -3,19 +3,19 @@ package com.axelor.apps.stock.service.massstockmove;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class MassStockMovableProductQuantityServiceImpl
     implements MassStockMovableProductQuantityService {
 
-  protected final StockLocationLineService stockLocationLineService;
+  protected final StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public MassStockMovableProductQuantityServiceImpl(
-      StockLocationLineService stockLocationLineService) {
-    this.stockLocationLineService = stockLocationLineService;
+      StockLocationLineFetchService stockLocationLineFetchService) {
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -24,10 +24,11 @@ public class MassStockMovableProductQuantityServiceImpl
       throws AxelorException {
 
     if (movableProduct.getTrackingNumber() != null) {
-      return stockLocationLineService.getTrackingNumberAvailableQty(
+      return stockLocationLineFetchService.getTrackingNumberAvailableQty(
           fromStockLocation, movableProduct.getTrackingNumber());
     }
 
-    return stockLocationLineService.getAvailableQty(fromStockLocation, movableProduct.getProduct());
+    return stockLocationLineFetchService.getAvailableQty(
+        fromStockLocation, movableProduct.getProduct());
   }
 }

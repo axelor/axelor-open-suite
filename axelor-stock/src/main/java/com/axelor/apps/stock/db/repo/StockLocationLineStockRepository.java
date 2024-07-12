@@ -22,17 +22,24 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class StockLocationLineStockRepository extends StockLocationLineRepository {
+
+  protected WeightedAveragePriceService weightedAveragePriceService;
+
+  @Inject
+  public StockLocationLineStockRepository(WeightedAveragePriceService weightedAveragePriceService) {
+    this.weightedAveragePriceService = weightedAveragePriceService;
+  }
 
   @Override
   public StockLocationLine save(StockLocationLine entity) {
     try {
       Product product = entity.getProduct();
       if (entity.getIsAvgPriceChanged()) {
-        Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
+        weightedAveragePriceService.computeAvgPriceForProduct(product);
       }
       return super.save(entity);
     } catch (Exception e) {

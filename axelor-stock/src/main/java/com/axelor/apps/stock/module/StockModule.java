@@ -70,6 +70,8 @@ import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineService;
@@ -96,6 +98,8 @@ import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileService;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationServiceImpl;
+import com.axelor.apps.stock.service.TrackingNumberCreateService;
+import com.axelor.apps.stock.service.TrackingNumberCreateServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.TrackingNumberServiceImpl;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
@@ -120,6 +124,8 @@ import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintS
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintServiceimpl;
+import com.axelor.apps.stock.utils.StockLocationUtilsService;
+import com.axelor.apps.stock.utils.StockLocationUtilsServiceImpl;
 
 public class StockModule extends AxelorModule {
 
@@ -180,5 +186,8 @@ public class StockModule extends AxelorModule {
         .to(MassStockMovableProductQuantityServiceImpl.class);
     bind(StoredProductRepository.class).to(StoredProductManagementRepository.class);
     bind(PickedProductRepository.class).to(PickedProductManagementRepository.class);
+    bind(StockLocationUtilsService.class).to(StockLocationUtilsServiceImpl.class);
+    bind(StockLocationLineFetchService.class).to(StockLocationLineFetchServiceImpl.class);
+    bind(TrackingNumberCreateService.class).to(TrackingNumberCreateServiceImpl.class);
   }
 }
