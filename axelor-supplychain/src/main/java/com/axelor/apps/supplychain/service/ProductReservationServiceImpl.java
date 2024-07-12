@@ -65,11 +65,12 @@ public class ProductReservationServiceImpl implements ProductReservationService 
               .fetchStream()
               .map(ProductReservation::getQty)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
-      Optional<StockLocationLine> optionalLine = productReservation.getStockLocation()
-              .getDetailsStockLocationLineList().stream()
+      Optional<StockLocationLine> optionalLine =
+          productReservation.getStockLocation().getDetailsStockLocationLineList().stream()
               .filter(it -> it.getTrackingNumber().equals(productReservation.getTrackingNumber()))
               .findFirst();
-      BigDecimal realQty = optionalLine.map(StockLocationLine::getCurrentQty).orElse(BigDecimal.ZERO);
+      BigDecimal realQty =
+          optionalLine.map(StockLocationLine::getCurrentQty).orElse(BigDecimal.ZERO);
       BigDecimal availableQty =
           realQty.subtract(alreadyAllocatedQty).setScale(2, RoundingMode.HALF_UP);
 

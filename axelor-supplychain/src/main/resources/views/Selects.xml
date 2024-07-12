@@ -213,7 +213,7 @@
     <option value="2">To produce on MO</option>
     <option value="3">To consume on MO</option>
   </selection>
-    
+
   <selection name="sale.order.delivery.state">
     <option value="1">Not delivered</option>
     <option value="2">Partially delivered</option>
