@@ -34,8 +34,9 @@
     <many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
     <boolean name="managePartnerComplementaryProduct"
       title="Manage partner complementary product"/>
-    <boolean name="isEnableCalculationEntireQuotationUsingPricing"
-      title="Enable calculation of the entire quotation using pricing"/>
+    <boolean name="isEnableCalculationEntireQuotation"
+      title="Enable calculation of the entire quotation's prices"
+      help="This configuration enables you to recalculate line prices using a quotation. The recalculation will take into account pricing, if any, then the partner's price lists."/>
     <boolean name="considerZeroCost"
       title="Consider zero cost and zero price lines in the margin"
       help="When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero."/>
@@ -70,7 +71,7 @@
       <field name="enableSalesProductByTradName" on="UPDATE"/>
       <field name="saleUnit" on="UPDATE"/>
       <field name="managePartnerComplementaryProduct" on="UPDATE"/>
-      <field name="isEnableCalculationEntireQuotationUsingPricing" on="UPDATE"/>
+      <field name="isEnableCalculationEntireQuotation" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
       <field name="isEditableGridEnabled" on="UPDATE"/>
     </track>

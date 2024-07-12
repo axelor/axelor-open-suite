@@ -39,18 +39,18 @@ import java.util.stream.Collectors;
 public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
 
   protected StockConfigService stockConfigService;
-  protected StockLocationLineService stockLocationLineService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
   protected ProductCompanyService productCompanyService;
   protected StockMoveLineService stockMoveLineService;
 
   @Inject
   public StockMoveCheckWapServiceImpl(
       StockConfigService stockConfigService,
-      StockLocationLineService stockLocationLineService,
+      StockLocationLineFetchService stockLocationLineFetchService,
       ProductCompanyService productCompanyService,
       StockMoveLineService stockMoveLineService) {
     this.stockConfigService = stockConfigService;
-    this.stockLocationLineService = stockLocationLineService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.productCompanyService = productCompanyService;
     this.stockMoveLineService = stockMoveLineService;
   }
@@ -68,7 +68,7 @@ public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
 
         StockLocation toStockLocation = stockMoveLine.getToStockLocation();
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(
+            stockLocationLineFetchService.getStockLocationLine(
                 stockMoveLine.getToStockLocation(), product);
         if (!product.getStockManaged()
             || toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL
