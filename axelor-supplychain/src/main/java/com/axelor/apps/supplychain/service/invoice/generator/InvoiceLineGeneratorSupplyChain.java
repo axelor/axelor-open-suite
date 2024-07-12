@@ -49,6 +49,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /** Classe de création de ligne de facture abstraite. */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
@@ -71,7 +72,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       String description,
       BigDecimal qty,
       Unit unit,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       int sequence,
       BigDecimal discountAmount,
       int discountTypeSelect,
@@ -91,7 +92,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         description,
         qty,
         unit,
-        taxLine,
+        taxLineSet,
         sequence,
         discountAmount,
         discountTypeSelect,
@@ -138,7 +139,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         this.unit = saleOrderLine.getUnit();
       }
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
-      this.taxLine = saleOrderLine.getTaxLine();
+      this.taxLineSet = saleOrderLine.getTaxLineSet();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
       this.typeSelect = saleOrderLine.getTypeSelect();
     } else if (purchaseOrderLine != null) {
@@ -155,7 +156,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         this.unit = purchaseOrderLine.getUnit();
       }
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-      this.taxLine = purchaseOrderLine.getTaxLine();
+      this.taxLineSet = purchaseOrderLine.getTaxLineSet();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
     } else if (stockMoveLine != null) {
       this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();

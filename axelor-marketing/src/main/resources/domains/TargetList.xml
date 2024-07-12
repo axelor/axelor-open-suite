@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
@@ -25,6 +25,14 @@
     <string name="leadQuery" title="Lead Query" large="true"/>
     <integer name="leadQueryTypeSelect" title="Select Query type"
       selection="marketing.target.list.query.type.select" default="0"/>
-  </entity>
 
+    <extra-code><![CDATA[
+
+		// TARGET QUERY TYPE SELECT
+		public static final int TARGET_QUERY_TYPE_SELECT_GUIDED = 0;
+		public static final int TARGET_QUERY_TYPE_SELECT_MANUAL = 1;
+
+	]]></extra-code>
+
+  </entity>
 </domain-models>

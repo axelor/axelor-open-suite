@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="CustomerRequest">
+    <integer name="statusSelect" title="Status" readonly="true" default="10"
+      selection="customer.request.status.select" copy="false"/>
+    <boolean name="emailSent" hidden="true" readonly="true" default="false"/>
+    <string name="sequence" title="Sequence" unique="true" readonly="true" copy="false"/>
+    <string name="name" title="Name">
+      <![CDATA[
+        StringJoiner name = new StringJoiner(" - ");
+        if (requestSource != null) {
+          name.add(requestSource.getName());
+        }
+        if (requestSubject != null) {
+          name.add(requestSubject.getName());
+        }
+        if (StringUtils.isBlank(name.toString())) {
+          return String.format("%s", sequence);
+        }
+        return String.format("%s: %s", sequence, name.toString());
+      ]]>
+    </string>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+      required="true"/>
+    <many-to-one name="tradingName" title="Trading name"
+      ref="com.axelor.apps.base.db.TradingName"/>
+    <many-to-one name="deliveredPartner" title="Delivered partner"
+      ref="com.axelor.apps.base.db.Partner" required="true"/>
+    <many-to-one name="interventionAddress" title="Intervention address"
+      ref="com.axelor.apps.base.db.Address" required="true"/>
+    <many-to-one name="contact" title="Contact" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="equipmentSet" title="Equipments"
+      ref="com.axelor.apps.intervention.db.Equipment"/>
+    <many-to-one name="contract" title="Contract"
+      ref="com.axelor.apps.contract.db.Contract"/>
+    <many-to-one name="requestSource" title="Request source"
+      ref="com.axelor.apps.intervention.db.RequestSource"/>
+    <many-to-one name="requestSubject" title="Request subject"
+      ref="com.axelor.apps.intervention.db.RequestSubject"/>
+    <many-to-one name="interventionCategory" title="Intervention category"
+      ref="com.axelor.apps.intervention.db.InterventionCategory"/>
+    <string name="description" title="Description" large="true" multiline="true"/>
+    <string name="priority" title="Priority" default="normal"
+      selection="customer.request.priority.select"/>
+    <datetime name="requestDateTime" title="Request date time" required="true"/>
+    <many-to-one name="userInCharge" title="User in charge"
+      ref="com.axelor.auth.db.User"/>
+    <boolean name="onCallManagement" title="On-call management" nullable="true"
+      default="null" readonly="true"/>
+    <many-to-one name="onCallPlanning" title="On-call planning"
+      ref="com.axelor.apps.base.db.WeeklyPlanning" readonly="true"/>
+
+    <many-to-one name="saleQuotations" ref="com.axelor.apps.sale.db.SaleOrder"
+      readonly="true" title="Sale quotations"/>
+
+    <datetime name="maxGitDateTime" title="Max GIT date time" readonly="true"/>
+    <datetime name="maxGrtDateTime" title="Max GRT date time" readonly="true"/>
+    <long name="realGit" title="Real GIT (h)" readonly="true" nullable="true"/>
+    <long name="realGrt" title="Real GRT (h)" readonly="true" nullable="true"/>
+    <string name="gitStatusIndicator" title="GIT status" readonly="true"
+      selection="customer.request.real.gt.indicator.select">
+      <![CDATA[
+        if (getContract() != null
+            && getRealGit() != null
+            && getRealGit() != 0L
+            && getContract().getGuaranteedInterventionTime() != null
+            && getContract().getGuaranteedInterventionTime() != 0L) {
+          return getRealGit().compareTo(getContract().getGuaranteedInterventionTime()) < 0 ? "respected" : "nonRespected";
+        }
+        if (getMaxGitDateTime() != null) {
+          LocalDateTime now = LocalDateTime.now();
+          long diff = ChronoUnit.SECONDS.between(now, getMaxGitDateTime());
+          if (diff > 8L * 60 * 60 && diff < 16L * 60 * 60) {
+            return "alert";
+          } else if (diff > 0L && diff <= 8L * 60 * 60) {
+            return "urgent";
+          } else if (diff < 0L) {
+            return "fail";
+          } else {
+            return "ok";
+          }
+        }
+        return null;
+      ]]>
+    </string>
+    <string name="grtStatusIndicator" title="GRT status" readonly="true"
+      selection="customer.request.real.gt.indicator.select">
+      <![CDATA[
+        if (getContract() != null
+            && getRealGrt() != null
+            && getRealGrt() != 0L
+            && getContract().getGuaranteedRecoveryTime() != null
+            && getContract().getGuaranteedRecoveryTime() != 0L) {
+          return getRealGrt().compareTo(getContract().getGuaranteedRecoveryTime()) < 0 ? "respected" : "nonRespected";
+        }
+        if (getMaxGrtDateTime() != null) {
+          LocalDateTime now = LocalDateTime.now();
+          long diff =
+              Math.abs(
+                  ChronoUnit.SECONDS.between(getMaxGrtDateTime(), now));
+          if (diff > 8L * 60 * 60 && diff < 16L * 60 * 60) {
+            return "alert";
+          } else if (diff > 0L && diff <= 8L * 60 * 60) {
+            return "urgent";
+          } else if (diff < 0L) {
+            return "fail";
+          } else {
+            return "ok";
+          }
+        }
+        return null;
+      ]]>
+    </string>
+
+    <extra-imports>
+      <![CDATA[
+      import java.time.temporal.ChronoUnit;
+      import java.util.StringJoiner;
+      import com.axelor.common.StringUtils;
+      ]]>
+    </extra-imports>
+
+    <extra-code>
+      <![CDATA[
+        // CUSTOMER REQUEST STATUS SELECT
+        public static final int CUSTOMER_REQUEST_STATUS_DRAFT = 10;
+        public static final int CUSTOMER_REQUEST_STATUS_TAKEN_INTO_ACCOUNT = 20;
+        public static final int CUSTOMER_REQUEST_STATUS_IN_PROGRESS = 30;
+        public static final int CUSTOMER_REQUEST_STATUS_FINISHED = 40;
+        public static final int CUSTOMER_REQUEST_STATUS_CANCELLED = 50;
+
+        // CUSTOMER REQUEST PRIORITY SELECT
+        public static final String CUSTOMER_REQUEST_PRIORITY_URGENT = "urgent";
+        public static final String CUSTOMER_REQUEST_PRIORITY_IMPORTANT = "important";
+        public static final String CUSTOMER_REQUEST_PRIORITY_NORMAL = "normal";
+
+        // CUSTOMER REQUEST REAL GT INDICATOR SELECT
+        public static final String CUSTOMER_REQUEST_REAL_GT_INDICATOR_OK = "ok";
+        public static final String CUSTOMER_REQUEST_REAL_GT_INDICATOR_FAIL = "fail";
+        public static final String CUSTOMER_REQUEST_REAL_GT_INDICATOR_ALERT = "alert";
+        public static final String CUSTOMER_REQUEST_REAL_GT_INDICATOR_URGENT = "urgent";
+  	  ]]>
+    </extra-code>
+
+    <track>
+      <field name="statusSelect"/>
+      <field name="deliveredPartner"/>
+      <field name="interventionAddress"/>
+      <field name="contact"/>
+      <field name="equipmentSet"/>
+      <field name="contract"/>
+      <field name="requestSource"/>
+      <field name="requestSubject"/>
+      <field name="interventionCategory"/>
+      <field name="description"/>
+      <field name="priority"/>
+      <field name="requestDateTime"/>
+      <field name="userInCharge"/>
+      <field name="onCallManagement"/>
+      <field name="onCallPlanning"/>
+      <field name="maxGitDateTime"/>
+      <field name="maxGrtDateTime"/>
+      <field name="realGit"/>
+      <field name="realGrt"/>
+      <field name="gitStatusIndicator"/>
+      <field name="grtStatusIndicator"/>
+    </track>
+  </entity>
+</domain-models>

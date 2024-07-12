@@ -74,7 +74,7 @@ public class MrpLineServiceImpl implements MrpLineService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
-  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService;
   protected PurchaseOrderService purchaseOrderService;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PurchaseOrderRepository purchaseOrderRepo;
@@ -87,7 +87,7 @@ public class MrpLineServiceImpl implements MrpLineService {
   @Inject
   public MrpLineServiceImpl(
       AppBaseService appBaseService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -98,7 +98,7 @@ public class MrpLineServiceImpl implements MrpLineService {
       MrpLineRepository mrpLineRepo) {
 
     this.appBaseService = appBaseService;
-    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderCreateSupplychainService = purchaseOrderCreateSupplychainService;
     this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
@@ -178,7 +178,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     if (purchaseOrder == null) {
       purchaseOrder =
           purchaseOrderRepo.save(
-              purchaseOrderSupplychainService.createPurchaseOrder(
+              purchaseOrderCreateSupplychainService.createPurchaseOrder(
                   AuthUtils.getUser(),
                   company,
                   null,

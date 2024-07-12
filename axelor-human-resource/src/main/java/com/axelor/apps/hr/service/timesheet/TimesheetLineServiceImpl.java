@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -279,5 +280,21 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
             I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINES_EXCEED_DAILY_LIMIT),
             dailyLimit,
             date.format(dateService.getDateFormat())));
+  }
+
+  @Override
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    if (timesheetLine.getProduct() == null) {
+      return timesheetLine.getEmployee().getProduct();
+    }
+    return timesheetLine.getProduct();
+  }
+
+  @Override
+  public void resetTimesheetLineTimer(TSTimer tsTimer) {
+    TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
+    if (timesheetLine != null) {
+      timesheetLine.setTimer(null);
+    }
   }
 }

@@ -19,25 +19,55 @@
 package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.db.repo.AdvancedExportBudgetRepository;
 import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GlobalBudgetGroupServiceImpl implements GlobalBudgetGroupService {
 
   protected GlobalBudgetService globalBudgetService;
   protected GlobalBudgetWorkflowService globalBudgetWorkflowService;
+  protected AdvancedExportBudgetRepository advancedExportBudgetRepository;
 
   @Inject
   public GlobalBudgetGroupServiceImpl(
       GlobalBudgetService globalBudgetService,
-      GlobalBudgetWorkflowService globalBudgetWorkflowService) {
+      GlobalBudgetWorkflowService globalBudgetWorkflowService,
+      AdvancedExportBudgetRepository advancedExportBudgetRepository) {
     this.globalBudgetService = globalBudgetService;
     this.globalBudgetWorkflowService = globalBudgetWorkflowService;
+    this.advancedExportBudgetRepository = advancedExportBudgetRepository;
   }
 
   @Override
   public void validateStructure(GlobalBudget globalBudget) throws AxelorException {
 
     globalBudgetWorkflowService.validateStructure(globalBudget);
+  }
+
+  @Override
+  public Map<String, Object> getOnNewValuesMap() {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put(
+        "$advancedExportGlobalBudget", getUniqueAdvancedExportByMetaModelName("GlobalBudget"));
+    valuesMap.put(
+        "$advancedExportBudgetLevel", getUniqueAdvancedExportByMetaModelName("BudgetLevel"));
+    valuesMap.put("$advancedExportBudget", getUniqueAdvancedExportByMetaModelName("Budget"));
+    valuesMap.put(
+        "$advancedExportBudgetLine", getUniqueAdvancedExportByMetaModelName("BudgetLine"));
+
+    return valuesMap;
+  }
+
+  protected AdvancedExport getUniqueAdvancedExportByMetaModelName(String modelName) {
+    List<AdvancedExport> advancedExportList =
+        advancedExportBudgetRepository.findByMetaModelName(modelName);
+
+    return advancedExportList.size() == 1 ? advancedExportList.get(0) : null;
   }
 }

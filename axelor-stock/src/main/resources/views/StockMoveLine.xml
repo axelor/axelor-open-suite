@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -113,7 +113,7 @@
       <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
         showTitle="false">
         <viewer depends="$partnerLanguage">
-          <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
+          <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
         </viewer>
       </field>
       <field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line"/>
@@ -508,7 +508,12 @@
           readonly="true"/>
         <field name="counter" title="Selected quantity"
           readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
+        <field name="hasWarranty"/>
         <field name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
+        <field name="isPerishable"/>
+        <field name="perishableExpirationDate" title="Perishable expiration date"
+          readonly="false"/>
+        <field name="checkExpirationDateAtStockMoveRealization"/>
         <field name="origin" title="Origin" readonly="true"/>
         <field name="note" title="Note" colSpan="12" readonly="true"/>
       </panel-related>
@@ -852,15 +857,15 @@
 
   <action-attrs name="action-stock-move-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="__parent__ &amp;&amp; __parent__.partner"/>
+      expr="eval: __parent__?.partner?.localization?.language == __user__.localization?.language"
+      if="__parent__ &amp;&amp; __parent__.partner &amp;&amp; __parent__.partner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: __parent__?.partner?.localization?.language?.code?.toUpperCase()"
       if="__parent__ &amp;&amp; __parent__.partner"/>
 
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: stockMove?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="stockMove &amp;&amp; stockMove.partner"/>
+      expr="eval: stockMove?.partner?.localization?.language == __user__.localization?.language"
+      if="stockMove &amp;&amp; stockMove.partner &amp;&amp; stockMove.partner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: stockMove?.partner?.localization?.language?.code?.toUpperCase()"
       if="stockMove &amp;&amp; stockMove.partner"/>

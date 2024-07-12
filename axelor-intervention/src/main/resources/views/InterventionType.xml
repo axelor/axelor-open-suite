@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.InterventionType" title="Intervention type"
+    name="intervention-type-grid">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="interventionCategory" grid-view="intervention-category-grid"
+      form-view="intervention-category-form"/>
+    <field name="defaultPrevisionalDuration" grid-view="duration-intervention-grid"
+      form-view="duration-intervention-form"/>
+    <field name="autoGenerateCustomerRequest"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.InterventionType" title="Intervention type"
+    name="intervention-type-form" width="large">
+    <panel name="mainPanel">
+      <panel name="mainFieldsPanel" colSpan="8">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="defaultPrevisionalDuration" grid-view="duration-intervention-grid"
+          form-view="duration-intervention-form" domain="self.applicationTypeSelect = 3"/>
+        <field name="interventionCategory" grid-view="intervention-category-grid"
+          form-view="intervention-category-form"/>
+        <field name="companySet" grid-view="company-grid" form-view="company-form"
+          widget="TagSelect" canNew="false"/>
+        <field name="tradingNameSet" grid-view="trading-name-grid"
+          form-view="trading-name-form" widget="TagSelect" canNew="false"
+          if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+      </panel>
+      <panel name="configsPanel" colSpan="4" itemSpan="12">
+        <field name="autoGenerateCustomerRequest" widget="inline-checkbox"/>
+      </panel>
+      <field name="exclusiveInterventionSet"
+        domain="self.isContact = false AND self.isCustomer = true" grid-view="partner-grid"
+        form-view="partner-form" colSpan="12" canNew="false" widget="TagSelect"/>
+    </panel>
+    <panel name="rangesPanel" title="Ranges" itemSpan="12">
+      <field name="advancedStartupMonitoringRange" grid-view="range-grid"
+        form-view="range-form"
+        domain="'advancedMonitoring' in (SELECT rq.question.answerType.answerTypeSelect FROM RangeQuestion rq WHERE rq.rangeVal = self)"/>
+      <field name="headerRangeList" grid-view="ordered-range-grid"
+        form-view="ordered-range-form"/>
+      <field name="equipmentRangeList" grid-view="ordered-range-grid"
+        form-view="ordered-range-form"
+        domain="self.rangeVal.rangeType.rangeTypeSelect = 'equipment'"/>
+      <field name="footerRangeList" grid-view="ordered-range-grid"
+        form-view="ordered-range-form"/>
+    </panel>
+    <panel-dashlet action="action-range-view-linked-interventions"
+      title="Linked interventions" canEdit="true"/>
+    <!--<panel-dashlet action="action-range-view-linked-contracts" title="Contracts using this intervention
+      type" canEdit="true"/> -->
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-view name="action-range-view-linked-interventions"
+    title="Linked interventions" model="com.axelor.apps.intervention.db.Intervention">
+    <view type="grid" name="intervention-grid"/>
+    <view type="form" name="intervention-form"/>
+    <domain>self.interventionType.id = :interventionTypeId</domain>
+    <context name="interventionTypeId" expr="eval: id == null ? 0 : id"/>
+  </action-view>
+  <!-- <action-view name="action-range-view-linked-contracts" title="Contracts using this intervention
+    type" model="com.axelor.apps.contract.db.Contract"> <view type="grid" name="contract-grid"/> <view type="form"
+    name="contract-form"/> <domain>self.interventionType.id = :interventionTypeId</domain> <context name="interventionTypeId"
+    expr="eval: id == null ? 0 : id"/> </action-view> -->
+
+</object-views>

@@ -44,9 +44,10 @@ public class EmbeddedReportSettings extends ReportSettings {
 
       final ReportGenerator generator = Beans.get(ReportGenerator.class);
 
-      String localeCode = (String) this.params.get("Locale");
+      String localeCode = (String) this.params.get("__locale");
       if (Strings.isNullOrEmpty(localeCode)) {
         localeCode = ReportingTool.getCompanyLocale().toString();
+        this.addParam("__locale", localeCode);
       }
 
       this.output =

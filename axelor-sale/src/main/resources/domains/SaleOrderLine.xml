@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -39,7 +39,8 @@
     <string name="pricingScaleLogs" title="Price calculation details" large="true"
       readonly="true"/>
 
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Taxes"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3" readonly="true"/>

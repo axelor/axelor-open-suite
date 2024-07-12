@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
-    <hilite if="$get('status.isCompleted') &amp;&amp; $get('status.isDefaultCompleted')"
-      color="success"/>
+    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
     <field name="ticketNumber"/>
@@ -20,8 +19,7 @@
       if="__config__.app.isApp('business-support')"/>
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <field name="status.isCompleted" hidden="true"/>
-    <field name="status.isDefaultCompleted" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
@@ -31,7 +29,8 @@
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check"
-        onClick="action-project-task-record-change-status,save" showIf="project.isShowStatus"/>
+        onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
+        showIf="project.isShowStatus"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -105,6 +104,9 @@
             onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
             form-view="user-form" grid-view="user-grid"
             onChange="action-project-task-attrs-hide-time-spent-button"/>
+          <field name="site" onSelect="action-project-task-attrs-set-site-domain"
+            form-view="site-form" grid-view="site-grid"
+            if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
           <field name="customerReferral"
             onSelect="action-project-task-attrs-customer-referral-domain" hidden="true"
             showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
@@ -160,9 +162,14 @@
         <field name="taskDeadline" title="Task deadline" colSpan="4"/>
         <field name="projectTaskTagSet" widget="TagSelect" x-color-field="colorSelect"
           form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
-        <field name="progressSelect" widget="SelectProgress"
-          onChange="action-project-task-update-planned-progress" showIf="project.isShowProgress"
-          colSpan="4"/>
+        <field name="progress" onChange="action-project-task-group-progress-onchange"
+          showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
+        <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
+        <field name="progress" showIf="project.isShowProgress &amp;&amp; $readonly()"
+          colSpan="4" widget="SelectProgress"/>
+        <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; $readonly()"/>
+        <field name="invoicingProgress" readonly="true" colSpan="6"
+          showIf="invoicingType == 4"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="project.isShowProgress" hidden="true"/>
         <field name="project.isShowSection" hidden="true"/>
@@ -185,26 +192,9 @@
        			]]></viewer>
         </field>
         <spacer name="budgetedTimeSpacer" colSpan="4"/>
-        <button name="addMultipleLinesBtn" title="Add multiple lines"
-          css="btn-custom text-left"
-          onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3"
-          hideIf="$popup()"/>
-        <button name="projectPlanningTimeLineBtn" title="New line" colSpan="3"
-          css="btn-custom text-left" onClick="save,action-project-task-view-time-planned,save"/>
-        <button name="removeProjectPlanningTimeLineBtn" title="Remove lines"
-          css="btn-custom text-left" colSpan="3"
-          onClick="save,action-project-task-attrs-project-planning-time-remove,save"/>
-        <field name="$projectPlanningTimeSet" hidden="true" type="many-to-many"
-          widget="TagSelect" title="Planned Time Planning" colSpan="12"
-          target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
-          grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
-        <button name="removeSelectedPlanningTimeBtn" colSpan="3" hidden="true"
-          title="Remove selected lines"
-          onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
-        <button name="cancelRemovePlanningTimeBtn" colSpan="3" hidden="true" title="Cancel"
-          onClick="action-project-attrs-project-planning-time-cancel-remove"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-          action="action-project-task-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
+          x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
+          colSpan="12" canSearch="true"/>
         <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
         <field name="project.isShowPlanning" hidden="true"/>
       </panel>
@@ -312,14 +302,14 @@
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
     </node>
 
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
       onClick="action-project-task-view-task">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
     </node>
 
   </tree>
@@ -333,14 +323,13 @@
     <field name="taskDeadline"/>
     <field name="priority.name"/>
     <field name="priority.technicalTypeSelect"/>
-    <field name="progressSelect"/>
+    <field name="progress"/>
     <field name="project.isShowProgress"/>
     <template>
 		<![CDATA[
 			<>
-				<h4>{name}</h4>
-				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
-				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<strong>{name}</strong>
+				<Box>{project.fullName}</Box>
 				<Box d="flex" justifyContent="space-between">
 					<Box>
 						<Icon icon="calendar" fontSize="15px"/>
@@ -360,12 +349,17 @@
 				</Box>
 				{project.isShowProgress &&
 					<Box mt={1}>
-						{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
+						{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 					</Box>
 				}
-         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
-         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
-         		</Box>
+			    <Box d="grid" gridTemplateColumns="auto auto" style={{ fontSize: "0.85rem", color: "grey" }} mt={2}>
+			        <Box d="flex" g={2}>
+			        	<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+			        </Box>
+			        <Box d="flex" justifyContent="flex-end">
+			        	{assignedTo && <Image src={$image('assignedTo', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+			        </Box>
+			    </Box>
 			</>
 		]]>
     </template>
@@ -380,13 +374,12 @@
     <field name="taskDeadline"/>
     <field name="priority.name"/>
     <field name="priority.technicalTypeSelect"/>
-    <field name="progressSelect"/>
+    <field name="progress"/>
     <template>
 		<![CDATA[
 			<>
-				<h4>{name}</h4>
-				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
-				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<strong>{name}</strong>
+				<Box>{project.fullName}</Box>
 				<Box d="flex" justifyContent="space-between">
 					<Box>
 						<Icon icon="calendar" fontSize="15px"/>
@@ -405,11 +398,16 @@
 					</Box>
 				</Box>
 				<Box mt={1}>
-					{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
+					{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 				</Box>
-         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
-         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
-         		</Box>
+			    <Box d="grid" gridTemplateColumns="auto auto" style={{ fontSize: "0.85rem", color: "grey" }} mt={2}>
+			        <Box d="flex" g={2}>
+			        	<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+			        </Box>
+			        <Box d="flex" justifyContent="flex-end">
+			        	{assignedTo && <Image src={$image('assignedTo', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+			        </Box>
+			    </Box>
 			</>
 		]]>
     </template>
@@ -510,15 +508,15 @@
     <view-param name="forceEdit" value="true"/>
     <view-param name="forceTitle" value="true"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
-    <context name="_projectTask" expr="eval:__self__"
+    <context name="_projectTask" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_timeUnit" expr="eval:__self__.timeUnit"
+    <context name="_timeUnit" expr="eval:__parent__.timeUnit"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_employee" expr="eval:assignedTo.employee"
+    <context name="_employee" expr="eval:__parent__.assignedTo.employee"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__self__.project"
+    <context name="_project" expr="eval:__parent__.project"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__self__"
+    <context name="_project" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.Project'"/>
   </action-view>
 
@@ -573,9 +571,13 @@
       if="__config__.app.getApp('business-support').providerCompany"/>
   </action-record>
 
+  <action-group name="action-project-task-group-progress-onchange">
+    <action name="action-project-task-update-planned-progress"/>
+  </action-group>
+
   <action-record name="action-project-task-update-planned-progress"
     model="com.axelor.apps.project.db.ProjectTask">
-    <field name="plannedProgress" expr="eval: progressSelect"/>
+    <field name="plannedProgress" expr="eval: progress"/>
   </action-record>
 
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
@@ -712,7 +714,6 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-business-support-provider"
       if="__config__.app.isApp('business-support')"/>
-    <action name="action-project-attrs-project-planning-time-cancel-remove"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
   </action-group>
 
@@ -769,24 +770,10 @@
     <view type="form" name="project-task-form"/>
   </action-view>
 
-  <action-attrs name="action-project-task-attrs-project-planning-time-remove">
-    <attribute name="readonly" for="removeProjectPlanningTimeLineBtn" expr="eval:true"/>
-    <attribute name="hidden" for="cancelRemovePlanningTimeBtn" expr="eval:false"/>
-    <attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:false"/>
-    <attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
-    <attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
-    <attribute name="title" for="$projectPlanningTimeSet"
-      expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
-    <attribute name="domain" for="$projectPlanningTimeSet"
-      expr="eval:&quot;self.projectTask.id = :id&quot;"/>
-  </action-attrs>
-
   <action-record name="action-project-task-record-change-status"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="statusBeforeComplete" expr="eval: status"/>
-    <field name="status"
-      expr="call:com.axelor.apps.project.service.ProjectTaskService:getDefaultCompletedStatus(project)"
-      if="project.isShowStatus"/>
+    <field name="status" expr="eval: project?.completedTaskStatus" if="project.isShowStatus"/>
   </action-record>
 
   <action-view name="action-project-view-per-section-kanban" title="Tasks"
@@ -838,6 +825,16 @@
       expr="!(project?.isShowTimeSpent &amp;&amp; assignedTo?.employee == __user__.employee)"/>
   </action-attrs>
 
+  <action-attrs name="action-project-task-attrs-set-site-domain">
+    <attribute for="site" name="domain"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-validate name="action-project-task-validate-finish-status">
+    <error message="Please fill completed task status in Project configuration."
+      if="!project?.completedTaskStatus"/>
+  </action-validate>
+
   <search-filters name="project-task-filters"
     model="com.axelor.apps.project.db.ProjectTask" title="Project task filters">
     <field name="targetVersion" hidden="true" if="!__config__.app.isApp('business-support')"/>
@@ -861,7 +858,6 @@
     <field name="project.invoicingSequenceSelect" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
     <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="invoiceLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="invoicingUnit" hidden="true" if="!__config__.app.isApp('business-project')"/>

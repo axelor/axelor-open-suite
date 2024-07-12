@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid title="Site" name="site-project-grid" model="com.axelor.apps.base.db.Site">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="typeSelect"/>
+    <field name="address"/>
+  </grid>
+
+  <form title="Site" name="site-form" id="project-site-form"
+    model="com.axelor.apps.base.db.Site" extension="true">
+    <extend target="//panel[@name='basePanel']">
+      <insert position="after">
+        <panel name="projectPanel" title="Project"
+          if="__config__.app.getApp('base')?.enableSiteManagementForProject">
+          <field name="isUsableOnProject" widget="boolean-switch"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-site-attrs-set-defaults"
+    id="project-action-site-attrs-set-defaults">
+    <attribute for="companySet" name="value" expr="eval: [__user__.activeCompany]"
+      if="__user__.activeCompany != null"/>
+    <attribute for="typeSelect" name="value" expr="1"/>
+    <attribute for="isUsableOnProject" name="value" expr="eval:_isFromProject"/>
+  </action-attrs>
+
+</object-views>

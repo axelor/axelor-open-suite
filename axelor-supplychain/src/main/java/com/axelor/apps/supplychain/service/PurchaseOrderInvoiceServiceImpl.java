@@ -39,8 +39,9 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
@@ -85,6 +86,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   protected CommonInvoiceService commonInvoiceService;
   protected AddressService addressService;
   protected InvoiceLineOrderService invoiceLineOrderService;
+  protected CurrencyService currencyService;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
@@ -98,6 +100,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
+      CurrencyService currencyService,
       CurrencyScaleService currencyScaleService) {
     this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
@@ -108,6 +111,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     this.commonInvoiceService = commonInvoiceService;
     this.addressService = addressService;
     this.invoiceLineOrderService = invoiceLineOrderService;
+    this.currencyService = currencyService;
     this.currencyScaleService = currencyScaleService;
   }
 
@@ -268,7 +272,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())
         && purchaseOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal rate =
-          invoicedAmount.divide(purchaseOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+          currencyService.computeScaledExchangeRate(
+              invoicedAmount, purchaseOrder.getCompanyExTaxTotal());
       invoicedAmount =
           currencyScaleService.getScaledValue(
               purchaseOrder, purchaseOrder.getExTaxTotal().multiply(rate));

@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="prod-process-grid" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess">
+    <field name="name"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="workshopStockLocation"
+      if="__config__.app.getApp('production')?.getManageWorkshop()"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="stockLocation" grid-view="stock-location-grid"
+      form-view="stock-location-form"/>
+    <field name="product"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <grid name="personalized-prod-process-grid" title="Production process"
+    model="com.axelor.apps.production.db.ProdProcess" canNew="false">
     <field name="name"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation"
@@ -22,8 +35,6 @@
     onSave="action-prod-process-method-validate-prod-process" width="large">
 
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-method-print-birt"/>
       <button name="newVersionBtn" title="Generate new version"
         if="__config__.app.getApp('production')?.manageProdProcessVersion"
         onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
@@ -60,6 +71,7 @@
       <field name="workshopStockLocation" canEdit="false"
         domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
         if="__config__.app.getApp('production')?.getManageWorkshop()"/>
+      <field name="leadTime" widget="duration" x-big="true" x-seconds="true"/>
     </panel>
 
     <panel-tabs>
@@ -73,10 +85,15 @@
         <field name="stockLocation" canEdit="false" required="true"
           grid-view="stock-location-grid" form-view="stock-location-form"
           onChange="action-prod-process-record-set-second-location"
-          domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
+          domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"
+          colSpan="4"/>
+        <field name="residualProductsDefaultStockLocation"
+          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
+          colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="producedProductStockLocation" canEdit="false"
           grid-view="stock-location-grid" form-view="stock-location-form"
-          domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
+          domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"
+          colSpan="4"/>
         <field name="launchQty"/>
         <field name="stockMoveRealizeOrderSelect"/>
         <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"
@@ -104,6 +121,10 @@
           <field name="generatePurchaseOrderOnMoPlanning" colSpan="4"
             if="__config__.app.getApp('production')?.getManageOutsourcing()"
             showIf="outsourcing || outsourcable"/>
+          <panel-related name="generatedPurchaseOrderProductPanel"
+            field="generatedPurchaseOrderProductSet"
+            showIf="(outsourcing || outsourcable) &amp;&amp; generatePurchaseOrderOnMoPlanning"
+            colSpan="12" canEdit="false" canNew="false" canSelect="true"/>
         </panel>
 
         <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
@@ -146,6 +167,7 @@
   <action-group name="action-prod-process-group-on-new">
     <action name="action-prod-process-default-record" if="_product"/>
     <action name="action-prod-process-record-set-default-company"/>
+    <action name="action-prod-process-default-stock-locations-record"/>
     <action name="action-prod-process-record-set-realize-order-select"/>
     <action name="action-prod-process-attrs-scale-and-precision"/>
     <action name="action-prod-process-attrs-hide-operation-continuity"/>
@@ -188,6 +210,16 @@
     <field name="product" expr="eval:_product"/>
     <field name="name" expr="eval:_product?.name"/>
     <field name="code" expr="eval:_product?.code"/>
+  </action-record>
+
+  <action-record name="action-prod-process-default-stock-locations-record"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="residualProductsDefaultStockLocation"
+      expr="eval: __repo__(StockConfig).all().filter('self.company = ?',company).fetchOne()?.residualProductsDefaultStockLocation"/>
+    <field name="producedProductStockLocation"
+      expr="eval: __repo__(StockConfig).all().filter('self.company = ?',company).fetchOne()?.finishedProductsDefaultStockLocation"/>
+    <field name="stockLocation"
+      expr="eval: __repo__(StockConfig).all().filter('self.company = ?',company).fetchOne()?.componentDefaultStockLocation"/>
   </action-record>
 
   <action-record name="action-prod-process-record-false"

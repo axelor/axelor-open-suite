@@ -21,4 +21,13 @@ package com.axelor.apps.budget.translation;
 public interface ITranslation {
 
   public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
+  public static final String ADVANCED_EXPORT_COMPANY_CODE = /*$$(*/ "Company code"; /*)*/
+  public static final String ADVANCED_EXPORT_GLOBAL_FULL_NAME = /*$$(*/
+      "Global budget full name"; /*)*/
+  public static final String ADVANCED_EXPORT_GLOBAL_ID = /*$$(*/ "Global budget id"; /*)*/
+  public static final String ADVANCED_EXPORT_PARENT_FULL_NAME = /*$$(*/
+      "Parent budget level full name"; /*)*/
+  public static final String ADVANCED_EXPORT_PARENT_ID = /*$$(*/ "Parent budget level id"; /*)*/
+  public static final String ADVANCED_EXPORT_BUDGET_FULL_NAME = /*$$(*/ "Budget full name"; /*)*/
+  public static final String ADVANCED_EXPORT_BUDGET_ID = /*$$(*/ "Budget id"; /*)*/ /*)*/
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
@@ -61,7 +61,9 @@
       title="Contract" mappedBy="nextVersion" copy="false"/>
 
     <one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine"
-      title="Invoicing content" mappedBy="contractVersion"/>
+      title="Recurring product" mappedBy="contractVersion"/>
+    <one-to-many name="contractFileList" title="Files"
+      ref="com.axelor.apps.base.db.File" mappedBy="contractVersion"/>
 
     <string name="fullName" namecolumn="true">
 			<![CDATA[
@@ -81,6 +83,11 @@
       readonly="true" copy="false" precision="20" scale="3"/>
     <decimal name="yearlyExTaxTotalRevalued" title="Yearly ex tax total revalued "
       readonly="true" precision="20" scale="3"/>
+
+    <decimal name="totalInvoicedAmount" title="Total invoiced amount" readonly="true"
+      copy="false" precision="20" scale="3"/>
+    <decimal name="totalPaidAmount" title="Total paid amount" readonly="true" precision="20"
+      scale="3"/>
 
     <extra-code><![CDATA[
             public static final int DRAFT_VERSION = 1;

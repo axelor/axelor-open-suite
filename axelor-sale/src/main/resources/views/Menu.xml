@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <menuitem name="sc-root-sale" title="Sales" order="-1900"
@@ -197,8 +197,9 @@
   <action-view name="sc.root.sale.conf.partner.price.list" title="Partner price lists"
     model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
-    <view type="form" name="sale-partner-price-list-form"/>
+    <view type="form" name="partner-price-list-form"/>
     <domain>self.typeSelect = 1</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
   </action-view>
 
   <menuitem name="sc-root-sale-conf-price-list" parent="sc-root-sale-conf"
@@ -207,8 +208,9 @@
   <action-view name="sc.root.sale.conf.price.list" title="Price lists"
     model="com.axelor.apps.base.db.PriceList">
     <view type="grid" name="price-list-grid"/>
-    <view type="form" name="sale-price-list-form"/>
+    <view type="form" name="price-list-form"/>
     <domain>self.typeSelect = 1</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
   </action-view>
 
   <menuitem name="sc-root-sale-templates" parent="sc-root-sale-conf"
@@ -360,6 +362,9 @@
     model="com.axelor.apps.base.db.Pricing">
     <view type="grid" name="pricing-grid"/>
     <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING"/>
   </action-view>
 
   <menuitem title="Pricing rules" name="sc-root-sale-conf-pricing-rule"
@@ -370,6 +375,7 @@
     model="com.axelor.apps.base.db.PricingRule">
     <view type="grid" name="pricing-rule-grid"/>
     <view type="form" name="pricing-rule-form"/>
+    <domain>self.concernedModel.name IS NOT 'InvoiceLine'</domain>
   </action-view>
 
 </object-views>

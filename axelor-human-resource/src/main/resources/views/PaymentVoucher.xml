@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="payment-voucher-form" title="Payment voucher"
+    model="com.axelor.apps.account.db.PaymentVoucher" id="hr-payment-voucher-form" extension="true">
+    <extend target="//field[@name='companyBankDetails']">
+      <insert position="after">
+        <field name="companyBankCard"
+          showIf="paymentMode.typeSelect == 6 &amp;&amp; operationTypeSelect &lt;= 2"
+          form-view="bank-card-form" onChange="action-payment-voucher-attrs-on-bank-card-change"
+          onSelect="action-payment-voucher-method-on-bank-card-select"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-payment-voucher-method-on-bank-card-select">
+    <call class="com.axelor.apps.hr.web.PaymentVoucherHRController"
+      method="setCompanyBankCardDomain"/>
+  </action-method>
+
+  <action-attrs name="action-payment-voucher-attrs-on-bank-card-change">
+    <attribute for="companyBankDetails" name="value"
+      expr="eval: companyBankCard?.bankDetails"/>
+  </action-attrs>
+
+</object-views>

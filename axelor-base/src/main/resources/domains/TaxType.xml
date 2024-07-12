@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="TaxType" cacheable="true">
+
+    <string name="name" title="Name" required="true" translatable="true"/>
+    <string name="code" title="Code" required="true" unique="true"/>
+    <integer name="typeSelect" title="Type" selection="tax.type.type.select" required="true"
+      nullable="true"/>
+
+    <extra-code><![CDATA[
+
+		   	// TYPE SELECT
+			public static final int TYPE_VAT = 1;
+			public static final int TYPE_OTHER = 2;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

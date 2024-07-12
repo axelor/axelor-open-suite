@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -69,6 +69,7 @@
     <option value="1">From stock</option>
     <option value="2">Purchase</option>
     <option value="3">Produce</option>
+    <option value="4">Stock and produce</option>
   </selection>
 
   <selection name='iimport.type.select'>
@@ -154,11 +155,13 @@
   <selection name="base.price.list.type.select">
     <option value="1">Sale</option>
     <option value="2">Purchase</option>
+    <option value="3">Customer contract</option>
+    <option value="4">Supplier contract</option>
   </selection>
 
   <selection name="base.price.list.line.type.select">
-    <option value="1">Discount</option>
-    <option value="2">Additionnal</option>
+    <option value="1">PriceListLineSelect.Discount</option>
+    <option value="2">Increase</option>
     <option value="3">Replace</option>
   </selection>
 
@@ -329,6 +332,10 @@
     <option value="2">Formula</option>
   </selection>
 
+  <selection name="unit.conversion.entity.select">
+    <option value="0">All</option>
+  </selection>
+
   <selection name="i.calendar.user.status.select">
     <option value="1">Yes</option>
     <option value="2">No</option>
@@ -407,6 +414,18 @@
     <option value="integer">Integer</option>
     <option value="date">Date</option>
     <option value="time">Time</option>
+  </selection>
+
+  <selection name="base.printing.template.type.select">
+    <option value="1"
+      data-print-factory="com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryFile">File</option>
+    <option value="2"
+      data-print-factory="com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryBirt">Birt</option>
+  </selection>
+
+  <selection name="base.printing.template.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Active</option>
   </selection>
 
   <selection name="base.blocking.select">
@@ -752,6 +771,30 @@
 
   <selection name="base.partner.link.type.type.select">
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
+  </selection>
+
+  <selection name="base.registration.number.template.validation.method.select">
+    <option
+      value="com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidatorFRA">French registration number validation</option>
+  </selection>
+
+  <selection name="tax.type.type.select">
+    <option value="1">VAT</option>
+    <option value="2">Other</option>
+  </selection>
+
+  <selection name="base.site.type.select">
+    <option value="1">Internal</option>
+    <option value="2">External</option>
+  </selection>
+
+  <selection name="base.pricing.type.select">
+    <option value="Default">Default</option>
+  </selection>
+
+  <selection name="base.file.type.select">
+    <option value="1">ContractFile</option>
+    <option value="2">EmployeeFile</option>
   </selection>
 
 </object-views>

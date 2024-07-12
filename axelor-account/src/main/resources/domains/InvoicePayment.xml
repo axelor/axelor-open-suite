@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -68,6 +68,7 @@
 
     <finder-method name="findByReconcile" using="reconcile" all="true"/>
     <finder-method name="findByReconcileAndInvoice" using="reconcile,invoice"/>
+    <finder-method name="findByMove" using="move" all="true"/>
 
     <extra-code>
    		<![CDATA[
@@ -87,6 +88,7 @@
 		public static final int TYPE_ADV_PAYMENT_IMPUTATION = 6;
 		public static final int TYPE_IRRECOVERABLE_DEBT = 7;
 		public static final int TYPE_DOUBTFUL_CREDIT = 8;
+		public static final int TYPE_REFUND_IMPUTATION = 9;
 
 	]]></extra-code>
 

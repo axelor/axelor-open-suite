@@ -35,7 +35,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -154,34 +154,38 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       return null;
     }
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    AnalyticDistributionTemplate analyticDistributionTemplate = null;
 
     if (accountConfig.getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
         && partner != null) {
       AccountingSituation accountingSituation =
           accountingSituationService.getAccountingSituation(partner, company);
-      return accountingSituation != null
-          ? accountingSituation.getAnalyticDistributionTemplate()
-          : null;
+      analyticDistributionTemplate =
+          accountingSituation != null
+              ? accountingSituation.getAnalyticDistributionTemplate()
+              : null;
 
     } else if (accountConfig.getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
       if (product != null) {
-        return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
-            product, company, isPurchase);
+        analyticDistributionTemplate =
+            accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
+                product, company, isPurchase);
       } else if (account != null) {
-        return account.getAnalyticDistributionAuthorized()
-            ? account.getAnalyticDistributionTemplate()
-            : null;
+        analyticDistributionTemplate = account.getAnalyticDistributionTemplate();
       }
 
     } else if (appBaseService.getAppBase().getEnableTradingNamesManagement()
         && accountConfig.getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME
         && tradingName != null) {
-      return tradingName.getAnalyticDistributionTemplate();
+      analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
     }
-    return null;
+
+    return account != null && !account.getAnalyticDistributionAuthorized()
+        ? null
+        : analyticDistributionTemplate;
   }
 
   public AnalyticMoveLine createAnalyticMoveLine(

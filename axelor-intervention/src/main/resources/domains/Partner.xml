@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Partner">
+
+    <one-to-many name="interventionNoteList"
+      ref="com.axelor.apps.intervention.db.InterventionNote" title="Intervention notes"
+      mappedBy="partner"/>
+
+  </entity>
+
+</domain-models>

@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -76,7 +77,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveSimulateService moveSimulateService;
-
+  protected MoveRepository moveRepo;
   protected boolean end = false;
   protected Move resultMove;
   protected BigDecimal resultMoveAmount;
@@ -92,7 +93,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       AccountConfigService accountConfigService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveSimulateService moveSimulateService) {
+      MoveSimulateService moveSimulateService,
+      MoveRepository moveRepo) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
@@ -102,6 +104,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveSimulateService = moveSimulateService;
+    this.moveRepo = moveRepo;
   }
 
   @Override
@@ -142,8 +145,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           accountingBatch.getCode());
     }
 
-    validateSimulatedConfiguration(
-        accountingBatch.getSimulateGeneratedMoves(), accountingBatch.getCompany());
+    validateStatusConfiguration(
+        accountingBatch.getGeneratedMoveStatusSelect(), accountingBatch.getCompany());
 
     if (accountingBatch.getGenerateResultMove() && accountingBatch.getCompany() != null) {
       AccountConfig accountConfig =
@@ -167,9 +170,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
-  protected void validateSimulatedConfiguration(boolean simulateGeneratedMoves, Company company)
+  protected void validateStatusConfiguration(Integer generatedMoveStatus, Company company)
       throws AxelorException {
-    if (simulateGeneratedMoves && company != null) {
+    if (company != null) {
       Journal journal = accountConfigService.getAccountConfig(company).getReportedBalanceJournal();
       if (journal == null) {
         throw new AxelorException(
@@ -178,10 +181,17 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             I18n.get(BaseExceptionMessage.EXCEPTION),
             accountingBatch.getCode());
       }
-      if (!journal.getAuthorizeSimulatedMove()) {
+      if (generatedMoveStatus == MoveRepository.STATUS_SIMULATED
+          && !journal.getAuthorizeSimulatedMove()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_4),
+            journal.getCode());
+      } else if (generatedMoveStatus == MoveRepository.STATUS_DAYBOOK
+          && !journal.getAllowAccountingDaybook()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_DAYBOOK),
             journal.getCode());
       }
     }
@@ -189,6 +199,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
 
   protected void process() {
     if (!end) {
+
+      removeSimulatedMoves(accountingBatch);
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
 
       Year year = accountingBatch.getYear();
       boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
@@ -226,7 +239,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
               accountingBatch.getYear().getReportedBalanceDate(),
               accountingBatch.getResultMoveDescription(),
               accountingBatch.getBankDetails(),
-              accountingBatch.getSimulateGeneratedMoves(),
+              accountingBatch.getGeneratedMoveStatusSelect(),
               resultMoveAmount);
         }
       } catch (AxelorException e) {
@@ -299,7 +312,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
     boolean closeYear = accountingBatch.getCloseYear();
     boolean openYear = accountingBatch.getOpenYear();
-    boolean isSimulatedMove = accountingBatch.getSimulateGeneratedMoves();
+    Integer generatedMoveStatus = accountingBatch.getGeneratedMoveStatusSelect();
     Year year = accountingBatch.getYear();
     LocalDate endOfYearDate = year.getToDate();
     LocalDate reportedBalanceDate = year.getReportedBalanceDate();
@@ -315,7 +328,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         value = map.get(accountByPartner);
         if (value != null) {
 
-          validateSimulatedConfiguration(isSimulatedMove, accountingBatch.getCompany());
+          validateStatusConfiguration(generatedMoveStatus, accountingBatch.getCompany());
 
           close = value.containsKey(true);
           open = value.containsValue(true);
@@ -332,7 +345,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     moveDescription,
                     closeYear,
                     allocatePerPartner,
-                    isSimulatedMove);
+                    generatedMoveStatus);
 
           } else if (open && !close) {
             generatedMoves =
@@ -346,7 +359,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     moveDescription,
                     openYear,
                     allocatePerPartner,
-                    isSimulatedMove);
+                    generatedMoveStatus);
 
           } else if (open && close) {
             generatedMoves =
@@ -361,7 +374,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     closeYear,
                     openYear,
                     allocatePerPartner,
-                    isSimulatedMove);
+                    generatedMoveStatus);
           }
           if (!CollectionUtils.isEmpty(generatedMoves)) {
             updateAccount(account);
@@ -395,6 +408,33 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         JPA.clear();
       }
     }
+  }
+
+  protected void removeSimulatedMoves(AccountingBatch accountingBatch) {
+    AccountConfig accountConfig = accountingBatch.getCompany().getAccountConfig();
+    if (accountConfig != null
+        && (!accountConfig.getIsActivateSimulatedMove()
+            || !accountingBatch.getIsDeleteSimulatedMove())) {
+      return;
+    }
+    com.axelor.db.Query<Move> moveQuery =
+        moveRepo
+            .all()
+            .filter(
+                "self.company = :company AND self.statusSelect = :statusSelect AND self.period.year = :year")
+            .bind("company", accountingBatch.getCompany())
+            .bind("statusSelect", MoveRepository.STATUS_SIMULATED)
+            .bind("year", accountingBatch.getYear())
+            .order("id");
+    JPA.runInTransaction(
+        () -> {
+          List<Move> moveList;
+          while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT)).isEmpty()) {
+            for (Move move : moveList) {
+              moveRepo.remove(move);
+            }
+          }
+        });
   }
 
   @Override

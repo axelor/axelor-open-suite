@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="InterventionNoteType">
+    <string name="name" required="true"/>
+    <boolean name="attachedFile" title="Attached file" default="false"/>
+  </entity>
+
+</domain-models>
+

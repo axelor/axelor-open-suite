@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  <module name="contract" package="com.axelor.apps.contract.db"/>
+
+  <entity name="Contract" repository="abstract">
+    <long name="guaranteedInterventionTime" title="Guaranteed intervention time (h)"
+      nullable="true" massUpdate="true"/>
+    <long name="guaranteedRecoveryTime" title="Guaranteed recovery time (h)" nullable="true"
+      massUpdate="true"/>
+    <many-to-one name="interventionType" title="Intervention type"
+      ref="com.axelor.apps.intervention.db.InterventionType" massUpdate="true"/>
+    <boolean name="onCallManagement" title="On-call management" massUpdate="true"/>
+    <many-to-one name="onCallPlanning" title="On-call planning"
+      ref="com.axelor.apps.base.db.WeeklyPlanning" massUpdate="true"/>
+    <long name="guaranteedInterventionTime" title="Guaranteed intervention time (h)"
+      nullable="true" massUpdate="true"/>
+    <long name="guaranteedRecoveryTime" title="Guaranteed recovery time (h)" nullable="true"
+      massUpdate="true"/>
+    <long name="delayToSendTheQuotation" title="Delay to send the quotation (h)"
+      nullable="true" massUpdate="true"/>
+
+    <boolean name="activateRecurrencePlanning" title="Activate recurrence planning"
+      massUpdate="true"/>
+    <integer name="planningPreferenceSelect" title="Planning preference"
+      selection="intervention.contract.intervention.planning.preference"/>
+    <many-to-one name="periodicity" title="Periodicity"
+      ref="com.axelor.apps.base.db.Duration" massUpdate="true"/>
+    <date name="nextAnnualVisitDate" title="Next annual visit date" massUpdate="true"/>
+    <date name="lastMaintenanceVisitDateDone" title="Last maintenance visit date done"
+      massUpdate="true"/>
+  </entity>
+</domain-models>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.AnswerType" title="Answer types"
+    name="answer-type-grid">
+    <field name="name"/>
+    <field name="answerTypeSelect"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.AnswerType" title="Answer type"
+    name="answer-type-form">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="answerTypeSelect"
+        onChange="action-answer-type-record-answer-type-select-change"/>
+      <panel name="listTypePanel" colSpan="12" hidden="true"
+        showIf="answerTypeSelect === 'list'">
+        <field name="answerValueList" grid-view="answer-value-grid"
+          form-view="answer-value-form" colSpan="12" requiredIf="answerTypeSelect === 'list'"/>
+      </panel>
+      <panel name="textTypePanel" colSpan="12" hidden="true"
+        showIf="answerTypeSelect === 'text'">
+        <field name="defaultTextValue"/>
+      </panel>
+      <panel name="measureTypePanel" colSpan="12" hidden="true"
+        showIf="answerTypeSelect === 'measure'">
+        <field name="desiredUnit" grid-view="unit-grid" form-view="unit-form"/>
+      </panel>
+      <panel name="checkboxTypePanel" colSpan="12" hidden="true"
+        showIf="answerTypeSelect === 'checkbox'">
+        <field name="checkboxName" requiredIf="answerTypeSelect === 'checkbox'"/>
+      </panel>
+      <panel name="indicationTypePanel" colSpan="12" hidden="true"
+        showIf="answerTypeSelect === 'indication'">
+        <field name="indicationText" requiredIf="answerTypeSelect === 'indication'"
+          widget="string" colSpan="12"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-record name="action-answer-type-record-answer-type-select-change"
+    model="com.axelor.apps.intervention.db.AnswerType">
+    <field name="answerValueList" expr="eval:null"/>
+    <field name="defaultTextValue" expr="eval:null"/>
+    <field name="desiredUnit" expr="eval:null"/>
+    <field name="checkboxName" expr="eval:null"/>
+    <field name="indicationText" expr="eval:null"/>
+  </action-record>
+
+</object-views>

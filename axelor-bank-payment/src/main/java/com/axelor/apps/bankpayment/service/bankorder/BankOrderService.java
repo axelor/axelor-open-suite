@@ -18,10 +18,9 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
@@ -38,16 +37,11 @@ public interface BankOrderService {
 
   public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException;
 
-  public void confirm(BankOrder bankOrder)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
-
   @Transactional(rollbackOn = {Exception.class})
   public void sign(BankOrder bankOrder);
 
   public void validate(BankOrder bankOrder)
       throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
-
-  public void realize(BankOrder bankOrder) throws AxelorException;
 
   public File generateFile(BankOrder bankOrder)
       throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
@@ -56,24 +50,7 @@ public interface BankOrderService {
 
   public void setSequenceOnBankOrderLines(BankOrder bankOrder);
 
-  public void checkLines(BankOrder bankOrder) throws AxelorException;
-
-  public void validatePayment(BankOrder bankOrder) throws AxelorException;
-
-  public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException;
-
-  public void cancelBankOrder(BankOrder bankOrder) throws AxelorException;
-
   public String createDomainForBankDetails(BankOrder bankOrder);
-
-  public BankDetails getDefaultBankDetails(BankOrder bankOrder);
-
-  public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException;
-
-  public boolean checkBankDetailsTypeCompatible(
-      BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
-
-  public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrder bankOrder);
 
   public void resetReceivers(BankOrder bankOrder);
 
@@ -81,4 +58,8 @@ public interface BankOrderService {
       String gridViewName, String formViewName, String viewDomain);
 
   public void setStatusToDraft(BankOrder bankOrder);
+
+  void processBankOrderStatus(BankOrder bankOrder, PaymentMode paymentMode) throws AxelorException;
+
+  void setNbOfLines(BankOrder bankOrder);
 }
