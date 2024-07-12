@@ -72,6 +72,12 @@
         <static name="invalidIbanText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
         </static>
+        <static name="unsupportedIbanText" hidden="true" colSpan="12">
+	        <![CDATA[<><Badge bg="info">The country doesn't support IBAN. The IBAN validation process has not been executed.</Badge></>]]>
+        </static>
+        <static name="bankDetailsTemplateFieldsToUseNotSetText" hidden="true" colSpan="12">
+	        <![CDATA[<><Badge bg="info">Fields to use are not set under the bank details template.</Badge></>]]>
+        </static>
         <field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}" colSpan="12"/>
       </panel>
       <panel name="IbanBbanPanel" colSpan="6">

@@ -16,9 +16,14 @@
       <field name="name" title="Name" required="true" colSpan="6"/>
       <field name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true"
         colSpan="6"/>
-      <panel-related name="bankDetailsTemplateLineListPanel"
+      <panel-related name="bankDetailsTemplateLineListNonIbanPanel"
         field="bankDetailsTemplateLineList" title="Fields to use" colSpan="12"
-        form-view="bank-details-template-line-form" grid-view="bank-details-template-line-grid"/>
+        form-view="bank-details-template-line-form"
+        grid-view="bank-details-template-line-non-iban-grid" hideIf="bankDetailsTypeSelect == 1"/>
+      <panel-related name="bankDetailsTemplateLineListIbanPanel"
+        field="bankDetailsTemplateLineList" title="Fields to use" colSpan="12"
+        form-view="bank-details-template-line-form" grid-view="bank-details-template-line-iban-grid"
+        hideIf="bankDetailsTypeSelect != 1"/>
     </panel>
   </form>
 

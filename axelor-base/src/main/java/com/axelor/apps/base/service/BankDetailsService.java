@@ -45,7 +45,7 @@ public interface BankDetailsService {
    * @param bankDetails
    * @return BankDetails
    */
-  BankDetails detailsIban(BankDetails bankDetails);
+  BankDetails detailsIban(BankDetails bankDetails) throws AxelorException;
 
   /**
    * Method allowing to create a bank details

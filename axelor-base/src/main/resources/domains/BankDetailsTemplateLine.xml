@@ -11,6 +11,8 @@
     <string name="title" title="Title" namecolumn="true"/>
     <many-to-one name="bankDetailsTemplate"
       ref="com.axelor.apps.base.db.BankDetailsTemplate" title="Bank details template"/>
+    <integer name="startPos" title="Start position"/>
+    <integer name="endPos" title="End position"/>
   </entity>
 
 </domain-models>
