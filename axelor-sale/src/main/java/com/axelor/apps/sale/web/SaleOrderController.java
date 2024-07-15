@@ -50,15 +50,19 @@ import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.common.ObjectUtils;
@@ -93,10 +97,18 @@ public class SaleOrderController {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(request.getContext());
+    boolean isTemplate = (boolean) request.getContext().get("_template");
+    SaleOrderInitValueService saleOrderInitValueService =
+        Beans.get(SaleOrderInitValueService.class);
     Map<String, Object> saleOrderMap = new HashMap<>();
-    saleOrderMap.putAll(Beans.get(SaleOrderInitValueService.class).getOnNewInitValues(saleOrder));
+    saleOrderMap.putAll(saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate));
+    saleOrderMap.putAll(saleOrderInitValueService.getOnNewInitValues(saleOrder));
+    saleOrderMap.putAll(Beans.get(SaleOrderDummyService.class).getOnNewDummies(saleOrder));
     response.setValues(saleOrderMap);
+    Map<String, Map<String, Object>> attrsMap =
+        Beans.get(SaleOrderViewService.class).getOnNewAttrs(saleOrder);
+    response.setAttrs(attrsMap);
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
@@ -763,5 +775,13 @@ public class SaleOrderController {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
     }
     response.setReload(true);
+  }
+
+  public void clientPartnerOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Map<String, Object> saleOrderMap = new HashMap<>();
+    saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).partnerOnChange(saleOrder));
+    response.setValues(saleOrderMap);
   }
 }
