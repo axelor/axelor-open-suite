@@ -25,6 +25,8 @@
     <panel name="storedProductPanel">
       <panel-related field="storedProductList" grid-view="stored-product-grid"
         form-view="stored-product-form" colSpan="12" canNew="company != null"/>
+      <button name="realizeStoringBtn" title="Store all / the rest"
+        onClick="save,action-mass-stock-move-method-realize-storing" icon="fa-play"/>
     </panel>
   </form>
 
@@ -39,6 +41,10 @@
 
   <action-method name="action-mass-stock-move-method-realize-picking">
     <call class="com.axelor.apps.stock.web.MassStockMoveController" method="realizeAllPicking"/>
+  </action-method>
+
+  <action-method name="action-mass-stock-move-method-realize-storing">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="realizeAllStoring"/>
   </action-method>
 
 </object-views>

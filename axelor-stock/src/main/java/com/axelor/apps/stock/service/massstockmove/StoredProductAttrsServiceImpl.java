@@ -1,11 +1,8 @@
 package com.axelor.apps.stock.service.massstockmove;
 
 import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StoredProduct;
-import com.axelor.utils.helpers.StringHelper;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class StoredProductAttrsServiceImpl implements StoredProductAttrsService {
   @Override
@@ -13,36 +10,35 @@ public class StoredProductAttrsServiceImpl implements StoredProductAttrsService 
 
     Objects.requireNonNull(massStockMove);
 
-    return String.format(
-        "self.id IN ( %s )",
-        StringHelper.getIdListString(
-            massStockMove.getPickedProductList().stream()
-                .map(PickedProduct::getPickedProduct)
-                .collect(Collectors.toList())));
+    if (massStockMove.getCartStockLocation() != null) {
+      String domain =
+          "(self IN (SELECT stockLocationLine.product FROM StockLocationLine stockLocationLine WHERE stockLocationLine.currentQty > 0 AND stockLocationLine.stockLocation = %d))";
+
+      return String.format(domain, massStockMove.getCartStockLocation().getId());
+    }
+
+    // Must not be able to select
+    return "self.id IN (0)";
   }
 
   @Override
   public String getTrackingNumberDomain(StoredProduct storedProduct, MassStockMove massStockMove) {
 
     Objects.requireNonNull(massStockMove);
+    Objects.requireNonNull(storedProduct);
 
-    if (storedProduct == null) {
+    if (storedProduct.getStoredProduct() != null && massStockMove.getCartStockLocation() != null) {
+      String domain =
+          "self.product.id = %d AND"
+              + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation = %d))";
+
       return String.format(
-          "self.id IN ( %s )",
-          StringHelper.getIdListString(
-              massStockMove.getPickedProductList().stream()
-                  .map(PickedProduct::getTrackingNumber)
-                  .collect(Collectors.toList())));
+          domain,
+          storedProduct.getStoredProduct().getId(),
+          massStockMove.getCartStockLocation().getId());
     }
 
-    return String.format(
-        "self.id IN ( %s )",
-        StringHelper.getIdListString(
-            massStockMove.getPickedProductList().stream()
-                .filter(
-                    pickedProduct ->
-                        pickedProduct.getPickedProduct().equals(storedProduct.getStoredProduct()))
-                .map(PickedProduct::getTrackingNumber)
-                .collect(Collectors.toList())));
+    // Must not be able to select
+    return "self.id IN (0)";
   }
 }

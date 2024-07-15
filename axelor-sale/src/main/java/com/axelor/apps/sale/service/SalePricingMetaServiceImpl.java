@@ -30,7 +30,7 @@ public class SalePricingMetaServiceImpl extends PricingMetaServiceImpl {
     if (model != null && SaleOrder.class.getName().equals(model)) {
       condition =
           condition.concat(
-              " && __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()");
+              " && __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()");
     }
 
     return condition;

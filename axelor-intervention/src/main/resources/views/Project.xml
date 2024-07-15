@@ -14,6 +14,17 @@
     </extend>
   </form>
 
+  <form id="intervention-business-project-form" name="business-project-form" title="Project"
+    model="com.axelor.apps.project.db.Project" extension="true">
+    <extend target="//menubar/menu[@name='projectToolsMenu']">
+      <insert position="inside">
+        <item name="generateEquipmentsBtn" title="Generate equipments"
+          action="action-park-model-show-confirmation-from-project"
+          if="__config__.app.isApp('intervention')"/>
+      </insert>
+    </extend>
+  </form>
+
   <action-view model="com.axelor.utils.db.Wizard"
     name="action-park-model-show-confirmation-from-project" title="Confirm">
     <view name="park-model-confirmation-wizard-form" type="form"/>

@@ -112,7 +112,7 @@ public class InventoryService {
   protected ProductRepository productRepo;
   protected InventoryRepository inventoryRepo;
   protected StockMoveRepository stockMoveRepo;
-  protected StockLocationLineService stockLocationLineService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
   protected StockLocationLineRepository stockLocationLineRepository;
@@ -128,7 +128,7 @@ public class InventoryService {
       ProductRepository productRepo,
       InventoryRepository inventoryRepo,
       StockMoveRepository stockMoveRepo,
-      StockLocationLineService stockLocationLineService,
+      StockLocationLineFetchService stockLocationLineFetchService,
       StockMoveService stockMoveService,
       StockMoveLineService stockMoveLineService,
       StockLocationLineRepository stockLocationLineRepository,
@@ -142,7 +142,7 @@ public class InventoryService {
     this.productRepo = productRepo;
     this.inventoryRepo = inventoryRepo;
     this.stockMoveRepo = stockMoveRepo;
-    this.stockLocationLineService = stockLocationLineService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationLineRepository = stockLocationLineRepository;
@@ -731,7 +731,7 @@ public class InventoryService {
     if (diff.signum() > 0) {
 
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(toStockLocation, product);
+          stockLocationLineFetchService.getStockLocationLine(toStockLocation, product);
       BigDecimal unitPrice = getAvgPrice(stockLocationLine);
       if (!inventoryLineService.isPresentInStockLocation(inventoryLine)) {
         unitPrice = inventoryLine.getPrice();
@@ -963,7 +963,7 @@ public class InventoryService {
 
       String lastInventoryDateTString = "";
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(
+          stockLocationLineFetchService.getStockLocationLine(
               inventory.getStockLocation(), inventoryLine.getProduct());
       if (stockLocationLine != null) {
         ZonedDateTime lastInventoryDateT = stockLocationLine.getLastInventoryDateT();

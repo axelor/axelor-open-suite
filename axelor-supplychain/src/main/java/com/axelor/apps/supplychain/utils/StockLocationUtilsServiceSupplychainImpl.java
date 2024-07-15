@@ -16,53 +16,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.supplychain.utils;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.db.repo.StockRulesRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
-import com.axelor.apps.stock.service.StockLocationServiceImpl;
-import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.StockLocationUtilsServiceImpl;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class StockLocationServiceSupplychainImpl extends StockLocationServiceImpl
-    implements StockLocationServiceSupplychain {
+public class StockLocationUtilsServiceSupplychainImpl extends StockLocationUtilsServiceImpl
+    implements StockLocationUtilsServiceSupplychain {
 
   @Inject
-  public StockLocationServiceSupplychainImpl(
-      StockLocationRepository stockLocationRepo,
-      StockLocationLineService stockLocationLineService,
-      ProductRepository productRepo,
-      StockConfigService stockConfigService,
-      AppBaseService appBaseService,
+  public StockLocationUtilsServiceSupplychainImpl(
       UnitRepository unitRepository,
       UnitConversionService unitConversionService,
-      StockRulesRepository stockRulesRepository,
-      StockLocationLineRepository stockLocationLineRepository) {
-    super(
-        stockLocationRepo,
-        stockLocationLineService,
-        productRepo,
-        stockConfigService,
-        appBaseService,
-        unitRepository,
-        unitConversionService,
-        stockRulesRepository,
-        stockLocationLineRepository);
+      AppBaseService appBaseService) {
+    super(unitRepository, unitConversionService, appBaseService);
   }
 
   @Override
   public BigDecimal getReservedQtyOfProductInStockLocations(
       Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException {
-
     return getQtyOfProductInStockLocations(productId, stockLocationIds, companyId, "reservedQty");
   }
 }

@@ -1,6 +1,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -156,12 +157,13 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   @Override
   public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
       throws AxelorException {
+    Company company = saleOrder.getCompany();
 
     return currencyScaleService.getCompanyScaledValue(
         saleOrder,
         currencyService.getAmountCurrencyConvertedAtDate(
             saleOrder.getCurrency(),
-            saleOrder.getCompany().getCurrency(),
+            company != null ? company.getCurrency() : null,
             exTaxTotal,
             saleOrder.getCreationDate()));
   }

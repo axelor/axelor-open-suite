@@ -2,6 +2,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -68,14 +69,14 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
       throws AxelorException {
 
     Product product = saleOrderLine.getProduct();
+    Company company = saleOrder.getCompany();
 
     return currencyScaleService.getCompanyScaledValue(
         saleOrder,
         currencyService.getAmountCurrencyConvertedAtDate(
-            (Currency)
-                productCompanyService.get(product, "purchaseCurrency", saleOrder.getCompany()),
-            saleOrder.getCompany().getCurrency(),
-            (BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()),
+            (Currency) productCompanyService.get(product, "purchaseCurrency", company),
+            company != null ? company.getCurrency() : null,
+            (BigDecimal) productCompanyService.get(product, "costPrice", company),
             saleOrder.getCreationDate()));
   }
 
