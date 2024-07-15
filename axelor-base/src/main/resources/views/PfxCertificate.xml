@@ -10,7 +10,7 @@
       <field name="certificate" widget="binary-link" colSpan="6"
         onChange="action-pfx-certificate-group-certificate-onchange"/>
       <field name="password" colSpan="6" readonlyIf="!certificate"
-        onChange="action-pfx-certificate-method-get-validity-dates"/>
+        onChange="action-pfx-certificate-method-get-validity-dates" hideIf="fromValidityDate"/>
       <spacer colSpan="6"/>
       <field name="fromValidityDate" colSpan="6"/>
       <field name="toValidityDate" colSpan="6"/>
