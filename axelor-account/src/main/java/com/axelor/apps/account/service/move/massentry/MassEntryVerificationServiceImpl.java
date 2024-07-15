@@ -146,7 +146,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     String newMoveDescription =
         newMoveLine.getMoveDescription() != null ? newMoveLine.getMoveDescription() : "";
     if (!newMoveDescription.equals(moveLine.getMoveDescription())) {
-      if (moveLine.getMoveDescription().equals(moveLine.getDescription())) {
+      if (moveLine.getMoveDescription() == null
+          || moveLine.getMoveDescription().equals(moveLine.getDescription())) {
         moveLine.setDescription(newMoveDescription);
       }
       moveLine.setMoveDescription(newMoveDescription);

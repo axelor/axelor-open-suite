@@ -151,6 +151,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryAttrsService.addInputActionSelectionIn(move, attrsMap);
     moveLineMassEntryAttrsService.addTemporaryMoveNumberFocus(move, attrsMap);
     moveLineMassEntryAttrsService.addOriginRequired(moveLine, move.getJournal(), attrsMap);
+    moveLineMassEntryAttrsService.addDescriptionRequired(move, attrsMap);
 
     if (move.getJournal() != null) {
       moveLineMassEntryAttrsService.addMovePaymentConditionRequired(
