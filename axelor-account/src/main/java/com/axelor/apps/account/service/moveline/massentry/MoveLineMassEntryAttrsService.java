@@ -68,4 +68,7 @@ public interface MoveLineMassEntryAttrsService {
   void addInputActionReadonly(boolean readonly, Map<String, Map<String, Object>> attrsMap);
 
   void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap);
+
+  void addDescriptionRequired(Move move, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 }
