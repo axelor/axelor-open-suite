@@ -38,13 +38,10 @@ import org.apache.commons.collections4.ListUtils;
 public class ProductStockRepositorySave {
 
   protected AppBaseService appBaseService;
-  public WeightedAveragePriceService weightedAveragePriceService;
 
   @Inject
-  public ProductStockRepositorySave(
-      AppBaseService appBaseService, WeightedAveragePriceService weightedAveragePriceService) {
+  public ProductStockRepositorySave(AppBaseService appBaseService) {
     this.appBaseService = appBaseService;
-    this.weightedAveragePriceService = weightedAveragePriceService;
   }
 
   public void addProductCompanies(Product product) {
@@ -90,7 +87,7 @@ public class ProductStockRepositorySave {
 
     // specific case for avgPrice per company
     productCompany.setAvgPrice(
-        weightedAveragePriceService.computeAvgPriceForCompany(product, company));
+        Beans.get(WeightedAveragePriceService.class).computeAvgPriceForCompany(product, company));
     productCompany.setCompany(company);
     productCompany.setProduct(product);
     return productCompany;

@@ -261,7 +261,7 @@
     </panel-tabs>
 
     <panel name="actionsPanel" sidebar="true"
-      hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted || $isLost) &amp;&amp; !partner">
+      hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted) &amp;&amp; !partner">
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
       <button name="convertBtn" title="Convert" hideIf="!id || isConverted || $isLost"
@@ -270,6 +270,8 @@
         onClick="action-lead-view-show-partner"/>
       <button name="loseBtn" title="Lose" hideIf="!id || isConverted || $isLost"
         onClick="action-lead-view-lose" css="btn-danger" icon="fa-times-circle"/>
+      <button name="resetBtn" title="Reset" showIf="$isLost"
+        onClick="action-lead-method-reset" icon="fa-refresh"/>
     </panel>
 
     <panel sidebar="true" name="activityPanel" title="Activity" colSpan="12" showIf="id">
@@ -643,5 +645,9 @@
 
   <action-method name="action-lead-method-rollback-lead-status">
     <call class="com.axelor.apps.crm.web.LeadController" method="rollbackLeadStatus"/>
+  </action-method>
+
+  <action-method name="action-lead-method-reset">
+    <call class="com.axelor.apps.crm.web.LeadController" method="resetLead"/>
   </action-method>
 </object-views>

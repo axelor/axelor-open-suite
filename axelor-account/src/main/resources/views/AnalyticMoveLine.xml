@@ -105,8 +105,9 @@
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="project" domain="self.imputable = true AND self.isBusinessProject = true"
-        if-module="axelor-business-project" form-view="project-form" grid-view="project-grid"
-        if="__config__.app.isApp('business-project')" title="Business project"/>
+        if-module="axelor-business-project" form-view="business-project-form"
+        grid-view="project-grid" if="__config__.app.isApp('business-project')"
+        title="Business project"/>
       <field name="account" onSelect="action-analytic-move-line-attrs-account-domain"
         onChange="action-analytic-move-line-record-account-onchange"/>
       <field name="accountType"
@@ -147,7 +148,7 @@
       <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
       <field name="amount" colSpan="4" readonly="true" x-scale="currency.numberOfDecimals"/>
       <field name="date" colSpan="4"/>
-      <field name="project" grid-view="project-grid" form-view="project-form"
+      <field name="project" grid-view="project-grid" form-view="business-project-form"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="typeSelect"/>
       <field name="currency" hidden="true" grid-view="currency-grid" form-view="currency-form"/>

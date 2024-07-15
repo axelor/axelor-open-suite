@@ -1,3 +1,96 @@
+## [8.1.2] (2024-07-11)
+
+### Fixes
+#### Base
+
+* Webapp: updated Axelor Open Platform dependency to 7.1.3.
+* Update axelor-studio, axelor-message and axelor-utils dependency to 3.1.1. This is fixing an issue where, with a default gradle configuration, the latest AOP snapshot was used instead of the version set in the webapp.
+* Partner: fixed issue related to view extension in CRM, causing an error when reloading views.
+* Currency conversion line: fixed an error preventing exchange rate update.
+* Fixed an issue where the logo defined in properties was not used in the login page.
+* City: fix city demo data import
+* Product: Fixed display of tracking number panel.
+* Product: fixed NPE when duplicating and saving a product.
+* Printing Template: technical refactor to be able to extend in other modules.
+* BIRT template: fixed error message when required BIRT parameter is missing.
+
+#### Account
+
+* Unreconcile: fixed invoice terms amount on both move lines.
+* Accounting report: fixed missing assets and disposal column value on 'Gross value and depreciations' report.
+* Accounting report: fixed Summary table of VAT Statement on invoices report which was not displaying all data.
+* Block customers with late payment batch: fixed an issue where the batch did not block some partners.
+* Analytic/InvoiceLine: removed analytic when account does not allow analytic in all configuration.
+* Accounting situation: fixed VAT system display when partner is internal.
+* MoveReverse: fixed imputation on reverse move invoice terms.
+* Accounting report: fixed summary table on the first page of the VAT Statement on payments displaying wrong values.
+
+#### Bank Payment
+
+* BankStatementLine: Set demo statement with operation dates/value date in 2024
+
+#### Budget
+
+* Purchase order line: fixed an issue where changing the account in tab budget changed the analytic configuration on the line.
+
+#### Contract
+
+* Contract line: fixed an issue where analytic distribution panel was never hidden.
+
+#### CRM
+
+* Catalog: fixed an issue where the user could upload files other than PDF.
+
+#### Human Resource
+
+* Expense line: orphan expense line are now also digitally signed if there is a justification file
+* Employee: Added demo Data for HR employee
+* Timesheet line: Fixed timesheet line deletion when it is linked to timer.
+
+#### Production
+
+* Production order: fixed production order sequence generated from product form not using the correct sequence in a multi company configuration.
+
+#### Project
+
+* Sale order: Fixed project generated with empty code which could trigger a exception
+
+#### Sale
+
+* Sale order template: fixed NPE when company is empty.
+* Sale order template: fixed NPE when currency or partner is empty.
+
+#### Stock
+
+* Sales dashboard: fixed stock location for customer deliveries.
+
+#### Supply Chain
+
+* Invoice: removed time table link when we merge or delete invoices, fixing an issue preventing invoice merge.
+* Translation: fixed alert message related to partner language always showing due to localization.
+
+
+### Developer
+
+#### Base
+
+Added the possibility to extend `base.printing.template.type.select` easily from other modules so any module can add new classes used to generate PDF from AOS models.
+
+#### Account
+
+To fix existing data if you reversed a move related to an invoice, you can run the following script:
+
+```sql
+UPDATE account_invoice_term AS it 
+SET amount_remaining = 0, company_amount_remaining = 0, is_paid = true
+FROM account_move_line ml JOIN account_move m ON m.id = ml.move
+WHERE ml.id = it.move_line AND ml.amount_remaining = 0 AND m.invoice IS NULL;
+```
+
+#### Project
+
+If you have the issue on project generation from sale order, the fix requires to run the following sql request in order to fully work: `UPDATE project_project SET code = id where code IS NULL;`
+
 ## [8.1.1] (2024-06-27)
 
 ### Fixes
@@ -211,5 +304,6 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.2]: https://github.com/axelor/axelor-open-suite/compare/v8.1.1...v8.1.2
 [8.1.1]: https://github.com/axelor/axelor-open-suite/compare/v8.1.0...v8.1.1
 [8.1.0]: https://github.com/axelor/axelor-open-suite/compare/v8.0.8...v8.1.0

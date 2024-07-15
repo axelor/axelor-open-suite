@@ -87,7 +87,8 @@ public class ProductController {
       Product newProduct = request.getContext().asType(Product.class);
       // Set anomaly when a product exists in list Price
       if (newProduct.getId() != null) {
-        Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+        Beans.get(PriceListService.class)
+            .setPriceListLineAnomaly(Beans.get(ProductRepository.class).find(newProduct.getId()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

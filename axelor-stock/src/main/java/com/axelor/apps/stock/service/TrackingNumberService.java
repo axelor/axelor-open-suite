@@ -19,33 +19,13 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import java.time.LocalDate;
 import java.util.Set;
 
 public interface TrackingNumberService {
-  TrackingNumber getTrackingNumber(
-      Product product, Company company, LocalDate date, String origin, Partner supplier)
-      throws AxelorException;
 
   String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration);
-
-  TrackingNumber createTrackingNumber(
-      Product product, Company company, LocalDate date, String origin, Partner supplier)
-      throws AxelorException;
-
-  TrackingNumber generateTrackingNumber(
-      Product product,
-      Company company,
-      LocalDate date,
-      String origin,
-      Partner supplier,
-      String notes)
-      throws AxelorException;
 
   void calculateDimension(TrackingNumber trackingNumber) throws AxelorException;
 
