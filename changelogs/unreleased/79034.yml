@@ -1,3 +1,2 @@
----
-title: "Project API: fixed an issue where condition in permission were not evaluated correctly to access unit and planning time of a project."
-module: axelor-project
+title: "Control entry API: fixed an issue where condition in permission were not evaluated correctly to access a control entry."
+module: axelor-quality
