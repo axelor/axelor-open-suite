@@ -37,7 +37,8 @@ public interface InvoiceTermPaymentService {
    * @return
    */
   public InvoicePayment initInvoiceTermPayments(
-      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay, LocalDate paymentDate);
+      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay, LocalDate paymentDate)
+      throws AxelorException;
 
   /**
    * Method to init invoiceTermPayments based on invoiceTerm to pay and inserted amount

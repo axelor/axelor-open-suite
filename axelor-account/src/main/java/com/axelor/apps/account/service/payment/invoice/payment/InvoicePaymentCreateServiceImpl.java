@@ -354,7 +354,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate paymentDate,
       LocalDate bankDepositDate,
       String chequeNumber,
-      PaymentSession paymentSession) {
+      PaymentSession paymentSession)
+      throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceTermList)) {
       return null;
     }
@@ -400,7 +401,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
-      PaymentSession paymentSession) {
+      PaymentSession paymentSession)
+      throws AxelorException {
     return this.createInvoicePayment(
         Collections.singletonList(invoiceTerm),
         paymentMode,
@@ -459,7 +461,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate paymentDate,
       LocalDate bankDepositDate,
       String chequeNumber,
-      boolean holdback) {
+      boolean holdback)
+      throws AxelorException {
     List<InvoiceTerm> invoiceTermList =
         invoice.getInvoiceTermList().stream()
             .filter(

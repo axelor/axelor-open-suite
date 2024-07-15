@@ -226,7 +226,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   @Override
   @Transactional
   public InvoicePayment generatePendingPaymentFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) throws AxelorException {
     InvoicePayment invoicePayment =
         super.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
     if (invoicePayment == null) {
