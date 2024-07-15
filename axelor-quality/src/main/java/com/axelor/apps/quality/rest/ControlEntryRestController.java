@@ -47,12 +47,12 @@ public class ControlEntryRestController {
   @POST
   @HttpExceptionHandler
   public Response getProgressValues(ControlEntryPostRequest requestBody) throws AxelorException {
-    new SecurityCheck().readAccess(ControlEntry.class).check();
     RequestValidator.validateBody(requestBody);
+    Long controlEntryId = requestBody.getControlEntryId();
+    new SecurityCheck().readAccess(ControlEntry.class, controlEntryId).check();
 
     ControlEntry controlEntry =
-        ObjectFinder.find(
-            ControlEntry.class, requestBody.getControlEntryId(), ObjectFinder.NO_VERSION);
+        ObjectFinder.find(ControlEntry.class, controlEntryId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(
         Response.Status.OK,
