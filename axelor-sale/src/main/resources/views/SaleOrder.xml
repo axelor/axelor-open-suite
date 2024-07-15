@@ -390,7 +390,7 @@
           form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
           colSpan="3"/>
         <field name="clientPartner" required="true" hideIf="company == null"
-          readonlyIf="statusSelect > 1" onChange="action-sale-order-group-client-partner-change"
+          readonlyIf="statusSelect > 1" onChange="action-sale-order-method-client-partner-onchange"
           onSelect="action-sale-order-method-set-client-partner-domain" form-view="partner-form"
           grid-view="partner-grid" colSpan="3"/>
         <field name="contactPartner" colSpan="3" hideIf="company == null"
@@ -932,7 +932,8 @@
       </panel>
 
       <panel name="customerInformationPanel" title="Customer information">
-        <field name="clientPartner" onChange="action-sale-order-group-client-partner-change"
+        <field name="clientPartner"
+          onChange="action-sale-order-method-client-partner-onchange"
           onSelect="action-sale-order-method-set-client-partner-domain" form-view="partner-form"
           grid-view="partner-grid"/>
         <field name="contactPartner" onChange="action-record-so-contact-partner-change"
@@ -1486,12 +1487,6 @@
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-notify-stock-move-created"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
-  </action-group>
-
-  <action-group name="action-sale-order-group-client-partner-change">
-    <action name="action-sale-order-method-client-partner-onchange"/>
-    <action name="action-sale-order-attrs-interco" if="__config__.app.isApp('supplychain')"/>
-    <action name="action-partner-attrs-hide-contact-partner"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">

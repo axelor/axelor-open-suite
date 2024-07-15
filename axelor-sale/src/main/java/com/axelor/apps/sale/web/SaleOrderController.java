@@ -783,5 +783,6 @@ public class SaleOrderController {
     Map<String, Object> saleOrderMap = new HashMap<>();
     saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).partnerOnChange(saleOrder));
     response.setValues(saleOrderMap);
+    response.setAttrs(Beans.get(SaleOrderViewService.class).getPartnerOnChangeAttrs(saleOrder));
   }
 }

@@ -43,6 +43,13 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
     return attrs;
   }
 
+  @Override
+  public Map<String, Map<String, Object>> getPartnerOnChangeAttrs(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = super.getPartnerOnChangeAttrs(saleOrder);
+    attrs.putAll(hideInterco(saleOrder));
+    return attrs;
+  }
+
   protected Map<String, Map<String, Object>> hideAvailabilityLabel(SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     if (!appBaseService.isApp("stock") || saleOrder.getId() == null) {
