@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
 
   <entity name="MobileMenu">
     <string name="technicalName" unique="true" required="true" title="Technical name"
-      help="Technical name should be the menu key used in module export on mobile application."/>
+      help="Technical name should be the menu key used in module export on mobile application."
+      readonly="true"/>
     <string name="name" title="Menu name"/>
     <integer name="menuOrder" title="mobileMenu.Order"/>
     <string name="parentApplication" title="Parent application"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="accounting-situation-partner-grid" title="Accounting situations"
     model="com.axelor.apps.account.db.AccountingSituation">
@@ -13,8 +13,9 @@
     <field name="balanceCustAccount"/>
     <field name="balanceDueCustAccount"/>
     <field name="balanceDueDebtRecoveryCustAccount"/>
-    <field name="acceptedCredit"/>
-    <field name="usedCredit"/>
+    <field name="acceptedCredit" x-scale="company.currency.numberOfDecimals"/>
+    <field name="usedCredit" x-scale="company.currency.numberOfDecimals"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="accounting-situation-pfp-partner-grid" canNew="false" title="Suppliers"
@@ -73,18 +74,14 @@
         domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="partner.isCustomer" hidden="true"/>
       <field name="partner.isSupplier" hidden="true"/>
-      <field name="__parent._model" hidden="true"/>
-      <field name="__parent.isSupplier" hidden="true"/>
-      <field name="__parent.isSupplier" hidden="true"/>
-      <field name="__parent" hidden="true"/>
     </panel>
     <panel name="vatSystemPanel" title="VAT System"
-      showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )|| (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)">
+      showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)">
       <field name="vatSystemSelect"
-        showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)"/>
+        showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)"/>
+      <field name="partner.isInternal" hidden="true"/>
     </panel>
-    <panel name="analyticsPanel" title="Analytics" colSpan="12"
-      showIf="__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; company.accountConfig.analyticDistributionTypeSelect == 2">
+    <panel name="analyticsPanel" title="Analytics" colSpan="12" hidden="true">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" domain="self.company = :company"/>
@@ -122,10 +119,11 @@
     </panel>
 
     <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
-      <field name="acceptedCredit"/>
-      <field name="usedCredit"/>
+      <field name="acceptedCredit" x-scale="company.currency.numberOfDecimals"/>
+      <field name="usedCredit" x-scale="company.currency.numberOfDecimals"/>
       <field name="insurCreditDate"/>
       <field name="description" colSpan="12"/>
+      <field name="company.currency.numberOfDecimals" hidden="true"/>
     </panel>
 
     <panel-dashlet name="viewMoveLinesPanel"
@@ -143,8 +141,9 @@
     <field name="balanceCustAccount"/>
     <field name="balanceDueCustAccount"/>
     <field name="balanceDueDebtRecoveryCustAccount"/>
-    <field name="acceptedCredit"/>
-    <field name="usedCredit"/>
+    <field name="acceptedCredit" x-scale="company.currency.numberOfDecimals"/>
+    <field name="usedCredit" x-scale="company.currency.numberOfDecimals"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="accounting-situation-form" title="Accounting situation"
@@ -190,10 +189,11 @@
     </panel>
 
     <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
-      <field name="acceptedCredit"/>
-      <field name="usedCredit"/>
+      <field name="acceptedCredit" x-scale="company.currency.numberOfDecimals"/>
+      <field name="usedCredit" x-scale="company.currency.numberOfDecimals"/>
       <field name="insurCreditDate"/>
       <field name="description" colSpan="12"/>
+      <field name="company.currency.numberOfDecimals" hidden="true"/>
     </panel>
 
     <panel-dashlet name="viewMoveLinesPanel"

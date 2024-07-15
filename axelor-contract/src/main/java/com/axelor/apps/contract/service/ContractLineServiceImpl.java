@@ -40,8 +40,10 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.db.mapper.Mapper;
@@ -69,6 +71,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
+  protected AppSaleService appSaleService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -82,7 +85,8 @@ public class ContractLineServiceImpl implements ContractLineService {
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
-      TaxService taxService) {
+      TaxService taxService,
+      AppSaleService appSaleService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
@@ -94,6 +98,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
     this.taxService = taxService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
@@ -148,44 +153,74 @@ public class ContractLineServiceImpl implements ContractLineService {
       throws AxelorException {
     Preconditions.checkNotNull(
         contract, I18n.get("Contract can't be " + "empty for compute contract line price."));
-    Preconditions.checkNotNull(
-        product, "Product can't be " + "empty for compute contract line price.");
 
     // TODO: maybe put tax computing in another method
     contractLine.setFiscalPosition(contract.getPartner().getFiscalPosition());
 
-    Set<TaxLine> taxLineSet =
-        accountManagementService.getTaxLineSet(
-            appBaseService.getTodayDate(contract.getCompany()),
-            product,
-            contract.getCompany(),
-            contractLine.getFiscalPosition(),
-            false);
+    Set<TaxLine> taxLineSet = getTaxLineSet(contractLine, contract, product);
     contractLine.setTaxLineSet(taxLineSet);
 
-    if (CollectionUtils.isNotEmpty(taxLineSet)
+    setPrice(contractLine, contract, product, taxLineSet);
+    setPriceScale(contractLine, contract, product);
+
+    return contractLine;
+  }
+
+  protected void setPrice(
+      ContractLine contractLine, Contract contract, Product product, Set<TaxLine> taxLineSet)
+      throws AxelorException {
+    BigDecimal price = contractLine.getPrice();
+    if (product != null
+        && CollectionUtils.isNotEmpty(taxLineSet)
         && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
-      BigDecimal price = contractLine.getPrice();
       price =
           price.divide(
               taxService.getTotalTaxRate(taxLineSet).add(BigDecimal.ONE),
               2,
               BigDecimal.ROUND_HALF_UP);
-      contractLine.setPrice(price);
+    }
+    contractLine.setPrice(price);
+  }
+
+  protected void setPriceScale(ContractLine contractLine, Contract contract, Product product)
+      throws AxelorException {
+    BigDecimal price = contractLine.getPrice();
+    if (product != null) {
+      BigDecimal convert =
+          currencyService.getCurrencyConversionRate(
+              (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()),
+              contract.getCurrency(),
+              appBaseService.getTodayDate(contract.getCompany()));
+      contractLine.setPrice(
+          price
+              .multiply(convert)
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+    }
+  }
+
+  protected Set<TaxLine> getTaxLineSet(
+      ContractLine contractLine, Contract contract, Product product) throws AxelorException {
+    Set<TaxLine> taxLineSet = Set.of();
+    int targetTypeSelect = contract.getTargetTypeSelect();
+    Set<TaxLine> contractTaxLineSet = contractLine.getTaxLineSet();
+
+    if (CollectionUtils.isNotEmpty(contractTaxLineSet)) {
+      return contractTaxLineSet;
     }
 
-    BigDecimal price = contractLine.getPrice();
-    BigDecimal convert =
-        currencyService.getCurrencyConversionRate(
-            (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()),
-            contract.getCurrency(),
-            appBaseService.getTodayDate(contract.getCompany()));
-    contractLine.setPrice(
-        price
-            .multiply(convert)
-            .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+    if (product != null
+        && (targetTypeSelect == ContractRepository.CUSTOMER_CONTRACT
+            || targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT)) {
+      taxLineSet =
+          accountManagementService.getTaxLineSet(
+              appBaseService.getTodayDate(contract.getCompany()),
+              product,
+              contract.getCompany(),
+              contractLine.getFiscalPosition(),
+              contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT);
+    }
 
-    return contractLine;
+    return taxLineSet;
   }
 
   @Override
@@ -334,5 +369,26 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     return priceListService.getPriceListLine(
         contractLine.getProduct(), contractLine.getQty(), priceList, price);
+  }
+
+  @Override
+  public String computeProductDomain(Contract contract) {
+    String domain =
+        "self.isModel = false"
+            + " and (self.endDate = null or self.endDate > :__date__)"
+            + " and self.dtype = 'Product'";
+
+    if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && appSaleService.getAppSale().getEnableSalesProductByTradName()
+        && contract != null
+        && contract.getTradingName() != null
+        && contract.getCompany() != null
+        && contract.getCompany().getTradingNameSet() != null
+        && !contract.getCompany().getTradingNameSet().isEmpty()) {
+      domain +=
+          " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
+    }
+
+    return domain;
   }
 }

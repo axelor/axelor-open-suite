@@ -66,6 +66,8 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
   public void computeTax(OrderLineTax orderLineTax, Currency currency) {
     BigDecimal exTaxBase = orderLineTax.getExTaxBase().abs();
     BigDecimal taxTotal = BigDecimal.ZERO;
+    int currencyScale = currencyScaleService.getCurrencyScale(currency);
+
     if (orderLineTax.getTaxLine() != null) {
       taxTotal =
           exTaxBase.multiply(
@@ -76,12 +78,10 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
                       new BigDecimal(100),
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
-      orderLineTax.setTaxTotal(
-          currencyScaleService.getScaledValue(taxTotal, currency.getNumberOfDecimals()));
+      orderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
     }
     orderLineTax.setInTaxTotal(
-        currencyScaleService.getScaledValue(
-            exTaxBase.add(taxTotal), currency.getNumberOfDecimals()));
+        currencyScaleService.getScaledValue(exTaxBase.add(taxTotal), currencyScale));
   }
 
   @Override

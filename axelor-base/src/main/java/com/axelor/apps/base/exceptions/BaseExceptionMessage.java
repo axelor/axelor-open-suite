@@ -549,11 +549,6 @@ public final class BaseExceptionMessage {
   public static final String COMPANY_LOCALE_MISSING = /*$$(*/
       "Please fill locale for the company %s" /*)*/;
 
-  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
-
-  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
-      "Swagger is enabled but not resource packages is specified." /*)*/;
-
   public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
       "The method '%s' doesn't exist in the Faker API." /*)*/;
 
@@ -631,8 +626,6 @@ public final class BaseExceptionMessage {
 
   public static final String ADDRESS_FIELD_TEMPLATE_ERROR = /*$$(*/
       "An error occurred while generating the address template: '%s' - '%s'" /*)*/;
-  public static final String PRICING_BUTTON_ERROR = /*$$(*/
-      "There was an error while trying to add the pricing button : %s" /*)*/;
 
   public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
       "Pricing process unavailable for this class : %s" /*)*/;
@@ -659,4 +652,6 @@ public final class BaseExceptionMessage {
 
   public static final String FACTORY_NO_FOUND = /*$$(*/
       "Factory not found this type of generator" /*)*/;
+
+  public static final String MISSING_BIRT_PARAMETER = /*$$(*/ "Missing %s parameter(s)" /*)*/;
 }

@@ -297,8 +297,6 @@ public final class StockExceptionMessage {
       "Same from stock location and to stock location" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_STATUS = /*$$(*/
       "Status must be planned or draft" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER = /*$$(*/
-      "Same purchase order" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;
   public static final String STOCK_MOVE_DIFF_SHIPMENT_FIELDS = /*$$(*/
       "Fields linked to the shipment are differents, the value of the oldest will be kept." /*)*/;

@@ -1,7 +1,28 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -11,8 +32,11 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationSe
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
@@ -21,6 +45,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
@@ -29,6 +54,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -47,6 +74,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
   protected BankOrderMoveService bankOrderMoveService;
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected PaymentSessionValidateService paymentSessionValidateService;
+  protected ReconcileService reconcileService;
 
   @Inject
   public BankOrderValidationServiceImpl(
@@ -62,7 +90,8 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
       AccountingSituationService accountingSituationService,
       BankOrderMoveService bankOrderMoveService,
       BankOrderLineOriginService bankOrderLineOriginService,
-      PaymentSessionValidateService paymentSessionValidateService) {
+      PaymentSessionValidateService paymentSessionValidateService,
+      ReconcileService reconcileService) {
     this.accountConfigService = accountConfigService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoicePaymentMoveCreateService = invoicePaymentMoveCreateService;
@@ -76,6 +105,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
     this.bankOrderMoveService = bankOrderMoveService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.paymentSessionValidateService = paymentSessionValidateService;
+    this.reconcileService = reconcileService;
   }
 
   @Override
@@ -90,19 +120,68 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
 
     Company company = invoicePayment.getInvoice().getCompany();
 
-    if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
-      invoicePayment = invoicePaymentMoveCreateService.createMoveForInvoicePayment(invoicePayment);
-      if (invoicePayment == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL));
+    if (!processLcrPaymentWithBankOrder(invoicePayment)) {
+      if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
+        invoicePayment =
+            invoicePaymentMoveCreateService.createMoveForInvoicePayment(invoicePayment);
+        if (invoicePayment == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL));
+        }
+      } else {
+        accountingSituationService.updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+        invoicePayment = invoicePaymentRepository.save(invoicePayment);
       }
-    } else {
-      accountingSituationService.updateCustomerCredit(invoicePayment.getInvoice().getPartner());
-      invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected boolean processLcrPaymentWithBankOrder(InvoicePayment invoicePayment)
+      throws AxelorException {
+    boolean isAlreadyPaid = false;
+    if (invoicePayment == null
+        || invoicePayment.getBankOrder() == null
+        || invoicePayment.getPaymentMode() == null
+        || invoicePayment.getPaymentMode().getTypeSelect()
+            != PaymentModeRepository.TYPE_EXCHANGES) {
+      return isAlreadyPaid;
+    }
+    PaymentSession paymentSession =
+        paymentSessionRepository.findByBankOrder(invoicePayment.getBankOrder());
+    if (paymentSession == null) {
+      return isAlreadyPaid;
+    }
+    for (BankOrderLine bankOrderLine : invoicePayment.getBankOrder().getBankOrderLineList()) {
+      if (bankOrderLine.getSenderMove() != null
+          && !ObjectUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+        Move move = bankOrderLine.getSenderMove();
+        invoicePayment.setMove(move);
+        Optional<MoveLine> cashMoveLine =
+            move.getMoveLineList().stream().filter(ml -> ml.getCredit().signum() != 0).findFirst();
+        List<InvoiceTerm> invoiceTermList =
+            invoicePayment.getInvoiceTermPaymentList().stream()
+                .map(InvoiceTermPayment::getInvoiceTerm)
+                .filter(it -> it.getPlacementMoveLine() != null)
+                .collect(Collectors.toList());
+        if (!ObjectUtils.isEmpty(invoiceTermList)) {
+          for (InvoiceTerm invoiceTerm : invoiceTermList) {
+            if (invoiceTerm != null && cashMoveLine.isPresent()) {
+              reconcileService.reconcile(
+                  invoiceTerm.getPlacementMoveLine(),
+                  cashMoveLine.get(),
+                  invoicePayment,
+                  false,
+                  false);
+              isAlreadyPaid = true;
+            }
+          }
+        }
+      }
+    }
+    return isAlreadyPaid;
   }
 
   @Override
@@ -143,8 +222,15 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
         paymentSessionValidateService.reconciledInvoiceTermMoves(
             paymentSession, invoiceTermLinkWithRefund);
 
-        paymentSessionValidateService.processPaymentSession(
-            paymentSession, invoiceTermLinkWithRefund);
+        if (paymentSession.getPaymentMode() != null
+            && paymentSession.getPaymentMode().getTypeSelect()
+                == PaymentModeRepository.TYPE_EXCHANGES) {
+          Beans.get(PaymentSessionBillOfExchangeValidateService.class)
+              .processPaymentSession(paymentSession, invoiceTermLinkWithRefund);
+        } else {
+          paymentSessionValidateService.processPaymentSession(
+              paymentSession, invoiceTermLinkWithRefund);
+        }
         bankOrder = bankOrderRepository.find(bankOrder.getId());
       }
     } else if (bankOrder

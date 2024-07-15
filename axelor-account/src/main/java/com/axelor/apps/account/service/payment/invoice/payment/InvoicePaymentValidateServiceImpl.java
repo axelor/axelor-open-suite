@@ -25,10 +25,11 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -36,29 +37,25 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 @RequestScoped
 public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidateService {
 
-  protected MoveCreateService moveCreateService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentToolService invoicePaymentToolService;
-  protected DateService dateService;
   protected InvoicePaymentMoveCreateService invoicePaymentMoveCreateService;
+  protected int jpaLimit = 10;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
-      MoveCreateService moveCreateService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
-      DateService dateService,
       InvoicePaymentMoveCreateService invoicePaymentMoveCreateService) {
 
-    this.moveCreateService = moveCreateService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
-    this.dateService = dateService;
     this.invoicePaymentMoveCreateService = invoicePaymentMoveCreateService;
   }
 
@@ -97,6 +94,30 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
+  }
+
+  @Override
+  public void validateMultipleInvoicePayment(
+      List<InvoicePayment> invoicePaymentList, boolean force) {
+    if (ObjectUtils.isEmpty(invoicePaymentList)) {
+      return;
+    }
+
+    int i = 0;
+    for (InvoicePayment invoicePayment : invoicePaymentList) {
+      try {
+        if (invoicePayment != null) {
+          invoicePayment = invoicePaymentRepository.find(invoicePayment.getId());
+          validate(invoicePayment, force);
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      } finally {
+        if (++i % jpaLimit == 0) {
+          JPA.clear();
+        }
+      }
+    }
   }
 
   protected void validatePartnerAccount(Invoice invoice) throws AxelorException {

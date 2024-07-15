@@ -275,6 +275,8 @@ public interface InvoiceTermService {
 
   boolean isPaymentConditionFree(InvoiceTerm invoiceTerm);
 
+  void payInvoiceTerms(List<InvoiceTerm> invoiceTermList);
+
   List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm);
 
   void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
@@ -286,4 +288,13 @@ public interface InvoiceTermService {
       BigDecimal amountToPay,
       BigDecimal currencyRate,
       Company company);
+
+  void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException;
+
+  void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException;
+
+  List<InvoiceTerm> getInvoiceTermsFromMoveLine(List<InvoiceTerm> invoiceTermList);
+
+  void updateInvoiceTermsAmountRemainingWithoutPayment(Reconcile reconcile, MoveLine moveLine)
+      throws AxelorException;
 }

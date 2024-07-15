@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.base.service.printing.template;
 
-import com.axelor.rpc.Response;
+import com.axelor.meta.schema.views.AbstractView;
 
 public interface PrintingTemplateMetaService {
 
-  void addPrintButton(String model, Response response);
+  void addPrintButton(AbstractView view);
 }

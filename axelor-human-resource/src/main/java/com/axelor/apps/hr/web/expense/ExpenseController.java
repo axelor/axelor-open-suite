@@ -702,13 +702,7 @@ public class ExpenseController {
         return;
       }
 
-      Expense expense = expenseLine.getExpense();
-
-      if (expense == null) {
-        expense = context.getParent().asType(Expense.class);
-      }
-
-      Employee employee = expense.getEmployee();
+      Employee employee = expenseLine.getEmployee();
 
       if (employee == null) {
         throw new AxelorException(

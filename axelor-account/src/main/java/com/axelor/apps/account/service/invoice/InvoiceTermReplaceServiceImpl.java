@@ -209,8 +209,11 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
   protected void replaceInvoiceTermsToRemoveWithCopy(List<InvoiceTerm> invoiceTermListToRemove) {
     for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
       InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
-      invoiceTerm.getMoveLine().addInvoiceTermListItem(newInvoiceTerm);
-      invoiceTerm.getMoveLine().removeInvoiceTermListItem(invoiceTerm);
+      invoiceTerm.setPaymentSession(null);
+      MoveLine moveLine = invoiceTerm.getMoveLine();
+      moveLine.addInvoiceTermListItem(newInvoiceTerm);
+      moveLine.removeInvoiceTermListItem(invoiceTerm);
+      invoiceTerm.setMoveLine(null);
       invoiceTermRepo.remove(invoiceTerm);
     }
   }

@@ -33,7 +33,12 @@ import javax.persistence.PersistenceException;
 
 public class EquipementMaintenanceRepo extends EquipementMaintenanceRepository {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
+
+  @Inject
+  public EquipementMaintenanceRepo(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public EquipementMaintenance save(EquipementMaintenance entity) {
