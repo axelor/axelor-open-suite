@@ -28,6 +28,7 @@ import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -37,9 +38,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.ProductReservation;
+import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
@@ -137,6 +141,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     }
     try {
       accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
+      cancelProductReservationFromSaleOrder(saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -210,5 +215,20 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     }
     super.completeSaleOrder(saleOrder);
     accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
+  }
+
+  protected void cancelProductReservationFromSaleOrder(List<SaleOrderLine> saleOrderLineList) {
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      ProductReservationRepository productReservationRepository =
+          Beans.get(ProductReservationRepository.class);
+      ProductReservationService productReservationService =
+          Beans.get(ProductReservationService.class);
+      Query<ProductReservation> query =
+          productReservationRepository.findBySaleOrderLine(saleOrderLine);
+      if (query.count() != 0) {
+        query.fetch().forEach(productReservationService::cancelReservation);
+      }
+    }
   }
 }

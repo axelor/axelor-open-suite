@@ -131,6 +131,10 @@
       ref="com.axelor.apps.stock.db.StockMove" title="Outsourcing stock moves"
       mappedBy="outsourcingManufOrder"/>
 
+    <one-to-many name="productReservationList"
+      ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservation"
+      mappedBy="originManufOrder"/>
+
 
     <unique-constraint columns="manufOrderSeq,company"/>
 

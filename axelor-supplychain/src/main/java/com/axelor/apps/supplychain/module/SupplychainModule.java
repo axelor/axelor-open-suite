@@ -95,6 +95,8 @@ import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.db.repo.ProductReservationManagementRepository;
+import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
@@ -141,6 +143,8 @@ import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.ProductReservationService;
+import com.axelor.apps.supplychain.service.ProductReservationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
@@ -411,5 +415,8 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderStockLocationService.class).to(SaleOrderStockLocationServiceImpl.class);
     bind(StockLocationLineFetchServiceImpl.class)
         .to(StockLocationLineFetchServiceSupplychainImpl.class);
+
+    bind(ProductReservationService.class).to(ProductReservationServiceImpl.class);
+    bind(ProductReservationRepository.class).to(ProductReservationManagementRepository.class);
   }
 }
