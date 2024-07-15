@@ -24,7 +24,7 @@
     </field>
     <field name="moveDescription"
       onChange="action-account-move-line-mass-entry-attrs-set-description,action-move-line-mass-entry-record-set-is-edited"
-      readonly="false" required="true"/>
+      readonly="false" requiredIf="$isDescriptionRequired"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-move-line-method-partner-onselect"
       onChange="action-move-line-mass-entry-group-on-change-partner" width="120" canEdit="false"
@@ -151,6 +151,7 @@
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
     <field name="account.analyticDistributionAuthorized" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
+    <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
   </grid>
 
   <!-- Action group -->
