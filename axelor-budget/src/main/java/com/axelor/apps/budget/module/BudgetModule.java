@@ -115,6 +115,8 @@ import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetServi
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineGroupBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetService;
+import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderDummyBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
@@ -209,5 +211,6 @@ public class BudgetModule extends AxelorModule {
     bind(SaleOrderLineComputeSupplychainServiceImpl.class)
         .to(SaleOrderLineComputeBudgetServiceImpl.class);
     bind(SaleOrderDummyServiceImpl.class).to(SaleOrderDummyBudgetServiceImpl.class);
+    bind(SaleOrderCheckBudgetService.class).to(SaleOrderCheckBudgetServiceImpl.class);
   }
 }

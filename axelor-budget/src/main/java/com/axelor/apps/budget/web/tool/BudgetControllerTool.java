@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.budget.web.tool;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -39,6 +41,20 @@ public class BudgetControllerTool {
     }
   }
 
+  public static String verifyMissingBudget() throws AxelorException {
+    Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
+    if (isError != null) {
+      if (isError) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
+      } else {
+        return I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND);
+      }
+    }
+    return "";
+  }
+
   public static void verifyBudgetExceed(
       String budgetExceedAlert, boolean isOrder, ActionResponse response) {
     if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
@@ -54,5 +70,23 @@ public class BudgetControllerTool {
         }
       }
     }
+  }
+
+  public static String verifyBudgetExceed(String budgetExceedAlert) throws AxelorException {
+    if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
+      Boolean isError = Beans.get(AppBudgetService.class).isBudgetExceedValuesError(true);
+      if (isError != null) {
+        budgetExceedAlert =
+            Beans.get(BudgetToolsService.class)
+                .getBudgetExceedMessage(budgetExceedAlert, true, isError);
+        if (isError) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(budgetExceedAlert));
+        } else {
+          return I18n.get(budgetExceedAlert);
+        }
+      }
+    }
+    return "";
   }
 }

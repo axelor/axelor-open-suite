@@ -1500,7 +1500,7 @@
 
   <action-group name="action-group-sale-order-finalize-quotation">
     <action name="save"/>
-    <action name="action-sale-order-validate-quotation"/>
+    <action name="action-sale-order-method-check-before-finalize"/>
     <action name="action-sale-order-method-finalize-quotation"/>
   </action-group>
 
@@ -1513,16 +1513,6 @@
     <action name="save"/>
     <action name="action-sale-order-method-version-recovery-btn"/>
   </action-group>
-
-  <action-validate name="action-sale-order-validate-quotation">
-    <error message="Please enter at least one detail line." if="saleOrderLineList?.isEmpty()"/>
-    <alert
-      message="One product is sold at loss, are you sure you want to finalize the quotation ?"
-      if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
-    <alert
-      message="The selected price list is no longer valid, do you still want to continue?"
-      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt;= __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt;= __config__.date))"/>
-  </action-validate>
 
   <action-attrs name="action-sale-order-attrs-in-ati">
     <attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
@@ -1556,6 +1546,10 @@
     if-module="axelor-supplychain">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="updateAmountToBeSpreadOverTheTimetable"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-check-before-finalize">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="checkBeforeFinalize"/>
   </action-method>
 
   <action-method name="action-sale-order-method-finalize-quotation">
