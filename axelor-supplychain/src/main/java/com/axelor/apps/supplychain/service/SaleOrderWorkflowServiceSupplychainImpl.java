@@ -36,6 +36,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected PartnerSupplychainService partnerSupplychainService;
   protected AnalyticToolSupplychainService analyticToolSupplychainService;
 
+  @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
