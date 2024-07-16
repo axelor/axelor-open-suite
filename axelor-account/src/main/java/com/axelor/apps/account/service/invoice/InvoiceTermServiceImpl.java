@@ -643,7 +643,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       BigDecimal companyAmountRemaining;
 
-      if (amountRemaining.compareTo(BigDecimal.ZERO) == 0) {
+      boolean isSameCurrencyRate = true;
+      if (invoicePayment != null) {
+        isSameCurrencyRate =
+            currencyService.isSameCurrencyRate(
+                invoiceTerm.getInvoice().getInvoiceDate(),
+                invoicePayment.getPaymentDate(),
+                invoiceTerm.getCurrency(),
+                invoiceTerm.getCompanyCurrency());
+      }
+
+      if (amountRemaining.compareTo(BigDecimal.ZERO) == 0 && isSameCurrencyRate) {
         companyAmountRemaining = BigDecimal.ZERO;
       } else {
         companyAmountRemaining =
@@ -1568,7 +1578,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     BigDecimal invoiceCurrencyRate =
-        companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP);
+        BigDecimal.ZERO.compareTo(currencyRate) == 0
+            ? companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP)
+            : currencyRate;
 
     if (!Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
       if (BigDecimal.ONE.compareTo(invoiceCurrencyRate.abs()) != 0) {

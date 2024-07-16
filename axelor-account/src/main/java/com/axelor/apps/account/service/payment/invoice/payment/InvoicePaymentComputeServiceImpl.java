@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,15 +32,18 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoicePaymentToolService invoicePaymentToolService;
 
   @Inject
   public InvoicePaymentComputeServiceImpl(
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePaymentToolService invoicePaymentToolService) {
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoicePaymentToolService = invoicePaymentToolService;
   }
 
   @Override
@@ -58,8 +62,14 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
         invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
       }
       invoicePayment.clearInvoiceTermPaymentList();
+      BigDecimal companyAvailableAmount =
+          invoicePaymentToolService.computeCompanyAmount(
+              invoicePayment.getAmount(),
+              invoicePayment.getCurrency(),
+              invoicePayment.getCompanyCurrency(),
+              invoicePayment.getPaymentDate());
       invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-          invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
+          invoicePayment, invoiceTerms, companyAvailableAmount, companyAvailableAmount);
 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
