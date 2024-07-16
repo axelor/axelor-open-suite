@@ -1,0 +1,3 @@
+---
+title: "PRODUCT : Fixed issue on product record duplicate to reset the field serialNumber"
+module: axelor-base

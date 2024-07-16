@@ -564,5 +564,6 @@ public class ProductServiceImpl implements ProductService {
     copy.setProductCompanyList(null);
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
+    copy.setSerialNumber(null);
   }
 }
