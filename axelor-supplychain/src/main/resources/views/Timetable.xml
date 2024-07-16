@@ -121,11 +121,8 @@
   <action-record name="action-timetable-record-on-percentage-change"
     model="com.axelor.apps.supplychain.db.Timetable">
     <field name="amount"
-      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(saleOrder?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-    <field name="amount"
-      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(purchaseOrder?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(__parent__?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
+      if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
   </action-record>
 
   <action-method name="action-timetable-method-generate-invoice">
