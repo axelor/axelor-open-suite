@@ -55,6 +55,15 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     attrs.putAll(getTypeSelectSelection());
     attrs.putAll(hideDiscount());
     attrs.putAll(refreshVersionPanel());
+    attrs.putAll(hideContactPartner(saleOrder));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getOnLoadAttrs(SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    attrs.putAll(hideContactPartner(saleOrder));
     return attrs;
   }
 
@@ -174,13 +183,15 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   protected Map<String, Map<String, Object>> hideContactPartner(SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     Partner clientPartner = saleOrder.getClientPartner();
+    Company company = saleOrder.getCompany();
     attrs.put(
         "contactPartner",
         Map.of(
             HIDDEN_ATTRS,
-            clientPartner != null
-                && clientPartner.getPartnerTypeSelect()
-                    == PartnerRepository.PARTNER_TYPE_INDIVIDUAL));
+            company == null
+                || (clientPartner != null
+                    && clientPartner.getPartnerTypeSelect()
+                        == PartnerRepository.PARTNER_TYPE_INDIVIDUAL)));
     return attrs;
   }
 }

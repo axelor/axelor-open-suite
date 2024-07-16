@@ -8,6 +8,8 @@ public interface SaleOrderViewService {
 
   Map<String, Map<String, Object>> getOnNewAttrs(SaleOrder saleOrder) throws AxelorException;
 
+  Map<String, Map<String, Object>> getOnLoadAttrs(SaleOrder saleOrder) throws AxelorException;
+
   Map<String, Map<String, Object>> getPartnerOnChangeAttrs(SaleOrder saleOrder)
       throws AxelorException;
 }

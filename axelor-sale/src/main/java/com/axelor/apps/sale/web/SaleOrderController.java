@@ -111,6 +111,13 @@ public class SaleOrderController {
     response.setAttrs(attrsMap);
   }
 
+  public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
+    SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(request.getContext());
+    Map<String, Map<String, Object>> attrsMap =
+        Beans.get(SaleOrderViewService.class).getOnLoadAttrs(saleOrder);
+    response.setAttrs(attrsMap);
+  }
+
   public void compute(ActionRequest request, ActionResponse response) {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
