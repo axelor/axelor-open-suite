@@ -36,3 +36,21 @@ ${(Address.addressL4 == null) ? '' : Address.addressL4}
 ${(Address.addressL5 == null) ? '' : Address.addressL5}
 ${(Address.addressL6 == null) ? '' : Address.addressL6}
 ${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.subDepartment == null) ? '' : Address.subDepartment}";"${(Address.room == null) ? '' : Address.room + '/'}${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name} ${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision} ${(Address.zip == null) ? '' : Address.zip}"
+"8";"AUTRICHE";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
+${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.buildingName == null) ? '' : Address.buildingName}" ;"${(Address.streetName == null) ? '' : Address.streetName} ${(Address.buildingNumber == null) ? '' : Address.buildingNumber}${(Address.floor == null) ? '' : '/'+Address.floor}${(Address.room == null) ? '' : '/'+Address.room}";"${(Address.townLocationName == null) ? '' : Address.townLocationName}";"${(Address.zip == null) ? '' : Address.zip} ${(Address.townName == null) ? '' : Address.townName}"
+"9";"BELGIQUE";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
+${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.buildingName == null) ? '' : Address.buildingName} ${(Address.floor == null) ? '' : Address.floor}";"${(Address.streetName == null) ? '' : Address.streetName} ${(Address.buildingNumber == null) ? '' : Address.buildingNumber} ${(Address.room == null) ? '' : 'bus '+ Address.room}";"${(Address.postBox == null) ? '' : 'Postbus '+ Address.postBox}";"${(Address.zip == null) ? '' : Address.zip} ${(Address.townName == null) ? '' : Address.townName} "
+"10";"CHINE";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
+${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.buildingNumber == null) ? '' : Address.buildingNumber} ${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.townLocationName == null) ? '' : Address.townLocationName}";"${(Address.townName == null) ? '' : Address.townName}";"${(Address.zip == null) ? '' : Address.zip} ${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision}"
