@@ -169,6 +169,44 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.inTaxTotal = this.currencyScaleService.getScaledValue(invoice, inTaxTotal);
   }
 
+  protected InvoiceLineGenerator(
+      Invoice invoice,
+      Product product,
+      String productName,
+      BigDecimal price,
+      BigDecimal inTaxPrice,
+      BigDecimal priceDiscounted,
+      String description,
+      BigDecimal qty,
+      Unit unit,
+      Set<TaxLine> taxLineSet,
+      int sequence,
+      BigDecimal discountAmount,
+      int discountTypeSelect,
+      BigDecimal exTaxTotal,
+      BigDecimal inTaxTotal,
+      boolean isTaxInvoice,
+      int typeSelect) {
+    this(
+        invoice,
+        product,
+        productName,
+        price,
+        inTaxPrice,
+        priceDiscounted,
+        description,
+        qty,
+        unit,
+        taxLineSet,
+        sequence,
+        discountAmount,
+        discountTypeSelect,
+        exTaxTotal,
+        inTaxTotal,
+        isTaxInvoice);
+    this.typeSelect = typeSelect;
+  }
+
   public Invoice getInvoice() {
     return invoice;
   }

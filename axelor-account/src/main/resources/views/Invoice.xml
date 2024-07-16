@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -819,8 +819,10 @@
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
         <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
           <field name="financialDiscountRate" readonly="true"/>
-          <field name="financialDiscountTotalAmount" readonly="true"/>
-          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
         </panel>
       </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
@@ -1671,20 +1673,18 @@
 
   <action-group name="action-invoice-group-ventilate-button">
     <action name="action-invoice-group-before-ventilate"/>
-    <action name="action-invoice-method-ventilate"/>
     <action name="save"/>
+    <action name="action-invoice-method-ventilate"/>
   </action-group>
 
   <action-group name="action-invoice-group-before-ventilate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-validate-check-pfp-validator-user"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
-    <action name="save"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
   </action-group>
 
   <action-group name="action-invoice-group-pfp-validate">
@@ -1748,7 +1748,7 @@
       if="statusSelect == 1 &amp;&amp; invoiceTermList?.isEmpty() &amp;&amp; invoiceLineList?.size() > 0 &amp;&amp; paymentCondition != null"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-record-due-date"/>
+    <action name="action-invoice-record-due-dates"/>
     <action name="action-invoice-method-update-unpaid-invoice-terms" if="statusSelect == 3"/>
     <action name="save"/>
     <action name="action-invoice-method-manage-pfp-status"

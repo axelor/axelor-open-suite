@@ -84,6 +84,8 @@ public interface InvoiceService {
    */
   void validateAndVentilate(Invoice invoice) throws AxelorException;
 
+  void checkPreconditions(Invoice invoice) throws AxelorException;
+
   /**
    * Annuler une facture. (Transaction)
    *

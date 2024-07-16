@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public MetaFile getUserActiveCompanyLogo() {
 
-    final Company company = this.getUserActiveCompany();
+    final Company company = AuthUtils.getUser() != null ? this.getUserActiveCompany() : null;
 
     if (company == null) {
       return null;
@@ -191,7 +191,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public String getUserActiveCompanyLogoLink() {
 
-    final Company company = this.getUserActiveCompany();
+    final Company company = AuthUtils.getUser() != null ? this.getUserActiveCompany() : null;
 
     if (company == null) {
       return null;
@@ -515,5 +515,12 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toList())));
 
     return metaPermissionRuleList;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setActiveCompany(User user, Company company) {
+    user.setActiveCompany(company);
+    userRepo.save(user);
   }
 }

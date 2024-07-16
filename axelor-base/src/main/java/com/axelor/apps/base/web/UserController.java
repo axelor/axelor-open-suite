@@ -20,13 +20,17 @@ package com.axelor.apps.base.web;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -118,6 +122,18 @@ public class UserController {
     try {
       AppSettings appSettings = AppSettings.get();
       response.setValue("language", appSettings.get("application.locale"));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setActiveCompany(ActionRequest request, ActionResponse response) {
+    try {
+      Company company = request.getContext().asType(Company.class);
+      company = Beans.get(CompanyRepository.class).find(company.getId());
+      Beans.get(UserService.class).setActiveCompany(AuthUtils.getUser(), company);
+      response.setNotify(
+          String.format(I18n.get("Active company changed to %s"), company.getName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

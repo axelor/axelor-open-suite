@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
     orderBy="-contractId">
@@ -13,6 +13,8 @@
     <field name="partner"/>
     <field name="startDate"/>
     <field name="currentContractVersion.supposedEndDate"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="statusSelect"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
@@ -67,7 +69,7 @@
             form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
             colSpan="3"/>
         </panel>
-        <panel name="partnerPanel" itemSpan="4" colSpan="12">
+        <panel name="partnerPanel" colSpan="8">
           <field name="partner" onSelect="action-contract-attrs-domains-partner"
             showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
             onChange="action-contract-group-partner-onchange" required="true"
@@ -76,8 +78,19 @@
             canEdit="false" form-view="partner-form" readonlyIf="statusSelect >= 2" required="true"
             onSelect="action-contract-method-set-invoiced-partner-domain"/>
         </panel>
+        <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
+          name="tradingName"
+          readonlyIf="(contractLineList &amp;&amp; contractLineList.length > 0) || statusSelect >= 2"
+          canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          grid-view="trading-name-grid" colSpan="3"
+          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
+          hideIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+          hidden="true"/>
+        <label name="tradingNameLabel"
+          if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
         <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
           showIf="contractTypeSelect == 1"/>
+        <field name="company.tradingNameSet" hidden="true"/>
       </panel>
     </panel>
     <panel sidebar="true" name="actionPanel">
@@ -111,7 +124,7 @@
           onClick="save,action-contract-method-waiting"/>
         <button name="ongoingBtn" title="Activate contract"
           showIf="id &amp;&amp; currentContractVersion.statusSelect == 2"
-          onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
+          onClick="action-contract-group-ongoing"/>
         <button if="__config__.app.getApp('contract')?.isRenewalManagement" name="renewBtn"
           title="Renew" hidden="true"
           showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
@@ -242,7 +255,8 @@
     <panel title="Notes" sidebar="true" name="notesPanel" canCollapse="true">
       <field name="note" showTitle="false"/>
     </panel>
-    <panel-tabs name="mainPanelTab" showIf="partner">
+    <panel-tabs name="mainPanelTab"
+      hideIf="!partner || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
       <panel title="Content" name="contentPanel">
         <panel name="contractLineListPanel" hidden="true"
           showIf="isInvoicingManagement &amp;&amp; targetTypeSelect &lt;= 2" colSpan="12">
@@ -278,7 +292,6 @@
             x-show-icons="false">
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
               <field name="description" colSpan="9" widget="html"/>
-              <field name="metaFile" colSpan="3" widget="binary-link"/>
             </editor>
           </field>
         </panel>
@@ -506,8 +519,16 @@
         showIf="id &amp;&amp; targetTypeSelect == 2 &amp;&amp; contractTypeSelect == 2"/>
 
       <panel name="contractFileListPanel" title="Files" colSpan="12">
-        <panel-dashlet action="action-contract-view-contract-files" colSpan="12"
-          x-show-bars="true"/>
+        <field name="currentContractVersion" showTitle="false" colSpan="12"
+          x-show-icons="false">
+          <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+            <field name="metaFile" colSpan="3" widget="binary-link"/>
+            <field form-view="file-form" grid-view="contract-file-grid"
+              name="contractFileList" readonlyIf="statusSelect !== 1 "
+              domain="self.contractVersion.id = currentContractVersion.id AND self.fileTypeSelect = 1"
+              colSpan="12"/>
+          </editor>
+        </field>
       </panel>
     </panel-tabs>
     <panel-mail name="mailsPanel">
@@ -528,15 +549,16 @@
   <action-group name="action-contract-group-on-new">
     <action name="action-contract-record-default"/>
     <action name="action-contract-attrs-partner-payment-config"/>
+    <action name="action-contract-record-get-trading-names-management-config"/>
   </action-group>
 
   <action-group name="action-contract-group-on-load">
-    <action name="action-contract-attrs-require-payment-config"/>
     <action name="action-contract-attrs-readonly-by-config"/>
     <action name="action-contract-readonly-if-unchangable"/>
     <action name="action-contract-method-hide-fields-list"/>
     <action name="action-contract-method-contract-line-list-on-change"/>
     <action name="action-contract-method-additional-contract-line-list-on-change"/>
+    <action name="action-contract-record-get-trading-names-management-config"/>
   </action-group>
 
   <action-group name="action-contract-group-invoicing-management-change">
@@ -567,6 +589,7 @@
     <field name="partner" expr="eval: _clientPartner" if="_clientPartner != null"/>
     <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
     <field name="project" expr="eval:_project" if="_project != null"/>
+    <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>
 
   <action-record name="action-record-contract-version-default-record"
@@ -731,13 +754,6 @@
     <domain>:id MEMBER OF self.contractSet</domain>
   </action-view>
 
-  <action-view name="action-contract-view-contract-files"
-    model="com.axelor.apps.base.db.File" title="Files">
-    <view type="grid" name="contract-file-grid"/>
-    <view type="form" name="file-form"/>
-    <domain>self.contractVersion.id = :_contractVersionId AND self.fileTypeSelect = 1</domain>
-    <context name="_contractVersionId" expr="eval: currentContractVersion.id"/>
-  </action-view>
 
   <action-attrs name="action-contract-attrs-domains-template">
     <attribute for="$contractTemplate" name="domain"
@@ -931,5 +947,17 @@
     <view type="form" name="purchase-order-form"/>
     <domain>self.contract.id = :id</domain>
   </action-view>
+
+  <action-record name="action-contract-record-get-trading-names-management-config"
+    model="com.axelor.apps.contract.db.Contract">
+    <field name="$enableTradingNamesManagement"
+      expr="eval: __config__.app.getApp('base')?.enableTradingNamesManagement"/>
+  </action-record>
+
+  <action-group name="action-contract-group-ongoing">
+    <action name="save"/>
+    <action name="action-contract-validate-on-going"/>
+    <action name="action-contract-method-ongoing"/>
+  </action-group>
 
 </object-views>

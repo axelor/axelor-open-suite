@@ -116,7 +116,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineRecordService.setCurrencyFields(moveLine, move);
     moveLineToolService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
     moveLineRecordService.setCounter(moveLine, move);
 
     valuesMap.put("counter", moveLine.getCounter());
@@ -269,7 +269,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
-    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -375,13 +375,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   @Override
   public Map<String, Object> getDateOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
-    if (move != null && move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
-      moveLineRecordService.setOriginDate(moveLine);
-    }
-    moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
-    if (move != null && move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      moveLineToolService.checkDateInPeriod(move, moveLine);
-    }
+    computeDateOnChangeValues(moveLine, move);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -396,6 +390,17 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     }
 
     return valuesMap;
+  }
+
+  @Override
+  public void computeDateOnChangeValues(MoveLine moveLine, Move move) throws AxelorException {
+    if (move != null && move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      moveLineRecordService.setOriginDate(moveLine);
+    }
+    moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+    if (move != null && move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveLineToolService.checkDateInPeriod(move, moveLine);
+    }
   }
 
   @Override

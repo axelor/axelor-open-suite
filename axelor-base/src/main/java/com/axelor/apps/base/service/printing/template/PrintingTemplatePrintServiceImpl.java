@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -153,7 +154,9 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   protected List<TemplatePrint> getPrintList(
       PrintingTemplate printingTemplate, PrintingGenFactoryContext context) throws AxelorException {
     List<TemplatePrint> prints = new ArrayList<>();
-    for (PrintingTemplateLine templateLine : printingTemplate.getPrintingTemplateLineList()) {
+    List<PrintingTemplateLine> templateLines = printingTemplate.getPrintingTemplateLineList();
+    templateLines.sort(Comparator.comparing(PrintingTemplateLine::getSequence));
+    for (PrintingTemplateLine templateLine : templateLines) {
       PrintingGeneratorFactory factory = PrintingGeneratorFactory.getFactory(templateLine);
       TemplatePrint print = factory.generate(templateLine, context);
       prints.add(print);

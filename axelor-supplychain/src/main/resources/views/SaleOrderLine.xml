@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
@@ -375,8 +375,10 @@
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
-    <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
+    <attribute name="readonly" for="analyticMoveLineList" if="__parent__"
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__?.company)?.analyticDistributionTypeSelect != 1"/>
+    <attribute name="readonly" for="analyticMoveLineList" if="saleOrder"
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(saleOrder?.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
   <action-attrs

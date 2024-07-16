@@ -222,4 +222,7 @@ public interface MoveToolService {
   List<Integer> getMoveStatusSelection(Company company, Journal journal) throws AxelorException;
 
   Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
+
+  List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException;
 }

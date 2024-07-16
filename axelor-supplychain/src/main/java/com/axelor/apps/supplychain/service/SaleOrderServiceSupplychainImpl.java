@@ -22,8 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerLink;
-import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -66,7 +64,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
@@ -77,6 +74,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected StockConfigService stockConfigService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected TrackingNumberSupplychainService trackingNumberSupplychainService;
+
+  protected PartnerLinkSupplychainService partnerLinkSupplychainService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -93,7 +92,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
-      TrackingNumberSupplychainService trackingNumberSupplychainService) {
+      TrackingNumberSupplychainService trackingNumberSupplychainService,
+      PartnerLinkSupplychainService partnerLinkSupplychainService) {
     super(
         saleOrderLineService,
         appBaseService,
@@ -109,6 +109,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.stockConfigService = stockConfigService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.trackingNumberSupplychainService = trackingNumberSupplychainService;
+    this.partnerLinkSupplychainService = partnerLinkSupplychainService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -279,9 +280,19 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       Partner clientPartner =
           Beans.get(PartnerRepository.class).find(saleOrder.getClientPartner().getId());
       if (clientPartner != null) {
-        setDefaultInvoicedAndDeliveredPartners(saleOrder, clientPartner);
+        saleOrder.setInvoicedPartner(
+            partnerLinkSupplychainService.getDefaultInvoicedPartner(clientPartner));
+        saleOrder.setDeliveredPartner(
+            partnerLinkSupplychainService.getDefaultDeliveredPartner(clientPartner));
         setInvoicedAndDeliveredAddresses(saleOrder);
       }
+    } else if (saleOrder != null && saleOrder.getClientPartner() == null) {
+      saleOrder.setInvoicedPartner(null);
+      saleOrder.setDeliveredPartner(null);
+      saleOrder.setMainInvoicingAddress(null);
+      saleOrder.setMainInvoicingAddressStr(null);
+      saleOrder.setDeliveryAddress(null);
+      saleOrder.setDeliveryAddressStr(null);
     }
   }
 
@@ -297,55 +308,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           Beans.get(PartnerService.class).getDeliveryAddress(saleOrder.getDeliveredPartner()));
       saleOrder.setDeliveryAddressStr(
           Beans.get(AddressService.class).computeAddressStr(saleOrder.getDeliveryAddress()));
-    }
-  }
-
-  protected void setDefaultInvoicedAndDeliveredPartners(
-      SaleOrder saleOrder, Partner clientPartner) {
-    if (!CollectionUtils.isEmpty(clientPartner.getManagedByPartnerLinkList())) {
-      List<PartnerLink> partnerLinkList = clientPartner.getManagedByPartnerLinkList();
-      // Retrieve all Invoiced by Type
-      List<PartnerLink> partnerLinkInvoicedByList =
-          partnerLinkList.stream()
-              .filter(
-                  partnerLink ->
-                      partnerLink
-                          .getPartnerLinkType()
-                          .getTypeSelect()
-                          .equals(PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY))
-              .collect(Collectors.toList());
-      // Retrieve all Delivered by Type
-      List<PartnerLink> partnerLinkDeliveredByList =
-          partnerLinkList.stream()
-              .filter(
-                  partnerLink ->
-                      partnerLink
-                          .getPartnerLinkType()
-                          .getTypeSelect()
-                          .equals(PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY))
-              .collect(Collectors.toList());
-
-      // If there is only one, then it is the default one
-      if (partnerLinkInvoicedByList.size() == 1) {
-        PartnerLink partnerLinkInvoicedBy = partnerLinkInvoicedByList.get(0);
-        saleOrder.setInvoicedPartner(partnerLinkInvoicedBy.getPartner2());
-      } else if (partnerLinkInvoicedByList.isEmpty()) {
-        saleOrder.setInvoicedPartner(clientPartner);
-      } else {
-        saleOrder.setInvoicedPartner(null);
-      }
-      if (partnerLinkDeliveredByList.size() == 1) {
-        PartnerLink partnerLinkDeliveredBy = partnerLinkDeliveredByList.get(0);
-        saleOrder.setDeliveredPartner(partnerLinkDeliveredBy.getPartner2());
-      } else if (partnerLinkDeliveredByList.isEmpty()) {
-        saleOrder.setDeliveredPartner(clientPartner);
-      } else {
-        saleOrder.setDeliveredPartner(null);
-      }
-
-    } else {
-      saleOrder.setInvoicedPartner(clientPartner);
-      saleOrder.setDeliveredPartner(clientPartner);
     }
   }
 

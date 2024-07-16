@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="business-project-grid" title="Projects"
     model="com.axelor.apps.project.db.Project">
@@ -48,6 +48,20 @@
         <item title="Compute project totals"
           action="save,action-project-method-compute-project-totals"
           if="__config__.app.isApp('business-project')" showIf="id &amp;&amp;isBusinessProject"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='invoicingPanel']/field[@name='invoicingComment']">
+      <insert position="before">
+        <panel name="analyticDistributionPanel" title="Analytics"
+          if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+          hidden="true" showIf="isBusinessProject" colSpan="12">
+          <help colSpan="12"><![CDATA[This analytic distribution template will be filled with partner or assigned user configuration according to Business Project module configuration.]]></help>
+          <field name="analyticDistributionTemplate"
+            grid-view="analytic-distribution-template-grid"
+            form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
+            domain="self.company = :company AND self.isSpecific = false"/>
+        </panel>
       </insert>
     </extend>
     <extend target="//panel[@name='salesPanel']">
@@ -142,19 +156,6 @@
             <field name="projectHistoryLineList" colSpan="12" canNew="false" canEdit="false"
               canRemove="false" title=""/>
           </panel>
-        </panel>
-      </insert>
-    </extend>
-    <extend target="//panel[@name='fieldsToDisplay']">
-      <insert position="before">
-        <panel name="analyticDistributionPanel" title="Analytics"
-          if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-          hidden="true" showIf="isBusinessProject" colSpan="12">
-          <field name="analyticDistributionTemplate"
-            grid-view="analytic-distribution-template-grid"
-            form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
-            domain="self.company = :company AND self.isSpecific = false"/>
         </panel>
       </insert>
     </extend>

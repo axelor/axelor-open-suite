@@ -192,4 +192,6 @@ public interface UserService {
   List<Permission> getPermissions(User user);
 
   List<MetaPermissionRule> getMetaPermissionRules(User user);
+
+  void setActiveCompany(User user, Company company);
 }

@@ -26,6 +26,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.meta.db.MetaFile;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,7 +43,8 @@ public interface ExpenseLineCreateService {
       String comments,
       Employee employee,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException;
 
   ExpenseLine createKilometricExpenseLine(
@@ -57,6 +59,7 @@ public interface ExpenseLineCreateService {
       Employee employee,
       Company company,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException;
 }

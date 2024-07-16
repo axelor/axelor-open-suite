@@ -80,8 +80,7 @@ public class MoveAdjustementService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public MoveLine createAdjustmentMove(
-      MoveLine moveLine, Account cashPositionVariationAccount, boolean isDebit)
+  public MoveLine createAdjustmentMove(MoveLine moveLine, Account cashPositionVariationAccount)
       throws AxelorException {
 
     Partner partner = moveLine.getPartner();
@@ -121,7 +120,7 @@ public class MoveAdjustementService {
         moveLineCreateService.createMoveLine(
             adjustmentMove,
             partner,
-            isDebit ? account : cashPositionVariationAccount,
+            account,
             amountRemainingInSpecificMoveCurrency,
             false,
             date,
@@ -133,7 +132,7 @@ public class MoveAdjustementService {
         moveLineCreateService.createMoveLine(
             adjustmentMove,
             partner,
-            isDebit ? cashPositionVariationAccount : account,
+            cashPositionVariationAccount,
             amountRemainingInSpecificMoveCurrency,
             true,
             date,
@@ -146,11 +145,7 @@ public class MoveAdjustementService {
     moveValidateService.accounting(adjustmentMove);
     moveRepository.save(adjustmentMove);
 
-    if (isDebit) {
-      return creditAdjustmentMoveLine;
-    } else {
-      return debitAdjustmentMoveLine;
-    }
+    return creditAdjustmentMoveLine;
   }
 
   /**

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -33,7 +33,7 @@
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
-    <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
+    <string name="fullName" namecolumn="true" title="Name" search="name"/>
 
     <many-to-one name="statusBeforeComplete" title="Last status"
       ref="com.axelor.apps.project.db.TaskStatus"/>

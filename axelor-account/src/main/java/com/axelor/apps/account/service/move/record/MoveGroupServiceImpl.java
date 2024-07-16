@@ -39,12 +39,15 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.mapper.Mapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MoveGroupServiceImpl implements MoveGroupService {
 
@@ -174,6 +177,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveDefaultService.setDefaultValues(move);
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setPeriod(move);
+
     moveRecordSetService.setFunctionalOriginSelect(move);
     moveRecordSetService.setOriginDate(move);
 
@@ -277,7 +281,11 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("dueDate", move.getDueDate());
-    valuesMap.put("moveLineList", move.getMoveLineList());
+    valuesMap.put(
+        "moveLineList",
+        move.getMoveLineList() != null
+            ? move.getMoveLineList().stream().map(Mapper::toMap).collect(Collectors.toList())
+            : new ArrayList<>());
     valuesMap.put("originDate", move.getOriginDate());
 
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -537,6 +545,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setCompanyBankDetails(move);
     moveDefaultService.setDefaultCurrency(move);
+    moveRecordSetService.setPeriod(move);
 
     if (move.getJournal() != null
         && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -550,6 +559,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+    valuesMap.put("period", move.getPeriod());
 
     if (move.getPartner() != null
         && move.getCompany() != null

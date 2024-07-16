@@ -1,0 +1,3 @@
+---
+title: "Payment Voucher: fixed an issue preventing the payment of invoices with financial discount."
+module: axelor-account

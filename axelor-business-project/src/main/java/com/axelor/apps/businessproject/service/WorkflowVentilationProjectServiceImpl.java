@@ -54,6 +54,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class WorkflowVentilationProjectServiceImpl
     extends WorkflowVentilationServiceSupplychainImpl {
@@ -153,6 +154,7 @@ public class WorkflowVentilationProjectServiceImpl
     BigDecimal newProgress =
         projectTask.getInvoiceLineSet().stream()
             .map(InvoiceLine::getNewProgress)
+            .filter(Objects::nonNull)
             .max(BigDecimal::compareTo)
             .orElse(BigDecimal.ZERO);
     if (ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS.equals(projectTask.getInvoicingType())) {

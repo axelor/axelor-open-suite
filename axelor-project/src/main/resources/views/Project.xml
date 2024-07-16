@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
@@ -328,7 +328,7 @@
       </panel>
       <panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject"
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <help><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
+        <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
         <field name="toInvoice" colSpan="3"
           onChange="action-project-attrs-set-invoicing-sequence"/>
         <field name="isInvoicingTimesheet" colSpan="3" showIf="isShowTimeSpent"/>

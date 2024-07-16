@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Invoice;
@@ -25,7 +43,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -266,7 +283,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
             invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
       } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-        invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+        invoiceTermsToPay =
+            invoiceTermService.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
 
       } else {
         return null;
@@ -284,27 +302,5 @@ public class ReconcileInvoiceTermComputationServiceImpl
         return invoiceTermsToPay;
       }
     }
-  }
-
-  protected List<InvoiceTerm> getInvoiceTermsFromMoveLine(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream()
-        .filter(it -> !it.getIsPaid())
-        .sorted(this::compareInvoiceTerm)
-        .collect(Collectors.toList());
-  }
-
-  protected int compareInvoiceTerm(InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2) {
-    LocalDate date1, date2;
-
-    if (invoiceTerm1.getEstimatedPaymentDate() != null
-        && invoiceTerm2.getEstimatedPaymentDate() != null) {
-      date1 = invoiceTerm1.getEstimatedPaymentDate();
-      date2 = invoiceTerm2.getEstimatedPaymentDate();
-    } else {
-      date1 = invoiceTerm1.getDueDate();
-      date2 = invoiceTerm2.getDueDate();
-    }
-
-    return date1.compareTo(date2);
   }
 }

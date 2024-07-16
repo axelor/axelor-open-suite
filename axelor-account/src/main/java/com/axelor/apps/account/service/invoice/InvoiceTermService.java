@@ -288,4 +288,13 @@ public interface InvoiceTermService {
       BigDecimal amountToPay,
       BigDecimal currencyRate,
       Company company);
+
+  void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException;
+
+  void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException;
+
+  List<InvoiceTerm> getInvoiceTermsFromMoveLine(List<InvoiceTerm> invoiceTermList);
+
+  void updateInvoiceTermsAmountRemainingWithoutPayment(Reconcile reconcile, MoveLine moveLine)
+      throws AxelorException;
 }

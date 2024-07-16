@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
@@ -51,6 +51,8 @@
     <many-to-one name="currentInvoicePeriod"
       ref="com.axelor.apps.contract.db.InvoicePeriod" title="Current invoice period"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="Trading name"/>
 
     <one-to-one name="currentContractVersion"
       ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"

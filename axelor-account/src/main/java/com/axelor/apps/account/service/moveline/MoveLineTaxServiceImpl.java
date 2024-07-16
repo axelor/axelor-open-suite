@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -50,6 +51,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -267,12 +270,29 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
       Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
       Set<TaxLine> sourceTaxLineSet = moveLine.getSourceTaxLineSet();
+      if (ObjectUtils.isEmpty(sourceTaxLineSet)
+          && Objects.equals(
+              AccountTypeRepository.TYPE_TAX,
+              Optional.of(moveLine)
+                  .map(MoveLine::getAccount)
+                  .map(Account::getAccountType)
+                  .map(AccountType::getTechnicalTypeSelect)
+                  .orElse(""))) {
+        sourceTaxLineSet =
+            ObjectUtils.isEmpty(moveLine.getTaxLineBeforeReverseSet())
+                ? moveLine.getTaxLineSet()
+                : moveLine.getTaxLineBeforeReverseSet();
+      }
       if (CollectionUtils.isNotEmpty(sourceTaxLineSet)) {
         moveLine.setCredit(BigDecimal.ZERO);
         moveLine.setDebit(BigDecimal.ZERO);
         for (TaxLine sourceTaxLine : sourceTaxLineSet) {
           String sourceTaxLineKey =
-              String.format("%s%s", moveLine.getAccount().getCode(), sourceTaxLine.getId());
+              String.format(
+                  "%s%s %d",
+                  moveLine.getAccount().getCode(),
+                  sourceTaxLine.getId(),
+                  moveLine.getVatSystemSelect());
           map.put(sourceTaxLineKey, moveLine);
         }
         moveLineItr.remove();
@@ -304,7 +324,9 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             || accountType.equals(AccountTypeRepository.TYPE_INCOME)
             || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
 
-    return accountTypeCondition && !moveLine.getIsNonDeductibleTax();
+    return accountTypeCondition
+        && !moveLine.getIsNonDeductibleTax()
+        && !ObjectUtils.isEmpty(moveLine.getTaxLineSet());
   }
 
   @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
@@ -182,7 +182,7 @@
             <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
               showTitle="false">
               <viewer depends="$partnerLanguage">
-                <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
+                <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
               </viewer>
             </field>
             <field name="$viewerTag" showTitle="false" showIf="product != null"
@@ -780,6 +780,11 @@
       expr="eval: __parent__?.currency?.numberOfDecimals"/>
   </action-record>
 
+  <action-record name="action-sale-order-line-record-set-business-project"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="project" expr="eval: __parent__.project"/>
+  </action-record>
+
   <!-- ACTION METHOD -->
 
   <action-method name="action-sale-order-line-method-compute-pricing-scale">
@@ -979,15 +984,15 @@
 
   <action-attrs name="action-sale-order-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.clientPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="__parent__"/>
+      expr="eval: __parent__?.clientPartner?.localization?.language == __user__.localization?.language"
+      if="__parent__ &amp;&amp; __parent__.clientPartner &amp;&amp; __parent__.clientPartner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: __parent__?.clientPartner?.localization?.language?.code?.toUpperCase()"
       if="__parent__"/>
 
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: saleOrder?.clientPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="saleOrder"/>
+      expr="eval: saleOrder?.clientPartner?.localization?.language == __user__.localization?.language"
+      if="saleOrder &amp;&amp; saleOrder.clientPartner &amp;&amp; saleOrder.clientPartner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: saleOrder?.clientPartner?.localization?.language?.code?.toUpperCase()"
       if="saleOrder"/>
@@ -1059,6 +1064,7 @@
     <action name="action-sale-order-line-record-init-dummy-fields"/>
     <action name="action-sale-order-line-attrs-onnew-focus"/>
     <action name="action-sale-order-line-record-non-negotiable"/>
+    <action name="action-sale-order-line-record-set-business-project"/>
   </action-group>
 
   <action-attrs name="action-sale-order-line-attrs-onnew-focus">
