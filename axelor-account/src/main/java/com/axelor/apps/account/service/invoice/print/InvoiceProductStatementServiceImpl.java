@@ -155,7 +155,8 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
   }
 
   protected Set<String> getTypesList(InvoiceProductStatement invoiceProductStatement) {
-    return Stream.of(invoiceProductStatement.getTypeList().trim().split(", "))
+    return Stream.of(invoiceProductStatement.getTypeList().trim().split(","))
+        .map(String::trim)
         .collect(Collectors.toSet());
   }
 
