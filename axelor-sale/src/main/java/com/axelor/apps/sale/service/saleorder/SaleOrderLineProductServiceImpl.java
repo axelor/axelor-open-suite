@@ -89,6 +89,9 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.putAll(
         saleOrderLineComplementaryProductService.fillComplementaryProductList(saleOrderLine));
     saleOrderLineMap.putAll(translateProductNameAndDescription(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        saleOrderLineComplementaryProductService.setIsComplementaryProductsUnhandledYet(
+            saleOrderLine));
 
     return saleOrderLineMap;
   }
