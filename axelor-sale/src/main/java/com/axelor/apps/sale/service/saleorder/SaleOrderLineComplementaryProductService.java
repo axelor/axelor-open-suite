@@ -28,4 +28,6 @@ public interface SaleOrderLineComplementaryProductService {
    * @param saleOrderLine
    */
   Map<String, Object> fillComplementaryProductList(SaleOrderLine saleOrderLine);
+
+  Map<String, Object> setIsComplementaryProductsUnhandledYet(SaleOrderLine saleOrderLine);
 }

@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
@@ -253,5 +254,14 @@ public class SaleOrderLineController {
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).compute(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
+  }
+
+  public void selectedComplementaryProductListOnChange(
+      ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    response.setValues(
+        Beans.get(SaleOrderLineComplementaryProductService.class)
+            .setIsComplementaryProductsUnhandledYet(saleOrderLine));
   }
 }

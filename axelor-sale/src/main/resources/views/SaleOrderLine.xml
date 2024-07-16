@@ -360,7 +360,7 @@
           grid-view="complementary-product-selected-grid"
           form-view="complementary-product-selected-form" colSpan="12" canView="false"
           canEdit="false" canRemove="false" canNew="false" canSelect="false"
-          onChange="action-sale-order-line-record-complementary-products-to-handle" hidden="true"
+          onChange="action-sale-order-line-method-complementary-product-list-onchange" hidden="true"
           showIf="selectedComplementaryProductList != null &amp;&amp; selectedComplementaryProductList.length &gt; 0"/>
         <panel name="descriptionPanel" title="Description" colSpan="12"
           readonlyIf="$isReadOnly !== false">
@@ -649,7 +649,6 @@
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
     <action name="action-sale-order-line-method-get-product-information"/>
-    <!--action name="action-sale-order-line-record-complementary-products-to-handle"/> <!-to be removed -->
 
     <action name="action-sale-order-line-method-fill-max-discount"/> <!-- dummy -->
     <action name="action-method-sale-order-line-available-and-allocated-stock"/> <!-- dummy -->
@@ -678,7 +677,6 @@
     <action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     <!-- name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" if="__config__.app.isApp('supplychain')
       &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/ --> <!-- to be removed -->
-    <!--action name="action-sale-order-line-record-complementary-products-to-handle"/ --> <!-- to be removed -->
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-unit-onchange">
@@ -732,12 +730,6 @@
   <action-record name="action-sale-order-line-record-reset-is-hide-unit-amounts"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="isHideUnitAmounts" expr="eval: false"/>
-  </action-record>
-
-  <action-record name="action-sale-order-line-record-complementary-products-to-handle"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="isComplementaryProductsUnhandledYet" expr="eval: true"
-      if="product != null &amp;&amp; product.complementaryProductList != null &amp;&amp; !product.complementaryProductList.isEmpty()"/>
   </action-record>
 
   <action-record
@@ -1051,6 +1043,12 @@
   <action-method name="action-sale-order-line-method-discount-amount-onchange">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="discountAmountOnChange"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-complementary-product-list-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="selectedComplementaryProductListOnChange"/>
   </action-method>
 
 </object-views>

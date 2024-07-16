@@ -8,6 +8,4 @@ public interface SaleOrderLineProductSupplychainService {
   Map<String, Object> getProductionInformation(SaleOrderLine saleOrderLine);
 
   Map<String, Object> setSupplierPartnerDefault(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  Map<String, Object> setIsComplementaryProductsUnhandledYet(SaleOrderLine saleOrderLine);
 }
