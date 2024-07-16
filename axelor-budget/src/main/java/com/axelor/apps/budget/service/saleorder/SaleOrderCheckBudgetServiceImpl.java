@@ -1,6 +1,5 @@
 package com.axelor.apps.budget.service.saleorder;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.google.inject.Inject;
@@ -16,13 +15,13 @@ public class SaleOrderCheckBudgetServiceImpl implements SaleOrderCheckBudgetServ
   }
 
   @Override
-  public String checkBudgetBeforeFinalize(SaleOrder saleOrder) throws AxelorException {
+  public String checkBudgetBeforeFinalize(SaleOrder saleOrder) {
     if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
       if (saleOrderBudgetService.isBudgetInLines(saleOrder)) {
         String budgetExceedAlert = saleOrderBudgetService.getBudgetExceedAlert(saleOrder);
-        return BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert);
+        return BudgetControllerTool.getVerifyBudgetExceedAlert(budgetExceedAlert);
       } else {
-        return BudgetControllerTool.verifyMissingBudget();
+        return BudgetControllerTool.getVerifyMissingBudgetAlert();
       }
     }
     return "";

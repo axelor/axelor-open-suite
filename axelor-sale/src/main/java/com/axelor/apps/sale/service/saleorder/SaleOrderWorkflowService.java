@@ -20,7 +20,6 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
 
@@ -28,16 +27,10 @@ public interface SaleOrderWorkflowService {
 
   Partner validateCustomer(SaleOrder saleOrder);
 
-  String getSequence(Company company, SaleOrder saleOrder) throws AxelorException;
-
   void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException;
 
-  void finalizeQuotation(SaleOrder saleOrder) throws AxelorException;
-
   void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
-
-  void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
 
   void completeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

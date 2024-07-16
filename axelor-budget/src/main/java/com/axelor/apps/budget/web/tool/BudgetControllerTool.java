@@ -41,18 +41,21 @@ public class BudgetControllerTool {
     }
   }
 
-  public static String verifyMissingBudget() throws AxelorException {
+  public static String getVerifyMissingBudgetAlert() {
     Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
-    if (isError != null) {
-      if (isError) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
-      } else {
-        return I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND);
-      }
+    if (isError != null && !isError) {
+      return I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND);
     }
     return "";
+  }
+
+  public static void getVerifyMissingBudgetError() throws AxelorException {
+    Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
+    if (isError != null && isError) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
+    }
   }
 
   public static void verifyBudgetExceed(
@@ -72,7 +75,22 @@ public class BudgetControllerTool {
     }
   }
 
-  public static String verifyBudgetExceed(String budgetExceedAlert) throws AxelorException {
+  public static String getVerifyBudgetExceedAlert(String budgetExceedAlert) {
+    if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
+      Boolean isError = Beans.get(AppBudgetService.class).isBudgetExceedValuesError(true);
+      if (isError != null) {
+        budgetExceedAlert =
+            Beans.get(BudgetToolsService.class)
+                .getBudgetExceedMessage(budgetExceedAlert, true, isError);
+        if (!isError) {
+          return I18n.get(budgetExceedAlert);
+        }
+      }
+    }
+    return "";
+  }
+
+  public static void getVerifyBudgetExceedError(String budgetExceedAlert) throws AxelorException {
     if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
       Boolean isError = Beans.get(AppBudgetService.class).isBudgetExceedValuesError(true);
       if (isError != null) {
@@ -82,11 +100,8 @@ public class BudgetControllerTool {
         if (isError) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(budgetExceedAlert));
-        } else {
-          return I18n.get(budgetExceedAlert);
         }
       }
     }
-    return "";
   }
 }

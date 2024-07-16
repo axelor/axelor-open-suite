@@ -189,9 +189,7 @@ public class SaleOrderController {
     }
   }
 
-  @ErrorException
-  public void validateFinalize(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateFinalize(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrderCheckBudgetService saleOrderBudgetService =
         Beans.get(SaleOrderCheckBudgetService.class);
