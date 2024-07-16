@@ -42,9 +42,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -210,28 +208,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       }
     }
     return Duration.ofSeconds(totalSecDuration);
-  }
-
-  @Override
-  public Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList) {
-    Map<Project, BigDecimal> projectTimeSpentMap = new HashMap<>();
-
-    if (timesheetLineList != null) {
-
-      for (TimesheetLine timesheetLine : timesheetLineList) {
-        Project project = timesheetLine.getProject();
-        BigDecimal hoursDuration = timesheetLine.getHoursDuration();
-
-        if (project != null) {
-          if (projectTimeSpentMap.containsKey(project)) {
-            hoursDuration = hoursDuration.add(projectTimeSpentMap.get(project));
-          }
-          projectTimeSpentMap.put(project, hoursDuration);
-        }
-      }
-    }
-
-    return projectTimeSpentMap;
   }
 
   public void checkDailyLimit(

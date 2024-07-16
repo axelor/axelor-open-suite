@@ -30,7 +30,6 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
@@ -102,10 +101,6 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Transactional(rollbackOn = Exception.class)
   public void validate(Timesheet timesheet) throws AxelorException {
     timesheetWorkflowCheckService.validateCheck(timesheet);
-
-    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
-      Beans.get(TimesheetTimeComputationService.class).computeTimeSpent(timesheet);
-    }
 
     timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
