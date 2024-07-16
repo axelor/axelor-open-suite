@@ -1578,7 +1578,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     BigDecimal invoiceCurrencyRate =
-        BigDecimal.ZERO.equals(currencyRate)
+        BigDecimal.ZERO.compareTo(currencyRate) == 0
             ? companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP)
             : currencyRate;
 
