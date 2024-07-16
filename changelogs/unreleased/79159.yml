@@ -1,3 +1,0 @@
----
-title: "Project : Remove unused code related to timeSpent field as it is no longer used"
-module: axelor-project
