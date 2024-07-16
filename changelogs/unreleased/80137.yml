@@ -1,0 +1,3 @@
+---
+title: "Opportunity status: fixed data init to use french status name instead of english."
+module: axelor-crm
