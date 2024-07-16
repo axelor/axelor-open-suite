@@ -59,6 +59,7 @@ public class SupplyChainConvertLeadWizardServiceImpl implements BaseConvertLeadW
       partner.setInPaymentMode(inPaymentMode);
       partner.setOutPaymentMode(outPaymentMode);
       partner.setPaymentCondition(paymentCondition);
+      partner.setOutPaymentCondition(paymentCondition);
       partner.setPayNoticeSendingMethodSelect(PartnerRepository.PAYMENT_NOTICE_EMAIL);
 
       if (!partner.getIsContact()) {
