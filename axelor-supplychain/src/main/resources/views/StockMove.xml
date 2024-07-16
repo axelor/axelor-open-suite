@@ -199,16 +199,20 @@
       editable="true" showIf="operationSelect == 2" form-view="partial-invoice-stock-move-line-form">
       <field name="productCode" readonly="true"/>
       <field name="productName" readonly="true"/>
-      <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"/>
-      <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"/>
-      <field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"/>
+      <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"
+        x-scale="$nbDecimalDigitForQty"/>
+      <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"
+        x-scale="$nbDecimalDigitForQty"/>
+      <field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
         readonlyIf="invoiceAll || isSubline" min="0"
-        validIf="$number(remainingQty) >= $number(qtyToInvoice)"/>
+        validIf="$number(remainingQty) >= $number(qtyToInvoice)" x-scale="$nbDecimalDigitForQty"/>
       <field name="invoiceAll" title="Invoice all" type="boolean"
         onChange="action-attrs-stock-move-line-invoicing-wizard-fill-qty"/>
       <field name="isSubline" hidden="true"/>
       <field name="stockMoveLineId" hidden="true"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel-related>
     <panel name="actionPanel">
       <button name="createInvoiceBtn" title="Generate the invoice"
