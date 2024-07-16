@@ -278,14 +278,6 @@ public interface InvoiceTermService {
 
   void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
 
-  BigDecimal adjustAmountInCompanyCurrency(
-      List<InvoiceTerm> invoiceTermList,
-      BigDecimal companyAmountRemaining,
-      BigDecimal amountToPayInCompanyCurrency,
-      BigDecimal amountToPay,
-      BigDecimal currencyRate,
-      Company company);
-
   void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException;
 
   void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException;
