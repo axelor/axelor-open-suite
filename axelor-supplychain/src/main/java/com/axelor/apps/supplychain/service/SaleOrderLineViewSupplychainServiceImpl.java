@@ -4,6 +4,7 @@ import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -93,14 +94,14 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
             .map(Product::getProductTypeSelect)
             .orElse("");
     boolean hidePanels = false;
-    if (productTypeSelect.equals("storable")) {
+    if (productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
       hidePanels =
           Optional.ofNullable(AuthUtils.getUser().getActiveCompany())
               .map(Company::getSupplyChainConfig)
               .map(SupplyChainConfig::getHasOutSmForStorableProduct)
               .orElse(false);
     }
-    if (productTypeSelect.equals("service")) {
+    if (productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
       hidePanels =
           Optional.ofNullable(AuthUtils.getUser().getActiveCompany())
               .map(Company::getSupplyChainConfig)
@@ -114,7 +115,12 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
   protected Map<String, Map<String, Object>> hideDeliveredQty(SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     int statusSelect = saleOrder.getStatusSelect();
-    attrs.put("deliveredQty", Map.of(HIDDEN_ATTR, statusSelect == 1 || statusSelect == 2));
+    attrs.put(
+        "deliveredQty",
+        Map.of(
+            HIDDEN_ATTR,
+            statusSelect == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+                || statusSelect == SaleOrderRepository.STATUS_FINALIZED_QUOTATION));
     return attrs;
   }
 
@@ -132,7 +138,7 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
             HIDDEN_ATTR,
             saleOrderLine.getId() == null
                 || statusSelect != SaleOrderRepository.STATUS_ORDER_CONFIRMED
-                || productTypeSelect.equals("service")));
+                || productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_SERVICE)));
     return attrs;
   }
 
@@ -149,7 +155,7 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
         Map.of(
             HIDDEN_ATTR,
             statusSelect != SaleOrderRepository.STATUS_ORDER_CONFIRMED
-                || productTypeSelect.equals("service")));
+                || productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_SERVICE)));
     return attrs;
   }
 

@@ -50,17 +50,11 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
   public Map<String, Map<String, Object>> hidePriceDiscounted(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    Boolean inAti = saleOrder.getInAti();
     BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
-    if (inAti) {
-      attrs.put(
-          "priceDiscounted",
-          Map.of(HIDDEN_ATTR, priceDiscounted.compareTo(saleOrderLine.getInTaxPrice()) == 0));
-    } else {
-      attrs.put(
-          "priceDiscounted",
-          Map.of(HIDDEN_ATTR, priceDiscounted.compareTo(saleOrderLine.getPrice()) == 0));
-    }
+    BigDecimal saleOrderLinePrice =
+        saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+    attrs.put(
+        "priceDiscounted", Map.of(HIDDEN_ATTR, priceDiscounted.compareTo(saleOrderLinePrice) == 0));
     return attrs;
   }
 
@@ -77,19 +71,25 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
   protected Map<String, Map<String, Object>> hideFieldsForClient() {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     Group group = AuthUtils.getUser().getGroup();
-    Boolean isClient = group != null && group.getIsClient();
+    boolean isClient = group != null && group.getIsClient();
     attrs.put("marginPanel", Map.of(HIDDEN_ATTR, isClient));
     return attrs;
   }
 
   protected Map<String, Map<String, Object>> hideDifferentLanguageMessage(SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    Language userLanguage = AuthUtils.getUser().getLocalization().getLanguage();
+    Language userLanguage =
+        Optional.ofNullable(AuthUtils.getUser().getLocalization())
+            .map(Localization::getLanguage)
+            .orElse(null);
     Language clientLanguage =
         Optional.ofNullable(saleOrder.getClientPartner())
             .map(Partner::getLocalization)
             .map(Localization::getLanguage)
             .orElse(null);
+    if (userLanguage == null || clientLanguage == null) {
+      return attrs;
+    }
     boolean hideMessage = userLanguage.equals(clientLanguage);
     attrs.put("$differentLanguageMessage", Map.of(HIDDEN_ATTR, hideMessage));
     return attrs;
