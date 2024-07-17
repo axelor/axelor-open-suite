@@ -70,8 +70,6 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       MassStockMovableProductLocationService locationService)
       throws AxelorException {
 
-    processingService.preRealize(movableProduct);
-
     var massStockMove = movableProduct.getMassStockMove();
     var fromStockLocation = locationService.getFromStockLocation(movableProduct);
     var toStockLocation = locationService.getToStockLocation(movableProduct);
@@ -79,6 +77,8 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
 
     if (movableProduct.getStockMoveLine() == null) {
       checkQty(movableProduct, fromStockLocation);
+
+      processingService.preRealize(movableProduct);
 
       var stockMove =
           stockMoveService.createStockMove(

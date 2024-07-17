@@ -38,6 +38,7 @@
         readonly="true"/>
       <field name="unit" readonly="true"/>
       <field name="pickedQty"/>
+      <field name="stockMoveLine" showIf="stockMoveLine != null"/>
     </panel>
   </form>
 

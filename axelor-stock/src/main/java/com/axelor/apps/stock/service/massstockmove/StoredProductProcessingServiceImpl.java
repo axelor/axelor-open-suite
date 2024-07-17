@@ -30,13 +30,7 @@ public class StoredProductProcessingServiceImpl
   }
 
   @Override
-  public void preRealize(StoredProduct movableProduct) {
-    // NOTHING
-
-  }
-
-  @Override
-  public void postRealize(StoredProduct movableProduct) throws AxelorException {
+  public void preRealize(StoredProduct movableProduct) throws AxelorException {
     // Creating a new storedProduct line if not storing everything
     var currentQty =
         massStockMovableProductQuantityService.getCurrentAvailableQty(
@@ -48,5 +42,10 @@ public class StoredProductProcessingServiceImpl
       newStoredProduct.setStockMoveLine(null);
       storedProductRepository.save(newStoredProduct);
     }
+  }
+
+  @Override
+  public void postRealize(StoredProduct movableProduct) throws AxelorException {
+    // Nothing
   }
 }
