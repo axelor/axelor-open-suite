@@ -181,12 +181,5 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
           I18n.get(StockExceptionMessage.STOCK_MOVE_MASS_MOVED_QUANTITY_IS_ZERO),
           movableProduct.getProduct().getFullName());
     }
-
-    if (movableProduct.getMovedQty().compareTo(movableProduct.getCurrentQty()) > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(StockExceptionMessage.STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY),
-          movableProduct.getProduct().getFullName());
-    }
   }
 }
