@@ -74,6 +74,13 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     return attrs;
   }
 
+  @Override
+  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    attrs.putAll(hideContactPartner(saleOrder));
+    return attrs;
+  }
+
   protected Map<String, Map<String, Object>> collapseSpecificSettings() {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     attrs.put("specificSettings", Map.of("collapse", true));

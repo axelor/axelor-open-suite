@@ -1442,6 +1442,7 @@
   </action-group>
 
   <action-group name="action-sale-group-onchange-company">
+    <action name="action-sale-order-method-company-onchange"/>
     <action name="action-sale-order-record-company-configuration"/>
     <action name="action-supplychain-sale-order-method-get-stock-location"
       if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
@@ -2055,6 +2056,10 @@
 
   <action-method name="action-sale-order-method-client-partner-onchange">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="clientPartnerOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-company-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="companyOnChange"/>
   </action-method>
 
   <action-validate name="action-sale-order-validate-check-on-confirm">

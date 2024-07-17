@@ -792,4 +792,12 @@ public class SaleOrderController {
     response.setValues(saleOrderMap);
     response.setAttrs(Beans.get(SaleOrderViewService.class).getPartnerOnChangeAttrs(saleOrder));
   }
+
+  public void companyOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Map<String, Object> saleOrderMap = new HashMap<>();
+    response.setValues(saleOrderMap);
+    response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
+  }
 }
