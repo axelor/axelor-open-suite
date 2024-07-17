@@ -394,8 +394,6 @@ public final class AccountExceptionMessage {
       "The currency is missing on the account move %s" /*)*/;
   public static final String MOVE_13 = /*$$(*/
       "The journal %s is in the 'journals to close' of the period %s, please remove it." /*)*/;
-  public static final String MOVE_15 = /*$$(*/
-      "There is no analytic line on the move line %s." /*)*/;
   public static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
   public static final String MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL = /*$$(*/

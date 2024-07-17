@@ -3336,7 +3336,6 @@
 "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually.",,,
 "There is at least one advance payment or payment that can be imputed to this invoice.",,,
 "There is no account chart defined. Please define a chart from the account configuration menu or import a default one using the account charts available below and click on the button \'Import\'.",,,
-"There is no analytic line on the move line %s.",,,
 "There is no configured sequence for final reconcile group","There is no configured sequence for final lettering",,
 "There is no configured sequence for temporary reconcile group","There is no configured sequence for temporary lettering",,
 "There is no fiscal year and periods defined. Please enter below the fiscal year dates (included-included) and the periods duration and click on the button \'Generate\' to create them automatically.",,,

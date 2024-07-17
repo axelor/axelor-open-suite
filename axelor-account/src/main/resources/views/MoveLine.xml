@@ -175,7 +175,7 @@
       onChange="action-move-line-method-analytic-distribution-template-onchange"
       onSelect="action-move-line-method-analytic-distribution-template-onselect"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
-      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; (account.analyticDistributionAuthorized &amp;&amp; account.company.accountConfig.analyticDistributionTypeSelect != 3) &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"
+      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"
       width="80"/>
     <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
