@@ -354,14 +354,22 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   @Override
   public void checkAccountAnalytic(Move move, MoveLine moveLine, Account account)
       throws AxelorException {
-    if (moveLine.getAnalyticDistributionTemplate() == null
-        && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-        && account.getAnalyticDistributionAuthorized()
-        && account.getAnalyticDistributionRequiredOnMoveLines()) {
+    if (account.getAnalyticDistributionAuthorized()
+        && account.getAnalyticDistributionRequiredOnMoveLines()
+        && moveLine.getAnalyticDistributionTemplate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.MOVE_10),
           account.getName(),
+          moveLine.getName());
+    }
+
+    if (account.getAnalyticDistributionAuthorized()
+        && account.getAnalyticDistributionRequiredOnMoveLines()
+        && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.MOVE_15),
           moveLine.getName());
     }
 

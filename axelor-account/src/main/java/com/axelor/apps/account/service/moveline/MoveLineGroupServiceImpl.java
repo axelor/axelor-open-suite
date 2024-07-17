@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -41,6 +43,7 @@ import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.apache.commons.collections.CollectionUtils;
@@ -337,9 +340,21 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   @Override
   public Map<String, Map<String, Object>> getAccountOnChangeAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException {
-    Map<String, Map<String, Object>> attrsMap =
-        new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
+    Map<String, Map<String, Object>> attrsMap;
 
+    Integer analyticDistributionTypeSelect =
+        Optional.of(move)
+            .map(Move::getCompany)
+            .map(Company::getAccountConfig)
+            .map(AccountConfig::getAnalyticDistributionTypeSelect)
+            .orElse(null);
+    if (analyticDistributionTypeSelect != null
+        && analyticDistributionTypeSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+      attrsMap = new HashMap<>();
+    } else {
+      attrsMap =
+          new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
+    }
     moveLineAttrsService.addPartnerReadonly(moveLine, move, attrsMap);
     analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
     moveLineAttrsService.changeFocus(move, moveLine, attrsMap);
