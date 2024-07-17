@@ -140,9 +140,8 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
 
   protected Map<String, Object> getContactPartner(SaleOrder saleOrder) {
     Map<String, Object> values = new HashMap<>();
-
     Partner clientPartner = saleOrder.getClientPartner();
-
+    saleOrder.setContactPartner(null);
     if (clientPartner != null) {
       Set<Partner> contactPartnerSet = clientPartner.getContactPartnerSet();
       if (CollectionUtils.isNotEmpty(contactPartnerSet) && contactPartnerSet.size() == 1) {
