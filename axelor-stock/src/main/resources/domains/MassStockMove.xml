@@ -6,6 +6,14 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="MassStockMove">
+    <string name="fullName" transient="true" namecolumn="true">
+      <![CDATA[
+        if (company != null && cartStockLocation != null) {
+          return company.getName() + "-" + cartStockLocation.getName();
+        }
+        return "";
+	  	]]>
+    </string>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
     <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
