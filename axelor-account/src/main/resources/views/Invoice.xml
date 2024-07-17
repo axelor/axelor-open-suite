@@ -624,7 +624,9 @@
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
-        <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
+        <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
+          field="invoiceLineTaxList"
+          onChange="action-invoice-method-compute,action-invoice-method-generate-invoice-terms"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"

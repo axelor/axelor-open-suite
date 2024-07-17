@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.invoice;
+package com.axelor.apps.account.service.invoice.tax;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineTaxAttrsService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -29,10 +30,14 @@ import java.util.Map;
 public class InvoiceLineTaxGroupServiceImpl implements InvoiceLineTaxGroupService {
 
   protected InvoiceLineTaxAttrsService invoiceLineTaxAttrsService;
+  protected InvoiceLineTaxRecordService invoiceLineTaxRecordService;
 
   @Inject
-  public InvoiceLineTaxGroupServiceImpl(InvoiceLineTaxAttrsService invoiceLineTaxAttrsService) {
+  public InvoiceLineTaxGroupServiceImpl(
+      InvoiceLineTaxAttrsService invoiceLineTaxAttrsService,
+      InvoiceLineTaxRecordService invoiceLineTaxRecordService) {
     this.invoiceLineTaxAttrsService = invoiceLineTaxAttrsService;
+    this.invoiceLineTaxRecordService = invoiceLineTaxRecordService;
   }
 
   @Override
@@ -47,10 +52,19 @@ public class InvoiceLineTaxGroupServiceImpl implements InvoiceLineTaxGroupServic
   }
 
   @Override
-  public Map<String, Object> recomputeAmounts(InvoiceLineTax invoiceLineTax) {
+  public Map<String, Object> recomputeAmounts(InvoiceLineTax invoiceLineTax, Invoice invoice)
+      throws AxelorException {
     Map<String, Object> values = new HashMap<>();
 
-    // Need to recompute all fields of invoiceLineTax
+    invoiceLineTax.setInTaxTotal(invoiceLineTaxRecordService.computeInTaxTotal(invoiceLineTax));
+    invoiceLineTax.setCompanyTaxTotal(
+        invoiceLineTaxRecordService.computeCompanyTaxTotal(invoiceLineTax, invoice));
+    invoiceLineTax.setCompanyInTaxTotal(
+        invoiceLineTaxRecordService.computeCompanyInTaxTotal(invoiceLineTax));
+
+    values.put("inTaxTotal", invoiceLineTax.getInTaxTotal());
+    values.put("companyTaxTotal", invoiceLineTax.getCompanyTaxTotal());
+    values.put("companyInTaxTotal", invoiceLineTax.getCompanyInTaxTotal());
 
     return values;
   }

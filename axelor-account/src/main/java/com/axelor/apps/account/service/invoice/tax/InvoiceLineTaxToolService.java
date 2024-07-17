@@ -16,16 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.invoice;
+package com.axelor.apps.account.service.invoice.tax;
 
-import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.InvoiceLineTax;
-import java.util.Map;
+import com.axelor.apps.base.db.Company;
+import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
-public interface InvoiceLineTaxGroupService {
+public interface InvoiceLineTaxToolService {
+  List<Pair<InvoiceLineTax, Account>> getInvoiceLineTaxAccountPair(
+      List<InvoiceLineTax> invoiceLineTaxList, Company company);
 
-  void setInvoiceLineTaxScale(
-      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
-
-  Map<String, Object> recomputeAmounts(InvoiceLineTax invoiceLineTax);
+  boolean isManageByAmount(InvoiceLineTax invoiceLineTax);
 }
