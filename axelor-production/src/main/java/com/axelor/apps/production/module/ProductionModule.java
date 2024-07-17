@@ -77,6 +77,7 @@ import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
@@ -183,6 +184,7 @@ import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
@@ -292,5 +294,7 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineProductProductionServiceImpl.class);
     bind(SaleOrderLineProductSupplychainServiceImpl.class)
         .to(SaleOrderLineProductProductionServiceImpl.class);
+    bind(SaleOrderLineViewSupplychainServiceImpl.class)
+        .to(SaleOrderLineViewProductionServiceImpl.class);
   }
 }

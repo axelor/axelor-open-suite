@@ -101,6 +101,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
@@ -121,6 +123,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServic
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
@@ -223,5 +227,7 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderProductPrintingService.class).to(SaleOrderProductPrintingServiceImpl.class);
     bind(SaleOrderCheckService.class).to(SaleOrderCheckServiceImpl.class);
     bind(SaleOrderFinalizeService.class).to(SaleOrderFinalizeServiceImpl.class);
+    bind(SaleOrderLineViewService.class).to(SaleOrderLineViewServiceImpl.class);
+    bind(SaleOrderLineDummyService.class).to(SaleOrderLineDummyServiceImpl.class);
   }
 }
