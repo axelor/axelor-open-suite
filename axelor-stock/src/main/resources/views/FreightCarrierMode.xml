@@ -21,9 +21,9 @@
       <field name="shipmentMode" form-view="shipment-mode-form"
         grid-view="shipment-mode-freight-carrier-mode-grid"/>
     </panel>
-    <panel name="carrierPricingPanel" title="Carrier pricings" colSpan="12">
-      <field name="carrierPricingSet" colSpan="12" canSelect="true"/>
-    </panel>
+    <panel-related field="freightCarrierPricingSet"
+      form-view="freight-carrier-pricing-form" grid-view="freight-carrier-pricing-grid" colSpan="12"
+      canSelect="true"/>
   </form>
 
   <grid name="freight-carrier-mode-shipment-mode-grid"

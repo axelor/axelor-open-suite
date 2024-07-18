@@ -163,7 +163,9 @@
     <option value="2">Inventory</option>
   </selection>
 
-
+  <selection name="base.pricing.type.select" id="stock.base.pricing.type.select">
+    <option value="FreightCarrierPricing">Stock.FreightCarrierPricing</option>
+  </selection>
 
   <selection name="message.related.to.select" id="stockRule.message.related.to.select">
     <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
