@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem name="stock-root" title="Stock management" order="-700"
     if="__config__.app.isApp('stock')" icon="fa-cubes" icon-background="#b6473f"/>
@@ -336,6 +336,16 @@
     model="com.axelor.apps.stock.db.StockBatch">
     <view type="grid" name="stock-batch-grid"/>
     <view type="form" name="stock-batch-form"/>
+  </action-view>
+
+
+  <menuitem name="stock-root-mass-moves" parent="stock-root" title="Mass moves"
+    action="stock.root.mass.moves" order="350"
+    if="__config__.app.getApp('stock')?.isMassStockMoveManaged"/>
+  <action-view name="stock.root.mass.moves" title="Mass move"
+    model="com.axelor.apps.stock.db.MassStockMove">
+    <view type="grid" name="mass-stock-move-grid"/>
+    <view type="form" name="mass-stock-move-form"/>
   </action-view>
 
 </object-views>

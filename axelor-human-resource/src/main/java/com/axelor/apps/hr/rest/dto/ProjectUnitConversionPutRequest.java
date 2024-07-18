@@ -19,11 +19,12 @@
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.utils.api.RequestPostStructure;
+import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 
 public class ProjectUnitConversionPutRequest extends RequestPostStructure {
   @NotNull protected Long startingUnitId;
-  @NotNull protected Long startingValue;
+  @NotNull protected BigDecimal startingValue;
   @NotNull protected Long destinationUnitId;
 
   public Long getStartingUnitId() {
@@ -34,11 +35,11 @@ public class ProjectUnitConversionPutRequest extends RequestPostStructure {
     this.startingUnitId = startingUnitId;
   }
 
-  public Long getStartingValue() {
+  public BigDecimal getStartingValue() {
     return startingValue;
   }
 
-  public void setStartingValue(Long startingValue) {
+  public void setStartingValue(BigDecimal startingValue) {
     this.startingValue = startingValue;
   }
 

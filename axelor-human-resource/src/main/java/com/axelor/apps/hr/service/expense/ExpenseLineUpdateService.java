@@ -26,6 +26,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.meta.db.MetaFile;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,7 +50,8 @@ public interface ExpenseLineUpdateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      Expense newExpense)
+      Expense newExpense,
+      ProjectTask projectTask)
       throws AxelorException;
 
   void updateGeneralExpenseLine(
@@ -64,7 +66,8 @@ public interface ExpenseLineUpdateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      Expense newExpense)
+      Expense newExpense,
+      ProjectTask projectTask)
       throws AxelorException;
 
   void updateKilometricExpenseLine(
@@ -81,6 +84,7 @@ public interface ExpenseLineUpdateService {
       Currency currency,
       Boolean toInvoice,
       Product expenseProduct,
-      Expense newExpense)
+      Expense newExpense,
+      ProjectTask projectTask)
       throws AxelorException;
 }

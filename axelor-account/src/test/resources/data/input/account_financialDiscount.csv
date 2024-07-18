@@ -1,0 +1,5 @@
+"importId";"name";"discountBaseSelect";"discountDelay";"discountRate";"legalNotice"
+1;"Escompte 2% à 10 jours (Base HT)";0;10;2;"Cette facture bénéficie d'un escompte de 2 % sur le montant HT en cas de paiement 10 jours avant la date d'échéance. "
+2;"Escompte 3% à 20 jours (Base HT)";0;20;3;"Cette facture bénéficie d'un escompte de 3 % sur le montant HT en cas de paiement 20 jours avant la date d'échéance. "
+100;"Escompte 2% à 10 jours (Base TTC)";1;10;2;"Cette facture bénéficie d'un escompte de 2 % sur le montant HT en cas de paiement 10 jours avant la date d'échéance. "
+101;"Escompte 3% à 20 jours (Base TTC)";1;20;3;"Cette facture bénéficie d'un escompte de 3 % sur le montant HT en cas de paiement 20 jours avant la date d'échéance. "

@@ -24,8 +24,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -35,18 +35,18 @@ public class ImportSaleOrder {
 
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
-  protected SaleOrderWorkflowService saleOrderWorkflowService;
+  protected SaleOrderFinalizeService saleOrderFinalizeService;
   protected SequenceService sequenceService;
 
   @Inject
   public ImportSaleOrder(
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
-      SaleOrderWorkflowService saleOrderWorkflowService,
+      SaleOrderFinalizeService saleOrderFinalizeService,
       SequenceService sequenceService) {
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
-    this.saleOrderWorkflowService = saleOrderWorkflowService;
+    this.saleOrderFinalizeService = saleOrderFinalizeService;
     this.sequenceService = sequenceService;
   }
 
@@ -65,7 +65,7 @@ public class ImportSaleOrder {
     } else {
       // Setting the status to draft or else we can't finalize it.
       saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
-      saleOrderWorkflowService.finalizeQuotation(saleOrder);
+      saleOrderFinalizeService.finalizeQuotation(saleOrder);
     }
 
     return saleOrder;

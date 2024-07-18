@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.1.xsd">
 
   <input file="account_accountType.csv" separator=";"
     type="com.axelor.apps.account.db.AccountType"/>
@@ -55,7 +55,6 @@
     <bind column="validAccounts" to="validAccountSet"
       search="self.importId in :validAccounts and self.company.importId = :company_importId"
       eval="validAccounts.split('\\|') as List"/>
-    <bind to="company" search="self.importId = :company_importId"/>
   </input>
 
   <input file="account_paymentMode.csv" separator=";"
@@ -290,9 +289,6 @@
   <input file="account_moveTemplate.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.apps.account.db.MoveTemplate"
     call="com.axelor.csv.script.ImportMoveTemplate:importMove">
-    <bind to="name" column="name"/>
-    <bind to="code" column="code"/>
-    <bind to="journal" column="journal" search="self.importId = :journal"/>
     <bind to="moveTemplateType" search="self.importId = :type"/>
   </input>
 
@@ -372,4 +368,13 @@
       search="self.importId = :accountConfig_importId"/>
   </input>
 
+  <input file="meta_metaTranslation.csv" separator=";"
+    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language"/>
+
+  <input file="account_bankDetails.csv" separator=";" search="self.importId = :importId"
+    update="true" type="com.axelor.apps.base.db.BankDetails">
+    <bind to="currency" column="currency_code" search="self.code=: currency_code"/>
+    <bind to="bankAccount" column="bankAccount_code" search="self.code = :bankAccount_code"/>
+    <bind to="journal" column="journal_code" search="self.code=:journal_code" if="journal_code"/>
+  </input>
 </csv-inputs>

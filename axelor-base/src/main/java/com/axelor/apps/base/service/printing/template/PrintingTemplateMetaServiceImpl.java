@@ -18,17 +18,15 @@
  */
 package com.axelor.apps.base.service.printing.template;
 
-import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.GridView;
-import com.axelor.rpc.Response;
 import com.axelor.web.ITranslation;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import net.fortuna.ical4j.util.Optional;
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaService {
 
@@ -42,30 +40,25 @@ public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaServ
   }
 
   @Override
-  public void addPrintButton(String model, Response response) {
-    var data = response.getData();
-    if (!printingTemplateService.hasActivePrintingTemplates(model)
-        || !isValidViewForToolBar(data)) {
+  public void addPrintButton(AbstractView view) {
+    if (!printingTemplateService.hasActivePrintingTemplates(view.getModel())
+        || !isValidViewForToolBar(view)) {
       return;
     }
-    try {
-      addButton(data);
-    } catch (IllegalAccessException e) {
-      TraceBackService.trace(e);
-    }
+    addButton(view);
   }
 
-  protected void addButton(Object data) throws IllegalAccessException {
+  protected void addButton(AbstractView view) {
 
-    if (data instanceof FormView) {
-      FormView form = (FormView) data;
+    if (view instanceof FormView) {
+      FormView form = (FormView) view;
       List<Button> toolbar = Optional.ofNullable(form.getToolbar()).orElse(new ArrayList<>());
       if (!hasPrintBtn(toolbar)) {
         toolbar.add(getPrintBtn(true));
       }
       form.setToolbar(toolbar);
-    } else if (data instanceof GridView) {
-      GridView grid = (GridView) data;
+    } else if (view instanceof GridView) {
+      GridView grid = (GridView) view;
       List<Button> toolbar = Optional.ofNullable(grid.getToolbar()).orElse(new ArrayList<>());
       if (!hasPrintBtn(toolbar)) {
         toolbar.add(getPrintBtn(false));
@@ -74,7 +67,7 @@ public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaServ
     }
   }
 
-  protected Button getPrintBtn(boolean isFormView) throws IllegalAccessException {
+  protected Button getPrintBtn(boolean isFormView) {
     Button printBtn = new Button();
     printBtn.setName(PRINT_BTN_NAME);
     printBtn.setOnClick("action-group-print-template");
@@ -82,7 +75,7 @@ public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaServ
     if (isFormView) {
       printBtn.setShowIf("id");
     }
-    FieldUtils.writeField(printBtn, "icon", "fa-print", true);
+    printBtn.setIcon("fa-print");
     return printBtn;
   }
 
@@ -90,7 +83,7 @@ public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaServ
     return toolbar.stream().map(Button::getName).anyMatch(PRINT_BTN_NAME::equals);
   }
 
-  protected boolean isValidViewForToolBar(Object object) {
+  protected boolean isValidViewForToolBar(AbstractView object) {
     var classes = List.of(FormView.class, GridView.class);
     return classes.stream().anyMatch(klass -> klass.isInstance(object));
   }

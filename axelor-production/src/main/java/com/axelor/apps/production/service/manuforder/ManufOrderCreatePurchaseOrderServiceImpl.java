@@ -32,6 +32,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -47,6 +48,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     implements ManufOrderCreatePurchaseOrderService {
 
   protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderCreateService purchaseOrderCreateService;
   protected StockConfigProductionService stockConfigProductionService;
   protected ManufOrderRepository manufOrderRepository;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
@@ -57,6 +59,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
   @Inject
   public ManufOrderCreatePurchaseOrderServiceImpl(
       PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
       StockConfigProductionService stockConfigProductionService,
       ManufOrderRepository manufOrderRepository,
       OperationOrderOutsourceService operationOrderOutsourceService,
@@ -64,6 +67,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
       AppBaseService appBaseService,
       AppProductionService appProductionService) {
     this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderCreateService = purchaseOrderCreateService;
     this.stockConfigProductionService = stockConfigProductionService;
     this.manufOrderRepository = manufOrderRepository;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
@@ -81,7 +85,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     List<PurchaseOrder> generatedPurchaseOrders = new ArrayList<>();
     for (Partner outsourcePartner : outsourcePartners) {
       PurchaseOrder purchaseOrder =
-          purchaseOrderService.createPurchaseOrder(
+          purchaseOrderCreateService.createPurchaseOrder(
               null,
               manufOrder.getCompany(),
               null,

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
     <extend target="/">
-      <attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
@@ -24,7 +23,7 @@
 
   <form name="sale-order-form-partner" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
-    onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
+    onNew="action-sale-order-method-onnew,action-group-partner-saleorder-onnew"
     onLoad="action-group-supplychain-saleorder-onload" onSave="action-supplychain-saleorder-onsave">
 
     <panel-include view="sale-order-form" from="axelor-sale"/>
@@ -44,8 +43,7 @@
 
   <form name="sale-order-form-client" id="supplychain-sale-order-form-client"
     title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
-    onNew="action-group-supplychain-saleorder-onnew"
-    onSave="save,action-sale-order-method-compute,save"
+    onNew="action-sale-order-method-onnew" onSave="save,action-sale-order-method-compute,save"
     onLoad="action-group-supplychain-saleorder-onload" width="large">
     <panel name="mainPanel" colSpan="4">
       <panel-include view="sale-order-form-client" from="axelor-sale"/>
@@ -57,7 +55,7 @@
     extension="true">
     <extend target="/">
       <attribute name="onNew"
-        value="action-group-sale-saleorder-onnew,action-saleorder-record-template"/>
+        value="action-sale-order-method-onnew,action-saleorder-record-template"/>
     </extend>
   </form>
 
@@ -108,17 +106,6 @@
     <action name="action-method-sale-order-validate-changes"/>
     <action name="action-sale-order-method-notify-stock-move-created"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
-  </action-group>
-
-  <action-group name="action-group-supplychain-saleorder-onnew">
-    <action name="action-group-sale-saleorder-onnew"/>
-    <action name="action-sale-order-record-payment-mode"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
-    <action name="action-sale-order-attrs-interco"/>
-    <action name="action-sale-order-record-interco"/>
-    <action name="supplychain-action-create-shipment-cost-line"/>
-    <action name="action-sale-order-record-set-default-tax-number"/>
   </action-group>
 
   <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
@@ -190,15 +177,6 @@
   <action-record name="action-record-load-dummy-supplier-partner"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(supplierPartnerId)"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-payment-mode"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
-      if="clientPartner?.inPaymentMode != null"/>
-    <field name="paymentMode"
-      expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode"
-      if="clientPartner?.inPaymentMode == null"/>
   </action-record>
 
   <action-record name="action-sale-order-record-interco"
@@ -310,17 +288,6 @@
   <action-record name="action-sale-order-record-freight-carrier"
     model="com.axelor.apps.base.db.Partner">
     <field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-partner-supplychain"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
-    <field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
-    <field name="carrierPartner"
-      expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
-    <field name="incoterm"
-      expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm"
-      if="company != null &amp;&amp; clientPartner != null"/>
   </action-record>
 
   <action-attrs name="action-sale-order-attrs-set-is-ispm-required">

@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewServiceImpl;
@@ -53,16 +54,25 @@ import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceSupplychainImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
@@ -70,13 +80,14 @@ import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
+import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
-import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.stock.utils.StockLocationUtilsServiceImpl;
 import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
@@ -137,6 +148,8 @@ import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderCreateServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -144,6 +157,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingViewServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
@@ -158,14 +172,25 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderCreateSupplychainService;
+import com.axelor.apps.supplychain.service.SaleOrderFinalizeSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderInitValueSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderIntercoService;
+import com.axelor.apps.supplychain.service.SaleOrderIntercoServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineOnChangeSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainService;
+import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainService;
+import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderMergingViewServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
@@ -174,18 +199,20 @@ import com.axelor.apps.supplychain.service.SaleOrderReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.SaleOrderShipmentServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderStockLocationService;
+import com.axelor.apps.supplychain.service.SaleOrderStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderVersionSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockCorrectionServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockHistoryServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.StockLocationLineFetchServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
-import com.axelor.apps.supplychain.service.StockLocationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
@@ -231,6 +258,8 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
+import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
+import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychainImpl;
 
 public class SupplychainModule extends AxelorModule {
 
@@ -249,7 +278,6 @@ public class SupplychainModule extends AxelorModule {
     bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
     bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
     bind(StockMoveServiceImpl.class).to(StockMoveServiceSupplychainImpl.class);
-    bind(SaleOrderLineServiceImpl.class).to(SaleOrderLineServiceSupplyChainImpl.class);
     bind(SaleOrderLineCreateServiceImpl.class).to(SaleOrderLineCreateSupplychainServiceImpl.class);
     bind(AdvancePaymentSaleRepository.class).to(AdvancePaymentSupplychainRepository.class);
     bind(AdvancePaymentServiceImpl.class).to(AdvancePaymentServiceSupplychainImpl.class);
@@ -286,8 +314,9 @@ public class SupplychainModule extends AxelorModule {
     bind(SubscriptionInvoiceService.class).to(SubscriptionInvoiceServiceImpl.class);
     bind(TimetableService.class).to(TimetableServiceImpl.class);
     bind(StockMoveLineServiceSupplychain.class).to(StockMoveLineServiceSupplychainImpl.class);
-    bind(StockLocationServiceImpl.class).to(StockLocationServiceSupplychainImpl.class);
-    bind(StockLocationServiceSupplychain.class).to(StockLocationServiceSupplychainImpl.class);
+    bind(StockLocationUtilsServiceImpl.class).to(StockLocationUtilsServiceSupplychainImpl.class);
+    bind(StockLocationUtilsServiceSupplychain.class)
+        .to(StockLocationUtilsServiceSupplychainImpl.class);
     bind(ReservedQtyService.class).to(ReservedQtyServiceImpl.class);
     bind(PurchaseOrderLineServiceImpl.class).to(PurchaseOrderLineServiceSupplyChainImpl.class);
     bind(PurchaseOrderStockService.class).to(PurchaseOrderStockServiceImpl.class);
@@ -310,6 +339,9 @@ public class SupplychainModule extends AxelorModule {
     bind(StockMoveLineStockRepository.class).to(StockMoveLineSupplychainRepository.class);
     bind(MrpForecastRepository.class).to(MrpForecastManagementRepository.class);
     bind(PurchaseOrderSupplychainService.class).to(PurchaseOrderServiceSupplychainImpl.class);
+    bind(PurchaseOrderCreateServiceImpl.class).to(PurchaseOrderCreateServiceSupplychainImpl.class);
+    bind(PurchaseOrderCreateSupplychainService.class)
+        .to(PurchaseOrderCreateServiceSupplychainImpl.class);
     bind(SaleOrderSupplychainService.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
     bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
@@ -357,6 +389,8 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineTreeComputationServiceSupplychainImpl.class);
     bind(PurchaseOrderMergingServiceImpl.class)
         .to(PurchaseOrderMergingServiceSupplyChainImpl.class);
+    bind(PurchaseOrderMergingSupplychainService.class)
+        .to(PurchaseOrderMergingServiceSupplyChainImpl.class);
     bind(PurchaseOrderMergingViewServiceImpl.class)
         .to(PurchaseOrderMergingViewServiceSupplyChainImpl.class);
     bind(AnalyticToolSupplychainService.class).to(AnalyticToolSupplychainServiceImpl.class);
@@ -366,5 +400,25 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderCreateSupplychainService.class).to(SaleOrderCreateServiceSupplychainImpl.class);
     bind(AdvancePaymentRefundService.class).to(AdvancePaymentRefundServiceImpl.class);
     bind(TrackingNumberSupplychainService.class).to(TrackingNumberSupplychainServiceImpl.class);
+    bind(SaleOrderLineComputeServiceImpl.class)
+        .to(SaleOrderLineComputeSupplychainServiceImpl.class);
+    bind(SaleOrderLineProductServiceImpl.class)
+        .to(SaleOrderLineProductSupplychainServiceImpl.class);
+    bind(SaleOrderLineProductSupplychainService.class)
+        .to(SaleOrderLineProductSupplychainServiceImpl.class);
+    bind(SaleOrderLineOnChangeServiceImpl.class)
+        .to(SaleOrderLineOnChangeSupplychainServiceImpl.class);
+    bind(SaleOrderInitValueServiceImpl.class).to(SaleOrderInitValueSupplychainServiceImpl.class);
+    bind(SaleOrderViewServiceImpl.class).to(SaleOrderViewSupplychainServiceImpl.class);
+    bind(SaleOrderOnChangeServiceImpl.class).to(SaleOrderOnChangeSupplychainServiceImpl.class);
+    bind(SaleOrderIntercoService.class).to(SaleOrderIntercoServiceImpl.class);
+    bind(SaleOrderProductPrintingService.class).to(SaleOrderProductPrintingServiceImpl.class);
+    bind(SaleOrderStockLocationService.class).to(SaleOrderStockLocationServiceImpl.class);
+    bind(StockLocationLineFetchServiceImpl.class)
+        .to(StockLocationLineFetchServiceSupplychainImpl.class);
+    bind(SaleOrderFinalizeServiceImpl.class).to(SaleOrderFinalizeSupplychainServiceImpl.class);
+    bind(SaleOrderLineViewSupplychainService.class)
+        .to(SaleOrderLineViewSupplychainServiceImpl.class);
+    bind(SaleOrderLineViewServiceImpl.class).to(SaleOrderLineViewSupplychainServiceImpl.class);
   }
 }

@@ -279,7 +279,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo
             .all()
-            .filter("self.paymentSession = :paymentSession")
+            .filter("self.paymentSession = :paymentSession AND self.paymentAmount > 0")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -356,7 +356,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   @Override
   @Transactional
   public InvoicePayment generatePendingPaymentFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) throws AxelorException {
     if (invoiceTerm.getInvoice() == null) {
       return null;
     }
@@ -1072,8 +1072,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   @Override
   public boolean isEmpty(PaymentSession paymentSession) {
-    return invoiceTermRepo.all().filter("self.paymentSession = :paymentSession")
-        .bind("paymentSession", paymentSession).fetch().stream()
+    return invoiceTermRepo
+        .all()
+        .filter("self.paymentSession = :paymentSession")
+        .bind("paymentSession", paymentSession)
+        .fetch()
+        .stream()
         .noneMatch(this::shouldBeProcessed);
   }
 

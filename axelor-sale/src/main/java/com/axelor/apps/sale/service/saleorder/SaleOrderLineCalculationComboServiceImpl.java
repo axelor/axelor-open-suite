@@ -30,11 +30,14 @@ public class SaleOrderLineCalculationComboServiceImpl
     implements SaleOrderLineCalculationComboService {
 
   protected SaleOrderLineTreeComputationService saleOrderLineTreeCalculationsService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderLineCalculationComboServiceImpl(
-      SaleOrderLineTreeComputationService saleOrderLineTreeCalculationsService) {
+      SaleOrderLineTreeComputationService saleOrderLineTreeCalculationsService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.saleOrderLineTreeCalculationsService = saleOrderLineTreeCalculationsService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -44,8 +47,7 @@ public class SaleOrderLineCalculationComboServiceImpl
 
     saleOrderLineTreeCalculationsService.computePrices(saleOrderLine);
 
-    Beans.get(SaleOrderLineService.class)
-        .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    saleOrderLineComputeService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
     saleOrderLineTreeCalculationsService.computeSubTotalCostPrice(saleOrderLine);
     return Beans.get(SaleOrderMarginService.class)
         .getSaleOrderLineComputedMarginInfo(saleOrderLine.getSaleOrder(), saleOrderLine);

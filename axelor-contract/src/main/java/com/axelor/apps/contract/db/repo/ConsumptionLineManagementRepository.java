@@ -19,15 +19,22 @@
 package com.axelor.apps.contract.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class ConsumptionLineManagementRepository extends ConsumptionLineRepository {
 
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public ConsumptionLineManagementRepository(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
+    AppBase appBase = appBaseService.getAppBase();
     json.put("$nbDecimalDigitForQty", appBase.getNbDecimalDigitForQty());
     return super.populate(json, context);
   }

@@ -73,6 +73,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final StockMoveInvoiceService stockMoveInvoiceService;
   protected final AppStockService appStockService;
   protected final SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
+  protected final PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
@@ -81,13 +82,15 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       PurchaseOrderRepository purchaseOrderRepository,
       StockMoveInvoiceService stockMoveInvoiceService,
       AppStockService appStockService,
-      SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain) {
+      SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
     this.invoiceRepository = invoiceRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.stockMoveInvoiceService = stockMoveInvoiceService;
     this.appStockService = appStockService;
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
+    this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
   }
 
   @Override
@@ -697,9 +700,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected Invoice createDummyInInvoice(StockMove stockMove) throws AxelorException {
     Invoice dummyInvoice = new Invoice();
 
-    if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
-      Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
-      PurchaseOrder purchaseOrder = purchaseOrderSet.iterator().next();
+    Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
+    if (ObjectUtils.notEmpty(purchaseOrderSet)) {
+      PurchaseOrder purchaseOrder =
+          purchaseOrderMergingSupplychainService.getDummyMergedPurchaseOrder(stockMove);
       dummyInvoice.setCurrency(purchaseOrder.getCurrency());
       dummyInvoice.setPartner(purchaseOrder.getSupplierPartner());
       dummyInvoice.setCompany(purchaseOrder.getCompany());
@@ -903,28 +907,30 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    */
   protected void fillReferenceInvoiceFromMultiInStockMove(
       List<StockMove> stockMoveList, Invoice dummyInvoice) {
-    // Concat sequence, internal ref and external ref from all saleOrder
+    // Concat sequence, internal ref and external ref from all purchaseOrder
+    StringJoiner externalRef = new StringJoiner("|");
+    StringJoiner internalRef = new StringJoiner("|");
 
-    List<String> externalRefList = new ArrayList<>();
-    List<String> internalRefList = new ArrayList<>();
     for (StockMove stockMove : stockMoveList) {
       Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
-      if (ObjectUtils.notEmpty(purchaseOrderSet)) {
-        for (PurchaseOrder purchaseOrder : purchaseOrderSet) {
 
-          externalRefList.add(purchaseOrder.getExternalReference());
-          internalRefList.add(
-              stockMove.getStockMoveSeq()
-                  + (purchaseOrder != null ? (":" + purchaseOrder.getPurchaseOrderSeq()) : ""));
-        }
+      if (ObjectUtils.isEmpty(purchaseOrderSet)) {
+        continue;
+      }
+      String externalReference =
+          stockMoveInvoiceService.fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet);
+      if (StringUtils.notEmpty(externalReference)) {
+        externalRef.add(externalReference);
+      }
+      String internalReference =
+          stockMoveInvoiceService.fillInternalReferenceInvoiceFromInStockMove(
+              stockMove, purchaseOrderSet);
+      if (StringUtils.notEmpty(internalReference)) {
+        internalRef.add(internalReference);
       }
     }
-
-    String externalRef = String.join("|", externalRefList);
-    String internalRef = String.join("|", internalRefList);
-
-    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef));
-    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef));
+    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef.toString()));
+    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef.toString()));
   }
 
   /**

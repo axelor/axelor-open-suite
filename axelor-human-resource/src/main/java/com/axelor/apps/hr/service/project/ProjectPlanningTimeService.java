@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.project;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -64,5 +65,10 @@ public interface ProjectPlanningTimeService {
   List<Long> computeAvailableDisplayTimeUnitIds(Unit unit);
 
   String computeDisplayPlannedTimeRestrictedDomain(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException;
+
+  BigDecimal getDefaultPlanningTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
+
+  PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException;
 }

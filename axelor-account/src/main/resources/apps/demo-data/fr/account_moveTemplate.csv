@@ -1,5 +1,5 @@
-"importId";"name";"code";"journal";"type";"endOfValidityDateShift";"functionalOriginSelect"
-1;"Location";"LOC";15;1;6;5
-2;"Prêt bancaire";"PBA";3;1;12;4
-3;"Encaissement par virement";"EPV";19;2;;5
-4;"Achat";"ACH";3;2;;4
+"importId";"name";"code";"journal.importId";"type";"endOfValidityDateShift";"functionalOriginSelect"
+1;"Location";"LOC";"FRA_PCG110";1;6;5
+2;"Prêt bancaire";"PBA";"FRA_PCG110";1;12;4
+3;"Encaissement par virement";"EPV";"FRA_PCG50";2;;5
+4;"Achat";"ACH";"FRA_PCG30";2;;4

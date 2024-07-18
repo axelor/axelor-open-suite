@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-business-project-config-form" title="App business project"
     model="com.axelor.studio.db.AppBusinessProject" canDelete="false" canNew="false" width="large">
@@ -26,8 +26,12 @@
     <panel name="invoicingPanel" title="Invoicing" colSpan="12">
       <field name="productInvoicingProject" canEdit="false"/>
       <field name="enableToInvoiceTimesheet" widget="boolean-switch"/>
-      <field name="enableToInvoiceExpense" widget="boolean-switch"/>
-      <field name="automaticInvoicing" widget="boolean-switch"/>
+      <field name="enableToInvoiceExpense" widget="boolean-switch" colSpan="3"/>
+      <field name="isExpenseLineOnInvoiceGrouped" widget="boolean-switch"
+        showIf="enableToInvoiceExpense" colSpan="3"/>
+      <field name="groupingPeriodSelect"
+        showIf="enableToInvoiceExpense &amp;&amp; isExpenseLineOnInvoiceGrouped" colSpan="3"/>
+      <field name="automaticInvoicing" widget="boolean-switch" colSpan="3"/>
       <field name="preTaskStatusSet" widget="TagSelect"/>
       <field name="postTaskStatusSet" widget="TagSelect"/>
       <field name="excludeTaskInvoicing"/>
@@ -61,6 +65,7 @@
     <panel name="printingsPanel" title="Printings" colSpan="12">
       <field name="invoicingProjectAnnexPrintTemplate"/>
       <field name="invoicingAnnexPrintTemplate"/>
+      <field name="invoiceExpensePrintTemplate"/>
     </panel>
 
     <panel name="actionsPanel">

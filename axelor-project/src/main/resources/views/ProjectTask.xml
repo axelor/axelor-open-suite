@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -328,9 +328,8 @@
     <template>
 		<![CDATA[
 			<>
-				<h4>{name}</h4>
-				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
-				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<strong>{name}</strong>
+				<Box>{project.fullName}</Box>
 				<Box d="flex" justifyContent="space-between">
 					<Box>
 						<Icon icon="calendar" fontSize="15px"/>
@@ -353,9 +352,14 @@
 						{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 					</Box>
 				}
-         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
-         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
-         		</Box>
+			    <Box d="grid" gridTemplateColumns="auto auto" style={{ fontSize: "0.85rem", color: "grey" }} mt={2}>
+			        <Box d="flex" g={2}>
+			        	<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+			        </Box>
+			        <Box d="flex" justifyContent="flex-end">
+			        	{assignedTo && <Image src={$image('assignedTo', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+			        </Box>
+			    </Box>
 			</>
 		]]>
     </template>
@@ -374,9 +378,8 @@
     <template>
 		<![CDATA[
 			<>
-				<h4>{name}</h4>
-				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
-				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<strong>{name}</strong>
+				<Box>{project.fullName}</Box>
 				<Box d="flex" justifyContent="space-between">
 					<Box>
 						<Icon icon="calendar" fontSize="15px"/>
@@ -397,9 +400,14 @@
 				<Box mt={1}>
 					{progress == 0 ? <span>{progress}%</span> : <LinearProgress value={progress} striped animated/>}
 				</Box>
-         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
-         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
-         		</Box>
+			    <Box d="grid" gridTemplateColumns="auto auto" style={{ fontSize: "0.85rem", color: "grey" }} mt={2}>
+			        <Box d="flex" g={2}>
+			        	<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+			        </Box>
+			        <Box d="flex" justifyContent="flex-end">
+			        	{assignedTo && <Image src={$image('assignedTo', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+			        </Box>
+			    </Box>
 			</>
 		]]>
     </template>
@@ -434,7 +442,6 @@
     <action name="action-project-task-attrs-project-filter-status"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
     <action name="action-project-task-attrs-onchange-invoice-type"/>
-    <action name="test" if="parentTask != null"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">

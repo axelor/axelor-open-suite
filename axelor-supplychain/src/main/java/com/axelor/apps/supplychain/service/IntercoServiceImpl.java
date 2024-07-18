@@ -52,8 +52,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -160,7 +160,7 @@ public class IntercoServiceImpl implements IntercoService {
     if (Beans.get(AppSupplychainService.class)
         .getAppSupplychain()
         .getIntercoSaleOrderCreateFinalized()) {
-      Beans.get(SaleOrderWorkflowService.class).finalizeQuotation(saleOrder);
+      Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(saleOrder);
     }
     purchaseOrder.setExternalReference(saleOrder.getSaleOrderSeq());
     saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
@@ -315,7 +315,8 @@ public class IntercoServiceImpl implements IntercoService {
 
     // compute price discounted
     BigDecimal priceDiscounted =
-        Beans.get(SaleOrderLineService.class).computeDiscount(saleOrderLine, saleOrder.getInAti());
+        Beans.get(SaleOrderLineComputeService.class)
+            .computeDiscount(saleOrderLine, saleOrder.getInAti());
     saleOrderLine.setPriceDiscounted(priceDiscounted);
 
     // delivery

@@ -18,41 +18,24 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductMultipleQtyService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.pricing.PricingService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
@@ -64,91 +47,33 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 
-public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
-    implements SaleOrderLineServiceSupplyChain {
+public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineServiceSupplyChain {
 
-  protected AppAccountService appAccountService;
-  protected AnalyticMoveLineService analyticMoveLineService;
   protected AppSupplychainService appSupplychainService;
-  protected AccountConfigService accountConfigService;
-  protected InvoiceLineRepository invoiceLineRepository;
-  protected SaleInvoicingStateService saleInvoicingStateService;
-  protected AnalyticLineModelService analyticLineModelService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
-      CurrencyService currencyService,
-      PriceListService priceListService,
-      ProductMultipleQtyService productMultipleQtyService,
-      AppBaseService appBaseService,
-      AppSaleService appSaleService,
-      AccountManagementService accountManagementService,
-      SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderService saleOrderService,
-      AppAccountService appAccountService,
-      AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
-      AccountConfigService accountConfigService,
-      PricingService pricingService,
-      TaxService taxService,
-      SaleOrderMarginService saleOrderMarginService,
-      InvoiceLineRepository invoiceLineRepository,
-      SaleInvoicingStateService saleInvoicingStateService,
-      AnalyticLineModelService analyticLineModelService,
-      CurrencyScaleService currencyScaleService) {
-    super(
-        currencyService,
-        priceListService,
-        productMultipleQtyService,
-        appBaseService,
-        appSaleService,
-        accountManagementService,
-        saleOrderLineRepo,
-        saleOrderService,
-        pricingService,
-        taxService,
-        saleOrderMarginService,
-        currencyScaleService);
-    this.appAccountService = appAccountService;
-    this.analyticMoveLineService = analyticMoveLineService;
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.appSupplychainService = appSupplychainService;
-    this.accountConfigService = accountConfigService;
-    this.invoiceLineRepository = invoiceLineRepository;
-    this.saleInvoicingStateService = saleInvoicingStateService;
-    this.analyticLineModelService = analyticLineModelService;
-  }
-
-  @Override
-  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    super.computeProductInformation(saleOrderLine, saleOrder);
-    saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
-
-    if (appAccountService.isApp("supplychain")) {
-      saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
-
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
-    }
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
-    if (!appAccountService.isApp("supplychain")) {
-      return super.getAvailableStock(saleOrder, saleOrderLine);
-    }
-
     StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+        stockLocationLineFetchService.getStockLocationLine(
+            saleOrder.getStockLocation(), saleOrderLine.getProduct());
 
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;
@@ -159,13 +84,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Override
   public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
-    if (!appAccountService.isApp("supplychain")) {
-      return super.getAllocatedStock(saleOrder, saleOrderLine);
-    }
-
     StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+        stockLocationLineFetchService.getStockLocationLine(
+            saleOrder.getStockLocation(), saleOrderLine.getProduct());
 
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;
@@ -308,37 +229,15 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
-  public SaleOrderLine updateProductQty(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty)
-      throws AxelorException {
+  public Map<String, Object> updateRequestedReservedQty(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
     BigDecimal qty = saleOrderLine.getQty();
-    qty =
-        qty.divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
-            .multiply(newQty)
-            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
-    saleOrderLine.setQty(qty);
-
-    if (appSupplychainService.isApp("supplychain")
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
-      qty = this.checkInvoicedOrDeliveredOrderQty(saleOrderLine);
-      saleOrderLine.setQty(qty);
-    }
-
-    saleOrderLine = super.updateProductQty(saleOrderLine, saleOrder, oldQty, newQty);
-    if (!appSupplychainService.isApp("supplychain")
-        || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
-      return saleOrderLine;
-    }
-    if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, null);
-      analyticLineModelService.computeAnalyticDistribution(analyticLineModel);
-    }
-    if (appSupplychainService.getAppSupplychain().getManageStockReservation()
-        && (saleOrderLine.getRequestedReservedQty().compareTo(qty) > 0
-            || saleOrderLine.getIsQtyRequested())) {
+    BigDecimal reservedQty = saleOrderLine.getReservedQty();
+    if (reservedQty.compareTo(qty) > 0 || saleOrderLine.getIsQtyRequested()) {
       saleOrderLine.setRequestedReservedQty(BigDecimal.ZERO.max(qty));
+      saleOrderLineMap.put("requestedReservedQty", saleOrderLine.getRequestedReservedQty());
     }
-    return saleOrderLine;
+    return saleOrderLineMap;
   }
 
   protected BigDecimal getInvoicedQty(SaleOrderLine saleOrderLine) {

@@ -29,6 +29,5 @@ public interface MoveLoadDefaultConfigService {
 
   Account getAccountingAccountFromAccountConfig(Move move);
 
-  Set<TaxLine> getTaxLineSet(Move move, MoveLine moveLine, Account accountingAccount)
-      throws AxelorException;
+  Set<TaxLine> getTaxLineSet(Move move, MoveLine moveLine, Account account) throws AxelorException;
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <action-group name="action-business-project-group-print-annex">
     <action name="action-business-project-validate-printing-settings"/>
@@ -29,4 +29,17 @@
     <error message="Please fill printing settings on invoice ${invoiceId}."
       if="!printingSettings"/>
   </action-validate>
+
+  <action-group name="action-invoice-wizard-group-print"
+    id="business-project-action-invoice-wizard-group-print">
+    <action name="action-invoice-group-report-print"/>
+    <action name="action-invoice-method-print-expenses"
+      if="__config__.app.isApp('business-project')"/>
+    <action name="close"/>
+  </action-group>
+
+  <action-method name="action-invoice-method-print-expenses">
+    <call class="com.axelor.apps.businessproject.web.InvoiceController" method="printExpenses"/>
+  </action-method>
+
 </object-views>

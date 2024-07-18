@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
 
   <entity name="MobileScreen">
-    <string name="technicalName" unique="true" required="true" title="Key"/>
-    <string name="name" title="Screen name" namecolumn="true"/>
+    <string name="technicalName" unique="true" required="true" title="Key" readonly="true"
+      namecolumn="true"/>
+    <string name="name" title="Screen name"/>
     <boolean name="isUsableOnShortcut" title="Usable on shortcut"/>
 
     <finder-method name="findByTechnicalName" using="technicalName"/>

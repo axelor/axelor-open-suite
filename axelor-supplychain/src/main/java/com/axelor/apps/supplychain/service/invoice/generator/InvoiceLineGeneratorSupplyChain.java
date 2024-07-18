@@ -199,37 +199,40 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     List<AnalyticMoveLine> analyticMoveLineList;
 
-    if (this.manageAnalytic()) {
-      if (saleOrderLine != null) {
-        switch (saleOrderLine.getTypeSelect()) {
-          case SaleOrderLineRepository.TYPE_END_OF_PACK:
-            invoiceLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
-            invoiceLine.setIsShowTotal(saleOrderLine.getIsShowTotal());
-            break;
+    boolean manageAnalytic = this.manageAnalytic();
+    if (saleOrderLine != null) {
+      switch (saleOrderLine.getTypeSelect()) {
+        case SaleOrderLineRepository.TYPE_END_OF_PACK:
+          invoiceLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
+          invoiceLine.setIsShowTotal(saleOrderLine.getIsShowTotal());
+          break;
 
-          case SaleOrderLineRepository.TYPE_NORMAL:
+        case SaleOrderLineRepository.TYPE_NORMAL:
+          if (manageAnalytic) {
             invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
                 invoiceLine, invoice, new AnalyticLineModel(saleOrderLine, null));
-            break;
+          }
+          break;
 
-          default:
-            return invoiceLine;
-        }
-      } else if (purchaseOrderLine != null) {
-        if (purchaseOrderLine.getIsTitleLine()) {
+        default:
           return invoiceLine;
-        }
+      }
+    } else if (purchaseOrderLine != null) {
+      if (purchaseOrderLine.getIsTitleLine()) {
+        return invoiceLine;
+      }
 
+      if (manageAnalytic) {
         invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
             invoiceLine, invoice, new AnalyticLineModel(purchaseOrderLine, null));
+      }
 
-        invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
+      invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
-        if (product != null && purchaseOrderLine.getFixedAssets()) {
-          FixedAssetCategory fixedAssetCategory =
-              accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
-          invoiceLine.setFixedAssetCategory(fixedAssetCategory);
-        }
+      if (product != null && purchaseOrderLine.getFixedAssets()) {
+        FixedAssetCategory fixedAssetCategory =
+            accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
+        invoiceLine.setFixedAssetCategory(fixedAssetCategory);
       }
     }
 

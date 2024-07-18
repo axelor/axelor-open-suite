@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed an issue where it was possible to change the printing format on a ventilated invoice."
-module: axelor-account

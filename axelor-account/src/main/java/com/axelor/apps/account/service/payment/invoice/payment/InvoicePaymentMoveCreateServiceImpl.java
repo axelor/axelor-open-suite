@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Account;
@@ -215,24 +233,30 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     }
 
     invoicePayment.setMove(move);
-    if (customerMoveLine != null
-        && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      for (MoveLine invoiceMoveLine : invoiceMoveLines) {
-        Reconcile reconcile =
-            reconcileService.reconcile(
-                invoiceMoveLine, customerMoveLine, true, true, invoicePayment);
+    if (customerMoveLine != null) {
+      if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+          && InvoiceToolService.isRefund(invoice)) {
+        invoiceMoveLines = moveToolService.getRefundAdvancePaymentMoveLines(invoicePayment);
+      }
 
-        if (reconcile == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
-              invoiceMoveLine.getName(),
-              invoiceMoveLine.getAccount().getCode(),
-              customerMoveLine.getName(),
-              customerMoveLine.getAccount().getCode());
+      if (!ObjectUtils.isEmpty(invoiceMoveLines)) {
+        for (MoveLine invoiceMoveLine : invoiceMoveLines) {
+          Reconcile reconcile =
+              reconcileService.reconcile(
+                  invoiceMoveLine, customerMoveLine, true, true, invoicePayment);
+
+          if (reconcile == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
+                invoiceMoveLine.getName(),
+                invoiceMoveLine.getAccount().getCode(),
+                customerMoveLine.getName(),
+                customerMoveLine.getAccount().getCode());
+          }
+
+          invoicePayment.setReconcile(reconcile);
         }
-
-        invoicePayment.setReconcile(reconcile);
       }
     }
 
@@ -293,21 +317,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     companyPaymentAmount =
         companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
     BigDecimal currencyRate =
-        this.computeCurrencyRate(
-            companyPaymentAmount,
-            paymentAmount,
-            invoice.getCurrency(),
-            invoicePayment.getCurrency(),
-            invoice.getCompany().getCurrency(),
-            invoice.getMove());
-    companyPaymentAmount =
-        invoiceTermService.adjustAmountInCompanyCurrency(
-            invoice.getInvoiceTermList(),
-            invoice.getCompanyInTaxTotalRemaining(),
-            companyPaymentAmount,
-            paymentAmount,
-            currencyRate,
-            company);
+        this.computeCurrencyRate(invoice, invoicePayment, companyPaymentAmount, paymentAmount);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -387,22 +397,25 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   }
 
   protected BigDecimal computeCurrencyRate(
+      Invoice invoice,
+      InvoicePayment invoicePayment,
       BigDecimal companyPaymentAmount,
-      BigDecimal paymentAmount,
-      Currency invoiceCurrency,
-      Currency paymentCurrency,
-      Currency companyCurrency,
-      Move invoiceMove) {
+      BigDecimal paymentAmount)
+      throws AxelorException {
+    Currency invoiceCurrency = invoice.getCurrency();
+    Currency paymentCurrency = invoicePayment.getCurrency();
+    Currency companyCurrency = invoice.getCompanyCurrency();
+
     BigDecimal currencyRate =
         currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
 
     if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
-      return invoiceMove != null
-          ? invoiceMove.getMoveLineList().stream()
-              .map(MoveLine::getCurrencyRate)
-              .findAny()
-              .orElse(currencyRate)
-          : currencyRate;
+      return currencyService.getCurrencyRate(
+          invoice.getInvoiceDate(),
+          invoicePayment.getPaymentDate(),
+          companyCurrency,
+          paymentCurrency,
+          currencyRate);
     }
 
     return currencyRate;

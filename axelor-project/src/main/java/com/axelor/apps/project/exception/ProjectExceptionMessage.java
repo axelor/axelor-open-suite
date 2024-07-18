@@ -57,4 +57,10 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_TASK_INFINITE_LOOP_ISSUE = /*$$(*/
       "Task parent or children has not been configured correctly." /*)*/;
+
+  public static final String PROJECT_CONFIG_COMPLETED_PROJECT_STATUS_MISSING = /*$$(*/
+      "Please set the completed project status in the project configuration." /*)*/;
+
+  public static final String PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING = /*$$(*/
+      "Please set the completed paid project status in the project configuration." /*)*/;
 }

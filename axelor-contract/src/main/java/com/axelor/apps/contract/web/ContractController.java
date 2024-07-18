@@ -37,6 +37,7 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractPurchaseOrderGeneration;
 import com.axelor.apps.contract.service.ContractSaleOrderGeneration;
@@ -117,7 +118,7 @@ public class ContractController {
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
     try {
-      Invoice invoice = Beans.get(ContractService.class).invoicingContract(contract);
+      Invoice invoice = Beans.get(ContractInvoicingService.class).invoicingContract(contract);
       response.setReload(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
@@ -313,7 +314,8 @@ public class ContractController {
     try {
       Contract contract = request.getContext().asType(Contract.class);
       Partner partner =
-          Beans.get(PartnerLinkSupplychainService.class).getPartnerIfOnlyOne(contract.getPartner());
+          Beans.get(PartnerLinkSupplychainService.class)
+              .getDefaultInvoicedPartner(contract.getPartner());
       if (partner != null) {
         response.setValue("invoicedPartner", partner);
       }

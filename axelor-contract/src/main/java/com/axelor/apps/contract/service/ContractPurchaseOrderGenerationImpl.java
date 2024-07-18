@@ -1,12 +1,32 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.contract.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
@@ -19,6 +39,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
   protected AppBaseService appBaseService;
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderCreateService purchaseOrderCreateService;
   protected AnalyticLineModelFromContractService analyticLineModelFromContractService;
 
   @Inject
@@ -26,10 +47,12 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
       AppBaseService appBaseService,
       PurchaseOrderRepository purchaseOrderRepository,
       PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
       AnalyticLineModelFromContractService analyticLineModelFromContractService) {
     this.appBaseService = appBaseService;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderCreateService = purchaseOrderCreateService;
     this.analyticLineModelFromContractService = analyticLineModelFromContractService;
   }
 
@@ -38,7 +61,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
   public PurchaseOrder generatePurchaseOrder(Contract contract) throws AxelorException {
 
     PurchaseOrder purchaseOrder =
-        purchaseOrderService.createPurchaseOrder(
+        purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
             contract.getCompany(),
             null,
@@ -53,6 +76,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
     purchaseOrder.setPaymentMode(contract.getCurrentContractVersion().getPaymentMode());
     purchaseOrder.setPaymentCondition(contract.getPartner().getPaymentCondition());
     purchaseOrder.setContract(contract);
+    purchaseOrder.setTradingName(contract.getTradingName());
 
     for (ContractLine contractLine : contract.getCurrentContractVersion().getContractLineList()) {
       createPurchaseOrderLineFromContractLine(contractLine, purchaseOrder);
@@ -85,6 +109,8 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
     purchaseOrderLine.setPriceDiscounted(contractLine.getPriceDiscounted());
 
     purchaseOrderLine.setTaxLineSet(Sets.newHashSet(contractLine.getTaxLineSet()));
+    purchaseOrderLine.setIsTitleLine(
+        contractLine.getTypeSelect() == ContractLineRepository.TYPE_TITLE);
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
 
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);

@@ -147,4 +147,9 @@ public final class BusinessProjectExceptionMessage {
   /** Business Project Config Service */
   public static final String BUSINESS_PROJECT_CONFIG_1 = /*$$(*/
       "%s : You must configure Business project module for company %s" /*)*/;
+
+  public static final String BATCH_TRANSITION_BETWEEN_PAID_STATUS = /*$$(*/
+      "Transition between paid status for projects" /*)*/;
+  public static final String BATCH_TRANSITION_BETWEEN_PAID_STATUS_ERROR = /*$$(*/
+      "Error while trying to transition between paid status for project %s." /*)*/;
 }

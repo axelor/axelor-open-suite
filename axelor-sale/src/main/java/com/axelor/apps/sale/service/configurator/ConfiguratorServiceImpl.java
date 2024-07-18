@@ -37,7 +37,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -72,30 +73,31 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected AppBaseService appBaseService;
   protected ConfiguratorFormulaService configuratorFormulaService;
   protected ProductRepository productRepository;
-  protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected SaleOrderComputeService saleOrderComputeService;
   protected MetaFieldRepository metaFieldRepository;
   protected ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService;
+  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public ConfiguratorServiceImpl(
       AppBaseService appBaseService,
       ConfiguratorFormulaService configuratorFormulaService,
       ProductRepository productRepository,
-      SaleOrderLineService saleOrderLineService,
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderComputeService saleOrderComputeService,
       MetaFieldRepository metaFieldRepository,
-      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService) {
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.appBaseService = appBaseService;
     this.configuratorFormulaService = configuratorFormulaService;
     this.productRepository = productRepository;
-    this.saleOrderLineService = saleOrderLineService;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderComputeService = saleOrderComputeService;
     this.metaFieldRepository = metaFieldRepository;
     this.configuratorMetaJsonFieldService = configuratorMetaJsonFieldService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -263,7 +265,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       saleOrderLine.setProduct(configurator.getProduct());
       this.fillSaleOrderWithProduct(saleOrderLine);
-      saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+      saleOrderLineComputeService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
 
       String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
       BigDecimal qty = BigDecimal.ONE;
@@ -290,7 +292,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    */
   protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getProduct() != null) {
-      saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
+      saleOrderLineProductService.computeProductInformation(
+          saleOrderLine, saleOrderLine.getSaleOrder());
     }
   }
 
@@ -419,7 +422,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           I18n.get(SaleExceptionMessage.CONFIGURATOR_SALE_ORDER_LINE_MISSING_PRODUCT_NAME));
     }
     saleOrderLine = saleOrderLineRepository.save(saleOrderLine);
-    saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    saleOrderLineComputeService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
     return saleOrderLine;
   }
 

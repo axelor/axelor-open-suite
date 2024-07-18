@@ -356,7 +356,9 @@ public class ReconcileServiceImpl implements ReconcileService {
         debitMoveLine, creditMoveLine, canBeZeroBalanceOk, updateInvoicePayments, null);
   }
 
-  /** @param reconcile */
+  /**
+   * @param reconcile
+   */
   protected void updatePaymentMoveLineDistribution(Reconcile reconcile) {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
@@ -420,7 +422,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         && debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
       balanceDebit(debitMoveLine);
     } else if (creditMoveLine != null
-        && creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        && creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) < 0) {
       balanceCredit(creditMoveLine);
     }
 
@@ -462,7 +464,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine debitAdjustmentMoveLine =
-              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount, false);
+              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount);
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -512,7 +514,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine creditAdjustMoveLine =
-              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount, true);
+              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount);
 
           // Création de la réconciliation
           Reconcile newReconcile =

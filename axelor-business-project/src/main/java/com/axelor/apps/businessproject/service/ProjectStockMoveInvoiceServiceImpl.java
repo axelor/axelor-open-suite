@@ -36,6 +36,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
+import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
@@ -63,7 +64,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       SupplyChainConfigService supplyChainConfigService,
       AppSupplychainService appSupplychainService,
       AppStockService appStockService,
-      SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain) {
+      SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -76,7 +78,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
         supplyChainConfigService,
         appSupplychainService,
         appStockService,
-        saleOrderMergingServiceSupplyChain);
+        saleOrderMergingServiceSupplyChain,
+        purchaseOrderMergingSupplychainService);
   }
 
   @Override

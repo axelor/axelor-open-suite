@@ -37,8 +37,8 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -51,6 +51,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +67,6 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
-      SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
       InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
@@ -75,7 +75,6 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
       AppBusinessProjectService appBusinessProjectService) {
-
     super(
         appBaseService,
         appStockService,
@@ -83,7 +82,6 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
         saleOrderRepo,
         invoiceRepo,
         invoiceService,
-        saleOrderLineService,
         stockMoveRepository,
         invoiceTermService,
         saleOrderWorkflowService,
@@ -136,6 +134,9 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
   public List<InvoiceLine> createInvoiceLine(
       Invoice invoice, SaleOrderLine saleOrderLine, BigDecimal qtyToInvoice)
       throws AxelorException {
+    if (saleOrderLine.getInvoicingModeSelect() != SaleOrderLineRepository.INVOICING_MODE_STANDARD) {
+      return List.of();
+    }
     List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, saleOrderLine, qtyToInvoice);
 
     if (!appBusinessProjectService.isApp("business-project")) {
@@ -169,5 +170,18 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
     }
     invoiceRepo.save(invoice);
     return invoice;
+  }
+
+  @Override
+  public List<Map<String, Object>> getSaleOrderLineList(SaleOrder saleOrder) {
+    List<Map<String, Object>> saleOrderLineList = super.getSaleOrderLineList(saleOrder);
+    List<Map<String, Object>> filteredSaleOrderLineList = new ArrayList<>();
+    for (Map<String, Object> saleOrderLineMap : saleOrderLineList) {
+      int invoicingModeSelect = (int) saleOrderLineMap.get("invoicingModeSelect");
+      if (invoicingModeSelect == SaleOrderLineRepository.INVOICING_MODE_STANDARD) {
+        filteredSaleOrderLineList.add(saleOrderLineMap);
+      }
+    }
+    return filteredSaleOrderLineList;
   }
 }

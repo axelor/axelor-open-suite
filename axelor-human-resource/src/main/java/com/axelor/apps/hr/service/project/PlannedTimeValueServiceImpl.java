@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.project;
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.repo.PlannedTimeValueRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public class PlannedTimeValueServiceImpl implements PlannedTimeValueService {
@@ -47,5 +48,11 @@ public class PlannedTimeValueServiceImpl implements PlannedTimeValueService {
     plannedTimeValue = new PlannedTimeValue();
     plannedTimeValue.setPlannedTime(plannedTime);
     return plannedTimeValue;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public PlannedTimeValue createAndSavePlannedTimeValue(BigDecimal plannedTime) {
+    return plannedTimeValueRepository.save(createPlannedTimeValue(plannedTime));
   }
 }

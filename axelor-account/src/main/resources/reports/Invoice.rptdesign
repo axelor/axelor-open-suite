@@ -2986,8 +2986,9 @@ RETURNS table(inv_id bigint, product_name varchar, description text,
     sequence int, "typeSelect" int, in_ati boolean, "productCode" varchar,
     "CustomerProductCode" varchar, "CustomerProductName" varchar,
     "productCategory" bigint, "showTotal" boolean, "hideUnitAmounts" boolean,
-    "PackHideUnitAmounts" boolean,number_of_decimals int,invoice_line_id bigint, "coefficient" numeric,
-    "ExpenseDate" date,"groupingPeriodSelect" varchar) as
+    "PackHideUnitAmounts" boolean,number_of_decimals int,invoice_line_id bigint, 
+    "coefficient" numeric, "ExpenseDate" date,"groupingPeriodSelect" varchar, "previousProgress" numeric, "newProgress" numeric,
+    "display_previous_progress" bigint, "display_new_progress" bigint, "previous_project_invoice_date" date) as
 $func$
 BEGIN
 IF (SELECT COUNT(to_regclass('sale_customer_catalog')) = 0) THEN
@@ -3026,7 +3027,17 @@ Currency.number_of_decimals,
 InvoiceLine.id as invoice_line_id,
 InvoiceLine.coefficient,
 ExpenseLine.expense_date as "ExpenseDate",
-Invoice.grouping_period_select as "groupingPeriodSelect"
+Invoice.grouping_period_select as "groupingPeriodSelect",
+InvoiceLine.previous_progress as "previousProgress",
+InvoiceLine.new_progress as "newProgress",
+(SELECT COUNT(previous_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_previous_progress",
+(SELECT COUNT(new_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_new_progress",
+(SELECT MAX(inv.invoice_date) FROM account_invoice as inv
+left outer join account_invoice_line as ILine on (inv.id = ILine.invoice)
+left outer join account_invoice_line_project_task_set as taskSet on (taskSet.invoice_line_set = ILine.id)
+WHERE taskSet.project_task_set IN (SELECT project_task_set from account_invoice_line_project_task_set as taskSet
+WHERE (taskSet.invoice_line_set = InvoiceLine.id))
+AND inv.invoice_date IS NOT NULL AND inv.invoice_date < Invoice.invoice_date AND inv.status_select IN (2,3)) as "previous_project_invoice_date"
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join base_product as Product on (InvoiceLine.product = Product.id)
@@ -3073,7 +3084,17 @@ Currency.number_of_decimals,
 InvoiceLine.id as invoice_line_id,
 InvoiceLine.coefficient,
 ExpenseLine.expense_date as "ExpenseDate",
-Invoice.grouping_period_select as "groupingPeriodSelect"
+Invoice.grouping_period_select as "groupingPeriodSelect",
+InvoiceLine.previous_progress as "previousProgress",
+InvoiceLine.new_progress as "newProgress",
+(SELECT COUNT(previous_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_previous_progress",
+(SELECT COUNT(new_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_new_progress",
+(SELECT MAX(inv.invoice_date) FROM account_invoice as inv
+left outer join account_invoice_line as ILine on (inv.id = ILine.invoice)
+left outer join account_invoice_line_project_task_set as taskSet on (taskSet.invoice_line_set = ILine.id)
+WHERE taskSet.project_task_set IN (SELECT project_task_set from account_invoice_line_project_task_set as taskSet
+WHERE (taskSet.invoice_line_set = InvoiceLine.id))
+AND inv.invoice_date IS NOT NULL AND inv.invoice_date < Invoice.invoice_date AND inv.status_select IN (2,3)) as "previous_project_invoice_date"
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join base_product as Product on (InvoiceLine.product = Product.id)
@@ -3095,16 +3116,15 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="name">expense_date</property>
                     <expression name="expression">if(row["ExpenseDate"]){
 var dateParts = row["ExpenseDate"].toString().split("-");
-var year = parseInt(dateParts[0]);
-var month = parseInt(dateParts[1]); 
-var day = parseInt(dateParts[2]);
+var year = dateParts[0];
+var month = dateParts[1]; 
+var day = dateParts[2];
 
 var now = new Date(year,month-1,day);
 var onejan = new Date(now.getFullYear(), 0, 1);
 var week = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7);
 
 if(row["groupingPeriodSelect"] == "month"){
-	month = month&lt;10 ? "0"+month : month
 	month + "/" + year;
 }
 else if(row["groupingPeriodSelect"] == "week"){
@@ -3278,6 +3298,36 @@ else if(row["groupingPeriodSelect"] == "week"){
                     <text-property name="displayName">groupingPeriodSelect</text-property>
                     <text-property name="heading">groupingPeriodSelect</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">previousProgress</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">previousProgress</text-property>
+                    <text-property name="heading">previousProgress</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">newProgress</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">newProgress</text-property>
+                    <text-property name="heading">newProgress</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_previous_progress</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_previous_progress</text-property>
+                    <text-property name="heading">display_previous_progress</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_new_progress</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_new_progress</text-property>
+                    <text-property name="heading">display_new_progress</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">previous_project_invoice_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">previous_project_invoice_date</text-property>
+                    <text-property name="heading">previous_project_invoice_date</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -3433,6 +3483,31 @@ else if(row["groupingPeriodSelect"] == "week"){
                         <property name="position">28</property>
                         <property name="name">expense_date</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
+                        <property name="name">previousProgress</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">30</property>
+                        <property name="name">newProgress</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">31</property>
+                        <property name="name">display_previous_progress</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">32</property>
+                        <property name="name">display_new_progress</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">33</property>
+                        <property name="name">previous_project_invoice_date</property>
+                        <property name="dataType">date</property>
                     </structure>
                 </list-property>
             </structure>
@@ -3627,6 +3702,41 @@ else if(row["groupingPeriodSelect"] == "week"){
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">28</property>
+                    <property name="name">previousProgress</property>
+                    <property name="nativeName">previousProgress</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">29</property>
+                    <property name="name">newProgress</property>
+                    <property name="nativeName">newProgress</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">30</property>
+                    <property name="name">display_previous_progress</property>
+                    <property name="nativeName">display_previous_progress</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">31</property>
+                    <property name="name">display_new_progress</property>
+                    <property name="nativeName">display_new_progress</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">32</property>
+                    <property name="name">previous_project_invoice_date</property>
+                    <property name="nativeName">previous_project_invoice_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH INV AS (
     select * from invoice_line_proc(cast(? as bigint))
@@ -3659,7 +3769,12 @@ select
     INV.invoice_line_id,
     INV."coefficient",
     INV."ExpenseDate",
-    INV."groupingPeriodSelect"
+    INV."groupingPeriodSelect",
+    INV."previousProgress",
+    INV."newProgress",
+    INV."display_previous_progress",
+    INV."display_new_progress",
+    INV."previous_project_invoice_date"
     from INV
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -3704,7 +3819,12 @@ select
     MIN(INV.invoice_line_id),
     SUM(INV.coefficient) as coefficient,
     MIN(INV."ExpenseDate"),
-    MIN(INV."groupingPeriodSelect")
+    MIN(INV."groupingPeriodSelect"),
+    SUM(INV."previousProgress") as "previousProgress",
+    SUM(INV."newProgress") as "newProgress",
+    SUM(INV."display_previous_progress") as "display_previous_progress",
+    SUM(INV."display_new_progress") as "display_new_progress",
+    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date"
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
@@ -3753,7 +3873,12 @@ select
     MIN(INV.invoice_line_id),
     SUM(INV.coefficient) as coefficient,
     MIN(INV."ExpenseDate"),
-    MIN(INV."groupingPeriodSelect")
+    MIN(INV."groupingPeriodSelect"),
+    SUM(INV."previousProgress") as "previousProgress",
+    SUM(INV."newProgress") as "newProgress",
+    SUM(INV."display_previous_progress") as "display_previous_progress",
+    SUM(INV."display_new_progress") as "display_new_progress",
+    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date"
 from INV
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -7144,6 +7269,54 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">productCategory</property>
+                                <text-property name="displayName">productCategory</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["productCategory"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">showTotal</property>
+                                <text-property name="displayName">showTotal</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["showTotal"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">hideUnitAmounts</property>
+                                <text-property name="displayName">hideUnitAmounts</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">previousProgress</property>
+                                <text-property name="displayName">previousProgress</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["previousProgress"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">newProgress</property>
+                                <text-property name="displayName">newProgress</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["newProgress"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">display_previous_progress</property>
+                                <text-property name="displayName">display_previous_progress</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["display_previous_progress"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">display_new_progress</property>
+                                <text-property name="displayName">display_new_progress</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["display_new_progress"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">previous_project_invoice_date</property>
+                                <text-property name="displayName">previous_project_invoice_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["previous_project_invoice_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
                         </list-property>
                         <list-property name="sort">
                             <structure>
@@ -7174,15 +7347,36 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                     <expression name="valueExpr" type="javascript">row._outer["displayProductCodeOnPrinting"] != 1</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.7in</property>
+                            <property name="width">0.55in</property>
                         </column>
                         <column id="5417">
                             <property name="width">2in</property>
+                        </column>
+                        <column id="6145">
+                            <property name="repeat">1</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["display_previous_progress"] == 0</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">0.7in</property>
+                        </column>
+                        <column id="6135">
+                            <property name="repeat">1</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["display_new_progress"] == 0</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">0.6in</property>
                         </column>
                         <column id="5418">
                             <property name="width">0.5in</property>
                         </column>
                         <column id="5419">
+                            <property name="whiteSpace">normal</property>
                             <property name="width">0.7in</property>
                         </column>
                         <column id="6062">
@@ -7192,7 +7386,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                     <expression name="valueExpr" type="javascript">!row._outer["invoiceCoefficientEnabled"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.7in</property>
+                            <property name="width">0.4in</property>
                         </column>
                         <column id="5420">
                             <property name="width">0.7in</property>
@@ -7213,7 +7407,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                     <expression name="valueExpr" type="javascript">row["in_ati"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.7in</property>
+                            <property name="width">0.35in</property>
                         </column>
                         <column id="5423">
                             <list-property name="visibility">
@@ -7330,6 +7524,137 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="6146">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="6147">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["previous_project_invoice_date"] == null</expression>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Invoice.previousProgress'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]+' ' +row._outer["previous_project_invoice_date"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                    <text id="6155">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["previous_project_invoice_date"] != null</expression>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Invoice.noPreviousProgress'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="6136">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="6137">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Invoice.progressAt'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]+' '+row._outer._outer["invoice_date"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="5607">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -7416,7 +7741,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="6059">
+                                <cell id="6242">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -7586,6 +7911,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                                 <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
+                                        <structure name="toc"/>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7653,7 +7979,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                         </structure>
                                     </list-property>
                                     <cell id="6166">
-                                        <property name="colSpan">3</property>
+                                        <property name="colSpan">5</property>
                                         <property name="rowSpan">1</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
@@ -8086,6 +8412,112 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                         <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="6148">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <table id="6149">
+                                        <property name="dataSet">InvoiceLineTaxLineDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["invoice_line_id"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">value</property>
+                                                <text-property name="displayName">value</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["value"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">code</property>
+                                                <text-property name="displayName">code</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["code"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <column id="6153"/>
+                                        <detail>
+                                            <row id="6150">
+                                                <cell id="6151">
+                                                    <text id="6152">
+                                                        <property name="fontSize">8pt</property>
+                                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF >if(row._outer["previousProgress"] != null ) row._outer["previousProgress"]+' %'</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
+                                            </row>
+                                        </detail>
+                                    </table>
+                                </cell>
+                                <cell id="6138">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <table id="6139">
+                                        <property name="dataSet">InvoiceLineTaxLineDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["invoice_line_id"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">value</property>
+                                                <text-property name="displayName">value</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["value"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">code</property>
+                                                <text-property name="displayName">code</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["code"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <column id="6143"/>
+                                        <detail>
+                                            <row id="6140">
+                                                <cell id="6141">
+                                                    <text id="6142">
+                                                        <property name="fontSize">8pt</property>
+                                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF >if(row._outer["newProgress"] != null ) row._outer["newProgress"]+' %'</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
+                                            </row>
+                                        </detail>
+                                    </table>
+                                </cell>
                                 <cell id="5389">
                                     <property name="borderBottomStyle">none</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -8128,7 +8560,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                         <detail>
                                             <row id="6054">
                                                 <cell id="6055">
-                                                    <text id="6059">
+                                                    <text id="6106">
                                                         <property name="fontSize">8pt</property>
                                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                                         <property name="contentType">html</property>
@@ -8216,6 +8648,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                                             <property name="allowExport">true</property>
                                                         </structure>
                                                     </list-property>
+                                                    <structure name="toc"/>
                                                     <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["unitname"]}</VALUE-OF>
@@ -8570,6 +9003,14 @@ else{ 1.00 }
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
                                 <cell id="5407">
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                </cell>
+                                <cell id="6154">
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                </cell>
+                                <cell id="6144">
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
@@ -9655,7 +10096,7 @@ else{ 1.00 }
                                                 </cell>
                                             </row>
                                         </header>
-                                        <group id="6063">
+                                        <group id="6107">
                                             <property name="groupName">GroupByTaxType</property>
                                             <expression name="keyExpr" type="javascript">row["tax_type_name"]</expression>
                                             <structure name="toc">
@@ -9670,7 +10111,7 @@ else{ 1.00 }
                                                 </structure>
                                             </list-property>
                                             <header>
-                                                <row id="6064">
+                                                <row id="6108">
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
@@ -9721,7 +10162,7 @@ else{ 1.00 }
                                                         <property name="borderLeftWidth">thin</property>
                                                         <property name="borderRightStyle">solid</property>
                                                         <property name="borderRightWidth">thin</property>
-                                                        <data id="6075">
+                                                        <data id="6246">
                                                             <property name="fontSize">8pt</property>
                                                             <property name="fontWeight">bold</property>
                                                             <structure name="numberFormat">
@@ -9738,7 +10179,7 @@ else{ 1.00 }
                                         <detail>
                                             <row id="4712">
                                                 <property name="fontSize">8pt</property>
-                                                <cell id="6060">
+                                                <cell id="6109">
                                                     <property name="borderBottomColor">#000000</property>
                                                     <property name="borderBottomStyle">solid</property>
                                                     <property name="borderBottomWidth">thin</property>
@@ -10562,11 +11003,11 @@ else{ 1.00 }
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <grid id="6076">
+                                                <grid id="6248">
                                                     <property name="dataBindingRef">InvoiceLineTaxTable</property>
-                                                    <column id="6077"/>
-                                                    <row id="6078">
-                                                        <cell id="6079">
+                                                    <column id="6249"/>
+                                                    <row id="6250">
+                                                        <cell id="6251">
                                                             <text id="5693">
                                                                 <property name="fontSize">10pt</property>
                                                                 <property name="fontWeight">normal</property>
@@ -11728,7 +12169,7 @@ else {'Invoice.totalTaxes'}</value>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["legal_notice"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                     </text>
-                                    <text id="6061">
+                                    <text id="6110">
                                         <property name="fontSize">9pt</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="visibility">
@@ -12506,8 +12947,35 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="rowSpan">1</property>
                                     <text id="5981">
                                         <property name="fontSize">8pt</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["invoice_product_statement"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["invoice_product_statement"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["invoice_product_statement"]
+}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5980"/>
@@ -12524,8 +12992,35 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="rowSpan">1</property>
                                     <text id="5155">
                                         <property name="fontSize">8pt</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["SaleLegalNote"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["SaleLegalNote"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["SaleLegalNote"]
+}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5091"/>
@@ -12634,7 +13129,7 @@ else {'Invoice.totalTaxes'}</value>
                                         <expression name="valueExpr" type="javascript">row["operation_type_select"] != 2 &amp;&amp; row["operation_type_select"] != 4</expression>
                                     </structure>
                                 </list-property>
-                                <cell id="6062">
+                                <cell id="6111">
                                     <property name="colSpan">9</property>
                                     <property name="rowSpan">1</property>
                                     <grid id="6037">
@@ -12719,8 +13214,35 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
                                     <text id="5144">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["ClientBox"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["ClientBox"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["ClientBox"]
+}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5128"/>
@@ -13396,8 +13918,35 @@ else {'Invoice.totalTaxes'}</value>
                     <property name="rowSpan">1</property>
                     <text id="5215">
                         <property name="fontSize">9pt</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'value:'+row["termsAndConditions"]</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["termsAndConditions"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["termsAndConditions"]
+}</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>

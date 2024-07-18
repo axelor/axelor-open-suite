@@ -1,3 +1,0 @@
----
-title: "Timesheet line: Fixed NPE when generating a project invoice with a timesheet line that has a non null duration for customer"
-module: axelor-business-project

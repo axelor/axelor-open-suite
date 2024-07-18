@@ -24,6 +24,8 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServ
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveValidateServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
+import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
@@ -67,6 +69,10 @@ import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
+import com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl;
+import com.axelor.apps.hr.service.PayrollPreparationExportService;
+import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
+import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
 import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
@@ -219,8 +225,6 @@ import com.axelor.apps.hr.service.timesheet.TimesheetReportService;
 import com.axelor.apps.hr.service.timesheet.TimesheetReportServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
-import com.axelor.apps.hr.service.timesheet.TimesheetTimeComputationService;
-import com.axelor.apps.hr.service.timesheet.TimesheetTimeComputationServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
@@ -339,7 +343,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetProjectPlanningTimeService.class)
         .to(TimesheetProjectPlanningTimeServiceImpl.class);
     bind(TimesheetRemoveService.class).to(TimesheetRemoveServiceImpl.class);
-    bind(TimesheetTimeComputationService.class).to(TimesheetTimeComputationServiceImpl.class);
     bind(TimesheetWorkflowService.class).to(TimesheetWorkflowServiceImpl.class);
     bind(TimesheetTimerCreateService.class).to(TimesheetTimerCreateServiceImpl.class);
     bind(TimerTimesheetGenerationService.class).to(TimerTimesheetGenerationServiceImpl.class);
@@ -358,5 +361,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(PlannedTimeValueService.class).to(PlannedTimeValueServiceImpl.class);
     bind(ProjectPlanningTimeResponseComputeService.class)
         .to(ProjectPlanningTimeResponseComputeServiceImpl.class);
+    bind(MoveLineTaxServiceImpl.class).to(MoveLineTaxHRServiceImpl.class);
+    bind(ReconcileCheckServiceImpl.class).to(ReconcileCheckServiceHRImpl.class);
+    bind(PayrollPreparationExportService.class).to(PayrollPreparationExportServiceImpl.class);
   }
 }

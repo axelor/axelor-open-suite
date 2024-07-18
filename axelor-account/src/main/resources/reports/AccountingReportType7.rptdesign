@@ -546,7 +546,14 @@
             <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, MoveLine.name as move_line_name, MoveLine.description as move_line_description,
 MoveLine.date_val, MoveLine.partner_full_name as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
-MoveLine.debit, MoveLine.credit, ReconcileGroup.code as reconcile_group_code, MoveLine.due_date, Journal.code as journal_code,
+MoveLine.debit, MoveLine.credit,
+
+CASE WHEN CAST(ReconcileGroup.lettering_date_time AS DATE) > AccountingReport.date_val
+THEN ''
+ELSE ReconcileGroup.code
+END as reconcile_group_code,
+
+MoveLine.due_date, Journal.code as journal_code,
 Account.code as account_code , Account.name as account_name , Move.reference as move_sequence,
 ABS(MoveLine.amount_remaining) as amount_remaining,
 MoveLine.currency_amount,
@@ -603,8 +610,8 @@ AND (AccountingReport.display_opening_accounting_moves is true
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND (ABS(MoveLine.amount_remaining) > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
 GROUP BY MoveLine.id, MoveLine.name, MoveLine.description, MoveLine.date_val, MoveLine.partner_full_name,
-account, MoveLine.debit, MoveLine.credit, ReconcileGroup.code, Journal.code, Account.code, Account.name,  Move.reference,
-MoveLine.amount_remaining, MoveLine.currency_amount, Move.currency_code, Currency.number_of_decimals, CompanyCurrency.number_of_decimals
+account, MoveLine.debit, MoveLine.credit, ReconcileGroup.code, ReconcileGroup.lettering_date_time, Journal.code, Account.code, Account.name,  Move.reference,
+MoveLine.amount_remaining, MoveLine.currency_amount, Move.currency_code, Currency.number_of_decimals, CompanyCurrency.number_of_decimals, AccountingReport.date_val
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -672,13 +679,6 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">global</text-property>
                     <text-property name="heading">global</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">global_by_date</property>
-                    <property name="alias">global_by_date</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">global_by_date</text-property>
-                    <text-property name="heading">global_by_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">global_by_partner</property>
@@ -801,51 +801,46 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
-                        <property name="name">global_by_date</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">11</property>
                         <property name="name">global_by_partner</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">display_code_account</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">display_move_line_sequence</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">display_name_account</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">display_only_not_completely_lettered_move_lines</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">display_cumulative_balance</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">18</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -918,69 +913,62 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">global_by_date</property>
-                    <property name="nativeName">global_by_date</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">11</property>
                     <property name="name">global_by_partner</property>
                     <property name="nativeName">global_by_partner</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">display_code_account</property>
                     <property name="nativeName">display_code_account</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">display_move_line_sequence</property>
                     <property name="nativeName">display_move_line_sequence</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">display_name_account</property>
                     <property name="nativeName">display_name_account</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">display_only_not_completely_lettered_move_lines</property>
                     <property name="nativeName">display_only_not_completely_lettered_move_lines</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">display_cumulative_balance</property>
                     <property name="nativeName">display_cumulative_balance</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">16</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">17</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">18</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
@@ -997,7 +985,6 @@ MetaFile.file_path as logo_path,
 Period.name as period_name, 
 Journal.name as journal_name, 
 AccountingReport.global, 
-AccountingReport.global_by_date,
 AccountingReport.global_by_partner,
 AccountingReport.display_code_account_column_on_printing as display_code_account,
 AccountingReport.display_move_line_sequence_on_printing as display_move_line_sequence,
@@ -1215,12 +1202,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                             <property name="name">global</property>
                             <text-property name="displayName">global</text-property>
                             <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">global_by_date</property>
-                            <text-property name="displayName">global_by_date</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["global_by_date"]</expression>
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
@@ -1444,12 +1425,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="name">global</property>
                     <text-property name="displayName">global</text-property>
                     <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">global_by_date</property>
-                    <text-property name="displayName">global_by_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["global_by_date"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -2320,16 +2295,16 @@ else {
                                     <expression name="valueExpr" type="javascript">!row._outer["display_name_account"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">15%</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4331">
-                            <property name="width">8%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4249">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4092">
-                            <property name="width">27%</property>
+                            <property name="width">25%</property>
                         </column>
                         <column id="5197">
                             <list-property name="visibility">
@@ -2338,7 +2313,7 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="5215">
                             <list-property name="visibility">
@@ -2347,7 +2322,7 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">11%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4093">
                             <list-property name="visibility">
@@ -2356,28 +2331,28 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">20%</property>
+                            <property name="width">15%</property>
                         </column>
                         <column id="4095">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4096">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4153">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4225">
-                            <property name="width">10%</property>
+                            <property name="width">7%</property>
                         </column>
                         <column id="4343">
-                            <property name="width">10%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="4351">
-                            <property name="width">10%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="4359">
-                            <property name="width">10%</property>
+                            <property name="width">7%</property>
                         </column>
                         <header>
                             <row id="5148">
@@ -3135,7 +3110,7 @@ else {
                                         <property name="colSpan">7</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4141">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <expression name="valueExpr">"Total" + " "+ row["account"]</expression>
                                             <property name="contentType">html</property>
@@ -3146,7 +3121,7 @@ else {
                                     <cell id="4110"/>
                                     <cell id="4112">
                                         <text id="5340">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
                                             <structure name="toc"/>
@@ -3156,7 +3131,7 @@ else {
                                     </cell>
                                     <cell id="4113">
                                         <text id="5341">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
                                             <structure name="toc"/>
@@ -3166,7 +3141,7 @@ else {
                                     </cell>
                                     <cell id="4151">
                                         <text id="5349">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
@@ -3243,7 +3218,7 @@ else {
                                         <property name="colSpan">6</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4288">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <expression name="valueExpr">"Total" + " "+ row["partner"]</expression>
                                             <property name="contentType">html</property>
@@ -3254,7 +3229,7 @@ else {
                                     <cell id="4272"/>
                                     <cell id="4273">
                                         <text id="5333">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
                                             <structure name="toc"/>
@@ -3266,7 +3241,7 @@ else {
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <text id="5334">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
                                             <structure name="toc"/>
@@ -3278,7 +3253,7 @@ else {
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <text id="5348">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
                                             <structure name="toc"/>
@@ -3310,7 +3285,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3361,7 +3336,7 @@ else {
                                         <property name="resultSetColumn">move_sequence</property>
                                     </data>
                                     <data id="4069">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -3378,7 +3353,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3431,7 +3406,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3479,7 +3454,7 @@ else {
                                 </cell>
                                 <cell id="4327">
                                     <data id="4073">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <structure name="dateTimeFormat">
                                             <property name="category">Short Date</property>
                                             <property name="pattern">Short Date</property>
@@ -3490,26 +3465,26 @@ else {
                                 </cell>
                                 <cell id="4246">
                                     <data id="4251">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="resultSetColumn">journal_code1</property>
                                     </data>
                                 </cell>
                                 <cell id="4072">
                                     <data id="4071">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="resultSetColumn">move_line_description</property>
                                     </data>
                                 </cell>
                                 <cell id="5193">
                                     <data id="5218">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="resultSetColumn">origin</property>
                                     </data>
                                 </cell>
                                 <cell id="5211">
                                     <data id="5188">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <structure name="dateTimeFormat">
                                             <property name="category">Short Date</property>
                                             <property name="pattern">Short Date</property>
@@ -3520,13 +3495,13 @@ else {
                                 </cell>
                                 <cell id="4074">
                                     <data id="4075">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="resultSetColumn">partner</property>
                                     </data>
                                 </cell>
                                 <cell id="4078">
                                     <text id="5331">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
                                         <structure name="toc"/>
                                         <property name="contentType">html</property>
@@ -3535,7 +3510,7 @@ else {
                                 </cell>
                                 <cell id="4080">
                                     <text id="5332">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
                                         <structure name="toc"/>
                                         <property name="contentType">html</property>
@@ -3544,7 +3519,7 @@ else {
                                 </cell>
                                 <cell id="4150">
                                     <text id="5347">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
                                         <list-property name="visibility">
                                             <structure>
@@ -3568,7 +3543,7 @@ else {
                                 <cell id="4339">
                                     <property name="backgroundColor">silver</property>
                                     <text id="5344">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
                                         <structure name="toc"/>
                                         <property name="contentType">html</property>
@@ -3578,7 +3553,7 @@ else {
                                 <cell id="4347">
                                     <property name="backgroundColor">silver</property>
                                     <text id="5345">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
                                         <structure name="toc"/>
                                         <property name="contentType">html</property>
@@ -3588,7 +3563,7 @@ else {
                                 <cell id="4355">
                                     <property name="backgroundColor">silver</property>
                                     <data id="5170">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">currencyCode</property>
                                     </data>
@@ -3611,7 +3586,7 @@ else {
                                 <cell id="4086"/>
                                 <cell id="4088">
                                     <text id="5342">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <structure name="toc"/>
@@ -3621,7 +3596,7 @@ else {
                                 </cell>
                                 <cell id="4089">
                                     <text id="5343">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <structure name="toc"/>
@@ -3631,7 +3606,7 @@ else {
                                 </cell>
                                 <cell id="4152">
                                     <text id="5350">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <list-property name="visibility">

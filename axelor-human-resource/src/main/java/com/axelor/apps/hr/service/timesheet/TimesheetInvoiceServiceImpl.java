@@ -61,6 +61,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
   protected PriceListService priceListService;
   protected UnitConversionService unitConversionService;
   protected UnitConversionForProjectService unitConversionForProjectService;
+  protected TimesheetLineService timesheetLineService;
 
   @Inject
   public TimesheetInvoiceServiceImpl(
@@ -69,13 +70,15 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
       ProductCompanyService productCompanyService,
       PriceListService priceListService,
       UnitConversionService unitConversionService,
-      UnitConversionForProjectService unitConversionForProjectService) {
+      UnitConversionForProjectService unitConversionForProjectService,
+      TimesheetLineService timesheetLineService) {
     this.appHumanResourceService = appHumanResourceService;
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
     this.priceListService = priceListService;
     this.unitConversionService = unitConversionService;
     this.unitConversionForProjectService = unitConversionForProjectService;
+    this.timesheetLineService = timesheetLineService;
   }
 
   @Override
@@ -91,7 +94,11 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[5];
-      tabInformations[0] = timesheetLine.getProduct();
+      Product product = timesheetLine.getProduct();
+      if (product == null) {
+        product = timesheetLineService.getDefaultProduct(timesheetLine);
+      }
+      tabInformations[0] = product;
       tabInformations[1] = timesheetLine.getEmployee();
       // Start date
       tabInformations[2] = timesheetLine.getDate();
@@ -101,7 +108,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
 
       String key = null;
       if (consolidate) {
-        key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getEmployee().getId();
+        key = product.getId() + "|" + timesheetLine.getEmployee().getId();
         if (timeSheetInformationsMap.containsKey(key)) {
           tabInformations = timeSheetInformationsMap.get(key);
           // Update date

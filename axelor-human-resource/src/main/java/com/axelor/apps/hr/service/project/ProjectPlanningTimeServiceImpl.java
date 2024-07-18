@@ -35,6 +35,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -80,6 +81,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   protected AppProjectService appProjectService;
   protected ProjectConfigService projectConfigService;
+  protected PlannedTimeValueService plannedTimeValueService;
   protected ICalendarService iCalendarService;
   protected ICalendarEventRepository iCalendarEventRepository;
 
@@ -95,6 +97,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       TimesheetLineRepository timesheetLineRepository,
       AppProjectService appProjectService,
       ProjectConfigService projectConfigService,
+      PlannedTimeValueService plannedTimeValueService,
       ICalendarService iCalendarService,
       ICalendarEventRepository iCalendarEventRepository,
       UnitConversionForProjectService unitConversionForProjectService,
@@ -110,6 +113,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.timesheetLineRepository = timesheetLineRepository;
     this.appProjectService = appProjectService;
     this.projectConfigService = projectConfigService;
+    this.plannedTimeValueService = plannedTimeValueService;
     this.iCalendarService = iCalendarService;
     this.iCalendarEventRepository = iCalendarEventRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
@@ -476,17 +480,23 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     List<Unit> units = new ArrayList<>();
     units.add(unit);
     units.addAll(
-        unitConversionRepository.all()
+        unitConversionRepository
+            .all()
             .filter("self.entitySelect = :entitySelect AND self.startUnit = :startUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("startUnit", unit)
-            .fetch().stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
+            .bind("startUnit", unit)
+            .fetch()
+            .stream()
             .map(UnitConversion::getEndUnit)
             .collect(Collectors.toList()));
     units.addAll(
-        unitConversionRepository.all()
+        unitConversionRepository
+            .all()
             .filter("self.entitySelect = :entitySelect AND self.endUnit = :endUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("endUnit", unit)
-            .fetch().stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
+            .bind("endUnit", unit)
+            .fetch()
+            .stream()
             .map(UnitConversion::getStartUnit)
             .collect(Collectors.toList()));
     return units;
@@ -501,5 +511,20 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
                 .getProjectConfig(projectPlanningTime.getProject().getCompany())
                 .getPlannedTimeValueList())
         + ")";
+  }
+
+  public BigDecimal getDefaultPlanningTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    return projectConfigService
+        .getProjectConfig(projectPlanningTime.getProject().getCompany())
+        .getValueByDefaultOnDisplayPlannedTime();
+  }
+
+  public PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    return plannedTimeValueService.createPlannedTimeValue(
+        projectConfigService
+            .getProjectConfig(projectPlanningTime.getProject().getCompany())
+            .getValueByDefaultOnDisplayPlannedTime());
   }
 }

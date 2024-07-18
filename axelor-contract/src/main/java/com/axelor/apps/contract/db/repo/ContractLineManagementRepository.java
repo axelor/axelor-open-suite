@@ -26,8 +26,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
@@ -36,10 +36,17 @@ import java.util.Map;
 public class ContractLineManagementRepository extends ContractLineRepository {
 
   protected InvoiceLineRepository invoiceLineRepository;
+  protected CurrencyScaleService currencyScaleService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public ContractLineManagementRepository(InvoiceLineRepository invoiceLineRepository) {
+  public ContractLineManagementRepository(
+      InvoiceLineRepository invoiceLineRepository,
+      CurrencyScaleService currencyScaleService,
+      AppBaseService appBaseService) {
     this.invoiceLineRepository = invoiceLineRepository;
+    this.currencyScaleService = currencyScaleService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -75,25 +82,21 @@ public class ContractLineManagementRepository extends ContractLineRepository {
 
         if (ContractVersion.class.equals(model)) {
           ContractVersion contractVersion =
-              Beans.get(ContractVersionRepository.class)
-                  .find(Long.parseLong(_parent.get("id").toString()));
+              JPA.find(ContractVersion.class, Long.parseLong(_parent.get("id").toString()));
           json.put(
               "$currencyNumberOfDecimals",
-              Beans.get(CurrencyScaleService.class).getScale(contractVersion.getContract()));
+              currencyScaleService.getScale(contractVersion.getContract()));
         } else if (ContractTemplate.class.equals(model)) {
           ContractTemplate contractTemplate =
-              Beans.get(ContractTemplateRepository.class)
-                  .find(Long.parseLong(_parent.get("id").toString()));
-          json.put(
-              "$currencyNumberOfDecimals",
-              Beans.get(CurrencyScaleService.class).getScale(contractTemplate));
+              JPA.find(ContractTemplate.class, Long.parseLong(_parent.get("id").toString()));
+          json.put("$currencyNumberOfDecimals", currencyScaleService.getScale(contractTemplate));
         }
       }
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
     }
 
-    AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
+    AppBase appBase = appBaseService.getAppBase();
 
     json.put("$nbDecimalDigitForQty", appBase.getNbDecimalDigitForQty());
     json.put("$nbDecimalDigitForUnitPrice", appBase.getNbDecimalDigitForUnitPrice());

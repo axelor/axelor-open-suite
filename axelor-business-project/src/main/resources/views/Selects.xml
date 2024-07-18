@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <selection name="business.project.task.invoicing.type.select">
     <option value="1">Time spent</option>
@@ -55,6 +55,7 @@
     <option value="2">Generate invoicing projects</option>
     <option value="3">Compute project totals</option>
     <option value="4">Backup project data to project history</option>
+    <option value="5">Transition between paid status</option>
   </selection>
 
   <selection name="business.project.batch.consolidate.phase.select">
@@ -86,9 +87,12 @@
   </selection>
 
   <selection name="business.project.sale.order.line.invoicing.mode.select">
-    <option value="1">Directly</option>
-    <option value="2">On delivery</option>
-    <option value="3">On progress</option>
+    <option value="1">Standard (via order)</option>
+    <option value="2">Business (via business proj)</option>
+    <option value="3">On delivery (via business proj)</option>
+    <option value="4">On progress (via task)</option>
+    <option value="5">On spent time (via task)</option>
+    <option value="6">On package (via task)</option>
   </selection>
 
   <selection name='iinvoice.operation.sub.type.select'

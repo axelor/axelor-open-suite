@@ -237,7 +237,9 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return remainingAmount.compareTo(pendingAmount) <= 0;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   @Override
   public List<BankDetails> findCompatibleBankDetails(
       Company company, InvoicePayment invoicePayment) {
@@ -419,7 +421,11 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (!CollectionUtils.isEmpty(invoiceTerms)) {
 
         BigDecimal companyAmount =
-            this.computeCompanyAmount(invoicePayment.getAmount(), invoicePayment);
+            this.computeCompanyAmount(
+                invoicePayment.getAmount(),
+                invoicePayment.getCurrency(),
+                invoicePayment.getCompanyCurrency(),
+                invoicePayment.getPaymentDate());
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
@@ -460,6 +466,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     List<Long> invoiceTermIdList = null;
     if (invoiceId > 0) {
       Invoice invoice = invoiceRepo.find(invoiceId);
+      LocalDate invoiceDate = invoice.getInvoiceDate();
       invoicePayment.setInvoice(invoice);
 
       List<InvoiceTerm> invoiceTerms =
@@ -471,17 +478,22 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
       invoicePayment =
           invoiceTermPaymentService.initInvoiceTermPayments(
-              invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
+              invoicePayment,
+              Lists.newArrayList(invoiceTerms.get(0)),
+              invoicePayment.getPaymentDate());
 
       if (this.isPartialPayment(invoicePayment)) {
         invoicePayment.setApplyFinancialDiscount(false);
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPayments(
-            invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
+            invoicePayment,
+            Lists.newArrayList(invoiceTerms.get(0)),
+            invoicePayment.getPaymentDate());
       }
 
-      invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
+      invoicePayment =
+          invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment, invoice);
 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
@@ -512,14 +524,16 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                     != 0);
   }
 
-  protected BigDecimal computeCompanyAmount(
-      BigDecimal amountInCurrency, InvoicePayment invoicePayment) throws AxelorException {
-    if (!invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())) {
+  @Override
+  public BigDecimal computeCompanyAmount(
+      BigDecimal amountInCurrency,
+      Currency paymentCurrency,
+      Currency companyCurrency,
+      LocalDate paymentDate)
+      throws AxelorException {
+    if (!paymentCurrency.equals(companyCurrency)) {
       return currencyService.getAmountCurrencyConvertedAtDate(
-          invoicePayment.getCurrency(),
-          invoicePayment.getCompanyCurrency(),
-          amountInCurrency,
-          invoicePayment.getPaymentDate());
+          paymentCurrency, companyCurrency, amountInCurrency, paymentDate);
     }
 
     return amountInCurrency;

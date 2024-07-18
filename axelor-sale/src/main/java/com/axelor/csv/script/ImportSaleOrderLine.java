@@ -20,7 +20,8 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -31,10 +32,11 @@ public class ImportSaleOrderLine {
     assert bean instanceof SaleOrderLine;
 
     SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
-    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    SaleOrderLineTaxService saleOrderLineTaxService = Beans.get(SaleOrderLineTaxService.class);
     saleOrderLine.setTaxLineSet(
-        saleOrderLineService.getTaxLineSet(saleOrderLine.getSaleOrder(), saleOrderLine));
-    saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+        saleOrderLineTaxService.getTaxLineSet(saleOrderLine.getSaleOrder(), saleOrderLine));
+    Beans.get(SaleOrderLineComputeService.class)
+        .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
 
     return saleOrderLine;
   }

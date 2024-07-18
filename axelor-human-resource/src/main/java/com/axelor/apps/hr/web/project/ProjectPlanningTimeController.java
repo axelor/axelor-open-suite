@@ -165,4 +165,19 @@ public class ProjectPlanningTimeController {
             .getProjectConfig(projectPlanningTime.getProject().getCompany())
             .getIsSelectionOnDisplayPlannedTime());
   }
+
+  public void getDefaultPlanningTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+    ProjectPlanningTimeService projectPlanningTimeService =
+        Beans.get(ProjectPlanningTimeService.class);
+
+    response.setValue(
+        "displayPlannedTime",
+        projectPlanningTimeService.getDefaultPlanningTime(projectPlanningTime));
+    response.setValue(
+        "displayPlannedTimeRestricted",
+        projectPlanningTimeService.getDefaultPlanningRestrictedTime(projectPlanningTime));
+  }
 }

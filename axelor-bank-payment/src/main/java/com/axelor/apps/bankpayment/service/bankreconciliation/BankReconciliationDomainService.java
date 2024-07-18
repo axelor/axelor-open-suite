@@ -27,7 +27,8 @@ public interface BankReconciliationDomainService {
   String getDomainForWizard(
       BankReconciliation bankReconciliation,
       BigDecimal bankStatementCredit,
-      BigDecimal bankStatementDebit);
+      BigDecimal bankStatementDebit)
+      throws AxelorException;
 
   String getAccountDomain(BankReconciliation bankReconciliation);
 

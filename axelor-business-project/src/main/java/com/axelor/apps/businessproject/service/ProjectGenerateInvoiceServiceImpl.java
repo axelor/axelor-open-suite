@@ -1,10 +1,32 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -20,6 +42,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
@@ -31,6 +54,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppBusinessProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -53,6 +77,9 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
   protected InvoiceLineService invoiceLineService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected AppBusinessProjectService appBusinessProjectService;
+  protected InvoiceLineAnalyticService invoiceLineAnalyticService;
+  protected AnalyticLineService analyticLineService;
 
   protected int sequence = 0;
 
@@ -69,7 +96,10 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       ExpenseInvoiceLineService expenseInvoiceLineService,
       InvoicingProjectStockMovesService invoicingProjectStockMovesService,
       InvoiceLineService invoiceLineService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      AppBusinessProjectService appBusinessProjectService,
+      InvoiceLineAnalyticService invoiceLineAnalyticService,
+      AnalyticLineService analyticLineService) {
     this.invoicingProjectService = invoicingProjectService;
     this.partnerService = partnerService;
     this.invoicingProjectRepo = invoicingProjectRepo;
@@ -82,6 +112,9 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.invoicingProjectStockMovesService = invoicingProjectStockMovesService;
     this.invoiceLineService = invoiceLineService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.appBusinessProjectService = appBusinessProjectService;
+    this.invoiceLineAnalyticService = invoiceLineAnalyticService;
+    this.analyticLineService = analyticLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -109,7 +142,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
             company,
             customer,
             customerContact,
-            project);
+            project,
+            customer.getInPaymentMode());
     return createInvoice(invoicingProject, invoiceGenerator, company);
   }
 
@@ -120,6 +154,9 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    invoice.setIsExpenseLineOnInvoiceGrouped(appBusinessProject.getIsExpenseLineOnInvoiceGrouped());
+    invoice.setGroupingPeriodSelect(appBusinessProject.getGroupingPeriodSelect());
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
     invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
@@ -136,14 +173,15 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       Company company,
       Partner invoicedPartner,
       Partner invoicedPartnerContact,
-      Project project)
+      Project project,
+      PaymentMode paymentMode)
       throws AxelorException {
 
     return new InvoiceGenerator(
         operationTypeSelect,
         company,
         invoicedPartner.getPaymentCondition(),
-        invoicedPartner.getInPaymentMode(),
+        paymentMode,
         partnerService.getInvoicingAddress(invoicedPartner),
         invoicedPartner,
         invoicedPartnerContact,
@@ -230,10 +268,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       invoiceLine.setSequence(sequence);
       sequence++;
 
-      if (folder.getProject() != null) {
-        invoiceLine.setAnalyticDistributionTemplate(
-            folder.getProject().getAnalyticDistributionTemplate());
-      }
+      this.computeAnalytic(invoiceLine, folder.getProject(), invoice.getCompany());
       invoiceLineService.compute(invoice, invoiceLine);
     }
 
@@ -301,5 +336,19 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
               .createInvoiceLine(invoice, purchaseOrderLine));
     }
     return invoiceLineList;
+  }
+
+  protected void computeAnalytic(InvoiceLine invoiceLine, Project project, Company company)
+      throws AxelorException {
+    if (project != null) {
+      invoiceLine.setAnalyticDistributionTemplate(project.getAnalyticDistributionTemplate());
+
+      List<AnalyticMoveLine> analyticMoveLineList =
+          invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
+      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+      invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+
+      analyticLineService.setAnalyticAccount(invoiceLine, company);
+    }
   }
 }

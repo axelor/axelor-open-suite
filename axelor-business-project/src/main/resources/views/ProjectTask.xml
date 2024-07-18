@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-project-project-task-grid" orderBy="-taskDate">
@@ -316,8 +316,14 @@
       expr="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'"
       if="!frameworkCustomerContract &amp;&amp; !frameworkSupplierContract"/>
     <attribute for="product" name="domain"
-      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND self.id IN (${(frameworkCustomerContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')}) AND self.id IN (${(frameworkSupplierContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')})&quot;"
-      if="frameworkCustomerContract || frameworkSupplierContract"/>
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND self.id IN (${(frameworkCustomerContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')})&quot;"
+      if="frameworkCustomerContract"/>
+    <attribute for="product" name="domain"
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND self.id IN (${(frameworkSupplierContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')})&quot;"
+      if="frameworkSupplierContract"/>
+    <attribute for="product" name="domain"
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND (self.id IN (${(frameworkCustomerContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')}) AND self.id IN (${(frameworkSupplierContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')}))&quot;"
+      if="frameworkCustomerContract &amp;&amp; frameworkSupplierContract"/>
   </action-attrs>
 
   <action-group name="action-project-task-group-set-price-from-contract">

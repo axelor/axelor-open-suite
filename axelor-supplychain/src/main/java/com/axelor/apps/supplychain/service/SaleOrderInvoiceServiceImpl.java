@@ -47,7 +47,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -62,6 +61,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -94,8 +94,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected InvoiceServiceSupplychainImpl invoiceService;
 
-  protected SaleOrderLineService saleOrderLineService;
-
   protected StockMoveRepository stockMoveRepository;
 
   protected SaleOrderWorkflowService saleOrderWorkflowService;
@@ -114,7 +112,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
-      SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
       InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
@@ -130,7 +127,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
     this.stockMoveRepository = stockMoveRepository;
-    this.saleOrderLineService = saleOrderLineService;
     this.invoiceTermService = invoiceTermService;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.commonInvoiceService = commonInvoiceService;
@@ -993,5 +989,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       invoiceList.add(invoice);
     }
     return invoiceList;
+  }
+
+  @Override
+  public List<Map<String, Object>> getSaleOrderLineList(SaleOrder saleOrder) {
+    List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+      saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
+      saleOrderLineList.add(saleOrderLineMap);
+    }
+    return saleOrderLineList;
   }
 }

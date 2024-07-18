@@ -119,4 +119,9 @@ public interface StockMoveInvoiceService {
 
   String fillInternalReferenceInvoiceFromOutStockMove(
       StockMove stockMove, Set<SaleOrder> saleOrderSet);
+
+  String fillExternalReferenceInvoiceFromInStockMove(Set<PurchaseOrder> purchaseOrderSet);
+
+  String fillInternalReferenceInvoiceFromInStockMove(
+      StockMove stockMove, Set<PurchaseOrder> purchaseOrderSet);
 }

@@ -27,11 +27,18 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.cash.management.db.ForecastRecap;
 import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class CashManagementForecastRecapRepository extends ForecastRecapRepository {
+
+  protected SequenceService sequenceService;
+
+  @Inject
+  public CashManagementForecastRecapRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public ForecastRecap save(ForecastRecap entity) {
@@ -42,13 +49,12 @@ public class CashManagementForecastRecapRepository extends ForecastRecapReposito
         Company company = entity.getCompany();
 
         String sequence =
-            Beans.get(SequenceService.class)
-                .getSequenceNumber(
-                    SequenceRepository.FORECAST_RECAP_SEQUENCE,
-                    company,
-                    ForecastRecap.class,
-                    "forecastRecapSeq",
-                    entity);
+            sequenceService.getSequenceNumber(
+                SequenceRepository.FORECAST_RECAP_SEQUENCE,
+                company,
+                ForecastRecap.class,
+                "forecastRecapSeq",
+                entity);
 
         if (sequence == null) {
           throw new AxelorException(

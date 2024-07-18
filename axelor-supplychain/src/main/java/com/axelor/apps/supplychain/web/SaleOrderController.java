@@ -51,7 +51,6 @@ import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.exception.MessageExceptionMessage;
@@ -77,7 +76,6 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderController {
 
-  private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
   private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
   private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
 
@@ -299,9 +297,10 @@ public class SaleOrderController {
       Map<Long, BigDecimal> priceMap,
       Map<Long, BigDecimal> qtyMap) {
     for (Map<String, Object> map : saleOrderLineListContext) {
-      if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
+      if (map.get(SaleOrderInvoiceService.SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
         BigDecimal qtyToInvoiceItem =
-            new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
+            new BigDecimal(
+                map.get(SaleOrderInvoiceService.SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
         if (qtyToInvoiceItem.signum() != 0) {
           Long soLineId = Long.valueOf((Integer) map.get("id"));
           qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
@@ -486,12 +485,8 @@ public class SaleOrderController {
   public void fillDefaultValueWizard(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
-        saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
-        saleOrderLineList.add(saleOrderLineMap);
-      }
+      List<Map<String, Object>> saleOrderLineList =
+          Beans.get(SaleOrderInvoiceService.class).getSaleOrderLineList(saleOrder);
       response.setValue("$amountToInvoice", BigDecimal.ZERO);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
@@ -700,6 +695,7 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
   /**
    * Called from sale order form view, on invoiced partner select. Call {@link
    * PartnerLinkService#computePartnerFilter}

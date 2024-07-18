@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -58,8 +59,11 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
         contractVersion != null ? contractVersion : contractLine.getContractVersion();
     this.contract = contract != null ? contract : this.contractVersion.getContract();
 
-    if (this.contractVersion == null && this.contract != null) {
-      this.contractVersion = this.contract.getCurrentContractVersion();
+    if (this.contract != null) {
+      this.isPurchase = this.contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT;
+      if (this.contractVersion == null) {
+        this.contractVersion = this.contract.getCurrentContractVersion();
+      }
     }
 
     this.analyticMoveLineList = contractLine.getAnalyticMoveLineList();

@@ -141,10 +141,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     task.setDescription(saleOrderLine.getDescription());
     task.setQuantity(saleOrderLine.getQty());
     task.setSaleOrderLine(saleOrderLine);
-    task.setToInvoice(
-        saleOrderLine.getSaleOrder() != null
-            ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
-            : false);
 
     if (isTimeUnitValid(orderLineUnit)) {
       task.setTimeUnit(orderLineUnit);

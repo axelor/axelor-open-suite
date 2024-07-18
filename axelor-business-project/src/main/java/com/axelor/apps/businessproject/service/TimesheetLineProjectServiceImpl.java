@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Timesheet;
@@ -192,5 +193,14 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
             timesheetLine.getEmployee(),
             timesheetLine.getProject().getCompany(),
             timesheetLine.getDate());
+  }
+
+  @Override
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    if (timesheetLine.getProjectTask() != null
+        && timesheetLine.getProjectTask().getProduct() != null) {
+      return timesheetLine.getProjectTask().getProduct();
+    }
+    return timesheetLine.getEmployee().getProduct();
   }
 }

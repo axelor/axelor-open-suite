@@ -34,6 +34,7 @@ import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -71,10 +72,12 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
       LocalDate expenseDate,
       String comments,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException {
     ExpenseLine expenseLine =
-        super.createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
+        super.createBasicExpenseLine(
+            project, employee, expenseDate, comments, currency, toInvoice, projectTask);
 
     if (appBusinessProjectService.isApp("business-project")) {
       expenseLine.setToInvoice(getToInvoice(project, toInvoice));

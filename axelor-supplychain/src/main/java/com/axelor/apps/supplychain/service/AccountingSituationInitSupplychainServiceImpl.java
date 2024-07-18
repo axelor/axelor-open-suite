@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -37,6 +38,7 @@ public class AccountingSituationInitSupplychainServiceImpl
 
   protected AppAccountService appAccountService;
   protected SaleConfigService saleConfigService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public AccountingSituationInitSupplychainServiceImpl(
@@ -45,10 +47,12 @@ public class AccountingSituationInitSupplychainServiceImpl
       PaymentModeService paymentModeService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
-      SaleConfigService saleConfigService) {
+      SaleConfigService saleConfigService,
+      CurrencyScaleService currencyScaleService) {
     super(sequenceService, accountingSituationRepository, paymentModeService, accountConfigService);
     this.appAccountService = appAccountService;
     this.saleConfigService = saleConfigService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -60,9 +64,10 @@ public class AccountingSituationInitSupplychainServiceImpl
     if (partner.getIsCustomer()
         && appAccountService.getAppAccount().getManageCustomerCredit()
         && appAccountService.isApp("supplychain")) {
-      SaleConfig config = saleConfigService.getSaleConfig(accountingSituation.getCompany());
+      SaleConfig config = saleConfigService.getSaleConfig(company);
       if (config != null) {
-        accountingSituation.setAcceptedCredit(config.getAcceptedCredit());
+        accountingSituation.setAcceptedCredit(
+            currencyScaleService.getCompanyScaledValue(company, config.getAcceptedCredit()));
       }
     }
 
