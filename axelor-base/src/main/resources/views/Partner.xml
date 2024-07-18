@@ -1344,11 +1344,14 @@
   <action-record name="action-partner-record-set-balance"
     model="com.axelor.apps.base.db.Partner">
     <field name="$balance"
-      expr="#{accountingSituationList.stream().map(
-                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
-                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
-                    : (x -> x.balanceCustAccount)
-                ).sum()}"/>
+      if="eval: __config__.app.getApp('account').partnerBalConfigSelect == 3"
+      expr="eval: accountingSituationList.collect{x -> x.balanceDueDebtRecoveryCustAccount}.sum()"/>
+    <field name="$balance"
+      if="eval: __config__.app.getApp('account').partnerBalConfigSelect == 2"
+      expr="eval: accountingSituationList.collect{x -> x.balanceDueCustAccount}.sum()"/>
+    <field name="$balance"
+      if="eval: ![2,3].contains(__config__.app.getApp('account').partnerBalConfigSelect)"
+      expr="eval: accountingSituationList.collect{x -> x.balanceCustAccount}.sum()"/>
   </action-record>
 
   <action-record name="action-partner-record-employee"
