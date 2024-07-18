@@ -52,8 +52,7 @@ public class ContractRevaluationServiceImpl implements ContractRevaluationServic
 
   public Contract applyFormula(Contract contract) throws AxelorException, ScriptException {
     contract = contractRepository.find(contract.getId());
-    List<ContractLine> contractLineList =
-        contract.getCurrentContractVersion().getContractLineList();
+    List<ContractLine> contractLineList = contract.getNextVersion().getContractLineList();
     StringJoiner newUnitPrices = new StringJoiner(", ");
     StringJoiner allP0 = new StringJoiner(", ");
     StringJoiner allPf = new StringJoiner(", ");
