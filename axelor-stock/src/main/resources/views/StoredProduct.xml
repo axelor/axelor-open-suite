@@ -14,7 +14,8 @@
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-stored-product-method-tracking-number-domain"
       onChange="action-stored-product-method-set-current-qty"/>
-    <field name="currentQty" readonly="true"/>
+    <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+      readonly="true"/>
     <field name="unit" readonly="true"/>
     <field name="storedQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
@@ -24,7 +25,7 @@
 
   <form name="stored-product-form" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProduct" onNew="action-stored-product-group-onnew"
-    canDelete="false">
+    onLoad="action-stored-product-method-set-current-qty" canDelete="false">
     <panel name="mainPanel">
       <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
         onSelect="action-stored-product-method-stored-product-domain"/>
@@ -35,9 +36,11 @@
       <field name="trackingNumber"
         onSelect="action-stored-product-method-tracking-number-domain"
         onChange="action-stored-product-method-set-current-qty"/>
-      <field name="currentQty" readonly="true"/>
+      <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+        readonly="true"/>
       <field name="unit" readonly="true"/>
       <field name="storedQty"/>
+      <field name="stockMoveLine" showIf="stockMoveLine != null"/>
     </panel>
   </form>
 

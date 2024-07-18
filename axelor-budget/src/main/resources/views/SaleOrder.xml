@@ -76,7 +76,7 @@
   <action-group name="action-group-sale-order-finalize-quotation"
     id="action-budget-group-sale-order-finalize-quotation">
     <action name="save"/>
-    <action name="action-sale-order-validate-quotation"/>
+    <action name="action-sale-order-method-check-before-finalize"/>
     <action name="action-sale-order-method-budget-auto-compute-budget-distribution"
       if="__config__.app.isApp('budget')"/>
     <action name="action-sale-order-method-budget-validate-finalize"/>

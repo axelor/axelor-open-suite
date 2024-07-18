@@ -390,10 +390,10 @@
           form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"
           colSpan="3"/>
         <field name="clientPartner" required="true" hideIf="company == null"
-          readonlyIf="statusSelect > 1" onChange="action-sale-order-group-client-partner-change"
+          readonlyIf="statusSelect > 1" onChange="action-sale-order-method-client-partner-onchange"
           onSelect="action-sale-order-method-set-client-partner-domain" form-view="partner-form"
           grid-view="partner-grid" colSpan="3"/>
-        <field name="contactPartner" colSpan="3" hideIf="company == null"
+        <field name="contactPartner" colSpan="3"
           onChange="action-record-so-contact-partner-change"
           onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true"
           canEdit="false" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -932,7 +932,8 @@
       </panel>
 
       <panel name="customerInformationPanel" title="Customer information">
-        <field name="clientPartner" onChange="action-sale-order-group-client-partner-change"
+        <field name="clientPartner"
+          onChange="action-sale-order-method-client-partner-onchange"
           onSelect="action-sale-order-method-set-client-partner-domain" form-view="partner-form"
           grid-view="partner-grid"/>
         <field name="contactPartner" onChange="action-record-so-contact-partner-change"
@@ -1441,6 +1442,7 @@
   </action-group>
 
   <action-group name="action-sale-group-onchange-company">
+    <action name="action-sale-order-method-company-onchange"/>
     <action name="action-sale-order-record-company-configuration"/>
     <action name="action-supplychain-sale-order-method-get-stock-location"
       if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
@@ -1459,8 +1461,8 @@
   </action-record>
 
   <action-group name="action-group-sale-saleorder-onload">
+    <action name="action-sale-order-method-onload"/>
     <action name="action-sale-order-attrs-collapse-specific-settings-group"/>
-    <action name="action-partner-attrs-hide-contact-partner"/>
     <action name="action-sale-order-attrs-in-ati"/>
     <action name="action-sale-order-attrs-hidden-bank-details"/>
     <action name="action-sale-order-record-project-default-fields"
@@ -1488,19 +1490,13 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
-  <action-group name="action-sale-order-group-client-partner-change">
-    <action name="action-sale-order-method-client-partner-onchange"/>
-    <action name="action-sale-order-attrs-interco" if="__config__.app.isApp('supplychain')"/>
-    <action name="action-partner-attrs-hide-contact-partner"/>
-  </action-group>
-
   <action-group name="action-group-sale-order-validate-changes">
     <action name="action-method-sale-order-validate-changes"/>
   </action-group>
 
   <action-group name="action-group-sale-order-finalize-quotation">
     <action name="save"/>
-    <action name="action-sale-order-validate-quotation"/>
+    <action name="action-sale-order-method-check-before-finalize"/>
     <action name="action-sale-order-method-finalize-quotation"/>
   </action-group>
 
@@ -1513,16 +1509,6 @@
     <action name="save"/>
     <action name="action-sale-order-method-version-recovery-btn"/>
   </action-group>
-
-  <action-validate name="action-sale-order-validate-quotation">
-    <error message="Please enter at least one detail line." if="saleOrderLineList?.isEmpty()"/>
-    <alert
-      message="One product is sold at loss, are you sure you want to finalize the quotation ?"
-      if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
-    <alert
-      message="The selected price list is no longer valid, do you still want to continue?"
-      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt;= __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt;= __config__.date))"/>
-  </action-validate>
 
   <action-attrs name="action-sale-order-attrs-in-ati">
     <attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
@@ -1556,6 +1542,10 @@
     if-module="axelor-supplychain">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="updateAmountToBeSpreadOverTheTimetable"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-check-before-finalize">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="checkBeforeFinalize"/>
   </action-method>
 
   <action-method name="action-sale-order-method-finalize-quotation">
@@ -2054,8 +2044,16 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="onNew"/>
   </action-method>
 
+  <action-method name="action-sale-order-method-onload">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="onLoad"/>
+  </action-method>
+
   <action-method name="action-sale-order-method-client-partner-onchange">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="clientPartnerOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-company-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="companyOnChange"/>
   </action-method>
 
   <action-validate name="action-sale-order-validate-check-on-confirm">

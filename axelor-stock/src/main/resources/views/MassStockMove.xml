@@ -24,7 +24,7 @@
     </panel>
     <panel name="storedProductPanel">
       <panel-related field="storedProductList" grid-view="stored-product-grid"
-        form-view="stored-product-form" colSpan="12" canNew="company != null"/>
+        form-view="stored-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizeStoringBtn" title="Store all / the rest"
         onClick="save,action-mass-stock-move-method-realize-storing" icon="fa-play"/>
     </panel>

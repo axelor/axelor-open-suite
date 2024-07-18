@@ -153,7 +153,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     Map<String, Object> values = new HashMap<>();
     Partner clientPartner = saleOrder.getClientPartner();
     FiscalPosition fiscalPosition = null;
-    if (clientPartner.getFiscalPosition() != null) {
+    if (clientPartner != null && clientPartner.getFiscalPosition() != null) {
       fiscalPosition = clientPartner.getFiscalPosition();
     }
     saleOrder.setFiscalPosition(fiscalPosition);
@@ -197,7 +197,9 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   protected Map<String, Object> getIsIspmRequired(SaleOrder saleOrder) {
     Map<String, Object> values = new HashMap<>();
     boolean partnerIsIspmRequired =
-        Optional.of(saleOrder.getClientPartner()).map(Partner::getIsIspmRequired).orElse(false);
+        Optional.ofNullable(saleOrder.getClientPartner())
+            .map(Partner::getIsIspmRequired)
+            .orElse(false);
     boolean addressIsIspmRequired =
         Optional.ofNullable(saleOrder.getDeliveryAddress())
             .map(Address::getCountry)

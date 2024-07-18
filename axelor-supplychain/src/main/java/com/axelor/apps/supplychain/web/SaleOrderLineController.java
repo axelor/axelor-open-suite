@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -42,7 +41,7 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
-import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -416,25 +415,6 @@ public class SaleOrderLineController {
     }
   }
 
-  public void manageAxis(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder =
-          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
-
-      if (saleOrder == null || saleOrder.getCompany() == null) {
-        return;
-      }
-
-      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-      Beans.get(AnalyticAttrsService.class)
-          .addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrsMap);
-
-      response.setAttrs(attrsMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder =
@@ -452,27 +432,6 @@ public class SaleOrderLineController {
               .getAnalyticAccountValueMap(analyticLineModel, saleOrder.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder =
-          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
-
-      if (saleOrder == null || saleOrder.getCompany() == null) {
-        return;
-      }
-
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
-      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-      Beans.get(AnalyticAttrsSupplychainService.class)
-          .addAnalyticDistributionPanelHiddenAttrs(analyticLineModel, attrsMap);
-      response.setAttrs(attrsMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -513,6 +472,9 @@ public class SaleOrderLineController {
         saleOrderLineProductSupplychainService.getProductionInformation(saleOrderLine));
     saleOrderLineMap.putAll(
         saleOrderLineProductSupplychainService.setSupplierPartnerDefault(saleOrderLine, saleOrder));
+    response.setAttrs(
+        Beans.get(SaleOrderLineViewSupplychainService.class)
+            .getSaleSupplySelectOnChangeAttrs(saleOrderLine, saleOrder));
     response.setValues(saleOrderLineMap);
   }
 }

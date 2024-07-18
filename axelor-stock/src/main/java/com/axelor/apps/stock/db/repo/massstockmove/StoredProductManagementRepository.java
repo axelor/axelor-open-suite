@@ -4,32 +4,47 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
+import com.axelor.apps.stock.service.massstockmove.StoredProductLocationServiceImpl;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class StoredProductManagementRepository extends StoredProductRepository {
 
   protected final MassStockMovableProductQuantityService massStockMovableProductQuantityService;
+  protected final StoredProductLocationServiceImpl storedProductLocationService;
 
   @Inject
   public StoredProductManagementRepository(
-      MassStockMovableProductQuantityService massStockMovableProductQuantityService) {
+      MassStockMovableProductQuantityService massStockMovableProductQuantityService,
+      StoredProductLocationServiceImpl storedProductLocationService) {
     this.massStockMovableProductQuantityService = massStockMovableProductQuantityService;
+    this.storedProductLocationService = storedProductLocationService;
   }
 
   @Override
-  public StoredProduct save(StoredProduct entity) {
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
-    try {
+    if (context.get("_model") != null
+        && context.get("_model").toString().equals(StoredProduct.class.getName())
+        && json.get("id") != null) {
 
-      entity.setCurrentQty(
-          massStockMovableProductQuantityService.getCurrentAvailableQty(
-              entity, entity.getMassStockMove().getCartStockLocation()));
-    } catch (Exception e) {
-      TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e.getMessage(), e);
+      var id = (Long) json.get("id");
+      var storedProduct = find(id);
+      var sourceStockLocation = storedProductLocationService.getFromStockLocation(storedProduct);
+
+      try {
+        json.put(
+            "currentQty",
+            massStockMovableProductQuantityService.getCurrentAvailableQty(
+                storedProduct, sourceStockLocation));
+      } catch (Exception e) {
+        json.put("currentQty", BigDecimal.ZERO);
+        TraceBackService.trace(e);
+      }
+    } else {
+      json.put("currentQty", BigDecimal.ZERO);
     }
-
-    return super.save(entity);
+    return super.populate(json, context);
   }
 }
