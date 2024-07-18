@@ -104,7 +104,8 @@ public class BatchAutoMoveLettering extends BatchStrategy {
 
       List<MoveLine> companyPartnerCreditMoveLineList =
           moveLineLists.getLeft().stream()
-              .filter(moveLine -> moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)
+              .filter(
+                  moveLine -> moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0)
               .collect(Collectors.toList());
       List<MoveLine> companyPartnerDebitMoveLineList =
           moveLineLists.getRight().stream()
@@ -199,7 +200,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       debitRemaining.put(debitMoveLine, debitMoveLine.getAmountRemaining());
     }
     for (MoveLine creditMoveLine : creditMoveLines) {
-      BigDecimal creditRemaining = creditMoveLine.getAmountRemaining();
+      BigDecimal creditRemaining = creditMoveLine.getAmountRemaining().abs();
       for (MoveLine debitMoveLine : debitMoveLines) {
         BigDecimal debit = debitMoveLine.getDebit();
         BigDecimal credit = creditMoveLine.getCredit();
@@ -300,10 +301,11 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     Reconcile reconcile;
     if (debitMoveLine.getMaxAmountToReconcile() != null
         && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
-      amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
+      amount =
+          debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining().abs());
       debitMoveLine.setMaxAmountToReconcile(null);
     } else {
-      amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
+      amount = creditMoveLine.getAmountRemaining().abs().min(debitMoveLine.getAmountRemaining());
     }
     LOG.debug("amount : {}", amount);
     LOG.debug("debitTotalRemaining : {}", debitTotalRemaining);
