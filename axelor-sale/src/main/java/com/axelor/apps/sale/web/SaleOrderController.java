@@ -114,6 +114,13 @@ public class SaleOrderController {
     response.setAttrs(attrsMap);
   }
 
+  public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
+    SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(request.getContext());
+    Map<String, Map<String, Object>> attrsMap =
+        Beans.get(SaleOrderViewService.class).getOnLoadAttrs(saleOrder);
+    response.setAttrs(attrsMap);
+  }
+
   public void compute(ActionRequest request, ActionResponse response) {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -797,5 +804,14 @@ public class SaleOrderController {
     Map<String, Object> saleOrderMap = new HashMap<>();
     saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).partnerOnChange(saleOrder));
     response.setValues(saleOrderMap);
+    response.setAttrs(Beans.get(SaleOrderViewService.class).getPartnerOnChangeAttrs(saleOrder));
+  }
+
+  public void companyOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Map<String, Object> saleOrderMap = new HashMap<>();
+    response.setValues(saleOrderMap);
+    response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
   }
 }
