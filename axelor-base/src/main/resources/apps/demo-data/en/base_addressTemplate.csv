@@ -122,3 +122,15 @@ ${(Address.addressL5 == null) ? '' : Address.addressL5}
 ${(Address.addressL6 == null) ? '' : Address.addressL6}
 ${(Address.addressL2 == null) ? '' : Address.addressL2}
 ${(Address.country == null) ? '' : Address.country.name}";"${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision}";"${(Address.buildingName == null) ? '' : Address.buildingName}";"${(Address.streetName == null) ? '' : Address.streetName} ${(Address.buildingNumber == null) ? '' : Address.buildingNumber} ${(Address.floor == null) ? '' : ', '+Address.floor} ${(Address.room == null) ? '' : Address.room}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.zip == null) ? '' : Address.zip} ${(Address.townName == null) ? '' : Address.townName}"
+"25";"SWITZERLAND";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
+${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.buildingName == null) ? '' : Address.buildingName}";"${(Address.streetName == null) ? '' : Address.streetName} ${(Address.buildingNumber == null) ? '' : Address.buildingNumber} ${(Address.floor == null) ? '' : ', '+Address.floor} ${(Address.room == null) ? '' : Address.room}";"${(Address.postBox == null) ? '' : 'Case postale '+Address.postBox}";"${(Address.zip == null) ? '' : Address.zip} ${(Address.townName == null) ? '' : Address.townName} ${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision}"
+"26";"VIETNAM";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
+${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.buildingNumber == null) ? '' : Address.buildingNumber} ${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.room == null) ? '' : 'Room '+Address.room}${(Address.buildingName != null && Address.room != null) ? ', ' : ''}${(Address.buildingName == null) ? '' : Address.buildingName}";"${(Address.townName == null) ? '' : Address.townName}${(Address.districtName == null) ? '' : ', '+Address.districtName}";"${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision} ${(Address.zip == null) ? '' : Address.zip}"
