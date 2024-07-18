@@ -148,7 +148,7 @@
   <action-view name="action-dashlet-version-view-show-task" title="Ticket associated"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="business-support-version-project-task-grid"/>
-    <view type="form" name="project-task-form"/>
+    <view type="form" name="business-project-task-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.targetVersion.id = :id</domain>
   </action-view>

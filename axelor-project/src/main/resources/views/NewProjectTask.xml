@@ -57,7 +57,7 @@
         <panel name="detailsPanel" colSpan="8">
           <field name="fullName" showTitle="false" colSpan="12">
             <viewer depends="name">
-              <![CDATA[
+                            <![CDATA[
 							<>
 								<h3>
 									<span>{name}</span>
@@ -267,7 +267,7 @@
     <field name="progress"/>
     <field name="project.isShowProgress"/>
     <template>
-      <![CDATA[
+            <![CDATA[
 			<>
 				<strong>{name}</strong>
 				<Box>{project.fullName}</Box>
@@ -317,7 +317,7 @@
     <field name="priority.technicalTypeSelect"/>
     <field name="progress"/>
     <template>
-      <![CDATA[
+            <![CDATA[
 			<>
 				<strong>{name}</strong>
 				<Box>{project.fullName}</Box>
@@ -715,3 +715,4 @@
   </search-filters>
 
 </object-views>
+
