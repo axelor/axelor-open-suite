@@ -9,6 +9,7 @@
         onClick="action-base-method-show-duplicate"/>
     </toolbar>
     <field name="fullName"/>
+    <field name="country"/>
     <button name="mapBtn" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
     <button name="directionsBtn" icon="near_me"
       onClick="action-base-address-method-view-direction"/>
