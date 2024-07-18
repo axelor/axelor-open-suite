@@ -70,8 +70,6 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       MassStockMovableProductLocationService locationService)
       throws AxelorException {
 
-    processingService.preRealize(movableProduct);
-
     var massStockMove = movableProduct.getMassStockMove();
     var fromStockLocation = locationService.getFromStockLocation(movableProduct);
     var toStockLocation = locationService.getToStockLocation(movableProduct);
@@ -80,6 +78,8 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
     if (movableProduct.getStockMoveLine() == null) {
       checkStockLocations(movableProduct, toStockLocation, fromStockLocation);
       checkQty(movableProduct, fromStockLocation);
+
+      processingService.preRealize(movableProduct);
 
       var stockMove =
           stockMoveService.createStockMove(
@@ -194,13 +194,6 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(StockExceptionMessage.STOCK_MOVE_MASS_MOVED_QUANTITY_IS_ZERO_OR_LESS),
-          movableProduct.getProduct().getFullName());
-    }
-
-    if (movableProduct.getMovedQty().compareTo(movableProduct.getCurrentQty()) > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(StockExceptionMessage.STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY),
           movableProduct.getProduct().getFullName());
     }
   }

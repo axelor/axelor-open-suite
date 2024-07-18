@@ -15,7 +15,6 @@
       title="Tracking number"/>
     <many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Source location" required="true"/>
-    <decimal name="currentQty" title="Current qty" precision="20" scale="10"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="pickedQty" title="Picked qty" required="true" precision="20" scale="10"
       min="0"/>
