@@ -23,10 +23,17 @@ import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.google.inject.Inject;
 
-public class MachineToolManagementRepository extends MachineRepository {
+public class MachineManagementRepository extends MachineRepository {
 
-  @Inject MachineToolRepository machineToolRepository;
-  @Inject AppProductionService appProductionService;
+  protected MachineToolRepository machineToolRepository;
+  protected AppProductionService appProductionService;
+
+  @Inject
+  public MachineManagementRepository(
+      MachineToolRepository machineToolRepository, AppProductionService appProductionService) {
+    this.machineToolRepository = machineToolRepository;
+    this.appProductionService = appProductionService;
+  }
 
   @Override
   public Machine save(Machine entity) {
