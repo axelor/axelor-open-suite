@@ -817,8 +817,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     Contract nextContract = newVersion.getNextContract();
     LocalDate todayDate = appBaseService.getTodayDate(contract.getCompany());
     waitingNextVersion(nextContract, todayDate);
-    activeNextVersion(nextContract, todayDate);
-    return newVersion.getContract();
+    return nextContract;
   }
 
   @Override
