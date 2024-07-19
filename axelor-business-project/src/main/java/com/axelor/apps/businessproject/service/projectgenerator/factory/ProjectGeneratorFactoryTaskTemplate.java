@@ -185,8 +185,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
 
     return ActionView.define(I18n.get("Tasks"))
         .model(ProjectTask.class.getName())
-        .add("grid", "project-task-grid")
-        .add("form", "project-task-form")
+        .add("grid", "business-project-task-grid")
+        .add("form", "business-project-task-form")
         .param("search-filters", "project-task-filters")
         .domain(
             "self.parentTask IN ("

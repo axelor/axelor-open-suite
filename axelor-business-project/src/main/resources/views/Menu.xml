@@ -3,7 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <menuitem name="business-project-all" parent="menu-project-root" order="200"
+  <menuitem name="menu-business-project-root" parent="menu-project-root" order="50"
+    title="Business projects" icon="fa-tasks" icon-background="#3f6bb9"
+    if="__config__.app.isApp('business-project')"/>
+
+  <menuitem name="business-project-all" parent="menu-business-project-root" order="200"
     title="Business projects" action="business.project.all"
     if="__config__.app.isApp('business-project')"/>
 
@@ -15,6 +19,19 @@
     <view-param name="search-filters" value="project-filters"/>
     <domain>self.isBusinessProject = true</domain>
     <context name="_fromBusinessProject" expr="eval:true"/>
+  </action-view>
+
+  <menuitem name="business-project-task-all" parent="menu-business-project-root"
+    order="300" title="Tasks" action="business.project.task.all"/>
+
+  <action-view name="business.project.task.all" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="kanban" name="project-task-kanban"/>
+    <view type="grid" name="business-project-task-grid"/>
+    <view type="form" name="business-project-task-form"/>
+    <view-param name="search-filters" value="project-filters"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: __repo__(ProjectTask).TYPE_TASK"/>
   </action-view>
 
   <menuitem name="business-project-folder" parent="project-configurations"

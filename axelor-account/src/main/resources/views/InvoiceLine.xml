@@ -743,8 +743,8 @@
 
   <action-view name="action-invoice-line-view-project-tasks" title="Related tasks"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="grid" name="project-task-grid"/>
-    <view type="form" name="project-task-form"/>
+    <view type="grid" name="business-project-task-grid"/>
+    <view type="form" name="business-project-task-form"/>
     <domain>:id IN self.invoiceLineSet.id</domain>
   </action-view>
 
