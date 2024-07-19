@@ -20,13 +20,13 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -51,18 +51,25 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
-      PartnerRepository partnerRepo,
-      SaleOrderRepository saleOrderRepo,
+      com.axelor.apps.base.db.repo.PartnerRepository partnerRepo,
+      com.axelor.apps.sale.db.repo.SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
+      SaleOrderCheckService saleOrderCheckService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
       AnalyticToolSupplychainService analyticToolSupplychainService) {
-    super(partnerRepo, saleOrderRepo, appSaleService, appCrmService, userService);
+    super(
+        partnerRepo,
+        saleOrderRepo,
+        appSaleService,
+        appCrmService,
+        userService,
+        saleOrderCheckService);
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychainService = appSupplychainService;

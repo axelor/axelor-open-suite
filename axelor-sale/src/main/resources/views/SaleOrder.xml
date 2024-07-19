@@ -1481,7 +1481,7 @@
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
-    <action name="action-sale-order-validate-check-on-confirm"/>
+    <action name="action-sale-order-method-check-before-confirm"/>
     <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
@@ -1546,6 +1546,10 @@
 
   <action-method name="action-sale-order-method-check-before-finalize">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="checkBeforeFinalize"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-check-before-confirm">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="checkBeforeConfirm"/>
   </action-method>
 
   <action-method name="action-sale-order-method-finalize-quotation">
