@@ -38,22 +38,37 @@
             <field name="delayToSendTheQuotation" colSpan="4" widget="duration" x-big="true"/>
           </panel>
 
-          <panel-dashlet name="relatedInterventionsPanel"
-            title="Related Interventions"
-            action="action-contract-view-display-related-interventions" readonly="true" colSpan="12"/>
+          <panel name="relatedInterventionsPanel" title="Related Interventions" colSpan="12"
+            canCollapse="true" collapseIf="true">
+            <panel-dashlet name="relatedInterventionsDashletPanel" colSpan="12"
+              action="action-contract-view-display-related-interventions" readonly="true"/>
+          </panel>
+
+          <panel name="relatedEquipmentsPanel" title="Related Equipments" colSpan="12"
+            canCollapse="true" collapseIf="true">
+            <panel-dashlet name="relatedEquipmentsDashletPanel" colSpan="12"
+              action="action-contract-view-display-related-equipments" readonly="true"/>
+          </panel>
         </panel>
       </insert>
     </extend>
   </form>
 
-  <action-view name="action-contract-view-display-related-interventions"
-    title="Contract related interventions" model="com.axelor.apps.intervention.db.Intervention">
+  <action-view name="action-contract-view-display-related-interventions" title=""
+    model="com.axelor.apps.intervention.db.Intervention">
     <view type="grid" name="intervention-grid"/>
     <view type="form" name="intervention-form"/>
     <domain><![CDATA[
         self.contract.id = :_id
       ]]>
     </domain>
+  </action-view>
+
+  <action-view name="action-contract-view-display-related-equipments" title=""
+    model="com.axelor.apps.intervention.db.Equipment">
+    <view type="grid" name="equipment-grid"/>
+    <view type="form" name="equipment-form"/>
+    <domain>self.contract.id = :_id</domain>
   </action-view>
 
   <action-view model="com.axelor.utils.db.Wizard"
