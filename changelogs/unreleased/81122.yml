@@ -1,0 +1,3 @@
+---
+title: "ANALYTIC : fix required analytic distribution template when the analytic distribution type is Per Product/Family/Account."
+module: axelor-account
