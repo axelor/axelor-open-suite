@@ -657,6 +657,13 @@
     <field name="totalCosts" expr="eval: product?.costPrice"/>
   </action-record>
 
+  <action-record name="action-project-task-business-support-provider"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="$provider"
+      expr="eval: __config__.app.getApp('business-support').providerCompany.name"
+      if="__config__.app.getApp('business-support').providerCompany"/>
+  </action-record>
+
   <action-group name="action-business-project-project-task-group-product-onchange">
     <action name="action-project-task-group-product-onchange"/>
     <action name="action-project-task-group-set-price-from-contract"/>

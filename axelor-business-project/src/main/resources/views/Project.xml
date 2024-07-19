@@ -123,14 +123,14 @@
     <panel-tabs name="mainPanelTab">
       <panel title="Task Tree" name="taskTreePanel">
         <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
-          icon="fa-plus" onClick="save,action-project-add-task"/>
+          icon="fa-plus" onClick="save,action-business-project-add-task"/>
         <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
           icon="fa-plus" onClick="save,action-project-add-ticket"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
           icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          colSpan="12" action="action-view-show-project-task-tree"/>
+          colSpan="12" action="action-view-show-business-project-task-tree"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
@@ -679,6 +679,27 @@
     <context name="_project" expr="eval:__this__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+  </action-view>
+
+  <action-view name="action-business-project-add-task"
+    model="com.axelor.apps.project.db.ProjectTask" title="Task">
+    <view name="business-project-task-form" type="form"/>
+    <view name="business-project-task-grid" type="grid"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_project" expr="eval:__this__"/>
+    <context name="_typeSelect"
+      expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
+  </action-view>
+
+  <action-view name="action-view-show-business-project-task-tree"
+    title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">
+    <view type="tree" name="project-project-task-tree"/>
+    <view type="form" name="business-project-task-form"/>
+    <domain>self.project.id = :_id AND self.parentTask = null</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <!-- Sales -->
