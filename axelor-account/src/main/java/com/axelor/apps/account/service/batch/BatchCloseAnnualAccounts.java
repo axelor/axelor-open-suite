@@ -491,14 +491,14 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       Query qIncome =
           JPA.em()
               .createQuery(
-                  "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
+                  "select SUM( ABS(self.debit - self.credit ) ) FROM MoveLine as self WHERE "
                       + query
                       + " AND self.account.accountType.technicalTypeSelect = 'income'",
                   BigDecimal.class);
       Query qCharge =
           JPA.em()
               .createQuery(
-                  "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
+                  "select SUM( ABS(self.debit - self.credit ) ) FROM MoveLine as self WHERE "
                       + query
                       + " AND self.account.accountType.technicalTypeSelect = 'charge'",
                   BigDecimal.class);
