@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
@@ -51,8 +52,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
-      com.axelor.apps.base.db.repo.PartnerRepository partnerRepo,
-      com.axelor.apps.sale.db.repo.SaleOrderRepository saleOrderRepo,
+      PartnerRepository partnerRepo,
+      SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,

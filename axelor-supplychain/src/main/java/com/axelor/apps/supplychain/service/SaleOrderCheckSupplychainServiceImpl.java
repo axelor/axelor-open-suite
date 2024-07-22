@@ -51,8 +51,9 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
         saleOrder.getSaleOrderLineList().stream()
             .anyMatch(
                 line ->
-                    ProductRepository.PRODUCT_TYPE_STORABLE.equals(
-                        line.getProduct().getProductTypeSelect()));
+                    line.getProduct() != null
+                        && ProductRepository.PRODUCT_TYPE_STORABLE.equals(
+                            line.getProduct().getProductTypeSelect()));
     StockLocation stockLocation = saleOrder.getStockLocation();
     String deliveryAddressAlpha2Code =
         Optional.ofNullable(saleOrder.getDeliveryAddress())
@@ -77,7 +78,7 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
         stockLocation == null && !deliveryAddressAlpha2Code.equals(companyAlpha2Code);
     boolean isAddressWrong = isStockLocationAddressWrong || isCompanyAddressWrong;
     boolean isIncotermRequiredAndEmpty =
-        isIncotermEnabled && (incoterm == null && anyStorableProduct) && isAddressWrong;
+        isIncotermEnabled && incoterm == null && anyStorableProduct && isAddressWrong;
 
     if (isIncotermRequiredAndEmpty) {
       throw new AxelorException(
