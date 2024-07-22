@@ -39,6 +39,18 @@ public class PickedProductController {
     response.setReload(true);
   }
 
+  public void cancelPicking(ActionRequest request, ActionResponse response) throws AxelorException {
+    var pickedProduct =
+        Optional.of(request.getContext().asType(PickedProduct.class))
+            .map(pp -> Beans.get(PickedProductRepository.class).find(pp.getId()));
+
+    if (pickedProduct.isPresent()) {
+      Beans.get(MassStockMovableProductService.class).cancel(pickedProduct.get());
+    }
+
+    response.setReload(true);
+  }
+
   public void setCurrentQty(ActionRequest request, ActionResponse response) throws AxelorException {
     var pickedProduct = request.getContext().asType(PickedProduct.class);
 

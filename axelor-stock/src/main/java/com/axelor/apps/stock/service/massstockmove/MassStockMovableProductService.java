@@ -10,4 +10,9 @@ public interface MassStockMovableProductService {
       throws AxelorException;
 
   void realize(MassStockMovableProduct movableProduct) throws AxelorException;
+
+  void cancel(List<? extends MassStockMovableProduct> massStockMovableProducts)
+      throws AxelorException;
+
+  void cancel(MassStockMovableProduct movableProduct) throws AxelorException;
 }

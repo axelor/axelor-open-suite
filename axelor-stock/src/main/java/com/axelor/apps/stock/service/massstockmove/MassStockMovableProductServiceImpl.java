@@ -197,4 +197,49 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
           movableProduct.getProduct().getFullName());
     }
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void cancel(List<? extends MassStockMovableProduct> massStockMovableProducts)
+      throws AxelorException {
+    Objects.requireNonNull(massStockMovableProducts);
+
+    if (!massStockMovableProducts.isEmpty()) {
+      MassStockMovableProductProcessingService processingService =
+          massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+              massStockMovableProducts.get(0));
+
+      for (MassStockMovableProduct massStockMovableProduct : massStockMovableProducts) {
+        cancel(massStockMovableProduct, processingService);
+      }
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void cancel(MassStockMovableProduct movableProduct) throws AxelorException {
+
+    MassStockMovableProductProcessingService processingService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+            movableProduct);
+
+    cancel(movableProduct, processingService);
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void cancel(
+      MassStockMovableProduct movableProduct,
+      MassStockMovableProductProcessingService processingService)
+      throws AxelorException {
+    Objects.requireNonNull(movableProduct);
+
+    if (movableProduct.getStockMoveLine() != null) {
+      processingService.preCancel(movableProduct);
+      stockMoveService.cancel(movableProduct.getStockMoveLine().getStockMove());
+      movableProduct.setStockMoveLine(null);
+      movableProduct.setMovedQty(BigDecimal.ZERO);
+      processingService.postCancel(movableProduct);
+      processingService.save(movableProduct);
+    }
+  }
 }

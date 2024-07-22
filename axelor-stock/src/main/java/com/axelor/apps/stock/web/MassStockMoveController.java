@@ -36,4 +36,22 @@ public class MassStockMoveController {
 
     response.setReload(true);
   }
+
+  public void cancelAllPicking(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    var massStockMove = request.getContext().asType(MassStockMove.class);
+
+    Beans.get(MassStockMovableProductService.class).cancel(massStockMove.getPickedProductList());
+
+    response.setReload(true);
+  }
+
+  public void cancelAllStoring(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    var massStockMove = request.getContext().asType(MassStockMove.class);
+
+    Beans.get(MassStockMovableProductService.class).cancel(massStockMove.getStoredProductList());
+
+    response.setReload(true);
+  }
 }

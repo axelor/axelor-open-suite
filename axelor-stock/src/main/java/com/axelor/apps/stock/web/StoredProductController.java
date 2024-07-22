@@ -64,6 +64,18 @@ public class StoredProductController {
     response.setReload(true);
   }
 
+  public void cancelStoring(ActionRequest request, ActionResponse response) throws AxelorException {
+    var storedProduct =
+        Optional.of(request.getContext().asType(StoredProduct.class))
+            .map(sp -> Beans.get(StoredProductRepository.class).find(sp.getId()));
+
+    if (storedProduct.isPresent()) {
+      Beans.get(MassStockMovableProductService.class).cancel(storedProduct.get());
+    }
+
+    response.setReload(true);
+  }
+
   public void setCurrentQty(ActionRequest request, ActionResponse response) throws AxelorException {
     var storedProduct = request.getContext().asType(StoredProduct.class);
     var massStockMove = request.getContext().getParent().asType(MassStockMove.class);

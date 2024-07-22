@@ -48,4 +48,14 @@ public class StoredProductProcessingServiceImpl
   public void postRealize(StoredProduct movableProduct) throws AxelorException {
     // Nothing
   }
+
+  @Override
+  public void preCancel(StoredProduct movableProduct) throws AxelorException {
+    // Nothing
+  }
+
+  @Override
+  public void postCancel(StoredProduct movableProduct) throws AxelorException {
+    movableProduct.setStoredQty(BigDecimal.ZERO);
+  }
 }

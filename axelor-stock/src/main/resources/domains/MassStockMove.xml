@@ -11,9 +11,9 @@
     <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Transition location (cart)" required="true"/>
     <one-to-many name="pickedProductList" ref="com.axelor.apps.stock.db.PickedProduct"
-      title="Picked products" mappedBy="massStockMove"/>
+      title="Picked products" mappedBy="massStockMove" orphanRemoval="true"/>
     <one-to-many name="storedProductList" ref="com.axelor.apps.stock.db.StoredProduct"
-      title="Stored products" mappedBy="massStockMove"/>
+      title="Stored products" mappedBy="massStockMove" orphanRemoval="true"/>
   </entity>
 
 
