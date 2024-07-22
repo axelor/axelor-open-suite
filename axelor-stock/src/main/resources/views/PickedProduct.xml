@@ -20,6 +20,9 @@
     <button name="realizePickingBtn" title="Realize picking"
       onClick="save,action-picked-product-method-realize-picking" readonlyIf="stockMoveLine != null"
       icon="fa-play"/>
+    <button name="cancelPickingBtn" icon="fa-undo"
+      onClick="action-picked-product-method-cancel-picking" readonlyIf="stockMoveLine == null"/>
+    <field name="stockMoveLine" hidden="true"/>
     <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
   </grid>
 
@@ -95,6 +98,10 @@
 
   <action-method name="action-picked-product-method-realize-picking">
     <call class="com.axelor.apps.stock.web.PickedProductController" method="realizePicking"/>
+  </action-method>
+
+  <action-method name="action-picked-product-method-cancel-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="cancelPicking"/>
   </action-method>
 
 
