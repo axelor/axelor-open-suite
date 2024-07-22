@@ -228,4 +228,6 @@ public interface MoveToolService {
       throws AxelorException;
 
   List<InvoiceTerm> _getInvoiceTermList(Move move);
+
+  boolean isOpenOrClosureMove(Move move);
 }

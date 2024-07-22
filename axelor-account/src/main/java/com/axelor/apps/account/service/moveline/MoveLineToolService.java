@@ -79,4 +79,6 @@ public interface MoveLineToolService {
   void setIsNonDeductibleTax(MoveLine moveLine, Tax tax);
 
   boolean isMoveLineSpecialAccount(MoveLine moveLine);
+
+  boolean isMoveLineCommitmentAccount(MoveLine moveLine);
 }
