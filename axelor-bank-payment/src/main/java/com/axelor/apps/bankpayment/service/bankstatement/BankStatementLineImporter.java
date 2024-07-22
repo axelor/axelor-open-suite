@@ -27,12 +27,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -54,10 +56,13 @@ public class BankStatementLineImporter extends Importer {
 
   @Inject
   public BankStatementLineImporter(
+      ExcelToCSV excelToCSV,
+      MetaFiles metaFiles,
       BankStatementLineRepository bankStatementLineRepository,
       BankStatementRepository bankStatementRepository,
       BankStatementDateService bankStatementDateService,
       BankStatement bankStatement) {
+    super(excelToCSV, metaFiles);
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.bankStatementRepository = bankStatementRepository;
     this.bankStatementDateService = bankStatementDateService;
@@ -65,9 +70,10 @@ public class BankStatementLineImporter extends Importer {
   }
 
   @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
+  protected ImportHistory process(
+      String bind, String data, String errorDir, Map<String, Object> importContext)
       throws IOException, AxelorException {
-    CSVImporter importer = new CSVImporter(bind, data);
+    CSVImporter importer = new CSVImporter(bind, data, errorDir);
 
     ImporterListener listener =
         new ImporterListener(getConfiguration().getName()) {
@@ -149,7 +155,19 @@ public class BankStatementLineImporter extends Importer {
 
   @Override
   protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, null);
+    return process(bind, data, getErrorDirectory());
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
+      throws IOException, AxelorException {
+    return process(bind, data, getErrorDirectory(), importContext);
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, String errorDir)
+      throws IOException, AxelorException {
+    return process(bind, data, errorDir, null);
   }
 
   public void setBankStatement(BankStatement bankStatement) {
