@@ -75,4 +75,9 @@
       method="updateAnalyticDistributionWithProject"/>
   </action-method>
 
+  <action-method name="action-sale-order-line-method-set-project-domain">
+    <call class="com.axelor.apps.businessproject.web.SaleOrderLineProjectController"
+      method="setProjectDomain"/>
+  </action-method>
+
 </object-views>

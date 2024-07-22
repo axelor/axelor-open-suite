@@ -17,10 +17,14 @@
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="storedQty"/>
+    <field name="storedQty" x-scale="nbDecimalQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
-      onClick="save,action-picked-product-method-realize-storing" readonlyIf="stockMoveLine != null"
+      onClick="save,action-stored-product-method-realize-storing" readonlyIf="stockMoveLine != null"
       icon="fa-play"/>
+    <button name="cancelPickingBtn" icon="fa-undo"
+      onClick="action-stored-product-method-cancel-storing" readonlyIf="stockMoveLine == null"/>
+    <field name="stockMoveLine" hidden="true"/>
+    <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
   </grid>
 
   <form name="stored-product-form" title="Stored products"
@@ -39,8 +43,9 @@
       <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
         readonly="true"/>
       <field name="unit" readonly="true"/>
-      <field name="storedQty"/>
+      <field name="storedQty" x-scale="nbDecimalQty"/>
       <field name="stockMoveLine" showIf="stockMoveLine != null"/>
+      <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
     </panel>
   </form>
 
@@ -96,8 +101,12 @@
       method="setTrackingNumberDomain"/>
   </action-method>
 
-  <action-method name="action-picked-product-method-realize-storing">
+  <action-method name="action-stored-product-method-realize-storing">
     <call class="com.axelor.apps.stock.web.StoredProductController" method="realizeStoring"/>
+  </action-method>
+
+  <action-method name="action-stored-product-method-cancel-storing">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="cancelStoring"/>
   </action-method>
 
 

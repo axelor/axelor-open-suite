@@ -21,12 +21,16 @@
         form-view="picked-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizePickingBtn" title="Pick all / the rest"
         onClick="save,action-mass-stock-move-method-realize-picking" icon="fa-play"/>
+      <button name="cancelPickingBtn" title="Cancel picking"
+        onClick="action-mass-stock-move-method-cancel-picking" icon="fa-undo"/>
     </panel>
     <panel name="storedProductPanel">
       <panel-related field="storedProductList" grid-view="stored-product-grid"
         form-view="stored-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizeStoringBtn" title="Store all / the rest"
         onClick="save,action-mass-stock-move-method-realize-storing" icon="fa-play"/>
+      <button name="cancelStorageBtn" title="Cancel storage"
+        onClick="save,action-mass-stock-move-method-cancel-storing" icon="fa-undo"/>
     </panel>
   </form>
 
@@ -45,6 +49,14 @@
 
   <action-method name="action-mass-stock-move-method-realize-storing">
     <call class="com.axelor.apps.stock.web.MassStockMoveController" method="realizeAllStoring"/>
+  </action-method>
+
+  <action-method name="action-mass-stock-move-method-cancel-picking">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="cancelAllPicking"/>
+  </action-method>
+
+  <action-method name="action-mass-stock-move-method-cancel-storing">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="cancelAllStoring"/>
   </action-method>
 
 </object-views>
