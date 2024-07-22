@@ -1,5 +1,6 @@
 package com.axelor.apps.stock.db.repo.massstockmove;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
@@ -11,11 +12,14 @@ import java.util.Map;
 public class PickedProductManagementRepository extends PickedProductRepository {
 
   protected final MassStockMovableProductQuantityService massStockMovableProductQuantityService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public PickedProductManagementRepository(
-      MassStockMovableProductQuantityService massStockMovableProductQuantityService) {
+      MassStockMovableProductQuantityService massStockMovableProductQuantityService,
+      AppBaseService appBaseService) {
     this.massStockMovableProductQuantityService = massStockMovableProductQuantityService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -34,6 +38,7 @@ public class PickedProductManagementRepository extends PickedProductRepository {
             "currentQty",
             massStockMovableProductQuantityService.getCurrentAvailableQty(
                 pickedProduct, sourceStockLocation));
+        json.put("nbDecimalQty", appBaseService.getNbDecimalDigitForQty());
       } catch (Exception e) {
         json.put("currentQty", BigDecimal.ZERO);
         TraceBackService.trace(e);
