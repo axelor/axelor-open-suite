@@ -1760,5 +1760,5 @@ public final class AccountExceptionMessage {
       "Block customer with late payment issues batch's reporting :" /*)*/;
 
   public static final String MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS = /*$$(*/
-      "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;
+      "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special or commitment should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;
 }
