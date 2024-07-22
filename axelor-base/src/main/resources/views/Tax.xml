@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax" orderBy="code">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -9,7 +9,8 @@
     <field name="name"/>
   </grid>
 
-  <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large">
+  <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large"
+    onLoad="action-base-attrs-set-tax-line-list-scale">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
@@ -30,6 +31,11 @@
     model="com.axelor.apps.account.db.Tax">
     <attribute name="domain" for="activeTaxLine"
       expr="eval: &quot; self.tax.id = ${__this__.id} &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-base-attrs-set-tax-line-list-scale">
+    <attribute name="scale" for="taxLineList.value"
+      expr="eval: __config__.app.getApp('base').getNbDecimalDigitForTaxRate()"/>
   </action-attrs>
 
   <search-filters name="tax-filters" model="com.axelor.apps.account.db.Tax"

@@ -33,6 +33,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.google.inject.Inject;
@@ -51,7 +52,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
-      TaxService taxService) {
+      TaxService taxService,
+      AppSaleService appSaleService) {
     super(
         appBaseService,
         accountManagementService,
@@ -63,7 +65,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
         analyticLineModelService,
         appAccountService,
         currencyScaleService,
-        taxService);
+        taxService,
+        appSaleService);
   }
 
   @Override

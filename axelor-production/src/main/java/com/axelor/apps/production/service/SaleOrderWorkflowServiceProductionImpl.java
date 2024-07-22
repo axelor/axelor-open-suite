@@ -20,7 +20,6 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -28,10 +27,6 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrd
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
@@ -50,41 +45,31 @@ public class SaleOrderWorkflowServiceProductionImpl
 
   @Inject
   public SaleOrderWorkflowServiceProductionImpl(
-      SequenceService sequenceService,
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
-      SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
-      SaleConfigService saleConfigService,
       AnalyticToolSupplychainService analyticToolSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
-      AppProductionService appProductionService,
-      SaleOrderService saleOrderService,
-      SaleOrderPrintService saleOrderPrintService) {
+      AppProductionService appProductionService) {
     super(
-        sequenceService,
         partnerRepo,
         saleOrderRepo,
         appSaleService,
         appCrmService,
         userService,
-        saleOrderLineService,
         saleOrderStockService,
         saleOrderPurchaseService,
         appSupplychainService,
         accountingSituationSupplychainService,
         partnerSupplychainService,
-        saleConfigService,
-        analyticToolSupplychainService,
-        saleOrderService,
-        saleOrderPrintService);
+        analyticToolSupplychainService);
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;
   }

@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.supplychain.service.TimetableService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
@@ -67,5 +69,15 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public void remove(Invoice entity) {
+
+    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      Beans.get(TimetableService.class).deleteInvoiceTimeTable(entity);
+    }
+
+    super.remove(entity);
   }
 }

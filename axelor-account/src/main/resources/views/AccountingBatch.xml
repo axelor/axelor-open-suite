@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -267,8 +267,14 @@
         onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
       <button name="blockCustomerWithLatePayments" title="Block customers with late payments"
         showIf="actionSelect == 23"
+        readonlyIf="!company?.accountConfig?.hasLatePaymentAccountBlocking"
         onClick="save,action-accounting-batch-method-block-customers-with-late-payments"
         colSpan="12"/>
+      <label
+        title="Blocking customer with late payment issues is not activated for this company"
+        css="label-danger"
+        showIf="actionSelect == 23 &amp;&amp; !company.accountConfig.hasLatePaymentAccountBlocking"/>
+      <field name="company.accountConfig.hasLatePaymentAccountBlocking" hidden="true"/>
       <button name="billOfExchangeBatchBtn" title="Bill of exchange batch"
         showIf="actionSelect == 24" onClick="save,action-accounting-batch-method-bill-of-exchange"
         colSpan="12"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -442,7 +442,6 @@
     <action name="action-project-task-attrs-project-filter-status"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
     <action name="action-project-task-attrs-onchange-invoice-type"/>
-    <action name="test" if="parentTask != null"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">

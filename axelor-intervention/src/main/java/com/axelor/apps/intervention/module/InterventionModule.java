@@ -19,6 +19,7 @@
 package com.axelor.apps.intervention.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.intervention.db.repo.CustomerRequestRepository;
 import com.axelor.apps.intervention.db.repo.EquipmentModelRepository;
 import com.axelor.apps.intervention.db.repo.InterventionQuestionRepository;
@@ -30,6 +31,7 @@ import com.axelor.apps.intervention.repo.InterventionManagementRepository;
 import com.axelor.apps.intervention.repo.InterventionQuestionManagementRepository;
 import com.axelor.apps.intervention.service.AppInterventionService;
 import com.axelor.apps.intervention.service.AppInterventionServiceImpl;
+import com.axelor.apps.intervention.service.ContractInterventionServiceImpl;
 import com.axelor.apps.intervention.service.CustomerRequestService;
 import com.axelor.apps.intervention.service.CustomerRequestServiceImpl;
 import com.axelor.apps.intervention.service.EquipmentLineService;
@@ -71,6 +73,7 @@ public class InterventionModule extends AxelorModule {
     bind(InterventionQuestionRepository.class).to(InterventionQuestionManagementRepository.class);
 
     bind(AppInterventionService.class).to(AppInterventionServiceImpl.class);
+    bind(ContractServiceImpl.class).to(ContractInterventionServiceImpl.class);
     bind(CustomerRequestService.class).to(CustomerRequestServiceImpl.class);
     bind(EquipmentLineService.class).to(EquipmentLineServiceImpl.class);
     bind(EquipmentModelService.class).to(EquipmentModelServiceImpl.class);

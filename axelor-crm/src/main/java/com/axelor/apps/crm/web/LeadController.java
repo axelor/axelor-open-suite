@@ -216,4 +216,14 @@ public class LeadController {
       }
     }
   }
+
+  public void resetLead(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      Beans.get(LeadService.class).resetLead(Beans.get(LeadRepository.class).find(lead.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

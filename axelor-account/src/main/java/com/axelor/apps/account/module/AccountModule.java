@@ -199,15 +199,24 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpUpdateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpUpdateServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -260,6 +269,8 @@ import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
 import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MovePfpServiceImpl;
+import com.axelor.apps.account.service.move.MovePfpValidateService;
+import com.axelor.apps.account.service.move.MovePfpValidateServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -376,10 +387,6 @@ import com.axelor.apps.account.service.period.PeriodControlService;
 import com.axelor.apps.account.service.period.PeriodControlServiceImpl;
 import com.axelor.apps.account.service.period.PeriodServiceAccount;
 import com.axelor.apps.account.service.period.PeriodServiceAccountImpl;
-import com.axelor.apps.account.service.reconcile.ForeignExchangeGapService;
-import com.axelor.apps.account.service.reconcile.ForeignExchangeGapServiceImpl;
-import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsService;
-import com.axelor.apps.account.service.reconcile.ForeignExchangeGapToolsServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckService;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
@@ -923,8 +930,14 @@ public class AccountModule extends AxelorModule {
     bind(AdvancePaymentMoveLineCreateService.class)
         .to(AdvancePaymentMoveLineCreateServiceImpl.class);
 
-    bind(ForeignExchangeGapService.class).to(ForeignExchangeGapServiceImpl.class);
+    bind(InvoiceTermPfpUpdateService.class).to(InvoiceTermPfpUpdateServiceImpl.class);
 
-    bind(ForeignExchangeGapToolsService.class).to(ForeignExchangeGapToolsServiceImpl.class);
+    bind(InvoiceTermPfpToolService.class).to(InvoiceTermPfpToolServiceImpl.class);
+
+    bind(InvoiceTermPfpValidateService.class).to(InvoiceTermPfpValidateServiceImpl.class);
+
+    bind(MovePfpValidateService.class).to(MovePfpValidateServiceImpl.class);
+
+    bind(InvoicePfpValidateService.class).to(InvoicePfpValidateServiceImpl.class);
   }
 }

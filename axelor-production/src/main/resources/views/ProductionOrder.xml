@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="production-order-grid" title="Production orders"
     model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
@@ -18,8 +18,8 @@
     <field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid"
       onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false"
       onChange="action-production-order-record-client-partner-onchange-sale-order"/>
-    <field name="project" if-module="axelor-business-production" form-view="project-form"
-      grid-view="project-grid"
+    <field name="project" if-module="axelor-business-production"
+      form-view="business-project-form" grid-view="project-grid"
       if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
   </grid>
 
@@ -42,8 +42,8 @@
       <field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid"
         onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false"
         onChange="action-production-order-record-client-partner-onchange-sale-order"/>
-      <field name="project" if-module="axelor-business-production" form-view="project-form"
-        grid-view="project-grid"
+      <field name="project" if-module="axelor-business-production"
+        form-view="business-project-form" grid-view="project-grid"
         if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -59,8 +59,8 @@
         <field name="statusSelect"/>
         <field name="createdBy"/>
         <field name="createdOn"/>
-        <field name="project" if-module="axelor-business-production" form-view="project-form"
-          grid-view="project-grid"
+        <field name="project" if-module="axelor-business-production"
+          form-view="business-project-form" grid-view="project-grid"
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
       </panel-related>
       <panel-dashlet name="operationOrderDetailsPanel"

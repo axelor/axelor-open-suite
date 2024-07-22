@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -171,6 +171,13 @@
     <boolean name="enablePricingScale" title="Enable pricing scale"/>
     <boolean name="isPricingComputingOrder" title="Pricing computing order"
       help="When selected, this is the pricing scale computation order."/>
+
+    <boolean name="isActivateInstanceInfoShortcut" default="false"
+      title="Activate the instance information shortcut"
+      help="This configuration allows quick access to the type of environment and the configured date and time"/>
+    <boolean name="isActivateCompanyChangeShortcut" default="false"
+      title="Activate the company change shortcut"
+      help="This configuration allows quick access to the active company change"/>
 
     <extra-code>
 	   		<![CDATA[

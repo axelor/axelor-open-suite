@@ -36,25 +36,31 @@ import java.util.List;
 public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeService {
   protected AppSaleService appSaleService;
   protected SaleOrderService saleOrderService;
-  protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLinePackService saleOrderLinePackService;
+  protected SaleOrderLineProductService saleOrderLineProductService;
 
   @Inject
   public SaleOrderOnLineChangeServiceImpl(
       AppSaleService appSaleService,
       SaleOrderService saleOrderService,
-      SaleOrderLineService saleOrderLineService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderComputeService saleOrderComputeService,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineProductService saleOrderLineProductService) {
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
-    this.saleOrderLineService = saleOrderLineService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLinePackService = saleOrderLinePackService;
+    this.saleOrderLineProductService = saleOrderLineProductService;
   }
 
   @Override
@@ -108,8 +114,9 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
                     .getQty()
                     .multiply(compProductSelected.getQty())
                     .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-            saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
-            saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+            saleOrderLineProductService.computeProductInformation(
+                newSoLine, newSoLine.getSaleOrder());
+            saleOrderLineComputeService.computeValues(newSoLine.getSaleOrder(), newSoLine);
 
             newSoLine.setParentId(originSoLine.getManualId());
 
@@ -123,8 +130,9 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
                   .multiply(compProductSelected.getQty())
                   .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
 
-          saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
-          saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+          saleOrderLineProductService.computeProductInformation(
+              newSoLine, newSoLine.getSaleOrder());
+          saleOrderLineComputeService.computeValues(newSoLine.getSaleOrder(), newSoLine);
         }
       }
       originSoLine.setIsComplementaryProductsUnhandledYet(false);
@@ -165,7 +173,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
         if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
           break;
         }
-        saleOrderLineService.updateProductQty(SOLine, saleOrder, oldQty, newQty);
+        saleOrderLineComputeService.updateProductQty(SOLine, saleOrder, oldQty, newQty);
       }
     }
     return saleOrder;
@@ -180,7 +188,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
                 saleOrderLine ->
                     saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK)) {
       if (appSaleService.getAppSale().getEnablePackManagement()
-          && saleOrderLineService.isStartOfPackTypeLineQtyChanged(
+          && saleOrderLinePackService.isStartOfPackTypeLineQtyChanged(
               saleOrder.getSaleOrderLineList())) {
         this.updateProductQtyWithPackHeaderQty(saleOrder);
       }

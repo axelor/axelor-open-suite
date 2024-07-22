@@ -173,7 +173,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       for (Budget budget : budgetList) {
         changeVersionLineOnBudget(versionExpectedAmountsLineList, budget, needRecomputeBudgetLine);
       }
-      globalBudget.setBudgetList(budgetList);
     }
 
     globalBudget.setActiveVersion(budgetVersion);

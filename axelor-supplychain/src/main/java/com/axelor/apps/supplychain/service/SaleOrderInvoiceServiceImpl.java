@@ -47,7 +47,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -95,8 +94,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected InvoiceServiceSupplychainImpl invoiceService;
 
-  protected SaleOrderLineService saleOrderLineService;
-
   protected StockMoveRepository stockMoveRepository;
 
   protected SaleOrderWorkflowService saleOrderWorkflowService;
@@ -115,7 +112,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
-      SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
       InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
@@ -131,7 +127,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
     this.stockMoveRepository = stockMoveRepository;
-    this.saleOrderLineService = saleOrderLineService;
     this.invoiceTermService = invoiceTermService;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.commonInvoiceService = commonInvoiceService;

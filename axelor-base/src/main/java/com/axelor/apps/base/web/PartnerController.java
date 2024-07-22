@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -43,6 +44,8 @@ import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRe
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -62,12 +65,14 @@ import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
@@ -184,7 +189,7 @@ public class PartnerController {
 
     String fileLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(clientSituationPrintTemplate, factoryContext, name + "-${date}");
+            .getPrintLink(clientSituationPrintTemplate, factoryContext);
 
     LOG.debug("Printing " + name);
 
@@ -437,5 +442,19 @@ public class PartnerController {
     if (validator != null && !validator.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
+  }
+
+  public void setPositiveBalance(ActionRequest request, ActionResponse response) {
+    BigDecimal balance =
+        Optional.ofNullable(request.getContext().get("balance"))
+            .map(b -> new BigDecimal(b.toString()))
+            .orElse(BigDecimal.ZERO);
+
+    Company company =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+
+    response.setValue(
+        "$positiveBalanceBtn",
+        Beans.get(CurrencyScaleService.class).getCompanyScaledValue(company, balance.abs()));
   }
 }

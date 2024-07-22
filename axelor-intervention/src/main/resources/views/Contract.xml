@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form id="intervention-contract-form" name="contract-form" title="Contract"
     model="com.axelor.apps.contract.db.Contract" extension="true">
     <extend target="//toolbar">
       <insert position="inside">
         <button name="generateEquipmentsBtn" title="Generate equipments"
-          onClick="action-park-model-show-confirmation-from-contract"
+          onClick="save,action-park-model-show-confirmation-from-contract"
           if="__config__.app.isApp('intervention')"/>
       </insert>
     </extend>

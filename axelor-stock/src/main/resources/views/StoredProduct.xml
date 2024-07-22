@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid name="stored-product-grid" title="Stored products"
+    model="com.axelor.apps.stock.db.StoredProduct">
+    <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
+      required="true" onSelect="action-stored-product-method-stored-product-domain"/>
+    <field name="toStockLocation"
+      onSelect="action-stored-product-method-set-domain-from-stock-location"
+      onChange="action-stored-product-record-set-tracking-number,action-stored-product-method-set-current-qty"
+      required="true"/>
+    <field name="trackingNumber" title="Tracking no."
+      onSelect="action-stored-product-method-tracking-number-domain"
+      onChange="action-stored-product-method-set-current-qty"/>
+    <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+      readonly="true"/>
+    <field name="unit" readonly="true"/>
+    <field name="storedQty"/>
+    <button name="realizeStoringBtn" title="Realize storing"
+      onClick="save,action-picked-product-method-realize-storing" readonlyIf="stockMoveLine != null"
+      icon="fa-play"/>
+  </grid>
+
+  <form name="stored-product-form" title="Stored products"
+    model="com.axelor.apps.stock.db.StoredProduct" onNew="action-stored-product-group-onnew"
+    onLoad="action-stored-product-method-set-current-qty" canDelete="false">
+    <panel name="mainPanel">
+      <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
+        onSelect="action-stored-product-method-stored-product-domain"/>
+      <field name="toStockLocation"
+        onSelect="action-stored-product-method-set-domain-to-stock-location"
+        onChange="action-stored-product-record-set-tracking-number,action-stored-product-method-set-current-qty"
+        required="true"/>
+      <field name="trackingNumber"
+        onSelect="action-stored-product-method-tracking-number-domain"
+        onChange="action-stored-product-method-set-current-qty"/>
+      <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+        readonly="true"/>
+      <field name="unit" readonly="true"/>
+      <field name="storedQty"/>
+      <field name="stockMoveLine" showIf="stockMoveLine != null"/>
+    </panel>
+  </form>
+
+
+  <action-method name="action-stored-product-method-set-current-qty">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="setCurrentQty"/>
+  </action-method>
+
+
+  <action-record name="action-stored-product-record-set-tracking-number"
+    model="com.axelor.apps.stock.db.StoredProduct">
+    <field name="trackingNumber" expr="eval: null"/>
+  </action-record>
+
+  <action-method name="action-stored-product-method-set-domain-to-stock-location">
+    <call class="com.axelor.apps.stock.web.StoredProductController"
+      method="setToStockLocationDomain"/>
+  </action-method>
+
+  <action-group name="action-stored-product-group-product-onchange">
+    <action name="action-stored-product-record-set-unit"/>
+    <action name="action-stored-product-attrs-tracking-number-required"/>
+    <action name="action-stored-product-record-set-tracking-number"/>
+    <action name="action-stored-product-method-set-current-qty"/>
+  </action-group>
+
+  <action-record name="action-stored-product-record-set-unit"
+    model="com.axelor.apps.stock.db.StoredProduct">
+    <field name="unit" expr="eval: storedProduct?.unit"/>
+  </action-record>
+
+  <action-attrs name="action-stored-product-attrs-tracking-number-required">
+    <attribute name="required" for="trackingNumber"
+      expr="eval: storedProduct?.trackingNumberConfiguration != null"/>
+  </action-attrs>
+
+
+  <action-record name="action-stored-product-record-default-location"
+    model="com.axelor.apps.stock.db.StoredProduct">
+    <field name="toStockLocation" expr="eval: __parent__?.commonFromStockLocation"/>
+  </action-record>
+
+  <action-group name="action-stored-product-group-onnew">
+    <action name="action-stored-product-record-default-location"/>
+  </action-group>
+
+  <action-method name="action-stored-product-method-stored-product-domain">
+    <call class="com.axelor.apps.stock.web.StoredProductController"
+      method="setStoredProductDomain"/>
+  </action-method>
+  <action-method name="action-stored-product-method-tracking-number-domain">
+    <call class="com.axelor.apps.stock.web.StoredProductController"
+      method="setTrackingNumberDomain"/>
+  </action-method>
+
+  <action-method name="action-picked-product-method-realize-storing">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="realizeStoring"/>
+  </action-method>
+
+
+</object-views>

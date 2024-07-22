@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -1049,7 +1049,7 @@
     <action name="action-partner-account-attrs-hide-customer-account"/>
     <action name="action-partner-account-attrs-hide-employee-account"/>
     <action name="action-partner-record-set-balance" if="__config__.app.isApp('account')"/>
-    <action name="action-partner-record-set-positive-balance"
+    <action name="action-partner-method-set-positive-balance"
       if="__config__.app.isApp('account')"/>
     <action name="action-partner-attrs-name-balance"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
@@ -1344,21 +1344,11 @@
   <action-record name="action-partner-record-set-balance"
     model="com.axelor.apps.base.db.Partner">
     <field name="$balance"
-      expr="#{accountingSituationList.stream().map(
-                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
-                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
-                    : (x -> x.balanceCustAccount)
-                ).sum()}"/>
-  </action-record>
-
-  <action-record name="action-partner-record-set-positive-balance"
-    model="com.axelor.apps.base.db.Partner">
-    <field name="$positiveBalanceBtn"
-      expr="eval: balance &lt; 0 ?
-		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance * -1) :
-		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance)"
-      if="balance != null"/>
-    <field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
+      expr="eval: accountingSituationList?.collect{
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? it.balanceDueDebtRecoveryCustAccount
+                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? it.balanceDueCustAccount
+                    : it.balanceCustAccount
+                }.sum()"/>
   </action-record>
 
   <action-record name="action-partner-record-employee"
@@ -1505,6 +1495,10 @@
 
   <action-method name="action-method-partner-check-registration-code">
     <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
+  </action-method>
+
+  <action-method name="action-partner-method-set-positive-balance">
+    <call class="com.axelor.apps.base.web.PartnerController" method="setPositiveBalance"/>
   </action-method>
 
   <action-view name="action-contact-partner-dashlet" title="Partners"

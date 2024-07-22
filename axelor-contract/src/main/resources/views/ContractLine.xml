@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="contract-line-grid" title="Contract Lines"
     model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
@@ -84,6 +84,7 @@
       </panel>
       <panel name="informationsPanel" title="Information" showIf="typeSelect == 0">
         <field name="product" canEdit="false" colSpan="5"
+          onSelect="action-contract-line-method-domain-product"
           onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
         <field name="productName" colSpan="5"/>
         <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="2"
@@ -176,6 +177,7 @@
       </panel>
       <panel name="informationsPanel" title="Information" showIf="typeSelect == 0">
         <field name="product" canEdit="false" colSpan="5"
+          onSelect="action-contract-line-method-domain-product"
           onChange="action-contract-line-additional-group-product-onchange"
           domain="self.dtype = 'Product'"/>
         <field name="productName" colSpan="5"/>
@@ -233,6 +235,7 @@
     onLoad="action-contract-line-method-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
+        onSelect="action-contract-line-method-domain-product"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
       <field name="productName"/>
       <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"/>
@@ -251,6 +254,7 @@
     onLoad="action-contract-line-method-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
+        onSelect="action-contract-line-method-domain-product"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
       <field name="productName"/>
       <field name="qty" x-scale="$nbDecimalDigitForQty"/>
@@ -291,6 +295,7 @@
       <panel name="informationsPanel" title="Information">
         <panel name="infoPanel" title="Information" colSpan="12">
           <field name="product" canEdit="false"
+            onSelect="action-contract-line-method-domain-product"
             onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
           <field name="productName"/>
           <field name="taxLineSet" canEdit="false"
@@ -330,7 +335,6 @@
 
   <action-group name="action-contract-line-group-edit-view">
     <action name="action-contract-line-attrs-hide-consumption-line"/>
-    <action name="action-contract-line-group-manage-analytic"/>
     <action name="action-contract-line-method-scale-and-precision"/>
     <action name="action-contract-line-method-hide-date-panel"/>
     <action name="action-contract-line-method-hide-is-to-revaluate"/>
@@ -362,8 +366,7 @@
     <action name="action-contract-line-method-hide-axis-analytic-account"/>
     <action name="action-contract-line-method-print-analytic-account"/>
     <action name="action-contract-line-attrs-read-only-distribution-lines"/>
-    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"
-      if="eval: __parent__?.targetTypeSelect == 1 || __parent__?.targetTypeSelect == 2"/>
+    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"/>
   </action-group>
 
   <action-group name="action-contract-line-group-product-onchange">
@@ -525,5 +528,10 @@ In case you have contract lines with different invoicing duration, you can activ
   <action-method name="action-contract-line-method-product-required">
     <call class="com.axelor.apps.contract.web.ContractLineController"
       method="setProductRequired"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-domain-product">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="computeProductDomain"/>
   </action-method>
 </object-views>

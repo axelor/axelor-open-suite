@@ -19,11 +19,14 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import java.util.Optional;
 
 public class SaleOrderDomainServiceImpl implements SaleOrderDomainService {
   @Override
   public String getPartnerBaseDomain(Company company) {
-    Long companyPartnerId = company.getPartner() == null ? 0 : company.getPartner().getId();
+    Long companyPartnerId =
+        Optional.ofNullable(company).map(Company::getPartner).map(Partner::getId).orElse(0L);
     return String.format(
         "self.id != %d AND self.isContact = false "
             + "AND (self.isCustomer = true or self.isProspect = true) "

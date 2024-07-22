@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
@@ -115,6 +115,7 @@
     <view type="form" name="purchase-order-form"/>
     <view-param name="search-filters" value="purchase-order-filters"/>
     <context name="_internalUser" expr="eval: __user__.id"/>
+    <context name="_status" expr="eval: [1,2,3,4,5]"/>
   </action-view>
 
   <menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"

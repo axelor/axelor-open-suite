@@ -31,6 +31,7 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.PayrollPreparationExportService;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.i18n.I18n;
@@ -63,14 +64,17 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   @Inject HRConfigService hrConfigService;
 
   protected LeaveRequestRepository leaveRequestRepo;
+  protected PayrollPreparationExportService payrollPreparationExportService;
 
   @Inject
   public BatchPayrollPreparationExport(
       PayrollPreparationService payrollPreparationService,
-      LeaveRequestRepository leaveRequestRepo) {
+      LeaveRequestRepository leaveRequestRepo,
+      PayrollPreparationExportService payrollPreparationExportService) {
     super();
     this.payrollPreparationService = payrollPreparationService;
     this.leaveRequestRepo = leaveRequestRepo;
+    this.payrollPreparationExportService = payrollPreparationExportService;
   }
 
   @Override
@@ -165,14 +169,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       incrementDone();
     }
 
-    String fileName = payrollPreparationService.getPayrollPreparationExportName();
+    String fileName = payrollPreparationExportService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvHelper.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        payrollPreparationService.getPayrollPreparationExportHeader(),
+        payrollPreparationExportService.getPayrollPreparationExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);
@@ -190,18 +194,18 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
 
       payrollPreparation.addBatchListItem(batch);
-      payrollPreparationService.exportNibelis(payrollPreparation, list);
+      payrollPreparationExportService.exportNibelis(payrollPreparation, list);
       total++;
     }
 
-    String fileName = payrollPreparationService.getPayrollPreparationExportName();
+    String fileName = payrollPreparationExportService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvHelper.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        payrollPreparationService.getPayrollPreparationMeilleurGestionExportHeader(),
+        payrollPreparationExportService.getPayrollPreparationMeilleurGestionExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);
@@ -230,19 +234,19 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
       payrollPreparation.addBatchListItem(batch);
-      payrollPreparationService.exportSilae(payrollPreparation, list);
+      payrollPreparationExportService.exportSilae(payrollPreparation, list);
       total++;
       incrementDone();
     }
 
-    String fileName = payrollPreparationService.getPayrollPreparationExportName();
+    String fileName = payrollPreparationExportService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvHelper.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        payrollPreparationService.getPayrollPreparationSilaeExportHeader(),
+        payrollPreparationExportService.getPayrollPreparationSilaeExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);

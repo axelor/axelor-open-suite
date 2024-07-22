@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -348,8 +348,6 @@
     <option value="7">Irrecoverable Debt</option>
     <option value="8">Doubtful credit</option>
     <option value="9">Credit note imputation</option>
-    <option value="10">Foreign exchange gain</option>
-    <option value="11">Foreign exchange loss</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -714,6 +712,7 @@
   <selection name="account.fixed.asset.split.type.select">
     <option value="1">Quantity</option>
     <option value="2">Amount</option>
+    <option value="3">Unit quantity</option>
   </selection>
 
   <selection name="account.fixed.asset.move.generation.exception">
