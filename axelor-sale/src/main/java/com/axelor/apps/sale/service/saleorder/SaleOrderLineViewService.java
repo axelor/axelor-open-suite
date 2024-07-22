@@ -15,6 +15,13 @@ public interface SaleOrderLineViewService {
   Map<String, Map<String, Object>> getProductOnChangeAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
+  Map<String, Map<String, Object>> getDiscountTypeSelectOnChangeAttrs(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+
   Map<String, Map<String, Object>> hidePriceDiscounted(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine);
+
+  Map<String, Map<String, Object>> getDiscountAmountTitle(SaleOrderLine saleOrderLine);
+
+  Map<String, Map<String, Object>> getPriceAndQtyScale();
 }
