@@ -815,13 +815,19 @@ public class PaymentVoucherConfirmService {
     BigDecimal currencyRate =
         currencyService.getCurrencyConversionRate(
             invoiceTerm.getCurrency(), invoiceTerm.getCompanyCurrency(), paymentDate);
+    BigDecimal invoiceTermCurrencyRate =
+        currencyService.getCurrencyConversionRate(
+            invoiceTerm.getCurrency(),
+            invoiceTerm.getCompanyCurrency(),
+            invoiceTerm.getInvoice().getInvoiceDate());
+    BigDecimal currencyAmount =
+        payVoucherElementToPay
+            .getAmountToPayCurrency()
+            .add(payVoucherElementToPay.getFinancialDiscountTotalAmount());
+
     BigDecimal companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
-            payVoucherElementToPay.getPaymentVoucher(),
-            (payVoucherElementToPay
-                    .getAmountToPayCurrency()
-                    .add(payVoucherElementToPay.getFinancialDiscountTotalAmount()))
-                .multiply(currencyRate));
+            payVoucherElementToPay.getPaymentVoucher(), currencyAmount.multiply(currencyRate));
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
@@ -844,6 +850,10 @@ public class PaymentVoucherConfirmService {
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(
         paymentMove, moveLine, paymentDate, false);
 
+    companyAmountToPay =
+        this.computeForeignExchangeCompanyAmount(
+            currencyRate, invoiceTermCurrencyRate, companyAmountToPay, currencyAmount, invoiceTerm);
+
     Reconcile reconcile =
         reconcileService.createReconcile(moveLineToPay, moveLine, companyAmountToPay, true);
     if (reconcile != null) {
@@ -860,5 +870,23 @@ public class PaymentVoucherConfirmService {
     } else {
       return payVoucherElementToPay.getPaymentVoucher().getRef();
     }
+  }
+
+  protected BigDecimal computeForeignExchangeCompanyAmount(
+      BigDecimal paymentCurrencyRate,
+      BigDecimal invoiceTermCurrencyRate,
+      BigDecimal companyAmount,
+      BigDecimal currencyAmount,
+      InvoiceTerm invoiceTerm)
+      throws AxelorException {
+    if (paymentCurrencyRate.compareTo(invoiceTermCurrencyRate) > 0) {
+      return currencyService.getAmountCurrencyConvertedAtDate(
+          invoiceTerm.getCurrency(),
+          invoiceTerm.getCompanyCurrency(),
+          currencyAmount,
+          invoiceTerm.getInvoice().getInvoiceDate());
+    }
+
+    return companyAmount;
   }
 }
