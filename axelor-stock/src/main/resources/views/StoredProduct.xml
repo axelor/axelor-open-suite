@@ -17,10 +17,11 @@
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="storedQty"/>
+    <field name="storedQty" x-scale="nbDecimalQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
       onClick="save,action-picked-product-method-realize-storing" readonlyIf="stockMoveLine != null"
       icon="fa-play"/>
+    <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
   </grid>
 
   <form name="stored-product-form" title="Stored products"
@@ -39,8 +40,9 @@
       <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
         readonly="true"/>
       <field name="unit" readonly="true"/>
-      <field name="storedQty"/>
+      <field name="storedQty" x-scale="nbDecimalQty"/>
       <field name="stockMoveLine" showIf="stockMoveLine != null"/>
+      <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
     </panel>
   </form>
 
