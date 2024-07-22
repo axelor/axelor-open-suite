@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <action-record name="action-product-set-stock"
     model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
@@ -134,12 +134,12 @@
     <extend target="//panel[@name='productionInformationsPanel']">
       <insert position="after">
         <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
-          showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('stock')">
+          showIf="productTypeSelect == 'storable'"
+          if="__config__.app.isApp('stock') &amp;&amp; !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})">
           <panel colSpan="12" name="trackingConfigPanel">
             <field name="trackingNumberConfiguration" canNew="true"
               form-view="tracking-number-configuration-form"
-              grid-view="tracking-number-configuration-grid"
-              if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})"/>
+              grid-view="tracking-number-configuration-grid"/>
           </panel>
         </panel>
       </insert>

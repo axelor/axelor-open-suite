@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
@@ -463,7 +463,7 @@
         <field name="amountPaid"
           hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"
           x-scale="companyCurrencyDecimals"/>
-        <field name="currencyAmount"
+        <field name="currencyAmount" x-scale="currencyDecimals"
           onChange="action-move-line-method-currency-amount-rate-onchange"
           readonlyIf="!isOtherCurrency"/>
         <field name="currencyRate"
@@ -496,8 +496,8 @@
           <field name="financialDiscountRate" showIf="financialDiscount" readonly="true"/>
           <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12"
             readonly="true">
-            <field name="financialDiscountTotalAmount"/>
-            <field name="remainingAmountAfterFinDiscount"/>
+            <field name="financialDiscountTotalAmount" x-scale="currencyDecimals"/>
+            <field name="remainingAmountAfterFinDiscount" x-scale="currencyDecimals"/>
           </panel>
         </panel>
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"

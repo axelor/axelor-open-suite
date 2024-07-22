@@ -7979,7 +7979,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                         </structure>
                                     </list-property>
                                     <cell id="6166">
-                                        <property name="colSpan">3</property>
+                                        <property name="colSpan">5</property>
                                         <property name="rowSpan">1</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
