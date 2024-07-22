@@ -13,7 +13,8 @@
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-picked-product-attrs-tracking-number-domain"
       onChange="action-picked-product-method-set-current-qty"/>
-    <field name="currentQty" readonly="true"/>
+    <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+      readonly="true"/>
     <field name="unit" readonly="true"/>
     <field name="pickedQty"/>
     <button name="realizePickingBtn" title="Realize picking"
@@ -23,7 +24,7 @@
 
   <form name="picked-product-form" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProduct" onNew="action-picked-product-group-onnew"
-    canDelete="false">
+    onLoad="action-picked-product-method-set-current-qty" canDelete="false">
     <panel name="mainPanel">
       <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
         onChange="action-picked-product-group-product-onchange"/>
@@ -33,9 +34,11 @@
       <field name="trackingNumber"
         onSelect="action-picked-product-attrs-tracking-number-domain"
         onChange="action-picked-product-method-set-current-qty"/>
-      <field name="currentQty" readonly="true"/>
+      <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+        readonly="true"/>
       <field name="unit" readonly="true"/>
       <field name="pickedQty"/>
+      <field name="stockMoveLine" showIf="stockMoveLine != null"/>
     </panel>
   </form>
 

@@ -7,7 +7,7 @@ public interface MassStockMovableProductProcessingService<T extends MassStockMov
 
   void save(T movableProduct);
 
-  void preRealize(T movableProduct);
+  void preRealize(T movableProduct) throws AxelorException;
 
   void postRealize(T movableProduct) throws AxelorException;
 }
