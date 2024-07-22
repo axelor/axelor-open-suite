@@ -32,7 +32,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -64,7 +64,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
       MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      BankReconciliationLineService bankReconciliationLineService,
+      BankReconciliationLineUnreconciliationService bankReconciliationLineUnreconciliationService,
       CurrencyScaleService currencyScaleService,
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService,
@@ -84,7 +84,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
         moveToolService,
         bankReconciliationService,
         bankReconciliationLineRepository,
-        bankReconciliationLineService,
+        bankReconciliationLineUnreconciliationService,
         currencyScaleService,
         unReconcileService,
         moveInvoiceTermService,

@@ -413,8 +413,8 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       return currencyService.getCurrencyRate(
           invoice.getInvoiceDate(),
           invoicePayment.getPaymentDate(),
-          companyCurrency,
           paymentCurrency,
+          companyCurrency,
           currencyRate);
     }
 

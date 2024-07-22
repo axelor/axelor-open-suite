@@ -16,10 +16,14 @@
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="pickedQty"/>
+    <field name="pickedQty" x-scale="nbDecimalQty"/>
     <button name="realizePickingBtn" title="Realize picking"
       onClick="save,action-picked-product-method-realize-picking" readonlyIf="stockMoveLine != null"
       icon="fa-play"/>
+    <button name="cancelPickingBtn" icon="fa-undo"
+      onClick="action-picked-product-method-cancel-picking" readonlyIf="stockMoveLine == null"/>
+    <field name="stockMoveLine" hidden="true"/>
+    <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
   </grid>
 
   <form name="picked-product-form" title="Picked products"
@@ -37,8 +41,9 @@
       <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
         readonly="true"/>
       <field name="unit" readonly="true"/>
-      <field name="pickedQty"/>
+      <field name="pickedQty" x-scale="nbDecimalQty"/>
       <field name="stockMoveLine" showIf="stockMoveLine != null"/>
+      <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
     </panel>
   </form>
 
@@ -93,6 +98,10 @@
 
   <action-method name="action-picked-product-method-realize-picking">
     <call class="com.axelor.apps.stock.web.PickedProductController" method="realizePicking"/>
+  </action-method>
+
+  <action-method name="action-picked-product-method-cancel-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="cancelPicking"/>
   </action-method>
 
 

@@ -2,7 +2,8 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -23,7 +24,8 @@ public class MassStockMoveController {
       throws AxelorException {
     var massStockMove = request.getContext().asType(MassStockMove.class);
 
-    Beans.get(MassStockMovableProductService.class).realize(massStockMove.getPickedProductList());
+    Beans.get(MassStockMovableProductRealizeService.class)
+        .realize(massStockMove.getPickedProductList());
 
     response.setReload(true);
   }
@@ -32,7 +34,28 @@ public class MassStockMoveController {
       throws AxelorException {
     var massStockMove = request.getContext().asType(MassStockMove.class);
 
-    Beans.get(MassStockMovableProductService.class).realize(massStockMove.getStoredProductList());
+    Beans.get(MassStockMovableProductRealizeService.class)
+        .realize(massStockMove.getStoredProductList());
+
+    response.setReload(true);
+  }
+
+  public void cancelAllPicking(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    var massStockMove = request.getContext().asType(MassStockMove.class);
+
+    Beans.get(MassStockMovableProductCancelService.class)
+        .cancel(massStockMove.getPickedProductList());
+
+    response.setReload(true);
+  }
+
+  public void cancelAllStoring(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    var massStockMove = request.getContext().asType(MassStockMove.class);
+
+    Beans.get(MassStockMovableProductCancelService.class)
+        .cancel(massStockMove.getStoredProductList());
 
     response.setReload(true);
   }

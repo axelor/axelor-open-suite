@@ -27,13 +27,11 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
@@ -71,16 +69,12 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -97,7 +91,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.validation.ValidationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -117,10 +110,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ManufOrderRepository manufOrderRepo;
   protected ProdProductRepository prodProductRepo;
   protected ProductCompanyService productCompanyService;
-  protected BarcodeGeneratorService barcodeGeneratorService;
   protected ProductStockLocationService productStockLocationService;
   protected UnitConversionService unitConversionService;
-  protected MetaFiles metaFiles;
   protected PartnerRepository partnerRepository;
   protected BillOfMaterialService billOfMaterialService;
   protected StockMoveService stockMoveService;
@@ -141,10 +132,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
       ProductCompanyService productCompanyService,
-      BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
-      MetaFiles metaFiles,
       PartnerRepository partnerRepository,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
@@ -162,10 +151,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.manufOrderRepo = manufOrderRepo;
     this.prodProductRepo = prodProductRepo;
     this.productCompanyService = productCompanyService;
-    this.barcodeGeneratorService = barcodeGeneratorService;
     this.productStockLocationService = productStockLocationService;
     this.unitConversionService = unitConversionService;
-    this.metaFiles = metaFiles;
     this.partnerRepository = partnerRepository;
     this.billOfMaterialService = billOfMaterialService;
     this.stockMoveService = stockMoveService;
@@ -1108,27 +1095,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     return true;
-  }
-
-  @Override
-  public void createBarcode(ManufOrder manufOrder) {
-    String manufOrderSeq = manufOrder.getManufOrderSeq();
-
-    try (InputStream inStream =
-        barcodeGeneratorService.createBarCode(
-            manufOrderSeq, appProductionService.getAppProduction().getBarcodeTypeConfig(), true)) {
-
-      if (inStream != null) {
-        MetaFile barcodeFile =
-            metaFiles.upload(
-                inStream, String.format("ManufOrderBarcode%d.png", manufOrder.getId()));
-        manufOrder.setBarCode(barcodeFile);
-      }
-    } catch (IOException e) {
-      TraceBackService.trace(e);
-    } catch (AxelorException e) {
-      throw new ValidationException(e.getMessage());
-    }
   }
 
   @Override

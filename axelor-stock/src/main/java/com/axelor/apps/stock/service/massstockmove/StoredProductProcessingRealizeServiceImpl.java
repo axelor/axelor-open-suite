@@ -4,29 +4,20 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class StoredProductProcessingServiceImpl
-    implements MassStockMovableProductProcessingService<StoredProduct> {
+public class StoredProductProcessingRealizeServiceImpl
+    implements MassStockMovableProductProcessingRealizeService<StoredProduct> {
 
   protected final StoredProductRepository storedProductRepository;
   protected final MassStockMovableProductQuantityService massStockMovableProductQuantityService;
 
   @Inject
-  public StoredProductProcessingServiceImpl(
+  public StoredProductProcessingRealizeServiceImpl(
       StoredProductRepository storedProductRepository,
       MassStockMovableProductQuantityService massStockMovableProductQuantityService) {
     this.storedProductRepository = storedProductRepository;
     this.massStockMovableProductQuantityService = massStockMovableProductQuantityService;
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void save(StoredProduct movableProduct) {
-    Objects.requireNonNull(movableProduct);
-    storedProductRepository.save(movableProduct);
   }
 
   @Override

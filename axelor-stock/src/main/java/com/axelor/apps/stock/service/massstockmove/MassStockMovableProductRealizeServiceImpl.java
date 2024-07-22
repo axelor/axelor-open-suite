@@ -18,7 +18,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-public class MassStockMovableProductServiceImpl implements MassStockMovableProductService {
+public class MassStockMovableProductRealizeServiceImpl
+    implements MassStockMovableProductRealizeService {
 
   protected final StockMoveService stockMoveService;
   protected final AppBaseService appBaseService;
@@ -28,7 +29,7 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
   protected final MassStockMovableProductQuantityService massStockMovableProductQuantityService;
 
   @Inject
-  public MassStockMovableProductServiceImpl(
+  public MassStockMovableProductRealizeServiceImpl(
       StockMoveService stockMoveService,
       AppBaseService appBaseService,
       StockMoveLineService stockMoveLineService,
@@ -50,15 +51,18 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
     Objects.requireNonNull(massStockMovableProducts);
 
     if (!massStockMovableProducts.isEmpty()) {
-      MassStockMovableProductProcessingService processingService =
-          massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+      MassStockMovableProductProcessingRealizeService processingService =
+          massStockMovableProductServiceFactory.getMassStockMovableProductProcessingRealizeService(
               massStockMovableProducts.get(0));
       MassStockMovableProductLocationService locationService =
           massStockMovableProductServiceFactory.getMassStockMovableProductLocationService(
               massStockMovableProducts.get(0));
+      MassStockMovableProductProcessingSaveService saveService =
+          massStockMovableProductServiceFactory.getMassStockMovableProductProcessingSaveService(
+              massStockMovableProducts.get(0));
 
       for (MassStockMovableProduct massStockMovableProduct : massStockMovableProducts) {
-        realize(massStockMovableProduct, processingService, locationService);
+        realize(massStockMovableProduct, processingService, saveService, locationService);
       }
     }
   }
@@ -66,7 +70,8 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
   @Transactional(rollbackOn = Exception.class)
   protected void realize(
       MassStockMovableProduct movableProduct,
-      MassStockMovableProductProcessingService processingService,
+      MassStockMovableProductProcessingRealizeService processingService,
+      MassStockMovableProductProcessingSaveService saveService,
       MassStockMovableProductLocationService locationService)
       throws AxelorException {
 
@@ -111,7 +116,7 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
 
       processingService.postRealize(movableProduct);
 
-      processingService.save(movableProduct);
+      saveService.save(movableProduct);
     }
   }
 
@@ -129,29 +134,22 @@ public class MassStockMovableProductServiceImpl implements MassStockMovableProdu
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  protected void realizeAndUpdateQty(
-      MassStockMovableProduct movableProduct,
-      MassStockMovableProductProcessingService processingService,
-      MassStockMovableProductLocationService locationService)
-      throws AxelorException {
-
-    this.realize(movableProduct, processingService, locationService);
-  }
-
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void realize(MassStockMovableProduct movableProduct) throws AxelorException {
     Objects.requireNonNull(movableProduct);
 
-    MassStockMovableProductProcessingService processingService =
-        massStockMovableProductServiceFactory.getMassStockMovableProductProcessingService(
+    MassStockMovableProductProcessingRealizeService processingService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductProcessingRealizeService(
             movableProduct);
     MassStockMovableProductLocationService locationService =
         massStockMovableProductServiceFactory.getMassStockMovableProductLocationService(
             movableProduct);
+    MassStockMovableProductProcessingSaveService saveService =
+        massStockMovableProductServiceFactory.getMassStockMovableProductProcessingSaveService(
+            movableProduct);
 
-    realize(movableProduct, processingService, locationService);
+    realize(movableProduct, processingService, saveService, locationService);
   }
 
   protected void checkQty(MassStockMovableProduct movableProduct, StockLocation fromStockLocation)
