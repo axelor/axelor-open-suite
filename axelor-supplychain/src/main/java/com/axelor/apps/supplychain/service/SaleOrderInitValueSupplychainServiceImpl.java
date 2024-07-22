@@ -2,7 +2,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -13,6 +12,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
@@ -21,7 +21,6 @@ import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,23 +29,27 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
   protected SaleOrderShipmentService saleOrderShipmentService;
   protected SaleOrderIntercoService saleOrderIntercoService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
+  protected BankDetailsService bankDetailsService;
+  protected SaleOrderTaxNumberService saleOrderTaxNumberService;
 
   @Inject
   public SaleOrderInitValueSupplychainServiceImpl(
       AppBaseService appBaseService,
       UserService userService,
-      BankDetailsService bankDetailsService,
+      SaleOrderBankDetailsService saleOrderBankDetailsService,
       SaleConfigService saleConfigService,
       CompanyService companyService,
       SaleOrderUserService saleOrderUserService,
       SaleOrderProductPrintingService saleOrderProductPrintingService,
       SaleOrderShipmentService saleOrderShipmentService,
       SaleOrderIntercoService saleOrderIntercoService,
-      SaleOrderStockLocationService saleOrderStockLocationService) {
+      SaleOrderStockLocationService saleOrderStockLocationService,
+      BankDetailsService bankDetailsService,
+      SaleOrderTaxNumberService saleOrderTaxNumberService) {
     super(
         appBaseService,
         userService,
-        bankDetailsService,
+        saleOrderBankDetailsService,
         saleConfigService,
         companyService,
         saleOrderUserService,
@@ -54,6 +57,8 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
     this.saleOrderShipmentService = saleOrderShipmentService;
     this.saleOrderIntercoService = saleOrderIntercoService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
+    this.bankDetailsService = bankDetailsService;
+    this.saleOrderTaxNumberService = saleOrderTaxNumberService;
   }
 
   @Override
@@ -64,7 +69,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
     initValues.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     initValues.putAll(saleOrderIntercoService.getInterco(saleOrder));
     initValues.putAll(getShipmentCostLine(saleOrder));
-    initValues.putAll(getTaxNumber(saleOrder));
+    initValues.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));
     return initValues;
   }
 
@@ -82,7 +87,6 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
     return saleOrderMap;
   }
 
-  @Override
   protected Map<String, Object> getBankDetails(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
     saleOrder.setCompanyBankDetails(
@@ -120,17 +124,6 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
     Map<String, Object> saleOrderMap = new HashMap<>();
     saleOrderShipmentService.createShipmentCostLine(saleOrder);
     saleOrderMap.put("saleOrderLineList", saleOrder.getSaleOrderLineList());
-    return saleOrderMap;
-  }
-
-  protected Map<String, Object> getTaxNumber(SaleOrder saleOrder) {
-    Map<String, Object> saleOrderMap = new HashMap<>();
-    Company company = saleOrder.getCompany();
-    List<TaxNumber> taxNumberList = company.getTaxNumberList();
-    if (taxNumberList.size() == 1) {
-      saleOrder.setTaxNumber(taxNumberList.stream().findFirst().orElse(null));
-    }
-    saleOrderMap.put("taxNumber", saleOrder.getTaxNumber());
     return saleOrderMap;
   }
 }

@@ -14,6 +14,8 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
@@ -39,6 +41,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   protected SaleOrderIntercoService saleOrderIntercoService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected AppBaseService appBaseService;
+  protected SaleOrderTaxNumberService saleOrderTaxNumberService;
 
   @Inject
   public SaleOrderOnChangeSupplychainServiceImpl(
@@ -50,13 +53,17 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderProductPrintingService saleOrderProductPrintingService,
       SaleOrderLineFiscalPositionService saleOrderLineFiscalPositionService,
       SaleOrderComputeService saleOrderComputeService,
+      SaleConfigService saleConfigService,
+      SaleOrderBankDetailsService saleOrderBankDetailsService,
+      AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       AccountingSituationService accountingSituationService,
       PartnerStockSettingsRepository partnerStockSettingsRepository,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderIntercoService saleOrderIntercoService,
       SaleOrderStockLocationService saleOrderStockLocationService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService1,
+      SaleOrderTaxNumberService saleOrderTaxNumberService) {
     super(
         partnerService,
         saleOrderUserService,
@@ -65,14 +72,18 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
         saleOrderCreateService,
         saleOrderProductPrintingService,
         saleOrderLineFiscalPositionService,
-        saleOrderComputeService);
+        saleOrderComputeService,
+        saleConfigService,
+        saleOrderBankDetailsService,
+        appBaseService);
     this.accountConfigService = accountConfigService;
     this.accountingSituationService = accountingSituationService;
     this.partnerStockSettingsRepository = partnerStockSettingsRepository;
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderIntercoService = saleOrderIntercoService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
-    this.appBaseService = appBaseService;
+    this.appBaseService = appBaseService1;
+    this.saleOrderTaxNumberService = saleOrderTaxNumberService;
   }
 
   @Override
@@ -89,6 +100,16 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(getIsIspmRequired(saleOrder));
     values.putAll(setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder));
+    return values;
+  }
+
+  @Override
+  public Map<String, Object> companyOnChange(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> values = super.companyOnChange(saleOrder);
+    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
+    values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
+    values.putAll(getIncoterm(saleOrder));
+    values.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));
     return values;
   }
 

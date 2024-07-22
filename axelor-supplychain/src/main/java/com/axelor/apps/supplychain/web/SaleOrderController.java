@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderShipmentService;
+import com.axelor.apps.supplychain.service.SaleOrderStockLocationService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -155,7 +156,7 @@ public class SaleOrderController {
     try {
       Company company = saleOrder.getCompany();
       StockLocation stockLocation =
-          Beans.get(SaleOrderSupplychainService.class)
+          Beans.get(SaleOrderStockLocationService.class)
               .getStockLocation(saleOrder.getClientPartner(), company);
       response.setValue("stockLocation", stockLocation);
     } catch (Exception e) {
@@ -777,7 +778,7 @@ public class SaleOrderController {
     try {
       Company company = saleOrder.getCompany();
       StockLocation toStockLocation =
-          Beans.get(SaleOrderSupplychainService.class)
+          Beans.get(SaleOrderStockLocationService.class)
               .getToStockLocation(saleOrder.getClientPartner(), company);
       response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
