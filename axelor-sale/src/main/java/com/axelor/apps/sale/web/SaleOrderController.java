@@ -811,6 +811,7 @@ public class SaleOrderController {
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Map<String, Object> saleOrderMap = new HashMap<>();
+    saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).companyOnChange(saleOrder));
     response.setValues(saleOrderMap);
     response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
   }
