@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -408,54 +409,44 @@ public class BatchAutoMoveLettering extends BatchStrategy {
         > 0;
   }
 
+  @SuppressWarnings({"unchecked", "rawtypes"})
   protected Comparator<MoveLine> getMoveLineComparator() {
-    Comparator<MoveLine> moveLineComparator = null;
     Comparator nullSafeComparator = Comparator.nullsLast(Comparator.naturalOrder());
 
-    String[] orderBySelect = accountingBatch.getOrderBySelect().split(", ");
+    String orderBySelect = accountingBatch.getOrderBySelect();
+    if (StringUtils.isEmpty(orderBySelect)) {
+      return Comparator.comparing(MoveLine::getId);
+    }
 
-    for (int i = 0; i < orderBySelect.length; i++) {
-      switch (orderBySelect[i]) {
+    List<Comparator<MoveLine>> comparators = new ArrayList<>();
+
+    for (String orderBy : orderBySelect.split(",")) {
+      switch (orderBy.trim()) {
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_ACCOUNTING_DATE:
-          moveLineComparator =
-              i == 0
-                  ? Comparator.comparing(MoveLine::getDate, nullSafeComparator)
-                  : moveLineComparator.thenComparing(MoveLine::getDate, nullSafeComparator);
+          comparators.add(Comparator.comparing(MoveLine::getDate, nullSafeComparator));
           break;
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_ORIGIN:
-          moveLineComparator =
-              i == 0
-                  ? Comparator.comparing(MoveLine::getOrigin, nullSafeComparator)
-                  : moveLineComparator.thenComparing(MoveLine::getOrigin, nullSafeComparator);
+          comparators.add(Comparator.comparing(MoveLine::getOrigin, nullSafeComparator));
           break;
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_DUE_DATE:
-          moveLineComparator =
-              i == 0
-                  ? Comparator.comparing(MoveLine::getDueDate, nullSafeComparator)
-                  : moveLineComparator.thenComparing(MoveLine::getDueDate, nullSafeComparator);
+          comparators.add(Comparator.comparing(MoveLine::getDueDate, nullSafeComparator));
           break;
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_PAYMENT_MODE:
-          moveLineComparator =
-              i == 0
-                  ? Comparator.comparing(moveLine -> moveLine.getMove().getPaymentMode().getId())
-                  : moveLineComparator.thenComparing(
-                      moveLine -> moveLine.getMove().getPaymentMode().getId());
+          comparators.add(
+              Comparator.comparing(moveLine -> moveLine.getMove().getPaymentMode().getId()));
           break;
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_LINE_LABEL:
-          moveLineComparator =
-              i == 0
-                  ? Comparator.comparing(MoveLine::getName)
-                  : moveLineComparator.thenComparing(MoveLine::getName);
+          comparators.add(Comparator.comparing(MoveLine::getName));
+          break;
+        default:
           break;
       }
     }
 
-    if (moveLineComparator == null) {
-      moveLineComparator = Comparator.comparing(MoveLine::getId);
-    } else {
-      moveLineComparator = moveLineComparator.thenComparing(MoveLine::getId);
-    }
-    return moveLineComparator;
+    comparators.add(Comparator.comparing(MoveLine::getId));
+    return comparators.stream()
+        .reduce(Comparator::thenComparing)
+        .orElse(Comparator.comparing(MoveLine::getId));
   }
 
   protected Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> getMoveLinesMap() {
