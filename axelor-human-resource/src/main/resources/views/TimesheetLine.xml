@@ -535,7 +535,7 @@
     model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line Form">
     <view name="timesheet-line-timesheet-project-task-form" type="form"/>
     <context name="_project" expr="eval: __user__.contextProject"/>
-    <context name="_user" expr="eval: __user__"/>
+    <context name="_employee" expr="eval: __user__.employee"/>
   </action-view>
 
   <action-attrs name="action-timesheet-line-attrs-set-site-domain">
