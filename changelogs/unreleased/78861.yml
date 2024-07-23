@@ -1,0 +1,3 @@
+---
+title: "Expense Line: fixed error when computing kilometric distance without choosing a type."
+module: axelor-human-resource
