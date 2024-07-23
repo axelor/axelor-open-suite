@@ -1,4 +1,4 @@
 "importId";"typeList";"statement"
 "GBR_COA1";"storable";"This invoice only includes deliveries of goods."
 "GBR_COA2";"service";"This invoice only includes services."
-"GBR_COA3";"storable, service";"This invoice includes deliveries of goods as well as services."
+"GBR_COA3";"storable,service";"This invoice includes deliveries of goods as well as services."
