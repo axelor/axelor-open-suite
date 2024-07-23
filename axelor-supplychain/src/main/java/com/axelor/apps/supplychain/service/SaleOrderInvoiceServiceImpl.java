@@ -892,10 +892,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           saleOrder
               .getExTaxTotal()
               .multiply(amountToInvoice)
-              .divide(
-                  new BigDecimal("100"),
-                  2,
-                  RoundingMode.HALF_UP);
+              .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
     }
     sumInvoices = sumInvoices.add(computedAmountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
