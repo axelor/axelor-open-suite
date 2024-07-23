@@ -1,3 +1,6 @@
 ---
 title: "Product: fixed action from production referenced in base."
 module: axelor-production
+developer: |
+  Created a new action group `action-product-group-production-onload` which will be run onLoad of the product form view,
+  replacing `action-group-product-onload`: if you override `onLoad` of product form in your module, please check related change.
