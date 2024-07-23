@@ -1,0 +1,3 @@
+---
+title: "Invoice/AdvancePayment: fix advance payment tax move line duplication"
+module: axelor-account
