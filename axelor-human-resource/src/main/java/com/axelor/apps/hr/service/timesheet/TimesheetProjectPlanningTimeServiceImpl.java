@@ -135,8 +135,8 @@ public class TimesheetProjectPlanningTimeServiceImpl
   protected BigDecimal getConvertedPlannedTime(
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
     BigDecimal dailyWorkHours = timesheet.getEmployee().getDailyWorkHours();
-    BigDecimal time = projectPlanningTime.getPlannedTime();
-    Unit timeUnit = projectPlanningTime.getTimeUnit();
+    BigDecimal time = computeTimeForConvertedPlannedTime(projectPlanningTime);
+    Unit timeUnit = computeUnitForConvertedPlannedTime(projectPlanningTime);
     String timeLoggingPreference = timesheet.getTimeLoggingPreferenceSelect();
 
     if (timeLoggingPreference == null && timesheet.getEmployee() != null) {
@@ -213,5 +213,14 @@ public class TimesheetProjectPlanningTimeServiceImpl
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_WRONG_TIME_UNIT));
+  }
+
+  protected BigDecimal computeTimeForConvertedPlannedTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    return projectPlanningTime.getPlannedTime();
+  }
+
+  protected Unit computeUnitForConvertedPlannedTime(ProjectPlanningTime projectPlanningTime) {
+    return projectPlanningTime.getTimeUnit();
   }
 }
