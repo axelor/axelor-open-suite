@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an issue preventing from invoicing X% of a sale order as an advance payment where X was greater than the sale order total."
+module: axelor-sale

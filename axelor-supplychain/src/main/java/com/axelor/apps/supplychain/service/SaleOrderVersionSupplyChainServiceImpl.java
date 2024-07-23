@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -36,14 +38,19 @@ public class SaleOrderVersionSupplyChainServiceImpl extends SaleOrderVersionServ
       SaleOrderRepository saleOrderRepository,
       SaleOrderLineRepository saleOrderLineRepository,
       AppBaseService appBaseService,
-      SaleOrderOnLineChangeService saleOrderOnLineChangeService) {
+      SaleOrderOnLineChangeService saleOrderOnLineChangeService,
+      SequenceService sequenceService) {
     super(
-        saleOrderRepository, saleOrderLineRepository, appBaseService, saleOrderOnLineChangeService);
+        saleOrderRepository,
+        saleOrderLineRepository,
+        appBaseService,
+        saleOrderOnLineChangeService,
+        sequenceService);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void createNewVersion(SaleOrder saleOrder) {
+  public void createNewVersion(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED);
     saleOrder.setInvoicingState(SaleOrderRepository.INVOICING_STATE_NOT_INVOICED);
     super.createNewVersion(saleOrder);
