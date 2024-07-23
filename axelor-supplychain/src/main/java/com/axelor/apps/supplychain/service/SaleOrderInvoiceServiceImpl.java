@@ -894,7 +894,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               .multiply(amountToInvoice)
               .divide(
                   new BigDecimal("100"),
-                  currencyScaleService.getScale(saleOrder),
+                  2,
                   RoundingMode.HALF_UP);
     }
     sumInvoices = sumInvoices.add(computedAmountToInvoice);
