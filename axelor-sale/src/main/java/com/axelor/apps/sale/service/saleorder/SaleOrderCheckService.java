@@ -6,6 +6,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 public interface SaleOrderCheckService {
   String finalizeCheckAlert(SaleOrder saleOrder) throws AxelorException;
 
+  String confirmCheckAlert(SaleOrder saleOrder) throws AxelorException;
+
   void checkSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 
   boolean productSoldAtLoss(SaleOrder saleOrder);

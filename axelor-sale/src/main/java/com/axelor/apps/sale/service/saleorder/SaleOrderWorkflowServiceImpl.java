@@ -46,6 +46,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected AppSaleService appSaleService;
   protected AppCrmService appCrmService;
   protected UserService userService;
+  protected SaleOrderCheckService saleOrderCheckService;
 
   @Inject
   public SaleOrderWorkflowServiceImpl(
@@ -53,13 +54,14 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
-      UserService userService) {
-
+      UserService userService,
+      SaleOrderCheckService saleOrderCheckService) {
     this.partnerRepo = partnerRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.appCrmService = appCrmService;
     this.userService = userService;
+    this.saleOrderCheckService = saleOrderCheckService;
   }
 
   @Override
@@ -122,6 +124,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_WRONG_STATUS));
     }
+
+    saleOrderCheckService.checkSaleOrderLineList(saleOrder);
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrder.setConfirmationDateTime(appSaleService.getTodayDateTime().toLocalDateTime());
