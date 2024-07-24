@@ -366,7 +366,7 @@
       <field name="company.tradingNameSet" hidden="true"/>
       <panel name="generalInfoPanel" colSpan="12">
         <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null"
-          widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company"
+          widget="SuggestBox" canEdit="false" onChange="action-sale-order-method-company-onchange"
           form-view="company-form" grid-view="company-grid" colSpan="3"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName"
@@ -914,7 +914,7 @@
         hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
       <field name="title"/>
       <field name="company" canEdit="false" widget="SuggestBox"
-        onChange="action-sale-group-onchange-company" form-view="company-form"
+        onChange="action-sale-order-method-company-onchange" form-view="company-form"
         grid-view="company-grid" readonlyIf="statusSelect == 3"/>
       <field name="templateUser" canNew="false" canEdit="false" canView="false"
         form-view="user-form" grid-view="user-grid"/>
@@ -1441,19 +1441,6 @@
     <action name="action-sale-order-method-merge-sale"/>
   </action-group>
 
-  <action-group name="action-sale-group-onchange-company">
-    <action name="action-sale-order-method-company-onchange"/>
-    <action name="action-sale-order-record-company-configuration"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
-    <action name="action-supplychain-sale-order-method-get-to-stock-location"
-      if="__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-method-fill-company-bank-details"/>
-    <action name="action-sale-record-update-info-company"/>
-    <action name="action-sale-order-record-compute-end-of-validity-date"/>
-    <action name="action-sale-order-record-set-default-tax-number"/>
-  </action-group>
-
   <action-record name="action-sale-order-record-get-trading-names-management-config"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="$enableTradingNamesManagement"
@@ -1679,11 +1666,6 @@
     <field name="partnerId" expr="eval: contextPartnerId"/>
   </action-record>
 
-  <action-record name="action-sale-order-record-company-configuration"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="duration" expr="eval: company?.saleConfig?.defaultValidityDuration"/>
-  </action-record>
-
   <action-record name="action-sale-order-record-partner"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="paymentCondition" expr="eval: clientPartner?.paymentCondition"
@@ -1800,13 +1782,6 @@
   <action-attrs name="action-sale-order-attrs-set-save-actual-version">
     <attribute for="$saveActualVersion" name="value" expr="eval: true"/>
   </action-attrs>
-
-  <action-record name="action-sale-order-record-set-default-tax-number"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="taxNumber"
-      expr="eval: company?.taxNumberList?.size() == 1 ? company.taxNumberList.collect{it}[0] : null"
-      if="__config__.app.isApp('account')"/>
-  </action-record>
 
   <action-method name="action-sale-order-method-set-client-partner-domain">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
@@ -2071,17 +2046,6 @@
           (stockLocation != null &amp;&amp; deliveryAddress?.country?.alpha2Code != stockLocation?.address?.country?.alpha2Code)
           || (stockLocation == null &amp;&amp; deliveryAddress?.country?.alpha2Code != company.address?.country?.alpha2Code))"/>
   </action-validate>
-
-  <action-record name="action-sale-record-update-info-company"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="tradingName" expr="eval: null"
-      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="printingSettings" expr="eval: company?.printingSettings"/>
-    <field name="incoterm"
-      expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm"
-      if="company != null &amp;&amp; clientPartner != null"/>
-    <field name="creationDate" expr="eval:__config__.app.getTodayDate(company)" if="company"/>
-  </action-record>
 
   <action-record name="action-sale-order-manual-unblock"
     model="com.axelor.apps.sale.db.SaleOrder">
