@@ -256,6 +256,7 @@
       if="!projectTask"/>
     <attribute for="site" name="value" expr="eval: projectTask?.site"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+    <attribute for="product" name="value" expr="eval: projectTask?.product"/>
   </action-attrs>
 
   <action-attrs name="action-project-planning-time-attrs-set-site-domain">
