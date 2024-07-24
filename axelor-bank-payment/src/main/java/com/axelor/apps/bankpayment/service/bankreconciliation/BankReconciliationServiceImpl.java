@@ -59,6 +59,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
@@ -1436,19 +1437,22 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   }
 
   @Override
+  @SuppressWarnings("rawtypes")
   public BigDecimal getSelectedMoveLineTotal(
       BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet) {
-    BigDecimal selectedMoveLineTotal = BigDecimal.ZERO;
-    List<MoveLine> moveLineList = new ArrayList<>();
-    toReconcileMoveLineSet.forEach(
-        m ->
-            moveLineList.add(
-                moveLineRepository.find(
-                    Long.valueOf((Integer) ((LinkedHashMap<?, ?>) m).get("id")))));
-    for (MoveLine moveLine : moveLineList) {
-      selectedMoveLineTotal = selectedMoveLineTotal.add(moveLine.getCurrencyAmount().abs());
-    }
-    return selectedMoveLineTotal;
+    return toReconcileMoveLineSet.stream()
+        .map(map -> map.get("id"))
+        .map(Object::toString)
+        .map(Long::valueOf)
+        .map(moveLineRepository::find)
+        .map(l -> getMoveLineAmount(l, bankReconciliation))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  protected BigDecimal getMoveLineAmount(MoveLine moveLine, BankReconciliation bankReconciliation) {
+    return BankReconciliationToolService.isForeignCurrency(bankReconciliation)
+        ? moveLine.getCurrencyAmount().abs()
+        : moveLine.getDebit().add(moveLine.getCredit());
   }
 
   @Override
