@@ -81,7 +81,7 @@
     <field name="discountAmount" colSpan="3"
       readonlyIf="$nonNegotiable || discountTypeSelect == 0"
       validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
-      onChange="action-sale-order-line-group-discount-amount-onchange"
+      onChange="action-sale-order-line-method-discount-amount-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="taxLineSet" canEdit="false" colSpan="6"
       readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
@@ -269,10 +269,10 @@
             <panel name="discountAmountPanel" colSpan="9" hideIf="discountTypeSelect == 0">
               <field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable"
                 validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
-                onChange="action-sale-order-line-group-discount-amount-onchange"
+                onChange="action-sale-order-line-method-discount-amount-onchange"
                 x-scale="saleOrder.currency.numberOfDecimals"/>
               <field name="discountDerogation" colSpan="3"
-                onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-group-discount-amount-onchange"/>
+                onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-method-discount-amount-onchange"/>
             </panel>
             <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 
@@ -472,7 +472,7 @@
           <field name="discountTypeSelect"
             onChange="action-sale-order-line-group-discount-type-select-onchange"/>
           <field name="discountAmount"
-            onChange="action-sale-order-line-group-discount-amount-onchange"
+            onChange="action-sale-order-line-method-discount-amount-onchange"
             hideIf="discountTypeSelect == 0"/>
           <field name="priceDiscounted" colSpan="4" hidden="true"/>
         </panel>
@@ -595,18 +595,13 @@
     <action name="action-sale-order-line-method-onnew"/>
     <action name="action-sale-order-line-record-is-form-readonly"/>
     <action name="action-sale-order-line-record-non-negotiable"/>
-    <action name="action-sale-order-line-attrs-title-project"/>
-    <action name="action-sale-order-line-attrs-scale-and-precision"/>
     <action name="action-sale-order-line-record-new"/>
     <action name="action-sale-order-line-record-project"/>
     <action name="action-sale-order-line-attrs-set-company-currency"/>
     <action name="action-sale-order-line-attrs-set-currency"/>
     <action name="action-sale-order-line-attrs-fill-estimated-date"/>
-    <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
     <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
-    <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-record-init-dummy-fields"/>
   </action-group>
 
@@ -616,17 +611,12 @@
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-line-record-is-form-readonly"/>
     <action name="action-sale-order-line-record-non-negotiable"/>
-    <action name="action-sale-order-line-attrs-title-project"/>
-    <action name="action-sale-order-line-attrs-scale-and-precision"/>
     <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     <action name="action-sale-order-line-attrs-set-company-currency"/>
     <action name="action-sale-order-line-attrs-set-currency"/>
     <action name="action-sale-order-line-method-check-qty"
       if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
-    <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
-    <action name="action-sale-order-line-attrs-selection-in-type-select"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -661,12 +651,7 @@
 
   <action-group name="action-sale-order-line-group-discount-type-select-onchange">
     <action name="action-sale-order-line-method-discount-type-onchange"/>
-    <action name="action-sale-order-line-attrs-discountamount-title"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
-  </action-group>
-
-  <action-group name="action-sale-order-line-group-discount-amount-onchange">
-    <action name="action-sale-order-line-method-discount-amount-onchange"/>
   </action-group>
 
   <action-group name="action-sale-order-line-group-deliv-estimated-date-onchange">
@@ -771,36 +756,44 @@
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkStocks"/>
   </action-method>
 
+  <action-method name="action-sale-order-line-method-qty-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="qtyOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-tax-line-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="taxLineOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-discount-type-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="discountTypeSelectOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-discount-amount-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="discountAmountOnChange"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-complementary-product-list-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="selectedComplementaryProductListOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-onnew">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-onload">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="onLoad"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-scale">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="setScaleForPriceAndQty"/>
+  </action-method>
+
   <!-- ACTION ATTRS -->
-
-  <action-attrs name="action-sale-order-line-attrs-discountamount-title">
-    <attribute name="title" for="discountAmount"
-      expr="eval: com.axelor.i18n.I18n.get('Discount rate')" if="discountTypeSelect == 1"/>
-    <attribute name="title" for="discountAmount"
-      expr="eval: com.axelor.i18n.I18n.get('Discount amount')" if="discountTypeSelect == 2"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-line-attrs-scale-and-precision">
-    <attribute name="scale" for="price"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="inTaxPrice"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="priceDiscounted"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="discountAmount"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-
-    <attribute name="scale" for="oldQty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="qty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="requestedReservedQty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="reservedQty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="deliveredQty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-  </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-set-company-currency">
     <attribute name="value" for="$companyCurrency"
@@ -830,21 +823,6 @@
     <attribute name="value" expr="eval: __parent__?.estimatedShippingDate"
       for="estimatedShippingDate"
       if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; deliveryState &lt; 2"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-line-attrs-selection-in-type-select">
-    <attribute name="selection-in" for="typeSelect"
-      expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
-  </action-attrs>
-
-  <action-attrs if-module="axelor-business-project"
-    name="action-sale-order-line-attrs-title-project">
-    <attribute name="title" for="project"
-      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
-      if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project')?.getProjectLabel())"/>
-    <attribute name="title" for="projectPanel"
-      expr="eval:  __config__.app.getApp('project')?.getProjectLabel()"
-      if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-show-availabilty-request">
@@ -884,37 +862,5 @@
     <action name="action-sale-order-line-validate-check-coefficient-config"/>
     <action name="action-sale-order-line-attrs-to-invoice"/>
   </action-group>
-
-  <action-method name="action-sale-order-line-method-qty-onchange">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="qtyOnChange"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-tax-line-onchange">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="taxLineOnChange"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-discount-type-onchange">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
-      method="discountTypeSelectOnChange"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-discount-amount-onchange">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
-      method="discountAmountOnChange"/>
-  </action-method>
-
-  <action-method
-    name="action-sale-order-line-method-complementary-product-list-onchange">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
-      method="selectedComplementaryProductListOnChange"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-onnew">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="onNew"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-onload">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="onLoad"/>
-  </action-method>
 
 </object-views>
