@@ -319,6 +319,7 @@
 "Planned time",,,
 "Please complete the order lines with at least one product type 'Service' and the supply mode 'Produce'",,,
 "Please fill printing settings on invoice ${invoiceId}.",,,
+"Please fill the company and the client partner before conversion.",,,
 "Please select lines",,,
 "Please set days unit in the configuration of app Business Project.",,,
 "Please set hours unit in the configuration of app Business Project.",,,

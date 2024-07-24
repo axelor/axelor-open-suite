@@ -319,6 +319,7 @@
 "Planned time","Temps planifié",,
 "Please complete the order lines with at least one product type 'Service' and the supply mode 'Produce'","Merci de compléter les lignes de commande avec au moins un produit de type ‘Service’ et mode d'approvisionnement ‘Produire’",,
 "Please fill printing settings on invoice ${invoiceId}.","Merci de remplir les paramètres d'impressions sur la facture ${invoiceId}.",,
+"Please fill the company and the client partner before conversion.","Veuillez remplir la société et le client avant la conversion",,
 "Please select lines","Sélectionner les lignes",,
 "Please set days unit in the configuration of app Business Project.","Merci de paramétrer l'unité pour les jours dans l'application Gestion à l'affaire.",,
 "Please set hours unit in the configuration of app Business Project.","Merci de paramétrer l'unité pour les heures dans l'application Gestion à l'affaire.",,
