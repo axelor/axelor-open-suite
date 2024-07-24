@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="project-task-link-type-grid" title="Project task relation types"
+    model="com.axelor.apps.project.db.ProjectTaskLinkType" editable="true">
+    <field name="name" required="true"/>
+    <field name="typeSelect" required="true"/>
+    <field name="link1Name" required="true"/>
+    <field name="link2Name" required="true"/>
+  </grid>
+
+  <form name="project-task-link-type-form" title="Project task relation type"
+    model="com.axelor.apps.project.db.ProjectTaskLinkType">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="typeSelect" required="true"/>
+      <field name="link1Name" required="true"/>
+      <field name="link2Name" required="true"/>
+    </panel>
+  </form>
+
+</object-views>

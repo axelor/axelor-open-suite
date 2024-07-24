@@ -56,4 +56,9 @@
     <option value="ticket">Ticket</option>
   </selection>
 
+  <selection name="project.project.link.type.type.select">
+    <option value="0">Relation</option>
+    <option value="1">Following</option>
+    <option value="2">Blocking</option>
+  </selection>
 </object-views>

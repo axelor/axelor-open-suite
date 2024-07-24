@@ -248,6 +248,12 @@
             title="Total duration (Hours)" colSpan="12"/>
         </panel>
       </panel>
+      <panel name="linkTaskPanel" title="Manage relations" showIf="id" colSpan="12">
+        <panel-related field="linkedFromProjectTaskLinkList"
+          grid-view="project-task-link-from-grid" form-view="project-task-link-form"/>
+        <panel-related field="linkedToProjectTaskLinkList"
+          grid-view="project-task-link-to-grid" form-view="project-task-link-form"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>

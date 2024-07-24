@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="ProjectTaskLinkType">
+
+    <string name="name" translatable="true"/>
+    <integer name="typeSelect" title="Type"
+      selection="project.project.link.type.type.select" default="0"/>
+    <string name="link1Name" title="Relation 1" translatable="true"/>
+    <string name="link2Name" title="Relation 2" translatable="true"/>
+  </entity>
+
+</domain-models>

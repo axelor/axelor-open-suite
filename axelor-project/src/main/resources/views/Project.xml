@@ -289,6 +289,7 @@
         onChange="action-project-record-category-reset-values"/>
       <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"
         showIf="isShowTaskCategory"/>
+      <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" placeholder="All"/>
       <field name="isShowProgress" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
