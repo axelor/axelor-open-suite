@@ -136,6 +136,7 @@ import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderFinalizeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
 import java.util.concurrent.Callable;
@@ -216,5 +217,7 @@ public class BudgetModule extends AxelorModule {
     bind(SaleOrderCheckBudgetService.class).to(SaleOrderCheckBudgetServiceImpl.class);
     bind(SaleOrderFinalizeSupplychainServiceImpl.class)
         .to(SaleOrderFinalizeBudgetServiceImpl.class);
+    bind(SaleOrderCheckSupplychainServiceImpl.class)
+        .to(com.axelor.apps.budget.service.SaleOrderCheckBudgetServiceImpl.class);
   }
 }

@@ -325,4 +325,7 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_MASS_PRODUCT_NO_STOCK_LOCATION_SOURCE_AVAILABLE = /*$$(*/
       "The product %s is missing a stock location (source or dest). Please make sure that the cart stock location and stock location in the product is filled." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_ALREADY_STORED_PRODUCT = /*$$(*/
+      "The product %s have already been stored" /*)*/;
 }

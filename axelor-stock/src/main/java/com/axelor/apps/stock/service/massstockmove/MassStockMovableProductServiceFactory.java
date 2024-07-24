@@ -5,8 +5,16 @@ import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
 
 public interface MassStockMovableProductServiceFactory {
 
-  MassStockMovableProductProcessingService<? extends MassStockMovableProduct>
-      getMassStockMovableProductProcessingService(MassStockMovableProduct movableProduct)
+  MassStockMovableProductProcessingRealizeService<? extends MassStockMovableProduct>
+      getMassStockMovableProductProcessingRealizeService(MassStockMovableProduct movableProduct)
+          throws AxelorException;
+
+  MassStockMovableProductProcessingCancelService<? extends MassStockMovableProduct>
+      getMassStockMovableProductProcessingCancelService(MassStockMovableProduct movableProduct)
+          throws AxelorException;
+
+  MassStockMovableProductProcessingSaveService<? extends MassStockMovableProduct>
+      getMassStockMovableProductProcessingSaveService(MassStockMovableProduct movableProduct)
           throws AxelorException;
 
   MassStockMovableProductLocationService<? extends MassStockMovableProduct>

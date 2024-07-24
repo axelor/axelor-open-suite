@@ -6,4 +6,6 @@ import java.util.Map;
 
 public interface SaleOrderOnChangeService {
   Map<String, Object> partnerOnChange(SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> companyOnChange(SaleOrder saleOrder) throws AxelorException;
 }

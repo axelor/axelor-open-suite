@@ -77,6 +77,7 @@ public class IntercoServiceImpl implements IntercoService {
   protected PurchaseConfigService purchaseConfigService;
   protected AnalyticLineModelService analyticLineModelService;
   protected TaxService taxService;
+  protected SaleOrderStockLocationService saleOrderStockLocationService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
@@ -84,10 +85,12 @@ public class IntercoServiceImpl implements IntercoService {
   public IntercoServiceImpl(
       PurchaseConfigService purchaseConfigService,
       AnalyticLineModelService analyticLineModelService,
-      TaxService taxService) {
+      TaxService taxService,
+      SaleOrderStockLocationService saleOrderStockLocationService) {
     this.purchaseConfigService = purchaseConfigService;
     this.analyticLineModelService = analyticLineModelService;
     this.taxService = taxService;
+    this.saleOrderStockLocationService = saleOrderStockLocationService;
   }
 
   @Override
@@ -134,8 +137,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     // get stock location
     saleOrder.setStockLocation(
-        Beans.get(SaleOrderSupplychainService.class)
-            .getStockLocation(clientPartner, intercoCompany));
+        saleOrderStockLocationService.getStockLocation(clientPartner, intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
