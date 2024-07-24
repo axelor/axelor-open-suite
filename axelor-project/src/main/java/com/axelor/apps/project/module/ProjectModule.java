@@ -42,6 +42,8 @@ import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskLinkService;
+import com.axelor.apps.project.service.ProjectTaskLinkServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTemplateService;
@@ -81,5 +83,6 @@ public class ProjectModule extends AxelorModule {
     bind(WikiRepository.class).to(WikiProjectRepository.class);
     bind(ProjectCreateTaskService.class).to(ProjectCreateTaskServiceImpl.class);
     bind(ProjectConfigService.class).to(ProjectConfigServiceImpl.class);
+    bind(ProjectTaskLinkService.class).to(ProjectTaskLinkServiceImpl.class);
   }
 }
