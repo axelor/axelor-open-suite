@@ -70,9 +70,12 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.observer.SaleOrderFireService;
+import com.axelor.apps.sale.service.observer.SaleOrderFireServiceImpl;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireServiceImpl;
 import com.axelor.apps.sale.service.observer.SaleOrderLineObserver;
+import com.axelor.apps.sale.service.observer.SaleOrderObserver;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.OpportunityServiceSaleImpl;
@@ -82,6 +85,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
@@ -240,5 +245,8 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineFireService.class).to(SaleOrderLineFireServiceImpl.class);
     bind(SaleOrderLineObserver.class);
     bind(SaleOrderLineInitValueService.class).to(SaleOrderLineInitValueServiceImpl.class);
+    bind(SaleOrderObserver.class);
+    bind(SaleOrderFireService.class).to(SaleOrderFireServiceImpl.class);
+    bind(SaleOrderConfirmService.class).to(SaleOrderConfirmServiceImpl.class);
   }
 }

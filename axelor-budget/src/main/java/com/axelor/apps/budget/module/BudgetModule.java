@@ -107,6 +107,7 @@ import com.axelor.apps.budget.service.move.MoveLineGroupBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveReverseServiceBudgetImpl;
 import com.axelor.apps.budget.service.move.MoveValidateBudgetServiceImpl;
+import com.axelor.apps.budget.service.observer.SaleOrderBudgetObserver;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderInvoiceBudgetServiceImpl;
@@ -223,5 +224,7 @@ public class BudgetModule extends AxelorModule {
         .to(com.axelor.apps.budget.service.SaleOrderCheckBudgetServiceImpl.class);
     bind(SaleOrderLineOnChangeSupplychainServiceImpl.class)
         .to(SaleOrderLineOnChangeBudgetServiceImpl.class);
+    bind(SaleOrderCheckSupplychainServiceImpl.class).to(SaleOrderCheckBudgetServiceImpl.class);
+    bind(SaleOrderBudgetObserver.class);
   }
 }

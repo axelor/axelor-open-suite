@@ -36,7 +36,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.observer.SaleOrderFireService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -86,6 +86,8 @@ public class ImportSupplyChain {
   @Inject protected InventoryLineService inventoryLineService;
 
   @Inject protected InvoiceTermService invoiceTermService;
+
+  @Inject protected SaleOrderFireService saleOrderFireService;
 
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
@@ -169,7 +171,6 @@ public class ImportSupplyChain {
   @Transactional(rollbackOn = {Exception.class})
   public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values) {
     try {
-      SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
       SaleOrder saleOrder = (SaleOrder) importSaleOrder.importSaleOrder(bean, values);
@@ -184,7 +185,7 @@ public class ImportSupplyChain {
       if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
         // taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation//
         // of tasks in project module
-        saleOrderWorkflowService.confirmSaleOrder(saleOrder);
+        saleOrderFireService.confirmSaleOrder(saleOrder);
         // Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
         //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
         // saleOrder.setClientPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
