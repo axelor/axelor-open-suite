@@ -22,14 +22,20 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
-public class TaxAccountService {
+public class TaxAccountService extends TaxService {
 
   protected AccountManagementAccountService accountManagementAccountService;
 
@@ -93,5 +99,18 @@ public class TaxAccountService {
       return accountManagementAccountService.getSaleVatRegulationAccount(
           accountManagement, tax, company);
     }
+  }
+
+  @Override
+  public BigDecimal getTotalTaxRateInPercentage(Set<TaxLine> taxLineSet) {
+    if (CollectionUtils.isEmpty(taxLineSet)) {
+      return BigDecimal.ZERO;
+    }
+    return taxLineSet.stream()
+        .filter(Objects::nonNull)
+        .filter(taxLine -> taxLine.getTax() != null && !taxLine.getTax().getIsNonDeductibleTax())
+        .map(TaxLine::getValue)
+        .filter(Objects::nonNull)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }
