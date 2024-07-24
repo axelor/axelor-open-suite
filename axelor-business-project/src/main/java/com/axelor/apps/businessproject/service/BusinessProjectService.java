@@ -7,7 +7,7 @@ import com.axelor.apps.project.db.Project;
 import com.google.inject.persist.Transactional;
 
 public interface BusinessProjectService {
-  @Transactional(rollbackOn = {Exception.class})
+
   void setAsBusinessProject(Project project, Company company, Partner clientPartner)
       throws AxelorException;
 
