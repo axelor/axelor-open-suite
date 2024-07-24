@@ -24,4 +24,6 @@ public interface SaleOrderLineViewService {
   Map<String, Map<String, Object>> getDiscountAmountTitle(SaleOrderLine saleOrderLine);
 
   Map<String, Map<String, Object>> getPriceAndQtyScale();
+
+  Map<String, Map<String, Object>> focusProduct();
 }

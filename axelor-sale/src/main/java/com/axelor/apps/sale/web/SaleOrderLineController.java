@@ -28,10 +28,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
@@ -47,6 +47,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,6 +72,16 @@ public class SaleOrderLineController {
         Beans.get(SaleOrderLineFireService.class).getOnLoadAttrs(saleOrderLine, saleOrder));
     response.setValues(
         Beans.get(SaleOrderLineDummyService.class).getOnLoadDummies(saleOrderLine, saleOrder));
+  }
+
+  public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(context);
+    response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
+    response.setValues(
+        Beans.get(SaleOrderLineDummyService.class)
+            .getOnNewEditableDummies(saleOrderLine, saleOrder));
   }
 
   public void computeSubMargin(ActionRequest request, ActionResponse response)
@@ -107,7 +118,9 @@ public class SaleOrderLineController {
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
         // Beans.get(SaleOrderLineCheckService.class).check(saleOrderLine); throws exception
-        // response.setValues(Beans.get(SaleOrderLineDummyService.class).getDummies());
+        saleOrderLineMap.putAll(
+            Beans.get(SaleOrderLineDummyService.class)
+                .getOnProductChangeDummies(saleOrderLine, saleOrder));
         response.setAttrs(
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
@@ -188,27 +201,6 @@ public class SaleOrderLineController {
   }
 
   /**
-   * Called from sale order line form view on load and on discount type select change. Call {@link
-   * SaleOrderLineDiscountService#computeMaxDiscount} and set the message to the view.
-   *
-   * @param request
-   * @param response
-   */
-  public void fillMaxDiscount(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
-      BigDecimal maxDiscount =
-          Beans.get(SaleOrderLineDiscountService.class)
-              .computeMaxDiscount(saleOrder, saleOrderLine);
-      response.setValue("$maxDiscount", maxDiscount);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
    * Called from sale order line form view, on product selection. Call {@link
    * com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService#computeProductDomain(SaleOrderLine,
    * SaleOrder)}.
@@ -272,8 +264,12 @@ public class SaleOrderLineController {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
-    Map<String, Object> saleOrderLineMap =
-        Beans.get(SaleOrderLineOnChangeService.class).compute(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineOnChangeService.class).compute(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineDummyService.class)
+            .getOnDiscountTypeChangeDummies(saleOrderLine, saleOrder));
     response.setAttrs(
         Beans.get(SaleOrderLineViewService.class)
             .getDiscountTypeSelectOnChangeAttrs(saleOrderLine, saleOrder));
