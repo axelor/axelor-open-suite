@@ -168,6 +168,13 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     return attrs;
   }
 
+  @Override
+  public Map<String, Map<String, Object>> focusProduct() {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    attrs.put("product", Map.of("focus", true));
+    return attrs;
+  }
+
   protected Map<String, Map<String, Object>> getTypeSelectSelection() {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     AppSale appSale = appSaleService.getAppSale();

@@ -102,27 +102,6 @@ public class SaleOrderLineController {
     }
   }
 
-  public void fillAvailableAndAllocatedStock(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
-        Beans.get(SaleOrderLineServiceSupplyChain.class);
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
-
-    if (saleOrder != null) {
-      if (saleOrderLine.getProduct() != null && saleOrder.getStockLocation() != null) {
-        BigDecimal availableStock =
-            saleOrderLineServiceSupplyChain.getAvailableStock(saleOrder, saleOrderLine);
-        BigDecimal allocatedStock =
-            saleOrderLineServiceSupplyChain.getAllocatedStock(saleOrder, saleOrderLine);
-
-        response.setValue("$availableStock", availableStock);
-        response.setValue("$allocatedStock", allocatedStock);
-        response.setValue("$totalStock", availableStock.add(allocatedStock));
-      }
-    }
-  }
-
   /**
    * Called from sale order line request quantity wizard view. Call {@link
    * ReservedQtyService#updateReservedQty(SaleOrderLine, BigDecimal)}.
