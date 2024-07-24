@@ -3243,7 +3243,7 @@
 "The deposit slip is validated",,,
 "The disposal of the asset cannot be executed while depreciation has already been accounted.",,,
 "The distribution is wrong, some axes percentage values are not equal to 100%",,,
-"The fiscal year %s still contains %s entry/ies in Daybook which will distort the calculations of the balances to be carried forward. Please post those entries or close definitely the periods before to proceed to the closure. Do you still wish to continue ?",,,
+"The fiscal year %s still contains %s entry/ies in Daybook which may subsequently lead to inconsistencies with the calculations of the balances to be carried forward with this closure process if they are modified. We recommand to post those entries or close definitely the periods before proceeding with the closure. Do you still wish to continue ?",,,
 "The fixed asset can't be disposed at the moment as there are still depreciations that remains to be accounted before input disposal date. Please proceed to the realization of those depreciations before proceeding to the disposal of the asset on that date.",,,
 "The fixed asset category does not have value in its depreciation plan and it can not be used",,,
 "The following account within the moveLine : %s is inactive. Thus, the move can't be set to accounted",,,
