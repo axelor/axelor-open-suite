@@ -203,6 +203,7 @@ public class BankReconciliationValidateService {
     boolean isDebit = bankReconciliationLine.getDebit().compareTo(BigDecimal.ZERO) == 1;
 
     boolean firstLine = true;
+    boolean isForeignCurrency = BankReconciliationToolService.isForeignCurrency(bankReconciliation);
 
     if ((moveLinesToReconcileContext != null && !moveLinesToReconcileContext.isEmpty())) {
       boolean isUnderCorrection =
@@ -218,16 +219,23 @@ public class BankReconciliationValidateService {
             moveLineRepository.find(((Integer) moveLineToReconcile.get("id")).longValue());
         BigDecimal debit;
         BigDecimal credit;
-
         if (isDebit) {
+          BigDecimal moveLineCredit = moveLine.getCredit();
+          if (isForeignCurrency) {
+            moveLineCredit = moveLine.getCurrencyAmount().abs();
+          }
           debit =
-              (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
+              (moveLineCredit.subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
           credit = BigDecimal.ZERO;
         } else {
           debit = BigDecimal.ZERO;
+          BigDecimal moveLineDebit = moveLine.getDebit();
+          if (isForeignCurrency) {
+            moveLineDebit = moveLine.getCurrencyAmount().abs();
+          }
           credit =
-              (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
+              (moveLineDebit.subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
         }
 
