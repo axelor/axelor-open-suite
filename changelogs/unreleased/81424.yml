@@ -1,3 +1,3 @@
 ---
-title: "Bank reconciliation: Correct Total of selected move lines in multiple reconciles."
+title: "Bank reconciliation: fixed total of selected move lines in multiple reconciles when currency is different from company currency."
 module: axelor-bank-payment
